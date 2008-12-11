@@ -1,8 +1,5 @@
 index.html: index.txt
 	asciidoc -a encoding=ISO-8859-1 index.txt
 
-index.txt: foo.py config.py
+index.txt: foo.py
 	python foo.py > index.txt
-
-ids.list: foo.py
-	python foo.py --ids > ids.list

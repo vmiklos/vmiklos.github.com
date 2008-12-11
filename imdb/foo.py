@@ -2,6 +2,7 @@ from sgmllib import SGMLParser
 import urllib
 import sys
 import os
+import MySQLdb
 
 class myurlopener(urllib.FancyURLopener):
 	version = "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.2) Gecko/20070225 Firefox/2.0.0.2"
@@ -71,15 +72,26 @@ parser.feed(page)
 parser.close()
 
 posts = {}
-if os.path.exists("posts.list"):
-	sock = open("posts.list")
-	buf = sock.read()
-	sock.close()
 
-	for i in buf.split('\n'):
-		items = i.split('\t')
-		if len(items) > 1:
-			posts[items[0]] = items[1]
+conn = MySQLdb.connect(host="localhost", user="vmiklos", passwd="ae89Bq%Bg", db="vmiklos")
+cursor = conn.cursor(MySQLdb.cursors.DictCursor)
+
+def get_title(id):
+	search = "%" + id + "%"
+	cursor.execute("""SELECT post_urltitle FROM blog_items__item WHERE post_content like %s or post_url like %s""",
+			(search, search))
+	row = cursor.fetchone()
+	if row and "post_urltitle" in row.keys():
+		return row['post_urltitle']
+
+for i in parser.rows:
+	l = i[2].split('[')[0].split('/')
+	if len(l) < 2:
+		continue
+	id = l[-2]
+	title = get_title(id)
+	if title:
+		posts[id] = "http://vmiklos.hu/blog/%s" % get_title(id)
 
 c = 0
 for i in parser.rows:
@@ -98,14 +110,8 @@ for i in parser.rows:
 	else:
 		i.append("")
 
-if len(sys.argv) == 1:
-	print "Coverage: %s%% (%s/%s)" % (round(float(c) / (len(parser.rows)-1), 2), c, len(parser.rows)-1)
-	print "|===="
-	for i in parser.rows:
-		print "| %s" % "| ".join(i)
-	print "|===="
-else:
-	for i in parser.rows:
-		l = i[2].split('[')[0].split('/')
-		if len(l) > 1:
-			print l[-2]
+print "Coverage: %s%% (%s/%s)" % (round(float(c) / (len(parser.rows)-1), 2), c, len(parser.rows)-1)
+print "|===="
+for i in parser.rows:
+	print "| %s" % "| ".join(i)
+print "|===="
