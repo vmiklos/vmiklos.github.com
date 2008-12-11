@@ -82,7 +82,7 @@ for i in parser.rows:
 	else:
 		i.append("")
 
-if sys.argv == 1:
+if len(sys.argv) == 1:
 	print "Coverage: %s%% (%s/%s)" % (round(float(c) / (len(parser.rows)-1), 2), c, len(parser.rows)-1)
 	print "|===="
 	for i in parser.rows:
