@@ -14,6 +14,7 @@ class HTMLParser(SGMLParser):
 		self.intr = False
 		self.intd = False
 		self.cell = []
+		self.link = None
 
 	def start_table(self, attrs):
 		for k, v in attrs:
@@ -28,11 +29,21 @@ class HTMLParser(SGMLParser):
 		if self.intr:
 			self.intd = True
 
+	def start_a(self, attrs):
+		if self.intd:
+			for k, v in attrs:
+				if k == "href":
+					self.link = "http://www.imdb.com" + v
+
 	def end_td(self):
 		if self.intd:
 			self.intd = False
-			self.coloumns.append("".join(self.cell))
+			s = "".join(self.cell)
+			if self.link:
+				s = '%s[%s]' % (self.link, s)
+			self.coloumns.append(s)
 			self.cell = []
+			self.link = None
 	
 	def end_tr(self):
 		if self.intr:
@@ -60,7 +71,7 @@ parser.close()
 
 c = 0
 for i in parser.rows:
-	title = i[2]
+	title = i[2].split('[')[-1].split(']')[0]
 	if title in posts.keys():
 		s = posts[title]
 		i.append("%s[%s]" % (s, s.split('/')[-1]))
