@@ -1,6 +1,7 @@
 from sgmllib import SGMLParser
 import urllib
 from config import posts
+import sys
 
 class myurlopener(urllib.FancyURLopener):
 	version = "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.2) Gecko/20070225 Firefox/2.0.0.2"
@@ -81,8 +82,14 @@ for i in parser.rows:
 	else:
 		i.append("")
 
-print "Coverage: %s%% (%s/%s)" % (round(float(c) / (len(parser.rows)-1), 2), c, len(parser.rows)-1)
-print "|===="
-for i in parser.rows:
-	print "| %s" % "| ".join(i)
-print "|===="
+if sys.argv == 1:
+	print "Coverage: %s%% (%s/%s)" % (round(float(c) / (len(parser.rows)-1), 2), c, len(parser.rows)-1)
+	print "|===="
+	for i in parser.rows:
+		print "| %s" % "| ".join(i)
+	print "|===="
+else:
+	for i in parser.rows:
+		l = i[2].split('[')[0].split('/')
+		if len(l) > 1:
+			print l[-2]

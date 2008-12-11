@@ -4,3 +4,5 @@ index.html: index.txt
 index.txt: foo.py config.py
 	python foo.py > index.txt
 
+ids.list: foo.py
+	python foo.py --ids > ids.list
