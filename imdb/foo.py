@@ -70,8 +70,8 @@ for i in parser.rows:
 	else:
 		i.append("")
 
+print "Coverage: %s%% (%s/%s)" % (round(float(c) / (len(parser.rows)-1), 2), c, len(parser.rows)-1)
 print "|===="
 for i in parser.rows:
 	print "| %s" % "| ".join(i)
 print "|===="
-print "Coverage: %s%%" % (round(float(c) / len(parser.rows), 2))
