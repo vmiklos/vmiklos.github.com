@@ -1,5 +1,6 @@
 from sgmllib import SGMLParser
 import urllib
+from config import posts
 
 class myurlopener(urllib.FancyURLopener):
 	version = "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.2) Gecko/20070225 Firefox/2.0.0.2"
@@ -57,18 +58,20 @@ parser.reset()
 parser.feed(page)
 parser.close()
 
-posts = {
-		"The Shawshank Redemption (1994)": "http://vmiklos.hu/blog/a_remeny_rabjai",
-		"The Godfather (1972)": "http://vmiklos.hu/blog/keresztapa_1_2_3"
-		}
-
+c = 0
 for i in parser.rows:
 	title = i[2]
 	if title in posts.keys():
-		#print "appending '%s' for '%s'" % (posts[i[0]], i[0])
-		i.append(posts[title])
+		s = posts[title]
+		i.append("%s[%s]" % (s, s.split('/')[-1]))
+		c += 1
+	elif title == "Title":
+		i.append("Post")
+	else:
+		i.append("")
 
 print "|===="
 for i in parser.rows:
 	print "| %s" % "| ".join(i)
 print "|===="
+print "Coverage: %s%%" % (round(float(c) / len(parser.rows), 2))
