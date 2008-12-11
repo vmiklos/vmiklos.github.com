@@ -103,7 +103,7 @@ for i in parser.rows:
 		id = None
 	if id in posts.keys():
 		s = posts[id]
-		i.append("%s[%s]" % (s, s.split('/')[-1]))
+		i.append("%s[%s]" % (s, s.split('/')[-1].replace('-', ' ').replace('_', ' ')))
 		c += 1
 	elif title == "Title":
 		i.append("Post")
