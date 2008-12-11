@@ -1,0 +1,14 @@
+#!/bin/sh
+
+tmp=$(mktemp)
+: > posts.list
+for i in $(cat ids.list)
+do
+	lynx -dump http://vmiklos.hu/blog/?s=$i > $tmp
+	if grep -q ']Permalink' $tmp; then
+		echo -e "$i\t$(grep ' 2\. ' $tmp|sed -n 's/.*\. //;$ p')" >> posts.list
+	else
+		echo "$i" >> posts.list
+	fi
+done
+rm $tmp

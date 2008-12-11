@@ -1,7 +1,7 @@
 from sgmllib import SGMLParser
 import urllib
-from config import posts
 import sys
+import os
 
 class myurlopener(urllib.FancyURLopener):
 	version = "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.2) Gecko/20070225 Firefox/2.0.0.2"
@@ -70,11 +70,27 @@ parser.reset()
 parser.feed(page)
 parser.close()
 
+posts = {}
+if os.path.exists("posts.list"):
+	sock = open("posts.list")
+	buf = sock.read()
+	sock.close()
+
+	for i in buf.split('\n'):
+		items = i.split('\t')
+		if len(items) > 1:
+			posts[items[0]] = items[1]
+
 c = 0
 for i in parser.rows:
 	title = i[2].split('[')[-1].split(']')[0]
-	if title in posts.keys():
-		s = posts[title]
+	items = i[2].split('[')[0].split('/')
+	if len(items) > 1:
+		id = items[-2]
+	else:
+		id = None
+	if id in posts.keys():
+		s = posts[id]
 		i.append("%s[%s]" % (s, s.split('/')[-1]))
 		c += 1
 	elif title == "Title":
