@@ -1,4 +1,4 @@
 rfcomm bind 0 00:0D:B5:38:BA:C6
-gpsbabel -i dg-100,erase=1 -f /dev/rfcomm0 -o gpx -F $(date +%Y-%m-%d).gpx
+gpsbabel -i dg-100,erase=1 -f /dev/rfcomm0 -x track,move=+$(python -c 'import time; print -1*time.altzone') -o gpx -F $(date +%Y-%m-%d).gpx
 gpsbabel -i gpx -f $(date +%Y-%m-%d).gpx -o kml -F $(date +%Y-%m-%d).kml
 rfcomm release 0
