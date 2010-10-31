@@ -1,0 +1,61 @@
+permalink: svn-ggit-conversion-using-git-svn
+pubdate: 2009-09-08T03:02:18Z
+title: svn->git conversion using git-svn
+author: Miklos
+tags: en, hacking
+
+---
+
+++++
+git-svnimport will be removed in git-1.5.4 and i don't think it's tirival to use git-svn (which is great for bi-directional work) to properly convert an svn repo (with multiple branches) to a git one, so here is a recipe.
+
+first, just use git-svn to create a git-svn repo. it's a git repo but it's a bit weird, it contains metadata which is necessary for bi-directional operations and you won't see the branches by default when you clone it. ah and it's not a bare repo.
+
+in this example i'll convert ooo-build's svn repo (it has several branches and tags, so it's a good example).
+
+<code>mkdir -p ~/git/ooo-build
+cd ~/git/ooo-build
+git svn init -s svn+ssh://svn.gnome.org/svn/ooo-build
+git svn fetch</code>
+
+this will take a while. once it's completed, you need to convert this to a bare repo:
+
+<code>mkdir ../ooo-build.git
+cd ../ooo-build.git
+git --bare init
+git config remote.origin.url ~/git/ooo-build
+git config remote.origin.fetch +refs/remotes/tags/*:refs/tags/*
+git config --add remote.origin.fetch +refs/remotes/trunk:refs/heads/master
+git config --add remote.origin.fetch +refs/remotes/*:refs/heads/*
+git fetch
+</code>
+
+and you're done! :)
+
+of course this is an incremental operation, so all you need is to run git svn fetch and git fetch from cron to keep the mirror up to date.
+
+update:
+
+it turns out you can even do this by having only one git repo. it has benefints: you don't have to duplicate the object database. and it has one problem: if you later switch fully to git, then you want to remove the git-svn metadata - doing so is the easiest if you just clone the repo.
+
+so - in case you want this, you have to:
+
+<code>mkdir -p ~/git/ooo-build.git
+cd ~/git/ooo-build.git
+git --bare init
+git --bare svn init -s svn+ssh://svn.gnome.org/svn/ooo-build
+git --bare svn fetch</code>
+
+and then you can fetch from yourself:
+
+<code>
+git config remote.origin.url .
+git config remote.origin.fetch +refs/remotes/tags/*:refs/tags/*
+git config --add remote.origin.fetch +refs/remotes/*:refs/heads/*
+git fetch
+</code>
+
+note: git config --add remote.origin.fetch +refs/remotes/trunk:refs/heads/master it unnecessary as git svn fetch will update this for you (it is different from git fetch)
+
+thanks for devurandom from #git for pointing out that this is possible using git --bare init before git svn init and using git --bare svn fetch :)
+++++

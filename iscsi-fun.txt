@@ -1,0 +1,13 @@
+permalink: iscsi-fun
+pubdate: 2009-04-09T12:22:01Z
+title: iSCSI fun
+author: Miklos
+tags: en, hacking
+
+---
+
+++++
+So I was playing with iSCSI, and the tricky part was that I shared out a block device to a Windows one and the silly OS created a partition table on it, but the block device was an LVM LV. So it was like /dev/mapper/foo-lvol0, and of udev did not create /dev/mapper/foo-lvol0p1, so it was hard the mount.
+
+Next example about hacking Frugalware is useful, we had this problem while generating the USB installer image as well, the trick was to mount /dev/mapper/foo-lvol0 with -o offset=32256, and this works generally as long as the partition table is an old PC one (so it's not an MS dynamic disk or anything).
+++++

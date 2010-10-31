@@ -1,0 +1,16 @@
+permalink: title-19
+pubdate: 2009-09-08T03:02:18Z
+title: title 19
+author: Miklos
+tags: en, hacking
+
+---
+
+++++
+finally i've got enough time to implement using fakeroot when building in chroot. a simple example about why this is good for us:
+select a pkg and put the <pre>touch /etc</pre> command to the end of build(). in chroot, this will run without any warning, and your chroot will be messed up. with the current fakeroot method:
+<pre>touch: cannot touch `/etc/foo': Permission denied
+==> ERROR: Build Failed.  Aborting...</pre>
+
+yes, that's what we wanted! :)
+++++

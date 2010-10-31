@@ -1,0 +1,31 @@
+permalink: recording-the-audio-output-of-flash-vide
+pubdate: 2009-01-30T02:32:14Z
+title: Recording the audio output of flash videos
+author: Miklos
+tags: en, hacking
+
+---
+
+++++
+This is useful if you really want to record the audio of a clip, which is not on youtube (you can use youtube-dl there).
+
+The <a href="http://carthick.wordpress.com/2007/11/26/linux-recording-soundcard-output-using-arecord/">howto</a> explains pretty much everything.
+
+Here are the amixer parameters I needed:
+
+amixer cset numid=24,iface=MIXER,name='Capture Source' 5
+
+~/.asoundrc:
+
+pcm.copy {
+type plug
+slave {
+pcm hw
+}
+route_policy copy
+}
+
+record commandline:
+
+arecord -f cd -t wav -D copy foo.wav
+++++

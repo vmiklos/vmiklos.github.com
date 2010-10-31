@@ -1,0 +1,27 @@
+permalink: read-only-s-mime-support-in-mutt
+pubdate: 2009-06-02T20:24:11Z
+title: read-only s/mime support in mutt
+author: Miklos
+tags: en, hacking
+
+---
+
+++++
+So my problem was that I already set up PGP, and I use it for sending / receiving signed (and sometimes crypted) messages. Today I received an S/MIME signed message and I had to verify it.
+
+First mutt just bailed out with "Can't verify S/MIME signature", but that was because S/MIME was not configured. Here is what I did:
+
+<pre>
+cd ~/.mutt
+cp /usr/share/doc/mutt-ng/samples/smime.rc .
+# edit muttrc to source it
+</pre>
+
+I thought that will be enough, but that was too aggressive.
+
+First, it disabled my PGP support. I had to put 'unset smime_is_default' to the top of smime.rc.
+
+Second, it tried to verify the whole damn cert chain, which is simply something I can't really care, as the cert is a self-signed cert anyway. To do this, I had to uncomment the last two lines in smime.rc (set smime_verify_command/smime_verify_opaque_command).
+
+So far it works just like I wanted it! :)
+++++

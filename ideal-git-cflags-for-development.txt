@@ -1,0 +1,28 @@
+permalink: ideal-git-cflags-for-development
+pubdate: 2009-01-15T03:21:31Z
+title: Ideal Git CFLAGS for development
+author: Miklos
+tags: en, hacking
+
+---
+
+++++
+This is always an interesting area. The avarage user needs a whole day to test a oneliner patch, just because she never built the software in question, etc. The other end of the line is a regular developer, she modifies the source and she is able to test in seconds.
+
+Regarding git, the testing part is not that hard: I usually work on builtins, so I edit the source code, then type 'make git-foo', and run ./tnumber-desc.sh from the testsuite.
+
+The other part is that you need special compiler flags, since you are interested in extra warnings, debug symbols and such.
+
+The default CFLAGS is defined in the Makefile, which is a tracked file, so modifying that is a no-go. You need 'make configure', then ./configure, and then you can edit config.mak.autogen.
+
+Junio a few days ago <a href="http://article.gmane.org/gmane.comp.version-control.git/105297">mentioned</a> the CFLAGS he uses.
+
+Here comes the interesting part:
+
+<pre>
+CC = ccache cc
+CFLAGS = -g -O2 -Wall -Werror -fno-inline -Wold-style-definition -Wdeclaration-after-statement
+</pre>
+
+-Werror so that I'm forced not to ignore warnings, -fno-inline to be able to debug inline functions, and I just stole the two others from Junio.
+++++

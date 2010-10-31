@@ -1,0 +1,38 @@
+permalink: git-svn-howto
+pubdate: 2009-09-08T03:02:18Z
+title: git-svn howto
+author: Miklos
+tags: en, hacking
+
+---
+
+++++
+i think using git-svn is really easy, once you figured out how to use it. so here is how i use it. no, i'm not a git-svn expert, just a user. and the way i use it - i think it's easy. so here is our situation:
+
+1) foo project uses svn for managing their code
+2) you wish they would use git
+
+how to do both:
+
+1) get the full svn repo:
+
+<code>$ git svn clone --prefix=origin/ url</code>
+
+yes, in my situation this project does not use the trunk/tags/branches structure, see the git-svn manpage if the project you clone does (s/clone/clone -s/ should do the trick)
+
+the --prefix parameter is needed so that you'll see the svn branches as if they were normal git remote branches
+
+2) your local repo is a git repo, so you can do whatever you want, commit, revert, bisect, etc
+
+3) instead of git pull, you need
+
+<code>$ git svn rebase</code>
+
+this does the same as git fetch + git rebase (since you can't merge because of svn)
+
+4) instead of git push, you need
+
+<code>$ git svn dcommit</code>
+
+and we're ready. 3 and not more command, right? :)
+++++

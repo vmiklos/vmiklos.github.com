@@ -1,0 +1,15 @@
+permalink: pootle-vs-frugalwareutils
+pubdate: 2009-02-27T00:12:04Z
+title: Pootle vs frugalwareutils
+author: Miklos
+tags: en, hacking
+
+---
+
+++++
+I already <a href="/blog/preparing-frugalware-1-0pre2">wrote once</a> about Pootle forcing us to use UTF-8 and not respecting the po headers (where charset can be set), but there is a new chapter in this story. So in case the charset is wrong, the generated mo file is still fine, as long as you have utf8 support in your system. Of course in the setup, where we have an "as much as possible" stripped down system, this is not true.
+
+A contributor reported this recently, and the symptom was that "sometimes" netconfig is localized, sometimes not. It turned out a bit later that it's localized when it's running in the target system's chroot (when the install of the packages is finished and the config tools are invoked), but not before the installation. Of course the previous solution worked here pretty fine as well: I just had to convert the remaining translations to utf8 manually, and then add code to convert from utf8 to the native encoding in the pre-package stage (currently named 'make prepare') of frugalwareutils.
+
+Hand converting is boring. And sometimes it's completely messed up, for example you need an 'iconv -f utf8 -t latin1' twice to get the correct accents. ;-)
+++++

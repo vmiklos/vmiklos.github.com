@@ -1,0 +1,33 @@
+permalink: successful-qemu-ppc-install-with-frugalw
+pubdate: 2009-01-27T01:01:48Z
+title: Successful qemu-ppc install with frugalware-current
+author: Miklos
+tags: en, hacking
+
+---
+
+++++
+Tonight I synced the 2.6.28 kernel on PPC, enabled the Realtek driver needed by Qemu and tried again: the whole installation procedure goes fine.
+
+Of course (it couldn't be true ;) ) the boot after the install fails, which is interesting - if boot from CD works fine, I don't see why can't it work from a HDD, but oh well.
+
+I just saw a recent commit in Qemu SVN about fixing qemu-system-ppc -kernel, so I'll give it a try later.
+
+Ah, and the speed is really promising. I did the installation on my laptop, not on a fast machine, and a base install really completed not so slow. ;)
+
+Update: After upgrading to svn6463, it boots with:
+
+qemu-system-ppc -kernel boot/vmlinux-2.6.28-fw1-ppc -append "ro root=/dev/hda3" -hda ~/documents/qemu/hda.img
+
+\o/
+
+Update 2:
+
+To install and boot Frugalware 1.2-ppc, I needed:
+
+qemu-system-ppc -kernel boot/vmlinux-2.6.32-fw3-ppc -initrd boot/initrd-ppc.img -append 'initrd=initrd-ppc.img.gz load_ramdisk=1 prompt_ramdisk=0 ramdisk_size=35396 rw rw root=/dev/ram' -hda ~/documents/qemu/hda.img
+
+and
+
+qemu-system-ppc -kernel boot/vmlinux-2.6.32-fw3-ppc -append 'ro root=/dev/hdc3' -hda ~/documents/qemu/hda.img
+++++

@@ -1,0 +1,28 @@
+permalink: using-xosd-for-irc-notifications-and-other-goodness
+pubdate: 2009-09-08T03:02:18Z
+title: using xosd for irc notifications and other goodness
+author: Miklos
+tags: en, hacking
+
+---
+
+++++
+so, here is the situation:
+
+you have a machine behind a firewall and you have an ssh session to a server. and you want to send notifications to you machine. here is what i did, maybe useful for others, too
+
+<ul>
+  <li>you'll need the program called osd_cat, provided by osd</li>
+  <li>you'll need to use ssh with the -X option</li>
+  <li>if you run programs inside screen, you still won't know the the right DISPLAY number, so do a trick: add
+
+<code>[ -n "$DISPLAY" ] && echo $DISPLAY > ~/.display</code>
+
+to you ~/.bash_login</li>
+  <li>now you're ready to use osd_cat:
+
+<code>$ echo -e 'foo'|DISPLAY=`cat ~/.display` osd_cat --color=blue --age=4 --font=-*-helvetica-medium-r-*-*-*-320-*-*-*-*-*-* --offset=100 --align=right --indent=100</code></li>
+</ul>
+
+as an example, irssi has <a href="http://irssi.org/scripts/scripts/osd.pl">osd.pl</a> to use osd_cat for highlight notifications :)
+++++

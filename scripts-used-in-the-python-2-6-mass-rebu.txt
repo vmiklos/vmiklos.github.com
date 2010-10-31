@@ -1,0 +1,62 @@
+permalink: scripts-used-in-the-python-2-6-mass-rebu
+pubdate: 2008-12-29T03:19:45Z
+title: Scripts used in the Python-2.6 mass rebuild
+author: Miklos
+tags: en, hacking
+
+---
+
+++++
+So here they go.
+
+First, I needed a list of packages for rebuild:
+
+<pre>
+wget -O test.html 'http://frugalware.org/packages/?op=file&amp;srch=usr%2Flib%2Fpython2.5&amp;arch=i686&amp;ver=current'
+lynx -dump ./test.html|grep ' [0-9]\+\. \['|sed 's/.*\]\(.*\) .*/\1/' &gt; test.list
+</pre>
+
+Then I used the following cycle:
+
+<pre>
+git checkout -f; for i in $(cat ~/test.list); do echo $i; cd ~/git/python26/source/*/$i || continue; sudo makepkg -t python2
+6,current -C; git clean -x -d -f; sed -i 's|python&gt;=2.5|python&gt;=2.6|g' FrugalBuild; bumppkg -t python26,current --rebuild "-
+ rebuilt with python-2.6" || break; repoman -t python26 -k push; done
+</pre>
+
+When a build failed, I fixed it up manually and used the following aliases:
+
+<pre>
+alias pybuild="sudo makepkg -t python26,current -cu"
+alias pypush="repoman -t python26 -k push"
+alias pyrec='repoman rec "- rebuilt with python-2.6"'
+</pre>
+
+then removed the already built pkgs from the top of test.list and started the for cycle again.
+
+Once this was done, I did a
+
+<pre>
+git grep 'python&gt;=2.5'
+</pre>
+
+to ensure everything has &amp;gt=2.6 now (except a few cases where a rebuild was not necessary).
+
+Syncing on x86_64 was like this:
+
+I generated the package order with:
+
+<pre>
+git log --reverse --no-merges --pretty=oneline master ^origin/master|sed 's/.* \(.*\)-[^-]\+-[^-]\+-i686/\1/' > build.list
+</pre>
+
+Then I started a for cycle as well, but now just ignoring the failed builds:
+
+<pre>
+git checkout -f; for i in $(cat ~/build.list); do echo $i; cd ~/git/python26/source/*/$i || continue; sudo makepkg -t python26,current -C; git clean -x -d -f; makepkg -dgu; rm -rf src; if sudo makepkg -t python26,current -cu; then repoman -t python26 -k push; else echo $i >> ~/broken.list; fi; done
+</pre>
+
+fortunately less then 5% of all pkgs failed.
+
+OK, that's all.
+++++

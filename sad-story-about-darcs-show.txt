@@ -1,0 +1,29 @@
+permalink: sad-story-about-darcs-show
+pubdate: 2008-11-27T00:06:22Z
+title: Sad story about darcs show
+author: Miklos
+tags: en, hacking
+
+---
+
+++++
+So today I did what I have in my TODO for some time: make darcs-fast-export produce the fast-import stream on the fly, without a tmp working dir (that's how tailor and darcs2git works, and I think that's just ugly).
+
+And the result? I thought this will be the trick that makes it a lot faster, compared to tailor and at the end it turns out that it slows it down about 3 times. :-(
+
+Not counting speed issues, it's a huge cleanup:
+
+<pre> 12 files changed, 34 insertions(+), 106 deletions(-)</pre>
+
+Dunno what to do with it now. I'll try to poke the darcs devs, maybe they can optimize it a bit.
+
+The sad fact is the comparision to git:
+
+<pre>
+$ time darcs show contents --match "hash 20040523231834-97f81-2bca6242bec169bd01079378524a33e0310e0b65.gz" tailor.py >/dev/null
+
+real    0m2.780s
+$ time git show 451ae1176d56a579d3d7bd236fe7d7dd9df59326:tailor.py >/dev/null
+
+real    0m0.004s</pre>
+++++

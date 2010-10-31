@@ -1,0 +1,72 @@
+permalink: pptp-client-howto-on-linux-on-console
+pubdate: 2010-02-09T17:39:00Z
+title: pptp client howto on linux on console
+author: Miklos
+tags: en, hacking
+
+---
+
+++++
+So I saw a few howtos on how to set up ms pptp client on linux, but they're mostly about how to click on networkmanager or other guis, so basically they hide the real detail, IOW what config files are actually used.
+
+First install the necessary packages:
+
+<code>
+# pacman-g2 -S ppp pptp
+</code>
+
+Here is what I have under /etc/ppp:
+
+<code>
+# cat chap-secrets
+# Secrets for authentication using CHAP
+# client        server  secret                  IP addresses
+$user           PPTP    $secret                 *
+</code>
+
+<code>
+# cat options
+lock
+</code>
+
+<code>
+# cat options.pptp
+lock
+noauth
+nobsdcomp
+nodeflate
+</code>
+
+<code>
+# cat peers/$network
+pty "/usr/sbin/pptp $server --nolaunchpppd"
+name "$user"
+file /etc/ppp/options.pptp
+remotename PPTP
+require-mppe-128
+refuse-eap
+ipparam $network
+</code>
+
+And to bring up ppp0:
+
+<code>
+# pon $network debug dump logfd 2 nodetach
+</code>
+
+If it works fine, you can just use:
+
+<code>
+# pon $network
+</code>
+
+(Obviously replace $user, $secret, $server and $network with real values.)
+
+One thing I did not figure out is how to configure it to set the default gateway as well. Right now I use the debug mode, then in the output I see the remote address, finally:
+
+<code>
+# route add default gw $remoteaddr
+</code>
+
+Other than that, it works fine - without any damn gui! :)
+++++

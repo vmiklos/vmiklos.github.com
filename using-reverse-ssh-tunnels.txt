@@ -1,0 +1,36 @@
+permalink: using-reverse-ssh-tunnels
+pubdate: 2009-09-08T03:02:18Z
+title: using reverse ssh tunnels
+author: Miklos
+tags: en, hacking
+
+---
+
+++++
+okay, i learned something today :)
+
+you have a client behind a firewall and you have a server somewhere. and you want to ssh from the server to the client. that's exactly why ssh has a magic -R option!
+
+if you do an
+
+<code>$ ssh -R 19022:localhost:22 server</code>
+
+that will mean that you can ssh to client:22 on the server by sshing to localhost:19022 on the server. yes, and it works even if the client is behind a firewall, yay! :)
+
+update:
+
+you probably want to add this to your ~/.ssh/config on the server as well:
+
+<pre>
+Host client
+        NoHostAuthenticationForLocalhost yes
+        HostName localhost
+        Port 19022
+</pre>
+
+so that you can easily just type
+
+<code>$ ssh client</code>
+
+on the server
+++++

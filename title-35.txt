@@ -1,0 +1,25 @@
+permalink: title-35
+pubdate: 2009-09-08T03:02:18Z
+title: title 35
+author: Miklos
+tags: en, hacking
+
+---
+
+++++
+just a draft about how to re-call a plugin from an other plugin in the setup:
+<pre>
+        extern GList *plugin_list;
+
+        int i;
+        plugin_t *plugin;
+
+        for (i=0; i<g_list_length(plugin_list); i++)
+        {
+                plugin = g_list_nth_data(plugin_list, i);
+                if(!strcmp(plugin->name, "loadsource"))
+                        plugin->run(config);
+        }
+</pre>
+here we call the loadsource plugin from an another plugin
+++++

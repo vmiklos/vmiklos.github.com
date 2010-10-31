@@ -1,0 +1,19 @@
+permalink: linux-bisecting
+pubdate: 2009-01-22T03:48:33Z
+title: Linux bisecting
+author: Miklos
+tags: en, hacking
+
+---
+
+++++
+So I reported this "timer runs too fast" bug to LKML and they asked me to bisect it. I know bisect already, but I only bisected userspace software which is easy. Basically you write a script that reproduces the issue, then git bisect will find the first bad commit automatically.
+
+With the kernel, this is much slower, because you must manually test each step.
+
+Of course I wanted to speed things up, so I wrote a small testcase and run it right after init=/bin/sh. This is bad. I haven't noticed until almost the end of the bisect that the bug occurs only after udev is loaded. Now that I'm sure the corrected test script really reports GOOD for 2.6.27 and BAD for 2.6.28, I can do the real bisect...
+
+As a side note, doing this with 1 machine would be really annoying. Luckily I can do whatever I want on my iBook, the build is done one of our fast Frugalware servers (dream) and I just download and test the bzImage on my notebook. I guess network booting would make it a bit faster (because currently I boot the test kernel, boot back the working one, download the next test one, goto 1), but I won't set up a whole tftp server on my iBook just for this. ;)
+
+So hopefully tomorrow we'll know what is the real first bad commit.
+++++

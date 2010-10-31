@@ -1,0 +1,53 @@
+permalink: removing-uids-in-gpg
+pubdate: 2009-09-08T03:02:18Z
+title: removing uids in gpg
+author: Miklos
+tags: en, hacking
+
+---
+
+++++
+here is the problem:
+
+you hava gpg key since 5 years. you had various mail addresses over the time and every mail address is attached to a key. so it'll look ugly, like <a href="http://frugalware.org/~vmiklos/pics/shots/gpg-bloated.png">this</a>.
+
+the problem is that once you pushed a uid (read: email address, attached to a key) to the keyserver, you can no longer remove it. but here is the solution: you can revoke it! :)
+
+how to do so?
+
+it's easy:
+
+<code>$ gpg --edit-key john@foo.org</code>
+
+a list of your ids with numbers are displayed. select a uid:
+
+<code>Command> uid 2</code>
+
+then you can revoke it:
+
+<code>Command> revuid 3
+Really revoke this user ID? (y/N) y
+Please select the reason for the revocation:
+  0 = No reason specified
+  4 = User ID is no longer valid
+  Q = Cancel
+(Probably you want to select 4 here)
+Your decision? 4
+Enter an optional description; end it with an empty line:
+>
+Reason for revocation: User ID is no longer valid
+(No description given)
+Is this okay? (y/N) y</code>
+
+you can notice that the uid is now listed as "revoked" instead of "ultimate"
+
+now you can exit using:
+
+<code>Command> save</code>
+
+and send it to the key server:
+
+<code>$ gpg --send-key 03915096</code>
+
+of course the uids will be still there, but that bloated list should be now short and tiny :)
+++++
