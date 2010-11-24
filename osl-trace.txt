@@ -1,0 +1,55 @@
+permalink: osl-trace
+pubdate: 2010-11-24T13:51:04Z
+title: OSL_TRACE()
+author: Miklos
+tags: en, hacking, libreoffice
+<<<
+Background: `OSL_TRACE()` is an internal LibreOffice macro that is like
+`printf()`, but it's only enabled in debug mode. Without it, you would
+add a debug printf during development:
+
+[source,c]
+----
+printf("debug, foo\n");
+----
+
+then you would comment it out when the code started working,:
+
+[source,c]
+----
+//printf("debug, foo\n");
+----
+
+then remove the comment when it breaks again, etc.
+
+In the past, if you built a LibreOffice module, then you executed:
+
+----
+build
+----
+
+inside a module, and in case you wanted debug symbols and such messages you built using:
+
+----
+build debug=t
+----
+
+which increased the debug level to 2 (from 0), where 1 is required for
+debug symbols, 2 for debug messages. (See the OOo
+http://wiki.services.openoffice.org/wiki/Debug_Levels[wiki page].)
+
+The recent update, why I'm writing this post: Now this has been
+http://cgit.freedesktop.org/libreoffice/bootstrap/commit/?id=47d09469e96485f93623a6fbeb42f709c2ce49bb[changed],
+and `debug=t` gives you debug symbols only, but no extra debug output.
+While this is
+http://lists.freedesktop.org/archives/libreoffice/2010-November/002894.html[great
+in most cases], sometimes you still want the old behaviour to get the
+debug messages. In that case the solution (as pointed out in the mailing
+list post) is to use:
+
+----
+build debug=t dbglevel=2
+----
+
+(Hopefully this post will be handy for who missed that post, like I did
+the first time.)
