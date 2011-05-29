@@ -4,13 +4,5 @@ author: Miklos
 tags: en, hacking
 <<<
 ++++
-We all know the usual problem with sql escaping, there is even a <a href="http://xkcd.com/327/">comic</a> about it.
-
-There is an other SQL-related project, <a href="http://www.sphinxsearch.com/">sphinx</a>, which is a quite efficient search indexer (especially for whole word search), but it also needs escaping. Given that in sphinx "foo-bar" means "all records containing foo, but not bar", if you really want a single-word "foo-bar", then you need to use "foo\-bar".
-
-And that's the fun part, as the escaping order matters a lot. Basically if you escape mysql first and then just insert the sphinx query, then you just created an injection yourself. ;)
-
-So the <em>final</em> query will look like "foo\\-bar" if you did the escaping in the right order.
-
-It's also notable that the official sphinx php API seems not escaping the ";" char, which is also a bug, as this way you can modify the search query in the way you want.
+<p>We all know the usual problem with sql escaping, there is even a <a href="http://xkcd.com/327/">comic</a> about it.</p><p>There is an other SQL-related project, <a href="http://www.sphinxsearch.com/">sphinx</a>, which is a quite efficient search indexer (especially for whole word search), but it also needs escaping. Given that in sphinx "foo-bar" means "all records containing foo, but not bar", if you really want a single-word "foo-bar", then you need to use "foo\-bar".</p><p>And that's the fun part, as the escaping order matters a lot. Basically if you escape mysql first and then just insert the sphinx query, then you just created an injection yourself. ;)</p><p>So the <em>final</em> query will look like "foo\\-bar" if you did the escaping in the right order.</p><p>It's also notable that the official sphinx php API seems not escaping the ";" char, which is also a bug, as this way you can modify the search query in the way you want.</p>
 ++++

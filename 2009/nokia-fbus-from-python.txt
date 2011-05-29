@@ -4,19 +4,11 @@ author: Miklos
 tags: en, hacking
 <<<
 ++++
-So yesterday I found <a href="http://www.embedtronics.com/nokia/fbus.html">this</a> article and I wanted to try it out from Python.
-
-Here is a few lines of code to send that "get hw and firmware version" message to the phone and at least read an ACK:
-
-<code>
-import serial, time
-
-ser = serial.Serial("/dev/ttyUSB0", 115200)
+<p>So yesterday I found <a href="http://www.embedtronics.com/nokia/fbus.html">this</a> article and I wanted to try it out from Python.</p><p>Here is a few lines of code to send that "get hw and firmware version" message to the phone and at least read an ACK:</p><p><code>
+import serial, time</p><p>ser = serial.Serial("/dev/ttyUSB0", 115200)
 ser.setRTS(False)
 ser.write("\x1E\x00\x0C\xD1\x00\x07\x00\x01\x00\x03\x00\x01\x40\x00\x52\xD5")
 print repr(ser.read(1))
 print repr(ser.read(10))
-</code>
-
-Of course this is just a PoC, the first read could be avoided and we could just read one char till we hit the 0x1e one. But that .setRTS() took a few hours to figure out. ;-)
+</code></p><p>Of course this is just a PoC, the first read could be avoided and we could just read one char till we hit the 0x1e one. But that .setRTS() took a few hours to figure out. ;-)</p>
 ++++

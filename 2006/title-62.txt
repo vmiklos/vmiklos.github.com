@@ -4,38 +4,18 @@ author: Miklos
 tags: en, hacking
 <<<
 ++++
-today i got this "having subpackages in extra while the main pkg is in the frugalware repo" stuff working. a few notes from the manpage:
-<em>       Special case: subpkgs in other repos.
-
-       The  situation  is  the following: you have a package which is in the frugalware repo, but
-       you want its subpackage to be in extra. It's a but tricky, but still possible.
-
-       The trick is to create a fake FrugalBuild in the other repo. You could place it  whereever
+<p>today i got this "having subpackages in extra while the main pkg is in the frugalware repo" stuff working. a few notes from the manpage:
+<em>       Special case: subpkgs in other repos.</p><p>       The  situation  is  the following: you have a package which is in the frugalware repo, but
+       you want its subpackage to be in extra. It's a but tricky, but still possible.</p><p>       The trick is to create a fake FrugalBuild in the other repo. You could place it  whereever
        you want, but to use repoman you need to place it under $fst/extra/source/subpkgs/pkgname,
-       where pkgname is the name of the original main package.
-
-       How to create that fake FrugalBuild?
-
-       Copy the original one, but remove everything except  the  subfoo  directives,  pkgver  and
+       where pkgname is the name of the original main package.</p><p>       How to create that fake FrugalBuild?</p><p>       Copy the original one, but remove everything except  the  subfoo  directives,  pkgver  and
        pkgrel.  The  next  step  is to clarify which subpackage have to be in which repo. This is
-       done by removing the architectures from the subarchs() array.
-
-       Example:
-
-       The old main:
-
+       done by removing the architectures from the subarchs() array.</p><p>       Example:</p><p>       The old main:</p><p>       subpkgs=('foo' 'bar')
+       subarchs=('i686 x86_64' 'i686 x86_64')</p><p>       The new main:
        subpkgs=('foo' 'bar')
-       subarchs=('i686 x86_64' 'i686 x86_64')
-
-       The new main:
+       subarchs=('i686 x86_64' '')</p><p>       The new fake:
        subpkgs=('foo' 'bar')
-       subarchs=('i686 x86_64' '')
-
-       The new fake:
-       subpkgs=('foo' 'bar')
-       subarchs=('' 'i686 x86_64')
-
-       This means that bar is expected to be uploaded to extra, while foo is still in the frugal-
+       subarchs=('' 'i686 x86_64')</p><p>       This means that bar is expected to be uploaded to extra, while foo is still in the frugal-
        ware  repo.  If  you  move all the subpackages to extra, then of course you can remove the
        whole subarchs() array from the main FrugalBuild.</em>
 a few other notes:
@@ -45,5 +25,5 @@ a few other notes:
   <li>as the fake FB is not in the current dir, if you record with repoman, it won't record the it!</li>
   <li>i've added subarchs() to the existing packages and updated the skel file :)</li>
   <li>for database generation it needs pacman from darcs, but probably you don't have to care about it as <a href="http://genesis.frugalware.org/">genesis</a> runs that version</li>
-</ul>
+</ul></p>
 ++++

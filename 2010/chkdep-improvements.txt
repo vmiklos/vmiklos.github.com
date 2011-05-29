@@ -4,11 +4,5 @@ author: Miklos
 tags: en, hacking, frugalware
 <<<
 ++++
-Yesterday I finally had a look at how chkdep removes duplicated dependencies. The whole idea behind the removal is that in case ldd says a package depends on libfoo and libbar + we know from pacman that libfoo already depends on libbar, then there is no point adding libbar to depends in most cases.
-
-The old code did the followings: it searched the depends of the packages found by ldd and in case a depend was found in the depend list of an other depend then it removed the depend from the list. The problem with this is that in case foo depends on bar depends baz and ldd finds foo and baz only, then baz won't be removed.
-
-The <a href="http://git.frugalware.org/gitweb/gitweb.cgi?p=pacman-tools.git;a=commitdiff;h=d8b015f7870332e9c236e488b9692b20f5fb783a">new code</a> does the same but depends are detected recursively to avoid the problem mentioned above.
-
-As a result, makepkg -a output should be less noisy. ;)
+<p>Yesterday I finally had a look at how chkdep removes duplicated dependencies. The whole idea behind the removal is that in case ldd says a package depends on libfoo and libbar + we know from pacman that libfoo already depends on libbar, then there is no point adding libbar to depends in most cases.</p><p>The old code did the followings: it searched the depends of the packages found by ldd and in case a depend was found in the depend list of an other depend then it removed the depend from the list. The problem with this is that in case foo depends on bar depends baz and ldd finds foo and baz only, then baz won't be removed.</p><p>The <a href="http://git.frugalware.org/gitweb/gitweb.cgi?p=pacman-tools.git;a=commitdiff;h=d8b015f7870332e9c236e488b9692b20f5fb783a">new code</a> does the same but depends are detected recursively to avoid the problem mentioned above.</p><p>As a result, makepkg -a output should be less noisy. ;)</p>
 ++++

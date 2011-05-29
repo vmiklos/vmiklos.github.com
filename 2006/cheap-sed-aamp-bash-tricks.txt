@@ -4,17 +4,13 @@ author: Miklos
 tags: en, hacking
 <<<
 ++++
-probably this is known, but i've just figured out how to get rid of grep when i use
+<p>probably this is known, but i've just figured out how to get rid of grep when i use
 <pre>foo |grep ... |sed ...</pre>
 the magic command is
-<pre>foo |sed -n '/^match/s/foo/bar/p'</pre>
-
-if we're at it, you can even get rid of sed if you use bash and just want to do simple replaces like 1.0 -> 1_0:
+<pre>foo |sed -n '/^match/s/foo/bar/p'</pre></p><p>if we're at it, you can even get rid of sed if you use bash and just want to do simple replaces like 1.0 -> 1_0:
 <pre>$ pkgver=1.0
 $ echo ${pkgver//./_}
-1_0_0</pre>
-
-two intereting tricks remained. the first is about deleting from a pattern to an another one (including both line)
+1_0_0</pre></p><p>two intereting tricks remained. the first is about deleting from a pattern to an another one (including both line)
 <pre>$ echo -e 'a\nb\nc\nd\ne'
 a
 b
@@ -23,14 +19,8 @@ d
 e
 $ echo -e 'a\nb\nc\nd\ne' |sed /b/,/d/d
 a
-e</pre>
-
-the last one is about deleting to the end of the file from a pattern:
+e</pre></p><p>the last one is about deleting to the end of the file from a pattern:
 <pre>$ echo -e 'a\nb\nc\nd\ne' |sed '/c/,$d'
 a
-b</pre>
-
-ok, that's all for today :)
-
-(other nice tricks <a href="http://www.student.northpark.edu/pemente/sed/sed1line52.txt">here</a>)
+b</pre></p><p>ok, that's all for today :)</p><p>(other nice tricks <a href="http://www.student.northpark.edu/pemente/sed/sed1line52.txt">here</a>)</p>
 ++++
