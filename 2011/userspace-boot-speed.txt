@@ -1,0 +1,34 @@
+pubdate: 2011-09-24T23:08:57Z
+title: Userspace boot speed: less than a second
+author: Miklos
+tags: en, frugalware
+<<<
+I did not care about boot speed for a long time, since servers usually
+restarted only for kernel upgrades, laptops suspend to ram all the time,
+and I have no desktop machine at home for years now.  Though one use
+case started to motivate me recently: I use virtual machines a lot, and
+waiting for them to boot up is boring.
+
+So I looked at the `systemd-analyze blame` output, and it turned out
+that for a base-only install the only service that takes a lot of time
+is `netconfig`. It's because it was a `oneshot` service, so the whole
+boot process waited for `dhcpcd` to get an IP. A much better solution is
+to just start netconfig in the background and move on -- and that's
+exactly frugalwareutils in git does now.
+
+Before:
+
+----
+$ systemd-analyze 
+Startup finished in 2030ms (kernel) + 1166ms (initrd) + 6755ms (userspace) = 9953ms
+----
+
+After:
+
+----
+$ systemd-analyze 
+Startup finished in 2039ms (kernel) + 1146ms (initrd) + 892ms (userspace) = 4079ms
+----
+
+NOTE: Again, this is for a virtual machine (where the host has some IO
+cache) and for a base-only install.
