@@ -1,0 +1,180 @@
+pubdate: 2012-01-04T01:29:49Z
+title: Frugalware arm port install HOWTO
+author: Miklos
+tags: en, frugalware
+<<<
+I recently got a http://en.wikipedia.org/wiki/GuruPlug[GuruPlug]. It has Debian
+by default, and it's apt config is set to `stable`, while in fact at the moment
+what's the factory default is considered as `oldstable` by upstream. So if you
+blindly do a few `apt-get install foo`, soon you'll have newer userspace than
+kernel, and your device will no longer boot (based on true story - and yes,
+this is not Debian's fault). Moreover, I was interested in how to install
+Frugalware on this device, so here is a quick howto.
+
+== Install rootfs
+
+First you need to bootstrap Frugalware from Debian. It's a good idea to install
+Frugalware on a USB stick, so you can switch back to Debian in case you messed
+up something and start from scratch again.
+
+Partitioning is up to you, you're recommended to have a small FAT (type: `0x0b`)
+partition (32MB for example) at the beginning, we'll use that later. The second
+can be the rest, ext4 or so.
+
+Format and mount it (your device name may differ!):
+
+----
+mkfs.ext4 /dev/sda2
+mkdir -p /mnt/sda2
+mount /dev/sda2 /mnt/sda2
+----
+
+Then install our pacman-g2 binary to the Debian system, so you can bootstrap:
+
+----
+wget http://ftp.frugalware.org/pub/frugalware/frugalware-stable/frugalware-arm/pacman-g2-3.8.3-2mores2-arm.fpm
+unxz pacman-g2-3.8.3-2mores2-arm.tar.xz
+cd /
+tar xf /path/to/pacman-g2-3.8.3-2mores2-arm.tar
+rm .CHANGELOG .FILELIST .PKGINFO
+----
+
+Installing the required packages is a single command, as described
+http://frugalware.org/docs/install#_a_manual_bootstrap[here]:
+
+----
+pacman-g2.static pacman-g2 --noconfirm -Sy core base -r /mnt/sda2/
+----
+
+== Upgrade the bootloader
+
+Once the rootfs is ready, you need a new bootloader that will be able to boot
+our vanilla kernel.
+
+You need a http://www.globalscaletechnologies.com/p-28-guruplug-jtag.aspx[JTAG
+Board], so you can access the serial console. If you connect the USB cable to
+you PC, you can use for example
+
+----
+screen /dev/ttyUSB0 115200
+----
+
+to access the device.
+
+Given that we want to boot a vanilla kernel, we need a vanilla bootloader as
+well. Before you mess with the bootloader, it's a good idea to make a backup of
+its config (there is a 3 second timeout during boot - if you press any key
+there, you get the Marvell prompt). Here is my config:
+
+----
+Marvell>> printenv
+bootcmd=${x_bootcmd_ethernet}; ${x_bootcmd_usb}; ${x_bootcmd_kernel}; setenv bootargs ${x_bootargs} ${x_bootargs_root}; bootm 0x6400000;
+bootdelay=3
+baudrate=115200
+x_bootcmd_ethernet=ping 192.168.2.1
+x_bootcmd_usb=usb start
+x_bootcmd_kernel=nand read.e 0x6400000 0x100000 0x400000
+x_bootargs=console=ttyS0,115200
+x_bootargs_root=ubi.mtd=2 root=ubi0:rootfs rootfstype=ubifs
+ethact=egiga0
+bootargs=console=ttyS0,115200 ubi.mtd=2 root=ubi0:rootfs rootfstype=ubifs
+ipaddr=10.10.10.10
+serverip=10.10.10.179
+ethaddr=F0:AD:4E:00:CE:C3
+stdin=serial
+stdout=serial
+stderr=serial
+----
+
+The only semi-unique part is the MAC address of the network interface(s).
+
+If you want to update the bootloader, a possible way is to put the new binary
+to a pendrive. Given that the default bootloader does not support ext*, we need
+a fat filesystem. So format the first small partition we created already (the
+device name may be different in your case!):
+
+----
+mkdosfs /dev/sda1
+----
+
+Till Frugalware 1.6 is released, support for GuruPlug is available in
+Frugalware -current only, so download the
+http://ftp.frugalware.org/pub/frugalware/frugalware-current/frugalware-arm/u-boot-2011.12-2-arm.fpm[binary
+package] from there, extract the u-boot.kwb file from the guruplug directory,
+put it to the new partition. (A few other models are explained
+http://www.cyrius.com/debian/kirkwood/sheevaplug/uboot-upgrade.html[here]).
+
+Before you reboot, copy also `/boot/uImage` to the fat partition, you may have
+problems problems with reading the kernel from the ext4 partition with u-boot.
+
+Once copying the kernel is done, reboot and in the u-boot shell do:
+
+----
+usb start
+fatload usb 0:1 0x0800000 u-boot.kwb
+nand erase 0x0 0x60000
+nand write 0x0800000 0x0 0x60000
+reset
+----
+
+You can verify the updated bootloader with the `version` command:
+
+----
+Marvell>> version
+
+U-Boot 2011.12 (Jan 03 2012 - 16:55:38)
+Marvell-GuruPlug
+gcc (Frugalware Linux) 4.6.2
+GNU ld (GNU Binutils) 2.22
+----
+
+If Frugalware is mentioned, that's a good sign. :)
+
+== Boot the new rootfs
+
+Now you can boot your new rootfs:
+
+----
+usb start
+fatload usb 0:1 0x00800000 /uImage
+setenv bootargs console=ttyS0,115200 root=/dev/sda2 rootdelay=5
+bootm 0x00800000
+----
+
+If it booted fine, you may want to make this the default:
+
+----
+setenv bootargs 'console=ttyS0,115200 root=/dev/sda2 rootdelay=5'
+setenv bootcmd_usb 'usb start; fatload usb 0:1 0x00800000 /uImage'
+setenv bootcmd 'run bootcmd_usb; bootm 0x00800000'
+saveenv
+----
+
+== Finalize
+
+The rest is up to you:
+
+- setting up a root password
+- setting up network by default using netconfig
+
+and so on... you know this already, nothing arm-specific.
+
+For the reference, here is the tested CPU and Frugalware version:
+
+----
+$ cat /proc/cpuinfo 
+Processor       : Feroceon 88FR131 rev 1 (v5l)
+BogoMIPS        : 1191.11
+Features        : swp half thumb fastmult edsp 
+CPU implementer : 0x56
+CPU architecture: 5TE
+CPU variant     : 0x2
+CPU part        : 0x131
+CPU revision    : 1
+
+Hardware        : Marvell GuruPlug Reference Board
+Revision        : 0000
+Serial          : 0000000000000000
+$ cat /etc/frugalware-release 
+Frugalware 1.5 (Mores)
+----
