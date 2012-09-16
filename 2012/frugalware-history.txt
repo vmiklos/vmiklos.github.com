@@ -1,0 +1,188 @@
+pubdate: 2012-09-16T21:27:14Z
+title: Frugalware history
+author: Miklos
+tags: en, frugalware
+<<<
+Given that Frugalware was founded by me, and recently James recently took over
+the project leadership, I think it makes sense to look back and summarize the
+past 6 years.
+
+== The beginning
+
+It all started with
+http://frugalware.org/pipermail/frugalware-announce/2004-September/000001.html[this
+announcement] about 6 years ago. It was a one-man show before, there was a
+http://ftp.frugalware.org/pub/archive/frugalware-0.1/ChangeLog.txt[manually
+written ChangeLog] but even then there were already quite a few packages, so
+don't ask me when I started hacking on this. Yes, normally there would be a
+first commit in git, but remember this was before git existed, and I hated
+centralized CVS so much that we didn't use anything.
+
+Looking back, it was all quite lame. :-) I used a mail address called "mamajom"
+(English translation could be "momonkey"), tied to an ISP, with a lengthy
+signature at the end of every mail I sent and was using my IRC nick instead of
+my real one everywhere... OTOH, I made some decisions I'm happy about even
+today. The first four developers (Ádám Zlehovszky, Krisztián Vasas, Zsolt
+Szalai and me) were all Hungarian and despite of this, I forced every code,
+test and documentation to be in English, to possibly turn the project into an
+international one in the future. And that proved to very, very useful.
+
+It was before 0.1 and 0.2 that we (Krisztián, Zsolt and me) showed up in a
+Hungarian TV (http://ftp.frugalware.org/pub/other/videos/hu/[video record])
+explaining Frugalware. This is something never happened later for some reason.
+
+The way we found a free hosting at a university I never attended may be also
+interesting. In the grammar school, our IT teacher found my Linux distribution
+idea interesting enough to support, and his friend was a teacher at the Eötvös
+Loránd University, which is at the same Budapest city where I live. So, with my
+friend Botond Balázs (who later was my witness at our wedding) we bought an
+ultra-slow old PC (some Pentium 1 with a single HDD) and we were extremely
+happy, as the uni offered to host it for free. I remember it ran some Slackware
+version, as Frugalware didn't support i586... ;-)
+
+== Early days
+
+Then some more developers joined and we started to package all the usual free
+software which is available in other distributions but I personally didn't use.
+Think of GNOME, Xfce, OpenOffice.org and so on.
+
+Of course we were still lame, the announcements still were not spellchecked by
+someone native and knowledgeable enough, ending up in words like "splitted" or
+"optimalization". However, we started to use an SCM (Darcs, which was horribly
+slow, but at least not the centralized CVS crap). Another developer I should
+mention was Bence Nagy, he came up with the idea of how we should avoid
+duplication in FrugalBuilds, leading to the various package templates under
+`source/include/` in the source tree.
+
+Then we went multiarch, Krisztián Hamar contributed the x86_64 port to the 0.3
+release. At the same time, I invented `syncpkg`, which avoided having to build
+the same package on multiple architectures manually.
+
+We also got Gábor Lőcsei (later we met IRL and completed several bike marathons
+together, resulting in a great friendship) who helped users in general on IRC,
+but more importantly, for some time he did quite some bug triaging, leading to
+a much better bugzilla (actually it was running Flyspray at that time) state.
+
+The constant questions of László Csécsy (who nowadays mostly hacks
+Drupal core and its modules) generated more and more improving documentation.
+We first started with a LaTeX documentation, then later turned it to an
+asciidoc one, in the hope of attracting more non-math contributors. ;-)
+
+Then we started to have some beautiful artwork, Viktor Gondor contributed some
+really cool wallpapers.
+
+Finally, I think the last two Hungarian guys who spent a hell of a time on the
+project was András Vöröskői (we still link his
+http://frugalware.org/docs/getting-involved/en[getting started HOWTO] for new
+contributors) and János Kovács. I remember for a long time I used the
+home-hosted server of János when we didn't have a fast dedicated i686 build
+server and my desktop was still 32bit.
+
+== Going international
+
+Then things started to happen fast. Developers outside Hungary showed up:
+Gabriel Craciunescu from Germany and Michel Hermier from France worked a lot on
+KDE, Gabriel also hacked a lot of the core OS, like kernel, glibc, etc.
+
+Priyank Gosalia from India started to work on GTK tools like a package manager
+frontend. David Kimpe contributed a PPC port years before I got my iBook (which
+I used as my primary box for a few years).
+
+And needless to say, we still made mistakes. We thought that the development of
+the original Pacman package manager slowed down, its rewrite (providing a
+separate library and a console frontend, instead of one monolithic binary)
+seemed to never complete, and given that we were not Archlinux developers, we
+never got access to its CVS. We started to use that library API in the
+installer, testcases, GUI tools, while changing the API for them wasn't an
+issue, since officially it was still unreleased. All this frustration (and
+underestimating the cost of maintaining a fork) resulted in our Pacman-G2
+project. First it appeared to be shiny, but once Krisztián Hamar left
+Frugalware, we constantly lacked manpower and today the consensus is that with
+git, maintaining a patchset over pacman.git would be far better, just nobody
+did the work of merging the two projects. Pacman-G2 is in maintenance mode
+today, and it still well serves its purpose, but it didn't see any new major
+feature in years.
+
+We also saw a rewrite of the installer. The original one was written in bash,
+then the second was written in C, using libdialog. And currently James works on
+a third one, hopefully fixing lots of instability, resulting from the design
+errors of the current one. ;-)
+
+== More and more developers
+
+And then somehow more and more developers came. Gourdin Gaetan (bouleetbil) and
+Sébastien Vincent (Baste) worked a lot on the GNOME support, James Buren took
+over the base system from me. Paolo Cretaro (Melko) does KDE bumps nowadays and
+Marius Cirsta (mcirsta) did heroic work of including OpenJDK 7 into Frugalware.
+
+Abdelmoumene Hamza (Slown) is a guy who volunteered to do a log of boring work.
+When you can install a random Perl on Python module from a package, chances
+that it was packaged by Slown are high. ;-)
+
+Regarding infrastructure, Benjamin Nolmans (Xarkam) stepped up, and finally
+converted the data from our Flyspray instance to the more mainstream and
+maintained Trac format. Regarding architectures Boris Albar (Elentir)
+contributed an ARM port. Our press noise was generated by Russell Dickenson
+(phayz) for a long time: he wrote newsletters regularly, and these days he
+works as a documentation writer for Red Hat.
+
+For a long time, no more Hungarians joined the project. Then Bagdán Róbert
+(kikadf) came, and even if he's rarely present on IRC, he still contributes
+from time to time, and these small, but valuable contributions are what keep
+Frugalware alive. :-)
+
+Regarding other big upgrades, Daniel Exner (dex) was the guy who stepped up and
+finally packaged KDE4 for Frugalware. All KDE4 users meeting him should buy a
+beer for him. ;-)
+
+Finally, I should not forget about Daniel Eledut (Devil505), who probably
+helped me the most with my "the rest" task: he really helped out in various
+areas, and he was a major Frugalware contributor for a long time.
+
+== The end of my leadership
+
+Contributing to other projects is something I did regularly, since every time I
+got a bugreport for a package, first I created a patch to fix the problem (in
+case it could not be worked around in the buildscript), and then of course
+tried to upstream it, knowing the maintenance cost of non-upstreamed patches.
+Still, these were minor and my main project was Frugalware for years.
+
+The bigger contributions came when I started to complete Google Summer of Code
+projects, first SWIG, then git, finally OpenOffice.org -- which turned into
+LibreOffice. The motivation is easy: these were still Free Software hacking,
+but given that they are not bash hacking (like most packaging work for
+Frugalware), more interesting problem had to be solved, GSoC also provided nice
+payments, and needless to say: was useful to many people not using Frugalware.
+
+The idea of passing over my leadership to someone else first came when I
+looked back, and I saw that I spend more time on LibreOffice than on
+Frugalware, even after the paid GSoC ended (later resulting in joining SUSE to
+work on LibreOffice fulltime). My focus somehow just shifted from hacking a
+distribution to hacking something that is directly useful for average users as
+well. It's not worse or better, it's just different, and after lots of years, I
+wanted to do something different.
+
+To sum up, I did not reach my expectations as a project leader and I waited for
+a candidate I could teach and finally who could become as good as I was in
+earlier years, or hopefully even better. And then James came, who first took
+over the base system, and we agreed that after 1.7, he'll do releases. So it
+was not unexpected, but still I was a bit surprised when I saw his
+role-changing
+http://git.frugalware.org/gitweb/gitweb.cgi?p=frugalware-current.git;a=commitdiff;h=979ada221b2f822f88f4468e6aefc2487fe87e48[commit].
+But needless to say, when thinking a bit more, it was completely logical, all I
+really do these days is fixing things left and right regarding my arm port
+needs, and maintaining the LibreOffice package.
+
+== Summary
+
+The idea of writing this post is not mine. However, when I thought about how
+many individuals helped this project so far, I realized I really need to create
+a summary, thanking their work. Reading the above, I hope that in the past
+years my leadership to Frugalware were useful and I realize that these days I
+have to step back, given a better leader appeared. I honestly wish the project
+to see at least as many releases as we already have, now that fresh energy
+leads it. :-)
+
+I tried to point out all our heroes during the last years, but it's possible I
+forgot someone. If you think you're missing from this post, please leave a
+comment. Thanks.
