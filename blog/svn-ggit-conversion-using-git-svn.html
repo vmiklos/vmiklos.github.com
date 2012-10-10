@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.5.3" />
+<meta name="description" content="svn->git conversion using git-svn - Miklos' blog" />
+<meta name="keywords" content="vmiklos, libereoffice, swig, git, python, hacking, bitlbee" />
+<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="http://vmiklos.hu/blog/index.rss" />
+<link rel="stylesheet" href="/blog/xhtml11.css" type="text/css" />
+<link rel="stylesheet" href="/blog/xhtml11-quirks.css" type="text/css" />
+<link rel="stylesheet" href="/blog/layout.css" type="text/css" />
+<title>svn->git conversion using git-svn</title>
+<!-- google analytics start -->
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-24726997-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<!-- google analytics end -->
+</head>
+<body>
+<div id="layout-banner-box">
+<div id="layout-banner">
+  <div id="layout-title">vmiklos.hu</div>
+  <div id="layout-description">shameless self-promoting website</div>
+</div>
+</div>
+<div id="layout-menu-box">
+<div id="layout-menu">
+  <div>&#187;<a href="/">Root</a></div>
+  <div>&#187;<a href="/blog/">Rejourn root</a></div>
+</div>
+
+</div>
+<div id="layout-content-box">
+<div id="layout-content">
+<div id="header">
+	<h1>svn->git conversion using git-svn</h1>
+</div>
+<div id="preamble">
+<div class="sectionbody">
+
+<!-- Single entry -->
+<div class="verseblock">
+<div class="verseblock-content">Posted <span class="timeago" title="2007-12-09T21:38:09Z">Sunday, 09 December 2007</span> by Miklos<br />
+    Tags:
+    <a href="tags/en.html">en</a>
+    <a href="tags/hacking.html">hacking</a>
+</div>
+</div>
+
+<!-- Body -->
+<p>git-svnimport will be removed in git-1.5.4 and i don't think it's tirival to use git-svn (which is great for bi-directional work) to properly convert an svn repo (with multiple branches) to a git one, so here is a recipe.</p><p>first, just use git-svn to create a git-svn repo. it's a git repo but it's a bit weird, it contains metadata which is necessary for bi-directional operations and you won't see the branches by default when you clone it. ah and it's not a bare repo.</p><p>in this example i'll convert ooo-build's svn repo (it has several branches and tags, so it's a good example).</p><p><code>mkdir -p ~/git/ooo-build
+cd ~/git/ooo-build
+git svn init -s svn+ssh://svn.gnome.org/svn/ooo-build
+git svn fetch</code></p><p>this will take a while. once it's completed, you need to convert this to a bare repo:</p><p><code>mkdir ../ooo-build.git
+cd ../ooo-build.git
+git --bare init
+git config remote.origin.url ~/git/ooo-build
+git config remote.origin.fetch +refs/remotes/tags/*:refs/tags/*
+git config --add remote.origin.fetch +refs/remotes/trunk:refs/heads/master
+git config --add remote.origin.fetch +refs/remotes/*:refs/heads/*
+git fetch
+</code></p><p>and you're done! :)</p><p>of course this is an incremental operation, so all you need is to run git svn fetch and git fetch from cron to keep the mirror up to date.</p><p>update:</p><p>it turns out you can even do this by having only one git repo. it has benefints: you don't have to duplicate the object database. and it has one problem: if you later switch fully to git, then you want to remove the git-svn metadata - doing so is the easiest if you just clone the repo.</p><p>so - in case you want this, you have to:</p><p><code>mkdir -p ~/git/ooo-build.git
+cd ~/git/ooo-build.git
+git --bare init
+git --bare svn init -s svn+ssh://svn.gnome.org/svn/ooo-build
+git --bare svn fetch</code></p><p>and then you can fetch from yourself:</p><p><code>
+git config remote.origin.url .
+git config remote.origin.fetch +refs/remotes/tags/*:refs/tags/*
+git config --add remote.origin.fetch +refs/remotes/*:refs/heads/*
+git fetch
+</code></p><p>note: git config --add remote.origin.fetch +refs/remotes/trunk:refs/heads/master it unnecessary as git svn fetch will update this for you (it is different from git fetch)</p><p>thanks for devurandom from #git for pointing out that this is possible using git --bare init before git svn init and using git --bare svn fetch :)</p>
+
+
+<script src="https://apis.google.com/js/plusone.js"></script>
+<g:plus action="share"></g:plus>
+
+<!-- Disqus comments -->
+<h1 id="comment-header">Comments</h1>
+<div id="disqus_thread"></div>
+<script type="text/javascript" src="http://vmiklos.disqus.com/embed.js">
+	var disqus_developer = 1;
+</script>
+<noscript>
+  <p><a href="http://disqus.com/?ref_noscript=vmiklos">View the discussion thread.</a></p>
+</noscript>
+
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

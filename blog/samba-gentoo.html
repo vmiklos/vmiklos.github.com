@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.5.3" />
+<meta name="description" content="samba, gentoo - Miklos' blog" />
+<meta name="keywords" content="vmiklos, libereoffice, swig, git, python, hacking, bitlbee" />
+<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="http://vmiklos.hu/blog/index.rss" />
+<link rel="stylesheet" href="/blog/xhtml11.css" type="text/css" />
+<link rel="stylesheet" href="/blog/xhtml11-quirks.css" type="text/css" />
+<link rel="stylesheet" href="/blog/layout.css" type="text/css" />
+<title>samba, gentoo</title>
+<!-- google analytics start -->
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-24726997-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<!-- google analytics end -->
+</head>
+<body>
+<div id="layout-banner-box">
+<div id="layout-banner">
+  <div id="layout-title">vmiklos.hu</div>
+  <div id="layout-description">shameless self-promoting website</div>
+</div>
+</div>
+<div id="layout-menu-box">
+<div id="layout-menu">
+  <div>&#187;<a href="/">Root</a></div>
+  <div>&#187;<a href="/blog/">Rejourn root</a></div>
+</div>
+
+</div>
+<div id="layout-content-box">
+<div id="layout-content">
+<div id="header">
+	<h1>samba, gentoo</h1>
+</div>
+<div id="preamble">
+<div class="sectionbody">
+
+<!-- Single entry -->
+<div class="verseblock">
+<div class="verseblock-content">Posted <span class="timeago" title="2010-03-06T15:36:55Z">Saturday, 06 March 2010</span> by Miklos<br />
+    Tags:
+    <a href="tags/en.html">en</a>
+    <a href="tags/hacking.html">hacking</a>
+</div>
+</div>
+
+<!-- Body -->
+<p>Sorry, I'm continuing the story of uninteresting challenges I had in the last two days. Or if they look like interesting ones, please continue. ;)</p><p>Two days ago we (at work) had to repair a samba installation after a 3.0.x -> 3.2.x upgrade. There were 3 problems:</p><p><ul>
+  <li>the firewall config had to be updated, to allow incoming tcp connections on port 445</li>
+  <li>somehow smbd was listening on ipv6 only, just listing all network interfaces in the config was enough to make it listen on ipv4 as well</li>
+  <li>for another strange reason it no longer accepted hostnames on its whitelist, using ip addresses directly did the trick</li>
+</ul></p><p>The other story from yesterday was fix up the firewall configuration at a small office. The problem was that till now they had a PPPoE connection and the firewall used NAT to share the internet access to the desktop machines, but now they switched to a radio-based access, they got a new modem which did not support PPPoE. Of course in short I just got the usual "the internet does not work!" bugreport. ;)</p><p>I must note that I'm not a sysadmin at this office, I just stepped in as the local sysadmin was a SPoF in the system and he (temporally?) disappeared and they asked me beause of "the hours is burning" effect. :)</p><p>So all I had to do is to alter the server configuration, which was running Gentoo. I never touched such a machine before, and it's configuration is (of course, since I'm used to our netconfig) weird, but at least the off-line documentation was enough. So after RTFM, I just had to turn off pppoe, set the dns and the default gateway to the address of the new router and all was fine. One notable interesting fact was that there was no damn vi on the server. Given that emerge takes a lot of time, I had to suck with mcedit. :P</p><p>Conclusion: yet another example why offline documentation is important, even in case nowadays "there is internet everywhere". ;)</p>
+
+
+<script src="https://apis.google.com/js/plusone.js"></script>
+<g:plus action="share"></g:plus>
+
+<!-- Disqus comments -->
+<h1 id="comment-header">Comments</h1>
+<div id="disqus_thread"></div>
+<script type="text/javascript" src="http://vmiklos.disqus.com/embed.js">
+	var disqus_developer = 1;
+</script>
+<noscript>
+  <p><a href="http://disqus.com/?ref_noscript=vmiklos">View the discussion thread.</a></p>
+</noscript>
+
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

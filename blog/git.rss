@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+    <channel>
+        <title>What is Miklos hacking - Tags: git</title>
+        <description></description>
+        <link>http://vmiklos.hu/blog/</link>
+        <item>
+            <title>Merging git notes</title>
+            <description>&lt;div class="paragraph"&gt;&lt;p&gt;The &lt;tt&gt;git notes&lt;/tt&gt; command is really about local annotation of commits&amp;#8201;&amp;#8212;&amp;#8201;nothing
+to share. If you decide to still do so, for example the
+&lt;a href="http://git-scm.com/2010/08/25/notes.html"&gt;git-scm.com&lt;/a&gt; HOWTO can show you how to
+pull and push them. But what about merging?  There is no UI for that, but&amp;#8201;&amp;#8212;&amp;#8201;given that with git, everything is possible&amp;#8201;&amp;#8212;&amp;#8201;you can still do so manually.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;So the problem comes when Alice fetches notes, Bob does so, Alice pushes her
+notes back, Bob annotates a different commit and when Bob wants to push, he
+gets &lt;tt&gt;rejected, non-fast-forward&lt;/tt&gt;. Normally you would merge or rebase in this
+situation, but given that &lt;tt&gt;git notes&lt;/tt&gt; by default updates the
+&lt;tt&gt;refs/notes/commits&lt;/tt&gt; ref and you typically have a different branch checked out,
+you can&amp;#8217;t use &lt;tt&gt;git merge&lt;/tt&gt; or &lt;tt&gt;git rebase&lt;/tt&gt; directly.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;What works is:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="listingblock"&gt;
+&lt;div class="content"&gt;
+&lt;pre&gt;&lt;tt&gt;git checkout refs/notes/commits
+git fetch origin refs/notes/commits
+git merge FETCH_HEAD
+git update-ref refs/notes/commits HEAD
+git checkout master&lt;/tt&gt;&lt;/pre&gt;
+&lt;/div&gt;&lt;/div&gt;
+&lt;div class="colist arabic"&gt;&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;
+Check out the notes, so if you have conflicts, you can resolve them.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+Fetch remote notes to FETCH_HEAD.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+Do the merge.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+Necessary, as &lt;tt&gt;git merge&lt;/tt&gt; won&amp;#8217;t update the ref automatically, since we&amp;#8217;re not on a branch.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+Or whereever you were before.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;And now you can push your notes, as detailed in the above referred blog post.
+Yes, rebasing would be possible as well, that&amp;#8217;s left as an exercise for the
+reader. ;-)&lt;/p&gt;&lt;/div&gt;
+</description>
+            <link>http://vmiklos.hu/blog/git-notes-merge.html</link>
+            <pubDate>Thu, 07 Jun 2012 19:31:30 +0200</pubDate>
+            <guid isPermaLink="false">git-notes-merge at http://vmiklos.hu/blog/</guid>
+        </item>
+        <item>
+            <title>JGit eloadas</title>
+            <description>&lt;div class="paragraph"&gt;&lt;p&gt;Holnap lesz 5 hete, hogy eloadtam JGit / EGit / Gerrit temaban a BME-n,
+&lt;a href="https://www.vik.bme.hu/kepzes/targyak/VIIIAV51"&gt;e targy&lt;/a&gt; kereteben. Az
+elaodas eleje gyakorlatilag copy&amp;amp;paste a korabbi Git eloadasombol, de
+mivel a targy kifejezetten Javaval foglalkozik, igy az elobb emlitett
+harom temat is feloleli. A slide-ok megtalalhatoak a
+&lt;a href="http://vmiklos.hu/odp/"&gt;szokasos helyen&lt;/a&gt;.&lt;/p&gt;&lt;/div&gt;
+</description>
+            <link>http://vmiklos.hu/blog/jgit-ea.html</link>
+            <pubDate>Wed, 01 Dec 2010 19:36:12 +0100</pubDate>
+            <guid isPermaLink="false">jgit-ea at http://vmiklos.hu/blog/</guid>
+        </item>
+    </channel>
+</rss>

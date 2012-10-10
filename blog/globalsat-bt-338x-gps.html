@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.5.3" />
+<meta name="description" content="Globalsat BT-338X GPS - Miklos' blog" />
+<meta name="keywords" content="vmiklos, libereoffice, swig, git, python, hacking, bitlbee" />
+<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="http://vmiklos.hu/blog/index.rss" />
+<link rel="stylesheet" href="/blog/xhtml11.css" type="text/css" />
+<link rel="stylesheet" href="/blog/xhtml11-quirks.css" type="text/css" />
+<link rel="stylesheet" href="/blog/layout.css" type="text/css" />
+<title>Globalsat BT-338X GPS</title>
+<!-- google analytics start -->
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-24726997-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<!-- google analytics end -->
+</head>
+<body>
+<div id="layout-banner-box">
+<div id="layout-banner">
+  <div id="layout-title">vmiklos.hu</div>
+  <div id="layout-description">shameless self-promoting website</div>
+</div>
+</div>
+<div id="layout-menu-box">
+<div id="layout-menu">
+  <div>&#187;<a href="/">Root</a></div>
+  <div>&#187;<a href="/blog/">Rejourn root</a></div>
+</div>
+
+</div>
+<div id="layout-content-box">
+<div id="layout-content">
+<div id="header">
+	<h1>Globalsat BT-338X GPS</h1>
+</div>
+<div id="preamble">
+<div class="sectionbody">
+
+<!-- Single entry -->
+<div class="verseblock">
+<div class="verseblock-content">Posted <span class="timeago" title="2010-08-27T02:46:00Z">Friday, 27 August 2010</span> by Miklos<br />
+    Tags:
+    <a href="tags/en.html">en</a>
+    <a href="tags/hacking.html">hacking</a>
+    <a href="tags/frugalware.html">frugalware</a>
+</div>
+</div>
+
+<!-- Body -->
+<p>Yesterday I bought a cheap GPS data logger / receiver, and given that the attached install CD did not support Linux, I'm collecting some hopefully useful links here.</p><p><ul>
+  <li>The <a href="http://wiki.openstreetmap.org/wiki/GPS_Reviews#Globalsat_BT-338">OpenStreetMap</a> wiki had an incorrect statement about the device has no memory - it has.</li>
+  <li><a href="http://www.globalsat.com.tw/products-page.php?menu=2&amp;gs_en_product_id=6&amp;gs_en_product_cnt_id=56">Vendor homepage</a>. (<a href="http://speedshop.hu/main.php?page=termek&amp;iid=44261">Hungarian one</a>.)</li>
+  <li>A <a href="http://blog.pjvenda.net/2007/09/my-new-toy-globalsat-dg-100-gps-data.html">blog post</a> about <a href="http://frugalware.org/packages/23237">gpsbabel</a> usage.</li>
+  <li>More gpsbabel docs: the <a href="http://www.gpsbabel.org/htmldoc-development/fmt_dg-100.html">dg-100</a> and the <a href="http://www.gpsbabel.org/htmldoc-development/fmt_skytraq.html">skytraq</a> formats.</li>
+</ul></p><p>Putting everything together, to get the log from the device using bluetooth I first had to create an rfcomm interface, as gpsbabel does not support bluetooth natively:</p><p><pre>
+# rfcomm bind 0 00:0D:B5:38:BA:C6
+</pre></p><p>Then to download and erase the log from the device:</p><p><pre>
+$ gpsbabel -i dg-100,erase=1 -f /dev/rfcomm0 -o gpx \
+        -F $(date +%Y-%m-%d).gpx
+</pre></p><p>The gpx format is fine in case you want to later reuse log with digikam's gpssync plugin (available from <a href="http://frugalware.org/packages/9654">kipi-plugins</a>).</p><p>Now in case you want to convert it to kml to show on Google Maps:</p><p><pre>
+$ gpsbabel -i gpx -f $(date +%Y-%m-%d).gpx -o kml -F $(date +%Y-%m-%d).kml
+</pre></p><p>Finally release the rfcomm interface in case you don't need it anymore:</p><p><pre>
+# rfcomm release 0
+</pre></p><p>Update: there is also a <a href="http://code.google.com/p/globdog-dg100/">gui</a> which can be used to enable logging of altitude info, etc - just <a href="http://frugalware.org/~vmiklos/patches/globdog-dg100-enable-rtcomm.patch">trivial patching</a> is needed and it works with BT-338X as well.</p>
+
+
+<script src="https://apis.google.com/js/plusone.js"></script>
+<g:plus action="share"></g:plus>
+
+<!-- Disqus comments -->
+<h1 id="comment-header">Comments</h1>
+<div id="disqus_thread"></div>
+<script type="text/javascript" src="http://vmiklos.disqus.com/embed.js">
+	var disqus_developer = 1;
+</script>
+<noscript>
+  <p><a href="http://disqus.com/?ref_noscript=vmiklos">View the discussion thread.</a></p>
+</noscript>
+
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

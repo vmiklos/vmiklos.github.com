@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.5.3" />
+<meta name="description" content="new in git-1.5.6: git cvsexportcommit -W - Miklos' blog" />
+<meta name="keywords" content="vmiklos, libereoffice, swig, git, python, hacking, bitlbee" />
+<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="http://vmiklos.hu/blog/index.rss" />
+<link rel="stylesheet" href="/blog/xhtml11.css" type="text/css" />
+<link rel="stylesheet" href="/blog/xhtml11-quirks.css" type="text/css" />
+<link rel="stylesheet" href="/blog/layout.css" type="text/css" />
+<title>new in git-1.5.6: git cvsexportcommit -W</title>
+<!-- google analytics start -->
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-24726997-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<!-- google analytics end -->
+</head>
+<body>
+<div id="layout-banner-box">
+<div id="layout-banner">
+  <div id="layout-title">vmiklos.hu</div>
+  <div id="layout-description">shameless self-promoting website</div>
+</div>
+</div>
+<div id="layout-menu-box">
+<div id="layout-menu">
+  <div>&#187;<a href="/">Root</a></div>
+  <div>&#187;<a href="/blog/">Rejourn root</a></div>
+</div>
+
+</div>
+<div id="layout-content-box">
+<div id="layout-content">
+<div id="header">
+	<h1>new in git-1.5.6: git cvsexportcommit -W</h1>
+</div>
+<div id="preamble">
+<div class="sectionbody">
+
+<!-- Single entry -->
+<div class="verseblock">
+<div class="verseblock-content">Posted <span class="timeago" title="2008-06-14T03:38:47Z">Saturday, 14 June 2008</span> by Miklos<br />
+    Tags:
+    <a href="tags/en.html">en</a>
+    <a href="tags/hacking.html">hacking</a>
+</div>
+</div>
+
+<!-- Body -->
+<p>git-1.5.6 will be released soon (probably in a few weeks) and there are some interesting news in it.</p><p>one of them is the new git cvsimport -W switch which makes it easy to do bi-directional changes between git and cvs.</p><p>to set up your local repo:</p><p><pre>$ CVSROOT=$URL cvs co module
+$ cd module
+$ git cvsimport</pre></p><p>this will do a fresh checkout of the cvs module and will import it to git. you will have two interesting git branch: origin is the "reference" one, you should not touch it, and you can work in master.</p><p>you can commit to master, etc.</p><p>then there are two tricky operations:</p><p>first, you may want to commit back your local commits.</p><p>to do this:</p><p><pre>$ for i in $(git rev-list --reverse origin..master)
+do
+        git cvsexportcommit -W -c -p -u $i
+done</pre></p><p>second, you may want to fetch upstream changes and rebase your local changes on top of them:</p><p><pre>$ git cvsimport -i
+$ git rebase origin</pre></p><p>that's all.</p><p>cookies goes to Dscho in commit <a href="http://git.kernel.org/?p=git/git.git;a=commit;h=d775734c40afed216160437c59a45c93bdf28689">d775734</a>. :)</p>
+
+
+<script src="https://apis.google.com/js/plusone.js"></script>
+<g:plus action="share"></g:plus>
+
+<!-- Disqus comments -->
+<h1 id="comment-header">Comments</h1>
+<div id="disqus_thread"></div>
+<script type="text/javascript" src="http://vmiklos.disqus.com/embed.js">
+	var disqus_developer = 1;
+</script>
+<noscript>
+  <p><a href="http://disqus.com/?ref_noscript=vmiklos">View the discussion thread.</a></p>
+</noscript>
+
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

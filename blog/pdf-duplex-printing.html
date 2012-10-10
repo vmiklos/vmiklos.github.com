@@ -1,0 +1,130 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.5.3" />
+<meta name="description" content="Poor man's PDF duplex printing - Miklos' blog" />
+<meta name="keywords" content="vmiklos, libereoffice, swig, git, python, hacking, bitlbee" />
+<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="http://vmiklos.hu/blog/index.rss" />
+<link rel="stylesheet" href="/blog/xhtml11.css" type="text/css" />
+<link rel="stylesheet" href="/blog/xhtml11-quirks.css" type="text/css" />
+<link rel="stylesheet" href="/blog/layout.css" type="text/css" />
+<title>Poor man's PDF duplex printing</title>
+<!-- google analytics start -->
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-24726997-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<!-- google analytics end -->
+</head>
+<body>
+<div id="layout-banner-box">
+<div id="layout-banner">
+  <div id="layout-title">vmiklos.hu</div>
+  <div id="layout-description">shameless self-promoting website</div>
+</div>
+</div>
+<div id="layout-menu-box">
+<div id="layout-menu">
+  <div>&#187;<a href="/">Root</a></div>
+  <div>&#187;<a href="/blog/">Rejourn root</a></div>
+</div>
+
+</div>
+<div id="layout-content-box">
+<div id="layout-content">
+<div id="header">
+	<h1>Poor man's PDF duplex printing</h1>
+</div>
+<div id="preamble">
+<div class="sectionbody">
+
+<!-- Single entry -->
+<div class="verseblock">
+<div class="verseblock-content">Posted <span class="timeago" title="2010-11-27T16:17:16Z">Saturday, 27 November 2010</span> by Miklos<br />
+    Tags:
+    <a href="tags/en.html">en</a>
+    <a href="tags/hacking.html">hacking</a>
+</div>
+</div>
+
+<!-- Body -->
+<div class="paragraph"><p>Yesterday I wanted to print a PDF document: two pages per sheet, and of
+course I wanted duplex printing as well (on the short side).</p></div>
+<div class="paragraph"><p>Given that the hardware (the printer) was not capable of duplex
+printing, I needed some software workaround. If you want one page per
+sheet, this is trivial, as the print dialog of any PDF reader will let
+you select "odd pages", then you re-feed the printer with the output
+paper and you select "even pages" and that&#8217;s it.</p></div>
+<div class="paragraph"><p>OTOH, if you want 2 pages per sheet, then first you need some trick
+first to create two PDF from the original: the first containing the
+pages 1, 2, 5, 6, etc. - and the other containing 3, 4, 7, 8, etc.</p></div>
+<div class="paragraph"><p>After all this isn&#8217;t really hard using <tt>pdftk</tt>. First, the input PDF was
+around 150 pages, so I wanted to split the input to one file / page:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>pdftk in.pdf burst output out/%03d.pdf</tt></pre>
+</div></div>
+<div class="paragraph"><p>Then let&#8217;s move the pages to the subdirs <tt>a</tt> or <tt>b</tt>, based on the above
+pattern:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.4
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>cd out
+mkdir a b
+<span style="font-weight: bold"><span style="color: #0000FF">for</span></span> i <span style="font-weight: bold"><span style="color: #0000FF">in</span></span> <span style="color: #990000">*.</span>pdf
+<span style="font-weight: bold"><span style="color: #0000FF">do</span></span>
+        <span style="color: #009900">base</span><span style="color: #990000">=</span><span style="color: #009900">$(</span>basename <span style="color: #009900">$i</span> <span style="color: #990000">.</span>pdf<span style="color: #990000">)</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">if</span></span> <span style="color: #990000">[</span> <span style="color: #009900">$base</span> -lt <span style="color: #993399">100</span> <span style="color: #990000">];</span> <span style="font-weight: bold"><span style="color: #0000FF">then</span></span>
+                <span style="color: #009900">rem</span><span style="color: #990000">=</span><span style="color: #009900">$(</span><span style="color: #990000">(</span><span style="color: #009900">$(</span>echo <span style="color: #009900">$i</span><span style="color: #990000">|</span>sed <span style="color: #FF0000">'s/^0</span><span style="color: #CC33CC">\+\(</span><span style="color: #FF0000">.*</span><span style="color: #CC33CC">\)\.</span><span style="color: #FF0000">pdf/</span><span style="color: #CC33CC">\1</span><span style="color: #FF0000">/'</span><span style="color: #990000">)%</span><span style="color: #993399">4</span><span style="color: #990000">))</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">else</span></span>
+                <span style="color: #009900">rem</span><span style="color: #990000">=</span><span style="color: #009900">$(($base%4))</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">fi</span></span>
+        <span style="font-weight: bold"><span style="color: #0000FF">if</span></span> <span style="color: #990000">[</span> <span style="color: #FF0000">"$rem"</span> <span style="color: #990000">=</span> <span style="color: #993399">1</span> -o <span style="color: #FF0000">"$rem"</span> <span style="color: #990000">=</span> <span style="color: #993399">2</span> <span style="color: #990000">];</span> <span style="font-weight: bold"><span style="color: #0000FF">then</span></span>
+                mv <span style="color: #009900">$i</span> a
+        <span style="font-weight: bold"><span style="color: #0000FF">else</span></span>
+                mv <span style="color: #009900">$i</span> b
+        <span style="font-weight: bold"><span style="color: #0000FF">fi</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">done</span></span></tt></pre></div></div>
+<div class="paragraph"><p>Finally concat the files from the <tt>a</tt> and the <tt>b</tt> dir to a single file:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>cd a
+pdftk *.pdf cat output ../a.pdf
+cd ../b
+pdftk *.pdf cat output ../b.pdf</tt></pre>
+</div></div>
+<div class="paragraph"><p>That&#8217;s it!</p></div>
+
+
+<script src="https://apis.google.com/js/plusone.js"></script>
+<g:plus action="share"></g:plus>
+
+<!-- Disqus comments -->
+<h1 id="comment-header">Comments</h1>
+<div id="disqus_thread"></div>
+<script type="text/javascript" src="http://vmiklos.disqus.com/embed.js">
+	var disqus_developer = 1;
+</script>
+<noscript>
+  <p><a href="http://disqus.com/?ref_noscript=vmiklos">View the discussion thread.</a></p>
+</noscript>
+
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

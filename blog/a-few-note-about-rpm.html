@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.5.3" />
+<meta name="description" content="a few note about rpm - Miklos' blog" />
+<meta name="keywords" content="vmiklos, libereoffice, swig, git, python, hacking, bitlbee" />
+<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="http://vmiklos.hu/blog/index.rss" />
+<link rel="stylesheet" href="/blog/xhtml11.css" type="text/css" />
+<link rel="stylesheet" href="/blog/xhtml11-quirks.css" type="text/css" />
+<link rel="stylesheet" href="/blog/layout.css" type="text/css" />
+<title>a few note about rpm</title>
+<!-- google analytics start -->
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-24726997-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<!-- google analytics end -->
+</head>
+<body>
+<div id="layout-banner-box">
+<div id="layout-banner">
+  <div id="layout-title">vmiklos.hu</div>
+  <div id="layout-description">shameless self-promoting website</div>
+</div>
+</div>
+<div id="layout-menu-box">
+<div id="layout-menu">
+  <div>&#187;<a href="/">Root</a></div>
+  <div>&#187;<a href="/blog/">Rejourn root</a></div>
+</div>
+
+</div>
+<div id="layout-content-box">
+<div id="layout-content">
+<div id="header">
+	<h1>a few note about rpm</h1>
+</div>
+<div id="preamble">
+<div class="sectionbody">
+
+<!-- Single entry -->
+<div class="verseblock">
+<div class="verseblock-content">Posted <span class="timeago" title="2008-12-16T01:51:15Z">Tuesday, 16 December 2008</span> by Miklos<br />
+    Tags:
+    <a href="tags/en.html">en</a>
+    <a href="tags/hacking.html">hacking</a>
+</div>
+</div>
+
+<!-- Body -->
+<p>I spent some time today to prepare some rpm packages for an RHEL4 box, it was an interesting experience. To preface to this story is that first I had to do the followings on Frugalware:</p><p><ul>
+  <li>Patch mysql 5.0.37 to add support for the sphinx search engine</li>
+  <li>Make sure about sphinx itself works fine with this (though sadly I haven't had time yet to package sphinx as well).</li>
+</ul></p><p>We have a newer (but compatible, since we still ship 5.0.x) mysql, but a simple git checkout gave me the old buildscript and then the patch applied perfectly.</p><p>Then the plan changed, I needed to do this on an RHEL4 box as well.</p><p>Steps:</p><p><ul>
+  <li>Fix broken up2date config, it seems nobody installed any security update on the box for a long time.</li>
+  <li>Notice that RHEL4 has mysql 4.x, so I had to upgrade it to 5.0.x which was not trivial.</li>
+  <li>After adding the patch to the spec file, I saw that there are a bunch of manual autoconf/automake/autoheader/autowhatever calls, so I did not add a call to mysql's own autogen script. It turned out later that this was a fault, the default autofoo calls did not regenerate all the necessary files, basically they just took a lot of time, but did not really do anything useful. Sigh.</li>
+  <li>Once build was done, I had to rebuild perl's mysql driver and the whole php package because of the major mysql upgrade. Did I say I hate to touch php?</li>
+  <li>And finally the worst was to package sphinx. I used some opensuse spec file, but it turned out to be badly broken on RHEL4. Fixing it was not so problematic, but took a lot of time, because debugging a specfile under RH is a PITA.</li>
+  <li>Let me show a few examples. The equivalent of Fdestdir (the directory which will be tared up after the build is done) is not rm -rf'd before the build starts. So if you have some crap there, your final package will have it.</li>
+  <li>OTOH, Fsrcdir (the directory where the build takes place) <em>is</em> deleted, which means you can't do an incremental build.</li>
+  <li>If you break your pre-uninstall script, you can't easily uninstall a package, even with rpm -e --force --nodeps (you need some magic --no-preun switch, which is not implied by --force).</li>
+  <li>If you say rpm -Uvh foo-2.0.rpm, then sometimes it bails out with an error about it has a file conflict because /bar/baz.so is provided by foo-1.0. What? Doesn't -U stand for <em>upgrade</em>?</li>
+</ul></p><p>Okay, this was enough. I finally finished the task, but I again just can make a "this is so much more efficient with Frugalware" note. ;-)</p><p>And no, I don't like to write about why foo sucks, but both this packaging system (or at least the default settings) a docbook sometimes really sucks.</p>
+
+
+<script src="https://apis.google.com/js/plusone.js"></script>
+<g:plus action="share"></g:plus>
+
+<!-- Disqus comments -->
+<h1 id="comment-header">Comments</h1>
+<div id="disqus_thread"></div>
+<script type="text/javascript" src="http://vmiklos.disqus.com/embed.js">
+	var disqus_developer = 1;
+</script>
+<noscript>
+  <p><a href="http://disqus.com/?ref_noscript=vmiklos">View the discussion thread.</a></p>
+</noscript>
+
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

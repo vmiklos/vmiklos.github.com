@@ -1,0 +1,131 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.5.3" />
+<meta name="description" content="Merging git notes - Miklos' blog" />
+<meta name="keywords" content="vmiklos, libereoffice, swig, git, python, hacking, bitlbee" />
+<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="http://vmiklos.hu/blog/index.rss" />
+<link rel="stylesheet" href="/blog/xhtml11.css" type="text/css" />
+<link rel="stylesheet" href="/blog/xhtml11-quirks.css" type="text/css" />
+<link rel="stylesheet" href="/blog/layout.css" type="text/css" />
+<title>Merging git notes</title>
+<!-- google analytics start -->
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-24726997-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<!-- google analytics end -->
+</head>
+<body>
+<div id="layout-banner-box">
+<div id="layout-banner">
+  <div id="layout-title">vmiklos.hu</div>
+  <div id="layout-description">shameless self-promoting website</div>
+</div>
+</div>
+<div id="layout-menu-box">
+<div id="layout-menu">
+  <div>&#187;<a href="/">Root</a></div>
+  <div>&#187;<a href="/blog/">Rejourn root</a></div>
+</div>
+
+</div>
+<div id="layout-content-box">
+<div id="layout-content">
+<div id="header">
+	<h1>Merging git notes</h1>
+</div>
+<div id="preamble">
+<div class="sectionbody">
+
+<!-- Single entry -->
+<div class="verseblock">
+<div class="verseblock-content">Posted <span class="timeago" title="2012-06-07T19:31:30Z">Thursday, 07 June 2012</span> by Miklos<br />
+    Tags:
+    <a href="tags/en.html">en</a>
+    <a href="tags/git.html">git</a>
+</div>
+</div>
+
+<!-- Body -->
+<div class="paragraph"><p>The <tt>git notes</tt> command is really about local annotation of commits&#8201;&#8212;&#8201;nothing
+to share. If you decide to still do so, for example the
+<a href="http://git-scm.com/2010/08/25/notes.html">git-scm.com</a> HOWTO can show you how to
+pull and push them. But what about merging?  There is no UI for that, but&#8201;&#8212;&#8201;given that with git, everything is possible&#8201;&#8212;&#8201;you can still do so manually.</p></div>
+<div class="paragraph"><p>So the problem comes when Alice fetches notes, Bob does so, Alice pushes her
+notes back, Bob annotates a different commit and when Bob wants to push, he
+gets <tt>rejected, non-fast-forward</tt>. Normally you would merge or rebase in this
+situation, but given that <tt>git notes</tt> by default updates the
+<tt>refs/notes/commits</tt> ref and you typically have a different branch checked out,
+you can&#8217;t use <tt>git merge</tt> or <tt>git rebase</tt> directly.</p></div>
+<div class="paragraph"><p>What works is:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>git checkout refs/notes/commits
+git fetch origin refs/notes/commits
+git merge FETCH_HEAD
+git update-ref refs/notes/commits HEAD
+git checkout master</tt></pre>
+</div></div>
+<div class="colist arabic"><ol>
+<li>
+<p>
+Check out the notes, so if you have conflicts, you can resolve them.
+</p>
+</li>
+<li>
+<p>
+Fetch remote notes to FETCH_HEAD.
+</p>
+</li>
+<li>
+<p>
+Do the merge.
+</p>
+</li>
+<li>
+<p>
+Necessary, as <tt>git merge</tt> won&#8217;t update the ref automatically, since we&#8217;re not on a branch.
+</p>
+</li>
+<li>
+<p>
+Or whereever you were before.
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p>And now you can push your notes, as detailed in the above referred blog post.
+Yes, rebasing would be possible as well, that&#8217;s left as an exercise for the
+reader. ;-)</p></div>
+
+
+<script src="https://apis.google.com/js/plusone.js"></script>
+<g:plus action="share"></g:plus>
+
+<!-- Disqus comments -->
+<h1 id="comment-header">Comments</h1>
+<div id="disqus_thread"></div>
+<script type="text/javascript" src="http://vmiklos.disqus.com/embed.js">
+	var disqus_developer = 1;
+</script>
+<noscript>
+  <p><a href="http://disqus.com/?ref_noscript=vmiklos">View the discussion thread.</a></p>
+</noscript>
+
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.5.3" />
+<meta name="description" content="Playing with libvirt - Miklos' blog" />
+<meta name="keywords" content="vmiklos, libereoffice, swig, git, python, hacking, bitlbee" />
+<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="http://vmiklos.hu/blog/index.rss" />
+<link rel="stylesheet" href="/blog/xhtml11.css" type="text/css" />
+<link rel="stylesheet" href="/blog/xhtml11-quirks.css" type="text/css" />
+<link rel="stylesheet" href="/blog/layout.css" type="text/css" />
+<title>Playing with libvirt</title>
+<!-- google analytics start -->
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-24726997-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<!-- google analytics end -->
+</head>
+<body>
+<div id="layout-banner-box">
+<div id="layout-banner">
+  <div id="layout-title">vmiklos.hu</div>
+  <div id="layout-description">shameless self-promoting website</div>
+</div>
+</div>
+<div id="layout-menu-box">
+<div id="layout-menu">
+  <div>&#187;<a href="/">Root</a></div>
+  <div>&#187;<a href="/blog/">Rejourn root</a></div>
+</div>
+
+</div>
+<div id="layout-content-box">
+<div id="layout-content">
+<div id="header">
+	<h1>Playing with libvirt</h1>
+</div>
+<div id="preamble">
+<div class="sectionbody">
+
+<!-- Single entry -->
+<div class="verseblock">
+<div class="verseblock-content">Posted <span class="timeago" title="2010-10-03T04:03:00Z">Sunday, 03 October 2010</span> by Miklos<br />
+    Tags:
+    <a href="tags/en.html">en</a>
+    <a href="tags/hacking.html">hacking</a>
+    <a href="tags/frugalware.html">frugalware</a>
+</div>
+</div>
+
+<!-- Body -->
+<p>I've been playing with <a href="http://frugalware.org/packages/14204">libvirt</a> in the last two days. My motivation was that I saw:<ol>
+  <li>plain kvm is not that fast</li>
+  <li>there is this virtio framework which aims to make it faster</li>
+  <li>using virtio directly is hard, better not reinventing the wheel and just try libvirt</li>
+</ol></p><p>So if you want to try it yourself, you need to pacman -S libvirt, service libvirtd start. Check /var/log/syslog for error messages, in case it can't find some commands (bridge-utils, dnsmasq, etc.), install them.</p><p>If you want to create a new virtual machine, you need pacman -S virtinst. Then you can use something like:</p><p><code>virt-install --name=syncpkgcd-helicon --arch=x86_64 --vcpus=1 --ram=1024 --os-type=linux --os-variant=virtio26 --connect=qemu:///system --network network=default --cdrom=/virt/iso/frugalware-1.3-i686-net.iso --disk path=/virt/syncpkgcd/syncpkgcd.img,size=40 --accelerate --vnc --noautoconsole --keymap=us</code></p><p>See man virt-isntall for more info about the meaning of the switches. One trick: kvm can't handle the gfxmenu in our grub on the install cd, so you need to disable that. One way to do it is to use <code>vim -b frugalware-1.3-i686-net.iso</code>, search for "menu /boot", and change "gfx" to "#fx". Then you can run virt-install. It'll start the install in the background. The easiest way (for me) to connect to the console is to create an ssh tunnel to the server running the kvm machine (for example ssh -L 5900:localhost:5900 server), then run <code>krdc localhost:0</code> on my own machine.</p><p>Next trick is that you need kernel support to boot from virtio disks (/dev/vda), that's enabled in frugalware-current.git but there were no rebuild yet, so you need to build it yourself for now.</p><p>Once the installation finished, the machine will be shut down. You can use <code>virsh</code> to start it. <a href="http://acidborg.wordpress.com/2010/02/19/how-to-manage-kvm-virtual-machines-using-virsh/">Here</a> is a great summary about virsh subcommands. Something not to forget: if you want to automatically start the machine after the host booted, use <code>virsh autostart $name</code>.</p><p>(You can also do a service libvirt-guests add, that way all guests will be automatically suspended/resumed on shutdown/boot. Just to be clear: if you want the "resume if it was a proper shutdown, start if there was a power cut" feature: you need both init scripts because libvirtd will always start/resume autostart guests, but it will never suspend them on shutdown.)</p><p>If grub hangs after reboot, try creating a small (I used 32MB) separate /boot partition first, that should fix the issue.</p><p><code>virsh shutdown $machine</code> won't work if you don't install acpid and enable it as well, so it's a good idea to do so.</p><p>The last trick: if you want to use the virt-manager gui from your local machine to manage a remote host, it isn't trivial to do so. First, it would try to login via ssh as root, and that's disabled by default. (And why would you enable it?). Also, even if you allow that, it would try to use <code>nc -U</code> which is supported by the openbsd nc only, the gnu nc does not have such a switch. Instead, we can use socat to connect to unix sockets. So I created a wrapper script under ~/bin with the following contents:</p><p><pre>
+#!/bin/sh
+if [ "$1" == "-U" ]; then
+        sudo socat - unix-client:$2
+else
+        /usr/bin/netcat $@
+fi
+</pre></p><p>Don't forget to add PATH=what_you_want line to ~/.ssh/environment, and include the full path of ~/bin there. This way you can keep using gnu nc and you can also login as a user to manage your machines, as long as you set up nopasswd sudo for your user for socat.</p><p>Finally a mini-benchmark:</p><p>The SBU of yugo (i686 buildserver, a bit old HW) is 645 seconds, SBU of an i686 guest on helicon (c2q machine with 8g ram) is 264, SBU of the host build on helicon is 76.</p><p>I would call this usable (not right now, but once we sort out the kernel part). Finally something that is free software and is comparable to VMware ESX. :)</p><p>Update: I recently did the same install with 1.4pre1 (which installs -current, so the kernel is 2.6.36), the list of tricks you still need:</p><p><ul>
+  <li>separate /boot (haven't tried without)</li>
+  <li>edit iso image to get rid of gfxboot (tried, still fails without)</li>
+  <li>some problem with grub, you need to manually add "(hd0) /dev/vda" to /boot/grub/device.map, then run grub-install /dev/vda</li>
+</ul></p><p>So no more custom kernel, boot from virtio works by default! :)</p>
+
+
+<script src="https://apis.google.com/js/plusone.js"></script>
+<g:plus action="share"></g:plus>
+
+<!-- Disqus comments -->
+<h1 id="comment-header">Comments</h1>
+<div id="disqus_thread"></div>
+<script type="text/javascript" src="http://vmiklos.disqus.com/embed.js">
+	var disqus_developer = 1;
+</script>
+<noscript>
+  <p><a href="http://disqus.com/?ref_noscript=vmiklos">View the discussion thread.</a></p>
+</noscript>
+
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+    <channel>
+        <title>What is Miklos hacking - Tags: gpsbabel</title>
+        <description></description>
+        <link>http://vmiklos.hu/blog/</link>
+        <item>
+            <title>How to split gpx files using gpsbabel</title>
+            <description>&lt;div class="paragraph"&gt;&lt;p&gt;I usually just download the gpx track from my GPS and delete the track
+from device each time I arrive home and I was at some interesting place
+before. Last week this was not the case, I was at
+&lt;a href="http://maps.google.com/?q=Gy%FAr%F3,+Hungary"&gt;Gyúró&lt;/a&gt; two weeks ago, then
+I borrowed by device, without clearing the log from it.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;So the task was easy: I had a timestamp and I had the full log from the
+device, and I want to split it: before and after a given timestamp. It
+turned out that I had some log from Oct 28th as well, so I wanted:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+The log till Oct 28th
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+The log between Nov 5th and 8th
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+The log after 10th.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Luckily the
+&lt;a href="http://www.gpsbabel.org/htmldoc-1.3.0/filter_track.html"&gt;gpsbabel
+documentation&lt;/a&gt; is quite clear in this area (see Example 4.8), I just
+needed the following commands:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="listingblock"&gt;
+&lt;div class="content"&gt;
+&lt;pre&gt;&lt;tt&gt;$ gpsbabel -t -i gpx -f in.gpx -x track,stop=20101028 -o gpx -F out1.gpx
+$ gpsbabel -t -i gpx -f in.gpx -x track,start=20101105,stop=20101108 -o gpx -F out2.gpx
+$ gpsbabel -t -i gpx -f in.gpx -x track,start=20101110 -o gpx -F out3.gpx&lt;/tt&gt;&lt;/pre&gt;
+&lt;/div&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Update: two more notes:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+the stop is exclusive, start is inclusive
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+when using the result in digikam, the camera time zone has to be set to "manual: gmt+0", even if both the gpx result and the camera time is in local time
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+</description>
+            <link>http://vmiklos.hu/blog/gpsbabel-split.html</link>
+            <pubDate>Wed, 17 Nov 2010 13:43:51 +0100</pubDate>
+            <guid isPermaLink="false">gpsbabel-split at http://vmiklos.hu/blog/</guid>
+        </item>
+    </channel>
+</rss>

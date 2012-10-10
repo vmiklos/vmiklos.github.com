@@ -1,0 +1,127 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.5.3" />
+<meta name="description" content="OSL_TRACE() - Miklos' blog" />
+<meta name="keywords" content="vmiklos, libereoffice, swig, git, python, hacking, bitlbee" />
+<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="http://vmiklos.hu/blog/index.rss" />
+<link rel="stylesheet" href="/blog/xhtml11.css" type="text/css" />
+<link rel="stylesheet" href="/blog/xhtml11-quirks.css" type="text/css" />
+<link rel="stylesheet" href="/blog/layout.css" type="text/css" />
+<title>OSL_TRACE()</title>
+<!-- google analytics start -->
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-24726997-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<!-- google analytics end -->
+</head>
+<body>
+<div id="layout-banner-box">
+<div id="layout-banner">
+  <div id="layout-title">vmiklos.hu</div>
+  <div id="layout-description">shameless self-promoting website</div>
+</div>
+</div>
+<div id="layout-menu-box">
+<div id="layout-menu">
+  <div>&#187;<a href="/">Root</a></div>
+  <div>&#187;<a href="/blog/">Rejourn root</a></div>
+</div>
+
+</div>
+<div id="layout-content-box">
+<div id="layout-content">
+<div id="header">
+	<h1>OSL_TRACE()</h1>
+</div>
+<div id="preamble">
+<div class="sectionbody">
+
+<!-- Single entry -->
+<div class="verseblock">
+<div class="verseblock-content">Posted <span class="timeago" title="2010-11-24T13:51:04Z">Wednesday, 24 November 2010</span> by Miklos<br />
+    Tags:
+    <a href="tags/en.html">en</a>
+    <a href="tags/hacking.html">hacking</a>
+    <a href="tags/libreoffice.html">libreoffice</a>
+</div>
+</div>
+
+<!-- Body -->
+<div class="paragraph"><p>Background: <tt>OSL_TRACE()</tt> is an internal LibreOffice macro that is like
+<tt>printf()</tt>, but it&#8217;s only enabled in debug mode. Without it, you would
+add a debug printf during development:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.4
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #000000">printf</span></span><span style="color: #990000">(</span><span style="color: #FF0000">"debug, foo</span><span style="color: #CC33CC">\n</span><span style="color: #FF0000">"</span><span style="color: #990000">);</span></tt></pre></div></div>
+<div class="paragraph"><p>then you would comment it out when the code started working,:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.4
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900">//printf("debug, foo\n");</span></span></tt></pre></div></div>
+<div class="paragraph"><p>then remove the comment when it breaks again, etc.</p></div>
+<div class="paragraph"><p>In the past, if you built a LibreOffice module, then you executed:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>build</tt></pre>
+</div></div>
+<div class="paragraph"><p>inside a module, and in case you wanted debug symbols and such messages you built using:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>build debug=t</tt></pre>
+</div></div>
+<div class="paragraph"><p>which increased the debug level to 2 (from 0), where 1 is required for
+debug symbols, 2 for debug messages. (See the OOo
+<a href="http://wiki.services.openoffice.org/wiki/Debug_Levels">wiki page</a>.)</p></div>
+<div class="paragraph"><p>The recent update, why I&#8217;m writing this post: Now this has been
+<a href="http://cgit.freedesktop.org/libreoffice/bootstrap/commit/?id=47d09469e96485f93623a6fbeb42f709c2ce49bb">changed</a>,
+and <tt>debug=t</tt> gives you debug symbols only, but no extra debug output.
+While this is
+<a href="http://lists.freedesktop.org/archives/libreoffice/2010-November/002894.html">great
+in most cases</a>, sometimes you still want the old behaviour to get the
+debug messages. In that case the solution (as pointed out in the mailing
+list post) is to use:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>build debug=t dbglevel=2</tt></pre>
+</div></div>
+<div class="paragraph"><p>(Hopefully this post will be handy for who missed that post, like I did
+the first time.)</p></div>
+
+
+<script src="https://apis.google.com/js/plusone.js"></script>
+<g:plus action="share"></g:plus>
+
+<!-- Disqus comments -->
+<h1 id="comment-header">Comments</h1>
+<div id="disqus_thread"></div>
+<script type="text/javascript" src="http://vmiklos.disqus.com/embed.js">
+	var disqus_developer = 1;
+</script>
+<noscript>
+  <p><a href="http://disqus.com/?ref_noscript=vmiklos">View the discussion thread.</a></p>
+</noscript>
+
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

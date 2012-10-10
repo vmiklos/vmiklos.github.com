@@ -1,0 +1,163 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.5.3" />
+<meta name="description" content="amtterm - Miklos' blog" />
+<meta name="keywords" content="vmiklos, libereoffice, swig, git, python, hacking, bitlbee" />
+<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="http://vmiklos.hu/blog/index.rss" />
+<link rel="stylesheet" href="/blog/xhtml11.css" type="text/css" />
+<link rel="stylesheet" href="/blog/xhtml11-quirks.css" type="text/css" />
+<link rel="stylesheet" href="/blog/layout.css" type="text/css" />
+<title>amtterm</title>
+<!-- google analytics start -->
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-24726997-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<!-- google analytics end -->
+</head>
+<body>
+<div id="layout-banner-box">
+<div id="layout-banner">
+  <div id="layout-title">vmiklos.hu</div>
+  <div id="layout-description">shameless self-promoting website</div>
+</div>
+</div>
+<div id="layout-menu-box">
+<div id="layout-menu">
+  <div>&#187;<a href="/">Root</a></div>
+  <div>&#187;<a href="/blog/">Rejourn root</a></div>
+</div>
+
+</div>
+<div id="layout-content-box">
+<div id="layout-content">
+<div id="header">
+	<h1>amtterm</h1>
+</div>
+<div id="preamble">
+<div class="sectionbody">
+
+<!-- Single entry -->
+<div class="verseblock">
+<div class="verseblock-content">Posted <span class="timeago" title="2010-12-11T00:26:04Z">Saturday, 11 December 2010</span> by Miklos<br />
+    Tags:
+    <a href="tags/en.html">en</a>
+    <a href="tags/frugalware.html">frugalware</a>
+</div>
+</div>
+
+<!-- Body -->
+<div class="paragraph"><p>So we have two machines next to each other: genesis and helicon. The
+original idea years ago was to put a serial cable between the two so
+that it&#8217;s possible to manage the machines even in case ssh dies for some
+reason. Of course we never did that, because we were lazy - but in the
+meantime both machines were replaced by a newer mainboard, supporting
+<a href="http://www.intel.com/technology/platform-technology/intel-amt/">Intel
+AMT</a>.</p></div>
+<div class="paragraph"><p>In short, this is a poor man&#8217;s IP console, it supports serial-over-lan,
+so with a bit of configuration and a special client tool you can control
+grub, watch the bootup process (will you miss the risky few minutes
+after a reboot till it turned out if a remote machine boots up after a
+kernel upgrade or not?) and finally can even log in when ssh is not
+running.</p></div>
+<div class="paragraph"><p>First you need to set up grub to listen on the serial port as well. To
+do this, you need to know the device name and I/O port of your
+serial-over-lan port. The boxes mentioned above have one physical and
+one virtual serial port, so we need the later - that will be
+<tt>/dev/ttyS1</tt>. Now let&#8217;s grep in dmesg to get the port:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>$ dmesg|grep 'ttyS1 at'
+0000:00:03.3: ttyS1 at I/O 0xf1c0 (irq = 17) is a 16550A</tt></pre>
+</div></div>
+<div class="paragraph"><p>Now we know everything to set up grub. Just prepend the following lines
+to your <tt>/boot/grub/menu.lst</tt>:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>serial --port=0xf1c0 --speed=115200
+terminal --timeout=30 console serial</tt></pre>
+</div></div>
+<div class="paragraph"><p>The speed is AFAIK the same for each SoL port, so you can just
+copy&amp;paste it.</p></div>
+<div class="paragraph"><p>It&#8217;s also recommended to change the timeout line to 30 as well, this way
+you will have half minute to press any key to tell grub you want to
+control is on the serial port and you&#8217;ll again have half minute to hit
+any key to edit the kernel parameters, etc. (The whole grub part is
+useful because this way in case you upgraded the machine and it fails to
+boot up, you can still boot using init=/bin/sh and fix the system.)</p></div>
+<div class="paragraph"><p>Second, you want to see the boot process, this way you can fix the
+system remotely, even if fsck fails and asks for root password, etc.</p></div>
+<div class="paragraph"><p>For this, you need to change your kernel parameters, so that messages
+sent to <tt>/dev/console</tt> will end up on the serial port.</p></div>
+<div class="paragraph"><p>I changed</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>root=/dev/md0 ro quiet vga=791</tt></pre>
+</div></div>
+<div class="paragraph"><p>to</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>root=/dev/md0 ro vga=normal nomodeset console=ttyS1,115200</tt></pre>
+</div></div>
+<div class="paragraph"><p>and that achieved this.</p></div>
+<div class="paragraph"><p>Third, you want to start a getty on ttyS1 once the machine booted up, in
+case ssh fails to start up. If you don&#8217;t use systemd yet, add the following
+line to <tt>/etc/inittab</tt>:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>s1:12345:respawn:/sbin/agetty ttyS1 115200 vt100-nav</tt></pre>
+</div></div>
+<div class="paragraph"><p>(Don&#8217;t forget to run <tt>init q</tt> to reload the config!)</p></div>
+<div class="paragraph"><p>Finally, you need <a href="http://dl.bytesex.org/releases/amtterm/">amtterm</a> on
+the client side - I plan to package it for Frugalware once 1.4pre2 is
+out. Till then you can just download, unpack and build the source
+tarball using <tt>make</tt> - no installation is necessary, you can run
+<tt>amtterm</tt> in-place. In my case I can&#8217;t connect directly to the machine
+as (for obvious reasons) the AMT is reachable from the local subnet
+only. So I build an ssh tunnel to the other machine and use <tt>socksify</tt>
+to pretend I run amtterm on the local subnet. The commandline I use is:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>$ socksify ./amtterm -p &lt;pass&gt; &lt;ip&gt;</tt></pre>
+</div></div>
+<div class="paragraph"><p>And that&#8217;s it - enjoy editing your kernel parameters, watching your boot
+process and login to the box even if ssh is not running and you don&#8217;t
+have IP console. :)</p></div>
+<div class="paragraph"><p>If you can&#8217;t try it out right now but you want to see it in action:
+<a href="http://frugalware.org/~vmiklos/pics/shots/helicon-amt-grub.png">grub
+in amtterm</a> and
+<a href="http://frugalware.org/~vmiklos/pics/shots/helicon-amt.png">boot
+in amtterm</a> - without any virtualization! ;)</p></div>
+
+
+<script src="https://apis.google.com/js/plusone.js"></script>
+<g:plus action="share"></g:plus>
+
+<!-- Disqus comments -->
+<h1 id="comment-header">Comments</h1>
+<div id="disqus_thread"></div>
+<script type="text/javascript" src="http://vmiklos.disqus.com/embed.js">
+	var disqus_developer = 1;
+</script>
+<noscript>
+  <p><a href="http://disqus.com/?ref_noscript=vmiklos">View the discussion thread.</a></p>
+</noscript>
+
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>
