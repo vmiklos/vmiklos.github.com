@@ -74,7 +74,7 @@ posts = {}
 
 def get_title(id):
 	cwd = os.getcwd()
-	os.chdir('/home/vmiklos/ftp/vmiklos.hu/rejourn/in')
+	os.chdir('/home/vmiklos/ftp/staging.vmiklos.hu/rejourn/in')
 	sock = os.popen('git grep -l %s' % id)
 	buf = sock.read()
 	sock.close()
