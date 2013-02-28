@@ -55,6 +55,66 @@
 
 <!-- Listing -->
 <div class="ulist"><ul>
+<li><p>Thursday, 28 February 2013<br /><a href="/blog/git-review.html">git-review</a>
+(<a href="/blog/git-review.html#disqus_thread">Comments</a>)
+</p><p><div class="paragraph"><p>LibreOffice started to use <a href="https://gerrit.libreoffice.org/">Gerrit</a> for code
+review, and while occasional contributors
+<a href="https://wiki.documentfoundation.org/Development/gerrit/SubmitPatch">can submit
+patches manually</a>, in case one does many reviews, it&#8217;s handy to use a dedicated
+tool. In core.git, we have
+<a href="http://cgit.freedesktop.org/libreoffice/core/tree/logerrit">logerrit</a>, but
+that&#8217;s not advised for regular reviewers, either,
+<a href="https://github.com/openstack-infra/git-review">git-review</a> is recommended
+instead.</p></div>
+<div class="paragraph"><p>So I looked into git-review. The good news is that it&#8217;s packaged already for most distributions, e.g. a simple</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>zypper in python-git-review</code></pre>
+</div></div>
+<div class="paragraph"><p>on openSUSE installs it.</p></div>
+<div class="paragraph"><p>I wanted to use this tool for two tasks:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Submitting changes to Gerrit: <code>git review -R</code> could do that. <code>-R</code> prevents
+  automatic rebase, so a test build won&#8217;t fail because your patch is based on
+  an already broken commit. The other good thing is that you don&#8217;t have to
+  remember where to submit: both the master and libreoffice-4-0 branches contain
+  a <code>.gitreview</code> file that contains the necessary server / branch information.
+</p>
+</li>
+<li>
+<p>
+Cherry-picking changes from Gerrit: I found no option for this. A cherry-pick
+  command is generated on the web interface, but it&#8217;s more complicated than a
+  simple <code>&lt;some command&gt; &lt;number of the change&gt;</code>. So I submitted
+  <a href="https://review.openstack.org/17290">this change</a> to git-review itself, the next
+  release will be able to do <code>git review -x &lt;number of the change&gt;</code>.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Probably the browser interface is still the best to comment (especially inline
+comment) and approve changes, though David even submitted a
+<a href="https://review.openstack.org/17423">proof of concept patch</a> for that as well.</p></div>
+<div class="paragraph"><p>Finally, let me just clear two myths:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+If you use Google for OpenID login, you can have multiple OpenID accounts
+  associated with your Gerrit login, so it&#8217;s not a problem (first I thought it
+  is) if you use one email for Gerrit and an other one for accessing other
+  Google services.
+</p>
+</li>
+<li>
+<p>
+Somewhere I read that the stock LibreOffice hooks conflict with git-review:
+  nope, git-review didn&#8217;t touch the hooks, you can use the tool without
+  corrupting them in any way.
+</p>
+</li>
+</ul></div>
+</p><hr/></li>
 <li><p>Saturday, 23 February 2013<br /><a href="/blog/mary-poppins.html">Mary Poppins</a>
 (<a href="/blog/mary-poppins.html#disqus_thread">Comments</a>)
 </p><p><div class="imageblock" style="text-align:center;">
