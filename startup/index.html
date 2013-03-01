@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
 <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
-<meta name="generator" content="AsciiDoc 8.6.6" />
+<meta name="generator" content="AsciiDoc 8.6.8" />
 <title>Firefox Startup Page</title>
 <style type="text/css">
 /* Shared CSS for AsciiDoc xhtml11 and html5 backends */
@@ -87,10 +87,14 @@ ul, ol, li > p {
 ul > li     { color: #aaa; }
 ul > li > * { color: black; }
 
-pre {
+.monospaced, code, pre {
+  font-family: "Courier New", Courier, monospace;
+  font-size: inherit;
+  color: navy;
   padding: 0;
   margin: 0;
 }
+
 
 #author {
   color: #527bbd;
@@ -349,7 +353,7 @@ div.colist td img {
   margin-bottom: 0.1em;
 }
 
-div.toclevel1, div.toclevel2, div.toclevel3, div.toclevel4 {
+div.toclevel0, div.toclevel1, div.toclevel2, div.toclevel3, div.toclevel4 {
   margin-top: 0;
   margin-bottom: 0;
 }
@@ -407,17 +411,13 @@ span.underline { text-decoration: underline; }
 span.overline { text-decoration: overline; }
 span.line-through { text-decoration: line-through; }
 
+div.unbreakable { page-break-inside: avoid; }
+
 
 /*
  * xhtml11 specific
  *
  * */
-
-tt {
-  font-family: monospace;
-  font-size: inherit;
-  color: navy;
-}
 
 div.tableblock {
   margin-top: 1.0em;
@@ -451,12 +451,6 @@ div.tableblock > table[frame="vsides"] {
  * html5 specific
  *
  * */
-
-.monospaced {
-  font-family: monospace;
-  font-size: inherit;
-  color: navy;
-}
 
 table.tableblock {
   margin-top: 1.0em;
@@ -537,6 +531,8 @@ body.manpage div.sectionbody {
 @media print {
   body.manpage div#toc { display: none; }
 }
+
+
 </style>
 <script type="text/javascript">
 /*<![CDATA[*/
@@ -581,7 +577,7 @@ toc: function (toclevels) {
 
   function tocEntries(el, toclevels) {
     var result = new Array;
-    var re = new RegExp('[hH]([2-'+(toclevels+1)+'])');
+    var re = new RegExp('[hH]([1-'+(toclevels+1)+'])');
     // Function that scans the DOM tree for header elements (the DOM2
     // nodeIterator API would be a better technique but not supported by all
     // browsers).
@@ -610,7 +606,7 @@ toc: function (toclevels) {
   var i;
   for (i = 0; i < toc.childNodes.length; i++) {
     var entry = toc.childNodes[i];
-    if (entry.nodeName == 'div'
+    if (entry.nodeName.toLowerCase() == 'div'
      && entry.getAttribute("class")
      && entry.getAttribute("class").match(/^toclevel/))
       tocEntriesToRemove.push(entry);
@@ -656,7 +652,7 @@ footnotes: function () {
   var entriesToRemove = [];
   for (i = 0; i < noteholder.childNodes.length; i++) {
     var entry = noteholder.childNodes[i];
-    if (entry.nodeName == 'div' && entry.getAttribute("class") == "footnote")
+    if (entry.nodeName.toLowerCase() == 'div' && entry.getAttribute("class") == "footnote")
       entriesToRemove.push(entry);
   }
   for (i = 0; i < entriesToRemove.length; i++) {
@@ -797,7 +793,7 @@ most annoying: <a href="https://bugs.freedesktop.org/showdependencytree.cgi?id=3
 <div class="ulist"><ul>
 <li>
 <p>
-<a href="http://bugs.bitlbee.org/bitlbee/query?status=accepted&amp;status=assigned&amp;status=new&amp;status=reopened&amp;component=Skype">Skype tickets</a>
+<a href="http://bugs.bitlbee.org/bitlbee/query?status=accepted&amp;status=assigned&amp;status=new&amp;status=reopened&amp;component=Skype&amp;col=id&amp;col=summary&amp;col=component&amp;col=status&amp;col=type&amp;col=priority&amp;col=changetime&amp;order=id">Skype tickets</a>
 </p>
 </li>
 </ul></div>
@@ -808,12 +804,6 @@ most annoying: <a href="https://bugs.freedesktop.org/showdependencytree.cgi?id=3
 <a href="https://bugs.frugalware.org/query?owner=~vmiklos&amp;status=accepted&amp;status=assigned&amp;status=new&amp;status=reopened&amp;desc=1&amp;order=modified&amp;desc=1">my tickets</a>
 </p>
 </li>
-<li>
-<p>
-<a href="https://bugs.frugalware.org/query?status=accepted&amp;status=assigned&amp;status=new&amp;status=reopened&amp;summary=~%5BSEC%5D&amp;order=modified&amp;desc=1">sec
-  tickets</a>
-</p>
-</li>
 </ul></div>
 </div>
 </div>
@@ -821,7 +811,7 @@ most annoying: <a href="https://bugs.freedesktop.org/showdependencytree.cgi?id=3
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2013-02-18 12:27:53 CET
+Last updated 2013-03-01 07:49:12 CET
 </div>
 </div>
 </body>
