@@ -7,5 +7,7 @@ index.hu.html: index.hu.txt Makefile
 	asciidoc index.hu.txt
 
 resume.pdf: index.txt Makefile
-	a2x -f pdf --dblatex-opts "-Pdoc.publisher.show=0 -Platex.output.revhistory=0 -Pdoc.layout=\"mainmatter\"" index.txt
+	cat /usr/share/asciidoc/dblatex/asciidoc-dblatex.sty dblatex.sty > asciidoc-dblatex.sty
+	a2x -f pdf --dblatex-opts "-s asciidoc-dblatex.sty -Pdoc.publisher.show=0 -Platex.output.revhistory=0 -Pdoc.layout=\"mainmatter\"" index.txt
 	mv -f index.pdf resume.pdf
+	rm -f asciidoc-dblatex.sty
