@@ -5,6 +5,43 @@
         <description></description>
         <link>http://vmiklos.hu/blog/</link>
         <item>
+            <title>DOC support in mso-dumper</title>
+            <description>&lt;div class="paragraph"&gt;&lt;p&gt;&lt;a href="http://cgit.freedesktop.org/libreoffice/contrib/mso-dumper/"&gt;mso-dumper&lt;/a&gt; is a
+project that creates some&amp;#8201;&amp;#8212;&amp;#8201;more or less human-readable&amp;#8201;&amp;#8212;&amp;#8201;dump from binary
+files. Initially Kohei Yoshida developed it to dump XLS, then Thorsten Behrens
+added support for PPT files, finally during last November I started to add DOC
+support.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;You may ask: why that is useful? My answer is that I spend quite some time on
+the import/export filters of LibreOffice Writer, and to be able to improve or
+fix such filters, some knowledge of the file format in question and Writer
+internals is needed. Regarding the file format knowledge, I find it much easier
+to read the specification once and implement some simple dumper based on that&amp;#8201;&amp;#8212;&amp;#8201;than reading the specification again and again, and just trying to
+understand what&amp;#8217;s going on inside a binary file using a hex editor.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;To my knowledge, such a dumper for the DOC format (in particular the WW8
+version of it) did not exist previously.
+&lt;a href="http://gitorious.org/ww8dumper"&gt;WW8Dumper&lt;/a&gt; was the closest match, but that was
+far from complete and I found extending mso-dumper easier.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;To stress-test the parser, I used
+&lt;a href="http://cgit.freedesktop.org/libreoffice/core/tree/bin/get-bugzilla-attachments-by-mimetype"&gt;get-bugzilla-attachments-by-mimetype&lt;/a&gt;
+to get all DOC attachements from the Freedesktop bugzilla, and during the last
+days I fixed the remaining crashes (actually this is why I write this post now
+;-) ). If you want to try it out you can do so by:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="listingblock"&gt;
+&lt;div class="content"&gt;
+&lt;pre&gt;&lt;code&gt;git clone git://anongit.freedesktop.org/libreoffice/contrib/mso-dumper
+cd mso-dumper
+./doc-dump.py /path/to/doc/file.doc&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The idea is that on any input the dumper should not crash: instead either it
+should give you usable result, or in case some unhandled structure is reached,
+it should print a &lt;code&gt;&amp;lt;todo&amp;gt;&lt;/code&gt; XML tag. Other than that, of course patches welcome&amp;#8201;&amp;#8212;&amp;#8201;that said, Maxime de Roucy already contributed a patch to the DOC part of
+mso-dumper, thanks! :-)&lt;/p&gt;&lt;/div&gt;
+</description>
+            <link>http://vmiklos.hu/blog/mso-dumper.html</link>
+            <pubDate>Sun, 26 May 2013 18:01:38 +0200</pubDate>
+            <guid isPermaLink="false">http://vmiklos.hu/blog/mso-dumper.html</guid>
+        </item>
+        <item>
             <title>Hackweek 9</title>
             <description>&lt;div class="imageblock" style="text-align:center;"&gt;
 &lt;div class="content"&gt;
@@ -549,42 +586,6 @@ BitlBee: &lt;a href="http://code.bitlbee.org/lh/bitlbee/revision/960"&gt;skype: 
             <link>http://vmiklos.hu/blog/recent-contributions-2012.html</link>
             <pubDate>Sun, 30 Dec 2012 13:56:54 +0100</pubDate>
             <guid isPermaLink="false">http://vmiklos.hu/blog/recent-contributions-2012.html</guid>
-        </item>
-        <item>
-            <title>Zero RTF Regressions?</title>
-            <description>&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;a class="image" href="https://lh4.googleusercontent.com/-VpSgFTUoC7o/UN26BTFBz_I/AAAAAAAAB9U/rFoWruRijss/s739/0regressions.png"&gt;
-&lt;img src="https://lh4.googleusercontent.com/-VpSgFTUoC7o/UN26BTFBz_I/AAAAAAAAB9U/rFoWruRijss/s400/0regressions.png" alt="https://lh4.googleusercontent.com/-VpSgFTUoC7o/UN26BTFBz_I/AAAAAAAAB9U/rFoWruRijss/s400/0regressions.png" /&gt;
-&lt;/a&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;I think the first attempt to track LibreOffice RTF Writer regressions (bugs not
-presenting in some earlier versions) was in
-&lt;a href="http://article.gmane.org/gmane.comp.documentfoundation.libreoffice.devel/27680"&gt;this&lt;/a&gt;
-mail. That started with 14 bugs, and of course while I fixed a few, new ones
-were added as well. I guess this is mostly due to testing work, since new fixes
-are usually covered by unit tests, so re-introducing the same problems
-nowadays is a bit more work.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;I remember I was down to one regression a few months ago, but we still had
-performance problems, which
-&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=a48e2fd9049797110b3b2505c363557284987ca8"&gt;got
-solved&lt;/a&gt; a few weeks ago, so I had the idea that I want to go down to zero
-during the holidays. It seems today I finally managed to do so&amp;#8201;&amp;#8212;&amp;#8201;bugs tagged
-as &lt;tt&gt;rtf_filter&lt;/tt&gt; and &lt;tt&gt;regression&lt;/tt&gt; are gone, thanks everyone who helped! :-)&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;For the reference here are the queries:
-&lt;a href="https://bugs.freedesktop.org/buglist.cgi?keywords=regression&amp;amp;keywords_type=allwords&amp;amp;status_whiteboard_type=allwordssubstr&amp;amp;query_format=advanced&amp;amp;status_whiteboard=rtf_filter&amp;amp;bug_status=NEW&amp;amp;bug_status=ASSIGNED&amp;amp;bug_status=REOPENED&amp;amp;bug_status=UNCONFIRMED&amp;amp;bug_status=NEEDINFO"&gt;RTF
-regressions&lt;/a&gt;,
-&lt;a href="https://bugs.freedesktop.org/buglist.cgi?keywords=regression&amp;amp;keywords_type=allwords&amp;amp;status_whiteboard_type=allwordssubstr&amp;amp;query_format=advanced&amp;amp;status_whiteboard=rtf_filter&amp;amp;bug_status=RESOLVED&amp;amp;list_id=196270"&gt;fixed
-RTF regressions&lt;/a&gt;,
-&lt;a href="https://bugs.freedesktop.org/buglist.cgi?cmdtype=dorem&amp;amp;remaction=run&amp;amp;namedcmd=Writer%20regressions&amp;amp;sharer_id=14344"&gt;Writer
-regressions&lt;/a&gt;.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Now that the list is empty, feel free to tag more bugs as &lt;tt&gt;rtf_filter&lt;/tt&gt; from the
-long Writer list when needed.&lt;/p&gt;&lt;/div&gt;
-</description>
-            <link>http://vmiklos.hu/blog/lo-zero-rtf-regressions.html</link>
-            <pubDate>Fri, 28 Dec 2012 16:36:33 +0100</pubDate>
-            <guid isPermaLink="false">http://vmiklos.hu/blog/lo-zero-rtf-regressions.html</guid>
         </item>
     </channel>
 </rss>
