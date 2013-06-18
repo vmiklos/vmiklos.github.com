@@ -1,0 +1,62 @@
+pubdate: 2013-06-18T11:44:53Z
+title: LibreOffice Hamburg Hackfest 2013
+author: Miklos
+tags: en, libreoffice
+<<<
+image::https://lh6.googleusercontent.com/-VWFdyXddsj4/UcAmItG7LdI/AAAAAAAAC0M/aduHC_-oanA/s400/HHHackfest2013.png[align="center",link="https://lh6.googleusercontent.com/-VWFdyXddsj4/UcAmItG7LdI/AAAAAAAAC0M/aduHC_-oanA/s714/HHHackfest2013.png"]
+
+This year, LibreOffice's Hamburg hackfest happened last weekend, with more than
+20 attendees. Thanks to the
+https://wiki.documentfoundation.org/Hackfest/Hamburg2013#Sponsors[sponsors], we
+had free drink and food during the whole hackfest. ;-)
+
+My original plan was to add support for tables inside text frames
+in Writer, when importing from RTF. At the end I managed to do that, though not
+the way I originally wanted to implement that feature. :-)
+
+Here is how this looked with the RTF importer we inherited from OpenOffice.org (LO 3.4),
+and then with the new RTF import filter (LO 3.6):
+
+++++
+<div align="center">
+++++
+image:$$https://lh6.googleusercontent.com/-8ltBBFaWW8E/UcAmQvIrchI/AAAAAAAAC0c/B6-aazoJpm0/s400/rtf-textframe-table-lo34.png$$[align="center",link="$$https://lh6.googleusercontent.com/-8ltBBFaWW8E/UcAmQvIrchI/AAAAAAAAC0c/B6-aazoJpm0/s514/rtf-textframe-table-lo34.png$$"]
+image:$$https://lh5.googleusercontent.com/-wcelxQuT94k/UcAmQ2uBEHI/AAAAAAAAC0o/wOgnKwhFGJI/s400/rtf-textframe-table-lo36.png$$[align="center",link="$$https://lh5.googleusercontent.com/-wcelxQuT94k/UcAmQ2uBEHI/AAAAAAAAC0o/wOgnKwhFGJI/s659/rtf-textframe-table-lo36.png$$"]
+++++
+</div>
+++++
+
+Here is how this looks like in latest master, and how it should look like:
+
+++++
+<div align="center">
+++++
+image:$$https://lh4.googleusercontent.com/-NpZdA5p2ZVI/UcAmQ1cIC8I/AAAAAAAAC0k/fvKJRMvlRFI/s400/rtf-textframe-table-lo42.png$$[align="center",link="$$https://lh4.googleusercontent.com/-NpZdA5p2ZVI/UcAmQ1cIC8I/AAAAAAAAC0k/fvKJRMvlRFI/s900/rtf-textframe-table-lo42.png$$"]
+image:$$https://lh6.googleusercontent.com/-5s9O3RJD0MI/UcAmRfFQBMI/AAAAAAAAC0s/uS47fqc-QZU/s400/rtf-textframe-table-word2007.png$$[align="center",link="$$https://lh6.googleusercontent.com/-5s9O3RJD0MI/UcAmRfFQBMI/AAAAAAAAC0s/uS47fqc-QZU/s687/rtf-textframe-table-word2007.png$$"]
+++++
+</div>
+++++
+
+Other than that, there were a few other topics I hacked on:
+
+- various additional fixes for
+  https://bugs.freedesktop.org/show_bug.cgi?id=58819[fdo#58819], so watermark
+  is exported (with correct size, position, rotation, opacity, etc.), and
+  reasonably imported
+- the last character of the git hash is no longer missing from the about dialog
+  (http://cgit.freedesktop.org/libreoffice/core/commit/?id=216fe5cf3c41713fa2a11731e4c3d514236b2480[commit])
+- number of leaking files when running the writer filter tests is now down to 2
+  from 527
+  (http://cgit.freedesktop.org/libreoffice/core/commit/?id=c03a1e46460e4255d7709df9ba8147947f66acfb[commit])
+- RTF import of text frame's AutoSize property
+  (http://cgit.freedesktop.org/libreoffice/core/commit/?id=aa0f3ca1cd285e8ffbc10de5510d447a72de980a[commit])
+- File -> Properties -> Security -> Record Changes is now imported and exported
+  in the RTF filter
+  (http://cgit.freedesktop.org/libreoffice/core/commit/?id=ae85b56a9a18657a57fd5033faff34e7ee4ff2f8[commit])
+- finally added UI for fine dashing -- so not only existing documents are
+  rendered correctly, but you can create such documents as well
+  (http://cgit.freedesktop.org/libreoffice/core/commit/?id=4c3d2dcdadbcb8f2ffc2caab07d50a286341df96[commit])
+
+You can see some photos https://picasaweb.google.com/104737754628780823336/20130617_Hamburg[here].
+
+Last, but not at least, thank you Eike and Bjoern for organizing this event! :-)
