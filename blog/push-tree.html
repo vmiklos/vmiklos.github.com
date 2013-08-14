@@ -4,13 +4,13 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <meta name="generator" content="AsciiDoc 8.5.3" />
-<meta name="description" content="What is Miklos hacking - Tags: git - Miklos' blog" />
+<meta name="description" content="Using a git push tree - Miklos' blog" />
 <meta name="keywords" content="vmiklos, libereoffice, swig, git, python, hacking, bitlbee" />
 <link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="http://vmiklos.hu/blog/index.rss" />
 <link rel="stylesheet" href="/blog/xhtml11.css" type="text/css" />
 <link rel="stylesheet" href="/blog/xhtml11-quirks.css" type="text/css" />
 <link rel="stylesheet" href="/blog/layout.css" type="text/css" />
-<title>What is Miklos hacking - Tags: git</title>
+<title>Using a git push tree</title>
 <!-- google analytics start -->
 <script type="text/javascript">
 
@@ -40,24 +40,27 @@
   <div>&#187;<a href="/blog/">Rejourn root</a></div>
 </div>
 
-
 </div>
 <div id="layout-content-box">
 <div id="layout-content">
 <div id="header">
-	<h1>What is Miklos hacking - Tags: git</h1>
+	<h1>Using a git push tree</h1>
 </div>
 <div id="preamble">
 <div class="sectionbody">
 
+<!-- Single entry -->
+<div class="verseblock">
+<div class="verseblock-content">Posted <span class="timeago" title="2013-08-14T10:14:28Z">Wednesday, 14 August 2013</span> by Miklos<br />
+    Tags:
+    <a href="tags/en.html">en</a>
+    <a href="tags/git.html">git</a>
+    <a href="tags/libreoffice.html">libreoffice</a>
+</div>
+</div>
 
-
-
-<!-- Listing -->
-<div class="ulist"><ul>
-<li><p>Wednesday, 14 August 2013<br /><a href="/blog/push-tree.html">Using a git push tree</a>
-(<a href="/blog/push-tree.html#disqus_thread">Comments</a>)
-</p><p><div class="paragraph"><p>I just checked, I created my git <em>push tree</em> more than a year ago, but
+<!-- Body -->
+<div class="paragraph"><p>I just checked, I created my git <em>push tree</em> more than a year ago, but
 yesterday I was reminded that this technique isn&#8217;t really documented anywhere,
 so let me describe it.</p></div>
 <div class="paragraph"><p>Some background: for the LibreOffice codebase, we decided to do all
@@ -134,78 +137,20 @@ An other non-technical but social reason to still update your <code>master</code
 <div class="paragraph"><p>Other than these, I can just recommend using a push tree, it helped me many
 times not to loose focus in the middle of the day. (And as we all know, pushing
 all your risky changes on Friday afternoon is also a bad idea. :-) )</p></div>
-</p><hr/></li>
-<li><p>Thursday, 07 June 2012<br /><a href="/blog/git-notes-merge.html">Merging git notes</a>
-(<a href="/blog/git-notes-merge.html#disqus_thread">Comments</a>)
-</p><p><div class="paragraph"><p>The <tt>git notes</tt> command is really about local annotation of commits&#8201;&#8212;&#8201;nothing
-to share. If you decide to still do so, for example the
-<a href="http://git-scm.com/2010/08/25/notes.html">git-scm.com</a> HOWTO can show you how to
-pull and push them. But what about merging?  There is no UI for that, but&#8201;&#8212;&#8201;given that with git, everything is possible&#8201;&#8212;&#8201;you can still do so manually.</p></div>
-<div class="paragraph"><p>So the problem comes when Alice fetches notes, Bob does so, Alice pushes her
-notes back, Bob annotates a different commit and when Bob wants to push, he
-gets <tt>rejected, non-fast-forward</tt>. Normally you would merge or rebase in this
-situation, but given that <tt>git notes</tt> by default updates the
-<tt>refs/notes/commits</tt> ref and you typically have a different branch checked out,
-you can&#8217;t use <tt>git merge</tt> or <tt>git rebase</tt> directly.</p></div>
-<div class="paragraph"><p>What works is:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><tt>git checkout refs/notes/commits
-git fetch origin refs/notes/commits
-git merge FETCH_HEAD
-git update-ref refs/notes/commits HEAD
-git checkout master</tt></pre>
-</div></div>
-<div class="colist arabic"><ol>
-<li>
-<p>
-Check out the notes, so if you have conflicts, you can resolve them.
-</p>
-</li>
-<li>
-<p>
-Fetch remote notes to FETCH_HEAD.
-</p>
-</li>
-<li>
-<p>
-Do the merge.
-</p>
-</li>
-<li>
-<p>
-Necessary, as <tt>git merge</tt> won&#8217;t update the ref automatically, since we&#8217;re not on a branch.
-</p>
-</li>
-<li>
-<p>
-Or whereever you were before.
-</p>
-</li>
-</ol></div>
-<div class="paragraph"><p>And now you can push your notes, as detailed in the above referred blog post.
-Yes, rebasing would be possible as well, that&#8217;s left as an exercise for the
-reader. ;-)</p></div>
-</p><hr/></li>
-<li><p>Wednesday, 01 December 2010<br /><a href="/blog/jgit-ea.html">JGit eloadas</a>
-(<a href="/blog/jgit-ea.html#disqus_thread">Comments</a>)
-</p><p><div class="paragraph"><p>Holnap lesz 5 hete, hogy eloadtam JGit / EGit / Gerrit temaban a BME-n,
-<a href="https://www.vik.bme.hu/kepzes/targyak/VIIIAV51">e targy</a> kereteben. Az
-elaodas eleje gyakorlatilag copy&amp;paste a korabbi Git eloadasombol, de
-mivel a targy kifejezetten Javaval foglalkozik, igy az elobb emlitett
-harom temat is feloleli. A slide-ok megtalalhatoak a
-<a href="http://vmiklos.hu/odp/">szokasos helyen</a>.</p></div>
-</p><hr/></li>
-</ul></div>
-<a href="/blog/archive.html">more &raquo;</a>
-<script type="text/javascript">
-var disqus_shortname = 'vmiklos';
-(function () {
- var s = document.createElement('script'); s.async = true;
- s.src = 'http://disqus.com/forums/vmiklos/count.js';
- (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
-}());
+
+
+<script src="https://apis.google.com/js/plusone.js"></script>
+<g:plus action="share"></g:plus>
+
+<!-- Disqus comments -->
+<h1 id="comment-header">Comments</h1>
+<div id="disqus_thread"></div>
+<script type="text/javascript" src="http://vmiklos.disqus.com/embed.js">
+	var disqus_developer = 1;
 </script>
+<noscript>
+  <p><a href="http://disqus.com/?ref_noscript=vmiklos">View the discussion thread.</a></p>
+</noscript>
 
 </div>
 </div>

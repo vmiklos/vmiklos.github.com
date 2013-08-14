@@ -5,6 +5,90 @@
         <description></description>
         <link>http://vmiklos.hu/blog/</link>
         <item>
+            <title>Using a git push tree</title>
+            <description>&lt;div class="paragraph"&gt;&lt;p&gt;I just checked, I created my git &lt;em&gt;push tree&lt;/em&gt; more than a year ago, but
+yesterday I was reminded that this technique isn&amp;#8217;t really documented anywhere,
+so let me describe it.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Some background: for the LibreOffice codebase, we decided to do all
+micro-features directly on the &lt;code&gt;master&lt;/code&gt; branch. This means that we typically
+rebase our local &lt;code&gt;master&lt;/code&gt; branch against &lt;code&gt;origin/master&lt;/code&gt;, then push it. The
+benefit of this is that code gets wider testing quickly and the commit history
+is not polluted with meaningless merge commits.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The problem: one drawback of the above situation is that after you pull, some
+changes of other developers in the lower layers may trigger a full rebuild,
+typically wasting about an hour of your life (or more, in case of slower
+machines).&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Push tree is one hack to avoid this problem. Using a push tree, you have two
+separate repositories locally, you update your main one less regularly, and
+when you have a commit to push, you push it from the push tree to be able to
+avoid pulling in your main tree.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Here is how to do it. To set this up:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="listingblock"&gt;
+&lt;div class="content"&gt;
+&lt;pre&gt;&lt;code&gt;git clone --referece /path/to/master ssh://logerrit/core master-push&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Then to use it, instead of &lt;code&gt;git pull -r &amp;amp;&amp;amp; git push&lt;/code&gt; in your &lt;code&gt;master&lt;/code&gt; tree, do these:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="listingblock"&gt;
+&lt;div class="content"&gt;
+&lt;pre&gt;&lt;code&gt;cd /path/to/master
+git show -s &lt;b&gt;&amp;lt;1&amp;gt;&lt;/b&gt;
+cd /path/to/master-push
+git pull -r
+git cherry-pick $sha1 &lt;b&gt;&amp;lt;2&amp;gt;&lt;/b&gt;
+git push&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;&lt;/div&gt;
+&lt;div class="colist arabic"&gt;&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;
+copy the sha1 hash from the output
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+replace $sha1 with the sha1 hash you got in the previous step
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;(There is a trick here, given that master-push already references the original
+tree, you can go ahead with cherry-pick directly, without fetching branches
+from your &lt;code&gt;master&lt;/code&gt; tree.)&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;And that&amp;#8217;s it, you were able to push without waiting for a long rebuild!&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Note: of course this technique has some drawbacks as well, so use with care.
+Keep in mind the followings:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+If your local &lt;code&gt;master&lt;/code&gt; is not up-to-date enough, you&amp;#8217;ll get conflicts while
+  cherry-picking. I usually update my &lt;code&gt;master&lt;/code&gt; tree once a day in the morning.
+  If you have a slower machine, do it once a week in the night, or so.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+Even if you don&amp;#8217;t get conflicts, there can be cases when the result of the
+  cherry-pick in the push tree won&amp;#8217;t be what you want. Chances that this
+  happens is pretty low if your &lt;code&gt;master&lt;/code&gt; tree is not super-old, see the previous
+  note.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+An other non-technical but social reason to still update your &lt;code&gt;master&lt;/code&gt; tree
+  regularly is that if everyone uses an infrequently updated &lt;code&gt;master&lt;/code&gt; tree,
+  then nobody will fix breakages caused by others on &lt;code&gt;origin/master&lt;/code&gt;. So updating
+  your real tree infrequently is a bit unfair to other developers.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Other than these, I can just recommend using a push tree, it helped me many
+times not to loose focus in the middle of the day. (And as we all know, pushing
+all your risky changes on Friday afternoon is also a bad idea. :-) )&lt;/p&gt;&lt;/div&gt;
+</description>
+            <link>http://vmiklos.hu/blog/push-tree.html</link>
+            <pubDate>Wed, 14 Aug 2013 10:14:28 +0200</pubDate>
+            <guid isPermaLink="false">http://vmiklos.hu/blog/push-tree.html</guid>
+        </item>
+        <item>
             <title>Iskola a határon</title>
             <description>&lt;div class="imageblock" style="text-align:center;"&gt;
 &lt;div class="content"&gt;
@@ -409,130 +493,6 @@ year speakers got a free t-shirt and lunch, thanks for the organizers! :)&lt;/p&
             <link>http://vmiklos.hu/blog/szszk-2013.html</link>
             <pubDate>Sun, 09 Jun 2013 12:31:35 +0200</pubDate>
             <guid isPermaLink="false">http://vmiklos.hu/blog/szszk-2013.html</guid>
-        </item>
-        <item>
-            <title>Balaton Maraton 2013</title>
-            <description>&lt;div class="paragraph"&gt;&lt;p&gt;Idén is volt Balaton Maraton (a tizenhatodik, nekem a negyedik), sikerült idén
-is teljesíteni a szintidőt, sőt&amp;#8230;  de ne szaladjunk ennyire előre.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_felkészülés"&gt;Felkészülés&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Idén igyekeztem a korábbi évek gyakorlatával ellentétben egy kicsit
-tudatosabban készülni. Így került sor a következő túrákra:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-április 7: Pilis, 126 km (&lt;a href="http://vmiklos.hu/blog/fehervasarnap.html"&gt;erről már írtam&lt;/a&gt;)
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-április 14: &lt;a href="http://vmiklos.hu/blog/godollo-30.html"&gt;Gödöllő K30&lt;/a&gt;, 102 km
-  (&lt;a href="https://maps.google.com/maps?q=http://vmiklos.hu/gps/2013-04-14.kml"&gt;GPS
-  track&lt;/a&gt;, a kmóra ezeket mérte: idő 4h27m11s, átlag 22.8 km/h, max 45.7 km/h)
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-április 27: &lt;a href="http://vmiklos.hu/blog/visegrad.html"&gt;Dunakanyar&lt;/a&gt;, 125 km
-  (&lt;a href="https://maps.google.com/maps?q=http://vmiklos.hu/gps/2013-04-27.kml"&gt;GPS
-  track&lt;/a&gt;, a kmóra ezeket mérte: idő 5h33m29s, átlag 22.4 km/h, max 37.0 km/h)
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-május 4: Ráckeve, 105 km
-  (&lt;a href="https://maps.google.com/maps?q=http://vmiklos.hu/gps/2013-05-04.kml"&gt;GPS
-track&lt;/a&gt;, a kmóra ezeket mérte: idő 4h31m31s, átlag 23.1 km/h, max 31.8 km/h)
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-május 27: &lt;a href="http://vmiklos.hu/blog/godollo-170.html"&gt;Gödöllő K100&lt;/a&gt;, 168 km
-  (&lt;a href="https://maps.google.com/maps?q=http://vmiklos.hu/gps/2013-05-25.kml"&gt;GPS
-  track&lt;/a&gt;, a kmóra ezeket mérte: idő 7h35m3s, átlag 22.0 km/h, max 51.4 km/h)
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Ez utóbbi 4 túra valahogy majdnem mindig az utolsó pillanatban dőlt el, így
-végül egyedül mentem. A K30/K100 útvonalakon szoktak szervezett versenyt is
-csapni, korábban így jártam ezeken a helyeken, de most nem akartam
-alkalmazkodni az általuk kitalált időpontokhoz. Sőt, a K100 útvonalán jól
-látható, hogy Vácduka és Rád között van egy gyalog (meg persze MTB-vel :-) )
-járható út, amit ki is használtam, egy felesleges kerülőt így megspórolva.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Lényeg a lényeg, abban a reményben indultam el az idei maratonra, hogy
-reméltem, sikerül javítani a korábbi időkön.&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_a_maraton"&gt;A maraton&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Innentől felpörögtek az események: szokás szerint a rajtnál a depóból nem
-indulhattunk el pontban 9:00-kor, mivel akkor még csak a verseny indul.
-Valahogy így festett:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;a class="image" href="https://lh3.googleusercontent.com/-DDoU9LpoyBg/UapBaIw0CEI/AAAAAAAACx4/DBz665H7_Gs/s2560/IMG_20130601_091219.jpg"&gt;
-&lt;img src="https://lh3.googleusercontent.com/-DDoU9LpoyBg/UapBaIw0CEI/AAAAAAAACx4/DBz665H7_Gs/s400/IMG_20130601_091219.jpg" alt="https://lh3.googleusercontent.com/-DDoU9LpoyBg/UapBaIw0CEI/AAAAAAAACx4/DBz665H7_Gs/s400/IMG_20130601_091219.jpg" /&gt;
-&lt;/a&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Aztán 9:15-kor lassan elindult a maraton eleje is, az a rész ahol én álltam a
-kmóra szerint 9:22-kor. Mint mindig, most is lassú rajt kellett volna legyen
-Zamárdiig (tilos előzni), de azért ezt nem sokan tartották be. Ugyanezen a
-szakaszon szoktak jönni a sajtófotósok és végigvillantanak sok-sok embert; LGee
-ki is keresett engem:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;a class="image" href="http://www.velo.hu/kepek/galeria/1046/xvi_balaton_maraton_tour_de_pelso_2013__78_.jpg"&gt;
-&lt;img src="https://lh5.googleusercontent.com/-thkcz7RN0Rw/UazIC-zN35I/AAAAAAAACy0/LKJjZlkmj9Y/s400/xvi_balaton_maraton_tour_de_pelso_2013__78_.jpg" alt="https://lh5.googleusercontent.com/-thkcz7RN0Rw/UazIC-zN35I/AAAAAAAACy0/LKJjZlkmj9Y/s400/xvi_balaton_maraton_tour_de_pelso_2013__78_.jpg" /&gt;
-&lt;/a&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Idén 5 frissítőpont volt:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-Fonyód
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-Keszthely
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-Badacsony
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-Balatonfüred
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-Balatonalmádi
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Nagyjából Balatonfürednél (160. km környéke) kezdett el jobban esni az eső, és ennek
-hatására konzekvensen le is állt a kmóra. ;-) Aztán már újra a hetesen
-karikázva a cél előtt kb. 8 km-rel újra bekapcsolt. Így a következőket mérte:
-idő 6h24m42s, táv 168 km, átlag 26.1 km/h, max 49.8 km/h.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Szervezett versenyről lévén szó, a tényleges táv változatlanul 209 km volt, és
-a célba 18h előtt sikerült beérni, ami azt jelenti, hogy sikerült megjárni az
-egészet 8h29m alatt! :-) Összehasonlításképpen, a korábbi években az idők így
-alakultak: 2012-ben 9h45m, 2011-ben 9h51m, 2010 9h29m.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Hivatalos eredmények
-&lt;a href="http://balaton-team.com/images/2013_eredmenyek/maraton13_1.xls"&gt;erre&lt;/a&gt;.&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-</description>
-            <link>http://vmiklos.hu/blog/balaton-maraton-2013.html</link>
-            <pubDate>Mon, 03 Jun 2013 19:03:29 +0200</pubDate>
-            <guid isPermaLink="false">http://vmiklos.hu/blog/balaton-maraton-2013.html</guid>
         </item>
     </channel>
 </rss>
