@@ -1,4 +1,4 @@
-all: index.html index.hu.html resume.pdf
+all: index.html index.hu.html resume.pdf resume.hu.pdf
 
 index.html: index.txt Makefile
 	asciidoc index.txt
