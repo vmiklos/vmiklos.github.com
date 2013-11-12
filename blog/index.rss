@@ -5,6 +5,31 @@
         <description></description>
         <link>http://vmiklos.hu/blog/</link>
         <item>
+            <title>LibreOffice Writer can now write .dot files</title>
+            <description>&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;a class="image" href="https://lh6.googleusercontent.com/-MFCwDOTVK1o/UoHtE8V1k8I/AAAAAAAADuU/dKjop88lNxo/s2000/dotexport.png"&gt;
+&lt;img src="https://lh6.googleusercontent.com/-MFCwDOTVK1o/UoHtE8V1k8I/AAAAAAAADuU/dKjop88lNxo/s400/dotexport.png" alt="https://lh6.googleusercontent.com/-MFCwDOTVK1o/UoHtE8V1k8I/AAAAAAAADuU/dKjop88lNxo/s400/dotexport.png" /&gt;
+&lt;/a&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;It was pointed out that LibreOffice Writer is only able to open, not save
+&lt;code&gt;.dot&lt;/code&gt; (Word binary template) files. From mso-dumper experience, I knew that
+the difference is quite small between &lt;code&gt;.doc&lt;/code&gt; (which we already export) and
+&lt;code&gt;.dot&lt;/code&gt; files. The feature freeze for LibreOffice 4.2 is here next week, so why
+not adding this feature before that deadline? You can see above the result. :-)&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;For the ones who love our &lt;code&gt;--convert-to&lt;/code&gt; commandline switch, an extra fix was
+necessary to make &lt;code&gt;--conver-to dot&lt;/code&gt; work as well, both commits are now in
+master. You can try it out yourself using a
+&lt;a href="http://dev-builds.libreoffice.org/daily/"&gt;daily build&lt;/a&gt; or just wait for the
+&lt;code&gt;libreoffice-4-2&lt;/code&gt; branchoff and the first beta from that branch.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Happy templating! ;-)&lt;/p&gt;&lt;/div&gt;
+</description>
+            <link>http://vmiklos.hu/blog/lo-dotexport.html</link>
+            <pubDate>Tue, 12 Nov 2013 10:03:56 +0100</pubDate>
+            <guid isPermaLink="false">http://vmiklos.hu/blog/lo-dotexport.html</guid>
+        </item>
+        <item>
             <title>Hat keréken Jeruzsálembe</title>
             <description>&lt;div class="imageblock" style="text-align:center;"&gt;
 &lt;div class="content"&gt;
@@ -337,90 +362,6 @@ ellátogattunk pl. a Jásd mellett található Szűz Mária Kápolnához is, stb
             <link>http://vmiklos.hu/blog/tes.html</link>
             <pubDate>Tue, 27 Aug 2013 21:56:15 +0200</pubDate>
             <guid isPermaLink="false">http://vmiklos.hu/blog/tes.html</guid>
-        </item>
-        <item>
-            <title>Using a git push tree</title>
-            <description>&lt;div class="paragraph"&gt;&lt;p&gt;I just checked, I created my git &lt;em&gt;push tree&lt;/em&gt; more than a year ago, but
-yesterday I was reminded that this technique isn&amp;#8217;t really documented anywhere,
-so let me describe it.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Some background: for the LibreOffice codebase, we decided to do all
-micro-features directly on the &lt;code&gt;master&lt;/code&gt; branch. This means that we typically
-rebase our local &lt;code&gt;master&lt;/code&gt; branch against &lt;code&gt;origin/master&lt;/code&gt;, then push it. The
-benefit of this is that code gets wider testing quickly and the commit history
-is not polluted with meaningless merge commits.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;The problem: one drawback of the above situation is that after you pull, some
-changes of other developers in the lower layers may trigger a full rebuild,
-typically wasting about an hour of your life (or more, in case of slower
-machines).&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Push tree is one hack to avoid this problem. Using a push tree, you have two
-separate repositories locally, you update your main one less regularly, and
-when you have a commit to push, you push it from the push tree to be able to
-avoid pulling in your main tree.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Here is how to do it. To set this up:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="listingblock"&gt;
-&lt;div class="content"&gt;
-&lt;pre&gt;&lt;code&gt;git clone --referece /path/to/master ssh://logerrit/core master-push&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Then to use it, instead of &lt;code&gt;git pull -r &amp;amp;&amp;amp; git push&lt;/code&gt; in your &lt;code&gt;master&lt;/code&gt; tree, do these:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="listingblock"&gt;
-&lt;div class="content"&gt;
-&lt;pre&gt;&lt;code&gt;cd /path/to/master
-git show -s &lt;b&gt;&amp;lt;1&amp;gt;&lt;/b&gt;
-cd /path/to/master-push
-git pull -r
-git cherry-pick $sha1 &lt;b&gt;&amp;lt;2&amp;gt;&lt;/b&gt;
-git push&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;&lt;/div&gt;
-&lt;div class="colist arabic"&gt;&lt;ol&gt;
-&lt;li&gt;
-&lt;p&gt;
-copy the sha1 hash from the output
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-replace $sha1 with the sha1 hash you got in the previous step
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ol&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;(There is a trick here, given that master-push already references the original
-tree, you can go ahead with cherry-pick directly, without fetching branches
-from your &lt;code&gt;master&lt;/code&gt; tree.)&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;And that&amp;#8217;s it, you were able to push without waiting for a long rebuild!&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Note: of course this technique has some drawbacks as well, so use with care.
-Keep in mind the followings:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-If your local &lt;code&gt;master&lt;/code&gt; is not up-to-date enough, you&amp;#8217;ll get conflicts while
-  cherry-picking. I usually update my &lt;code&gt;master&lt;/code&gt; tree once a day in the morning.
-  If you have a slower machine, do it once a week in the night, or so.
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-Even if you don&amp;#8217;t get conflicts, there can be cases when the result of the
-  cherry-pick in the push tree won&amp;#8217;t be what you want. Chances that this
-  happens is pretty low if your &lt;code&gt;master&lt;/code&gt; tree is not super-old, see the previous
-  note.
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-An other non-technical but social reason to still update your &lt;code&gt;master&lt;/code&gt; tree
-  regularly is that if everyone uses an infrequently updated &lt;code&gt;master&lt;/code&gt; tree,
-  then nobody will fix breakages caused by others on &lt;code&gt;origin/master&lt;/code&gt;. So updating
-  your real tree infrequently is a bit unfair to other developers.
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Other than these, I can just recommend using a push tree, it helped me many
-times not to loose focus in the middle of the day. (And as we all know, pushing
-all your risky changes on Friday afternoon is also a bad idea. :-) )&lt;/p&gt;&lt;/div&gt;
-</description>
-            <link>http://vmiklos.hu/blog/push-tree.html</link>
-            <pubDate>Wed, 14 Aug 2013 10:14:28 +0200</pubDate>
-            <guid isPermaLink="false">http://vmiklos.hu/blog/push-tree.html</guid>
         </item>
     </channel>
 </rss>
