@@ -1,0 +1,243 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.5.3" />
+<meta name="description" content="OOXML shape improvements in LibreOffice Writer 4.3 - Miklos' blog" />
+<meta name="keywords" content="vmiklos, libereoffice, swig, git, python, hacking, bitlbee" />
+<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="http://vmiklos.hu/blog/index.rss" />
+<link rel="stylesheet" href="/blog/xhtml11.css" type="text/css" />
+<link rel="stylesheet" href="/blog/xhtml11-quirks.css" type="text/css" />
+<link rel="stylesheet" href="/blog/layout.css" type="text/css" />
+<title>OOXML shape improvements in LibreOffice Writer 4.3</title>
+<!-- google analytics start -->
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-24726997-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<!-- google analytics end -->
+</head>
+<body>
+<div id="layout-banner-box">
+<div id="layout-banner">
+  <div id="layout-title">vmiklos.hu</div>
+  <div id="layout-description">shameless self-promoting website</div>
+</div>
+</div>
+<div id="layout-menu-box">
+<div id="layout-menu">
+  <div>&#187;<a href="/">Root</a></div>
+  <div>&#187;<a href="/blog/">Rejourn root</a></div>
+  <div>&#187;<a href="http://planet.documentfoundation.org/">LibreOffice Community Blogs</a></div>
+</div>
+
+</div>
+<div id="layout-content-box">
+<div id="layout-content">
+<div id="header">
+	<h1>OOXML shape improvements in LibreOffice Writer 4.3</h1>
+</div>
+<div id="preamble">
+<div class="sectionbody">
+
+<!-- Single entry -->
+<div class="verseblock">
+<div class="verseblock-content">Posted <span class="timeago" title="2014-01-11T16:51:26Z">Saturday, 11 January 2014</span> by Miklos<br />
+    Tags:
+    <a href="tags/en.html">en</a>
+    <a href="tags/libreoffice.html">libreoffice</a>
+</div>
+</div>
+
+<!-- Body -->
+<div class="paragraph"><p>Although LibreOffice 4.2.0 is
+<a href="https://wiki.documentfoundation.org/ReleasePlan/4.2">not yet released</a>, it was
+already branched off from <code>master</code> in November last year, and improvements for
+the next release are already cooking in <code>master</code>. One of these will be a major
+improvement of shape handling in the DOCX import/export filter.</p></div>
+<div class="paragraph"><p>Some background: when DOCX was initially introduced, it still used
+<a href="http://en.wikipedia.org/wiki/Vector_Markup_Language">VML</a> (which is in short
+an XML equivalent of the binary shape format), and only Word 2010 started to
+write shapes using
+<a href="http://en.wikipedia.org/wiki/Office_Open_XML_file_formats#DrawingML">drawingML</a>.
+Given that Word still understands VML, it wasn&#8217;t urgent for us to write shapes
+using the drawingML markup. As for import, Word still writes an approximate
+version of the shape in VML as a fallback&#8201;&#8212;&#8201;that&#8217;s what we read till now.
+Needless to say, newer drawingML features have no VML equivalent so with time
+it became more and more important for us to finally read and write shapes in
+DOCX using drawingML, which just happened in Writer.</p></div>
+<div class="paragraph"><p>I&#8217;m posting here a few screenshots showing the improvements I&#8217;ve implemented.
+Note that final 4.3 is still far from being released, so this is not a
+complete list. :-) In each case I&#8217;m providing a screenshot showing how it
+looked (at the end of an import/export/import again roundtrip) <em>before</em>, how
+it looks <em>now</em> in 4.3 and the <em>reference</em> layout. Click on the images to get a
+larger image:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+document with different colors
+  (<a href="http://people.freedesktop.org/~vmiklos/2014/docx-drawingml/color.docx">test doc</a>):
+</p>
+</li>
+</ul></div>
+<div align="center">
+<div class="paragraph"><p><span class="image">
+<a class="image" href="https://lh3.googleusercontent.com/-9mP2CfnGea4/UtFifqpPAII/AAAAAAAAD7k/5vJFQNHZOew/s500/color-lo42.png">
+<img src="https://lh3.googleusercontent.com/-9mP2CfnGea4/UtFifqpPAII/AAAAAAAAD7k/5vJFQNHZOew/s400/color-lo42.png" alt="https://lh3.googleusercontent.com/-9mP2CfnGea4/UtFifqpPAII/AAAAAAAAD7k/5vJFQNHZOew/s400/color-lo42.png" />
+</a>
+</span>
+<span class="image">
+<a class="image" href="https://lh4.googleusercontent.com/-zVLbX6nvZLY/UtFifqBENbI/AAAAAAAAD7c/r9PQuAd5g18/s500/color-lo43.png">
+<img src="https://lh4.googleusercontent.com/-zVLbX6nvZLY/UtFifqBENbI/AAAAAAAAD7c/r9PQuAd5g18/s400/color-lo43.png" alt="https://lh4.googleusercontent.com/-zVLbX6nvZLY/UtFifqBENbI/AAAAAAAAD7c/r9PQuAd5g18/s400/color-lo43.png" />
+</a>
+</span>
+<span class="image">
+<a class="image" href="https://lh6.googleusercontent.com/-OQdaaTTH0Aw/UtFifrL-jTI/AAAAAAAAD7U/inr0Zx0lHmo/s500/color-word2007.png">
+<img src="https://lh6.googleusercontent.com/-OQdaaTTH0Aw/UtFifrL-jTI/AAAAAAAAD7U/inr0Zx0lHmo/s400/color-word2007.png" alt="https://lh6.googleusercontent.com/-OQdaaTTH0Aw/UtFifrL-jTI/AAAAAAAAD7U/inr0Zx0lHmo/s400/color-word2007.png" />
+</a>
+</span>
+<span class="image">
+<a class="image" href="https://lh4.googleusercontent.com/-Yb2am1Vc65g/UtFigUF9fkI/AAAAAAAAD7w/nRZhF0iUYMA/s500/color-word2010.png">
+<img src="https://lh4.googleusercontent.com/-Yb2am1Vc65g/UtFigUF9fkI/AAAAAAAAD7w/nRZhF0iUYMA/s400/color-word2010.png" alt="https://lh4.googleusercontent.com/-Yb2am1Vc65g/UtFigUF9fkI/AAAAAAAAD7w/nRZhF0iUYMA/s400/color-word2010.png" />
+</a>
+</span></p></div>
+</div>
+<div class="paragraph"><p>OK, this has four pictures: before, now, Word 2007 and Word2010. As you can see now we&#8217;re now on par with Word 2010. ;-)</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+document with textboxes inside a group shape
+  (<a href="http://people.freedesktop.org/~vmiklos/2014/docx-drawingml/groupshape-textbox.docx">test doc</a>):
+</p>
+</li>
+</ul></div>
+<div align="center">
+<div class="paragraph"><p><span class="image">
+<a class="image" href="https://lh6.googleusercontent.com/-G4vltiHehvQ/UtFigLmY6fI/AAAAAAAAD8Q/I1iPtoh4hHE/s500/groupshape-textbox-lo42.png">
+<img src="https://lh6.googleusercontent.com/-G4vltiHehvQ/UtFigLmY6fI/AAAAAAAAD8Q/I1iPtoh4hHE/s400/groupshape-textbox-lo42.png" alt="https://lh6.googleusercontent.com/-G4vltiHehvQ/UtFigLmY6fI/AAAAAAAAD8Q/I1iPtoh4hHE/s400/groupshape-textbox-lo42.png" />
+</a>
+</span>
+<span class="image">
+<a class="image" href="https://lh6.googleusercontent.com/-wncA0mX92hA/UtFighZK4HI/AAAAAAAAD70/pwB6tGwyPbk/s500/groupshape-textbox-lo43.png">
+<img src="https://lh6.googleusercontent.com/-wncA0mX92hA/UtFighZK4HI/AAAAAAAAD70/pwB6tGwyPbk/s400/groupshape-textbox-lo43.png" alt="https://lh6.googleusercontent.com/-wncA0mX92hA/UtFighZK4HI/AAAAAAAAD70/pwB6tGwyPbk/s400/groupshape-textbox-lo43.png" />
+</a>
+</span>
+<span class="image">
+<a class="image" href="https://lh6.googleusercontent.com/-X3X_AXClLyw/UtFig15lsrI/AAAAAAAAD74/_YntDxB1pUk/s500/groupshape-textbox-word2010.png">
+<img src="https://lh6.googleusercontent.com/-X3X_AXClLyw/UtFig15lsrI/AAAAAAAAD74/_YntDxB1pUk/s400/groupshape-textbox-word2010.png" alt="https://lh6.googleusercontent.com/-X3X_AXClLyw/UtFig15lsrI/AAAAAAAAD74/_YntDxB1pUk/s400/groupshape-textbox-word2010.png" />
+</a>
+</span></p></div>
+</div>
+<div class="ulist"><ul>
+<li>
+<p>
+document with textbox, having a special
+  <a href="http://api.libreoffice.org/docs/idl/ref/namespacecom_1_1sun_1_1star_1_1text_1_1RelOrientation.html">RelOrientation</a>
+  (<a href="http://people.freedesktop.org/~vmiklos/2014/docx-drawingml/relorentation-textbox.docx">test doc</a>):
+</p>
+</li>
+</ul></div>
+<div align="center">
+<div class="paragraph"><p><span class="image">
+<a class="image" href="https://lh3.googleusercontent.com/-hpAhQ8Jd2R4/UtFihLad6RI/AAAAAAAAD8M/sgFpaLTRnAE/s800/relorientaton-textbox-lo42.png">
+<img src="https://lh3.googleusercontent.com/-hpAhQ8Jd2R4/UtFihLad6RI/AAAAAAAAD8M/sgFpaLTRnAE/s400/relorientaton-textbox-lo42.png" alt="https://lh3.googleusercontent.com/-hpAhQ8Jd2R4/UtFihLad6RI/AAAAAAAAD8M/sgFpaLTRnAE/s400/relorientaton-textbox-lo42.png" />
+</a>
+</span>
+<span class="image">
+<a class="image" href="https://lh6.googleusercontent.com/-1Ca-ZW3ugKg/UtFihSSXf0I/AAAAAAAAD8I/lQt2qu7XDQA/s800/relorientaton-textbox-lo43.png">
+<img src="https://lh6.googleusercontent.com/-1Ca-ZW3ugKg/UtFihSSXf0I/AAAAAAAAD8I/lQt2qu7XDQA/s400/relorientaton-textbox-lo43.png" alt="https://lh6.googleusercontent.com/-1Ca-ZW3ugKg/UtFihSSXf0I/AAAAAAAAD8I/lQt2qu7XDQA/s400/relorientaton-textbox-lo43.png" />
+</a>
+</span>
+<span class="image">
+<a class="image" href="https://lh6.googleusercontent.com/-LgNJNRlraq8/UtFikZ2L43I/AAAAAAAAD9I/VgOKGQt0o9M/s800/relorientaton-textbox-word2010.png">
+<img src="https://lh6.googleusercontent.com/-LgNJNRlraq8/UtFikZ2L43I/AAAAAAAAD9I/VgOKGQt0o9M/s400/relorientaton-textbox-word2010.png" alt="https://lh6.googleusercontent.com/-LgNJNRlraq8/UtFikZ2L43I/AAAAAAAAD9I/VgOKGQt0o9M/s400/relorientaton-textbox-word2010.png" />
+</a>
+</span></p></div>
+</div>
+<div class="ulist"><ul>
+<li>
+<p>
+document with a shape having a custom adjustment
+  (<a href="http://people.freedesktop.org/~vmiklos/2014/docx-drawingml/shape-adj.docx">test doc</a>):
+</p>
+</li>
+</ul></div>
+<div align="center">
+<div class="paragraph"><p><span class="image">
+<a class="image" href="https://lh3.googleusercontent.com/-VeqomDNiRDg/UtFiiM9h93I/AAAAAAAAD8k/5iGiGUEan4s/s500/shape-adj-lo42.png">
+<img src="https://lh3.googleusercontent.com/-VeqomDNiRDg/UtFiiM9h93I/AAAAAAAAD8k/5iGiGUEan4s/s400/shape-adj-lo42.png" alt="https://lh3.googleusercontent.com/-VeqomDNiRDg/UtFiiM9h93I/AAAAAAAAD8k/5iGiGUEan4s/s400/shape-adj-lo42.png" />
+</a>
+</span>
+<span class="image">
+<a class="image" href="https://lh6.googleusercontent.com/-Jd3N1X6jvcA/UtFiiTc_GWI/AAAAAAAAD8g/-ExLQkNqMfQ/s500/shape-adj-lo43.png">
+<img src="https://lh6.googleusercontent.com/-Jd3N1X6jvcA/UtFiiTc_GWI/AAAAAAAAD8g/-ExLQkNqMfQ/s400/shape-adj-lo43.png" alt="https://lh6.googleusercontent.com/-Jd3N1X6jvcA/UtFiiTc_GWI/AAAAAAAAD8g/-ExLQkNqMfQ/s400/shape-adj-lo43.png" />
+</a>
+</span>
+<span class="image">
+<a class="image" href="https://lh4.googleusercontent.com/-aLbCIiyql48/UtFii62b47I/AAAAAAAAD8o/W0EDNoQtCl0/s500/shape-adj-word2010.png">
+<img src="https://lh4.googleusercontent.com/-aLbCIiyql48/UtFii62b47I/AAAAAAAAD8o/W0EDNoQtCl0/s400/shape-adj-word2010.png" alt="https://lh4.googleusercontent.com/-aLbCIiyql48/UtFii62b47I/AAAAAAAAD8o/W0EDNoQtCl0/s400/shape-adj-word2010.png" />
+</a>
+</span></p></div>
+</div>
+<div class="ulist"><ul>
+<li>
+<p>
+document with different colors
+  (<a href="http://people.freedesktop.org/~vmiklos/2014/docx-drawingml/smiley.docx">test doc</a>):
+</p>
+</li>
+</ul></div>
+<div align="center">
+<div class="paragraph"><p><span class="image">
+<a class="image" href="https://lh6.googleusercontent.com/-HRRivr0f-a0/UtFijDe8cfI/AAAAAAAAD88/rnVTutXIE84/s500/smiley-lo42.png">
+<img src="https://lh6.googleusercontent.com/-HRRivr0f-a0/UtFijDe8cfI/AAAAAAAAD88/rnVTutXIE84/s400/smiley-lo42.png" alt="https://lh6.googleusercontent.com/-HRRivr0f-a0/UtFijDe8cfI/AAAAAAAAD88/rnVTutXIE84/s400/smiley-lo42.png" />
+</a>
+</span>
+<span class="image">
+<a class="image" href="https://lh5.googleusercontent.com/-mITRnHUfrqA/UtFijZriQeI/AAAAAAAAD84/92BbOA8DRfk/s500/smiley-lo43.png">
+<img src="https://lh5.googleusercontent.com/-mITRnHUfrqA/UtFijZriQeI/AAAAAAAAD84/92BbOA8DRfk/s400/smiley-lo43.png" alt="https://lh5.googleusercontent.com/-mITRnHUfrqA/UtFijZriQeI/AAAAAAAAD84/92BbOA8DRfk/s400/smiley-lo43.png" />
+</a>
+</span>
+<span class="image">
+<a class="image" href="https://lh6.googleusercontent.com/--_LhqgTxNM0/UtFij6NNYaI/AAAAAAAAD9A/5UFA4kEvBp0/s500/smiley-word2010.png">
+<img src="https://lh6.googleusercontent.com/--_LhqgTxNM0/UtFij6NNYaI/AAAAAAAAD9A/5UFA4kEvBp0/s400/smiley-word2010.png" alt="https://lh6.googleusercontent.com/--_LhqgTxNM0/UtFij6NNYaI/AAAAAAAAD9A/5UFA4kEvBp0/s400/smiley-word2010.png" />
+</a>
+</span></p></div>
+</div>
+<div class="paragraph"><p>If you want to try these out yourself, get a
+<a href="http://dev-builds.libreoffice.org/daily/">daily build</a> and play with it! If
+something goes wrong, report it to us in the
+<a href="https://www.libreoffice.org/get-help/bug/">Bugzilla</a>, so we can try fix it
+before 4.3 gets branched off. Last, but not at least, thanks for
+<a href="http://www.cloudon.com/">CloudOn</a> for funding these improvements! :-)</p></div>
+
+
+<script src="https://apis.google.com/js/plusone.js"></script>
+<g:plus action="share"></g:plus>
+
+<!-- Disqus comments -->
+<h1 id="comment-header">Comments</h1>
+<div id="disqus_thread"></div>
+<script type="text/javascript" src="http://vmiklos.disqus.com/embed.js">
+	var disqus_developer = 1;
+</script>
+<noscript>
+  <p><a href="http://disqus.com/?ref_noscript=vmiklos">View the discussion thread.</a></p>
+</noscript>
+
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

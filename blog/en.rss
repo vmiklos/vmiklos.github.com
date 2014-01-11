@@ -5,6 +5,173 @@
         <description></description>
         <link>http://vmiklos.hu/blog/</link>
         <item>
+            <title>OOXML shape improvements in LibreOffice Writer 4.3</title>
+            <description>&lt;div class="paragraph"&gt;&lt;p&gt;Although LibreOffice 4.2.0 is
+&lt;a href="https://wiki.documentfoundation.org/ReleasePlan/4.2"&gt;not yet released&lt;/a&gt;, it was
+already branched off from &lt;code&gt;master&lt;/code&gt; in November last year, and improvements for
+the next release are already cooking in &lt;code&gt;master&lt;/code&gt;. One of these will be a major
+improvement of shape handling in the DOCX import/export filter.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Some background: when DOCX was initially introduced, it still used
+&lt;a href="http://en.wikipedia.org/wiki/Vector_Markup_Language"&gt;VML&lt;/a&gt; (which is in short
+an XML equivalent of the binary shape format), and only Word 2010 started to
+write shapes using
+&lt;a href="http://en.wikipedia.org/wiki/Office_Open_XML_file_formats#DrawingML"&gt;drawingML&lt;/a&gt;.
+Given that Word still understands VML, it wasn&amp;#8217;t urgent for us to write shapes
+using the drawingML markup. As for import, Word still writes an approximate
+version of the shape in VML as a fallback&amp;#8201;&amp;#8212;&amp;#8201;that&amp;#8217;s what we read till now.
+Needless to say, newer drawingML features have no VML equivalent so with time
+it became more and more important for us to finally read and write shapes in
+DOCX using drawingML, which just happened in Writer.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;I&amp;#8217;m posting here a few screenshots showing the improvements I&amp;#8217;ve implemented.
+Note that final 4.3 is still far from being released, so this is not a
+complete list. :-) In each case I&amp;#8217;m providing a screenshot showing how it
+looked (at the end of an import/export/import again roundtrip) &lt;em&gt;before&lt;/em&gt;, how
+it looks &lt;em&gt;now&lt;/em&gt; in 4.3 and the &lt;em&gt;reference&lt;/em&gt; layout. Click on the images to get a
+larger image:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+document with different colors
+  (&lt;a href="http://people.freedesktop.org/~vmiklos/2014/docx-drawingml/color.docx"&gt;test doc&lt;/a&gt;):
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div align="center"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;&lt;span class="image"&gt;
+&lt;a class="image" href="https://lh3.googleusercontent.com/-9mP2CfnGea4/UtFifqpPAII/AAAAAAAAD7k/5vJFQNHZOew/s500/color-lo42.png"&gt;
+&lt;img src="https://lh3.googleusercontent.com/-9mP2CfnGea4/UtFifqpPAII/AAAAAAAAD7k/5vJFQNHZOew/s400/color-lo42.png" alt="https://lh3.googleusercontent.com/-9mP2CfnGea4/UtFifqpPAII/AAAAAAAAD7k/5vJFQNHZOew/s400/color-lo42.png" /&gt;
+&lt;/a&gt;
+&lt;/span&gt;
+&lt;span class="image"&gt;
+&lt;a class="image" href="https://lh4.googleusercontent.com/-zVLbX6nvZLY/UtFifqBENbI/AAAAAAAAD7c/r9PQuAd5g18/s500/color-lo43.png"&gt;
+&lt;img src="https://lh4.googleusercontent.com/-zVLbX6nvZLY/UtFifqBENbI/AAAAAAAAD7c/r9PQuAd5g18/s400/color-lo43.png" alt="https://lh4.googleusercontent.com/-zVLbX6nvZLY/UtFifqBENbI/AAAAAAAAD7c/r9PQuAd5g18/s400/color-lo43.png" /&gt;
+&lt;/a&gt;
+&lt;/span&gt;
+&lt;span class="image"&gt;
+&lt;a class="image" href="https://lh6.googleusercontent.com/-OQdaaTTH0Aw/UtFifrL-jTI/AAAAAAAAD7U/inr0Zx0lHmo/s500/color-word2007.png"&gt;
+&lt;img src="https://lh6.googleusercontent.com/-OQdaaTTH0Aw/UtFifrL-jTI/AAAAAAAAD7U/inr0Zx0lHmo/s400/color-word2007.png" alt="https://lh6.googleusercontent.com/-OQdaaTTH0Aw/UtFifrL-jTI/AAAAAAAAD7U/inr0Zx0lHmo/s400/color-word2007.png" /&gt;
+&lt;/a&gt;
+&lt;/span&gt;
+&lt;span class="image"&gt;
+&lt;a class="image" href="https://lh4.googleusercontent.com/-Yb2am1Vc65g/UtFigUF9fkI/AAAAAAAAD7w/nRZhF0iUYMA/s500/color-word2010.png"&gt;
+&lt;img src="https://lh4.googleusercontent.com/-Yb2am1Vc65g/UtFigUF9fkI/AAAAAAAAD7w/nRZhF0iUYMA/s400/color-word2010.png" alt="https://lh4.googleusercontent.com/-Yb2am1Vc65g/UtFigUF9fkI/AAAAAAAAD7w/nRZhF0iUYMA/s400/color-word2010.png" /&gt;
+&lt;/a&gt;
+&lt;/span&gt;&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;OK, this has four pictures: before, now, Word 2007 and Word2010. As you can see now we&amp;#8217;re now on par with Word 2010. ;-)&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+document with textboxes inside a group shape
+  (&lt;a href="http://people.freedesktop.org/~vmiklos/2014/docx-drawingml/groupshape-textbox.docx"&gt;test doc&lt;/a&gt;):
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div align="center"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;&lt;span class="image"&gt;
+&lt;a class="image" href="https://lh6.googleusercontent.com/-G4vltiHehvQ/UtFigLmY6fI/AAAAAAAAD8Q/I1iPtoh4hHE/s500/groupshape-textbox-lo42.png"&gt;
+&lt;img src="https://lh6.googleusercontent.com/-G4vltiHehvQ/UtFigLmY6fI/AAAAAAAAD8Q/I1iPtoh4hHE/s400/groupshape-textbox-lo42.png" alt="https://lh6.googleusercontent.com/-G4vltiHehvQ/UtFigLmY6fI/AAAAAAAAD8Q/I1iPtoh4hHE/s400/groupshape-textbox-lo42.png" /&gt;
+&lt;/a&gt;
+&lt;/span&gt;
+&lt;span class="image"&gt;
+&lt;a class="image" href="https://lh6.googleusercontent.com/-wncA0mX92hA/UtFighZK4HI/AAAAAAAAD70/pwB6tGwyPbk/s500/groupshape-textbox-lo43.png"&gt;
+&lt;img src="https://lh6.googleusercontent.com/-wncA0mX92hA/UtFighZK4HI/AAAAAAAAD70/pwB6tGwyPbk/s400/groupshape-textbox-lo43.png" alt="https://lh6.googleusercontent.com/-wncA0mX92hA/UtFighZK4HI/AAAAAAAAD70/pwB6tGwyPbk/s400/groupshape-textbox-lo43.png" /&gt;
+&lt;/a&gt;
+&lt;/span&gt;
+&lt;span class="image"&gt;
+&lt;a class="image" href="https://lh6.googleusercontent.com/-X3X_AXClLyw/UtFig15lsrI/AAAAAAAAD74/_YntDxB1pUk/s500/groupshape-textbox-word2010.png"&gt;
+&lt;img src="https://lh6.googleusercontent.com/-X3X_AXClLyw/UtFig15lsrI/AAAAAAAAD74/_YntDxB1pUk/s400/groupshape-textbox-word2010.png" alt="https://lh6.googleusercontent.com/-X3X_AXClLyw/UtFig15lsrI/AAAAAAAAD74/_YntDxB1pUk/s400/groupshape-textbox-word2010.png" /&gt;
+&lt;/a&gt;
+&lt;/span&gt;&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+document with textbox, having a special
+  &lt;a href="http://api.libreoffice.org/docs/idl/ref/namespacecom_1_1sun_1_1star_1_1text_1_1RelOrientation.html"&gt;RelOrientation&lt;/a&gt;
+  (&lt;a href="http://people.freedesktop.org/~vmiklos/2014/docx-drawingml/relorentation-textbox.docx"&gt;test doc&lt;/a&gt;):
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div align="center"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;&lt;span class="image"&gt;
+&lt;a class="image" href="https://lh3.googleusercontent.com/-hpAhQ8Jd2R4/UtFihLad6RI/AAAAAAAAD8M/sgFpaLTRnAE/s800/relorientaton-textbox-lo42.png"&gt;
+&lt;img src="https://lh3.googleusercontent.com/-hpAhQ8Jd2R4/UtFihLad6RI/AAAAAAAAD8M/sgFpaLTRnAE/s400/relorientaton-textbox-lo42.png" alt="https://lh3.googleusercontent.com/-hpAhQ8Jd2R4/UtFihLad6RI/AAAAAAAAD8M/sgFpaLTRnAE/s400/relorientaton-textbox-lo42.png" /&gt;
+&lt;/a&gt;
+&lt;/span&gt;
+&lt;span class="image"&gt;
+&lt;a class="image" href="https://lh6.googleusercontent.com/-1Ca-ZW3ugKg/UtFihSSXf0I/AAAAAAAAD8I/lQt2qu7XDQA/s800/relorientaton-textbox-lo43.png"&gt;
+&lt;img src="https://lh6.googleusercontent.com/-1Ca-ZW3ugKg/UtFihSSXf0I/AAAAAAAAD8I/lQt2qu7XDQA/s400/relorientaton-textbox-lo43.png" alt="https://lh6.googleusercontent.com/-1Ca-ZW3ugKg/UtFihSSXf0I/AAAAAAAAD8I/lQt2qu7XDQA/s400/relorientaton-textbox-lo43.png" /&gt;
+&lt;/a&gt;
+&lt;/span&gt;
+&lt;span class="image"&gt;
+&lt;a class="image" href="https://lh6.googleusercontent.com/-LgNJNRlraq8/UtFikZ2L43I/AAAAAAAAD9I/VgOKGQt0o9M/s800/relorientaton-textbox-word2010.png"&gt;
+&lt;img src="https://lh6.googleusercontent.com/-LgNJNRlraq8/UtFikZ2L43I/AAAAAAAAD9I/VgOKGQt0o9M/s400/relorientaton-textbox-word2010.png" alt="https://lh6.googleusercontent.com/-LgNJNRlraq8/UtFikZ2L43I/AAAAAAAAD9I/VgOKGQt0o9M/s400/relorientaton-textbox-word2010.png" /&gt;
+&lt;/a&gt;
+&lt;/span&gt;&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+document with a shape having a custom adjustment
+  (&lt;a href="http://people.freedesktop.org/~vmiklos/2014/docx-drawingml/shape-adj.docx"&gt;test doc&lt;/a&gt;):
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div align="center"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;&lt;span class="image"&gt;
+&lt;a class="image" href="https://lh3.googleusercontent.com/-VeqomDNiRDg/UtFiiM9h93I/AAAAAAAAD8k/5iGiGUEan4s/s500/shape-adj-lo42.png"&gt;
+&lt;img src="https://lh3.googleusercontent.com/-VeqomDNiRDg/UtFiiM9h93I/AAAAAAAAD8k/5iGiGUEan4s/s400/shape-adj-lo42.png" alt="https://lh3.googleusercontent.com/-VeqomDNiRDg/UtFiiM9h93I/AAAAAAAAD8k/5iGiGUEan4s/s400/shape-adj-lo42.png" /&gt;
+&lt;/a&gt;
+&lt;/span&gt;
+&lt;span class="image"&gt;
+&lt;a class="image" href="https://lh6.googleusercontent.com/-Jd3N1X6jvcA/UtFiiTc_GWI/AAAAAAAAD8g/-ExLQkNqMfQ/s500/shape-adj-lo43.png"&gt;
+&lt;img src="https://lh6.googleusercontent.com/-Jd3N1X6jvcA/UtFiiTc_GWI/AAAAAAAAD8g/-ExLQkNqMfQ/s400/shape-adj-lo43.png" alt="https://lh6.googleusercontent.com/-Jd3N1X6jvcA/UtFiiTc_GWI/AAAAAAAAD8g/-ExLQkNqMfQ/s400/shape-adj-lo43.png" /&gt;
+&lt;/a&gt;
+&lt;/span&gt;
+&lt;span class="image"&gt;
+&lt;a class="image" href="https://lh4.googleusercontent.com/-aLbCIiyql48/UtFii62b47I/AAAAAAAAD8o/W0EDNoQtCl0/s500/shape-adj-word2010.png"&gt;
+&lt;img src="https://lh4.googleusercontent.com/-aLbCIiyql48/UtFii62b47I/AAAAAAAAD8o/W0EDNoQtCl0/s400/shape-adj-word2010.png" alt="https://lh4.googleusercontent.com/-aLbCIiyql48/UtFii62b47I/AAAAAAAAD8o/W0EDNoQtCl0/s400/shape-adj-word2010.png" /&gt;
+&lt;/a&gt;
+&lt;/span&gt;&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+document with different colors
+  (&lt;a href="http://people.freedesktop.org/~vmiklos/2014/docx-drawingml/smiley.docx"&gt;test doc&lt;/a&gt;):
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div align="center"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;&lt;span class="image"&gt;
+&lt;a class="image" href="https://lh6.googleusercontent.com/-HRRivr0f-a0/UtFijDe8cfI/AAAAAAAAD88/rnVTutXIE84/s500/smiley-lo42.png"&gt;
+&lt;img src="https://lh6.googleusercontent.com/-HRRivr0f-a0/UtFijDe8cfI/AAAAAAAAD88/rnVTutXIE84/s400/smiley-lo42.png" alt="https://lh6.googleusercontent.com/-HRRivr0f-a0/UtFijDe8cfI/AAAAAAAAD88/rnVTutXIE84/s400/smiley-lo42.png" /&gt;
+&lt;/a&gt;
+&lt;/span&gt;
+&lt;span class="image"&gt;
+&lt;a class="image" href="https://lh5.googleusercontent.com/-mITRnHUfrqA/UtFijZriQeI/AAAAAAAAD84/92BbOA8DRfk/s500/smiley-lo43.png"&gt;
+&lt;img src="https://lh5.googleusercontent.com/-mITRnHUfrqA/UtFijZriQeI/AAAAAAAAD84/92BbOA8DRfk/s400/smiley-lo43.png" alt="https://lh5.googleusercontent.com/-mITRnHUfrqA/UtFijZriQeI/AAAAAAAAD84/92BbOA8DRfk/s400/smiley-lo43.png" /&gt;
+&lt;/a&gt;
+&lt;/span&gt;
+&lt;span class="image"&gt;
+&lt;a class="image" href="https://lh6.googleusercontent.com/--_LhqgTxNM0/UtFij6NNYaI/AAAAAAAAD9A/5UFA4kEvBp0/s500/smiley-word2010.png"&gt;
+&lt;img src="https://lh6.googleusercontent.com/--_LhqgTxNM0/UtFij6NNYaI/AAAAAAAAD9A/5UFA4kEvBp0/s400/smiley-word2010.png" alt="https://lh6.googleusercontent.com/--_LhqgTxNM0/UtFij6NNYaI/AAAAAAAAD9A/5UFA4kEvBp0/s400/smiley-word2010.png" /&gt;
+&lt;/a&gt;
+&lt;/span&gt;&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;If you want to try these out yourself, get a
+&lt;a href="http://dev-builds.libreoffice.org/daily/"&gt;daily build&lt;/a&gt; and play with it! If
+something goes wrong, report it to us in the
+&lt;a href="https://www.libreoffice.org/get-help/bug/"&gt;Bugzilla&lt;/a&gt;, so we can try fix it
+before 4.3 gets branched off. Last, but not at least, thanks for
+&lt;a href="http://www.cloudon.com/"&gt;CloudOn&lt;/a&gt; for funding these improvements! :-)&lt;/p&gt;&lt;/div&gt;
+</description>
+            <link>http://vmiklos.hu/blog/lo-writer-drawingml-shape-improvements.html</link>
+            <pubDate>Sat, 11 Jan 2014 16:51:26 +0100</pubDate>
+            <guid isPermaLink="false">http://vmiklos.hu/blog/lo-writer-drawingml-shape-improvements.html</guid>
+        </item>
+        <item>
             <title>A LibreOffice Draw GEDCOM import filter</title>
             <description>&lt;div class="imageblock" style="text-align:center;"&gt;
 &lt;div class="content"&gt;
@@ -373,90 +540,6 @@ before 4.2 gets branched off. And remember, there are lots more improvements
             <link>http://vmiklos.hu/blog/lo-floattable-ooxml-improvements.html</link>
             <pubDate>Sun, 01 Sep 2013 21:38:42 +0200</pubDate>
             <guid isPermaLink="false">http://vmiklos.hu/blog/lo-floattable-ooxml-improvements.html</guid>
-        </item>
-        <item>
-            <title>Using a git push tree</title>
-            <description>&lt;div class="paragraph"&gt;&lt;p&gt;I just checked, I created my git &lt;em&gt;push tree&lt;/em&gt; more than a year ago, but
-yesterday I was reminded that this technique isn&amp;#8217;t really documented anywhere,
-so let me describe it.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Some background: for the LibreOffice codebase, we decided to do all
-micro-features directly on the &lt;code&gt;master&lt;/code&gt; branch. This means that we typically
-rebase our local &lt;code&gt;master&lt;/code&gt; branch against &lt;code&gt;origin/master&lt;/code&gt;, then push it. The
-benefit of this is that code gets wider testing quickly and the commit history
-is not polluted with meaningless merge commits.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;The problem: one drawback of the above situation is that after you pull, some
-changes of other developers in the lower layers may trigger a full rebuild,
-typically wasting about an hour of your life (or more, in case of slower
-machines).&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Push tree is one hack to avoid this problem. Using a push tree, you have two
-separate repositories locally, you update your main one less regularly, and
-when you have a commit to push, you push it from the push tree to be able to
-avoid pulling in your main tree.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Here is how to do it. To set this up:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="listingblock"&gt;
-&lt;div class="content"&gt;
-&lt;pre&gt;&lt;code&gt;git clone --referece /path/to/master ssh://logerrit/core master-push&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Then to use it, instead of &lt;code&gt;git pull -r &amp;amp;&amp;amp; git push&lt;/code&gt; in your &lt;code&gt;master&lt;/code&gt; tree, do these:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="listingblock"&gt;
-&lt;div class="content"&gt;
-&lt;pre&gt;&lt;code&gt;cd /path/to/master
-git show -s &lt;b&gt;&amp;lt;1&amp;gt;&lt;/b&gt;
-cd /path/to/master-push
-git pull -r
-git cherry-pick $sha1 &lt;b&gt;&amp;lt;2&amp;gt;&lt;/b&gt;
-git push&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;&lt;/div&gt;
-&lt;div class="colist arabic"&gt;&lt;ol&gt;
-&lt;li&gt;
-&lt;p&gt;
-copy the sha1 hash from the output
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-replace $sha1 with the sha1 hash you got in the previous step
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ol&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;(There is a trick here, given that master-push already references the original
-tree, you can go ahead with cherry-pick directly, without fetching branches
-from your &lt;code&gt;master&lt;/code&gt; tree.)&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;And that&amp;#8217;s it, you were able to push without waiting for a long rebuild!&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Note: of course this technique has some drawbacks as well, so use with care.
-Keep in mind the followings:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-If your local &lt;code&gt;master&lt;/code&gt; is not up-to-date enough, you&amp;#8217;ll get conflicts while
-  cherry-picking. I usually update my &lt;code&gt;master&lt;/code&gt; tree once a day in the morning.
-  If you have a slower machine, do it once a week in the night, or so.
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-Even if you don&amp;#8217;t get conflicts, there can be cases when the result of the
-  cherry-pick in the push tree won&amp;#8217;t be what you want. Chances that this
-  happens is pretty low if your &lt;code&gt;master&lt;/code&gt; tree is not super-old, see the previous
-  note.
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-An other non-technical but social reason to still update your &lt;code&gt;master&lt;/code&gt; tree
-  regularly is that if everyone uses an infrequently updated &lt;code&gt;master&lt;/code&gt; tree,
-  then nobody will fix breakages caused by others on &lt;code&gt;origin/master&lt;/code&gt;. So updating
-  your real tree infrequently is a bit unfair to other developers.
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Other than these, I can just recommend using a push tree, it helped me many
-times not to loose focus in the middle of the day. (And as we all know, pushing
-all your risky changes on Friday afternoon is also a bad idea. :-) )&lt;/p&gt;&lt;/div&gt;
-</description>
-            <link>http://vmiklos.hu/blog/push-tree.html</link>
-            <pubDate>Wed, 14 Aug 2013 10:14:28 +0200</pubDate>
-            <guid isPermaLink="false">http://vmiklos.hu/blog/push-tree.html</guid>
         </item>
     </channel>
 </rss>
