@@ -1,0 +1,186 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.5.3" />
+<meta name="description" content="Death of doctok in LibreOffice - Miklos' blog" />
+<meta name="keywords" content="vmiklos, libereoffice, swig, git, python, hacking, bitlbee" />
+<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="http://vmiklos.hu/blog/index.rss" />
+<link rel="stylesheet" href="/blog/xhtml11.css" type="text/css" />
+<link rel="stylesheet" href="/blog/xhtml11-quirks.css" type="text/css" />
+<link rel="stylesheet" href="/blog/layout.css" type="text/css" />
+<title>Death of doctok in LibreOffice</title>
+<!-- google analytics start -->
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-24726997-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<!-- google analytics end -->
+</head>
+<body>
+<div id="layout-banner-box">
+<div id="layout-banner">
+  <div id="layout-title">vmiklos.hu</div>
+  <div id="layout-description">shameless self-promoting website</div>
+</div>
+</div>
+<div id="layout-menu-box">
+<div id="layout-menu">
+  <div>&#187;<a href="/">Root</a></div>
+  <div>&#187;<a href="/blog/">Rejourn root</a></div>
+  <div>&#187;<a href="http://planet.documentfoundation.org/">LibreOffice Community Blogs</a></div>
+</div>
+
+</div>
+<div id="layout-content-box">
+<div id="layout-content">
+<div id="header">
+	<h1>Death of doctok in LibreOffice</h1>
+</div>
+<div id="preamble">
+<div class="sectionbody">
+
+<!-- Single entry -->
+<div class="verseblock">
+<div class="verseblock-content">Posted <span class="timeago" title="2014-03-09T12:21:08Z">Sunday, 09 March 2014</span> by Miklos<br />
+    Tags:
+    <a href="tags/en.html">en</a>
+    <a href="tags/libreoffice.html">libreoffice</a>
+</div>
+</div>
+
+<!-- Body -->
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh5.googleusercontent.com/-IumGq3jzNdI/UxxG3Deg6QI/AAAAAAAAEFY/Ij7oMS7YyoY/s809/">
+<img src="https://lh5.googleusercontent.com/-IumGq3jzNdI/UxxG3Deg6QI/AAAAAAAAEFY/Ij7oMS7YyoY/s300/" alt="https://lh5.googleusercontent.com/-IumGq3jzNdI/UxxG3Deg6QI/AAAAAAAAEFY/Ij7oMS7YyoY/s300/" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>Last year in September we
+<a href="http://lists.freedesktop.org/archives/libreoffice/2013-September/055976.html">decided</a>
+to get rid of the writerfilter-based DOC tokenizer, and I volunteered to
+actually do this. As cleanups in general have a low priority, I only
+progressed with this slowly, though yesterday I completed it, that&#8217;s why I&#8217;m
+writing this post. :-)</p></div>
+<div class="paragraph"><p>Some background: the writerfilter module is responsible for RTF and DOCX
+import in Writer. As the above picture shows, the currently used DOC import is
+independent from it, and there was also an <em>other</em> DOC import filter, that was
+in writerfilter which was disabled at runtime. As I don&#8217;t like duplication, I
+examined the state of the two filters, and the linked minutes mail details
+how we decided that the old filter will stay, and we&#8217;ll get rid of the
+writerfilter one. It&#8217;s just a matter of deleting that code, right? :-) That&#8217;s
+what I thought first. But then I had to realize that the architecture of
+writerfilter is a bit more complex:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh3.googleusercontent.com/-vBMsCsYLRZE/UxxG3PsuI2I/AAAAAAAAEFc/Ly8sQ0ydY1A/s831/">
+<img src="https://lh3.googleusercontent.com/-vBMsCsYLRZE/UxxG3PsuI2I/AAAAAAAAEFc/Ly8sQ0ydY1A/s400/" alt="https://lh3.googleusercontent.com/-vBMsCsYLRZE/UxxG3PsuI2I/AAAAAAAAEFc/Ly8sQ0ydY1A/s400/" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>It has the following components:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+the dmapper (domain mapper), that handles all the nasty complexities of
+  mapping Word concepts to Writer concepts (think of e.g. sections ↔ page
+  styles)
+</p>
+</li>
+<li>
+<p>
+one tokenizer for each (RTF, DOCX, DOC) format
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>The traffic between the tokenizers and dmapper is called tokens. Naturally
+it&#8217;s not enough that tokenizers send and dmapper receives these tokens, they
+should be <em>defined</em> somewhere as well. And that&#8217;s where I realized this work
+will take a bit more time: instead of having a single token definition,
+actually the ooxml tokenizer defined its own grammar, and doctok also defined
+two <em>additional</em> grammars. And of course dmapper had to handle all of that.
+;-) Given that OOXML is a superset of the DOC/RTF format, it makes sense to
+just use the ooxml grammar, and get rid of the other two.</p></div>
+<div class="paragraph"><p>Especially that&#8201;&#8212;&#8201;by now you probably found this out&#8201;&#8212;&#8201;if I wanted to kill
+doctok, I had to kill the sprm and rtf grammars as well. Otherwise just
+removing doctok would break the RTF and DOCX import as well, as those also
+used the rtf/sprm grammars.</p></div>
+<div class="paragraph"><p>So at the end, the cleaned up architecture now looks like this:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh5.googleusercontent.com/-Iki8jKN61vE/UxxG3FaQc2I/AAAAAAAAEFQ/hWFsR20qB5o/s813/">
+<img src="https://lh5.googleusercontent.com/-Iki8jKN61vE/UxxG3FaQc2I/AAAAAAAAEFQ/hWFsR20qB5o/s400/" alt="https://lh5.googleusercontent.com/-Iki8jKN61vE/UxxG3FaQc2I/AAAAAAAAEFQ/hWFsR20qB5o/s400/" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>And that has multiple advantages:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+It removes quite some code: In <code>libreoffice-4-1</code>, the doctok was 78849 (!)
+  lines of code (well, part of that was XML data, and some scripts generated
+  C++ code from that).
+</p>
+</li>
+<li>
+<p>
+dmapper now doesn&#8217;t have to handle the rtf and sprm grammars anymore, so now
+  there is a <em>single</em> place in dmapper that handles e.g. the italic character
+  property.
+</p>
+</li>
+<li>
+<p>
+Smaller writerfilter binary for the end user: even if doctok wasn&#8217;t enabled
+  at runtime, it was shipped in the installation set.
+</p>
+</li>
+<li>
+<p>
+Hopefully it&#8217;s now a bit more easy to understand writerfilter: at least e.g.
+  if you want to look up the place where dmapper handles the character bold
+  ("b") XML tag of OOXML, you don&#8217;t have to know that the binary DOC
+  equivalent of that is sprmCFBold, just because we have an unused DOC tokenizer
+  there as well. :-)
+</p>
+</li>
+<li>
+<p>
+Given that DOC and RTF formats are a dead end, I think it&#8217;s a good thing
+  that in writerfilter now <em>the</em> grammar is OOXML (that keeps introducing new
+  features), rather than some dead format. ;-)
+</p>
+</li>
+</ul></div>
+
+
+<script src="https://apis.google.com/js/plusone.js"></script>
+<g:plus action="share"></g:plus>
+
+<!-- Disqus comments -->
+<h1 id="comment-header">Comments</h1>
+<div id="disqus_thread"></div>
+<script type="text/javascript" src="http://vmiklos.disqus.com/embed.js">
+	var disqus_developer = 1;
+</script>
+<noscript>
+  <p><a href="http://disqus.com/?ref_noscript=vmiklos">View the discussion thread.</a></p>
+</noscript>
+
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>
