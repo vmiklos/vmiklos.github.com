@@ -1,18 +1,24 @@
 $(function() {
-  d3.xml('worldmap.svg', 'image/svg+xml', function(xml) {
+  d3.xml('worldmap4.svg', 'image/svg+xml', function(xml) {
     $('#svg').html(xml.documentElement);
 
     d3.selectAll('path').each(function() {
-      var newId =  $(this).attr('id').replace(/ /g, '_');
-      $(this).attr('id', newId).attr('fill', '#77C4D3');
-    }).on('mouseover', function () {
+      $(this).attr('fill', '#77C4D3');
+    });
+
+    d3.selectAll('g').on('mouseover', function () {
       d3.selectAll('.hover').classed('hover', false);
       d3.selectAll('#' + this.id).classed('hover', true);
-      $('#country').text(parseId(this.id));
+    });
+
+    d3.selectAll('path').on('mouseover', function () {
+      d3.selectAll('.hover').classed('hover', false);
+      d3.selectAll('#' + this.id).classed('hover', true);
     });
 
     $(countries).each(function() {
       $('#' + this).css('fill', '#EA2E49');
+      $('#' + this + ' path').css('fill', '#EA2E49');
     });
 
     $('#number-countries').text(countries.length);
@@ -22,22 +28,40 @@ $(function() {
       return id.replace(/_/g, '  ').toUpperCase();
     }
 
-    function pieChart() {
-      var w = 300,
-        h = 300,
-        r = 100,
-        color = ['#EA2E49', '#77C4D3'];
+    function donnutChart() {
+      var dataset = {
+        apples: [countries.length, 193 - countries.length],
+      };
 
-        var data = [{"value": countries.length}, {"value": 193 - countries.length}];
-        var vis = d3.select("#pie-chart").append("svg:svg").data([data]).attr("width", w).attr("height", h).append("svg:g").attr("transform", "translate(" + r + "," + r + ")"); 
-        var arc = d3.svg.arc().outerRadius(r);
-        var pie = d3.layout.pie().value(function(d) { return d.value; });
-        var arcs = vis.selectAll("g.slice").data(pie).enter().append("svg:g").attr("class", "slice");
-            
-        arcs.append("svg:path").attr("fill", function(d, i) { return color[i]; } ).attr("d", arc);
+      var width = 460,
+          height = 300,
+          radius = Math.min(width, height) / 2;
+
+      var color = ['#EA2E49', '#77C4D3'];
+
+      var pie = d3.layout.pie()
+          .sort(null);
+
+      var arc = d3.svg.arc()
+          .innerRadius(radius - 100)
+          .outerRadius(radius - 50);
+
+      var svg = d3.select("#pie-chart").append("svg")
+          .attr("width", width)
+          .attr("height", height)
+          .append("g")
+          .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+      var path = svg.selectAll("path")
+          .data(pie(dataset.apples))
+          .enter().append("path")
+          .attr("fill", function(d, i) { return color[i]; })
+          .attr("d", arc);
     }
 
-    pieChart();
+    donnutChart();
 
   });
 });
+
+
