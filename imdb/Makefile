@@ -7,3 +7,6 @@ index.txt: foo.py FORCE
 	python foo.py > index.txt
 
 FORCE:
+
+check:
+	pep8 --ignore=E501 foo.py
