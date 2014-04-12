@@ -19,27 +19,32 @@ class HTMLParser(SGMLParser):
 
 	def start_table(self, attrs):
 		for k, v in attrs:
-			if k == "border" and v == "1":
+			# There are two tables on the page, the interesting one has the chart class.
+			if k == "class" and v == "chart":
 				self.intable = True
+				self.rows.append(['Rank & Title', 'IMDb Rating'])
 
 	def start_tr(self, attrs):
 		if self.intable:
 			self.intr = True
 	
 	def start_td(self, attrs):
-		if self.intr:
+		# We only want the picture, Rank & Title and Rating
+		if self.intr and len(self.coloumns) < 3:
 			self.intd = True
 
 	def start_a(self, attrs):
 		if self.intd:
 			for k, v in attrs:
 				if k == "href":
-					self.link = "http://www.imdb.com" + v
+					# Drop /?ref_= suffix.
+					self.link = "http://www.imdb.com" + v.split('?ref')[0]
 
 	def end_td(self):
 		if self.intd:
 			self.intd = False
-			s = "".join(self.cell)
+			# Get rid of whitespace we added ourselves to have spaces within tokens.
+			s = "".join(self.cell).strip()
 			if self.link:
 				s = '%s[%s]' % (self.link, s)
 			self.coloumns.append(s)
@@ -49,8 +54,11 @@ class HTMLParser(SGMLParser):
 	def end_tr(self):
 		if self.intr:
 			self.intr = False
-			self.rows.append(self.coloumns)
-			self.coloumns = []
+			if len(self.coloumns) > 1:
+				# Picture is not interesting
+				self.coloumns = self.coloumns[1:]
+				self.rows.append(self.coloumns)
+				self.coloumns = []
 
 	def end_table(self):
 		if self.intable:
@@ -58,7 +66,8 @@ class HTMLParser(SGMLParser):
 	
 	def handle_data(self, text):
 		if self.intd:
-			self.cell.append(text)
+			# Drop whitespace around the token, just keep a single trailing space.
+			self.cell.append("%s " % text.strip())
 
 urllib._urlopener = myurlopener()
 sock = urllib.urlopen("http://www.imdb.com/chart/top")
@@ -74,7 +83,7 @@ posts = {}
 
 def get_title(id):
 	cwd = os.getcwd()
-	os.chdir('/home/vmiklos/ftp/staging.vmiklos.hu/rejourn/in')
+	os.chdir('/home/vmiklos/git/staging.vmiklos.hu/rejourn/in')
 	sock = os.popen('git grep -l %s' % id)
 	buf = sock.read()
 	sock.close()
@@ -85,27 +94,32 @@ def get_title(id):
 	return ret
 
 for i in parser.rows:
-	l = i[2].split('[')[0].split('/')
+	# The first column contains the link.
+	l = i[0].split('[')[0].split('/')
 	if len(l) < 2:
 		continue
 	id = l[-2]
 	title = get_title(id)
 	if title:
-		posts[id] = "http://vmiklos.hu/blog/%s" % get_title(id)
+		# Handle when foo -> foo.html redirection doesn't work.
+		posts[id] = "http://vmiklos.hu/blog/%s.html" % title
 
 c = 0
 for i in parser.rows:
-	title = i[2].split('[')[-1].split(']')[0]
-	items = i[2].split('[')[0].split('/')
+	# The first column contains the title and the link.
+	title = i[0].split('[')[-1].split(']')[0]
+	items = i[0].split('[')[0].split('/')
 	if len(items) > 1:
 		id = items[-2]
 	else:
 		id = None
 	if id in posts.keys():
 		s = posts[id]
-		i.append("%s[%s]" % (s, s.split('/')[-1].replace('-', ' ').replace('_', ' ')))
+		# Make the URL a bit more human-readable.
+		i.append("%s[%s]" % (s, s.split('/')[-1].replace('-', ' ').replace('_', ' ').replace('.html', '')))
 		c += 1
-	elif title == "Title":
+	# This is the last original column, add our own one.
+	elif title == "IMDb Rating":
 		i.append("Post")
 	else:
 		i.append("")

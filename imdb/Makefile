@@ -1,5 +1,7 @@
+# Great, the IMDb page is no longer latin1-encoded.
+
 index.html: index.txt
-	asciidoc -a encoding=ISO-8859-1 index.txt
+	asciidoc -a encoding=utf-8 index.txt
 
 index.txt: foo.py FORCE
 	python foo.py > index.txt
