@@ -1,6 +1,7 @@
 #!/bin/bash -e
 
-move=$(python -c 'import time as t; n = t.time(); print int(t.mktime(t.localtime(n))-t.mktime(t.gmtime(n)))')
+IFS=":" read hh mm < <(date +%:z)
+move=$(($hh*3600+$mm*60))
 date=$(date +%Y-%m-%d)
 
 if [ ! -e /dev/rfcomm0 ]; then
