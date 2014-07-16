@@ -5,6 +5,312 @@
         <description></description>
         <link>http://vmiklos.hu/blog/</link>
         <item>
+            <title>TextBox: complex LibreOffice Writer content inside shapes</title>
+            <description>&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;a class="image" href="https://lh6.googleusercontent.com/-Aq8Uxzw0bys/U8ZXkDbzhfI/AAAAAAAAEiQ/2pvZlSkHTsc/s0/"&gt;
+&lt;img src="https://lh6.googleusercontent.com/-Aq8Uxzw0bys/U8ZXkDbzhfI/AAAAAAAAEiQ/2pvZlSkHTsc/s400/" alt="https://lh6.googleusercontent.com/-Aq8Uxzw0bys/U8ZXkDbzhfI/AAAAAAAAEiQ/2pvZlSkHTsc/s400/" /&gt;
+&lt;/a&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;TL;DR: see above&amp;#8201;&amp;#8212;&amp;#8201;it&amp;#8217;s now possible to have complex Writer content (charts,
+tracked changes, tables, fields, etc.) inside drawinglayer shapes, yay! :-)&lt;/p&gt;&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_the_problem"&gt;The problem&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Writer in LibreOffice 4.3 can have two kind of shapes: drawinglayer ones or
+Writer TextFrames. (Let&amp;#8217;s ignore OLE objects and Writer pictures for now.)
+Drawinglayer shapes can be triangles (non-rectangular), rectangles can have
+rounded corners and so on, but shape text is handled by editeng&amp;#8201;&amp;#8212;&amp;#8201;the same
+engine that is used for Impress shapes or Calc cells. OTOH a Writer TextFrame
+can contain anything that is supported by Writer (Writer fields, styles,
+tables, etc.), but its drawing capabilities are quite limited: no triangle,
+rounded corners, etc. I wanted to have both, and use the "shape with TextBox"
+term for this use case.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;A user can already sort of to do this by creating a drawinglayer shape, then a
+Writer TextFrame, and by setting the properties of the Writer TextFrame
+(position, size, etc) to appear as if the TextFrame would be the shape text of
+the drawinglayer shape.  The idea is to tie these two objects together, so the
+(UI and API) user sees them as a single object.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_results"&gt;Results&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;I&amp;#8217;m providing here a few screenshots. Above, you can see &lt;a href="http://cgit.freedesktop.org/libreoffice/core/tree/sw/qa/extras/odfexport/data/textbox-rounded-corners.odt"&gt;an ODF document&lt;/a&gt;
+having a rectangle with rounded corners, still containing a table.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Given that OOXML has this feature since its birth, I&amp;#8217;m also showing &lt;a href="http://people.freedesktop.org/~vmiklos/2014/textbox/"&gt;a few DOCX
+documents&lt;/a&gt;, which are now handled far better:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+chart inside a left arrow callout:
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;a class="image" href="https://lh4.googleusercontent.com/-s5ABCN9pchc/U8ZXfLV5eKI/AAAAAAAAEh4/uxpwBVIcJRU/s0/"&gt;
+&lt;img src="https://lh4.googleusercontent.com/-s5ABCN9pchc/U8ZXfLV5eKI/AAAAAAAAEh4/uxpwBVIcJRU/s400/" alt="https://lh4.googleusercontent.com/-s5ABCN9pchc/U8ZXfLV5eKI/AAAAAAAAEh4/uxpwBVIcJRU/s400/" /&gt;
+&lt;/a&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+tracked changes inside a cloud callout:
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;a class="image" href="https://lh6.googleusercontent.com/-AzHF9r3PMgY/U8ZXhbZuXOI/AAAAAAAAEiA/58FsbrkumcM/s0/"&gt;
+&lt;img src="https://lh6.googleusercontent.com/-AzHF9r3PMgY/U8ZXhbZuXOI/AAAAAAAAEiA/58FsbrkumcM/s400/" alt="https://lh6.googleusercontent.com/-AzHF9r3PMgY/U8ZXhbZuXOI/AAAAAAAAEiA/58FsbrkumcM/s400/" /&gt;
+&lt;/a&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+SmartArt inside a snip diagonal corner rectangle:
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;a class="image" href="https://lh3.googleusercontent.com/-_1-RYPfLX2w/U8ZXi6XNEhI/AAAAAAAAEiI/irEHHeoxRXU/s0/"&gt;
+&lt;img src="https://lh3.googleusercontent.com/-_1-RYPfLX2w/U8ZXi6XNEhI/AAAAAAAAEiI/irEHHeoxRXU/s400/" alt="https://lh3.googleusercontent.com/-_1-RYPfLX2w/U8ZXi6XNEhI/AAAAAAAAEiI/irEHHeoxRXU/s400/" /&gt;
+&lt;/a&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+Table of Contents inside a pentagon:
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;a class="image" href="https://lh3.googleusercontent.com/-aBD1Rbv4-DU/U8ZXlV2vxSI/AAAAAAAAEiY/atjjnYGDQyw/s0/"&gt;
+&lt;img src="https://lh3.googleusercontent.com/-aBD1Rbv4-DU/U8ZXlV2vxSI/AAAAAAAAEiY/atjjnYGDQyw/s400/" alt="https://lh3.googleusercontent.com/-aBD1Rbv4-DU/U8ZXlV2vxSI/AAAAAAAAEiY/atjjnYGDQyw/s400/" /&gt;
+&lt;/a&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_details"&gt;Details&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;What follows is something you can probably skip if you&amp;#8217;re a user&amp;#8201;&amp;#8212;&amp;#8201;however if
+you&amp;#8217;re a developer and you want to understand how the above is implemented,
+then read on. ;-)&lt;/p&gt;&lt;/div&gt;
+&lt;div class="sect2"&gt;
+&lt;h3 id="_situation_in_4_3"&gt;Situation in 4.3&lt;/h3&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;From the drawinglayer point of view: &lt;code&gt;SwDoc&lt;/code&gt; contains an &lt;code&gt;SdrModel&lt;/code&gt;
+(&lt;code&gt;SwDoc::GetOrCreateDrawModel()&lt;/code&gt;), which contains a single &lt;code&gt;SdrPage&lt;/code&gt;
+(&lt;code&gt;SdrModel::GetPage()&lt;/code&gt;)&amp;#8201;&amp;#8212;&amp;#8201;Draw/Impress contain multiple sdr pages. The
+&lt;code&gt;SdrPage&lt;/code&gt; contains the shapes: e.g. a triangle is an &lt;code&gt;SdrObjCustomShape&lt;/code&gt;. For
+TextFrames, a placeholder object called &lt;code&gt;SwVirtFlyDrawObj&lt;/code&gt; is added to the
+draw page.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The writer-specific properties of an &lt;code&gt;SdrObject&lt;/code&gt; is stored as an &lt;code&gt;SwFrmFmt&lt;/code&gt;
+object, an &lt;code&gt;SwFrmFmt&lt;/code&gt; array is a member of &lt;code&gt;SwDoc&lt;/code&gt; ("frame format table"). The
+anchor position and the node index of the frame contents counts as a property.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;At UNO level, a single &lt;code&gt;DrawPage&lt;/code&gt; object is part of the Component (opened
+document), which abstracts away the internal &lt;code&gt;SdrPage&lt;/code&gt;.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;For TextFrames, the UNO API works exactly the same way, except that the
+implementation stores all properties of the TextFrame in the &lt;code&gt;SwFrmFmt&lt;/code&gt; (and
+some properties are different, compared to a drawinglayer shape).&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;One remaining detail is how the shape text is represented. In case of
+drawinglayer shapes, this is provided by editeng: internally an &lt;code&gt;EditTextObject&lt;/code&gt;
+provides a container for paragraphs, at UNO API level &lt;code&gt;SvxUnoTextContent&lt;/code&gt;
+provides an interface that presents paragraphs and their text portions.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;For TextFrames, the contents of the frames is stored in a special section in
+the Writer text node array (in the 3rd toplevel section, while the 5th
+toplevel section is used for body text), that&amp;#8217;s how it can contain anything
+that&amp;#8217;s a valid Writer body text. An offset into this node array of the
+"content" property of the &lt;code&gt;SwFrmFmt&lt;/code&gt;.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect2"&gt;
+&lt;h3 id="_document_model"&gt;Document model&lt;/h3&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;At a document model level, we need a way to describe that an &lt;code&gt;SdrObject&lt;/code&gt;
+(provided by svx) has an associated TextFrame (provided by sw). svx can&amp;#8217;t
+depend on sw, but in the &lt;code&gt;SwFrmFmt&lt;/code&gt; of the SdrObject, we can use the so far
+unused &lt;code&gt;RES_CNTNT&lt;/code&gt; ("content") property to point to a TextFrame content.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;So behind the scenes the UNO API and the UI does the following when
+turning on the TextBox bit for a drawinglayer shape:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+creates a TextFrame
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+connects the &lt;code&gt;SdrObject&lt;/code&gt; to the TextFrame
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Also, every property of the TextFrame depends on the properties of the
+&lt;code&gt;SdrObject&lt;/code&gt;, think of the followings:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+position / size is the largest rectangle that fits inside the shape
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+borders are disabled
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+background is transparent
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Finding the largest rectangle that fits inside the shape is probably the most
+interesting here, it&amp;#8217;s implemented in &lt;code&gt;SwTextBoxHelper::getTextRectangle()&lt;/code&gt;,
+which uses &lt;code&gt;SdrObjCustomShape::GetTextBounds()&lt;/code&gt;.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect2"&gt;
+&lt;h3 id="_uno_api"&gt;UNO API&lt;/h3&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The UNO API hides the detail that the TextFrame and the &lt;code&gt;SdrObject&lt;/code&gt; are in
+fact two objects. To get there, the followings are done:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;code&gt;SwXShape&lt;/code&gt; is modified, so that in the TextBox case not editengine, but the
+  attached TextFrame is accessed when &lt;code&gt;getText()&lt;/code&gt; is invoked.
+  This was a bit tricky, as &lt;code&gt;SwXShape&lt;/code&gt; doesn&amp;#8217;t have an explicit &lt;code&gt;getText()&lt;/code&gt;
+  implementation: it overrides &lt;code&gt;queryInterface()&lt;/code&gt; instead (see
+  &lt;code&gt;SwTextBoxHelper::queryInterface()&lt;/code&gt;).
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;code&gt;SwXDrawPage&lt;/code&gt; (its &lt;code&gt;XEnumerationAccess&lt;/code&gt; and &lt;code&gt;XIndexAccess&lt;/code&gt;) is modified to
+  ignore TextFrames in the TextBox case
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;code&gt;SwXTextPortionEnumeration&lt;/code&gt; is modified to ignore TextFrames in the TextBox case
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;code&gt;SwXText::insertTextContent()&lt;/code&gt; and &lt;code&gt;SwXText::appendTextContent()&lt;/code&gt; is
+  modified to handle the TextBox case
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect2"&gt;
+&lt;h3 id="_layout"&gt;Layout&lt;/h3&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;This was the easiest part: the "merge TextFrame and &lt;code&gt;SdrObj&lt;/code&gt; into a shape with
+TextBox" approach ensured that that we use existing layout features here, no
+major effort was necessary here.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;One interesting detail here was the positioning of as-character anchored
+shapes having TextBoxes, that&amp;#8217;s now handled in &lt;code&gt;SwFlyCntPortion::SetBase()&lt;/code&gt;.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect2"&gt;
+&lt;h3 id="_filters"&gt;Filters&lt;/h3&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The primary point of this feature is to improve Word (and in particular DOCX)
+compatibility, and of course I wanted to update ODF as necessary as well.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Regarding the new feature, I did the followings:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+DOCX import now avoids setting service name from original to
+  &lt;code&gt;css.text.TextFrame&lt;/code&gt; in case shape has shape text
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+DOCX export now handles the TextBox case: reads Writer text instead of
+  editeng text as necessary
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+ODF export now adds a
+  &lt;a href="https://wiki.documentfoundation.org/Development/ODF_Implementer_Notes#LibreOffice_ODF_extensions"&gt;new
+  optional boolean attribute&lt;/a&gt; to make export of the TextBox case possible
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+ODF import now handles the new attribute and act accordingly
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Note that regarding backwards compatibility, we keep supporting
+editengine-based text as well. This has the best of two worlds:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+existing ODF documents are unchanged, but
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+the TextBox feature is enabled unconditionally in DOCX import to avoid
+  formatting loss
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect2"&gt;
+&lt;h3 id="_user_interface"&gt;User Interface&lt;/h3&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;I took care of the followings:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+the context menu of shapes now provides an item to add / remove a TextBox
+  to/from a shape
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+when moving or resizing a shape, the TextBox properties are updated
+  as well
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+when the shape is deleted, the associated TextBox is also
+  deleted
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+editing individual TextBox properties is no longer possible, since they
+  depend on the shape properties
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_summary"&gt;Summary&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;If you want to try these out yourself, get a
+&lt;a href="http://dev-builds.libreoffice.org/daily/"&gt;daily build&lt;/a&gt; and play with it! If
+something goes wrong, report it to us in the
+&lt;a href="https://www.libreoffice.org/get-help/bug/"&gt;Bugzilla&lt;/a&gt;, so we can try fix it
+before 4.4 gets branched off. Last, but not at least, thanks for
+&lt;a href="http://www.cloudon.com/"&gt;CloudOn&lt;/a&gt; for funding these improvements! :-)&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+            <link>http://vmiklos.hu/blog/textbox.html</link>
+            <pubDate>Wed, 16 Jul 2014 13:33:38 +0200</pubDate>
+            <guid isPermaLink="false">http://vmiklos.hu/blog/textbox.html</guid>
+        </item>
+        <item>
             <title>Updated Writer training slides</title>
             <description>&lt;div style="text-align: center; font-size: 0.6em;"&gt;
 &lt;img src="https://lh4.googleusercontent.com/-qJiiajLRZ7A/U7vLBcDzbBI/AAAAAAAAEf0/mo6E4QbfVWU/s400/"/&gt;
@@ -549,43 +855,6 @@ before 4.3 gets branched off. Last, but not at least, thanks for
             <link>http://vmiklos.hu/blog/lo-writer-drawingml-shape-improvements.html</link>
             <pubDate>Sat, 11 Jan 2014 16:51:26 +0100</pubDate>
             <guid isPermaLink="false">http://vmiklos.hu/blog/lo-writer-drawingml-shape-improvements.html</guid>
-        </item>
-        <item>
-            <title>A LibreOffice Draw GEDCOM import filter</title>
-            <description>&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;a class="image" href="https://lh4.googleusercontent.com/-4110I0vkRE4/Ur8-uJ6YcII/AAAAAAAAD44/u1pNo4z1y-M/s1440/screenshot.png"&gt;
-&lt;img src="https://lh4.googleusercontent.com/-4110I0vkRE4/Ur8-uJ6YcII/AAAAAAAAD44/u1pNo4z1y-M/s400/screenshot.png" alt="https://lh4.googleusercontent.com/-4110I0vkRE4/Ur8-uJ6YcII/AAAAAAAAD44/u1pNo4z1y-M/s400/screenshot.png" /&gt;
-&lt;/a&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;You may remember that I wrote about my little
-&lt;a href="http://vmiklos.hu/blog/ged2dot.html"&gt;ged2dot project&lt;/a&gt; about two months ago.
-It&amp;#8217;s a Python script that can be used from commandline with quite some
-options. I&amp;#8217;m happy to announce that there is a GUI for it now, in the form of
-a LibreOffice Draw import filter. If you open
-&lt;a href="https://github.com/vmiklos/ged2dot/blob/master/test/screenshot.ged"&gt;this GEDCOM
-file&lt;/a&gt;, you&amp;#8217;ll see something similar to the above image.  You can simply build
-the &lt;code&gt;.oxt&lt;/code&gt; from the &lt;a href="https://github.com/vmiklos/ged2dot"&gt;Git repo&lt;/a&gt;, or just get
-it from the
-&lt;a href="http://extensions.libreoffice.org/extension-center/gedcom"&gt;LibreOffice
-Extensions site&lt;/a&gt;.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Technical details for the interested readers: the import filter just glues
-together existing pieces. First it runs &lt;code&gt;ged2dot&lt;/code&gt;, then &lt;code&gt;dot&lt;/code&gt; to generate an
-SVG. To keep things simple, then the filter "inlineizes" all the included
-images, finally the already existing SVG import filter does the real work. I
-find it elegant that each step works from and to the memory, and not ugly
-temporary files. :-) It works on Linux and Windows, feedback on if it works on
-Mac is appreciated.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Also, if you ask why this is an extension, not part of LibreOffice core: I
-guess most users are not interested in building family trees; also being
-someone who works on the core most of the time, I wanted to try out how
-implementing an import filter as an extension (filter detection, import
-options dialog, etc.) works. ;-)&lt;/p&gt;&lt;/div&gt;
-</description>
-            <link>http://vmiklos.hu/blog/libreoffice-draw-gedcom-import-filter.html</link>
-            <pubDate>Sat, 28 Dec 2013 22:27:05 +0100</pubDate>
-            <guid isPermaLink="false">http://vmiklos.hu/blog/libreoffice-draw-gedcom-import-filter.html</guid>
         </item>
     </channel>
 </rss>
