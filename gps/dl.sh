@@ -30,3 +30,8 @@ do
 done
 #gpsbabel -i gpx -f $(date +%Y-%m-%d).gpx -o kml,units=m -F $(date +%Y-%m-%d).kml
 sudo rfcomm release 0
+
+git add ${date}.gpx
+echo -n "What is the track name? "
+read name
+git commit -m "gps: ${date} (${name})"
