@@ -5,6 +5,102 @@
         <description></description>
         <link>http://vmiklos.hu/blog/</link>
         <item>
+            <title>Cleanup of ooxmltok in LibreOffice</title>
+            <description>&lt;div style="text-align: center; font-size: 0.6em;"&gt;
+&lt;img src="https://lh4.googleusercontent.com/-GipHI6c2dSM/U_8TTB9IzUI/AAAAAAAAExA/LVMQpNezkus/s400/"/&gt;
+&lt;p&gt;(via &lt;a href="https://www.flickr.com/photos/aigle_dore/7356881428/"&gt;aigle_dore&lt;/a&gt;)&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;In June, we
+&lt;a href="http://article.gmane.org/gmane.comp.documentfoundation.libreoffice.qa/7272"&gt;decided&lt;/a&gt;
+to get rid of XSLT usage in writerfilter, the module repsponsible for RTF and
+DOCX import in LibreOffice. As usual with cleaning up mess, this took time
+(about two months), but I&amp;#8217;m now happy to say that I&amp;#8217;m mostly done with this.
+:-)&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;See &lt;a href="http://vmiklos.hu/blog/doctok.html"&gt;the doctok blog post&lt;/a&gt; for some
+background, the topic here was to clean up the OOXML tokenizer, that is that
+building block that turns a zipped XML document into a token stream.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The following problems are now solved:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+Part of the module was generated code, the generator was implemented mostly
+  in XSLT, but some bits were written in Perl and sed. About 4200 lines of
+  XSLT code is now rewrittein in Python, in about 1300 lines.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+Given that we have much more developers who speak Python, compared to XSLT,
+  nontrivial changes are now much easier in the generator: Jan Holesovsky
+  &lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=c74de6c2e29a16fb4a458816cd17fa678edd16e7"&gt;cleaned
+  up&lt;/a&gt; &lt;code&gt;boost::unordered_map&lt;/code&gt; usage at places where we depended on the order of
+  elements. (Yes, you read it correctly, that was the situation up till now!)
+  This also helps reducing the size of the resulting writerfilter shared library.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+The input of the code generator was the large &lt;code&gt;model.xml&lt;/code&gt; file, and
+  generator scripts only extracted interesting information from it, so if you
+  mistyped something, you got no error messages, just silent failures. I&amp;#8217;ve
+  removed quite some XML elements and attributes from it which were parsed by
+  none of the generator scripts and written a
+  &lt;a href="http://opengrok.libreoffice.org/xref/core/writerfilter/documentation/ooxml/model.rng"&gt;relax-ng
+  schema&lt;/a&gt; for the remaining markup. Validating against this schema is part of
+  the default build, so no more typos without a build failure. ;-)
+  (The schema also contains quite some documentation, finally.)
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+A gperf hash of all possible OOXML elements / attribute names were
+  duplicated in writerfilter, even if that information was already available
+  from the oox module. This is now fixed, reducing the size of the shared
+  library even further.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+Also, both oox and writerfilter had a list of namespace URL&amp;#8217;s, mapping them
+  to an integer enumeration, and when the two lists didn&amp;#8217;t match, Bad Things
+  happened (read: usually resulted in a crash.) This is the past, I&amp;#8217;ve
+  refactored writerfilter to use the same namespace alias names as oox, and this
+  allowed to get rid of the writerfilter copy of the namespace alias list. So in
+  the future, if new namespaces have to added, only oox has to be extended.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Oh and the bonus feature: I&amp;#8217;ve implemented a script called
+&lt;a href="http://opengrok.libreoffice.org/xref/core/writerfilter/qa/ooxml/watch-generated-code.sh"&gt;watch-generated-code.sh&lt;/a&gt;,
+which can record a good state of the generated code, and then compare later
+generated results against that, so that refacoring of the generator can now be
+performed in a safe way: you can change the generator in any way to make it
+better, and still avoid accidental output changes. :-) This is particularly
+useful, as it only diffs the end result of the whole generation process (cxx
+and hxx files), not temporarily files, which are OK to change, as long as the
+end result is the same.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;As a conclusion, here are sizes of a stripped dbgutil version of the
+writerfilter shared library, from the libreoffice-4-3-branch-point and today&amp;#8217;s
+master:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="listingblock"&gt;
+&lt;div class="content"&gt;
+&lt;pre&gt;&lt;code&gt;$ git checkout oldest
+HEAD is now at b3130c8... 2014-05-21
+vmiklos@o9010:~/git/libreoffice/daily$ ls -lh opt/program/libwriterfilterlo.so
+-rwxr-xr-x 1 vmiklos users 8,3M aug   28 14:00 opt/program/libwriterfilterlo.so
+$ git checkout master
+Switched to branch 'master'
+vmiklos@o9010:~/git/libreoffice/daily$ ls -lh opt/program/libwriterfilterlo.so
+-rwxr-xr-x 1 vmiklos users 6,1M aug   28 14:01 opt/program/libwriterfilterlo.so&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Again, the 8,3MB &amp;#8594; 6,1MB size reduction is mostly thanks to Kendy&amp;#8217;s map cleanups + the
+duplicated gperf hash going away. :-)&lt;/p&gt;&lt;/div&gt;
+</description>
+            <link>http://vmiklos.hu/blog/ooxmltok.html</link>
+            <pubDate>Thu, 28 Aug 2014 14:04:36 +0200</pubDate>
+            <guid isPermaLink="false">http://vmiklos.hu/blog/ooxmltok.html</guid>
+        </item>
+        <item>
             <title>So many bugs</title>
             <description>&lt;div align="center"&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;&lt;span class="image"&gt;
@@ -663,47 +759,6 @@ olvastam, hogy megnéztük. Tényleg nem rossz.&lt;/p&gt;&lt;/div&gt;
             <link>http://vmiklos.hu/blog/chihiro-szellemorszagban.html</link>
             <pubDate>Sun, 13 Apr 2014 19:31:53 +0200</pubDate>
             <guid isPermaLink="false">http://vmiklos.hu/blog/chihiro-szellemorszagban.html</guid>
-        </item>
-        <item>
-            <title>Improved support for text frames with relative sizes in LibreOffice Writer</title>
-            <description>&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;a class="image" href="https://lh6.googleusercontent.com/-YDWSLjQcV1U/UzxP5AJhnyI/AAAAAAAAEIo/8uurEY7s90k/s0/"&gt;
-&lt;img src="https://lh6.googleusercontent.com/-YDWSLjQcV1U/UzxP5AJhnyI/AAAAAAAAEIo/8uurEY7s90k/s400/" alt="https://lh6.googleusercontent.com/-YDWSLjQcV1U/UzxP5AJhnyI/AAAAAAAAEIo/8uurEY7s90k/s400/" /&gt;
-&lt;/a&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;When using text frames in Writer, you can always choose if you set an absolute
-size for it or you set a relative one. Oddly enough, in case of relative
-sizes, it wasn&amp;#8217;t entirely clear what 100% percent means. With a bit of
-&lt;a href="https://help.libreoffice.org/Writer/Type#Relative"&gt;searching&lt;/a&gt;, the help says
-"it&amp;#8217;s the page text area", which in practice means the page size, excluding
-the margins.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;And that&amp;#8217;s where the problem lies: in many cases (importing foreign formats,
-cover page of a document, etc.) you want to have a textframe which is 100%
-wide, compared to the full page size, including margins. It was already
-possible previously to work this around by manually specifying the same size
-what was used for page size, but that&amp;#8217;s ugly, you duplicate the setting at two
-places.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;As you can see on the above screenshot, in LibreOffice 4.3, I now implemented
-this as a new option, you can choose what 100% means for both width and
-height. File filters are also updated accordingly: in case of ODF an
-&lt;a href="https://wiki.documentfoundation.org/Development/ODF_Implementer_Notes#LibreOffice_ODF_extensions"&gt;extension&lt;/a&gt;
-is proposed, and also DOCX and RTF filters are updated, where the file format
-already supported this feature.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;For the curious ones, the feature is in &lt;code&gt;master&lt;/code&gt; for almost two months now,
-but I only implemented my favorite part&amp;#8201;&amp;#8212;&amp;#8201;RTF filter&amp;#8201;&amp;#8212;&amp;#8201;only last week,
-that&amp;#8217;s the "news" here. ;-)&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;If you want to try these out yourself, get a
-&lt;a href="http://dev-builds.libreoffice.org/daily/"&gt;daily build&lt;/a&gt; and play with it! If
-something goes wrong, report it to us in the
-&lt;a href="https://www.libreoffice.org/get-help/bug/"&gt;Bugzilla&lt;/a&gt;, so we can try fix it
-before 4.3 gets branched off. Last, but not at least, thanks for
-&lt;a href="http://www.cloudon.com/"&gt;CloudOn&lt;/a&gt; for funding this improvement! :-)&lt;/p&gt;&lt;/div&gt;
-</description>
-            <link>http://vmiklos.hu/blog/improved-relative-sized-textframes-in-libreoffice.html</link>
-            <pubDate>Wed, 02 Apr 2014 20:13:29 +0200</pubDate>
-            <guid isPermaLink="false">http://vmiklos.hu/blog/improved-relative-sized-textframes-in-libreoffice.html</guid>
         </item>
     </channel>
 </rss>
