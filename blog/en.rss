@@ -5,6 +5,43 @@
         <description></description>
         <link>http://vmiklos.hu/blog/</link>
         <item>
+            <title>UPC vs port forwarding</title>
+            <description>&lt;div class="paragraph"&gt;&lt;p&gt;&lt;a href="http://en.wikipedia.org/wiki/UPC_Broadband"&gt;UPC&lt;/a&gt; traditionally had a setup
+consisting of a cable modem providing internet access to a single computer,
+and then it was up to the users if they use that access to really connect to a
+computer or to a router, providing wireless access and so on.  It seems, these
+days they are more after actually &lt;em&gt;encouraging&lt;/em&gt; people to use their
+subscription on multiple devices&amp;#8201;&amp;#8212;&amp;#8201;possibly that way it&amp;#8217;s easier to sell
+larger packages (like 60 MBit/s download rate instead of 30 MBit/s, etc).  One
+fallout from this move is that they started to replace modems with a
+combination of modems and routers, in this case this is an
+&lt;a href="http://www.ubeeinteractive.com/products/cable/evw3226"&gt;Ubee EVW3226&lt;/a&gt;, with the
+brand removed. I wanted to try out if this new device could replace my
+previous router or not&amp;#8201;&amp;#8212;&amp;#8201;so far it seems to be good enough, though there was
+one pitfall, hence this post.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;It&amp;#8217;s possible to define a range of IP addresses to be used for DHCP purposes,
+though you can&amp;#8217;t serve fixed IP addresses based on the MAC address of the
+clients. Given that my home network isn&amp;#8217;t that large, I can tolerate that: as
+long as there is a range that can be safely used for fixed addresses, I can
+configure that manually.  It&amp;#8217;s also possible to do port forwarding, e.g.
+redirecting the incoming ssh traffic to a given address&amp;#8201;&amp;#8212;&amp;#8201;except you can&amp;#8217;t do
+both at the same time: you can&amp;#8217;t redirect traffic to an address that&amp;#8217;s not
+known (served via DHCP) to the router. Which is a shame, the #1 use case for
+port forwarding is to redirect traffic to a home-server that will then also
+have a fixed IP internally&amp;#8230;&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;So here is a hack that allowed me to still do this: set the start of the range
+of the DHCP served IP&amp;#8217;s exactly to the address of the (to be used in future
+as) fixed address, e.g. 192.168.0.5. Connect with one client, so that the
+address will be &lt;em&gt;known&lt;/em&gt; to the router. Then add the port-forwarding rule,
+finally set the DHCP range back to its original value (in my case I use
+192.168.0.1..99 for fixed addresses and 100+ for dynamic purposes). It&amp;#8217;s a
+stupid trick, but it works&amp;#8230; ;-)&lt;/p&gt;&lt;/div&gt;
+</description>
+            <link>http://vmiklos.hu/blog/upc-port-forward.html</link>
+            <pubDate>Sat, 20 Sep 2014 20:56:33 +0200</pubDate>
+            <guid isPermaLink="false">http://vmiklos.hu/blog/upc-port-forward.html</guid>
+        </item>
+        <item>
             <title>LibreOffice Conference 2014, Bern</title>
             <description>&lt;div class="imageblock" style="text-align:center;"&gt;
 &lt;div class="content"&gt;
@@ -707,34 +744,6 @@ before 4.3 gets branched off. Last, but not at least, thanks for
             <link>http://vmiklos.hu/blog/improved-relative-sized-textframes-in-libreoffice.html</link>
             <pubDate>Wed, 02 Apr 2014 20:13:29 +0200</pubDate>
             <guid isPermaLink="false">http://vmiklos.hu/blog/improved-relative-sized-textframes-in-libreoffice.html</guid>
-        </item>
-        <item>
-            <title>DOCX import progressbar in LibreOffice Writer</title>
-            <description>&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;a class="image" href="https://lh5.googleusercontent.com/-sW_Ccet7HMU/Uy2hcmf7ZsI/AAAAAAAAEHg/IGwPJI6h6vE/w643-h518-no/"&gt;
-&lt;img src="https://lh5.googleusercontent.com/-sW_Ccet7HMU/Uy2hcmf7ZsI/AAAAAAAAEHg/IGwPJI6h6vE/s400/" alt="https://lh5.googleusercontent.com/-sW_Ccet7HMU/Uy2hcmf7ZsI/AAAAAAAAEHg/IGwPJI6h6vE/s400/" /&gt;
-&lt;/a&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;I&amp;#8217;m sure in this case a few words are worth more than the above picture, so
-let me describe what you see above. :-)&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;In case of opening an ODT, DOC or RTF document in LibreOffice Writer, you
-already got some feedback on where the importer is, in case the process needed
-more time than what you feel "instant". However, this wasn&amp;#8217;t supported for
-DOCX.  According to &lt;code&gt;git blame&lt;/code&gt;, I added this to my todo on 2012-10-29, and a
-few months later also a
-&lt;a href="https://bugs.freedesktop.org/show_bug.cgi?id=58044"&gt;bugreport&lt;/a&gt; was opened,
-requesting the same, but up to yesterday, nothing changed.  However, now I&amp;#8217;ve
-implemented this on master, it&amp;#8217;ll be part of the 4.3 release.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Back to where I started, what you actually see there is when LibreOffice is in
-the middle of the import process of the Holy Bible in DOCX format, which takes
-around 12 seconds on my machine. One could say that speed up quite acceptable
-for that amount of data, but with a progressbar, it&amp;#8217;s definitely better. ;-)&lt;/p&gt;&lt;/div&gt;
-</description>
-            <link>http://vmiklos.hu/blog/docx-import-progressbar-in-libreoffice.html</link>
-            <pubDate>Sat, 22 Mar 2014 15:54:39 +0100</pubDate>
-            <guid isPermaLink="false">http://vmiklos.hu/blog/docx-import-progressbar-in-libreoffice.html</guid>
         </item>
     </channel>
 </rss>

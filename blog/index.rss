@@ -5,6 +5,43 @@
         <description></description>
         <link>http://vmiklos.hu/blog/</link>
         <item>
+            <title>UPC vs port forwarding</title>
+            <description>&lt;div class="paragraph"&gt;&lt;p&gt;&lt;a href="http://en.wikipedia.org/wiki/UPC_Broadband"&gt;UPC&lt;/a&gt; traditionally had a setup
+consisting of a cable modem providing internet access to a single computer,
+and then it was up to the users if they use that access to really connect to a
+computer or to a router, providing wireless access and so on.  It seems, these
+days they are more after actually &lt;em&gt;encouraging&lt;/em&gt; people to use their
+subscription on multiple devices&amp;#8201;&amp;#8212;&amp;#8201;possibly that way it&amp;#8217;s easier to sell
+larger packages (like 60 MBit/s download rate instead of 30 MBit/s, etc).  One
+fallout from this move is that they started to replace modems with a
+combination of modems and routers, in this case this is an
+&lt;a href="http://www.ubeeinteractive.com/products/cable/evw3226"&gt;Ubee EVW3226&lt;/a&gt;, with the
+brand removed. I wanted to try out if this new device could replace my
+previous router or not&amp;#8201;&amp;#8212;&amp;#8201;so far it seems to be good enough, though there was
+one pitfall, hence this post.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;It&amp;#8217;s possible to define a range of IP addresses to be used for DHCP purposes,
+though you can&amp;#8217;t serve fixed IP addresses based on the MAC address of the
+clients. Given that my home network isn&amp;#8217;t that large, I can tolerate that: as
+long as there is a range that can be safely used for fixed addresses, I can
+configure that manually.  It&amp;#8217;s also possible to do port forwarding, e.g.
+redirecting the incoming ssh traffic to a given address&amp;#8201;&amp;#8212;&amp;#8201;except you can&amp;#8217;t do
+both at the same time: you can&amp;#8217;t redirect traffic to an address that&amp;#8217;s not
+known (served via DHCP) to the router. Which is a shame, the #1 use case for
+port forwarding is to redirect traffic to a home-server that will then also
+have a fixed IP internally&amp;#8230;&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;So here is a hack that allowed me to still do this: set the start of the range
+of the DHCP served IP&amp;#8217;s exactly to the address of the (to be used in future
+as) fixed address, e.g. 192.168.0.5. Connect with one client, so that the
+address will be &lt;em&gt;known&lt;/em&gt; to the router. Then add the port-forwarding rule,
+finally set the DHCP range back to its original value (in my case I use
+192.168.0.1..99 for fixed addresses and 100+ for dynamic purposes). It&amp;#8217;s a
+stupid trick, but it works&amp;#8230; ;-)&lt;/p&gt;&lt;/div&gt;
+</description>
+            <link>http://vmiklos.hu/blog/upc-port-forward.html</link>
+            <pubDate>Sat, 20 Sep 2014 20:56:33 +0200</pubDate>
+            <guid isPermaLink="false">http://vmiklos.hu/blog/upc-port-forward.html</guid>
+        </item>
+        <item>
             <title>LibreOffice Conference 2014, Bern</title>
             <description>&lt;div class="imageblock" style="text-align:center;"&gt;
 &lt;div class="content"&gt;
@@ -756,53 +793,6 @@ bringás nadrág / mez
             <link>http://vmiklos.hu/blog/bringas-ellenorzo-lista.html</link>
             <pubDate>Thu, 22 May 2014 08:41:18 +0200</pubDate>
             <guid isPermaLink="false">http://vmiklos.hu/blog/bringas-ellenorzo-lista.html</guid>
-        </item>
-        <item>
-            <title>OTRS plugin for Supybot</title>
-            <description>&lt;div class="paragraph"&gt;&lt;p&gt;OTRS is quite different to Bugzilla (what we use for upstream LibreOffice
-development for quite some time). On the plus side, e.g. it has strong support
-for multiple customers. OTOH, it deals with tickets instead of bugs, and sadly
-it doesn&amp;#8217;t have a single identifier for tickets. It has a ticket &lt;em&gt;number&lt;/em&gt;
-(which by default even includes the date), which is searchable, and it has a
-ticket &lt;em&gt;ID&lt;/em&gt;, which is used for URL&amp;#8217;s.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;In case of Bugzilla, you can easily lookup "bug#12345" in Firefox. Create a
-bookmark with the following properties:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-Location: &lt;a href="https://localhost/bugzilla/show_bug.cgi?id=%s"&gt;https://localhost/bugzilla/show_bug.cgi?id=%s&lt;/a&gt;
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-Keyword: bug
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;and then you can just copy&amp;amp;paste bug#12345 to Firefox, replace the # with a
-space, and Firefox will do the right thing.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Unfortunately (due to the above detailed reasons), this is not possible with
-OTRS. So I decided to write a Supybot plugin that can notice "bug#12345" on an
-IRC channel, and give you the clickable URL (after finding out the ticket ID
-from the ticket number).&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;The result is available
-&lt;a href="https://github.com/vmiklos/vmexam/tree/master/python/supybot-otrs"&gt;on GitHub&lt;/a&gt;,
-it looks like this:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="listingblock"&gt;
-&lt;div class="content"&gt;
-&lt;pre&gt;&lt;code&gt;09:58 &amp;lt; vmiklos&amp;gt; bug#1000068
-09:58 &amp;lt; supybot&amp;gt; https://localhost/otrs/index.pl?Action=AgentTicketZoom;TicketID=73&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Given that I found no relevant hits when
-&lt;a href="https://www.google.com/search?q=supybot+%22otrs%22"&gt;searching&lt;/a&gt; for &lt;em&gt;supybot
-otrs&lt;/em&gt;, I hope this code may be useful for others as well.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Thanks to James Scott for his
-&lt;a href="https://github.com/scottjab/supybot-youtube"&gt;YouTube&lt;/a&gt; plugin that helped to
-quickly figure out the relevant Supybot API&amp;#8217;s.&lt;/p&gt;&lt;/div&gt;
-</description>
-            <link>http://vmiklos.hu/blog/supybot-otrs.html</link>
-            <pubDate>Sun, 18 May 2014 11:03:46 +0200</pubDate>
-            <guid isPermaLink="false">http://vmiklos.hu/blog/supybot-otrs.html</guid>
         </item>
     </channel>
 </rss>
