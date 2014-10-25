@@ -5,6 +5,26 @@
         <description></description>
         <link>http://vmiklos.hu/blog/</link>
         <item>
+            <title>The yellow border around the pig</title>
+            <description>&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;a class="image" href="https://lh3.googleusercontent.com/-IhaYMXbDVyo/VEufBghNiHI/AAAAAAAAE4g/8n2DuQ_Edeo/s0/"&gt;
+&lt;img src="https://lh3.googleusercontent.com/-IhaYMXbDVyo/VEufBghNiHI/AAAAAAAAE4g/8n2DuQ_Edeo/s400/" alt="https://lh3.googleusercontent.com/-IhaYMXbDVyo/VEufBghNiHI/AAAAAAAAE4g/8n2DuQ_Edeo/s400/" /&gt;
+&lt;/a&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;It turns out LibreOffice&amp;#8217;s RTF and DOCX import filter ignored borders around Writer
+pictures. Given that this
+&lt;a href="https://bugs.freedesktop.org/show_bug.cgi?id=85179"&gt;worked&lt;/a&gt; in the RTF case in
+the past, it&amp;#8217;s a bit amusing that now the very same commit implements a new
+feature for the DOCX case and at the same time fixes a regression in the RTF
+filter. Code sharing FTW! :-)&lt;/p&gt;&lt;/div&gt;
+</description>
+            <link>http://vmiklos.hu/blog/yellow-pig.html</link>
+            <pubDate>Sat, 25 Oct 2014 15:10:38 +0200</pubDate>
+            <guid isPermaLink="false">http://vmiklos.hu/blog/yellow-pig.html</guid>
+        </item>
+        <item>
             <title>LibreOffice Conference 2014, Bern</title>
             <description>&lt;div class="imageblock" style="text-align:center;"&gt;
 &lt;div class="content"&gt;
@@ -688,116 +708,6 @@ for that amount of data, but with a progressbar, it&amp;#8217;s definitely bette
             <link>http://vmiklos.hu/blog/docx-import-progressbar-in-libreoffice.html</link>
             <pubDate>Sat, 22 Mar 2014 15:54:39 +0100</pubDate>
             <guid isPermaLink="false">http://vmiklos.hu/blog/docx-import-progressbar-in-libreoffice.html</guid>
-        </item>
-        <item>
-            <title>Death of doctok in LibreOffice</title>
-            <description>&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;a class="image" href="https://lh5.googleusercontent.com/-IumGq3jzNdI/UxxG3Deg6QI/AAAAAAAAEFY/Ij7oMS7YyoY/s809/"&gt;
-&lt;img src="https://lh5.googleusercontent.com/-IumGq3jzNdI/UxxG3Deg6QI/AAAAAAAAEFY/Ij7oMS7YyoY/s300/" alt="https://lh5.googleusercontent.com/-IumGq3jzNdI/UxxG3Deg6QI/AAAAAAAAEFY/Ij7oMS7YyoY/s300/" /&gt;
-&lt;/a&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Last year in September we
-&lt;a href="http://lists.freedesktop.org/archives/libreoffice/2013-September/055976.html"&gt;decided&lt;/a&gt;
-to get rid of the writerfilter-based DOC tokenizer, and I volunteered to
-actually do this. As cleanups in general have a low priority, I only
-progressed with this slowly, though yesterday I completed it, that&amp;#8217;s why I&amp;#8217;m
-writing this post. :-)&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Some background: the writerfilter module is responsible for RTF and DOCX
-import in Writer. As the above picture shows, the currently used DOC import is
-independent from it, and there was also an &lt;em&gt;other&lt;/em&gt; DOC import filter, that was
-in writerfilter which was disabled at runtime. As I don&amp;#8217;t like duplication, I
-examined the state of the two filters, and the linked minutes mail details
-how we decided that the old filter will stay, and we&amp;#8217;ll get rid of the
-writerfilter one. It&amp;#8217;s just a matter of deleting that code, right? :-) That&amp;#8217;s
-what I thought first. But then I had to realize that the architecture of
-writerfilter is a bit more complex:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;a class="image" href="https://lh3.googleusercontent.com/-vBMsCsYLRZE/UxxG3PsuI2I/AAAAAAAAEFc/Ly8sQ0ydY1A/s831/"&gt;
-&lt;img src="https://lh3.googleusercontent.com/-vBMsCsYLRZE/UxxG3PsuI2I/AAAAAAAAEFc/Ly8sQ0ydY1A/s400/" alt="https://lh3.googleusercontent.com/-vBMsCsYLRZE/UxxG3PsuI2I/AAAAAAAAEFc/Ly8sQ0ydY1A/s400/" /&gt;
-&lt;/a&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;It has the following components:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-the dmapper (domain mapper), that handles all the nasty complexities of
-  mapping Word concepts to Writer concepts (think of e.g. sections ↔ page
-  styles)
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-one tokenizer for each (RTF, DOCX, DOC) format
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;The traffic between the tokenizers and dmapper is called tokens. Naturally
-it&amp;#8217;s not enough that tokenizers send and dmapper receives these tokens, they
-should be &lt;em&gt;defined&lt;/em&gt; somewhere as well. And that&amp;#8217;s where I realized this work
-will take a bit more time: instead of having a single token definition,
-actually the ooxml tokenizer defined its own grammar, and doctok also defined
-two &lt;em&gt;additional&lt;/em&gt; grammars. And of course dmapper had to handle all of that.
-;-) Given that OOXML is a superset of the DOC/RTF format, it makes sense to
-just use the ooxml grammar, and get rid of the other two.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Especially that&amp;#8201;&amp;#8212;&amp;#8201;by now you probably found this out&amp;#8201;&amp;#8212;&amp;#8201;if I wanted to kill
-doctok, I had to kill the sprm and rtf grammars as well. Otherwise just
-removing doctok would break the RTF and DOCX import as well, as those also
-used the rtf/sprm grammars.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;So at the end, the cleaned up architecture now looks like this:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;a class="image" href="https://lh5.googleusercontent.com/-Iki8jKN61vE/UxxG3FaQc2I/AAAAAAAAEFQ/hWFsR20qB5o/s813/"&gt;
-&lt;img src="https://lh5.googleusercontent.com/-Iki8jKN61vE/UxxG3FaQc2I/AAAAAAAAEFQ/hWFsR20qB5o/s400/" alt="https://lh5.googleusercontent.com/-Iki8jKN61vE/UxxG3FaQc2I/AAAAAAAAEFQ/hWFsR20qB5o/s400/" /&gt;
-&lt;/a&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;And that has multiple advantages:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-It removes quite some code: In &lt;code&gt;libreoffice-4-1&lt;/code&gt;, the doctok was 78849 (!)
-  lines of code (well, part of that was XML data, and some scripts generated
-  C++ code from that).
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-dmapper now doesn&amp;#8217;t have to handle the rtf and sprm grammars anymore, so now
-  there is a &lt;em&gt;single&lt;/em&gt; place in dmapper that handles e.g. the italic character
-  property.
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-Smaller writerfilter binary for the end user: even if doctok wasn&amp;#8217;t enabled
-  at runtime, it was shipped in the installation set.
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-Hopefully it&amp;#8217;s now a bit more easy to understand writerfilter: at least e.g.
-  if you want to look up the place where dmapper handles the character bold
-  ("b") XML tag of OOXML, you don&amp;#8217;t have to know that the binary DOC
-  equivalent of that is sprmCFBold, just because we have an unused DOC tokenizer
-  there as well. :-)
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-Given that DOC and RTF formats are a dead end, I think it&amp;#8217;s a good thing
-  that in writerfilter now &lt;em&gt;the&lt;/em&gt; grammar is OOXML (that keeps introducing new
-  features), rather than some dead format. ;-)
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-</description>
-            <link>http://vmiklos.hu/blog/doctok.html</link>
-            <pubDate>Sun, 09 Mar 2014 12:21:08 +0100</pubDate>
-            <guid isPermaLink="false">http://vmiklos.hu/blog/doctok.html</guid>
         </item>
     </channel>
 </rss>

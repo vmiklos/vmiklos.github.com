@@ -12,5 +12,5 @@ sync:
 	git push
 
 server:
-	@echo "http://localhost:8000/"
+	@echo "http://$(shell ip addr show |grep 'inet ' |grep -v 127.0.0.1 |sed 's|.*inet \([^ /]*\)/.*|\1|;q'):8000/"
 	python -m SimpleHTTPServer 8000
