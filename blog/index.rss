@@ -5,6 +5,130 @@
         <description></description>
         <link>http://vmiklos.hu/blog/</link>
         <item>
+            <title>Document Liberation Project hacking experience</title>
+            <description>&lt;div class="paragraph"&gt;&lt;p&gt;As someone who usually hacks on LibreOffice, external import filters produced
+by the Document Liberation Project cut both ways: they are great, as they deal
+with obscure formats and we get them for free, OTOH hacking such code is more
+complex than the usual LO code. I recently contributed a few patches to
+&lt;a href="http://cgit.freedesktop.org/libreoffice/libvisio/commit/?id=2060d364bc0f7df97b864bf01fc5a27da12061c3"&gt;libvisio&lt;/a&gt;
+and
+&lt;a href="http://sourceforge.net/p/libwpd/libodfgen/ci/fb43d79e12ce132fc127cc0481ff5a6bdbcd1afe/"&gt;libodfgen&lt;/a&gt;,
+but before I was able to do actual code changes, I had to set up a number of
+repositories and configure them to talk to each other&amp;#8201;&amp;#8212;&amp;#8201;this post describes one
+possible setup that suited my needs.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_building_blocks"&gt;Building blocks&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;DLP&amp;#8217;s central project is librevenge and everything builds on top of that,
+either by calling it or called by it. In case the task is to turn VSDX files
+into ODG ones, it looks like this:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;a class="image" href="https://lh3.googleusercontent.com/-cxQ9QnWmyAo/VHoyKdHXSAI/AAAAAAAAFAY/Rqqr8xPorNM/s0/"&gt;
+&lt;img src="https://lh3.googleusercontent.com/-cxQ9QnWmyAo/VHoyKdHXSAI/AAAAAAAAFAY/Rqqr8xPorNM/s400/" alt="https://lh3.googleusercontent.com/-cxQ9QnWmyAo/VHoyKdHXSAI/AAAAAAAAFAY/Rqqr8xPorNM/s400/" /&gt;
+&lt;/a&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;libvisio can build a librevenge document model from Visio files (more on the
+various librevenge-based libraries
+&lt;a href="http://davetardon.wordpress.com/2014/05/06/writing-import-libraries-with-librevenge-part-i-getting-started/"&gt;here&lt;/a&gt;),
+libodfgen can generate ODF output from such document models (one other
+possibility would be e.g.
+&lt;a href="http://sourceforge.net/projects/libepubgen/"&gt;libepubgen&lt;/a&gt;), and the
+writerperfect module provides kind of a controller for the remaining modules,
+e.g. for our purpose, a vsd2odg binary.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_alternatives_considered"&gt;Alternatives considered&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;One possibility is to build LibreOffice, use &lt;code&gt;--with-system-libvisio&lt;/code&gt; and
+similar switches, then clone the repos, install them system-wide (possibly
+with your modifications), and then you can test your changes just with
+building the various libs, without changing your LO build (more
+&lt;a href="http://fridrich.blogspot.hu/2012/01/fosdem-2012-how-to-make-best-of-it-and.html"&gt;here&lt;/a&gt;).
+The drawback is that this way you pollute your system with unstable versions
+of those libs.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;An other possibility is to build LibreOffice as usual, and then use the
+&lt;a href="https://wiki.documentfoundation.org/Development/Patching_External_Libraries"&gt;external
+libraries patching mechanism&lt;/a&gt; to hack on the code. The drawback is that you
+have to work without git on the code, and also you can only work with a
+released version.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_the_pkg_config_approach"&gt;The pkg-config approach&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;So here is what I did to avoid the above mentioned drawbacks: all DLP projects
+use pkg-config to find the required libraries, so you can configure them in a
+way that allows building as a user, avoid installing them at all, and still
+execute vsd2odg using the libs with your changes. Here is how to do it:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+librevenge:
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;&lt;code&gt;git clone git://git.code.sf.net/p/libwpd/librevenge&lt;/code&gt;&lt;br /&gt;
+&lt;code&gt;cd librevenge&lt;/code&gt;&lt;br /&gt;
+&lt;code&gt;./autogen.sh&lt;/code&gt;&lt;br /&gt;
+&lt;code&gt;./configure --enable-debug&lt;/code&gt;&lt;br /&gt;
+&lt;code&gt;make&lt;/code&gt;&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+libvisio:
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;&lt;code&gt;git clone git://gerrit.libreoffice.org/libvisio&lt;/code&gt;&lt;br /&gt;
+&lt;code&gt;cd libvisio&lt;/code&gt;&lt;br /&gt;
+&lt;code&gt;./autogen.sh&lt;/code&gt;&lt;br /&gt;
+&lt;code&gt;./configure REVENGE_CFLAGS="-I/home/vmiklos/git/libreoffice/librevenge/inc" REVENGE_LIBS="-L/home/vmiklos/git/libreoffice/librevenge/src/lib/.libs/ -lrevenge-0.0" REVENGE_GENERATORS_CFLAGS="-I/home/vmiklos/git/libreoffice/librevenge/inc" REVENGE_GENERATORS_LIBS="-L/home/vmiklos/git/libreoffice/librevenge/src/lib/.libs/ -lrevenge-generators-0.0" REVENGE_STREAM_CFLAGS="-I/home/vmiklos/git/libreoffice/librevenge/inc" REVENGE_STREAM_LIBS="-L/home/vmiklos/git/libreoffice/librevenge/src/lib/.libs/ -lrevenge-stream-0.0" --enable-debug&lt;/code&gt;&lt;br /&gt;
+&lt;code&gt;make&lt;/code&gt;&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+libodfgen:
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;&lt;code&gt;git clone git://git.code.sf.net/p/libwpd/libodfgen&lt;/code&gt;&lt;br /&gt;
+&lt;code&gt;cd libodfgen&lt;/code&gt;&lt;br /&gt;
+&lt;code&gt;./autogen.sh&lt;/code&gt;&lt;br /&gt;
+&lt;code&gt;./configure REVENGE_CFLAGS="-I/home/vmiklos/git/libreoffice/librevenge/inc" REVENGE_LIBS="-L/home/vmiklos/git/libreoffice/librevenge/src/lib/.libs/ -lrevenge-0.0" REVENGE_STREAM_CFLAGS="-I/home/vmiklos/git/libreoffice/librevenge/inc" REVENGE_STREAM_LIBS="-L/home/vmiklos/git/libreoffice/librevenge/src/lib/.libs/ -lrevenge-stream-0.0" --enable-debug&lt;/code&gt;&lt;br /&gt;
+&lt;code&gt;make&lt;/code&gt;&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+writerperfect:
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;&lt;code&gt;git clone git://git.code.sf.net/p/libwpd/writerperfect&lt;/code&gt;&lt;br /&gt;
+&lt;code&gt;cd writerperfect&lt;/code&gt;&lt;br /&gt;
+&lt;code&gt;./autogen.sh&lt;/code&gt;&lt;br /&gt;
+&lt;code&gt;./configure REVENGE_CFLAGS="-I/home/vmiklos/git/libreoffice/librevenge/inc" REVENGE_LIBS="-L/home/vmiklos/git/libreoffice/librevenge/src/lib/.libs/ -lrevenge-0.0" REVENGE_STREAM_CFLAGS="-I/home/vmiklos/git/libreoffice/librevenge/inc" REVENGE_STREAM_LIBS="-L/home/vmiklos/git/libreoffice/librevenge/src/lib/.libs/ -lrevenge-stream-0.0" ODFGEN_CFLAGS="-I/home/vmiklos/git/libreoffice/libodfgen/inc" ODFGEN_LIBS="-L/home/vmiklos/git/libreoffice/libodfgen/src/.libs -lodfgen-0.1 -lrevenge-0.0 -lrevenge-stream-0.0" VISIO_CFLAGS="-I/home/vmiklos/git/libreoffice/libvisio/inc" VISIO_LIBS="-L/home/vmiklos/git/libreoffice/libvisio/src/lib/.libs -lvisio-0.1 -lrevenge-0.0" --enable-debug --with-libvisio&lt;/code&gt;&lt;br /&gt;&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Of course, replace &lt;code&gt;/home/vmiklos/git/libreoffice/&lt;/code&gt; with any other directory
+you like, just be consistent. ;-)&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Now you can hack on any of these libraries, you just need to build your
+changes, and then vsd2odg will produce a flat ODG that you can quickly test
+with any ODF processor, like LibreOffice. One remaining trick (in case you&amp;#8217;re
+not an autotools expert) is that vsd2odg is a libtool shell script, not a
+binary. If you still want to ran the underlying binary in gdb, here is how you
+can do that:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;&lt;code&gt;libtool --mode=execute gdb --args vsd2odg /home/vmiklos/git/libreoffice/test.vsdx&lt;/code&gt;&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;In case the above considered two alternatives are not sufficient for your
+purposes, then I hope you find this setup useful. ;-)&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+            <link>http://vmiklos.hu/blog/libvisio-setup.html</link>
+            <pubDate>Sat, 29 Nov 2014 22:28:35 +0100</pubDate>
+            <guid isPermaLink="false">http://vmiklos.hu/blog/libvisio-setup.html</guid>
+        </item>
+        <item>
             <title>Kása</title>
             <description>&lt;div class="imageblock" style="text-align:center;"&gt;
 &lt;div class="content"&gt;
@@ -635,49 +759,6 @@ code base. For the gory details, you always need to read the code anyway. ;-)&lt
             <link>http://vmiklos.hu/blog/lo-writer-training-2014.html</link>
             <pubDate>Tue, 08 Jul 2014 12:52:24 +0200</pubDate>
             <guid isPermaLink="false">http://vmiklos.hu/blog/lo-writer-training-2014.html</guid>
-        </item>
-        <item>
-            <title>CLUC 2014 Conference</title>
-            <description>&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;a class="image" href="https://speakerdeck.com/vmiklos/4-dot-3"&gt;
-&lt;img src="https://lh4.googleusercontent.com/-8H5VKexBW1Q/U6Kz9kfXv7I/AAAAAAAAEX8/GVuWhXuueUs/s400/" alt="https://lh4.googleusercontent.com/-8H5VKexBW1Q/U6Kz9kfXv7I/AAAAAAAAEX8/GVuWhXuueUs/s400/" /&gt;
-&lt;/a&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;I&amp;#8217;ve arrived home yesterday from Zagreb where I
-&lt;a href="http://2014.dorscluc.org/en/keynotes/#miklos"&gt;gave a keynote&lt;/a&gt; at CLUC 2014
-&lt;a href="http://2014.dorscluc.org/en/conference-schedule/"&gt;on Tuesday&lt;/a&gt;.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Here are a few talks I enjoyed:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-Dave Whiteland&amp;#8217;s &lt;a href="https://www.mysociety.org/"&gt;mysociety.org&lt;/a&gt; talk
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="http://en.wikipedia.org/wiki/Harald_Welte"&gt;Harald Welte&lt;/a&gt;'s
-  &lt;a href="http://osmocom.org/"&gt;osmocom.org&lt;/a&gt; talk
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-Elizabeth Krumbach Joseph&amp;#8217;s &lt;a href="http://openstack.org"&gt;OpenStack&lt;/a&gt; talk (explaining
-  how do they use gerrit, git-review and related tools)
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;I also took a &lt;a href="http://vmiklos.hu/panoramas/zagreb.html"&gt;panorama&lt;/a&gt; and some
-pictures, available
-&lt;a href="https://picasaweb.google.com/104737754628780823336/20140619_Zagrab"&gt;here&lt;/a&gt;,
-including photos of some speakers.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Thanks Elizabeth for the above photo, and also to the organizers of the
-conference, it was a great one! ;-)&lt;/p&gt;&lt;/div&gt;
-</description>
-            <link>http://vmiklos.hu/blog/cluc2014.html</link>
-            <pubDate>Thu, 19 Jun 2014 12:14:12 +0200</pubDate>
-            <guid isPermaLink="false">http://vmiklos.hu/blog/cluc2014.html</guid>
         </item>
     </channel>
 </rss>
