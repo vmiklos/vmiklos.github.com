@@ -11,6 +11,9 @@ sync: check
 	cd ../rejourn/in; git push
 	git push
 
+backup:
+	(cd ~/mnt/backup/git/staging.vmiklos.hu/; rsync --delete -avP $(PWD)/../ .)
+
 check:
 	$(MAKE) -C ../rejourn/in check
 
