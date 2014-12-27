@@ -5,6 +5,59 @@
         <description></description>
         <link>http://vmiklos.hu/blog/</link>
         <item>
+            <title>Fixing the cloud problem</title>
+            <description>&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;a class="image" href="https://lh3.googleusercontent.com/-0aWZ5rvDWI4/VJ3tCCh9wcI/AAAAAAAAFHA/A1P8Un5ksrw/s0/"&gt;
+&lt;img src="https://lh3.googleusercontent.com/-0aWZ5rvDWI4/VJ3tCCh9wcI/AAAAAAAAFHA/A1P8Un5ksrw/s400/" alt="https://lh3.googleusercontent.com/-0aWZ5rvDWI4/VJ3tCCh9wcI/AAAAAAAAFHA/A1P8Un5ksrw/s400/" /&gt;
+&lt;/a&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;TL;DR: see above -- a number of preset shapes are now rendered correctly at
+any scale factors, where previously rendering problems occurred.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;&lt;a href="https://bugs.freedesktop.org/show_bug.cgi?id=87448"&gt;fdo#87448&lt;/a&gt; has a reproducer
+document that shows rendering errors with the scaled cloud preset shape
+definition. At first I thought that the OOXML spec has wrong definition for
+this shape type, but that turned out to be not the case. What was a problem is
+our implementation of the drawingML arcTo command. This implementation defines
+how we render such arcs as polygons when the shape is to be painted, and given
+that LibreOffice has native support for the drawingML arcTo / ODF G command,
+this implementation is invoked during rendering, it&amp;#8217;s not an import/export
+problem.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The rendering result looked like this before:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;a class="image" href="https://lh3.googleusercontent.com/-tYg4cifemAs/VJ3tCEHtf9I/AAAAAAAAFG8/WzioMo1AkMA/s0/"&gt;
+&lt;img src="https://lh3.googleusercontent.com/-tYg4cifemAs/VJ3tCEHtf9I/AAAAAAAAFG8/WzioMo1AkMA/s400/" alt="https://lh3.googleusercontent.com/-tYg4cifemAs/VJ3tCEHtf9I/AAAAAAAAFG8/WzioMo1AkMA/s400/" /&gt;
+&lt;/a&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The cloud is drawn using a set of moveTo and arcTo commands. MoveTo is easier,
+as it uses explicit coordinates, but arcTo is more complex. It has 4
+parameters: the height and width of a "circle", and the start / end angle of
+an arc on that circle. (Of course if height and width do not equal, than
+that&amp;#8217;s no longer a circle&amp;#8230; ;-) ) The problem is that due to this, the
+distance vector between the arc&amp;#8217;s start and end points is implicit&amp;#8201;&amp;#8212;&amp;#8201;so if
+something is miscalculated, errors are nicely added to each other as more and
+more arcs are drawn. This is especially a problem if you later return to the
+end of an earlier arc using moveTo: if arcTo has some problem, then it&amp;#8217;ll be
+clearly visible.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;After
+&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=20f8006e21943b08f1f152e4a0359c9ebe4786f2"&gt;fixing
+UNO ARCANGLETO&lt;/a&gt; to only take care of scaling / translation only after counting
+the actual arc, we started to produce correct end points for the arcs and
+shapes started to appear correctly at any scale factor, yay! :-)&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;One remaining problem was how to test this from cppunit, in the above commit I
+exported the shape to a metafile, and then I could use Tomaž's excellent
+MetafileXmlDump to assert that the end of an arc (implicit location) and the
+parameters of a moveTo command (explicit location) equal&amp;#8201;&amp;#8212;&amp;#8201;when they do not,
+that&amp;#8217;s what your eyes call a "rendering problem".&lt;/p&gt;&lt;/div&gt;
+</description>
+            <link>http://vmiklos.hu/blog/cloud.html</link>
+            <pubDate>Sat, 27 Dec 2014 12:21:56 +0100</pubDate>
+            <guid isPermaLink="false">http://vmiklos.hu/blog/cloud.html</guid>
+        </item>
+        <item>
             <title>Document Liberation Project hacking experience</title>
             <description>&lt;div class="paragraph"&gt;&lt;p&gt;As someone who usually hacks on LibreOffice, external import filters produced
 by the Document Liberation Project cut both ways: they are great, as they deal
@@ -755,51 +808,6 @@ conference, it was a great one! ;-)&lt;/p&gt;&lt;/div&gt;
             <link>http://vmiklos.hu/blog/cluc2014.html</link>
             <pubDate>Thu, 19 Jun 2014 12:14:12 +0200</pubDate>
             <guid isPermaLink="false">http://vmiklos.hu/blog/cluc2014.html</guid>
-        </item>
-        <item>
-            <title>Improved handling of track changes in groupshape text</title>
-            <description>&lt;div class="paragraph"&gt;&lt;p&gt;Shapes in Writer are provided by LibreOffice&amp;#8217;s drawing layer&amp;#8201;&amp;#8212;&amp;#8201;they are
-independent from the normal Writer paragraphs. Given that the drawing layer
-does not support tracking changes, just Writer&amp;#8217;s "native" paragraphs, fully
-featured tracked changes in real shape text would be quite some work. In case
-of ODF, the markup describes tracked changes in a way, so that in case the
-reader does not support tracking changes, it can at least read the normal and
-inserted text, i.e. the current version.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;This is exactly what I
-&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=e6300f83d08fd959596551dcd660eb0fbfb248a6"&gt;implemented&lt;/a&gt;
-in the DOCX import filter now:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;a class="image" href="https://lh5.googleusercontent.com/-8q4PA4ru1KE/U5RZB7SxKdI/AAAAAAAAETs/6_avZ3q04T0/s0/"&gt;
-&lt;img src="https://lh5.googleusercontent.com/-8q4PA4ru1KE/U5RZB7SxKdI/AAAAAAAAETs/6_avZ3q04T0/s400/" alt="https://lh5.googleusercontent.com/-8q4PA4ru1KE/U5RZB7SxKdI/AAAAAAAAETs/6_avZ3q04T0/s400/" /&gt;
-&lt;/a&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Previously we just ignored both inserted and deleted text, so if you had
-content which was all either deleted or inserted, you ended up having no shape
-text at all (can be tested using e.g.
-&lt;a href="http://cgit.freedesktop.org/libreoffice/core/tree/sw/qa/extras/ooxmlimport/data/groupshape-trackedchanges.docx"&gt;this
-test document&lt;/a&gt;):&lt;/p&gt;&lt;/div&gt;
-&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;a class="image" href="https://lh4.googleusercontent.com/-NQOH4joafZA/U5RZBjGVO5I/AAAAAAAAETo/3WGNKc3j80c/s0/"&gt;
-&lt;img src="https://lh4.googleusercontent.com/-NQOH4joafZA/U5RZBjGVO5I/AAAAAAAAETo/3WGNKc3j80c/s400/" alt="https://lh4.googleusercontent.com/-NQOH4joafZA/U5RZBjGVO5I/AAAAAAAAETo/3WGNKc3j80c/s400/" /&gt;
-&lt;/a&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;To be fair, the reference layout looks like this:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;a class="image" href="https://lh6.googleusercontent.com/-hyCX0lGuEck/U5RZBn27CbI/AAAAAAAAET0/91WKFnyEhQ0/s0/"&gt;
-&lt;img src="https://lh6.googleusercontent.com/-hyCX0lGuEck/U5RZBn27CbI/AAAAAAAAET0/91WKFnyEhQ0/s400/" alt="https://lh6.googleusercontent.com/-hyCX0lGuEck/U5RZBn27CbI/AAAAAAAAET0/91WKFnyEhQ0/s400/" /&gt;
-&lt;/a&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;I still hope to fix that as well one day, but the above fix is something we&amp;#8217;ll already provide in 4.3. :-)&lt;/p&gt;&lt;/div&gt;
-</description>
-            <link>http://vmiklos.hu/blog/groupshape-changetracking.html</link>
-            <pubDate>Sun, 08 Jun 2014 14:47:42 +0200</pubDate>
-            <guid isPermaLink="false">http://vmiklos.hu/blog/groupshape-changetracking.html</guid>
         </item>
     </channel>
 </rss>

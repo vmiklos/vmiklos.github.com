@@ -5,6 +5,59 @@
         <description></description>
         <link>http://vmiklos.hu/blog/</link>
         <item>
+            <title>Fixing the cloud problem</title>
+            <description>&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;a class="image" href="https://lh3.googleusercontent.com/-0aWZ5rvDWI4/VJ3tCCh9wcI/AAAAAAAAFHA/A1P8Un5ksrw/s0/"&gt;
+&lt;img src="https://lh3.googleusercontent.com/-0aWZ5rvDWI4/VJ3tCCh9wcI/AAAAAAAAFHA/A1P8Un5ksrw/s400/" alt="https://lh3.googleusercontent.com/-0aWZ5rvDWI4/VJ3tCCh9wcI/AAAAAAAAFHA/A1P8Un5ksrw/s400/" /&gt;
+&lt;/a&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;TL;DR: see above -- a number of preset shapes are now rendered correctly at
+any scale factors, where previously rendering problems occurred.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;&lt;a href="https://bugs.freedesktop.org/show_bug.cgi?id=87448"&gt;fdo#87448&lt;/a&gt; has a reproducer
+document that shows rendering errors with the scaled cloud preset shape
+definition. At first I thought that the OOXML spec has wrong definition for
+this shape type, but that turned out to be not the case. What was a problem is
+our implementation of the drawingML arcTo command. This implementation defines
+how we render such arcs as polygons when the shape is to be painted, and given
+that LibreOffice has native support for the drawingML arcTo / ODF G command,
+this implementation is invoked during rendering, it&amp;#8217;s not an import/export
+problem.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The rendering result looked like this before:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;a class="image" href="https://lh3.googleusercontent.com/-tYg4cifemAs/VJ3tCEHtf9I/AAAAAAAAFG8/WzioMo1AkMA/s0/"&gt;
+&lt;img src="https://lh3.googleusercontent.com/-tYg4cifemAs/VJ3tCEHtf9I/AAAAAAAAFG8/WzioMo1AkMA/s400/" alt="https://lh3.googleusercontent.com/-tYg4cifemAs/VJ3tCEHtf9I/AAAAAAAAFG8/WzioMo1AkMA/s400/" /&gt;
+&lt;/a&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The cloud is drawn using a set of moveTo and arcTo commands. MoveTo is easier,
+as it uses explicit coordinates, but arcTo is more complex. It has 4
+parameters: the height and width of a "circle", and the start / end angle of
+an arc on that circle. (Of course if height and width do not equal, than
+that&amp;#8217;s no longer a circle&amp;#8230; ;-) ) The problem is that due to this, the
+distance vector between the arc&amp;#8217;s start and end points is implicit&amp;#8201;&amp;#8212;&amp;#8201;so if
+something is miscalculated, errors are nicely added to each other as more and
+more arcs are drawn. This is especially a problem if you later return to the
+end of an earlier arc using moveTo: if arcTo has some problem, then it&amp;#8217;ll be
+clearly visible.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;After
+&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=20f8006e21943b08f1f152e4a0359c9ebe4786f2"&gt;fixing
+UNO ARCANGLETO&lt;/a&gt; to only take care of scaling / translation only after counting
+the actual arc, we started to produce correct end points for the arcs and
+shapes started to appear correctly at any scale factor, yay! :-)&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;One remaining problem was how to test this from cppunit, in the above commit I
+exported the shape to a metafile, and then I could use Tomaž's excellent
+MetafileXmlDump to assert that the end of an arc (implicit location) and the
+parameters of a moveTo command (explicit location) equal&amp;#8201;&amp;#8212;&amp;#8201;when they do not,
+that&amp;#8217;s what your eyes call a "rendering problem".&lt;/p&gt;&lt;/div&gt;
+</description>
+            <link>http://vmiklos.hu/blog/cloud.html</link>
+            <pubDate>Sat, 27 Dec 2014 12:21:56 +0100</pubDate>
+            <guid isPermaLink="false">http://vmiklos.hu/blog/cloud.html</guid>
+        </item>
+        <item>
             <title>Document Liberation Project hacking experience</title>
             <description>&lt;div class="paragraph"&gt;&lt;p&gt;As someone who usually hacks on LibreOffice, external import filters produced
 by the Document Liberation Project cut both ways: they are great, as they deal
@@ -723,42 +776,6 @@ before 4.4 gets branched off. Last, but not at least, thanks for
             <link>http://vmiklos.hu/blog/textbox.html</link>
             <pubDate>Wed, 16 Jul 2014 13:33:38 +0200</pubDate>
             <guid isPermaLink="false">http://vmiklos.hu/blog/textbox.html</guid>
-        </item>
-        <item>
-            <title>Updated Writer training slides</title>
-            <description>&lt;div style="text-align: center; font-size: 0.6em;"&gt;
-&lt;img src="https://lh4.googleusercontent.com/-qJiiajLRZ7A/U7vLBcDzbBI/AAAAAAAAEf0/mo6E4QbfVWU/s400/"/&gt;
-&lt;p&gt;(via &lt;a href="https://www.flickr.com/photos/michaeljosh/4382953112/"&gt;michaeljosh&lt;/a&gt;)&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Last year I
-&lt;a href="https://speakerdeck.com/vmiklos/libreoffice-writer-training"&gt;published&lt;/a&gt; some
-Writer training slides, which are hopefully a useful extension to in-tree
-documentation like
-&lt;a href="http://cgit.freedesktop.org/libreoffice/core/tree/sw/README"&gt;sw/README&lt;/a&gt; and
-&lt;a href="http://cgit.freedesktop.org/libreoffice/core/tree/sw/qa/extras/README"&gt;sw/qa/extras/README&lt;/a&gt;.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Last week I reviewed those slides and realized that some of them are outdated. So here comes an updated version:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://speakerdeck.com/vmiklos/writer-training-number-1-2014"&gt;first part&lt;/a&gt;,
-  up to, but not including layout
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://speakerdeck.com/vmiklos/writer-training-number-2-2014"&gt;second part&lt;/a&gt;,
-  starting from the layout
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;The intention is that these build nicely on top of Michael&amp;#8217;s
-&lt;a href="https://people.gnome.org/~michael/blog/2013-07-26.html"&gt;generic intro&lt;/a&gt; slides,
-and with that, the reader can have a good "big picture" understanding of the
-code base. For the gory details, you always need to read the code anyway. ;-)&lt;/p&gt;&lt;/div&gt;
-</description>
-            <link>http://vmiklos.hu/blog/lo-writer-training-2014.html</link>
-            <pubDate>Tue, 08 Jul 2014 12:52:24 +0200</pubDate>
-            <guid isPermaLink="false">http://vmiklos.hu/blog/lo-writer-training-2014.html</guid>
         </item>
     </channel>
 </rss>

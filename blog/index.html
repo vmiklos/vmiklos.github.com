@@ -50,11 +50,11 @@
 <div id="alltags-menu">
 	Tags:
 	<div>&#187;<a href="/blog/tags/hu.html">hu</a> (1201)</div>
-	<div>&#187;<a href="/blog/tags/en.html">en</a> (512)</div>
-	<div>&#187;<a href="/blog/tags/hacking.html">hacking</a> (417)</div>
+	<div>&#187;<a href="/blog/tags/en.html">en</a> (513)</div>
+	<div>&#187;<a href="/blog/tags/hacking.html">hacking</a> (416)</div>
 	<div>&#187;<a href="/blog/tags/film.html">film</a> (286)</div>
 	<div>&#187;<a href="/blog/tags/geek.html">geek</a> (82)</div>
-	<div>&#187;<a href="/blog/tags/libreoffice.html">libreoffice</a> (62)</div>
+	<div>&#187;<a href="/blog/tags/libreoffice.html">libreoffice</a> (64)</div>
 	<div>&#187;<a href="/blog/tags/bringa.html">bringa</a> (60)</div>
 	<div>&#187;<a href="/blog/tags/konyv.html">konyv</a> (44)</div>
 	<div>&#187;<a href="/blog/tags/misc.html">misc</a> (37)</div>
@@ -74,12 +74,13 @@
 	<div>&#187;<a href="/blog/tags/kde.html">kde</a> (1)</div>
 	<div>&#187;<a href="/blog/tags/libwpd.html">libwpd</a> (1)</div>
 	<div>&#187;<a href="/blog/tags/karacsony.html">karacsony</a> (1)</div>
+	<div>&#187;<a href="/blog/tags/upc.html">upc</a> (1)</div>
 	<div>&#187;<a href="/blog/tags/google.html">google</a> (1)</div>
 	<div>&#187;<a href="/blog/tags/fail.html">fail</a> (1)</div>
 	<div>&#187;<a href="/blog/tags/openstack.html">openstack</a> (1)</div>
 	<div>&#187;<a href="/blog/tags/mdadm.html">mdadm</a> (1)</div>
 	<div>&#187;<a href="/blog/tags/w3c.html">w3c</a> (1)</div>
-	<div>&#187;<a href="/blog/tags/networking.html">networking</a> (1)</div>
+	<div>&#187;<a href="/blog/tags/java.html">java</a> (1)</div>
 	<div>&#187;<a href="/blog/tags/greasemonkey.html">greasemonkey</a> (1)</div>
 	<div>&#187;<a href="/blog/tags/auto.html">auto</a> (1)</div>
 	<div>&#187;<a href="/blog/tags/otrs.html">otrs</a> (1)</div>
@@ -88,10 +89,9 @@
 	<div>&#187;<a href="/blog/tags/python.html">python</a> (1)</div>
 	<div>&#187;<a href="/blog/tags/howto.html">howto</a> (1)</div>
 	<div>&#187;<a href="/blog/tags/openoffice.html">openoffice</a> (1)</div>
-	<div>&#187;<a href="/blog/tags/java.html">java</a> (1)</div>
+	<div>&#187;<a href="/blog/tags/networking.html">networking</a> (1)</div>
 	<div>&#187;<a href="/blog/tags/gpsbabel.html">gpsbabel</a> (1)</div>
 	<div>&#187;<a href="/blog/tags/supybot.html">supybot</a> (1)</div>
-	<div>&#187;<a href="/blog/tags/upc.html">upc</a> (1)</div>
 	<div>&#187;<a href="/blog/tags/lcov.html">lcov</a> (1)</div>
 	<div>&#187;<a href="/blog/tags/nyaralas.html">nyaralas</a> (1)</div>
 </div>
@@ -110,6 +110,55 @@
 
 <!-- Listing -->
 <div class="ulist"><ul>
+<li><p>Saturday, 27 December 2014<br /><a href="/blog/cloud.html">Fixing the cloud problem</a>
+(<a href="/blog/cloud.html#disqus_thread">Comments</a>)
+</p><p><div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh3.googleusercontent.com/-0aWZ5rvDWI4/VJ3tCCh9wcI/AAAAAAAAFHA/A1P8Un5ksrw/s0/">
+<img src="https://lh3.googleusercontent.com/-0aWZ5rvDWI4/VJ3tCCh9wcI/AAAAAAAAFHA/A1P8Un5ksrw/s400/" alt="https://lh3.googleusercontent.com/-0aWZ5rvDWI4/VJ3tCCh9wcI/AAAAAAAAFHA/A1P8Un5ksrw/s400/" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>TL;DR: see above -- a number of preset shapes are now rendered correctly at
+any scale factors, where previously rendering problems occurred.</p></div>
+<div class="paragraph"><p><a href="https://bugs.freedesktop.org/show_bug.cgi?id=87448">fdo#87448</a> has a reproducer
+document that shows rendering errors with the scaled cloud preset shape
+definition. At first I thought that the OOXML spec has wrong definition for
+this shape type, but that turned out to be not the case. What was a problem is
+our implementation of the drawingML arcTo command. This implementation defines
+how we render such arcs as polygons when the shape is to be painted, and given
+that LibreOffice has native support for the drawingML arcTo / ODF G command,
+this implementation is invoked during rendering, it&#8217;s not an import/export
+problem.</p></div>
+<div class="paragraph"><p>The rendering result looked like this before:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh3.googleusercontent.com/-tYg4cifemAs/VJ3tCEHtf9I/AAAAAAAAFG8/WzioMo1AkMA/s0/">
+<img src="https://lh3.googleusercontent.com/-tYg4cifemAs/VJ3tCEHtf9I/AAAAAAAAFG8/WzioMo1AkMA/s400/" alt="https://lh3.googleusercontent.com/-tYg4cifemAs/VJ3tCEHtf9I/AAAAAAAAFG8/WzioMo1AkMA/s400/" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>The cloud is drawn using a set of moveTo and arcTo commands. MoveTo is easier,
+as it uses explicit coordinates, but arcTo is more complex. It has 4
+parameters: the height and width of a "circle", and the start / end angle of
+an arc on that circle. (Of course if height and width do not equal, than
+that&#8217;s no longer a circle&#8230; ;-) ) The problem is that due to this, the
+distance vector between the arc&#8217;s start and end points is implicit&#8201;&#8212;&#8201;so if
+something is miscalculated, errors are nicely added to each other as more and
+more arcs are drawn. This is especially a problem if you later return to the
+end of an earlier arc using moveTo: if arcTo has some problem, then it&#8217;ll be
+clearly visible.</p></div>
+<div class="paragraph"><p>After
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=20f8006e21943b08f1f152e4a0359c9ebe4786f2">fixing
+UNO ARCANGLETO</a> to only take care of scaling / translation only after counting
+the actual arc, we started to produce correct end points for the arcs and
+shapes started to appear correctly at any scale factor, yay! :-)</p></div>
+<div class="paragraph"><p>One remaining problem was how to test this from cppunit, in the above commit I
+exported the shape to a metafile, and then I could use Tomaž's excellent
+MetafileXmlDump to assert that the end of an arc (implicit location) and the
+parameters of a moveTo command (explicit location) equal&#8201;&#8212;&#8201;when they do not,
+that&#8217;s what your eyes call a "rendering problem".</p></div>
+</p><hr/></li>
 <li><p>Saturday, 29 November 2014<br /><a href="/blog/libvisio-setup.html">Document Liberation Project hacking experience</a>
 (<a href="/blog/libvisio-setup.html#disqus_thread">Comments</a>)
 </p><p><div class="paragraph"><p>As someone who usually hacks on LibreOffice, external import filters produced
@@ -793,38 +842,6 @@ before 4.4 gets branched off. Last, but not at least, thanks for
 <a href="http://www.cloudon.com/">CloudOn</a> for funding these improvements! :-)</p></div>
 </div>
 </div>
-</p><hr/></li>
-<li><p>Tuesday, 08 July 2014<br /><a href="/blog/lo-writer-training-2014.html">Updated Writer training slides</a>
-(<a href="/blog/lo-writer-training-2014.html#disqus_thread">Comments</a>)
-</p><p><div style="text-align: center; font-size: 0.6em;">
-<img src="https://lh4.googleusercontent.com/-qJiiajLRZ7A/U7vLBcDzbBI/AAAAAAAAEf0/mo6E4QbfVWU/s400/"/>
-<p>(via <a href="https://www.flickr.com/photos/michaeljosh/4382953112/">michaeljosh</a>)</p>
-</div>
-<div class="paragraph"><p>Last year I
-<a href="https://speakerdeck.com/vmiklos/libreoffice-writer-training">published</a> some
-Writer training slides, which are hopefully a useful extension to in-tree
-documentation like
-<a href="http://cgit.freedesktop.org/libreoffice/core/tree/sw/README">sw/README</a> and
-<a href="http://cgit.freedesktop.org/libreoffice/core/tree/sw/qa/extras/README">sw/qa/extras/README</a>.</p></div>
-<div class="paragraph"><p>Last week I reviewed those slides and realized that some of them are outdated. So here comes an updated version:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-<a href="https://speakerdeck.com/vmiklos/writer-training-number-1-2014">first part</a>,
-  up to, but not including layout
-</p>
-</li>
-<li>
-<p>
-<a href="https://speakerdeck.com/vmiklos/writer-training-number-2-2014">second part</a>,
-  starting from the layout
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>The intention is that these build nicely on top of Michael&#8217;s
-<a href="https://people.gnome.org/~michael/blog/2013-07-26.html">generic intro</a> slides,
-and with that, the reader can have a good "big picture" understanding of the
-code base. For the gory details, you always need to read the code anyway. ;-)</p></div>
 </p><hr/></li>
 </ul></div>
 <a href="/blog/archive.html">more &raquo;</a>
