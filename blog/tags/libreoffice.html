@@ -62,6 +62,56 @@
 
 <!-- Listing -->
 <div class="ulist"><ul>
+<li><p>Saturday, 10 January 2015<br /><a href="/blog/export-validation.html">Export validation as a new year's resolution</a>
+(<a href="/blog/export-validation.html#disqus_thread">Comments</a>)
+</p><p><div class="paragraph"><p>TL;DR: If you touch the ODF and/or OOXML filters in LibreOffice, please use
+the <code>--with-export-validation</code> configure option after you ran the
+<a href="https://gerrit.libreoffice.org/gitweb?p=dev-tools.git;a=blob;f=export-validation/setup.sh;hb=HEAD">setup.sh</a>
+script.</p></div>
+<div class="paragraph"><p><a href="https://mmohrhard.wordpress.com/">Markus Mohrhard</a> did an excellent job with
+adding the <code>--with-export-validation</code> build switch to LibreOffice. It does the
+following:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+it validates every Calc and Impress zippped XML document (both ODF and
+  OOXML) produced during the build by export filters
+</p>
+</li>
+<li>
+<p>
+it does the same for Writer, except there only a subset of documents are
+  validated
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>One remaining <a href="https://bugs.freedesktop.org/show_bug.cgi?id=84600">problem</a> was
+that it required setting up both
+<a href="http://incubator.apache.org/odftoolkit/conformance/ODFValidator.html">odfvalidator</a>
+and <a href="https://code.google.com/p/officeotron/">officeotron</a>, neither of them are
+standard GNU projects but Java beasts. So even if I and a number of other
+developers do use this option, it happens from time to time that we need to
+fix new validation regressions, as others don&#8217;t see the problem; and even if
+we point it out, it&#8217;s hard to reproduce for the author of the problematic
+commit.</p></div>
+<div class="paragraph"><p>This has just changed, all you need is to get <code>export-validation/setup.sh</code>
+from <a href="https://gerrit.libreoffice.org/gitweb?p=dev-tools.git">dev-tools.git</a>, and run it like this:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>./setup.sh ~/svn /opt/lo/bin</code></pre>
+</div></div>
+<div class="paragraph"><p>I.e. the first parameter is a working directory and the second is a directory
+that&#8217;s writable by you and is already in your path. And then wait a bit&#8230; ODF
+validator uses maven as a build system, so how much you have to wait depends
+on how much of the maven dependencies you already have in your local cache&#8230;
+it&#8217;s typically 5 to 15 minutes.</p></div>
+<div class="paragraph"><p>Once it&#8217;s done, you can add <code>--with-export-validation</code> to your autogen.input
+and then toplevel <code>make</code> will invoke odfvalidator and officeotron for the
+above mentioned documents.</p></div>
+<div class="paragraph"><p>The new year is here, if you don&#8217;t have a new year&#8217;s resolution yet&#8201;&#8212;&#8201;or if
+you hate those, but you&#8217;re willing to adopt a new habit from time to time&#8201;&#8212;&#8201;then please consider <code>--with-export-validation</code>, so that such regressions can
+be detected before you publish your changes. Thanks! ;-)</p></div>
+</p><hr/></li>
 <li><p>Saturday, 27 December 2014<br /><a href="/blog/cloud.html">Fixing the cloud problem</a>
 (<a href="/blog/cloud.html#disqus_thread">Comments</a>)
 </p><p><div class="imageblock" style="text-align:center;">
@@ -793,47 +843,6 @@ pictures, available
 including photos of some speakers.</p></div>
 <div class="paragraph"><p>Thanks Elizabeth for the above photo, and also to the organizers of the
 conference, it was a great one! ;-)</p></div>
-</p><hr/></li>
-<li><p>Sunday, 08 June 2014<br /><a href="/blog/groupshape-changetracking.html">Improved handling of track changes in groupshape text</a>
-(<a href="/blog/groupshape-changetracking.html#disqus_thread">Comments</a>)
-</p><p><div class="paragraph"><p>Shapes in Writer are provided by LibreOffice&#8217;s drawing layer&#8201;&#8212;&#8201;they are
-independent from the normal Writer paragraphs. Given that the drawing layer
-does not support tracking changes, just Writer&#8217;s "native" paragraphs, fully
-featured tracked changes in real shape text would be quite some work. In case
-of ODF, the markup describes tracked changes in a way, so that in case the
-reader does not support tracking changes, it can at least read the normal and
-inserted text, i.e. the current version.</p></div>
-<div class="paragraph"><p>This is exactly what I
-<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=e6300f83d08fd959596551dcd660eb0fbfb248a6">implemented</a>
-in the DOCX import filter now:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://lh5.googleusercontent.com/-8q4PA4ru1KE/U5RZB7SxKdI/AAAAAAAAETs/6_avZ3q04T0/s0/">
-<img src="https://lh5.googleusercontent.com/-8q4PA4ru1KE/U5RZB7SxKdI/AAAAAAAAETs/6_avZ3q04T0/s400/" alt="https://lh5.googleusercontent.com/-8q4PA4ru1KE/U5RZB7SxKdI/AAAAAAAAETs/6_avZ3q04T0/s400/" />
-</a>
-</div>
-</div>
-<div class="paragraph"><p>Previously we just ignored both inserted and deleted text, so if you had
-content which was all either deleted or inserted, you ended up having no shape
-text at all (can be tested using e.g.
-<a href="http://cgit.freedesktop.org/libreoffice/core/tree/sw/qa/extras/ooxmlimport/data/groupshape-trackedchanges.docx">this
-test document</a>):</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://lh4.googleusercontent.com/-NQOH4joafZA/U5RZBjGVO5I/AAAAAAAAETo/3WGNKc3j80c/s0/">
-<img src="https://lh4.googleusercontent.com/-NQOH4joafZA/U5RZBjGVO5I/AAAAAAAAETo/3WGNKc3j80c/s400/" alt="https://lh4.googleusercontent.com/-NQOH4joafZA/U5RZBjGVO5I/AAAAAAAAETo/3WGNKc3j80c/s400/" />
-</a>
-</div>
-</div>
-<div class="paragraph"><p>To be fair, the reference layout looks like this:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://lh6.googleusercontent.com/-hyCX0lGuEck/U5RZBn27CbI/AAAAAAAAET0/91WKFnyEhQ0/s0/">
-<img src="https://lh6.googleusercontent.com/-hyCX0lGuEck/U5RZBn27CbI/AAAAAAAAET0/91WKFnyEhQ0/s400/" alt="https://lh6.googleusercontent.com/-hyCX0lGuEck/U5RZBn27CbI/AAAAAAAAET0/91WKFnyEhQ0/s400/" />
-</a>
-</div>
-</div>
-<div class="paragraph"><p>I still hope to fix that as well one day, but the above fix is something we&#8217;ll already provide in 4.3. :-)</p></div>
 </p><hr/></li>
 </ul></div>
 <a href="/blog/archive.html">more &raquo;</a>
