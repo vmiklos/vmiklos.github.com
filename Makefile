@@ -14,6 +14,9 @@ sync: check
 backup:
 	(cd ~/mnt/backup/git/staging.vmiklos.hu/; rsync --delete -avP $(PWD)/../ .)
 
+restore:
+	(cd ..; rsync -avP --delete ~/mnt/backup/git/staging.vmiklos.hu/ .)
+
 check:
 	$(MAKE) -C ../rejourn/in check
 
