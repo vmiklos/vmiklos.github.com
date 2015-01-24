@@ -5,6 +5,98 @@
         <description></description>
         <link>http://vmiklos.hu/blog/</link>
         <item>
+            <title>Perfect WW8 comment import</title>
+            <description>&lt;div class="paragraph"&gt;&lt;p&gt;TL;DR: Import of annotated text ranges from binary DOC format was a problem
+for quite some time, now it should be as good as it always was in the
+ODT/DOCX/RTF filter.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Longer version: the import of annotation marks from binary DOC was never
+perfect. My
+&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=7907cc0ef9751d553014bd3bab49be9e7fc31bca"&gt;initial
+implementation&lt;/a&gt; had a somewhat hidden, but important shortcoming, in the form
+of a "Don&amp;#8217;t support ranges affecting multiple SwTxtNode for now." comment. The
+underlying problem was that annotation marks have a start and end position,
+and this is described as an offset into the piece table (so the unit was a
+character position, CP) in the binary DOC format, while in Writer, we work
+with document model positions (text node and content indexes, SwPosition), and it isn&amp;#8217;t
+trivial to map between these two.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;&lt;a href="http://zolnaitamas.blogspot.com/"&gt;Tamás&lt;/a&gt; somewhat
+&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=f2945255df273404ee2457dcf761cb8f334b732b"&gt;improved&lt;/a&gt;
+this homegrown CP &amp;#8594; SwPosition mapping code, but was still far from perfect. Here is an example. This is how &lt;a href="http://people.freedesktop.org/~vmiklos/2015/perfect-ww8-comment-import.doc"&gt;this demo document&lt;/a&gt; looks like now in LibreOffice Writer:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;a class="image" href="https://lh6.googleusercontent.com/-SYW-7l2Otpo/VMQDQ-Fme1I/AAAAAAAAFLg/nkGHlfIV85Y/s0/"&gt;
+&lt;img src="https://lh6.googleusercontent.com/-SYW-7l2Otpo/VMQDQ-Fme1I/AAAAAAAAFLg/nkGHlfIV85Y/s800/" alt="https://lh6.googleusercontent.com/-SYW-7l2Otpo/VMQDQ-Fme1I/AAAAAAAAFLg/nkGHlfIV85Y/s800/" /&gt;
+&lt;/a&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;And this is how it looked like before the end of last year:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;a class="image" href="https://lh4.googleusercontent.com/-geD82nPpzC4/VMQDQ9souvI/AAAAAAAAFLk/Mhuqrib2DEs/s0/"&gt;
+&lt;img src="https://lh4.googleusercontent.com/-geD82nPpzC4/VMQDQ9souvI/AAAAAAAAFLk/Mhuqrib2DEs/s800/" alt="https://lh4.googleusercontent.com/-geD82nPpzC4/VMQDQ9souvI/AAAAAAAAFLk/Mhuqrib2DEs/s800/" /&gt;
+&lt;/a&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Notice how "Start" is commented and it wasn&amp;#8217;t before. Which one is correct? Here is the reference:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;a class="image" href="https://lh5.googleusercontent.com/-L_LmD_wIZks/VMQDQ76Jn3I/AAAAAAAAFLo/mMHr5h5p4oM/s0/"&gt;
+&lt;img src="https://lh5.googleusercontent.com/-L_LmD_wIZks/VMQDQ76Jn3I/AAAAAAAAFLo/mMHr5h5p4oM/s800/" alt="https://lh5.googleusercontent.com/-L_LmD_wIZks/VMQDQ76Jn3I/AAAAAAAAFLo/mMHr5h5p4oM/s800/" /&gt;
+&lt;/a&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The reason is that the document has fields and tables, and the homegrown CP &amp;#8594;
+SwPosition mapping did not handle this. A much better approach is to handle
+the mapping as we do it for bookmarks: even if at the end annotation marks and
+bookmarks are entires in &lt;code&gt;sw::mark::MarkManager&lt;/code&gt;, it&amp;#8217;s possible to set the
+start position as a character attribute during import (since mapping the
+&lt;em&gt;current&lt;/em&gt; CP to the current SwPosition is easy) and when we know both the
+start and end, delete the character attribute and turn it into a mark manager
+entry. That&amp;#8217;s exactly what I&amp;#8217;ve done. The first screenshot is the result of 3
+changes:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=271722d923610d128a358528e64d7233641ea0dc"&gt;add
+  a annotationmark-start character attribute&lt;/a&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=677fdd4fa235466649911042577bc4980d42deb6"&gt;tokenize
+  the annitationmark start and end structures from binary DOC&lt;/a&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=0ec0ec267986644084baaa5bda5ba917dc5744df"&gt;handle
+  annotation marks via the character attribute added in the first change&lt;/a&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Hopefully this makes LibreOffice not only
+&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=b1cd83c625a2afeb9da43cc9745d79c01963c797"&gt;avoid
+crashing&lt;/a&gt; on such complex annotated contents, but also puts and end to the
+long story of "annotation marks from binary DOC" problems.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="admonitionblock"&gt;
+&lt;table&gt;&lt;tr&gt;
+&lt;td class="icon"&gt;
+&lt;div class="title"&gt;Note&lt;/div&gt;
+&lt;/td&gt;
+&lt;td class="content"&gt;Just like how C++11 perfect forwarding isn&amp;#8217;t perfect&amp;#8201;&amp;#8212;&amp;#8201;if you think
+it is, see "Familiarize yourself with perfect forwarding failure cases." in
+&lt;a href="http://scottmeyers.blogspot.hu/2014/08/near-final-draft-of-effective-modern-c.html"&gt;this
+post of Scoot&lt;/a&gt;&amp;#8201;&amp;#8212;&amp;#8201;the above changes may still not result in a truly perfect
+import result of DOC annotation marks. But I think the #1 problem in this area
+is now solved. :-)&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+</description>
+            <link>http://vmiklos.hu/blog/perfect-ww8-comment-import.html</link>
+            <pubDate>Sat, 24 Jan 2015 22:14:50 +0100</pubDate>
+            <guid isPermaLink="false">http://vmiklos.hu/blog/perfect-ww8-comment-import.html</guid>
+        </item>
+        <item>
             <title>Export validation as a new year's resolution</title>
             <description>&lt;div class="paragraph"&gt;&lt;p&gt;TL;DR: If you touch the ODF and/or OOXML filters in LibreOffice, please use
 the &lt;code&gt;--with-export-validation&lt;/code&gt; configure option after you ran the
@@ -782,49 +874,6 @@ code base. For the gory details, you always need to read the code anyway. ;-)&lt
             <link>http://vmiklos.hu/blog/lo-writer-training-2014.html</link>
             <pubDate>Tue, 08 Jul 2014 12:52:24 +0200</pubDate>
             <guid isPermaLink="false">http://vmiklos.hu/blog/lo-writer-training-2014.html</guid>
-        </item>
-        <item>
-            <title>CLUC 2014 Conference</title>
-            <description>&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;a class="image" href="https://speakerdeck.com/vmiklos/4-dot-3"&gt;
-&lt;img src="https://lh4.googleusercontent.com/-8H5VKexBW1Q/U6Kz9kfXv7I/AAAAAAAAEX8/GVuWhXuueUs/s400/" alt="https://lh4.googleusercontent.com/-8H5VKexBW1Q/U6Kz9kfXv7I/AAAAAAAAEX8/GVuWhXuueUs/s400/" /&gt;
-&lt;/a&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;I&amp;#8217;ve arrived home yesterday from Zagreb where I
-&lt;a href="http://2014.dorscluc.org/en/keynotes/#miklos"&gt;gave a keynote&lt;/a&gt; at CLUC 2014
-&lt;a href="http://2014.dorscluc.org/en/conference-schedule/"&gt;on Tuesday&lt;/a&gt;.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Here are a few talks I enjoyed:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-Dave Whiteland&amp;#8217;s &lt;a href="https://www.mysociety.org/"&gt;mysociety.org&lt;/a&gt; talk
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="http://en.wikipedia.org/wiki/Harald_Welte"&gt;Harald Welte&lt;/a&gt;'s
-  &lt;a href="http://osmocom.org/"&gt;osmocom.org&lt;/a&gt; talk
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-Elizabeth Krumbach Joseph&amp;#8217;s &lt;a href="http://openstack.org"&gt;OpenStack&lt;/a&gt; talk (explaining
-  how do they use gerrit, git-review and related tools)
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;I also took a &lt;a href="http://vmiklos.hu/panoramas/zagreb.html"&gt;panorama&lt;/a&gt; and some
-pictures, available
-&lt;a href="https://picasaweb.google.com/104737754628780823336/20140619_Zagrab"&gt;here&lt;/a&gt;,
-including photos of some speakers.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Thanks Elizabeth for the above photo, and also to the organizers of the
-conference, it was a great one! ;-)&lt;/p&gt;&lt;/div&gt;
-</description>
-            <link>http://vmiklos.hu/blog/cluc2014.html</link>
-            <pubDate>Thu, 19 Jun 2014 12:14:12 +0200</pubDate>
-            <guid isPermaLink="false">http://vmiklos.hu/blog/cluc2014.html</guid>
         </item>
     </channel>
 </rss>
