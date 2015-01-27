@@ -5,6 +5,113 @@
         <description></description>
         <link>http://vmiklos.hu/blog/</link>
         <item>
+            <title>Tiled editing: from viewing only to a living document</title>
+            <description>&lt;div class="paragraph"&gt;&lt;p&gt;As it has been announced
+&lt;a href="http://blog.documentfoundation.org/2015/01/21/libreoffice-viewer-for-android/"&gt;last
+week&lt;/a&gt;, an Android port of LibreOffice in the form of a viewer app is now
+available for download.  What&amp;#8217;s next? Editing, naturally.  First, thanks again
+to The Document Foundation&amp;#8201;&amp;#8212;&amp;#8201;and all the
+&lt;a href="http://donate.libreoffice.org/"&gt;donors&lt;/a&gt; who made this (ongoing) work possible.
+In this post I would like to explain what did we do with
+&lt;a href="http://tomazvajngerl.blogspot.com/"&gt;Tomaž Vajngerl&lt;/a&gt; at Collabora so far in that
+direction.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;If you ever touched the Android port of LibreOffice, you probably noticed that
+sadly developing for Android is much harder compared to Linux (desktop). On
+Linux, if you just touch a single module, it&amp;#8217;s possible to rebuild just that
+module in a few seconds, and then you can run soffice again with your
+modifications included. On Android, this is much harder:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+due to a limitation of the Android linker, we link all the native code into
+  a single shared object, that has to be re-linked after each native code
+  modification
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+the native + the Java code has to be packed into a .apk archive
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+the .apk archive has to be uploaded to the device (or emulator) and
+  installed there
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;and only then can you test your changes. To partly sidestep from this problem,
+we split the "Android editing" into two:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+tiled editing: this can be tested on Linux using the gtktiledviewer test
+  application (and ideally any core problem can be seen here already)
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+Android LibreOfficeKit client: replacing gtktiledviewer with the real
+  Android client code, and this time testing it on the device
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;One problem with this approach was that while Android properly rendered small
+tiles of 256x256 pixels, gtktiledviewer rendered a single huge tile. This
+means that in case part of the document changes and we need to re-draw it, we
+always repainted the whole document in gtktiledviewer, while we only repainted
+the necessary parts on Android. Guess what, if the area to be repainted is
+wrong, it&amp;#8217;ll be visible on Android but not on gtktiledviewer. So the first
+task we solved was to let gtktiledviewer also render small tiles. For
+debugging purposes, small red rectangles are painted at the top left corners
+of each rectangle, so the size and position of the tiles can be seen easily:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;a class="image" href="https://lh5.googleusercontent.com/-VvQFF-Kg270/VMYqe9G76-I/AAAAAAAAFL4/Fnh9_ig03Ww/s0/"&gt;
+&lt;img src="https://lh5.googleusercontent.com/-VvQFF-Kg270/VMYqe9G76-I/AAAAAAAAFL4/Fnh9_ig03Ww/s420/" alt="https://lh5.googleusercontent.com/-VvQFF-Kg270/VMYqe9G76-I/AAAAAAAAFL4/Fnh9_ig03Ww/s420/" /&gt;
+&lt;/a&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The next step was to somehow start work on real editing&amp;#8201;&amp;#8212;&amp;#8201;but where to start? We identified two critical building blocks:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+there should be some way for the user to provide input (e.g. press a key on
+  the software keyboard)
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+once the document changed, the application has to redraw the changed part of
+  the view
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;To avoid solving two problems at the same time, we first went after the
+second. One use case that only requires the update of the view is blinking
+text. Even if no touch or key events are available, a blinking text wants to
+update the view using a timer, so it&amp;#8217;s a good testcase. It&amp;#8217;s now possible for
+LibreOfficeKit clients to register a notification callback, and using that,
+LibreOffice can notify clients if part of the view has to be redrawn. Here is
+how it looks using gtktiledviewer:&lt;/p&gt;&lt;/div&gt;
+&lt;center&gt;
+&lt;iframe width="420" height="315" src="http://www.youtube.com/embed/rgv76GPlMRU" frameborder="0" allowfullscreen&gt;&lt;/iframe&gt;
+&lt;/center&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;This demonstrates that the LibreOfficeKit implementation in LibreOffice core
+and also the gtktiledviewer client code handle correctly tile invalidations.
+Once that was done, we could also implement a similar client code in the
+Android app&amp;#8201;&amp;#8212;&amp;#8201;it looks like this:&lt;/p&gt;&lt;/div&gt;
+&lt;center&gt;
+&lt;iframe width="420" height="315" src="http://www.youtube.com/embed/EkGpCrGlhiY" frameborder="0" allowfullscreen&gt;&lt;/iframe&gt;
+&lt;/center&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;That&amp;#8217;s it for now&amp;#8201;&amp;#8212;&amp;#8201;next on our list is adding support for input handling, so
+it&amp;#8217;s possible to type in some text. :-)&lt;/p&gt;&lt;/div&gt;
+</description>
+            <link>http://vmiklos.hu/blog/tiled-editing-part-1.html</link>
+            <pubDate>Tue, 27 Jan 2015 11:02:48 +0100</pubDate>
+            <guid isPermaLink="false">http://vmiklos.hu/blog/tiled-editing-part-1.html</guid>
+        </item>
+        <item>
             <title>Perfect WW8 comment import</title>
             <description>&lt;div class="paragraph"&gt;&lt;p&gt;TL;DR: Import of annotated text ranges from binary DOC format was a problem
 for quite some time, now it should be as good as it always was in the
@@ -838,42 +945,6 @@ before 4.4 gets branched off. Last, but not at least, thanks for
             <link>http://vmiklos.hu/blog/textbox.html</link>
             <pubDate>Wed, 16 Jul 2014 13:33:38 +0200</pubDate>
             <guid isPermaLink="false">http://vmiklos.hu/blog/textbox.html</guid>
-        </item>
-        <item>
-            <title>Updated Writer training slides</title>
-            <description>&lt;div style="text-align: center; font-size: 0.6em;"&gt;
-&lt;img src="https://lh4.googleusercontent.com/-qJiiajLRZ7A/U7vLBcDzbBI/AAAAAAAAEf0/mo6E4QbfVWU/s400/"/&gt;
-&lt;p&gt;(via &lt;a href="https://www.flickr.com/photos/michaeljosh/4382953112/"&gt;michaeljosh&lt;/a&gt;)&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Last year I
-&lt;a href="https://speakerdeck.com/vmiklos/libreoffice-writer-training"&gt;published&lt;/a&gt; some
-Writer training slides, which are hopefully a useful extension to in-tree
-documentation like
-&lt;a href="http://cgit.freedesktop.org/libreoffice/core/tree/sw/README"&gt;sw/README&lt;/a&gt; and
-&lt;a href="http://cgit.freedesktop.org/libreoffice/core/tree/sw/qa/extras/README"&gt;sw/qa/extras/README&lt;/a&gt;.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Last week I reviewed those slides and realized that some of them are outdated. So here comes an updated version:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://speakerdeck.com/vmiklos/writer-training-number-1-2014"&gt;first part&lt;/a&gt;,
-  up to, but not including layout
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://speakerdeck.com/vmiklos/writer-training-number-2-2014"&gt;second part&lt;/a&gt;,
-  starting from the layout
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;The intention is that these build nicely on top of Michael&amp;#8217;s
-&lt;a href="https://people.gnome.org/~michael/blog/2013-07-26.html"&gt;generic intro&lt;/a&gt; slides,
-and with that, the reader can have a good "big picture" understanding of the
-code base. For the gory details, you always need to read the code anyway. ;-)&lt;/p&gt;&lt;/div&gt;
-</description>
-            <link>http://vmiklos.hu/blog/lo-writer-training-2014.html</link>
-            <pubDate>Tue, 08 Jul 2014 12:52:24 +0200</pubDate>
-            <guid isPermaLink="false">http://vmiklos.hu/blog/lo-writer-training-2014.html</guid>
         </item>
     </channel>
 </rss>
