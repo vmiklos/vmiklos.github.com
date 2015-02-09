@@ -5,6 +5,108 @@
         <description></description>
         <link>http://vmiklos.hu/blog/</link>
         <item>
+            <title>Tiled editing: from a living document to input handling</title>
+            <description>&lt;div class="paragraph"&gt;&lt;p&gt;In &lt;a href="http://vmiklos.hu/blog/tiled-editing-part-1.html"&gt;from viewing only to a
+living document&lt;/a&gt;, I wrote about how tile invalidation can handle updates in
+the Android app in case what should be displayed on the screen changes. A next
+step is to handle more than blinking text: keyboard and mouse/touch events
+from the user.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;First let me enumerate over the issues we had to face:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+Gtk, Android and LibreOffice&amp;#8217;s VCL use different key codes for the same
+  physical keys. We solved this by mapping the special keys manually on the
+  Gtk/Android side (using the C++ and Java UNO binding), and for the rest,
+  we simply use the unicode representation of the keys.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+Special keys: while "return" was easy to map, getting "backspace" to work
+  was more challenging. It worked fine on the Gtk side, but on Android we had
+  to make sure that the whole sfx2 dispatching framework works properly, only
+  then could map the backspace key to the correct UNO command, which is
+  &lt;code&gt;.uno:SwBackspace&lt;/code&gt; in case of Writer.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+Mouse handling: VCL sends pixel coordinates to the editing windows, they
+  then calculate the offset of the editing area (think about toolbars and
+  menus that have to be excluded), and then converts the pixel values to
+  document coordinates. In case of tiled editing, we always work with document
+  coordinates in logical units (twips), so we had to add the possibility to send
+  the coordinates in document ones. This allows core not knowing where the user
+  exactly is (in case the tiles are already ready, swiping can be handled
+  without any LOK calls), and also allows Android not knowing the implementation
+  details of the desktop app (where menus and toolbars would be).
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+Cursor caret overlay: we wanted to be sure that it&amp;#8217;s not necessary to
+  re-render the affected tiles each time the cursor blinks, so we added a LOK
+  API to send the rectangle (its width is nearly zero) of the cursor to Android,
+  and then it can handle the blinking cursor itself in a transparent overlay.
+  This overlay will be useful for presenting selections as well.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;As usual the commits of me and &lt;a href="http://tomazvajngerl.blogspot.com/"&gt;Tomaž
+Vajngerl&lt;/a&gt; are in master, so you can try this right now, or wait till tomorrow
+and get the
+&lt;a href="http://dev-builds.libreoffice.org/daily/master/Android-ARM@24-Bytemark-Hosting/current/"&gt;Android
+daily build&lt;/a&gt;. However, if you are just interested how this looks like, here are some demos:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+Keyboard handling in gtktiledviewer:
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;center&gt;
+&lt;iframe width="420" height="315" src="https://www.youtube.com/embed/Hi9N9IumMZY" frameborder="0" allowfullscreen&gt;&lt;/iframe&gt;
+&lt;/center&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+Same on Android, including newlines and backspace handling:
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;center&gt;
+&lt;iframe width="420" height="315" src="https://www.youtube.com/embed/4CJbu_QNUh0" frameborder="0" allowfullscreen&gt;&lt;/iframe&gt;
+&lt;/center&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+Mouse handling in gtktiledviewer:
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;center&gt;
+&lt;iframe width="420" height="315" src="https://www.youtube.com/embed/4jH_Ek1p1OA" frameborder="0" allowfullscreen&gt;&lt;/iframe&gt;
+&lt;/center&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+Same on Android, including the transparent selection overlay that can
+  efficiently blink the cursor:
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;center&gt;
+&lt;iframe width="420" height="315" src="https://www.youtube.com/embed/frQWyjjsl3I" frameborder="0" allowfullscreen&gt;&lt;/iframe&gt;
+&lt;/center&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;That&amp;#8217;s it for now&amp;#8201;&amp;#8212;&amp;#8201;next on our list are selections, so you can delete and
+overwrite more easily. :-)&lt;/p&gt;&lt;/div&gt;
+</description>
+            <link>http://vmiklos.hu/blog/tiled-editing-part-2.html</link>
+            <pubDate>Mon, 09 Feb 2015 09:54:48 +0100</pubDate>
+            <guid isPermaLink="false">http://vmiklos.hu/blog/tiled-editing-part-2.html</guid>
+        </item>
+        <item>
             <title>LibreOffice on Android FOSDEM talk</title>
             <description>&lt;div style="text-align: center; font-size: 0.6em;"&gt;
 &lt;img src="https://lh4.googleusercontent.com/-3Z-6BCCwldk/VNEQnkMAl8I/AAAAAAAAFO8/m-5535Gu_IM/s400/"/&gt;
@@ -621,102 +723,6 @@ also made a &lt;a href="http://vmiklos.hu/panoramas/bern.html"&gt;panorama&lt;/a
             <link>http://vmiklos.hu/blog/locon2014-bern.html</link>
             <pubDate>Mon, 08 Sep 2014 12:11:05 +0200</pubDate>
             <guid isPermaLink="false">http://vmiklos.hu/blog/locon2014-bern.html</guid>
-        </item>
-        <item>
-            <title>Cleanup of ooxmltok in LibreOffice</title>
-            <description>&lt;div style="text-align: center; font-size: 0.6em;"&gt;
-&lt;img src="https://lh4.googleusercontent.com/-GipHI6c2dSM/U_8TTB9IzUI/AAAAAAAAExA/LVMQpNezkus/s400/"/&gt;
-&lt;p&gt;(via &lt;a href="https://www.flickr.com/photos/aigle_dore/7356881428/"&gt;aigle_dore&lt;/a&gt;)&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;In June, we
-&lt;a href="http://article.gmane.org/gmane.comp.documentfoundation.libreoffice.qa/7272"&gt;decided&lt;/a&gt;
-to get rid of XSLT usage in writerfilter, the module responsible for RTF and
-DOCX import in LibreOffice. As usual with cleaning up mess, this took time
-(about two months), but I&amp;#8217;m now happy to say that I&amp;#8217;m mostly done with this.
-:-)&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;See &lt;a href="http://vmiklos.hu/blog/doctok.html"&gt;the doctok blog post&lt;/a&gt; for some
-background, the topic here was to clean up the OOXML tokenizer, that is that
-building block that turns a zipped XML document into a token stream.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;The following problems are now solved:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-Part of the module was generated code, the generator was implemented mostly
-  in XSLT, but some bits were written in Perl and sed. About 4200 lines of
-  XSLT code is now rewritten in Python, in about 1300 lines.
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-Given that we have much more developers who speak Python, compared to XSLT,
-  nontrivial changes are now much easier in the generator: Jan Holesovsky
-  &lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=c74de6c2e29a16fb4a458816cd17fa678edd16e7"&gt;cleaned
-  up&lt;/a&gt; &lt;code&gt;boost::unordered_map&lt;/code&gt; usage at places where we depended on the order of
-  elements. (Yes, you read it correctly, that was the situation up till now!)
-  This also helps reducing the size of the resulting writerfilter shared library.
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-The input of the code generator was the large &lt;code&gt;model.xml&lt;/code&gt; file, and
-  generator scripts only extracted interesting information from it, so if you
-  mistyped something, you got no error messages, just silent failures. I&amp;#8217;ve
-  removed quite some XML elements and attributes from it which were parsed by
-  none of the generator scripts and written a
-  &lt;a href="http://opengrok.libreoffice.org/xref/core/writerfilter/documentation/ooxml/model.rng"&gt;relax-ng
-  schema&lt;/a&gt; for the remaining markup. Validating against this schema is part of
-  the default build, so no more typos without a build failure. ;-)
-  (The schema also contains quite some documentation, finally.)
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-A gperf hash of all possible OOXML elements / attribute names were
-  duplicated in writerfilter, even if that information was already available
-  from the oox module. This is now fixed, reducing the size of the shared
-  library even further.
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-Also, both oox and writerfilter had a list of namespace URL&amp;#8217;s, mapping them
-  to an integer enumeration, and when the two lists didn&amp;#8217;t match, Bad Things
-  happened (read: usually resulted in a crash.) This is the past, I&amp;#8217;ve
-  refactored writerfilter to use the same namespace alias names as oox, and this
-  allowed to get rid of the writerfilter copy of the namespace alias list. So in
-  the future, if new namespaces have to added, only oox has to be extended.
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Oh and the bonus feature: I&amp;#8217;ve implemented a script called
-&lt;a href="http://opengrok.libreoffice.org/xref/core/writerfilter/qa/ooxml/watch-generated-code.sh"&gt;watch-generated-code.sh&lt;/a&gt;,
-which can record a good state of the generated code, and then compare later
-generated results against that, so that refactoring of the generator can now be
-performed in a safe way: you can change the generator in any way to make it
-better, and still avoid accidental output changes. :-) This is particularly
-useful, as it only diffs the end result of the whole generation process (cxx
-and hxx files), not temporarily files, which are OK to change, as long as the
-end result is the same.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;As a conclusion, here are sizes of a stripped dbgutil version of the
-writerfilter shared library, from the libreoffice-4-3-branch-point and today&amp;#8217;s
-master:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="listingblock"&gt;
-&lt;div class="content"&gt;
-&lt;pre&gt;&lt;code&gt;$ git checkout oldest
-HEAD is now at b3130c8... 2014-05-21
-vmiklos@o9010:~/git/libreoffice/daily$ ls -lh opt/program/libwriterfilterlo.so
--rwxr-xr-x 1 vmiklos users 8,3M aug   28 14:00 opt/program/libwriterfilterlo.so
-$ git checkout master
-Switched to branch 'master'
-vmiklos@o9010:~/git/libreoffice/daily$ ls -lh opt/program/libwriterfilterlo.so
--rwxr-xr-x 1 vmiklos users 6,1M aug   28 14:01 opt/program/libwriterfilterlo.so&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Again, the 8,3MB &amp;#8594; 6,1MB size reduction is mostly thanks to Kendy&amp;#8217;s map cleanups + the
-duplicated gperf hash going away. :-)&lt;/p&gt;&lt;/div&gt;
-</description>
-            <link>http://vmiklos.hu/blog/ooxmltok.html</link>
-            <pubDate>Thu, 28 Aug 2014 14:04:36 +0200</pubDate>
-            <guid isPermaLink="false">http://vmiklos.hu/blog/ooxmltok.html</guid>
         </item>
     </channel>
 </rss>
