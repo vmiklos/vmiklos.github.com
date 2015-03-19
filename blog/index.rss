@@ -5,6 +5,122 @@
         <description></description>
         <link>http://vmiklos.hu/blog/</link>
         <item>
+            <title>Tiled editing: from selections to graphic handling</title>
+            <description>&lt;div class="paragraph"&gt;&lt;p&gt;In &lt;a href="http://vmiklos.hu/blog/tiled-editing-part-3.html"&gt;from input handling to
+selections&lt;/a&gt;, I wrote about how we let LibreOffice Android app draw the
+selections around text content natively. A next step in this
+&lt;a href="http://blog.documentfoundation.org/2015/01/27/the-document-foundation-announces-the-results-of-the-android-tender/"&gt;TDF-funded
+project&lt;/a&gt; is to provide selections around more UI elements: images and shapes.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Here are a number of challenges we (&lt;a href="http://tomazvajngerl.blogspot.com/"&gt;Tomaž Vajngerl&lt;/a&gt; and me) faced while we implemented this:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+On Linux (the desktop), the move and resize operations are really similar:
+  if you click near a resize handle (you "hit it"), then it&amp;#8217;ll be a resize,
+  otherwise it&amp;#8217;ll be a move. Defining "near" means that you don&amp;#8217;t have to
+  click exactly at the center of the handle, but we allow some tolerance. Turns
+  out that the tolerance depended on the pixel size of the handle drawn on the
+  desktop: and because we don&amp;#8217;t package the bitmaps of the desktop UI, that
+  tolerance was 0.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+Writer normally requires a click and a double-click to start editing shape
+  text. One to select the shape and another to actually start the text
+  editing. Instead of literally translating this to a tap and a long push, we
+  wanted to start text editing right away if the user tapped on shape text.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+Shape text doesn&amp;#8217;t use the normal Writer text, but editeng&amp;#8201;&amp;#8212;&amp;#8201;used by
+  Impress and Calc, too. So we had to instrument the editeng module as well to
+  expose the blinking cursor, so that if you tap inside the edieng text, you
+  have some feedback where you are. Same is true for the cursor handle: once we
+  knew where the cursor is, we could draw the cursor handle, but dragging it did
+  nothing: now the &lt;code&gt;setTextSelection()&lt;/code&gt; LOK API handles the case when the cursor
+  is inside editeng text and can adjust the cursor position there, too.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+On Linux, users got used to the following resize behavior: when images are
+  resized, the aspect ratio is kept, but this is not the case for shapes. We
+  wanted to keep this behavior on Android, too.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;If you are interested how this looks like, here is a demo (click on the image to see the video):&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;a class="image" href="http://youtu.be/bTWLz_4YQtA"&gt;
+&lt;img src="https://lh5.googleusercontent.com/-JEuiW789JEM/VQqrR8zDHjI/AAAAAAAAFVo/ORgDKNBIIJA/s800/" alt="https://lh5.googleusercontent.com/-JEuiW789JEM/VQqrR8zDHjI/AAAAAAAAFVo/ORgDKNBIIJA/s800/" /&gt;
+&lt;/a&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Notice how the word selection in a table turns into a table selection, or how
+a long push inside an empty cell creates a selection containing only the empty
+cell.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;An other direction we&amp;#8217;re working towards is to show / hide the soft keyboard
+of Android as you would expect it. On Linux, it&amp;#8217;s easy: the keyboard is always
+available. However on Android you should track when it makes sense to use the
+keyboard and when not&amp;#8201;&amp;#8212;&amp;#8201;and show/hide automatically according to the context.
+Examples:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+When you tap inside text, we show the keyboard.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+When you finish editing, we hide it.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+When you start scrolling, we hide it.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+When you select an image, we hide it.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Additionally, we need to handle the situation when this automagic goes wrong.
+The Android soft keyboard has a button to hide itself, but we added a toolbar
+button to force-show it, too (click on the image to see the video):&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;a class="image" href="http://youtu.be/36MsGe-7Mpo"&gt;
+&lt;img src="https://lh6.googleusercontent.com/-rUxX9gC9z4M/VQqrR0rIyMI/AAAAAAAAFVk/y5GluM-u5eg/s800/" alt="https://lh6.googleusercontent.com/-rUxX9gC9z4M/VQqrR0rIyMI/AAAAAAAAFVk/y5GluM-u5eg/s800/" /&gt;
+&lt;/a&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Finally, &lt;a href="https://siqi43.wordpress.com/"&gt;Siqi Liu&lt;/a&gt; added a new callback type,
+allowing to tap on hyperlinks and handle them according to how you
+configured URL handling on your Android device. Here is a demo to show this in
+action:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;a class="image" href="http://youtu.be/dBcGVu5pcSk"&gt;
+&lt;img src="https://lh6.googleusercontent.com/-tNnSAiN3p-o/VQqrR5UslSI/AAAAAAAAFVg/xCbkq7-Vark/s800/" alt="https://lh6.googleusercontent.com/-tNnSAiN3p-o/VQqrR5UslSI/AAAAAAAAFVg/xCbkq7-Vark/s800/" /&gt;
+&lt;/a&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;That&amp;#8217;s it for now&amp;#8201;&amp;#8212;&amp;#8201;as usual the commits are in master (a few of them is only
+in feature/tiled-editing for now), so you can try this right now, or wait till
+the next Tuesday and get the
+&lt;a href="http://dev-builds.libreoffice.org/daily/master/Android-ARM@24-Bytemark-Hosting/current/"&gt;Android
+daily build&lt;/a&gt;. :-)&lt;/p&gt;&lt;/div&gt;
+</description>
+            <link>http://vmiklos.hu/blog/tiled-editing-part-4.html</link>
+            <pubDate>Thu, 19 Mar 2015 12:26:34 +0100</pubDate>
+            <guid isPermaLink="false">http://vmiklos.hu/blog/tiled-editing-part-4.html</guid>
+        </item>
+        <item>
             <title>Document Liberation Project regression testing</title>
             <description>&lt;div class="imageblock" style="text-align:center;"&gt;
 &lt;div class="content"&gt;
@@ -796,35 +912,6 @@ purposes, then I hope you find this setup useful. ;-)&lt;/p&gt;&lt;/div&gt;
             <link>http://vmiklos.hu/blog/libvisio-setup.html</link>
             <pubDate>Sat, 29 Nov 2014 22:28:35 +0100</pubDate>
             <guid isPermaLink="false">http://vmiklos.hu/blog/libvisio-setup.html</guid>
-        </item>
-        <item>
-            <title>Kása</title>
-            <description>&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;a class="image" href="https://lh5.googleusercontent.com/-_vm--J4931U/VE0TDPtzt5I/AAAAAAAAE4w/MzrG6VYGuWo/s0/"&gt;
-&lt;img src="https://lh5.googleusercontent.com/-_vm--J4931U/VE0TDPtzt5I/AAAAAAAAE4w/MzrG6VYGuWo/s400/" alt="https://lh5.googleusercontent.com/-_vm--J4931U/VE0TDPtzt5I/AAAAAAAAE4w/MzrG6VYGuWo/s400/" /&gt;
-&lt;/a&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="quoteblock"&gt;
-&lt;div class="content"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;A vízben jó. Ez nagyon hamar tudatosult bennem, és a mai napig a víz a kedvenc
-közegem. Megnyugtat. Magabiztossá tesz. Otthon vagyok benne.  Ha beugrom és
-elmerülök, megszűnik minden más. Csak a víz van, és én meg a csend.  Simogató
-csend. De a külvilág akkor sem jut el hozzám, ha följövök. A vízben más
-tudatállapotba kerülök.&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="attribution"&gt;
-&amp;#8212; M. Kiss Csaba - Kásás Tamás: Kása avagy egy pólós világsztár életének első harminchat éve
-&lt;/div&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;(&lt;a href="http://bookline.hu/product/home.action?id=116270&amp;amp;type=22"&gt;bookline&lt;/a&gt;, de a
-lira.hu is
-&lt;a href="http://www.lira.hu/hu/ekonyv/tortenelem-1/eletrajzok/kasa-avagy-egy-polos-vilagsztar-eletenek-elso-harminchat-eve-ekonyv-epub-mobi-1"&gt;árulja&lt;/a&gt;
-DRM-mentes ebookban)&lt;/p&gt;&lt;/div&gt;
-</description>
-            <link>http://vmiklos.hu/blog/kasa.html</link>
-            <pubDate>Sun, 26 Oct 2014 16:42:01 +0100</pubDate>
-            <guid isPermaLink="false">http://vmiklos.hu/blog/kasa.html</guid>
         </item>
     </channel>
 </rss>
