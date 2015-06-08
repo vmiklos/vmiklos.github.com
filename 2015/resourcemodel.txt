@@ -1,0 +1,43 @@
+title: Cleanup of resourcemodel in LibreOffice
+author: Miklos
+tags: en, libreoffice
+pubdate: 2015-06-08T07:47:09Z
+<<<
+
+++++
+<div style="text-align: center; font-size: 0.6em;">
+<img src="https://lh3.googleusercontent.com/-YxMHx754A4A/VXQbB0-TMBI/AAAAAAAAFos/Nx6SlKp1JF4/s400/"/>
+<p>(via <a href="https://www.flickr.com/photos/jbparrott/9381120992/">jbparrott</a>)</p>
+</div>
+++++
+
+The `libreoffice-5-0` branch is created, and in each release cycle there is at
+least one topic that was a long overdue cleanup. In this post, I'm describing
+how and why the `writerfilter/inc/resourcemodel/` and
+`writerfilter/source/resourcemodel/` directories disappeared -- though
+probably nobody will miss them. :-)
+
+The resourcemodel building block of writerfilter (that handles Writer's DOCX
+and RTF import in LibreOffice) was basically a bucket of old and unused
+https://www.youtube.com/watch?v=MvgN5gCuLac[stuff].  After the removal of the
+unused http://vmiklos.hu/blog/doctok.html[.DOC tokenizer], it turned out that
+most of that code was just referring to itself or template code that was used
+with a single type only (hello
+http://cgit.freedesktop.org/libreoffice/core/commit/?id=45234fd21ad76b7732be4e5783cc7dd5dcf2daa2[TableManager]).
+resourcemodel was about 6000 lines of code at the time LibreOffice was
+started, and after some manual cleanup and moving the still needed small part
+to dmapper (the shared part of the RTF / DOCX import), tools like
+http://cgit.freedesktop.org/libreoffice/core/tree/compilerplugins/clang/unreffun.cxx[loplugin:unreffun]
+and https://github.com/caolanm/callcatcher[callcatcher] helped to detect what
+became truly unused -- at the end resulting in the complete removal of these
+directories.
+
+That means that after folding the
+http://cgit.freedesktop.org/libreoffice/core/commit/?id=fcec34ffcc93f98be005b06c223e25c9c4e77cde[last
+remaining header into dmapper], the relevant
+http://cgit.freedesktop.org/libreoffice/core/tree/writerfilter/README[documentation]
+can hopefully now describe source contents easier, having just 4 directories:
+the RTF and the DOCX tokenizer, the shared part and the UNO service
+implementations. One less cryptic leftover nobody really knows what it is! ;-)
+
+// vim: ft=asciidoc
