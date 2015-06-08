@@ -1,0 +1,119 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.5.3" />
+<meta name="description" content="Cleanup of resourcemodel in LibreOffice - Miklos' blog" />
+<meta name="keywords" content="vmiklos, libereoffice, swig, git, python, hacking, bitlbee" />
+<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="http://vmiklos.hu/blog/index.rss" />
+<link rel="stylesheet" href="/blog/xhtml11.css" type="text/css" />
+<link rel="stylesheet" href="/blog/xhtml11-quirks.css" type="text/css" />
+<link rel="stylesheet" href="/blog/layout.css" type="text/css" />
+<title>Cleanup of resourcemodel in LibreOffice</title>
+<!-- google analytics start -->
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-24726997-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<!-- google analytics end -->
+</head>
+<body>
+<div id="layout-banner-box">
+<div id="layout-banner">
+  <div id="layout-title">vmiklos.hu</div>
+  <div id="layout-description">shameless self-promoting website</div>
+</div>
+</div>
+<div id="layout-menu-box">
+<div id="layout-menu">
+  <div>&#187;<a href="/">Root</a></div>
+  <div>&#187;<a href="/blog/">Rejourn root</a></div>
+  <div>&#187;<a href="http://planet.documentfoundation.org/">LibreOffice Community Blogs</a></div>
+  <div>
+    Search:<br/>
+    <form action="http://www.google.com/cse" id="cse-search-box" target="_blank">
+    <input type="hidden" name="cx" value="007336731492173318056:bik8fqvatno"/><input type="hidden" name="ie" value="UTF-8"/><input type="text" name="q" size="15"/><br/>
+    <input type="submit" name="sa" value="&#187;"/></form>
+  </div>
+</div>
+
+</div>
+<div id="layout-content-box">
+<div id="layout-content">
+<div id="header">
+	<h1>Cleanup of resourcemodel in LibreOffice</h1>
+</div>
+<div id="preamble">
+<div class="sectionbody">
+
+<!-- Single entry -->
+<div class="verseblock">
+<div class="verseblock-content">Posted <span class="timeago" title="2015-06-08T07:47:09Z">Monday, 08 June 2015</span> by Miklos<br />
+    Tags:
+    <a href="tags/en.html">en</a>
+    <a href="tags/libreoffice.html">libreoffice</a>
+</div>
+</div>
+
+<!-- Body -->
+<div style="text-align: center; font-size: 0.6em;">
+<img src="https://lh3.googleusercontent.com/-YxMHx754A4A/VXQbB0-TMBI/AAAAAAAAFos/Nx6SlKp1JF4/s400/"/>
+<p>(via <a href="https://www.flickr.com/photos/jbparrott/9381120992/">jbparrott</a>)</p>
+</div>
+<div class="paragraph"><p>The <code>libreoffice-5-0</code> branch is created, and in each release cycle there is at
+least one topic that was a long overdue cleanup. In this post, I&#8217;m describing
+how and why the <code>writerfilter/inc/resourcemodel/</code> and
+<code>writerfilter/source/resourcemodel/</code> directories disappeared&#8201;&#8212;&#8201;though
+probably nobody will miss them. :-)</p></div>
+<div class="paragraph"><p>The resourcemodel building block of writerfilter (that handles Writer&#8217;s DOCX
+and RTF import in LibreOffice) was basically a bucket of old and unused
+<a href="https://www.youtube.com/watch?v=MvgN5gCuLac">stuff</a>.  After the removal of the
+unused <a href="http://vmiklos.hu/blog/doctok.html">.DOC tokenizer</a>, it turned out that
+most of that code was just referring to itself or template code that was used
+with a single type only (hello
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=45234fd21ad76b7732be4e5783cc7dd5dcf2daa2">TableManager</a>).
+resourcemodel was about 6000 lines of code at the time LibreOffice was
+started, and after some manual cleanup and moving the still needed small part
+to dmapper (the shared part of the RTF / DOCX import), tools like
+<a href="http://cgit.freedesktop.org/libreoffice/core/tree/compilerplugins/clang/unreffun.cxx">loplugin:unreffun</a>
+and <a href="https://github.com/caolanm/callcatcher">callcatcher</a> helped to detect what
+became truly unused&#8201;&#8212;&#8201;at the end resulting in the complete removal of these
+directories.</p></div>
+<div class="paragraph"><p>That means that after folding the
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=fcec34ffcc93f98be005b06c223e25c9c4e77cde">last
+remaining header into dmapper</a>, the relevant
+<a href="http://cgit.freedesktop.org/libreoffice/core/tree/writerfilter/README">documentation</a>
+can hopefully now describe source contents easier, having just 4 directories:
+the RTF and the DOCX tokenizer, the shared part and the UNO service
+implementations. One less cryptic leftover nobody really knows what it is! ;-)</p></div>
+
+
+<script src="https://apis.google.com/js/plusone.js"></script>
+<g:plus action="share"></g:plus>
+
+<!-- Disqus comments -->
+<h1 id="comment-header">Comments</h1>
+<div id="disqus_thread"></div>
+<script type="text/javascript" src="http://vmiklos.disqus.com/embed.js">
+	var disqus_developer = 1;
+</script>
+<noscript>
+  <p><a href="http://disqus.com/?ref_noscript=vmiklos">View the discussion thread.</a></p>
+</noscript>
+
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

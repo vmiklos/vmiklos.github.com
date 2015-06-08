@@ -5,6 +5,43 @@
         <description></description>
         <link>http://vmiklos.hu/blog/</link>
         <item>
+            <title>Cleanup of resourcemodel in LibreOffice</title>
+            <description>&lt;div style="text-align: center; font-size: 0.6em;"&gt;
+&lt;img src="https://lh3.googleusercontent.com/-YxMHx754A4A/VXQbB0-TMBI/AAAAAAAAFos/Nx6SlKp1JF4/s400/"/&gt;
+&lt;p&gt;(via &lt;a href="https://www.flickr.com/photos/jbparrott/9381120992/"&gt;jbparrott&lt;/a&gt;)&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The &lt;code&gt;libreoffice-5-0&lt;/code&gt; branch is created, and in each release cycle there is at
+least one topic that was a long overdue cleanup. In this post, I&amp;#8217;m describing
+how and why the &lt;code&gt;writerfilter/inc/resourcemodel/&lt;/code&gt; and
+&lt;code&gt;writerfilter/source/resourcemodel/&lt;/code&gt; directories disappeared&amp;#8201;&amp;#8212;&amp;#8201;though
+probably nobody will miss them. :-)&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The resourcemodel building block of writerfilter (that handles Writer&amp;#8217;s DOCX
+and RTF import in LibreOffice) was basically a bucket of old and unused
+&lt;a href="https://www.youtube.com/watch?v=MvgN5gCuLac"&gt;stuff&lt;/a&gt;.  After the removal of the
+unused &lt;a href="http://vmiklos.hu/blog/doctok.html"&gt;.DOC tokenizer&lt;/a&gt;, it turned out that
+most of that code was just referring to itself or template code that was used
+with a single type only (hello
+&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=45234fd21ad76b7732be4e5783cc7dd5dcf2daa2"&gt;TableManager&lt;/a&gt;).
+resourcemodel was about 6000 lines of code at the time LibreOffice was
+started, and after some manual cleanup and moving the still needed small part
+to dmapper (the shared part of the RTF / DOCX import), tools like
+&lt;a href="http://cgit.freedesktop.org/libreoffice/core/tree/compilerplugins/clang/unreffun.cxx"&gt;loplugin:unreffun&lt;/a&gt;
+and &lt;a href="https://github.com/caolanm/callcatcher"&gt;callcatcher&lt;/a&gt; helped to detect what
+became truly unused&amp;#8201;&amp;#8212;&amp;#8201;at the end resulting in the complete removal of these
+directories.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;That means that after folding the
+&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=fcec34ffcc93f98be005b06c223e25c9c4e77cde"&gt;last
+remaining header into dmapper&lt;/a&gt;, the relevant
+&lt;a href="http://cgit.freedesktop.org/libreoffice/core/tree/writerfilter/README"&gt;documentation&lt;/a&gt;
+can hopefully now describe source contents easier, having just 4 directories:
+the RTF and the DOCX tokenizer, the shared part and the UNO service
+implementations. One less cryptic leftover nobody really knows what it is! ;-)&lt;/p&gt;&lt;/div&gt;
+</description>
+            <link>http://vmiklos.hu/blog/resourcemodel.html</link>
+            <pubDate>Mon, 08 Jun 2015 07:47:09 +0200</pubDate>
+            <guid isPermaLink="false">http://vmiklos.hu/blog/resourcemodel.html</guid>
+        </item>
+        <item>
             <title>LibreOffice Cambridge Hackfest</title>
             <description>&lt;div class="imageblock" style="text-align:center;"&gt;
 &lt;div class="content"&gt;
@@ -650,110 +687,6 @@ daily build&lt;/a&gt;. :-)&lt;/p&gt;&lt;/div&gt;
             <link>http://vmiklos.hu/blog/tiled-editing-part-3.html</link>
             <pubDate>Fri, 27 Feb 2015 12:14:55 +0100</pubDate>
             <guid isPermaLink="false">http://vmiklos.hu/blog/tiled-editing-part-3.html</guid>
-        </item>
-        <item>
-            <title>Tiled editing: from a living document to input handling</title>
-            <description>&lt;div class="paragraph"&gt;&lt;p&gt;In &lt;a href="http://vmiklos.hu/blog/tiled-editing-part-1.html"&gt;from viewing only to a
-living document&lt;/a&gt;, I wrote about how tile invalidation can handle updates in
-the Android app in case what should be displayed on the screen changes. A next
-step in this
-&lt;a href="http://blog.documentfoundation.org/2015/01/27/the-document-foundation-announces-the-results-of-the-android-tender/"&gt;TDF-funded
-project&lt;/a&gt; is to handle more than blinking text: keyboard and mouse/touch events
-from the user.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;First let me enumerate over the issues we had to face:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-Gtk, Android and LibreOffice&amp;#8217;s VCL use different key codes for the same
-  physical keys. We solved this by mapping the special keys manually on the
-  Gtk/Android side (using the C++ and Java UNO binding), and for the rest,
-  we simply use the unicode representation of the keys.
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-Special keys: while "return" was easy to map, getting "backspace" to work
-  was more challenging. It worked fine on the Gtk side, but on Android we had
-  to make sure that the whole sfx2 dispatching framework works properly, only
-  then could map the backspace key to the correct UNO command, which is
-  &lt;code&gt;.uno:SwBackspace&lt;/code&gt; in case of Writer.
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-Mouse handling: VCL sends pixel coordinates to the editing windows, they
-  then calculate the offset of the editing area (think about toolbars and
-  menus that have to be excluded), and then converts the pixel values to
-  document coordinates. In case of tiled editing, we always work with document
-  coordinates in logical units (twips), so we had to add the possibility to send
-  the coordinates in document ones. This allows core not knowing where the user
-  exactly is (in case the tiles are already ready, swiping can be handled
-  without any LOK calls), and also allows Android not knowing the implementation
-  details of the desktop app (where menus and toolbars would be).
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-Cursor caret overlay: we wanted to be sure that it&amp;#8217;s not necessary to
-  re-render the affected tiles each time the cursor blinks, so we added a LOK
-  API to send the rectangle (its width is nearly zero) of the cursor to Android,
-  and then it can handle the blinking cursor itself in a transparent overlay.
-  This overlay will be useful for presenting selections as well.
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;As usual the commits of me and &lt;a href="http://tomazvajngerl.blogspot.com/"&gt;Tomaž
-Vajngerl&lt;/a&gt; are in master, so you can try this right now, or wait till tomorrow
-and get the
-&lt;a href="http://dev-builds.libreoffice.org/daily/master/Android-ARM@24-Bytemark-Hosting/current/"&gt;Android
-daily build&lt;/a&gt;. However, if you are just interested how this looks like, here are some demos:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-Keyboard handling in gtktiledviewer:
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-&lt;center&gt;
-&lt;iframe width="420" height="315" src="https://www.youtube.com/embed/Hi9N9IumMZY" frameborder="0" allowfullscreen&gt;&lt;/iframe&gt;
-&lt;/center&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-Same on Android, including newlines and backspace handling:
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-&lt;center&gt;
-&lt;iframe width="420" height="315" src="https://www.youtube.com/embed/4CJbu_QNUh0" frameborder="0" allowfullscreen&gt;&lt;/iframe&gt;
-&lt;/center&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-Mouse handling in gtktiledviewer:
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-&lt;center&gt;
-&lt;iframe width="420" height="315" src="https://www.youtube.com/embed/4jH_Ek1p1OA" frameborder="0" allowfullscreen&gt;&lt;/iframe&gt;
-&lt;/center&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-Same on Android, including the transparent selection overlay that can
-  efficiently blink the cursor:
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-&lt;center&gt;
-&lt;iframe width="420" height="315" src="https://www.youtube.com/embed/frQWyjjsl3I" frameborder="0" allowfullscreen&gt;&lt;/iframe&gt;
-&lt;/center&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;That&amp;#8217;s it for now&amp;#8201;&amp;#8212;&amp;#8201;next on our list are selections, so you can delete and
-overwrite more easily. :-)&lt;/p&gt;&lt;/div&gt;
-</description>
-            <link>http://vmiklos.hu/blog/tiled-editing-part-2.html</link>
-            <pubDate>Mon, 09 Feb 2015 09:54:48 +0100</pubDate>
-            <guid isPermaLink="false">http://vmiklos.hu/blog/tiled-editing-part-2.html</guid>
         </item>
     </channel>
 </rss>
