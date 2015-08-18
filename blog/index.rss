@@ -14,12 +14,12 @@
 not just literally strange things like the above ones. ;-) LibreOffice 5.0 got
 &lt;a href="https://gerrit.libreoffice.org/gitweb?p=core.git;a=blob;f=vcl/README.lifecycle;h=6b5cbd6e8df4bcc77b28b0e296e50a96ca8899a0;hb=HEAD"&gt;VclPtr&lt;/a&gt;,
 which is smart pointer specialized to VCL&amp;#8217;s needs.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Such refacotrings are good things, except that there is no huge rework without
+&lt;div class="paragraph"&gt;&lt;p&gt;Such refactorings are good things, except that there is no huge rework without
 regressions. In &lt;a href="https://bugs.documentfoundation.org/show_bug.cgi?id=93284"&gt;this
 case&lt;/a&gt; the WMF filter had 3 places where we were leaking VirtualDevices due to
-a miscoversion to the new VclPtr API. The problem was that the document had
+a misconversion to the new VclPtr API. The problem was that the document had
 135 images, WMF files to be exact. Now given that the leaks were during
-parsing of WMF recods (a WMF file consists of multiple WMF records), at the
+parsing of WMF records (a WMF file consists of multiple WMF records), at the
 end we leaked 8884 VirtualDevices. At first the problem was seen as
 Windows-specific, as at least X on Linux has no problem with creating that
 many VirtualDevices, but Windows' default resource limits are hit in this
