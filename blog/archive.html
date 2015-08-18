@@ -62,6 +62,43 @@
 
 <!-- Listing -->
 <div class="ulist"><ul>
+<li><p>Tuesday, 18 August 2015<br /><a href="/blog/virtualdevice-leak.html">8884 VirtualDevices</a>
+(<a href="/blog/virtualdevice-leak.html#disqus_thread">Comments</a>)
+</p><p><div style="text-align: center; font-size: 0.6em;">
+<img src="https://lh3.googleusercontent.com/-RAsPMFc8JVk/VdH9h_W4r_I/AAAAAAAAF6U/PDpQIbBtPKg/s475-Ic42/"/>
+<p>(via <a href="http://www.teq.com/smart-pointers">teq</a>)</p>
+</div>
+<div class="paragraph"><p>If you are into C++ programming, you probably know that smart pointers are
+not just literally strange things like the above ones. ;-) LibreOffice 5.0 got
+<a href="https://gerrit.libreoffice.org/gitweb?p=core.git;a=blob;f=vcl/README.lifecycle;h=6b5cbd6e8df4bcc77b28b0e296e50a96ca8899a0;hb=HEAD">VclPtr</a>,
+which is smart pointer specialized to VCL&#8217;s needs.</p></div>
+<div class="paragraph"><p>Such refacotrings are good things, except that there is no huge rework without
+regressions. In <a href="https://bugs.documentfoundation.org/show_bug.cgi?id=93284">this
+case</a> the WMF filter had 3 places where we were leaking VirtualDevices due to
+a miscoversion to the new VclPtr API. The problem was that the document had
+135 images, WMF files to be exact. Now given that the leaks were during
+parsing of WMF recods (a WMF file consists of multiple WMF records), at the
+end we leaked 8884 VirtualDevices. At first the problem was seen as
+Windows-specific, as at least X on Linux has no problem with creating that
+many VirtualDevices, but Windows' default resource limits are hit in this
+case.</p></div>
+<div class="paragraph"><p>A note about testing this bugfix effectively, so it never happens again. The
+problem was that I wanted to create a minimal reproducer, but I also needed a
+document with lots of WMF images, each complex enough to trigger the resource
+limit. At the end I manually created a DOCX file that had the same image
+copy&amp;pasted multiple times: that way we really imported them multiple times
+(normally we notice that they&#8217;re the same, and only save the image to the file
+once, and put multiple references to it), and because DOCX is also a ZIP
+container, the test file can be still only 99KB instead of the original 17MB
+RTF.</p></div>
+<div class="paragraph"><p>Thanks to the
+<a href="https://wiki.documentfoundation.org/QA/Bibisect/Windows#Versions">4.4 &#8594; 5.0
+Windows bibisect repo</a>, it was immediately obvious that this is a VclPtr
+problem, and then it was possible to identify the root cause, and finally see
+that the bug title mentioning RTF was just container of the WMF images in this
+case, the problem had nothing to with with RTF and the leak wasn&#8217;t
+Windows-specific, either.</p></div>
+</p><hr/></li>
 <li><p>Tuesday, 28 July 2015<br /><a href="/blog/mail-merge-embedding.html">Mail merge embedding</a>
 (<a href="/blog/mail-merge-embedding.html#disqus_thread">Comments</a>)
 </p><p><div class="paragraph"><p>If you ever used the
