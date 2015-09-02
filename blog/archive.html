@@ -62,6 +62,38 @@
 
 <!-- Listing -->
 <div class="ulist"><ul>
+<li><p>Wednesday, 02 September 2015<br /><a href="/blog/calc-header.html">Fixing Calc header image backgrounds</a>
+(<a href="/blog/calc-header.html#disqus_thread">Comments</a>)
+</p><p><div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh3.googleusercontent.com/-u9SiImjl99k/VecKvEnT6lI/AAAAAAAAGDs/sNUH3OIlk4Y/s0-Ic42/">
+<img src="https://lh3.googleusercontent.com/-u9SiImjl99k/VecKvEnT6lI/AAAAAAAAGDs/sNUH3OIlk4Y/s640-Ic42/" alt="https://lh3.googleusercontent.com/-u9SiImjl99k/VecKvEnT6lI/AAAAAAAAGDs/sNUH3OIlk4Y/s640-Ic42/" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>I think this is my first Calc bugfix. :-) The problem I wanted to fix is that
+while LibreOffice 4.4 learned advanced
+<a href="https://gerrit.libreoffice.org/gitweb?p=core.git&amp;a=search&amp;h=HEAD&amp;st=commit&amp;s=fillattributes">fill
+attributes</a> (gradients, hatches, etc) for page headers / footers in Writer,
+this broke the saving of simple graphic header backgrounds in Calc. Seeing
+that no-one stepped up to fix this, I tried to do this myself&#8201;&#8212;&#8201;and luckily
+the problem was in the ODF export filter, which is much more familiar to me,
+compared to Calc core.</p></div>
+<div class="paragraph"><p>Part of that larger feature was changes to the ODF filter, and
+<a href="https://bugs.documentfoundation.org/show_bug.cgi?id=89245">the bug</a> was exactly
+about touching shared ODF filter code to please Writer without testing other
+LibreOffice applications.</p></div>
+<div class="paragraph"><p>The actual problem was
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=3b40329f9a64b93b1e1230b1bff74ed8cda8cd70">overlapping
+constants</a>: as in multiple constants had the same numeric value. Such issues
+are sometimes hard to track down, in this case it wasn&#8217;t <em>that</em> hard: the
+context filter that tried to make sure we don&#8217;t write duplicated XML
+attributes removed the background property when it tried to guard header
+repeat offsets.</p></div>
+<div class="paragraph"><p>Given that this affected the LibreOffice 4.4 and 5.0 series, both branches got
+a backport of the commit, and so the next release from those lines will have
+the fix.</p></div>
+</p><hr/></li>
 <li><p>Tuesday, 18 August 2015<br /><a href="/blog/virtualdevice-leak.html">8884 VirtualDevices</a>
 (<a href="/blog/virtualdevice-leak.html#disqus_thread">Comments</a>)
 </p><p><div style="text-align: center; font-size: 0.6em;">
