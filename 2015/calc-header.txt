@@ -1,0 +1,35 @@
+title: Fixing Calc header image backgrounds
+author: Miklos
+tags: en, libreoffice
+pubdate: 2015-09-02T18:08:21Z
+<<<
+
+image::https://lh3.googleusercontent.com/-u9SiImjl99k/VecKvEnT6lI/AAAAAAAAGDs/sNUH3OIlk4Y/s640-Ic42/[align="center",link="https://lh3.googleusercontent.com/-u9SiImjl99k/VecKvEnT6lI/AAAAAAAAGDs/sNUH3OIlk4Y/s0-Ic42/"]
+
+I think this is my first Calc bugfix. :-) The problem I wanted to fix is that
+while LibreOffice 4.4 learned advanced
+https://gerrit.libreoffice.org/gitweb?p=core.git&a=search&h=HEAD&st=commit&s=fillattributes[fill
+attributes] (gradients, hatches, etc) for page headers / footers in Writer,
+this broke the saving of simple graphic header backgrounds in Calc. Seeing
+that no-one stepped up to fix this, I tried to do this myself -- and luckily
+the problem was in the ODF export filter, which is much more familiar to me,
+compared to Calc core.
+
+Part of that larger feature was changes to the ODF filter, and
+https://bugs.documentfoundation.org/show_bug.cgi?id=89245[the bug] was exactly
+about touching shared ODF filter code to please Writer without testing other
+LibreOffice applications.
+
+The actual problem was
+http://cgit.freedesktop.org/libreoffice/core/commit/?id=3b40329f9a64b93b1e1230b1bff74ed8cda8cd70[overlapping
+constants]: as in multiple constants had the same numeric value. Such issues
+are sometimes hard to track down, in this case it wasn't _that_ hard: the
+context filter that tried to make sure we don't write duplicated XML
+attributes removed the background property when it tried to guard header
+repeat offsets.
+
+Given that this affected the LibreOffice 4.4 and 5.0 series, both branches got
+a backport of the commit, and so the next release from those lines will have
+the fix.
+
+// vim: ft=asciidoc
