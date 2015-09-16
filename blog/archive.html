@@ -62,6 +62,50 @@
 
 <!-- Listing -->
 <div class="ulist"><ul>
+<li><p>Wednesday, 16 September 2015<br /><a href="/blog/base-form.html">Fixing Base form image backgrounds</a>
+(<a href="/blog/base-form.html#disqus_thread">Comments</a>)
+</p><p><div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh3.googleusercontent.com/-G5jug0myAVY/Vfh1U_i-QTI/AAAAAAAAGFQ/eZ-GKJqxqMU/s0-Ic42/">
+<img src="https://lh3.googleusercontent.com/-G5jug0myAVY/Vfh1U_i-QTI/AAAAAAAAGFQ/eZ-GKJqxqMU/s640-Ic42/" alt="https://lh3.googleusercontent.com/-G5jug0myAVY/Vfh1U_i-QTI/AAAAAAAAGFQ/eZ-GKJqxqMU/s640-Ic42/" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>In this post I want to go further, and after
+<a href="http://vmiklos.hu/blog/calc-header.html">touching Calc</a>, here is my first story
+about Base. Of course I lie, it seems that Base forms are kind of read-only
+Writer documents, at least that&#8217;s how I could fix the bug I&#8217;m describing here.
+:-) The topic is still the same, rounding rough edges after the fill
+attributes rework, this time a stretched background of a Base form. (Which was
+not stretched at all, it was simply centered both horizontally and vertically
+on the page.)</p></div>
+<div class="paragraph"><p>I&#8217;m not entirely sure how the document from
+<a href="https://bugs.documentfoundation.org/show_bug.cgi?id=92586">tdf#92586</a> is
+created, but the interesting part from styles.xml is:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">&lt;style:page-layout-properties</span></span> ... <span style="color: #009900">style:repeat</span><span style="color: #990000">=</span><span style="color: #FF0000">"no-repeat"</span><span style="font-weight: bold"><span style="color: #0000FF">&gt;</span></span>
+     <span style="font-weight: bold"><span style="color: #0000FF">&lt;style:background-image</span></span> ... <span style="color: #009900">style:repeat</span><span style="color: #990000">=</span><span style="color: #FF0000">"stretch"</span><span style="font-weight: bold"><span style="color: #0000FF">/&gt;</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">&lt;/style:page-layout-properties&gt;</span></span></tt></pre></div></div>
+<div class="paragraph"><p>So the schema allows specifying the way how the bitmap is repeated at two
+places, and in the past the later attribute won, and with the rework this got
+lost.</p></div>
+<div class="paragraph"><p>An additional problem that
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=6621da38b3cd217314c2d2295fd1e71be7e1875e">the
+commit</a> had to solve is that the attribute on the page-layout-properties XML
+element is mapped to our
+<a href="http://api.libreoffice.org/docs/idl/ref/servicecom_1_1sun_1_1star_1_1drawing_1_1FillProperties.html#acd89f2a230dfdf0be3f6c840c2630871">FillBitmapMode</a>
+API, while the attribute with the same name on the background-image XML
+element is mapped to the
+<a href="http://api.libreoffice.org/docs/idl/ref/servicecom_1_1sun_1_1star_1_1style_1_1PageProperties.html#a229455fd0417732944f850139fdf96d5">BackGraphicLocation</a>
+API, which is specific to Writer. As a result, now there is a compatibility
+map from the old enumeration to the new one, that&#8217;s how the bug document is
+now rendered the same again, as in the past.</p></div>
+<div class="paragraph"><p>The fix is already backported to the <code>libreoffice-5-0</code> branch.</p></div>
+</p><hr/></li>
 <li><p>Wednesday, 02 September 2015<br /><a href="/blog/calc-header.html">Fixing Calc header image backgrounds</a>
 (<a href="/blog/calc-header.html#disqus_thread">Comments</a>)
 </p><p><div class="imageblock" style="text-align:center;">

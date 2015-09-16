@@ -5,6 +5,54 @@
         <description></description>
         <link>http://vmiklos.hu/blog/</link>
         <item>
+            <title>Fixing Base form image backgrounds</title>
+            <description>&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;a class="image" href="https://lh3.googleusercontent.com/-G5jug0myAVY/Vfh1U_i-QTI/AAAAAAAAGFQ/eZ-GKJqxqMU/s0-Ic42/"&gt;
+&lt;img src="https://lh3.googleusercontent.com/-G5jug0myAVY/Vfh1U_i-QTI/AAAAAAAAGFQ/eZ-GKJqxqMU/s640-Ic42/" alt="https://lh3.googleusercontent.com/-G5jug0myAVY/Vfh1U_i-QTI/AAAAAAAAGFQ/eZ-GKJqxqMU/s640-Ic42/" /&gt;
+&lt;/a&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;In this post I want to go further, and after
+&lt;a href="http://vmiklos.hu/blog/calc-header.html"&gt;touching Calc&lt;/a&gt;, here is my first story
+about Base. Of course I lie, it seems that Base forms are kind of read-only
+Writer documents, at least that&amp;#8217;s how I could fix the bug I&amp;#8217;m describing here.
+:-) The topic is still the same, rounding rough edges after the fill
+attributes rework, this time a stretched background of a Base form. (Which was
+not stretched at all, it was simply centered both horizontally and vertically
+on the page.)&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;I&amp;#8217;m not entirely sure how the document from
+&lt;a href="https://bugs.documentfoundation.org/show_bug.cgi?id=92586"&gt;tdf#92586&lt;/a&gt; is
+created, but the interesting part from styles.xml is:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="listingblock"&gt;
+&lt;div class="content"&gt;&lt;!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite --&gt;
+&lt;pre&gt;&lt;tt&gt;&lt;span style="font-weight: bold"&gt;&lt;span style="color: #0000FF"&gt;&amp;lt;style:page-layout-properties&lt;/span&gt;&lt;/span&gt; ... &lt;span style="color: #009900"&gt;style:repeat&lt;/span&gt;&lt;span style="color: #990000"&gt;=&lt;/span&gt;&lt;span style="color: #FF0000"&gt;"no-repeat"&lt;/span&gt;&lt;span style="font-weight: bold"&gt;&lt;span style="color: #0000FF"&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;
+     &lt;span style="font-weight: bold"&gt;&lt;span style="color: #0000FF"&gt;&amp;lt;style:background-image&lt;/span&gt;&lt;/span&gt; ... &lt;span style="color: #009900"&gt;style:repeat&lt;/span&gt;&lt;span style="color: #990000"&gt;=&lt;/span&gt;&lt;span style="color: #FF0000"&gt;"stretch"&lt;/span&gt;&lt;span style="font-weight: bold"&gt;&lt;span style="color: #0000FF"&gt;/&amp;gt;&lt;/span&gt;&lt;/span&gt;
+&lt;span style="font-weight: bold"&gt;&lt;span style="color: #0000FF"&gt;&amp;lt;/style:page-layout-properties&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;/tt&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;So the schema allows specifying the way how the bitmap is repeated at two
+places, and in the past the later attribute won, and with the rework this got
+lost.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;An additional problem that
+&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=6621da38b3cd217314c2d2295fd1e71be7e1875e"&gt;the
+commit&lt;/a&gt; had to solve is that the attribute on the page-layout-properties XML
+element is mapped to our
+&lt;a href="http://api.libreoffice.org/docs/idl/ref/servicecom_1_1sun_1_1star_1_1drawing_1_1FillProperties.html#acd89f2a230dfdf0be3f6c840c2630871"&gt;FillBitmapMode&lt;/a&gt;
+API, while the attribute with the same name on the background-image XML
+element is mapped to the
+&lt;a href="http://api.libreoffice.org/docs/idl/ref/servicecom_1_1sun_1_1star_1_1style_1_1PageProperties.html#a229455fd0417732944f850139fdf96d5"&gt;BackGraphicLocation&lt;/a&gt;
+API, which is specific to Writer. As a result, now there is a compatibility
+map from the old enumeration to the new one, that&amp;#8217;s how the bug document is
+now rendered the same again, as in the past.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The fix is already backported to the &lt;code&gt;libreoffice-5-0&lt;/code&gt; branch.&lt;/p&gt;&lt;/div&gt;
+</description>
+            <link>http://vmiklos.hu/blog/base-form.html</link>
+            <pubDate>Wed, 16 Sep 2015 09:10:29 +0200</pubDate>
+            <guid isPermaLink="false">http://vmiklos.hu/blog/base-form.html</guid>
+        </item>
+        <item>
             <title>Fixing Calc header image backgrounds</title>
             <description>&lt;div class="imageblock" style="text-align:center;"&gt;
 &lt;div class="content"&gt;
@@ -390,25 +438,6 @@ OpenStreetMap&amp;#8201;&amp;#8212;&amp;#8201;finally one pointless fight ends.&
             <link>http://vmiklos.hu/blog/openit-2015.html</link>
             <pubDate>Tue, 21 Apr 2015 14:29:55 +0200</pubDate>
             <guid isPermaLink="false">http://vmiklos.hu/blog/openit-2015.html</guid>
-        </item>
-        <item>
-            <title>Open Source Budapest 5. meetup</title>
-            <description>&lt;div style="text-align: center; font-size: 0.6em;"&gt;
-&lt;img src="https://lh3.googleusercontent.com/-ZPI3opPIqYE/VTIW5Igo5SI/AAAAAAAAFZc/rTmjqi14fZY/s800/"/&gt;
-&lt;p&gt;(via &lt;a href="https://www.youtube.com/watch?v=cKTpJtRQaCM"&gt;Open Source Budapest Meetup&lt;/a&gt;)&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;On Tuesday the 5th Open Source Budapest meetup was held, I was one of the
-invited speakers, and gave a lightning talk about
-&lt;a href="https://github.com/vmiklos/ged2dot"&gt;ged2dot&lt;/a&gt;, both as a standalone Python
-script and as a
-&lt;a href="http://extensions.libreoffice.org/extension-center/gedcom"&gt;LibreOffice
-extension&lt;/a&gt;.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;My uploaded slides are available
-&lt;a href="https://speakerdeck.com/vmiklos/csaladfak-abrazolasa-szabad-szoftverekkel"&gt;here&lt;/a&gt;.&lt;/p&gt;&lt;/div&gt;
-</description>
-            <link>http://vmiklos.hu/blog/open-source-budapest-5.html</link>
-            <pubDate>Fri, 17 Apr 2015 10:39:22 +0200</pubDate>
-            <guid isPermaLink="false">http://vmiklos.hu/blog/open-source-budapest-5.html</guid>
         </item>
     </channel>
 </rss>

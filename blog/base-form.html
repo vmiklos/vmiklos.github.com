@@ -1,0 +1,127 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.5.3" />
+<meta name="description" content="Fixing Base form image backgrounds - Miklos' blog" />
+<meta name="keywords" content="vmiklos, libereoffice, swig, git, python, hacking, bitlbee" />
+<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="http://vmiklos.hu/blog/index.rss" />
+<link rel="stylesheet" href="/blog/xhtml11.css" type="text/css" />
+<link rel="stylesheet" href="/blog/xhtml11-quirks.css" type="text/css" />
+<link rel="stylesheet" href="/blog/layout.css" type="text/css" />
+<title>Fixing Base form image backgrounds</title>
+<!-- google analytics start -->
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-24726997-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<!-- google analytics end -->
+</head>
+<body>
+<div id="layout-banner-box">
+<div id="layout-banner">
+  <div id="layout-title">vmiklos.hu</div>
+  <div id="layout-description">shameless self-promoting website</div>
+</div>
+</div>
+<div id="layout-menu-box">
+<div id="layout-menu">
+  <div>&#187;<a href="/">Root</a></div>
+  <div>&#187;<a href="/blog/">Rejourn root</a></div>
+  <div>&#187;<a href="http://planet.documentfoundation.org/">LibreOffice Community Blogs</a></div>
+  <div>
+    Search:<br/>
+    <form action="http://www.google.com/cse" id="cse-search-box" target="_blank">
+    <input type="hidden" name="cx" value="007336731492173318056:bik8fqvatno"/><input type="hidden" name="ie" value="UTF-8"/><input type="text" name="q" size="15"/><br/>
+    <input type="submit" name="sa" value="&#187;"/></form>
+  </div>
+</div>
+
+</div>
+<div id="layout-content-box">
+<div id="layout-content">
+<div id="header">
+	<h1>Fixing Base form image backgrounds</h1>
+</div>
+<div id="preamble">
+<div class="sectionbody">
+
+<!-- Single entry -->
+<div class="verseblock">
+<div class="verseblock-content">Posted <span class="timeago" title="2015-09-16T09:10:29Z">Wednesday, 16 September 2015</span> by Miklos<br />
+</div>
+</div>
+
+<!-- Body -->
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh3.googleusercontent.com/-G5jug0myAVY/Vfh1U_i-QTI/AAAAAAAAGFQ/eZ-GKJqxqMU/s0-Ic42/">
+<img src="https://lh3.googleusercontent.com/-G5jug0myAVY/Vfh1U_i-QTI/AAAAAAAAGFQ/eZ-GKJqxqMU/s640-Ic42/" alt="https://lh3.googleusercontent.com/-G5jug0myAVY/Vfh1U_i-QTI/AAAAAAAAGFQ/eZ-GKJqxqMU/s640-Ic42/" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>In this post I want to go further, and after
+<a href="http://vmiklos.hu/blog/calc-header.html">touching Calc</a>, here is my first story
+about Base. Of course I lie, it seems that Base forms are kind of read-only
+Writer documents, at least that&#8217;s how I could fix the bug I&#8217;m describing here.
+:-) The topic is still the same, rounding rough edges after the fill
+attributes rework, this time a stretched background of a Base form. (Which was
+not stretched at all, it was simply centered both horizontally and vertically
+on the page.)</p></div>
+<div class="paragraph"><p>I&#8217;m not entirely sure how the document from
+<a href="https://bugs.documentfoundation.org/show_bug.cgi?id=92586">tdf#92586</a> is
+created, but the interesting part from styles.xml is:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">&lt;style:page-layout-properties</span></span> ... <span style="color: #009900">style:repeat</span><span style="color: #990000">=</span><span style="color: #FF0000">"no-repeat"</span><span style="font-weight: bold"><span style="color: #0000FF">&gt;</span></span>
+     <span style="font-weight: bold"><span style="color: #0000FF">&lt;style:background-image</span></span> ... <span style="color: #009900">style:repeat</span><span style="color: #990000">=</span><span style="color: #FF0000">"stretch"</span><span style="font-weight: bold"><span style="color: #0000FF">/&gt;</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">&lt;/style:page-layout-properties&gt;</span></span></tt></pre></div></div>
+<div class="paragraph"><p>So the schema allows specifying the way how the bitmap is repeated at two
+places, and in the past the later attribute won, and with the rework this got
+lost.</p></div>
+<div class="paragraph"><p>An additional problem that
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=6621da38b3cd217314c2d2295fd1e71be7e1875e">the
+commit</a> had to solve is that the attribute on the page-layout-properties XML
+element is mapped to our
+<a href="http://api.libreoffice.org/docs/idl/ref/servicecom_1_1sun_1_1star_1_1drawing_1_1FillProperties.html#acd89f2a230dfdf0be3f6c840c2630871">FillBitmapMode</a>
+API, while the attribute with the same name on the background-image XML
+element is mapped to the
+<a href="http://api.libreoffice.org/docs/idl/ref/servicecom_1_1sun_1_1star_1_1style_1_1PageProperties.html#a229455fd0417732944f850139fdf96d5">BackGraphicLocation</a>
+API, which is specific to Writer. As a result, now there is a compatibility
+map from the old enumeration to the new one, that&#8217;s how the bug document is
+now rendered the same again, as in the past.</p></div>
+<div class="paragraph"><p>The fix is already backported to the <code>libreoffice-5-0</code> branch.</p></div>
+
+
+<script src="https://apis.google.com/js/plusone.js"></script>
+<g:plus action="share"></g:plus>
+
+<!-- Disqus comments -->
+<h1 id="comment-header">Comments</h1>
+<div id="disqus_thread"></div>
+<script type="text/javascript" src="http://vmiklos.disqus.com/embed.js">
+	var disqus_developer = 1;
+</script>
+<noscript>
+  <p><a href="http://disqus.com/?ref_noscript=vmiklos">View the discussion thread.</a></p>
+</noscript>
+
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>
