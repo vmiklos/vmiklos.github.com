@@ -5,6 +5,7 @@ countries = [
 	'ch', // Switzerland: Bern 2014
 	'cz', // Czech Republic: Prague 2010, Prague 2012
 	'de', // Germany: Nurnberg 2010, Munich 2011, Hamburg 2012, Berlin 2012, Munich 2012
+	'dk', // Denmark: Aarhus 2015
 	'es', // Spain: Zaragoza 2015
 	'fr', // France: Isola 2009, Isola 2011, Paris 2011
 	'gb', // United Kingdom: Cambridge 2015
@@ -15,6 +16,7 @@ countries = [
 	'mc', // Monaco: 2011
 	'pl', // Poland: Poznan 2010
 	'ro', // Romania: Cluj-Napoca, etc.
+	'se', // Sweden: Malmo 2015
 	'si', // Slovenia: Koper 2011
 	'sk', // Slovakia: Krompachy, etc.
 	'tr', // Turkey: Marmaris 2012
