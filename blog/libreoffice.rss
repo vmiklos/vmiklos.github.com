@@ -5,6 +5,35 @@
         <description></description>
         <link>http://vmiklos.hu/blog/</link>
         <item>
+            <title>Restarting timer of the presenter console</title>
+            <description>&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;a class="image" href="https://lh3.googleusercontent.com/-gedKN4759cE/VhZqBSpZL7I/AAAAAAAAGJs/Hlez6jX85ww/s0-Ic42/"&gt;
+&lt;img src="https://lh3.googleusercontent.com/-gedKN4759cE/VhZqBSpZL7I/AAAAAAAAGJs/Hlez6jX85ww/s400-Ic42/" alt="https://lh3.googleusercontent.com/-gedKN4759cE/VhZqBSpZL7I/AAAAAAAAGJs/Hlez6jX85ww/s400-Ic42/" /&gt;
+&lt;/a&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;This use-case came up during this year&amp;#8217;s LibreOffice conference. I started the
+Impress slideshow a few minutes in advance, so the audience could check if they
+are at the correct room, seeing the title side. Right after starting the
+slideshow, the presentation timer also started to count. I had to stop and
+start the presentation, so I had an idea how much time my talk took so far. The
+side effect of this workaround was that the audience saw an ugly short flash
+while the presentation was not running at the moment I started talking.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Because hacking the presenter console requires you to have two monitors, it&amp;#8217;s
+not something I looked into during the conference&amp;#8217;s hackfest, but now here it
+is: I
+&lt;a href="https://gerrit.libreoffice.org/gitweb?p=core.git;a=commit;h=b1a6a99b9a78689c6d3649ce066fad66912188e2"&gt;added&lt;/a&gt;
+a button to just restart the timer, then it&amp;#8217;s not needed to stop/start the
+presentation manually.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The icon is just a placeholder for now, the real design is
+&lt;a href="http://listarchives.libreoffice.org/global/design/msg07351.html"&gt;in progress&lt;/a&gt;.&lt;/p&gt;&lt;/div&gt;
+</description>
+            <link>http://vmiklos.hu/blog/presenter-console.html</link>
+            <pubDate>Fri, 09 Oct 2015 08:06:29 +0200</pubDate>
+            <guid isPermaLink="false">http://vmiklos.hu/blog/presenter-console.html</guid>
+        </item>
+        <item>
             <title>LibreOffice's Android port</title>
             <description>&lt;div style="text-align: center; font-size: 0.6em;"&gt;
 &lt;img src="https://lh3.googleusercontent.com/-Q_NX5YCu1Wk/VgT4uHIJI5I/AAAAAAAAGHo/AgTiFrgfDcA/s400-Ic42/"/&gt;
@@ -345,91 +374,6 @@ category. ;-)&lt;/p&gt;&lt;/div&gt;
             <link>http://vmiklos.hu/blog/plugfest2015.html</link>
             <pubDate>Mon, 18 May 2015 07:54:24 +0200</pubDate>
             <guid isPermaLink="false">http://vmiklos.hu/blog/plugfest2015.html</guid>
-        </item>
-        <item>
-            <title>MathType import in the RTF and DOCX filter</title>
-            <description>&lt;div class="paragraph"&gt;&lt;p&gt;TL;DR: Import of old-style (pre-2010 for RTF, pre-2007 for DOCX) math
-equations embedded into text documents should be now imported as editable
-embedded math objects.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Longer version: if you want to embed math equations into RTF or DOCX files,
-you have two choices. The older approach is to embed a MathType OLE object
-into the file, the newer one is a native OOXML markup, which has an RTF markup
-equivalent as well. Handling of the later has been implemented by
-&lt;a href="http://llunak.blogspot.com/"&gt;Luboš Luňák&lt;/a&gt; for DOCX a long time ago, and I
-contributed the RTF equivalent almost
-&lt;a href="http://vmiklos.hu/blog/lo-rtf-math-native.html"&gt;3 years ago&lt;/a&gt;.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;What remains is the handling of the older version, the embedded OLE object.
-Previously only the replacement graphic was imported, so regardless of the
-Tools &amp;#8594; Options &amp;#8594; Load / Save &amp;#8594; Microsoft Office &amp;#8594; MathType to Math
-checkbox, the result was never editable.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Here is how it looks like now:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;img src="https://lh3.googleusercontent.com/-V3SqO3Rz88s/VUZvFcBNMPI/AAAAAAAAFb4/QARDYqQVQGY/s0/" alt="https://lh3.googleusercontent.com/-V3SqO3Rz88s/VUZvFcBNMPI/AAAAAAAAFb4/QARDYqQVQGY/s0/" /&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Given that the RTF and the DOCX importers share lots of code in the
-&lt;code&gt;writerfilter/&lt;/code&gt; module, I implemented the same for the DOCX import at the same
-time, too. The interesting challenge was that writerfilter wants an
-&lt;a href="http://api.libreoffice.org/docs/idl/ref/interfacecom_1_1sun_1_1star_1_1document_1_1XFilter.html"&gt;XFilter&lt;/a&gt;
-implementation for the embedded object if it is to be handled internally by
-LibreOffice, but the MathType filter (originally created to handle math
-objects inside binary DOC files) didn&amp;#8217;t have one. Once I implemented such a
-&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=add60d233f70ff56472448bd50b3771f38974c52"&gt;filter
-wrapper&lt;/a&gt;, the
-&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=2a3e8b470edf2fe76188f9ccf6b0f32dfc817ea4"&gt;rest&lt;/a&gt;
-wasn&amp;#8217;t too hard.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Here are
-&lt;a href="http://cgit.freedesktop.org/libreoffice/core/tree/sw/qa/extras/rtfimport/data/mathtype.rtf"&gt;test&lt;/a&gt;
-&lt;a href="http://cgit.freedesktop.org/libreoffice/core/tree/sw/qa/extras/ooxmlimport/data/mathtype.docx"&gt;documents&lt;/a&gt;
-if you want to try it yourself. You&amp;#8217;ll need a 5.0
-&lt;a href="http://dev-builds.libreoffice.org/daily/master/"&gt;daily build&lt;/a&gt; for that, though.
-;-)&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;If I&amp;#8217;m at describing features new in LibreOffice Writer 5.0 file filters, here are a few more:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=830abf307aab9f9611db60b5c734fbafd3b3d8a3"&gt;Automatic hyphenation at a document
-  level&lt;/a&gt; and &lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=a3ec386c2283a196f8d9f1edd0ff97c38ddb281a"&gt;exceptions to it&lt;/a&gt; is now
-  imported in RTF. I also adjusted the
-  &lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=a2fea109e6454b10e8e85148b93bdca89066fe8d"&gt;exporter&lt;/a&gt;, so now Word sort of
-  understands our hyphenation rules, replacing the OOo-specific custom
-  hyphenation RTF extension that Word just ignored.
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=7546a904265cc0d0a0e3795cdb411cbb945a39fe"&gt;picture wrap distance properties&lt;/a&gt;
-  are now handled in the RTF importer&amp;#8201;&amp;#8212;&amp;#8201;previously that was only handled for
-  shapes.
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;And a number of bugfixes for the RTF filter:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://bugs.documentfoundation.org/show_bug.cgi?id=86182"&gt;tdf#86182&lt;/a&gt; better RTL paragraph handling
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://bugs.documentfoundation.org/show_bug.cgi?id=80708"&gt;tdf#80708&lt;/a&gt; related to the improved old-style Writer table export handling work
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://bugs.documentfoundation.org/show_bug.cgi?id=90421"&gt;tdf#90421&lt;/a&gt; hyperlink export tweak
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Do these sound interesting? Look at what others did for LibreOffice 5.0 on
-&lt;a href="https://wiki.documentfoundation.org/ReleaseNotes/5.0"&gt;the TDF wiki&lt;/a&gt;, even if
-it&amp;#8217;s far from complete, as the 5.0 branch is not yet created. :-)&lt;/p&gt;&lt;/div&gt;
-</description>
-            <link>http://vmiklos.hu/blog/mathtype-import.html</link>
-            <pubDate>Sun, 03 May 2015 21:15:59 +0200</pubDate>
-            <guid isPermaLink="false">http://vmiklos.hu/blog/mathtype-import.html</guid>
         </item>
     </channel>
 </rss>
