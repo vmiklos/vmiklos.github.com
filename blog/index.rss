@@ -5,6 +5,42 @@
         <description></description>
         <link>http://vmiklos.hu/blog/</link>
         <item>
+            <title>Rich RTF comment export in LibreOffice Writer</title>
+            <description>&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;a class="image" href="https://lh3.googleusercontent.com/-cPX4gcKiTxI/VmnrtwdnTXI/AAAAAAAAGTE/cYj_XZONoRg/s0-Ic42/"&gt;
+&lt;img src="https://lh3.googleusercontent.com/-cPX4gcKiTxI/VmnrtwdnTXI/AAAAAAAAGTE/cYj_XZONoRg/s400-Ic42/" alt="https://lh3.googleusercontent.com/-cPX4gcKiTxI/VmnrtwdnTXI/AAAAAAAAGTE/cYj_XZONoRg/s400-Ic42/" /&gt;
+&lt;/a&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;As it has been reported in
+&lt;a href="https://bugs.documentfoundation.org/show_bug.cgi?id=94377"&gt;tdf#94377&lt;/a&gt;, the
+state of Writer comment contents in the RTF export filter wasn&amp;#8217;t great.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;With two recent changes, however, the situation is now much better:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+I&amp;#8217;ve added support for multiple paragraphs
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+I&amp;#8217;ve added support for both paragraph and text portion formatting
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;It wasn&amp;#8217;t necessary to implement this from scratch, because comment contents
+uses the same editeng store as the shape text, and there formatting was already
+handled. A benefit of this code sharing is that shape text also handles
+multiple paragraphs without a problem now. :-)&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The commits are backported to &lt;code&gt;libreoffice-5-1&lt;/code&gt;, so users will see them
+already in the upcoming 5.1.0 release.&lt;/p&gt;&lt;/div&gt;
+</description>
+            <link>http://vmiklos.hu/blog/rtf-rich-comment-export.html</link>
+            <pubDate>Fri, 11 Dec 2015 08:40:09 +0100</pubDate>
+            <guid isPermaLink="false">http://vmiklos.hu/blog/rtf-rich-comment-export.html</guid>
+        </item>
+        <item>
             <title>Sanitizing member variable names in LibreOffice Writer</title>
             <description>&lt;div class="imageblock" style="text-align:center;"&gt;
 &lt;div class="content"&gt;
@@ -342,36 +378,6 @@ build&lt;/a&gt;. :-)&lt;/p&gt;&lt;/div&gt;
             <link>http://vmiklos.hu/blog/mail-merge-embedding.html</link>
             <pubDate>Tue, 28 Jul 2015 09:34:09 +0200</pubDate>
             <guid isPermaLink="false">http://vmiklos.hu/blog/mail-merge-embedding.html</guid>
-        </item>
-        <item>
-            <title>ctags vs override/SAL_OVERRIDE</title>
-            <description>&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;img src="https://lh3.googleusercontent.com/-9Hd40EVT8aw/VZBhBTZQdTI/AAAAAAAAFyM/AfymfTqKDFw/s0/" alt="https://lh3.googleusercontent.com/-9Hd40EVT8aw/VZBhBTZQdTI/AAAAAAAAFyM/AfymfTqKDFw/s0/" /&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;If you use &lt;a href="http://ctags.sourceforge.net/"&gt;ctags&lt;/a&gt; to help your LibreOffice
-development, there are already good descriptions for that&amp;#8201;&amp;#8212;&amp;#8201;e.g. for vim
-there is one &lt;a href="https://wiki.documentfoundation.org/Development/Vim#ctags"&gt;on the
-TDF wiki&lt;/a&gt;.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;What was problematic is that since C++11, &lt;code&gt;override&lt;/code&gt; is a valid keyword
-after a member function declaration, and we have our &lt;code&gt;SAL_OVERRIDE&lt;/code&gt; macro that
-I
-&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=3891d323cdc3c03154f5682baaeaa4b2ef015a63"&gt;added&lt;/a&gt;
-to be able to use it before all our supported compilers recognize it.
-Unsupported parsers include ctags, so if a member function have SAL_OVERRIDE,
-ctags only indexed the definition, not the declaration.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;I created patches to fix these problems in ctags, the
-&lt;a href="https://sourceforge.net/p/ctags/bugs/367/"&gt;override one&lt;/a&gt; is probably
-interesting for all C++ projects, the
-&lt;a href="https://github.com/vmiklos/ctags-svn/commit/ef53a231db5b428585324f266072b884e17bae52"&gt;SAL_OVERRIDE
-one&lt;/a&gt; is LibreOffice-specific.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;The hope is that the later will go away in the long run, so it won&amp;#8217;t really be
-a problem that ctags do not recognize that macro out of the box. :-)&lt;/p&gt;&lt;/div&gt;
-</description>
-            <link>http://vmiklos.hu/blog/ctags-sal-override.html</link>
-            <pubDate>Mon, 29 Jun 2015 09:29:56 +0200</pubDate>
-            <guid isPermaLink="false">http://vmiklos.hu/blog/ctags-sal-override.html</guid>
         </item>
     </channel>
 </rss>
