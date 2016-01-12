@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.5.3" />
+<meta name="description" content="RTF page background export in LibreOffice Writer - Miklos' blog" />
+<meta name="keywords" content="vmiklos, libereoffice, swig, git, python, hacking, bitlbee" />
+<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="http://vmiklos.hu/blog/index.rss" />
+<link rel="stylesheet" href="/blog/xhtml11.css" type="text/css" />
+<link rel="stylesheet" href="/blog/xhtml11-quirks.css" type="text/css" />
+<link rel="stylesheet" href="/blog/layout.css" type="text/css" />
+<title>RTF page background export in LibreOffice Writer</title>
+<!-- google analytics start -->
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-24726997-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<!-- google analytics end -->
+</head>
+<body>
+<div id="layout-banner-box">
+<div id="layout-banner">
+  <div id="layout-title">vmiklos.hu</div>
+  <div id="layout-description">shameless self-promoting website</div>
+</div>
+</div>
+<div id="layout-menu-box">
+<div id="layout-menu">
+  <div>&#187;<a href="/">Root</a></div>
+  <div>&#187;<a href="/blog/">Rejourn root</a></div>
+  <div>&#187;<a href="http://planet.documentfoundation.org/">LibreOffice Community Blogs</a></div>
+  <div>
+    Search:<br/>
+    <form action="http://www.google.com/cse" id="cse-search-box" target="_blank">
+    <input type="hidden" name="cx" value="007336731492173318056:bik8fqvatno"/><input type="hidden" name="ie" value="UTF-8"/><input type="text" name="q" size="15"/><br/>
+    <input type="submit" name="sa" value="&#187;"/></form>
+  </div>
+</div>
+
+</div>
+<div id="layout-content-box">
+<div id="layout-content">
+<div id="header">
+	<h1>RTF page background export in LibreOffice Writer</h1>
+</div>
+<div id="preamble">
+<div class="sectionbody">
+
+<!-- Single entry -->
+<div class="verseblock">
+<div class="verseblock-content">Posted <span class="timeago" title="2016-01-12T10:11:16Z">Tuesday, 12 January 2016</span> by Miklos<br />
+    Tags:
+    <a href="tags/en.html">en</a>
+    <a href="tags/libreoffice.html">libreoffice</a>
+</div>
+</div>
+
+<!-- Body -->
+<div class="paragraph"><p>While I added support for page background colors in the RTF import
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=14e163b0caf97addf340aefc5760a9031ec98390">back
+in 2013</a>, the export part was missing up to now.</p></div>
+<div class="paragraph"><p>If you set a solid color fill for a page style, and you export it to RTF, here
+is how the reference rendering output looks like:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh3.googleusercontent.com/-JI384fzDsng/VpEkSeMEgfI/AAAAAAAAGYY/GXhT1tzi4WQ/s900-Ic42/reference.png">
+<img src="https://lh3.googleusercontent.com/-JI384fzDsng/VpEkSeMEgfI/AAAAAAAAGYY/GXhT1tzi4WQ/s900-Ic42/reference.png" alt="https://lh3.googleusercontent.com/-JI384fzDsng/VpEkSeMEgfI/AAAAAAAAGYY/GXhT1tzi4WQ/s900-Ic42/reference.png" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>However, in Libreoffice only the background of the paragraph reflected the
+color set by the user:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh3.googleusercontent.com/-YZDNx5H0qYQ/VpEkSWxf2II/AAAAAAAAGYU/o4Q06VeBK-I/s900-Ic42/bad.png">
+<img src="https://lh3.googleusercontent.com/-YZDNx5H0qYQ/VpEkSWxf2II/AAAAAAAAGYU/o4Q06VeBK-I/s900-Ic42/bad.png" alt="https://lh3.googleusercontent.com/-YZDNx5H0qYQ/VpEkSWxf2II/AAAAAAAAGYU/o4Q06VeBK-I/s900-Ic42/bad.png" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>After implementing this feature in the RTF export filter, it now looks much
+closer to the reference:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh3.googleusercontent.com/--6VbXTzbA_k/VpEkSWJB7tI/AAAAAAAAGYc/D7KEn0lLvXw/s900-Ic42/good.png">
+<img src="https://lh3.googleusercontent.com/--6VbXTzbA_k/VpEkSWJB7tI/AAAAAAAAGYc/D7KEn0lLvXw/s900-Ic42/good.png" alt="https://lh3.googleusercontent.com/--6VbXTzbA_k/VpEkSWJB7tI/AAAAAAAAGYc/D7KEn0lLvXw/s900-Ic42/good.png" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>At the moment only solid fill is implemented, so other advanced fill types
+like graphics or gradients are still missing.</p></div>
+
+
+<script src="https://apis.google.com/js/plusone.js"></script>
+<g:plus action="share"></g:plus>
+
+<!-- Disqus comments -->
+<h1 id="comment-header">Comments</h1>
+<div id="disqus_thread"></div>
+<script type="text/javascript" src="http://vmiklos.disqus.com/embed.js">
+	var disqus_developer = 1;
+</script>
+<noscript>
+  <p><a href="http://disqus.com/?ref_noscript=vmiklos">View the discussion thread.</a></p>
+</noscript>
+
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>
