@@ -5,11 +5,12 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #
 
+import io
+import os
 import sys
 import urllib.parse
 import urllib.request
 import xml.sax
-import io
 
 
 class ContentHandler(xml.sax.handler.ContentHandler):
@@ -30,13 +31,6 @@ class ContentHandler(xml.sax.handler.ContentHandler):
         self.inSmallLogoURL = False
         self.smallLogoURL = None
         self.positions = 0
-
-    def startDocument(self):
-        self.outSock.write("= My portfolio\n\n")
-        self.outSock.write("Fore more details, see my https://www.openhub.net/accounts/vmiklos[Open Hub profile].\n\n")
-
-    def endDocument(self):
-        pass
 
     def startElement(self, name, attrs):
         if name == "position":
@@ -105,12 +99,14 @@ class ContentHandler(xml.sax.handler.ContentHandler):
 
 def main(argv):
     out = open(argv[0], "w")
+    out.write("= My portfolio\n\n")
+    out.write("Fore more details, see my https://www.openhub.net/accounts/%s[Open Hub profile].\n\n" % os.environ['USER'])
 
     page = 1
     while True:
         print("Page %s..." % page)
         params = urllib.parse.urlencode({'api_key': '3ede1a5eff4f15ff75306a849c68676c1e2a3503b86d6c3c77b29f0d61de9811', 'v': 1, 'page': str(page)})
-        url = "https://www.openhub.net/accounts/vmiklos/positions.xml?%s" % (params)
+        url = "https://www.openhub.net/accounts/%s/positions.xml?%s" % (os.environ['USER'], params)
         sock = urllib.request.urlopen(url)
 
         buf = sock.read()
