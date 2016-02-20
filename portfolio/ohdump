@@ -1,0 +1,133 @@
+#!/usr/bin/env python3
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+#
+
+import sys
+import urllib.parse
+import urllib.request
+import xml.sax
+import io
+
+
+class ContentHandler(xml.sax.handler.ContentHandler):
+    def __init__(self, outSock):
+        self.outSock = outSock
+        self.collectedCharacters = []
+        self.inPosition = False
+        self.inProject = False
+        self.inProjectName = False
+        self.projectName = None
+        self.inProjectHTMLURL = False
+        self.projectHTMLURL = None
+        self.inLicenses = False
+        self.inCommits = False
+        self.commits = None
+        self.inHTMLURL = False
+        self.HTMLURL = None
+        self.inSmallLogoURL = False
+        self.smallLogoURL = None
+        self.positions = 0
+
+    def startDocument(self):
+        self.outSock.write("= My portfolio\n\n")
+        self.outSock.write("Fore more details, see my https://www.openhub.net/accounts/vmiklos[Open Hub profile].\n\n")
+
+    def endDocument(self):
+        pass
+
+    def startElement(self, name, attrs):
+        if name == "position":
+            self.inPosition = True
+        elif name == "project":
+            self.inProject = True
+        elif name == "licenses":
+            self.inLicenses = True
+        elif self.inLicenses:
+            pass
+        elif self.inProject and name == "name":
+            self.inProjectName = True
+        elif self.inProject and name == "html_url":
+            self.inProjectHTMLURL = True
+        elif name == "commits":
+            self.inCommits = True
+        elif name == "html_url":
+            self.inHTMLURL = True
+        elif name == "small_logo_url":
+            self.inSmallLogoURL = True
+
+    def endElement(self, name):
+        if name == "position":
+            self.inPosition = False
+            self.outSock.write(".")
+            if self.smallLogoURL:
+                self.outSock.write(' image:%s["%s"] ' % (self.smallLogoURL, self.projectName))
+            self.outSock.write(" %s[%s]: %s[%s commits]\n" % (self.projectHTMLURL, self.projectName, self.HTMLURL, self.commits))
+            self.smallLogoURL = None
+            self.projectHTMLURL = None
+            self.projectName = None
+            self.HTMLURL = None
+            self.commits = None
+            self.positions += 1
+        elif name == "project":
+            self.inProject = False
+        elif name == "licenses":
+            self.inLicenses = False
+        elif self.inLicenses:
+            pass
+        elif self.inProject and name == "name":
+            self.inProjectName = False
+            self.projectName = "".join(self.collectedCharacters)
+            self.collectedCharacters = []
+        elif self.inProject and name == "html_url":
+            self.inProjectHTMLURL = False
+            self.projectHTMLURL = "".join(self.collectedCharacters)
+            self.collectedCharacters = []
+        elif name == "commits":
+            self.inCommits = False
+            self.commits = "".join(self.collectedCharacters)
+            self.collectedCharacters = []
+        elif name == "html_url":
+            self.inHTMLURL = False
+            self.HTMLURL = "".join(self.collectedCharacters)
+            self.collectedCharacters = []
+        elif name == "small_logo_url":
+            self.inSmallLogoURL = False
+            self.smallLogoURL = "".join(self.collectedCharacters)
+            self.collectedCharacters = []
+
+    def characters(self, content):
+        if self.inProjectName or self.inProjectHTMLURL or self.inCommits or self.inHTMLURL or self.inSmallLogoURL:
+            self.collectedCharacters.append(content)
+
+
+def main(argv):
+    out = open(argv[0], "w")
+
+    page = 1
+    while True:
+        print("Page %s..." % page)
+        params = urllib.parse.urlencode({'api_key': '3ede1a5eff4f15ff75306a849c68676c1e2a3503b86d6c3c77b29f0d61de9811', 'v': 1, 'page': str(page)})
+        url = "https://www.openhub.net/accounts/vmiklos/positions.xml?%s" % (params)
+        sock = urllib.request.urlopen(url)
+
+        buf = sock.read()
+        sock.close()
+        # print(buf.decode('utf-8'))
+
+        parser = xml.sax.make_parser()
+        contentHandler = ContentHandler(out)
+        parser.setContentHandler(contentHandler)
+        parser.parse(io.BytesIO(buf))
+        if contentHandler.positions == 0:
+            break
+        page += 1
+
+    out.close()
+
+if __name__ == "__main__":
+    main(sys.argv[1:])
+
+# vim:set shiftwidth=4 softtabstop=4 expandtab:
