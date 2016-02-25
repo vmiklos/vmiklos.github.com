@@ -1,0 +1,116 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.5.3" />
+<meta name="description" content="Import of DOCX and RTF linked graphic into LibreOffice Writer - Miklos' blog" />
+<meta name="keywords" content="vmiklos, libereoffice, swig, git, python, hacking, bitlbee" />
+<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="http://vmiklos.hu/blog/index.rss" />
+<link rel="stylesheet" href="/blog/xhtml11.css" type="text/css" />
+<link rel="stylesheet" href="/blog/xhtml11-quirks.css" type="text/css" />
+<link rel="stylesheet" href="/blog/layout.css" type="text/css" />
+<title>Import of DOCX and RTF linked graphic into LibreOffice Writer</title>
+<!-- google analytics start -->
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-24726997-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<!-- google analytics end -->
+</head>
+<body>
+<div id="layout-banner-box">
+<div id="layout-banner">
+  <div id="layout-title">vmiklos.hu</div>
+  <div id="layout-description">shameless self-promoting website</div>
+</div>
+</div>
+<div id="layout-menu-box">
+<div id="layout-menu">
+  <div>&#187;<a href="/">Root</a></div>
+  <div>&#187;<a href="/blog/">Rejourn root</a></div>
+  <div>&#187;<a href="http://planet.documentfoundation.org/">LibreOffice Community Blogs</a></div>
+  <div>
+    Search:<br/>
+    <form action="http://www.google.com/cse" id="cse-search-box" target="_blank">
+    <input type="hidden" name="cx" value="007336731492173318056:bik8fqvatno"/><input type="hidden" name="ie" value="UTF-8"/><input type="text" name="q" size="15"/><br/>
+    <input type="submit" name="sa" value="&#187;"/></form>
+  </div>
+</div>
+
+</div>
+<div id="layout-content-box">
+<div id="layout-content">
+<div id="header">
+	<h1>Import of DOCX and RTF linked graphic into LibreOffice Writer</h1>
+</div>
+<div id="preamble">
+<div class="sectionbody">
+
+<!-- Single entry -->
+<div class="verseblock">
+<div class="verseblock-content">Posted <span class="timeago" title="2016-02-25T09:17:00Z">Thursday, 25 February 2016</span> by Miklos<br />
+    Tags:
+    <a href="tags/en.html">en</a>
+    <a href="tags/libreoffice.html">libreoffice</a>
+</div>
+</div>
+
+<!-- Body -->
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh3.googleusercontent.com/-ov8ANPdqriE/Vs3em0UknHI/AAAAAAAAGc8/7mHejdWPLlg/s900-Ic42/">
+<img src="https://lh3.googleusercontent.com/-ov8ANPdqriE/Vs3em0UknHI/AAAAAAAAGc8/7mHejdWPLlg/s900-Ic42/" alt="https://lh3.googleusercontent.com/-ov8ANPdqriE/Vs3em0UknHI/AAAAAAAAGc8/7mHejdWPLlg/s900-Ic42/" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>As it has been
+<a href="https://bugs.documentfoundation.org/show_bug.cgi?id=59699">reported</a>, the RTF
+<code>includepicture</code> field was ignored on import. As writerfilter has quite some
+shared code for DOCX and RTF import, I also looked at the state of linked
+graphics in the DOCX import, and that wasn&#8217;t better, either.</p></div>
+<div class="paragraph"><p>Although, the root causes were different. ;-) Regarding DOCX, a linked and a
+non-linked graphic has quite similar drawingML markup: the only difference is
+if the graphic has a relationship alias (embedded case) or a (possibly
+relative) external URL. Relative external URLs were broken, as the
+writerfilter &#8594; oox call (to import the graphic) did not forward the base URL,
+so oox had no chance to properly resolve a relative URL.</p></div>
+<div class="paragraph"><p>Regarding RTF, a linked graphic is represented as an <code>includepicture</code> field, and
+now the RTF tokenizer resolves that to a real graphic. As you can see on the
+above screenshot series (new Writer behavior, old Writer, and reference), we
+now behave the same way as the reference (or the Writer DOC import).</p></div>
+<div class="paragraph"><p>A related interesting fact I noticed is that <code>includepicture</code> fields in OOXML
+are valid, but it seems Word never writes them: either their expanded field
+result is outdated (e.g. it&#8217;s some text), or if the user updates the field,
+then their implementation instantly replaces the field with a drawingML markup
+that links the graphic.</p></div>
+
+
+<script src="https://apis.google.com/js/plusone.js"></script>
+<g:plus action="share"></g:plus>
+
+<!-- Disqus comments -->
+<h1 id="comment-header">Comments</h1>
+<div id="disqus_thread"></div>
+<script type="text/javascript" src="http://vmiklos.disqus.com/embed.js">
+	var disqus_developer = 1;
+</script>
+<noscript>
+  <p><a href="http://disqus.com/?ref_noscript=vmiklos">View the discussion thread.</a></p>
+</noscript>
+
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

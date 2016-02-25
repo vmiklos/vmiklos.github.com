@@ -62,6 +62,36 @@
 
 <!-- Listing -->
 <div class="ulist"><ul>
+<li><p>Thursday, 25 February 2016<br /><a href="/blog/sw-linked-graphic-import.html">Import of DOCX and RTF linked graphic into LibreOffice Writer</a>
+(<a href="/blog/sw-linked-graphic-import.html#disqus_thread">Comments</a>)
+</p><p><div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh3.googleusercontent.com/-ov8ANPdqriE/Vs3em0UknHI/AAAAAAAAGc8/7mHejdWPLlg/s900-Ic42/">
+<img src="https://lh3.googleusercontent.com/-ov8ANPdqriE/Vs3em0UknHI/AAAAAAAAGc8/7mHejdWPLlg/s900-Ic42/" alt="https://lh3.googleusercontent.com/-ov8ANPdqriE/Vs3em0UknHI/AAAAAAAAGc8/7mHejdWPLlg/s900-Ic42/" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>As it has been
+<a href="https://bugs.documentfoundation.org/show_bug.cgi?id=59699">reported</a>, the RTF
+<code>includepicture</code> field was ignored on import. As writerfilter has quite some
+shared code for DOCX and RTF import, I also looked at the state of linked
+graphics in the DOCX import, and that wasn&#8217;t better, either.</p></div>
+<div class="paragraph"><p>Although, the root causes were different. ;-) Regarding DOCX, a linked and a
+non-linked graphic has quite similar drawingML markup: the only difference is
+if the graphic has a relationship alias (embedded case) or a (possibly
+relative) external URL. Relative external URLs were broken, as the
+writerfilter &#8594; oox call (to import the graphic) did not forward the base URL,
+so oox had no chance to properly resolve a relative URL.</p></div>
+<div class="paragraph"><p>Regarding RTF, a linked graphic is represented as an <code>includepicture</code> field, and
+now the RTF tokenizer resolves that to a real graphic. As you can see on the
+above screenshot series (new Writer behavior, old Writer, and reference), we
+now behave the same way as the reference (or the Writer DOC import).</p></div>
+<div class="paragraph"><p>A related interesting fact I noticed is that <code>includepicture</code> fields in OOXML
+are valid, but it seems Word never writes them: either their expanded field
+result is outdated (e.g. it&#8217;s some text), or if the user updates the field,
+then their implementation instantly replaces the field with a drawingML markup
+that links the graphic.</p></div>
+</p><hr/></li>
 <li><p>Sunday, 31 January 2016<br /><a href="/blog/fosdem2016.html">Mail merge embedding in LibreOffice Writer FOSDEM talk</a>
 (<a href="/blog/fosdem2016.html#disqus_thread">Comments</a>)
 </p><p><div class="imageblock" style="text-align:center;">

@@ -5,6 +5,40 @@
         <description></description>
         <link>http://vmiklos.hu/blog/</link>
         <item>
+            <title>Import of DOCX and RTF linked graphic into LibreOffice Writer</title>
+            <description>&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;a class="image" href="https://lh3.googleusercontent.com/-ov8ANPdqriE/Vs3em0UknHI/AAAAAAAAGc8/7mHejdWPLlg/s900-Ic42/"&gt;
+&lt;img src="https://lh3.googleusercontent.com/-ov8ANPdqriE/Vs3em0UknHI/AAAAAAAAGc8/7mHejdWPLlg/s900-Ic42/" alt="https://lh3.googleusercontent.com/-ov8ANPdqriE/Vs3em0UknHI/AAAAAAAAGc8/7mHejdWPLlg/s900-Ic42/" /&gt;
+&lt;/a&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;As it has been
+&lt;a href="https://bugs.documentfoundation.org/show_bug.cgi?id=59699"&gt;reported&lt;/a&gt;, the RTF
+&lt;code&gt;includepicture&lt;/code&gt; field was ignored on import. As writerfilter has quite some
+shared code for DOCX and RTF import, I also looked at the state of linked
+graphics in the DOCX import, and that wasn&amp;#8217;t better, either.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Although, the root causes were different. ;-) Regarding DOCX, a linked and a
+non-linked graphic has quite similar drawingML markup: the only difference is
+if the graphic has a relationship alias (embedded case) or a (possibly
+relative) external URL. Relative external URLs were broken, as the
+writerfilter &amp;#8594; oox call (to import the graphic) did not forward the base URL,
+so oox had no chance to properly resolve a relative URL.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Regarding RTF, a linked graphic is represented as an &lt;code&gt;includepicture&lt;/code&gt; field, and
+now the RTF tokenizer resolves that to a real graphic. As you can see on the
+above screenshot series (new Writer behavior, old Writer, and reference), we
+now behave the same way as the reference (or the Writer DOC import).&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;A related interesting fact I noticed is that &lt;code&gt;includepicture&lt;/code&gt; fields in OOXML
+are valid, but it seems Word never writes them: either their expanded field
+result is outdated (e.g. it&amp;#8217;s some text), or if the user updates the field,
+then their implementation instantly replaces the field with a drawingML markup
+that links the graphic.&lt;/p&gt;&lt;/div&gt;
+</description>
+            <link>http://vmiklos.hu/blog/sw-linked-graphic-import.html</link>
+            <pubDate>Thu, 25 Feb 2016 09:17:00 +0100</pubDate>
+            <guid isPermaLink="false">http://vmiklos.hu/blog/sw-linked-graphic-import.html</guid>
+        </item>
+        <item>
             <title>Mail merge embedding in LibreOffice Writer FOSDEM talk</title>
             <description>&lt;div class="imageblock" style="text-align:center;"&gt;
 &lt;div class="content"&gt;
@@ -368,42 +402,6 @@ now rendered the same again, as in the past.&lt;/p&gt;&lt;/div&gt;
             <link>http://vmiklos.hu/blog/base-form.html</link>
             <pubDate>Wed, 16 Sep 2015 09:10:29 +0200</pubDate>
             <guid isPermaLink="false">http://vmiklos.hu/blog/base-form.html</guid>
-        </item>
-        <item>
-            <title>Fixing Calc header image backgrounds</title>
-            <description>&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;a class="image" href="https://lh3.googleusercontent.com/-u9SiImjl99k/VecKvEnT6lI/AAAAAAAAGDs/sNUH3OIlk4Y/s0-Ic42/"&gt;
-&lt;img src="https://lh3.googleusercontent.com/-u9SiImjl99k/VecKvEnT6lI/AAAAAAAAGDs/sNUH3OIlk4Y/s640-Ic42/" alt="https://lh3.googleusercontent.com/-u9SiImjl99k/VecKvEnT6lI/AAAAAAAAGDs/sNUH3OIlk4Y/s640-Ic42/" /&gt;
-&lt;/a&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;I think this is my first Calc bugfix. :-) The problem I wanted to fix is that
-while LibreOffice 4.4 learned advanced
-&lt;a href="https://gerrit.libreoffice.org/gitweb?p=core.git&amp;amp;a=search&amp;amp;h=HEAD&amp;amp;st=commit&amp;amp;s=fillattributes"&gt;fill
-attributes&lt;/a&gt; (gradients, hatches, etc) for page headers / footers in Writer,
-this broke the saving of simple graphic header backgrounds in Calc. Seeing
-that no-one stepped up to fix this, I tried to do this myself&amp;#8201;&amp;#8212;&amp;#8201;and luckily
-the problem was in the ODF export filter, which is much more familiar to me,
-compared to Calc core.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Part of that larger feature was changes to the ODF filter, and
-&lt;a href="https://bugs.documentfoundation.org/show_bug.cgi?id=89245"&gt;the bug&lt;/a&gt; was exactly
-about touching shared ODF filter code to please Writer without testing other
-LibreOffice applications.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;The actual problem was
-&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=3b40329f9a64b93b1e1230b1bff74ed8cda8cd70"&gt;overlapping
-constants&lt;/a&gt;: as in multiple constants had the same numeric value. Such issues
-are sometimes hard to track down, in this case it wasn&amp;#8217;t &lt;em&gt;that&lt;/em&gt; hard: the
-context filter that tried to make sure we don&amp;#8217;t write duplicated XML
-attributes removed the background property when it tried to guard header
-repeat offsets.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Given that this affected the LibreOffice 4.4 and 5.0 series, both branches got
-a backport of the commit, and so the next release from those lines will have
-the fix.&lt;/p&gt;&lt;/div&gt;
-</description>
-            <link>http://vmiklos.hu/blog/calc-header.html</link>
-            <pubDate>Wed, 02 Sep 2015 18:08:21 +0200</pubDate>
-            <guid isPermaLink="false">http://vmiklos.hu/blog/calc-header.html</guid>
         </item>
     </channel>
 </rss>
