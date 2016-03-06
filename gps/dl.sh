@@ -1,5 +1,7 @@
 #!/bin/bash -e
 
+# ./gpsbabel is 1.4.4, 1.5.2 seems to be broken. see also: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=804476
+
 IFS=":" read hh mm < <(date +%:z)
 move=$(($hh*3600+$mm*60))
 date=$(date +%Y-%m-%d)
@@ -12,7 +14,7 @@ fi
 while true
 do
 	echo "gpsbabel: download"
-	if gpsbabel -i dg-100 -f /dev/rfcomm0 -x track,move=+$move -o gpx -F ${date}.gpx; then
+	if ./gpsbabel -i dg-100 -f /dev/rfcomm0 -x track,move=+$move -o gpx -F ${date}.gpx; then
 		if [ $(cat ${date}.gpx | wc -c) -gt 1024 ]; then
 			break
 		fi
@@ -22,7 +24,7 @@ done
 while true
 do
 	echo "gpsbabel: delete"
-	if gpsbabel -i dg-100,erase=1 -f /dev/rfcomm0 -o gpx -F deleted.gpx; then
+	if ./gpsbabel -i dg-100,erase=1 -f /dev/rfcomm0 -o gpx -F deleted.gpx; then
 		rm deleted.gpx
 		break
 	fi
