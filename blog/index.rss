@@ -5,6 +5,77 @@
         <description></description>
         <link>http://vmiklos.hu/blog/</link>
         <item>
+            <title>SHA-256 hashes for ODF signatures in LibreOffice</title>
+            <description>&lt;div class="paragraph"&gt;&lt;p&gt;As it happened with MD5 hashes in the past, the world is currently moving from
+SHA1 hashes to SHA-256 hashes these days. This affects LibreOffice&amp;#8217;s ODF
+signing feature as well, where we previously wrote and read SHA-1 hashes, but
+not SHA-256 ones. First, thanks to the Dutch Ministry of Defense who made this
+work possible (as part of a project implementing trusted signing and
+communication in LibreOffice), I could start work on
+&lt;a href="https://bugs.documentfoundation.org/show_bug.cgi?id=76142"&gt;tdf#76142&lt;/a&gt; which
+attached a reproducer document as well, helping the implementation of this
+feature.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;If you&amp;#8217;re not into the digital signature details, SHA-256 is relevant in two
+aspects here:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+it can be a signature method, denoted by the
+  &lt;code&gt;http://www.w3.org/2001/04/xmldsig-more#rsa-sha256&lt;/code&gt; URI, and
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+it can be a digest method, denoted by the
+  &lt;code&gt;http://www.w3.org/2001/04/xmlenc#sha256&lt;/code&gt; URI
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Hashing is interesting in the context of digital signatures because typically
+not the whole document is signed, just a hash of it, and crypto frameworks
+like nss or mscrypto typically tie these two together, so you just say you
+sign with rsa-sha256, which in more detail means hashing with SHA-256 and then
+signing using rsa.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;A valid signed document using SHA-256 hashing looked like this before:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;a class="image" href="https://lh3.googleusercontent.com/-c6JR6vywSuY/Vuw4CdYpj8I/AAAAAAAAGjE/hUOW-Ul073QM4SqMN2GM8K0mjGUdGSk5wCCo/s0-Ic42/"&gt;
+&lt;img src="https://lh3.googleusercontent.com/-c6JR6vywSuY/Vuw4CdYpj8I/AAAAAAAAGjE/hUOW-Ul073QM4SqMN2GM8K0mjGUdGSk5wCCo/s400-Ic42/" alt="https://lh3.googleusercontent.com/-c6JR6vywSuY/Vuw4CdYpj8I/AAAAAAAAGjE/hUOW-Ul073QM4SqMN2GM8K0mjGUdGSk5wCCo/s400-Ic42/" /&gt;
+&lt;/a&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;I.e. we failed to validate the signature, and presented a dialog that suggested the signature is not valid. After my changes, it looks like this:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;a class="image" href="https://lh3.googleusercontent.com/-QLHuSvGkFJQ/Vuw4CQD60ZI/AAAAAAAAGjI/GcmqED9Vqmc7KEw1BpDVNg_uxyrJp693gCCo/s0-Ic42/"&gt;
+&lt;img src="https://lh3.googleusercontent.com/-QLHuSvGkFJQ/Vuw4CQD60ZI/AAAAAAAAGjI/GcmqED9Vqmc7KEw1BpDVNg_uxyrJp693gCCo/s400-Ic42/" alt="https://lh3.googleusercontent.com/-QLHuSvGkFJQ/Vuw4CQD60ZI/AAAAAAAAGjI/GcmqED9Vqmc7KEw1BpDVNg_uxyrJp693gCCo/s400-Ic42/" /&gt;
+&lt;/a&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;I.e. no error on loading, and the status bar icon tells the user that
+everything is fine, except that we can&amp;#8217;t validate the certificate used for
+signing.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;As for when should LibreOffice start &lt;strong&gt;writing&lt;/strong&gt; (not reading) SHA-256 hashes
+when creating signatures, it&amp;#8217;s an open question. Probably best to wait till
+most users already have a version that can read those hashes. Then we would
+still keep support for reading SHA-1 hashes, but we would use SHA-256 when
+creating new signatures.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Another detail is that the hard work of signing in LibreOffice is done by
+using &lt;a href="https://www.aleksey.com/xmlsec/"&gt;libxmlsec&lt;/a&gt;. We bundled a heavily patched
+version from 2009, and it wasn&amp;#8217;t clear how much work it is to port our patches
+to a newer upstream version, so I&amp;#8217;ve initially backported the SHA-256 patches
+to our older version (for the nss and mscrypto backends of libxmlsec, as that
+covers what LibreOffice uses on Linux, Windows and OS X). At the end I managed
+to update our bundled libxmlsec to a newer (even if not the newest yet)
+version, so latest master got rid of those custom backports.  As usual, you
+can try this right now with a 5.2
+&lt;a href="http://dev-builds.libreoffice.org/daily/master/"&gt;daily build&lt;/a&gt;. :-)&lt;/p&gt;&lt;/div&gt;
+</description>
+            <link>http://vmiklos.hu/blog/libreoffice-sha256-signatures.html</link>
+            <pubDate>Wed, 23 Mar 2016 09:37:54 +0100</pubDate>
+            <guid isPermaLink="false">http://vmiklos.hu/blog/libreoffice-sha256-signatures.html</guid>
+        </item>
+        <item>
             <title>Signature descriptions in LibreOffice</title>
             <description>&lt;div class="paragraph"&gt;&lt;p&gt;LibreOffice&amp;#8217;s user interface prohibited creating multiple signatures by the
 same author on a document, because there was no semantic meaning of signing
@@ -378,23 +449,6 @@ presentation manually.&lt;/p&gt;&lt;/div&gt;
             <link>http://vmiklos.hu/blog/presenter-console.html</link>
             <pubDate>Fri, 09 Oct 2015 08:06:29 +0200</pubDate>
             <guid isPermaLink="false">http://vmiklos.hu/blog/presenter-console.html</guid>
-        </item>
-        <item>
-            <title>LibreOffice's Android port</title>
-            <description>&lt;div style="text-align: center; font-size: 0.6em;"&gt;
-&lt;img src="https://lh3.googleusercontent.com/-Q_NX5YCu1Wk/VgT4uHIJI5I/AAAAAAAAGHo/AgTiFrgfDcA/s400-Ic42/"/&gt;
-&lt;p&gt;(via &lt;a href="https://plus.google.com/115321503505930643274/posts/gsXjsZpW5DR"&gt;Andras Timar&lt;/a&gt;)&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;I had the pleasure to share where we are wrt. the Android port of LibreOffice
-yesterday. Abstract on the
-&lt;a href="http://conference.libreoffice.org/2015/the-program/talks/development/#LibreOffice%27s%20Android%20port"&gt;conference
-website&lt;/a&gt;, slides at the
-&lt;a href="https://speakerdeck.com/vmiklos/libreoffices-android-port"&gt;usual place&lt;/a&gt;, video
-record "soon" as usual. :-)&lt;/p&gt;&lt;/div&gt;
-</description>
-            <link>http://vmiklos.hu/blog/libreoffices-android-port.html</link>
-            <pubDate>Fri, 25 Sep 2015 09:39:08 +0200</pubDate>
-            <guid isPermaLink="false">http://vmiklos.hu/blog/libreoffices-android-port.html</guid>
         </item>
     </channel>
 </rss>
