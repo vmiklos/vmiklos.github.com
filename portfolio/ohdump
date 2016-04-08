@@ -58,7 +58,10 @@ class ContentHandler(xml.sax.handler.ContentHandler):
             self.outSock.write(".")
             if self.smallLogoURL:
                 self.outSock.write(' image:%s["%s"] ' % (self.smallLogoURL, self.projectName))
-            self.outSock.write(" %s[%s]: %s[%s commits]\n" % (self.projectHTMLURL, self.projectName, self.HTMLURL, self.commits))
+            commits = "commit"
+            if self.commits != "1":
+                commits += "s"
+            self.outSock.write(" %s[%s]: %s[%s %s]\n" % (self.projectHTMLURL, self.projectName, self.HTMLURL, self.commits, commits))
             self.smallLogoURL = None
             self.projectHTMLURL = None
             self.projectName = None
