@@ -1,0 +1,181 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.5.3" />
+<meta name="description" content="OOXML signature export in LibreOffice - Miklos' blog" />
+<meta name="keywords" content="vmiklos, libereoffice, swig, git, python, hacking, bitlbee" />
+<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="http://vmiklos.hu/blog/index.rss" />
+<link rel="stylesheet" href="/blog/xhtml11.css" type="text/css" />
+<link rel="stylesheet" href="/blog/xhtml11-quirks.css" type="text/css" />
+<link rel="stylesheet" href="/blog/layout.css" type="text/css" />
+<title>OOXML signature export in LibreOffice</title>
+<!-- google analytics start -->
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-24726997-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<!-- google analytics end -->
+</head>
+<body>
+<div id="layout-banner-box">
+<div id="layout-banner">
+  <div id="layout-title">vmiklos.hu</div>
+  <div id="layout-description">shameless self-promoting website</div>
+</div>
+</div>
+<div id="layout-menu-box">
+<div id="layout-menu">
+  <div>&#187;<a href="/">Root</a></div>
+  <div>&#187;<a href="/blog/">Rejourn root</a></div>
+  <div>&#187;<a href="http://planet.documentfoundation.org/">LibreOffice Community Blogs</a></div>
+  <div>
+    Search:<br/>
+    <form action="http://www.google.com/cse" id="cse-search-box" target="_blank">
+    <input type="hidden" name="cx" value="007336731492173318056:bik8fqvatno"/><input type="hidden" name="ie" value="UTF-8"/><input type="text" name="q" size="15"/><br/>
+    <input type="submit" name="sa" value="&#187;"/></form>
+  </div>
+</div>
+
+</div>
+<div id="layout-content-box">
+<div id="layout-content">
+<div id="header">
+	<h1>OOXML signature export in LibreOffice</h1>
+</div>
+<div id="preamble">
+<div class="sectionbody">
+
+<!-- Single entry -->
+<div class="verseblock">
+<div class="verseblock-content">Posted <span class="timeago" title="2016-04-14T08:20:51Z">Thursday, 14 April 2016</span> by Miklos<br />
+    Tags:
+    <a href="tags/en.html">en</a>
+    <a href="tags/libreoffice.html">libreoffice</a>
+</div>
+</div>
+
+<!-- Body -->
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh3.googleusercontent.com/-E5cCfFV5kkk/VwzwIcJ0JqI/AAAAAAAAGqk/4JpTSRlvUok6txiXgp1MgoNoNgPb0ov8gCCo/s0-Ic42/">
+<img src="https://lh3.googleusercontent.com/-E5cCfFV5kkk/VwzwIcJ0JqI/AAAAAAAAGqk/4JpTSRlvUok6txiXgp1MgoNoNgPb0ov8gCCo/s600-Ic42/" alt="https://lh3.googleusercontent.com/-E5cCfFV5kkk/VwzwIcJ0JqI/AAAAAAAAGqk/4JpTSRlvUok6txiXgp1MgoNoNgPb0ov8gCCo/s600-Ic42/" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>After adding <a href="http://vmiklos.hu/blog/ooxml-signature-import.html">support
+for reading OOXML signatures in LibreOffice</a>, I continued with implementing OOXML
+signature export (as in: not only verification, but signing).</p></div>
+<div class="paragraph"><p>By verification, I mean that I count the signature of the input document, then
+compare it with an existing signature, and if they match, it is verified. This
+can be also called "import", as I only read an existing signature, I don&#8217;t
+create one.  By signing, I mean the creation of a new signature, which is
+always good&#8201;&#8212;&#8201;if it isn&#8217;t, that&#8217;s a programming error. This can be also
+called "export", as I write the new signature into the document.</p></div>
+<div class="paragraph"><p>First, thanks to the Dutch Ministry of Defense who made this work possible (as
+part of a project implementing trusted signing and communication in
+LibreOffice), this included:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+signing a previously unsigned document
+</p>
+</li>
+<li>
+<p>
+appending a signature to an already signed document
+</p>
+</li>
+<li>
+<p>
+removing a signature from a document with multiple signatures
+</p>
+</li>
+<li>
+<p>
+removing the last signature of a signed document, turning it into an
+  unsigned one
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Obviously the hardest part was the initial success: signing a previously
+unsigned document, in a way that is accepted by both LibreOffice and MSO. One
+trick here is that while in ODF the signature stream is simply added to an
+existing document storage, in OOXML the storage has to refer to the signature
+sub-storage (it&#8217;s not a stream, as it has a stream for each individual
+signature), then it has to be signed, and finally the signature can be added
+to the document storage. So instead of reading the document, then appending
+the signature, here we need to modify the document, and then we can append the
+signature.  By referring the signature sub-storage, I mean it is necessary to
+modify <code>[Content_Types].xml</code> (so it contains a mime type for both the <code>.sigs</code>
+extension, and also for the individual <code>/_xmlsignatures/sigN.xml</code> streams) and
+also the <code>_rels/.rels</code> stream has to refer <code>_xmlsignatures/origin.sigs</code>, which
+will contain the list of actual signatures.  A surprising detail is that the
+signature is required to contain quite some software and hardware details
+about your environment, like monitor resolution, Windows version and so on.
+For a cross-platform project like LibreOffice this isn&#8217;t meaningful, not to
+mention we have no interest in leaking such information. So what I did instead
+is writing hardcoded values based on what my test environment would produce,
+just to please MSO. ;-)</p></div>
+<div class="paragraph"><p>After the initial
+<a href="https://cgit.freedesktop.org/libreoffice/core/tree/xmlsecurity/source/helper/ooxmlsecexporter.cxx">OOXML
+signature exporter</a> was ready, the next challenge was adding multiple
+signatures. The problem here is that you have to roundtrip the existing
+signatures perfectly. And when I write perfectly, I really mean it: if a
+single character is written differently, then the hash of the signature will
+be different, so the roundtrip (when we write back an existing and a new
+signature to the document) will invalidate the signature. And there is no way
+around that: the very point of the signature is that only the original signer
+can re-calculate the signature hash. :-) So what we do is simply threating the
+existing signatures as a byte array, and when writing back, then we don&#8217;t try
+to re-construct the signature stream based on the xmlsecurity data model, but
+simply write back the byte array. This way it&#8217;s enough to extract parts of the
+signature which are presented to the user (date, certificate, comment), and we
+don&#8217;t need to parse the rest.</p></div>
+<div class="paragraph"><p>Removing one of multiple existing signatures isn&#8217;t particularly hard, you just
+need to update <code>_xmlsignatures/_rels/origin.sigs.rels</code> and
+<code>[Content_Types].xml</code> which refer each and every signature stream. It&#8217;s a good
+idea to truncate them before writing, otherwise you may get a not even
+well-formed XML as a result.</p></div>
+<div class="paragraph"><p>Finally removing the last signature is a matter of undoing all changes we did
+while adding the first signature (the content type list and the toplevel
+relation list), finally removing the signature sub-storage all-together. I
+also factored out all this signature management code from
+<code>DigitalSignaturesDialog</code> (which is a graphical dialog) to
+<code>DocumentSignatureManager</code>, so that all the above mentioned features can be
+<a href="https://cgit.freedesktop.org/libreoffice/core/tree/xmlsecurity/qa/unit/signing/signing.cxx">unit-tested</a>.</p></div>
+<div class="paragraph"><p>Putting all of these together, LO can now do all signature add, append, remove
+and clean operations a user would expect from what is referred as simply
+<em>OOXML signature support</em>. As usual, you can try this right now with a 5.2
+<a href="http://dev-builds.libreoffice.org/daily/master/">daily build</a>. :-)</p></div>
+
+
+<script src="https://apis.google.com/js/plusone.js"></script>
+<g:plus action="share"></g:plus>
+
+<!-- Disqus comments -->
+<h1 id="comment-header">Comments</h1>
+<div id="disqus_thread"></div>
+<script type="text/javascript" src="http://vmiklos.disqus.com/embed.js">
+	var disqus_developer = 1;
+</script>
+<noscript>
+  <p><a href="http://disqus.com/?ref_noscript=vmiklos">View the discussion thread.</a></p>
+</noscript>
+
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>
