@@ -1,0 +1,72 @@
+title: Classification toolbar in LibreOffice
+author: Miklos
+tags: en, libreoffice
+pubdate: 2016-05-02T08:50:54Z
+<<<
+
+In the past few posts in this blog I wrote about various digital
+signing-related improvements that will land in LibreOffice 5.2. In this post I
+would like to cover an other aspect of helping secure document handling:
+classification.  First, thanks to the Dutch Ministry of Defense who made this
+work possible (as part of a project implementing trusted signing and
+communication in LibreOffice) in cooperation with
+http://nouenoff.nl/[Nou&Off]. The basic idea is that in case the user is
+required to follow a policy when editing a document, then LO can help the user
+respect these rules in case LO is informed about the rules.
+
+Luckily https://www.tscp.org/[TSCP] produced a number of open standards around
+this, which LO can implement without going after a specific vendor. For the
+scope of this post, two of them are interesting:
+
+- https://www.tscp.org/wp-content/uploads/2013/08/TSCP_BAFv1.pdf[Business
+  Authentication Framework] (BAF) specifies how you can describe your existing
+  policy (which is probably some legal text) in a machine-readable format.
+- http://www.tscp.org/wp-content/uploads/2013/08/TSCP_BAILSv1.pdf[Business
+  Authorization Identification and Labeling Scheme] (BAILS) specifies how to
+  refer to such a BAF policy in a document. The concepts in BAILS are so
+  generic that they can be applied to any format that supports document-level
+  user-defined properties.
+
+So how does this look like? View -> Toolbars -> Classification can enable a
+toolbar that's disabled by default:
+
+image::https://lh3.googleusercontent.com/-Xax-DgF5OXU/VyMiHHa2MhI/AAAAAAAAGsk/4FhSfBAnSMAt_qUSrTq_C_1Mh68T5GhAACCo/s400/[align="center",link="https://lh3.googleusercontent.com/-Xax-DgF5OXU/VyMiHHa2MhI/AAAAAAAAGsk/4FhSfBAnSMAt_qUSrTq_C_1Mh68T5GhAACCo/s0/"]
+
+It has a list box that contains the categories described by the BAF policy. LO
+comes with such an example policy by default, that's why you can see
+categories there already. If you want to use your own policy, you can do so:
+Tools -> Options -> LibreOffice -> Paths has a Classification row to configure
+a custom policy:
+
+image::https://lh3.googleusercontent.com/-F-zzCoVt-Gc/VyMiN6C_BKI/AAAAAAAAGsY/K3XkZDDSX1c5_X266H3hC4KqkA5twGmrgCCo/s400/[align="center",link="https://lh3.googleusercontent.com/-F-zzCoVt-Gc/VyMiN6C_BKI/AAAAAAAAGsY/K3XkZDDSX1c5_X266H3hC4KqkA5twGmrgCCo/s0/"]
+
+And if you select the 'Internal Only' category, you'll see most of the
+features described by a category: it can add an info-bar (UI only),
+header/footer fields and a watermark (stored in the document) as well:
+
+image::https://lh3.googleusercontent.com/-4iEF3y78npI/VyMiTCCMALI/AAAAAAAAGso/IrzORuYa-7IjGwjs9HXYQr3_rLcope0PwCCo/s400/[align="center",link="https://lh3.googleusercontent.com/-4iEF3y78npI/VyMiTCCMALI/AAAAAAAAGso/IrzORuYa-7IjGwjs9HXYQr3_rLcope0PwCCo/s0/"]
+
+I would like to point out that the watermark is a proper scalable customshape,
+not a poor bitmap. :-) Perhaps this part could be extracted to a separate 'Add
+Watermark' feature later, as I think it's quite useful on its own as well.
+
+Finally, one feature is that LO knows how secure the document is once it has a
+classification category, which means a classification scale and level. For two
+documents that have the same scale, LO can detect if the user would accidentally
+try to leak sensitive content from a document with higher classification level
+to a document that has a lower one. This is implemented when copy&pasting:
+
+image::https://lh3.googleusercontent.com/-ZRYwwOW0dQ4/VyMiXiqx2cI/AAAAAAAAGso/J6dH-q2nZPESOY3SiMQoCSLDUYfHi9WbACCo/s400/[align="center",link="https://lh3.googleusercontent.com/-ZRYwwOW0dQ4/VyMiXiqx2cI/AAAAAAAAGso/J6dH-q2nZPESOY3SiMQoCSLDUYfHi9WbACCo/s0/"]
+
+Most of these features work in all Writer, Calc and Impress. The header/footer
+fields and the watermark are Writer-only, and also Calc/Impress does
+classification checks only in its internal copy&paste code (e.g. not when
+doing paste special and choosing RTF).
+
+Putting all of these together, LO can now help users required to follow
+classification rules in a number of different ways, as long as the rules they
+have to follow are available as a BAF XML policy. As usual, you can try this
+right now with a 5.2 http://dev-builds.libreoffice.org/daily/master/[daily
+build]. :-)
+
+// vim: ft=asciidoc
