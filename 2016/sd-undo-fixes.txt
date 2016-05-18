@@ -1,0 +1,44 @@
+title: Recent undo/redo fixes in LibreOffice Impress
+author: Miklos
+tags: en, libreoffice
+pubdate: 2016-05-18T09:34:42Z
+<<<
+
+I've recently spent some time fixing a few bugs around undo/redo in Impress,
+in the area of table shapes. I'm mentioning these here as they're all bugfixes, so
+they are backported to LibreOffice 5.1, and no major release notes will point
+them out. So if you are using Impress table shapes and you consider their
+usability suboptimal, then read on, I have some great news. :-)
+
+image::https://lh3.googleusercontent.com/-4K07Iu7su4M/Vzs8dQCfx7I/AAAAAAAAGts/7GCj5T3Zs9UMyTaR277tHvlOHSk-9HGmACCo/s800/[align="center",link="https://lh3.googleusercontent.com/-4K07Iu7su4M/Vzs8dQCfx7I/AAAAAAAAGts/7GCj5T3Zs9UMyTaR277tHvlOHSk-9HGmACCo/s0/"]
+
+The first problem is
+https://bugs.documentfoundation.org/show_bug.cgi?id=99396[tdf#99396], where
+there were actually two problems:
+
+. Vertical alignment is a cell property, but when setting that property, the undo code was simply https://cgit.freedesktop.org/libreoffice/core/commit/?id=6819992113947e7a6272bf750fee712c2df41905[missing].
+. When editing cell text (the user is inside "text edit") the undo stack is in
+a special mode -- and ending text edit made the cell property undo items go
+away. This wasn't a problem for vertical alignment only, it was a problem for
+example when the background color of the cell was changed, too. These cell
+property changes are now
+https://cgit.freedesktop.org/libreoffice/core/commit/?id=100eb15b4d8529d7a11d98a28742f31f0f792fa1[added]
+to the undo stack after finishing text edit, so you can still undo them later.
+
+image::https://lh3.googleusercontent.com/-aCZDFOS8xR4/Vzs8bzEjtvI/AAAAAAAAGtw/ZESadiryhEAwAsLoxwztIRNvSjdwOEmDgCCo/s600/[align="center",link="https://lh3.googleusercontent.com/-aCZDFOS8xR4/Vzs8bzEjtvI/AAAAAAAAGtw/ZESadiryhEAwAsLoxwztIRNvSjdwOEmDgCCo/s0/"]
+
+The second bugreport is
+https://bugs.documentfoundation.org/show_bug.cgi?id=99452[tdf#99452] where
+resizing a table shape row separator and then undoing the resize didn't
+restore the original state. See the
+https://cgit.freedesktop.org/libreoffice/core/commit/?id=cafc53f8b4c08443524b1da6f4918d49afd45bb5[commit]
+for all the details, but the bottom line is: it isn't a good idea to
+automatically re-layout the table when we've already resized the shape as part
+of undo, but the table rows were not yet resized to reflect their original
+sizes.
+
+As usual, you can try this right now with a 5.2
+http://dev-builds.libreoffice.org/daily/master/[daily build]. :-) (Or even
+with an 5.1 one, actually.)
+
+// vim: ft=asciidoc
