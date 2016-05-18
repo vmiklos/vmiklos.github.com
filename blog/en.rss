@@ -5,6 +5,65 @@
         <description></description>
         <link>http://vmiklos.hu/blog/</link>
         <item>
+            <title>Recent undo/redo fixes in LibreOffice Impress</title>
+            <description>&lt;div class="paragraph"&gt;&lt;p&gt;I&amp;#8217;ve recently spent some time fixing a few bugs around undo/redo in Impress,
+in the area of table shapes. I&amp;#8217;m mentioning these here as they&amp;#8217;re all bugfixes, so
+they are backported to LibreOffice 5.1, and no major release notes will point
+them out. So if you are using Impress table shapes and you consider their
+usability suboptimal, then read on, I have some great news. :-)&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;a class="image" href="https://lh3.googleusercontent.com/-4K07Iu7su4M/Vzs8dQCfx7I/AAAAAAAAGts/7GCj5T3Zs9UMyTaR277tHvlOHSk-9HGmACCo/s0/"&gt;
+&lt;img src="https://lh3.googleusercontent.com/-4K07Iu7su4M/Vzs8dQCfx7I/AAAAAAAAGts/7GCj5T3Zs9UMyTaR277tHvlOHSk-9HGmACCo/s800/" alt="https://lh3.googleusercontent.com/-4K07Iu7su4M/Vzs8dQCfx7I/AAAAAAAAGts/7GCj5T3Zs9UMyTaR277tHvlOHSk-9HGmACCo/s800/" /&gt;
+&lt;/a&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The first problem is
+&lt;a href="https://bugs.documentfoundation.org/show_bug.cgi?id=99396"&gt;tdf#99396&lt;/a&gt;, where
+there were actually two problems:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="olist arabic"&gt;&lt;ol class="arabic"&gt;
+&lt;li&gt;
+&lt;p&gt;
+Vertical alignment is a cell property, but when setting that property, the undo code was simply &lt;a href="https://cgit.freedesktop.org/libreoffice/core/commit/?id=6819992113947e7a6272bf750fee712c2df41905"&gt;missing&lt;/a&gt;.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+When editing cell text (the user is inside "text edit") the undo stack is in
+a special mode&amp;#8201;&amp;#8212;&amp;#8201;and ending text edit made the cell property undo items go
+away. This wasn&amp;#8217;t a problem for vertical alignment only, it was a problem for
+example when the background color of the cell was changed, too. These cell
+property changes are now
+&lt;a href="https://cgit.freedesktop.org/libreoffice/core/commit/?id=100eb15b4d8529d7a11d98a28742f31f0f792fa1"&gt;added&lt;/a&gt;
+to the undo stack after finishing text edit, so you can still undo them later.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;a class="image" href="https://lh3.googleusercontent.com/-aCZDFOS8xR4/Vzs8bzEjtvI/AAAAAAAAGtw/ZESadiryhEAwAsLoxwztIRNvSjdwOEmDgCCo/s0/"&gt;
+&lt;img src="https://lh3.googleusercontent.com/-aCZDFOS8xR4/Vzs8bzEjtvI/AAAAAAAAGtw/ZESadiryhEAwAsLoxwztIRNvSjdwOEmDgCCo/s600/" alt="https://lh3.googleusercontent.com/-aCZDFOS8xR4/Vzs8bzEjtvI/AAAAAAAAGtw/ZESadiryhEAwAsLoxwztIRNvSjdwOEmDgCCo/s600/" /&gt;
+&lt;/a&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The second bugreport is
+&lt;a href="https://bugs.documentfoundation.org/show_bug.cgi?id=99452"&gt;tdf#99452&lt;/a&gt; where
+resizing a table shape row separator and then undoing the resize didn&amp;#8217;t
+restore the original state. See the
+&lt;a href="https://cgit.freedesktop.org/libreoffice/core/commit/?id=cafc53f8b4c08443524b1da6f4918d49afd45bb5"&gt;commit&lt;/a&gt;
+for all the details, but the bottom line is: it isn&amp;#8217;t a good idea to
+automatically re-layout the table when we&amp;#8217;ve already resized the shape as part
+of undo, but the table rows were not yet resized to reflect their original
+sizes.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;As usual, you can try this right now with a 5.2
+&lt;a href="http://dev-builds.libreoffice.org/daily/master/"&gt;daily build&lt;/a&gt;. :-) (Or even
+with an 5.1 one, actually.)&lt;/p&gt;&lt;/div&gt;
+</description>
+            <link>http://vmiklos.hu/blog/sd-undo-fixes.html</link>
+            <pubDate>Wed, 18 May 2016 09:34:42 +0200</pubDate>
+            <guid isPermaLink="false">http://vmiklos.hu/blog/sd-undo-fixes.html</guid>
+        </item>
+        <item>
             <title>Classification toolbar in LibreOffice</title>
             <description>&lt;div class="paragraph"&gt;&lt;p&gt;In the past few posts in this blog I wrote about various digital
 signing-related improvements that will land in LibreOffice 5.2. In this post I
@@ -552,43 +611,6 @@ already in the upcoming 5.1.0 release.&lt;/p&gt;&lt;/div&gt;
             <link>http://vmiklos.hu/blog/rtf-rich-comment-export.html</link>
             <pubDate>Fri, 11 Dec 2015 08:40:09 +0100</pubDate>
             <guid isPermaLink="false">http://vmiklos.hu/blog/rtf-rich-comment-export.html</guid>
-        </item>
-        <item>
-            <title>Sanitizing member variable names in LibreOffice Writer</title>
-            <description>&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;a class="image" href="https://lh3.googleusercontent.com/-Qk6Y55f7HaY/VlYtR13vYeI/AAAAAAAAGRA/hK-7EJMFhwk/s0-Ic42/"&gt;
-&lt;img src="https://lh3.googleusercontent.com/-Qk6Y55f7HaY/VlYtR13vYeI/AAAAAAAAGRA/hK-7EJMFhwk/s400-Ic42/" alt="https://lh3.googleusercontent.com/-Qk6Y55f7HaY/VlYtR13vYeI/AAAAAAAAGRA/hK-7EJMFhwk/s400-Ic42/" /&gt;
-&lt;/a&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Robinson just
-&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?h=libreoffice-5-1&amp;amp;id=fa7c921feb2f6e14f7eca717dd3cfbca0bd35c03"&gt;branched
-off&lt;/a&gt; libreoffice-5-1 from master in LibreOffice&amp;#8217;s core.git repository, so time
-to talk about what happened behind the scenes in the 5.0 &amp;#8594; 5.1 development
-cycle from my side.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;One stylistic detail that annoyed me for a while was the inconsistency around
-naming class member variables. In new code it&amp;#8217;s common to give them an &lt;code&gt;m_&lt;/code&gt;
-(or at least an &lt;code&gt;m&lt;/code&gt;) prefix, but in older code that wasn&amp;#8217;t that common, and
-various custom hacks were invented to differentiate between pointers which
-point to the same memory address, but one being a parameter of a member
-function, and the other being a member variable.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Probably the worst scenario is when one was an abbreviation of the other, like
-pTable and pTbl or pCursor and pCrsr. I took this as an opportunity to play
-with Clang&amp;#8217;s &lt;a href="http://clang.llvm.org/docs/LibTooling.html"&gt;LibTooling&lt;/a&gt;, and I
-wrote two tools &lt;a href="http://vmiklos.hu/blog/cambridge.html"&gt;back during the
-Cambridge hackfest&lt;/a&gt; to automate the process of finding and fixing missing
-prefixes.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;To scope the renaming, I changed all classes in the &lt;code&gt;sw&lt;/code&gt; module having more
-than 20 unprefixed members to follow the above convention, hopefully this
-nicely improves code readability, together with the
-&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=49c2b9808df8a6b197dec666dfc0cda6321a4306"&gt;mass-rename
-of pointless abbreviations&lt;/a&gt;, also done before the branch-off, so affecting
-both libreoffice-5-1 and master. :-)&lt;/p&gt;&lt;/div&gt;
-</description>
-            <link>http://vmiklos.hu/blog/sanitizing-member-variable-names.html</link>
-            <pubDate>Thu, 26 Nov 2015 08:50:47 +0100</pubDate>
-            <guid isPermaLink="false">http://vmiklos.hu/blog/sanitizing-member-variable-names.html</guid>
         </item>
     </channel>
 </rss>
