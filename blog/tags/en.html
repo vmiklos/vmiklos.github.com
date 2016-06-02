@@ -62,6 +62,39 @@
 
 <!-- Listing -->
 <div class="ulist"><ul>
+<li><p>Thursday, 02 June 2016<br /><a href="/blog/classification-toolbar-multicat.html">Classification toolbar in LibreOffice: Multiple Categories</a>
+(<a href="/blog/classification-toolbar-multicat.html#disqus_thread">Comments</a>)
+</p><p><div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://farm8.staticflickr.com/7073/26791252053_5cd37892f2_o.png">
+<img src="https://farm8.staticflickr.com/7073/26791252053_46f2c7d4ae_z.jpg" alt="https://farm8.staticflickr.com/7073/26791252053_46f2c7d4ae_z.jpg" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>I explained the concept of the classification toolbar appearing in LibreOffice
+5.2 in a <a href="http://vmiklos.hu/blog/classification-toolbar.html">previous post</a>.
+One incremental update on top of that is support for multiple categories,
+which I&#8217;m describing here.</p></div>
+<div class="paragraph"><p><a href="https://www.tscp.org/">TSCP</a> in its
+<a href="http://www.tscp.org/wp-content/uploads/2013/08/TSCP_BAILSv1.pdf">BAILSv1</a> spec
+defines 3 different policy types (IntellectualProperty, NationalSecurity and
+ExportControl), and you can set different classification categories for
+different policy types. Giving a practical example, if you&#8217;re communicating
+with someone, then you can declare what policy type will you be using for that
+communication, and tag a single document multiple times, once for all used
+policy types.</p></div>
+<div class="paragraph"><p>This multiple-categories feature wasn&#8217;t supported by LibreOffice previously,
+we simply read the IntellectualProperty type from the document, and also only
+wrote that. Now the user interface still reacts to the IntellectualProperty
+policy type (since in case there are multiple policies and each of them wants
+a different e.g. watermark, the UI has to pick one in some way), but other
+than that we read all types from the document, all values are shown on the
+toolbar and of course you can also set all of them.</p></div>
+<div class="paragraph"><p>All internal APIs and the <code>.uno</code> command that can be used from macros take a
+type parameter to get/set a given type of category, if wanted.  As usual, you
+can try this right now with a 5.2 or
+<a href="http://dev-builds.libreoffice.org/daily/master/">5.3 daily build</a>. :-)</p></div>
+</p><hr/></li>
 <li><p>Wednesday, 18 May 2016<br /><a href="/blog/sd-undo-fixes.html">Recent undo/redo fixes in LibreOffice Impress</a>
 (<a href="/blog/sd-undo-fixes.html#disqus_thread">Comments</a>)
 </p><p><div class="paragraph"><p>I&#8217;ve recently spent some time fixing a few bugs around undo/redo in Impress,
@@ -597,38 +630,6 @@ closer to the reference:</p></div>
 </div>
 <div class="paragraph"><p>At the moment only solid fill is implemented, so other advanced fill types
 like graphics or gradients are still missing.</p></div>
-</p><hr/></li>
-<li><p>Friday, 11 December 2015<br /><a href="/blog/rtf-rich-comment-export.html">Rich RTF comment export in LibreOffice Writer</a>
-(<a href="/blog/rtf-rich-comment-export.html#disqus_thread">Comments</a>)
-</p><p><div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://lh3.googleusercontent.com/-cPX4gcKiTxI/VmnrtwdnTXI/AAAAAAAAGTE/cYj_XZONoRg/s0-Ic42/">
-<img src="https://lh3.googleusercontent.com/-cPX4gcKiTxI/VmnrtwdnTXI/AAAAAAAAGTE/cYj_XZONoRg/s400-Ic42/" alt="https://lh3.googleusercontent.com/-cPX4gcKiTxI/VmnrtwdnTXI/AAAAAAAAGTE/cYj_XZONoRg/s400-Ic42/" />
-</a>
-</div>
-</div>
-<div class="paragraph"><p>As it has been reported in
-<a href="https://bugs.documentfoundation.org/show_bug.cgi?id=94377">tdf#94377</a>, the
-state of Writer comment contents in the RTF export filter wasn&#8217;t great.</p></div>
-<div class="paragraph"><p>With two recent changes, however, the situation is now much better:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-I&#8217;ve added support for multiple paragraphs
-</p>
-</li>
-<li>
-<p>
-I&#8217;ve added support for both paragraph and text portion formatting
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>It wasn&#8217;t necessary to implement this from scratch, because comment contents
-uses the same editeng store as the shape text, and there formatting was already
-handled. A benefit of this code sharing is that shape text also handles
-multiple paragraphs without a problem now. :-)</p></div>
-<div class="paragraph"><p>The commits are backported to <code>libreoffice-5-1</code>, so users will see them
-already in the upcoming 5.1.0 release.</p></div>
 </p><hr/></li>
 </ul></div>
 <a href="/blog/archive.html">more &raquo;</a>

@@ -5,6 +5,43 @@
         <description></description>
         <link>http://vmiklos.hu/blog/</link>
         <item>
+            <title>Classification toolbar in LibreOffice: Multiple Categories</title>
+            <description>&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;a class="image" href="https://farm8.staticflickr.com/7073/26791252053_5cd37892f2_o.png"&gt;
+&lt;img src="https://farm8.staticflickr.com/7073/26791252053_46f2c7d4ae_z.jpg" alt="https://farm8.staticflickr.com/7073/26791252053_46f2c7d4ae_z.jpg" /&gt;
+&lt;/a&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;I explained the concept of the classification toolbar appearing in LibreOffice
+5.2 in a &lt;a href="http://vmiklos.hu/blog/classification-toolbar.html"&gt;previous post&lt;/a&gt;.
+One incremental update on top of that is support for multiple categories,
+which I&amp;#8217;m describing here.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;&lt;a href="https://www.tscp.org/"&gt;TSCP&lt;/a&gt; in its
+&lt;a href="http://www.tscp.org/wp-content/uploads/2013/08/TSCP_BAILSv1.pdf"&gt;BAILSv1&lt;/a&gt; spec
+defines 3 different policy types (IntellectualProperty, NationalSecurity and
+ExportControl), and you can set different classification categories for
+different policy types. Giving a practical example, if you&amp;#8217;re communicating
+with someone, then you can declare what policy type will you be using for that
+communication, and tag a single document multiple times, once for all used
+policy types.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;This multiple-categories feature wasn&amp;#8217;t supported by LibreOffice previously,
+we simply read the IntellectualProperty type from the document, and also only
+wrote that. Now the user interface still reacts to the IntellectualProperty
+policy type (since in case there are multiple policies and each of them wants
+a different e.g. watermark, the UI has to pick one in some way), but other
+than that we read all types from the document, all values are shown on the
+toolbar and of course you can also set all of them.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;All internal APIs and the &lt;code&gt;.uno&lt;/code&gt; command that can be used from macros take a
+type parameter to get/set a given type of category, if wanted.  As usual, you
+can try this right now with a 5.2 or
+&lt;a href="http://dev-builds.libreoffice.org/daily/master/"&gt;5.3 daily build&lt;/a&gt;. :-)&lt;/p&gt;&lt;/div&gt;
+</description>
+            <link>http://vmiklos.hu/blog/classification-toolbar-multicat.html</link>
+            <pubDate>Thu, 02 Jun 2016 08:27:53 +0200</pubDate>
+            <guid isPermaLink="false">http://vmiklos.hu/blog/classification-toolbar-multicat.html</guid>
+        </item>
+        <item>
             <title>Recent undo/redo fixes in LibreOffice Impress</title>
             <description>&lt;div class="paragraph"&gt;&lt;p&gt;I&amp;#8217;ve recently spent some time fixing a few bugs around undo/redo in Impress,
 in the area of table shapes. I&amp;#8217;m mentioning these here as they&amp;#8217;re all bugfixes, so
@@ -575,42 +612,6 @@ like graphics or gradients are still missing.&lt;/p&gt;&lt;/div&gt;
             <link>http://vmiklos.hu/blog/rtf-page-background-export.html</link>
             <pubDate>Tue, 12 Jan 2016 10:11:16 +0100</pubDate>
             <guid isPermaLink="false">http://vmiklos.hu/blog/rtf-page-background-export.html</guid>
-        </item>
-        <item>
-            <title>Rich RTF comment export in LibreOffice Writer</title>
-            <description>&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;a class="image" href="https://lh3.googleusercontent.com/-cPX4gcKiTxI/VmnrtwdnTXI/AAAAAAAAGTE/cYj_XZONoRg/s0-Ic42/"&gt;
-&lt;img src="https://lh3.googleusercontent.com/-cPX4gcKiTxI/VmnrtwdnTXI/AAAAAAAAGTE/cYj_XZONoRg/s400-Ic42/" alt="https://lh3.googleusercontent.com/-cPX4gcKiTxI/VmnrtwdnTXI/AAAAAAAAGTE/cYj_XZONoRg/s400-Ic42/" /&gt;
-&lt;/a&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;As it has been reported in
-&lt;a href="https://bugs.documentfoundation.org/show_bug.cgi?id=94377"&gt;tdf#94377&lt;/a&gt;, the
-state of Writer comment contents in the RTF export filter wasn&amp;#8217;t great.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;With two recent changes, however, the situation is now much better:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-I&amp;#8217;ve added support for multiple paragraphs
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-I&amp;#8217;ve added support for both paragraph and text portion formatting
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;It wasn&amp;#8217;t necessary to implement this from scratch, because comment contents
-uses the same editeng store as the shape text, and there formatting was already
-handled. A benefit of this code sharing is that shape text also handles
-multiple paragraphs without a problem now. :-)&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;The commits are backported to &lt;code&gt;libreoffice-5-1&lt;/code&gt;, so users will see them
-already in the upcoming 5.1.0 release.&lt;/p&gt;&lt;/div&gt;
-</description>
-            <link>http://vmiklos.hu/blog/rtf-rich-comment-export.html</link>
-            <pubDate>Fri, 11 Dec 2015 08:40:09 +0100</pubDate>
-            <guid isPermaLink="false">http://vmiklos.hu/blog/rtf-rich-comment-export.html</guid>
         </item>
     </channel>
 </rss>
