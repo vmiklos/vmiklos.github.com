@@ -5,6 +5,54 @@
         <description></description>
         <link>http://vmiklos.hu/blog/</link>
         <item>
+            <title>On LibreOffice's ViewContact/ViewObjectContact/ObjectContact</title>
+            <description>&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;a class="image" href="https://farm9.staticflickr.com/8833/28305552801_1d518e31ae_o.png"&gt;
+&lt;img src="https://farm9.staticflickr.com/8833/28305552801_21343667ff_z.jpg" alt="https://farm9.staticflickr.com/8833/28305552801_21343667ff_z.jpg" /&gt;
+&lt;/a&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;I&amp;#8217;ve recently
+&lt;a href="https://gerrit.libreoffice.org/gitweb?p=core.git;a=commit;h=ac0b3b05ab52d0ac06137cf93d71187c7957ec99"&gt;fixed&lt;/a&gt;
+a missing-repaint problem in LibreOffice&amp;#8217;s headless backend, but the root
+cause wasn&amp;#8217;t close to the symptom I saw first. Part of the debugging process
+was to understand what&amp;#8217;s the relation between &lt;code&gt;sdr::contact::ViewContact&lt;/code&gt;,
+&lt;code&gt;sdr::contact::ViewObjectContact&lt;/code&gt; and &lt;code&gt;sdr::contact::ObjectContact&lt;/code&gt;.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;See
+&lt;a href="http://www.openoffice.org/marketing/ooocon2006/presentations/wednesday_g11.odp"&gt;this
+old presentation&lt;/a&gt; and the &lt;a href="https://gerrit.libreoffice.org/27190"&gt;review of my
+documentation update&lt;/a&gt; for the details, but the short version is that:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+somewhat confusingly, &lt;code&gt;sdr::contact::ViewContact&lt;/code&gt; is part of the &lt;strong&gt;model&lt;/strong&gt;, and
+  there is one &lt;code&gt;sdr::contact::ViewContact&lt;/code&gt; object per shape
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;code&gt;sdr::contact::ViewObjectContact&lt;/code&gt; is part of a view, and there is one
+  &lt;code&gt;sdr::contact::ViewObjectContact&lt;/code&gt; per shape, per view
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+finally &lt;code&gt;sdr::contact::ObjectContact&lt;/code&gt; is part of a &lt;strong&gt;view&lt;/strong&gt;, and there is one
+  &lt;code&gt;sdr::contact::ObjectContact&lt;/code&gt; per view
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;So the answer to my original &lt;em&gt;Is it normal that I have two object contacts and
+a single view contact for a shape and two views?&lt;/em&gt; question is: yes, that&amp;#8217;s
+expected. ;-) Hopefully the updated documentation is now more clear, the
+incorrect 1:N relation in the original class diagram first confused me.&lt;/p&gt;&lt;/div&gt;
+</description>
+            <link>http://vmiklos.hu/blog/vc-voc-oc.html</link>
+            <pubDate>Mon, 18 Jul 2016 10:17:03 +0200</pubDate>
+            <guid isPermaLink="false">http://vmiklos.hu/blog/vc-voc-oc.html</guid>
+        </item>
+        <item>
             <title>RTF shape import: group scaling and flip in LibreOffice Writer</title>
             <description>&lt;div class="paragraph"&gt;&lt;p&gt;Some kind of simple logo was
 &lt;a href="https://bugs.documentfoundation.org/show_bug.cgi?id=91684"&gt;reported&lt;/a&gt; to be
@@ -554,68 +602,6 @@ that links the graphic.&lt;/p&gt;&lt;/div&gt;
             <link>http://vmiklos.hu/blog/sw-linked-graphic-import.html</link>
             <pubDate>Thu, 25 Feb 2016 09:17:00 +0100</pubDate>
             <guid isPermaLink="false">http://vmiklos.hu/blog/sw-linked-graphic-import.html</guid>
-        </item>
-        <item>
-            <title>Mail merge embedding in LibreOffice Writer FOSDEM talk</title>
-            <description>&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;a class="image" href="https://speakerd.s3.amazonaws.com/presentations/30e7f96db4a8430cbe7938245b545880/mm-fosdem-brussels-2k16.pdf"&gt;
-&lt;img src="https://lh3.googleusercontent.com/-tY-2qENlPkA/Vq3iZ4wlO9I/AAAAAAAAGbY/o7lbUDAUoHo/s800-Ic42/" alt="https://lh3.googleusercontent.com/-tY-2qENlPkA/Vq3iZ4wlO9I/AAAAAAAAGbY/o7lbUDAUoHo/s800-Ic42/" /&gt;
-&lt;/a&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Yesterday I gave a
-&lt;a href="https://fosdem.org/2016/schedule/event/libreoffice_mail_merging/"&gt;Mail merge
-embedding in LibreOffice Writer&lt;/a&gt; talk at FOSDEM 2016, in the
-&lt;a href="https://fosdem.org/2016/schedule/track/open_document_editors/"&gt;Open document
-editors developer room&lt;/a&gt;. The room was well-crowded&amp;#8201;&amp;#8212;&amp;#8201;seems this year LibreOffice
-Online was a hot topic. ;-)&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;We also had a
-&lt;a href="https://wiki.documentfoundation.org/Hackfest/FOSDEM2016"&gt;hackfest&lt;/a&gt; with about
-20 hackers attending, (again) kindly hosted by
-&lt;a href="http://www.betacowork.com/"&gt;Betacowork&lt;/a&gt; on Thursday and Friday, before FOSDEM.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;There were a few topics I hacked on:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/gitweb?p=core.git;a=commitdiff;h=552361aaad740e55fcfa7993b4111aba354f863f"&gt;.uno:Paste
-  AnchorType param&lt;/a&gt; for Writer
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://bugs.documentfoundation.org/show_bug.cgi?id=97371"&gt;tdf#97371&lt;/a&gt; DOCX import regression fix about TextBoxes
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://bugs.documentfoundation.org/show_bug.cgi?id=96175"&gt;tdf#96175&lt;/a&gt; RTF export feature about &lt;em&gt;company&lt;/em&gt; doc property
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/gitweb?p=core.git;a=commitdiff;h=363aa5dbb2c223b6cc3a109bd654f39772e310fa"&gt;refactoring&lt;/a&gt;
-  around Writer&amp;#8217;s new (in 5.1) hide-whitespace feature, as requested by Ashod
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-code coverage: &lt;code&gt;RtfExport::WriteRevTab()&lt;/code&gt; was completely untested
-  previously, now
-  &lt;a href="https://gerrit.libreoffice.org/gitweb?p=core.git;a=commitdiff;h=8ff66c71bb4da8d0e4454e250e480eada9fe226c"&gt;fixed&lt;/a&gt;
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;A full list of achievements is
-&lt;a href="https://wiki.documentfoundation.org/Hackfest/FOSDEM2016#Achievements"&gt;available&lt;/a&gt;, if
-you were at the hackfest and you did not contribute to that section, please
-write a line about what did you hack on. :-)&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Quite some other slides are now available on
-&lt;a href="http://planet.documentfoundation.org/"&gt;Planet&lt;/a&gt;, don&amp;#8217;t miss them.&lt;/p&gt;&lt;/div&gt;
-</description>
-            <link>http://vmiklos.hu/blog/fosdem2016.html</link>
-            <pubDate>Sun, 31 Jan 2016 11:45:26 +0100</pubDate>
-            <guid isPermaLink="false">http://vmiklos.hu/blog/fosdem2016.html</guid>
         </item>
     </channel>
 </rss>

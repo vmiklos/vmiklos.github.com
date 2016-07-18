@@ -1,0 +1,130 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.5.3" />
+<meta name="description" content="On LibreOffice's ViewContact/ViewObjectContact/ObjectContact - Miklos' blog" />
+<meta name="keywords" content="vmiklos, libereoffice, swig, git, python, hacking, bitlbee" />
+<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="http://vmiklos.hu/blog/index.rss" />
+<link rel="stylesheet" href="/blog/xhtml11.css" type="text/css" />
+<link rel="stylesheet" href="/blog/xhtml11-quirks.css" type="text/css" />
+<link rel="stylesheet" href="/blog/layout.css" type="text/css" />
+<title>On LibreOffice's ViewContact/ViewObjectContact/ObjectContact</title>
+<!-- google analytics start -->
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-24726997-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<!-- google analytics end -->
+</head>
+<body>
+<div id="layout-banner-box">
+<div id="layout-banner">
+  <div id="layout-title">vmiklos.hu</div>
+  <div id="layout-description">shameless self-promoting website</div>
+</div>
+</div>
+<div id="layout-menu-box">
+<div id="layout-menu">
+  <div>&#187;<a href="/">Root</a></div>
+  <div>&#187;<a href="/blog/">Rejourn root</a></div>
+  <div>&#187;<a href="http://planet.documentfoundation.org/">LibreOffice Community Blogs</a></div>
+  <div>
+    Search:<br/>
+    <form action="http://www.google.com/cse" id="cse-search-box" target="_blank">
+    <input type="hidden" name="cx" value="007336731492173318056:bik8fqvatno"/><input type="hidden" name="ie" value="UTF-8"/><input type="text" name="q" size="15"/><br/>
+    <input type="submit" name="sa" value="&#187;"/></form>
+  </div>
+</div>
+
+</div>
+<div id="layout-content-box">
+<div id="layout-content">
+<div id="header">
+	<h1>On LibreOffice's ViewContact/ViewObjectContact/ObjectContact</h1>
+</div>
+<div id="preamble">
+<div class="sectionbody">
+
+<!-- Single entry -->
+<div class="verseblock">
+<div class="verseblock-content">Posted <span class="timeago" title="2016-07-18T10:17:03Z">Monday, 18 July 2016</span> by Miklos<br />
+    Tags:
+    <a href="tags/en.html">en</a>
+    <a href="tags/libreoffice.html">libreoffice</a>
+</div>
+</div>
+
+<!-- Body -->
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://farm9.staticflickr.com/8833/28305552801_1d518e31ae_o.png">
+<img src="https://farm9.staticflickr.com/8833/28305552801_21343667ff_z.jpg" alt="https://farm9.staticflickr.com/8833/28305552801_21343667ff_z.jpg" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>I&#8217;ve recently
+<a href="https://gerrit.libreoffice.org/gitweb?p=core.git;a=commit;h=ac0b3b05ab52d0ac06137cf93d71187c7957ec99">fixed</a>
+a missing-repaint problem in LibreOffice&#8217;s headless backend, but the root
+cause wasn&#8217;t close to the symptom I saw first. Part of the debugging process
+was to understand what&#8217;s the relation between <code>sdr::contact::ViewContact</code>,
+<code>sdr::contact::ViewObjectContact</code> and <code>sdr::contact::ObjectContact</code>.</p></div>
+<div class="paragraph"><p>See
+<a href="http://www.openoffice.org/marketing/ooocon2006/presentations/wednesday_g11.odp">this
+old presentation</a> and the <a href="https://gerrit.libreoffice.org/27190">review of my
+documentation update</a> for the details, but the short version is that:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+somewhat confusingly, <code>sdr::contact::ViewContact</code> is part of the <strong>model</strong>, and
+  there is one <code>sdr::contact::ViewContact</code> object per shape
+</p>
+</li>
+<li>
+<p>
+<code>sdr::contact::ViewObjectContact</code> is part of a view, and there is one
+  <code>sdr::contact::ViewObjectContact</code> per shape, per view
+</p>
+</li>
+<li>
+<p>
+finally <code>sdr::contact::ObjectContact</code> is part of a <strong>view</strong>, and there is one
+  <code>sdr::contact::ObjectContact</code> per view
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>So the answer to my original <em>Is it normal that I have two object contacts and
+a single view contact for a shape and two views?</em> question is: yes, that&#8217;s
+expected. ;-) Hopefully the updated documentation is now more clear, the
+incorrect 1:N relation in the original class diagram first confused me.</p></div>
+
+
+<script src="https://apis.google.com/js/plusone.js"></script>
+<g:plus action="share"></g:plus>
+
+<!-- Disqus comments -->
+<h1 id="comment-header">Comments</h1>
+<div id="disqus_thread"></div>
+<script type="text/javascript" src="http://vmiklos.disqus.com/embed.js">
+	var disqus_developer = 1;
+</script>
+<noscript>
+  <p><a href="http://disqus.com/?ref_noscript=vmiklos">View the discussion thread.</a></p>
+</noscript>
+
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

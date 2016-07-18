@@ -62,6 +62,50 @@
 
 <!-- Listing -->
 <div class="ulist"><ul>
+<li><p>Monday, 18 July 2016<br /><a href="/blog/vc-voc-oc.html">On LibreOffice's ViewContact/ViewObjectContact/ObjectContact</a>
+(<a href="/blog/vc-voc-oc.html#disqus_thread">Comments</a>)
+</p><p><div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://farm9.staticflickr.com/8833/28305552801_1d518e31ae_o.png">
+<img src="https://farm9.staticflickr.com/8833/28305552801_21343667ff_z.jpg" alt="https://farm9.staticflickr.com/8833/28305552801_21343667ff_z.jpg" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>I&#8217;ve recently
+<a href="https://gerrit.libreoffice.org/gitweb?p=core.git;a=commit;h=ac0b3b05ab52d0ac06137cf93d71187c7957ec99">fixed</a>
+a missing-repaint problem in LibreOffice&#8217;s headless backend, but the root
+cause wasn&#8217;t close to the symptom I saw first. Part of the debugging process
+was to understand what&#8217;s the relation between <code>sdr::contact::ViewContact</code>,
+<code>sdr::contact::ViewObjectContact</code> and <code>sdr::contact::ObjectContact</code>.</p></div>
+<div class="paragraph"><p>See
+<a href="http://www.openoffice.org/marketing/ooocon2006/presentations/wednesday_g11.odp">this
+old presentation</a> and the <a href="https://gerrit.libreoffice.org/27190">review of my
+documentation update</a> for the details, but the short version is that:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+somewhat confusingly, <code>sdr::contact::ViewContact</code> is part of the <strong>model</strong>, and
+  there is one <code>sdr::contact::ViewContact</code> object per shape
+</p>
+</li>
+<li>
+<p>
+<code>sdr::contact::ViewObjectContact</code> is part of a view, and there is one
+  <code>sdr::contact::ViewObjectContact</code> per shape, per view
+</p>
+</li>
+<li>
+<p>
+finally <code>sdr::contact::ObjectContact</code> is part of a <strong>view</strong>, and there is one
+  <code>sdr::contact::ObjectContact</code> per view
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>So the answer to my original <em>Is it normal that I have two object contacts and
+a single view contact for a shape and two views?</em> question is: yes, that&#8217;s
+expected. ;-) Hopefully the updated documentation is now more clear, the
+incorrect 1:N relation in the original class diagram first confused me.</p></div>
+</p><hr/></li>
 <li><p>Monday, 27 June 2016<br /><a href="/blog/rtf-share-import-scale-flip.html">RTF shape import: group scaling and flip in LibreOffice Writer</a>
 (<a href="/blog/rtf-share-import-scale-flip.html#disqus_thread">Comments</a>)
 </p><p><div class="paragraph"><p>Some kind of simple logo was
