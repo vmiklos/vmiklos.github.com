@@ -62,6 +62,23 @@
 
 <!-- Listing -->
 <div class="ulist"><ul>
+<li><p>Thursday, 08 September 2016<br /><a href="/blog/locon2016.html">Improved digital signature handling in LibreOffice LOCon talk</a>
+(<a href="/blog/locon2016.html#disqus_thread">Comments</a>)
+</p><p><div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://speakerd.s3.amazonaws.com/presentations/d7946ac560054fcb9f9a3953f079d9a7/xmlsec-locon-brno-2k16.pdf">
+<img src="https://farm9.staticflickr.com/8646/29432546522_585a16f89a_z.jpg" alt="https://farm9.staticflickr.com/8646/29432546522_585a16f89a_z.jpg" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>Earlier today I gave a
+<a href="http://conference.libreoffice.org/2016/the-program/sept-8th-thursday/">Improved
+digital signature handling in LibreOffice</a> talk at LibreOffice conference
+2016, in the development track. The room was well-crowded&#8201;&#8212;&#8201;seems this year
+classification was a hot topic. ;-)</p></div>
+<div class="paragraph"><p>Quite some pictures are now available <a href="https://twitter.com/libreoffice">on</a>
+<a href="https://twitter.com/CollaboraOffice">Twitter</a>, don&#8217;t miss them.</p></div>
+</p><hr/></li>
 <li><p>Friday, 05 August 2016<br /><a href="/blog/libreoffice-xmlsec.html">LibreOffice now bundles the latest libxmlsec version</a>
 (<a href="/blog/libreoffice-xmlsec.html#disqus_thread">Comments</a>)
 </p><p><div class="paragraph"><p>I wrote about how LibreOffice uses the <a href="https://www.aleksey.com/xmlsec/">XMLSec
@@ -608,73 +625,6 @@ work with that.</p></div>
 <div class="paragraph"><p>Putting all of these together, we now have unit tests that take test documents
 having "good" and "bad" signatures, and the verification result in LO will
 match with the one of MSO. As usual, you can try this right now with a 5.2
-<a href="http://dev-builds.libreoffice.org/daily/master/">daily build</a>. :-)</p></div>
-</p><hr/></li>
-<li><p>Wednesday, 23 March 2016<br /><a href="/blog/libreoffice-sha256-signatures.html">SHA-256 hashes for ODF signatures in LibreOffice</a>
-(<a href="/blog/libreoffice-sha256-signatures.html#disqus_thread">Comments</a>)
-</p><p><div class="paragraph"><p>As it happened with MD5 hashes in the past, the world is currently moving from
-SHA1 hashes to SHA-256 hashes these days. This affects LibreOffice&#8217;s ODF
-signing feature as well, where we previously wrote and read SHA-1 hashes, but
-not SHA-256 ones. First, thanks to the Dutch Ministry of Defense who made this
-work possible (as part of a project implementing trusted signing and
-communication in LibreOffice), I could start work on
-<a href="https://bugs.documentfoundation.org/show_bug.cgi?id=76142">tdf#76142</a> which
-attached a reproducer document as well, helping the implementation of this
-feature.</p></div>
-<div class="paragraph"><p>If you&#8217;re not into the digital signature details, SHA-256 is relevant in two
-aspects here:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-it can be a signature method, denoted by the
-  <code>http://www.w3.org/2001/04/xmldsig-more#rsa-sha256</code> URI, and
-</p>
-</li>
-<li>
-<p>
-it can be a digest method, denoted by the
-  <code>http://www.w3.org/2001/04/xmlenc#sha256</code> URI
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>Hashing is interesting in the context of digital signatures because typically
-not the whole document is signed, just a hash of it, and crypto frameworks
-like nss or mscrypto typically tie these two together, so you just say you
-sign with rsa-sha256, which in more detail means hashing with SHA-256 and then
-signing using rsa.</p></div>
-<div class="paragraph"><p>A valid signed document using SHA-256 hashing looked like this before:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://lh3.googleusercontent.com/-c6JR6vywSuY/Vuw4CdYpj8I/AAAAAAAAGjE/hUOW-Ul073QM4SqMN2GM8K0mjGUdGSk5wCCo/s0-Ic42/">
-<img src="https://lh3.googleusercontent.com/-c6JR6vywSuY/Vuw4CdYpj8I/AAAAAAAAGjE/hUOW-Ul073QM4SqMN2GM8K0mjGUdGSk5wCCo/s400-Ic42/" alt="https://lh3.googleusercontent.com/-c6JR6vywSuY/Vuw4CdYpj8I/AAAAAAAAGjE/hUOW-Ul073QM4SqMN2GM8K0mjGUdGSk5wCCo/s400-Ic42/" />
-</a>
-</div>
-</div>
-<div class="paragraph"><p>I.e. we failed to validate the signature, and presented a dialog that suggested the signature is not valid. After my changes, it looks like this:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://lh3.googleusercontent.com/-QLHuSvGkFJQ/Vuw4CQD60ZI/AAAAAAAAGjI/GcmqED9Vqmc7KEw1BpDVNg_uxyrJp693gCCo/s0-Ic42/">
-<img src="https://lh3.googleusercontent.com/-QLHuSvGkFJQ/Vuw4CQD60ZI/AAAAAAAAGjI/GcmqED9Vqmc7KEw1BpDVNg_uxyrJp693gCCo/s400-Ic42/" alt="https://lh3.googleusercontent.com/-QLHuSvGkFJQ/Vuw4CQD60ZI/AAAAAAAAGjI/GcmqED9Vqmc7KEw1BpDVNg_uxyrJp693gCCo/s400-Ic42/" />
-</a>
-</div>
-</div>
-<div class="paragraph"><p>I.e. no error on loading, and the status bar icon tells the user that
-everything is fine, except that we can&#8217;t validate the certificate used for
-signing.</p></div>
-<div class="paragraph"><p>As for when should LibreOffice start <strong>writing</strong> (not reading) SHA-256 hashes
-when creating signatures, it&#8217;s an open question. Probably best to wait till
-most users already have a version that can read those hashes. Then we would
-still keep support for reading SHA-1 hashes, but we would use SHA-256 when
-creating new signatures.</p></div>
-<div class="paragraph"><p>Another detail is that the hard work of signing in LibreOffice is done by
-using <a href="https://www.aleksey.com/xmlsec/">libxmlsec</a>. We bundled a heavily patched
-version from 2009, and it wasn&#8217;t clear how much work it is to port our patches
-to a newer upstream version, so I&#8217;ve initially backported the SHA-256 patches
-to our older version (for the nss and mscrypto backends of libxmlsec, as that
-covers what LibreOffice uses on Linux, Windows and OS X). At the end I managed
-to update our bundled libxmlsec to a newer (even if not the newest yet)
-version, so latest master got rid of those custom backports.  As usual, you
-can try this right now with a 5.2
 <a href="http://dev-builds.libreoffice.org/daily/master/">daily build</a>. :-)</p></div>
 </p><hr/></li>
 </ul></div>
