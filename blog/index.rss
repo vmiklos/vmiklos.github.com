@@ -5,6 +5,25 @@
         <description></description>
         <link>http://vmiklos.hu/blog/</link>
         <item>
+            <title>Collaborative editing using LibreOfficeKit LOCon talk</title>
+            <description>&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;a class="image" href="https://speakerd.s3.amazonaws.com/presentations/035a8c526e5b4748a062a266cd4ffd94/collaborative-locon-brno-2k16.pdf"&gt;
+&lt;img src="https://farm9.staticflickr.com/8830/29558170685_8aa768ec84_z.jpg" alt="https://farm9.staticflickr.com/8830/29558170685_8aa768ec84_z.jpg" /&gt;
+&lt;/a&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Yesterday I gave a
+&lt;a href="http://conference.libreoffice.org/2016/the-program/sept-8th-thursday/"&gt;Collaborative
+editing using LibreOfficeKit&lt;/a&gt; talk at LibreOffice conference 2016, in the
+development track. There were many interested parties&amp;#8201;&amp;#8212;&amp;#8201;not a surprise, as
+this is the power horse behind LibreOffice Online. :-)&lt;/p&gt;&lt;/div&gt;
+</description>
+            <link>http://vmiklos.hu/blog/collaborative-locon-brno-2k16.html</link>
+            <pubDate>Fri, 09 Sep 2016 09:45:33 +0200</pubDate>
+            <guid isPermaLink="false">http://vmiklos.hu/blog/collaborative-locon-brno-2k16.html</guid>
+        </item>
+        <item>
             <title>Improved digital signature handling in LibreOffice LOCon talk</title>
             <description>&lt;div class="imageblock" style="text-align:center;"&gt;
 &lt;div class="content"&gt;
@@ -533,81 +552,6 @@ and clean operations a user would expect from what is referred as simply
             <link>http://vmiklos.hu/blog/ooxml-signature-export.html</link>
             <pubDate>Thu, 14 Apr 2016 08:20:51 +0200</pubDate>
             <guid isPermaLink="false">http://vmiklos.hu/blog/ooxml-signature-export.html</guid>
-        </item>
-        <item>
-            <title>OOXML signature import in LibreOffice</title>
-            <description>&lt;div style="text-align: center; font-size: 0.6em;"&gt;
-&lt;img src="https://lh3.googleusercontent.com/-8fwMz2Ie0ys/Vvpxvf94SrI/AAAAAAAAGlQ/vVaTBn_vEvY7Y3Fn2rcLYPERx3raDX_UwCCo/s400-Ic42/"/&gt;
-&lt;p&gt;(via &lt;a href="http://www.ascertia.com/"&gt;ascertia&lt;/a&gt;)&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;After adding &lt;a href="http://vmiklos.hu/blog/libreoffice-sha256-signatures.html"&gt;support
-for SHA-256 hashes in LibreOffice&lt;/a&gt;, I turned towards implementing OOXML
-signature import (as in: verification, not signing) in LibreOffice. First,
-thanks to the Dutch Ministry of Defense who made this work possible (as part
-of a project implementing trusted signing and communication in LibreOffice), I
-collected a list of building blocks needed for this to work:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-support for the Relationships Transform Algorithm (described in ISO/IEC
-  29500-2:2012) in xmlsec
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-an actual XML parser for the OOXML signature in &lt;code&gt;xmlsecurity/&lt;/code&gt;
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-a new filter flag, so that our code no longer assumes "is ODF" means
-  "supports digital signing" and
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-some refactoring in &lt;code&gt;xmlsecurity/&lt;/code&gt;, so that our digital signature code doesn&amp;#8217;t
-  assume that multiple signatures are always written to a single file
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;The xmlsec bits are now
-&lt;a href="https://github.com/lsh123/xmlsec/commit/7069e2b0ab49679008abedd6d223fb95538b0684.patch"&gt;upstream&lt;/a&gt;,
-it seems to me that new algorithm is needed, so that MSO can avoid signing a
-number of streams (files in ZIP containers), while still being able to verify
-that all normal streams are signed. Given that MSO by default doesn&amp;#8217;t sign all
-streams (so that e.g. the metadata of the document can be modified without
-invalidating signatures), this is in use even for a hello-world document. This
-implies that a typical OOXML signature will never gain the best "signed"
-category in LO, as we&amp;#8217;ll always warn that even though the signature is valid,
-not all streams are signed. This is a bit of a rant, but better not hide the
-reality: a default ODF signature covers more than a default OOXML signature.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;The
-&lt;a href="https://cgit.freedesktop.org/libreoffice/core/tree/xmlsecurity/source/helper/ooxmlsecparser.cxx"&gt;OOXML
-signature parser&lt;/a&gt; had to extract all information from the signature markup
-that&amp;#8217;s interesting for LibreOffice, like the certificate, the signature date
-or the signature description. I considered extending the ODF signature parser
-instead of implementing a new one for OOXML, since both markups are based on
-the same W3C signing spec, but they are different enough that the added
-complexity doesn&amp;#8217;t outweigh the benefit of code sharing here.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;The next step was to add a new &lt;code&gt;SUPPORTSSIGNING&lt;/code&gt; filter flag in &lt;code&gt;filter/&lt;/code&gt;, and
-mark the DOCX, XLSX and PPTX file filters as such, and then of course find
-places mostly in &lt;code&gt;sfx2/&lt;/code&gt; and &lt;code&gt;xmlsecurity/&lt;/code&gt; that assume only ODF files can be
-signed, and modifying those checks to also handle this new flag.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Finally, a difference between ODF and OOXML signatures is that ODF puts all of
-them in a single stream, and all the signing and verifying code works with
-that stream. However, in case of OOXML, all signatures are in separate
-streams, so if we want to work with a single object as kind of a signature
-context, we need a storage (a sub-directory inside the ZIP container), and
-work with that.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Putting all of these together, we now have unit tests that take test documents
-having "good" and "bad" signatures, and the verification result in LO will
-match with the one of MSO. As usual, you can try this right now with a 5.2
-&lt;a href="http://dev-builds.libreoffice.org/daily/master/"&gt;daily build&lt;/a&gt;. :-)&lt;/p&gt;&lt;/div&gt;
-</description>
-            <link>http://vmiklos.hu/blog/ooxml-signature-import.html</link>
-            <pubDate>Thu, 31 Mar 2016 08:47:31 +0200</pubDate>
-            <guid isPermaLink="false">http://vmiklos.hu/blog/ooxml-signature-import.html</guid>
         </item>
     </channel>
 </rss>
