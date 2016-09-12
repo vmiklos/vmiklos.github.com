@@ -5,6 +5,27 @@
         <description></description>
         <link>http://vmiklos.hu/blog/</link>
         <item>
+            <title>A year in LibreOffice's RTF support LOCon talk</title>
+            <description>&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;a class="image" href="https://speakerd.s3.amazonaws.com/presentations/65dac04a99f146649b08cf66211469fd/rtf-locon-brno-2k16.pdf"&gt;
+&lt;img src="https://farm9.staticflickr.com/8004/29626765785_7f35c9bfd6_z.jpg" alt="https://farm9.staticflickr.com/8004/29626765785_7f35c9bfd6_z.jpg" /&gt;
+&lt;/a&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Last week I gave a
+&lt;a href="http://conference.libreoffice.org/2016/the-program/sept-8th-thursday/"&gt; year in
+LibreOffice&amp;#8217;s RTF support&lt;/a&gt; talk at LibreOffice conference 2016, in the
+development track. Click on the image to see all the slides.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;I&amp;#8217;ve also published a number of (mostly)
+&lt;a href="https://www.flickr.com/photos/vmiklos/albums/72157673517450165"&gt;sightseeing
+pictures&lt;/a&gt; based on wondering around in Brno before and after the conference.&lt;/p&gt;&lt;/div&gt;
+</description>
+            <link>http://vmiklos.hu/blog/rtf-locon-brno-2k16.html</link>
+            <pubDate>Mon, 12 Sep 2016 09:55:00 +0200</pubDate>
+            <guid isPermaLink="false">http://vmiklos.hu/blog/rtf-locon-brno-2k16.html</guid>
+        </item>
+        <item>
             <title>Collaborative editing using LibreOfficeKit LOCon talk</title>
             <description>&lt;div class="imageblock" style="text-align:center;"&gt;
 &lt;div class="content"&gt;
@@ -453,105 +474,6 @@ build&lt;/a&gt;. :-)&lt;/p&gt;&lt;/div&gt;
             <link>http://vmiklos.hu/blog/classification-toolbar.html</link>
             <pubDate>Mon, 02 May 2016 08:50:54 +0200</pubDate>
             <guid isPermaLink="false">http://vmiklos.hu/blog/classification-toolbar.html</guid>
-        </item>
-        <item>
-            <title>OOXML signature export in LibreOffice</title>
-            <description>&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;a class="image" href="https://lh3.googleusercontent.com/-E5cCfFV5kkk/VwzwIcJ0JqI/AAAAAAAAGqk/4JpTSRlvUok6txiXgp1MgoNoNgPb0ov8gCCo/s0-Ic42/"&gt;
-&lt;img src="https://lh3.googleusercontent.com/-E5cCfFV5kkk/VwzwIcJ0JqI/AAAAAAAAGqk/4JpTSRlvUok6txiXgp1MgoNoNgPb0ov8gCCo/s600-Ic42/" alt="https://lh3.googleusercontent.com/-E5cCfFV5kkk/VwzwIcJ0JqI/AAAAAAAAGqk/4JpTSRlvUok6txiXgp1MgoNoNgPb0ov8gCCo/s600-Ic42/" /&gt;
-&lt;/a&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;After adding &lt;a href="http://vmiklos.hu/blog/ooxml-signature-import.html"&gt;support
-for reading OOXML signatures in LibreOffice&lt;/a&gt;, I continued with implementing OOXML
-signature export (as in: not only verification, but signing).&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;By verification, I mean that I count the signature of the input document, then
-compare it with an existing signature, and if they match, it is verified. This
-can be also called "import", as I only read an existing signature, I don&amp;#8217;t
-create one.  By signing, I mean the creation of a new signature, which is
-always good&amp;#8201;&amp;#8212;&amp;#8201;if it isn&amp;#8217;t, that&amp;#8217;s a programming error. This can be also
-called "export", as I write the new signature into the document.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;First, thanks to the Dutch Ministry of Defense who made this work possible (as
-part of a project implementing trusted signing and communication in
-LibreOffice), this included:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-signing a previously unsigned document
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-appending a signature to an already signed document
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-removing a signature from a document with multiple signatures
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-removing the last signature of a signed document, turning it into an
-  unsigned one
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Obviously the hardest part was the initial success: signing a previously
-unsigned document, in a way that is accepted by both LibreOffice and MSO. One
-trick here is that while in ODF the signature stream is simply added to an
-existing document storage, in OOXML the storage has to refer to the signature
-sub-storage (it&amp;#8217;s not a stream, as it has a stream for each individual
-signature), then it has to be signed, and finally the signature can be added
-to the document storage. So instead of reading the document, then appending
-the signature, here we need to modify the document, and then we can append the
-signature.  By referring the signature sub-storage, I mean it is necessary to
-modify &lt;code&gt;[Content_Types].xml&lt;/code&gt; (so it contains a mime type for both the &lt;code&gt;.sigs&lt;/code&gt;
-extension, and also for the individual &lt;code&gt;/_xmlsignatures/sigN.xml&lt;/code&gt; streams) and
-also the &lt;code&gt;_rels/.rels&lt;/code&gt; stream has to refer &lt;code&gt;_xmlsignatures/origin.sigs&lt;/code&gt;, which
-will contain the list of actual signatures.  A surprising detail is that the
-signature is required to contain quite some software and hardware details
-about your environment, like monitor resolution, Windows version and so on.
-For a cross-platform project like LibreOffice this isn&amp;#8217;t meaningful, not to
-mention we have no interest in leaking such information. So what I did instead
-is writing hardcoded values based on what my test environment would produce,
-just to please MSO. ;-)&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;After the initial
-&lt;a href="https://cgit.freedesktop.org/libreoffice/core/tree/xmlsecurity/source/helper/ooxmlsecexporter.cxx"&gt;OOXML
-signature exporter&lt;/a&gt; was ready, the next challenge was adding multiple
-signatures. The problem here is that you have to roundtrip the existing
-signatures perfectly. And when I write perfectly, I really mean it: if a
-single character is written differently, then the hash of the signature will
-be different, so the roundtrip (when we write back an existing and a new
-signature to the document) will invalidate the signature. And there is no way
-around that: the very point of the signature is that only the original signer
-can re-calculate the signature hash. :-) So what we do is simply threating the
-existing signatures as a byte array, and when writing back, then we don&amp;#8217;t try
-to re-construct the signature stream based on the xmlsecurity data model, but
-simply write back the byte array. This way it&amp;#8217;s enough to extract parts of the
-signature which are presented to the user (date, certificate, comment), and we
-don&amp;#8217;t need to parse the rest.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Removing one of multiple existing signatures isn&amp;#8217;t particularly hard, you just
-need to update &lt;code&gt;_xmlsignatures/_rels/origin.sigs.rels&lt;/code&gt; and
-&lt;code&gt;[Content_Types].xml&lt;/code&gt; which refer each and every signature stream. It&amp;#8217;s a good
-idea to truncate them before writing, otherwise you may get a not even
-well-formed XML as a result.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Finally removing the last signature is a matter of undoing all changes we did
-while adding the first signature (the content type list and the toplevel
-relation list), finally removing the signature sub-storage all-together. I
-also factored out all this signature management code from
-&lt;code&gt;DigitalSignaturesDialog&lt;/code&gt; (which is a graphical dialog) to
-&lt;code&gt;DocumentSignatureManager&lt;/code&gt;, so that all the above mentioned features can be
-&lt;a href="https://cgit.freedesktop.org/libreoffice/core/tree/xmlsecurity/qa/unit/signing/signing.cxx"&gt;unit-tested&lt;/a&gt;.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Putting all of these together, LO can now do all signature add, append, remove
-and clean operations a user would expect from what is referred as simply
-&lt;em&gt;OOXML signature support&lt;/em&gt;. As usual, you can try this right now with a 5.2
-&lt;a href="http://dev-builds.libreoffice.org/daily/master/"&gt;daily build&lt;/a&gt;. :-)&lt;/p&gt;&lt;/div&gt;
-</description>
-            <link>http://vmiklos.hu/blog/ooxml-signature-export.html</link>
-            <pubDate>Thu, 14 Apr 2016 08:20:51 +0200</pubDate>
-            <guid isPermaLink="false">http://vmiklos.hu/blog/ooxml-signature-export.html</guid>
         </item>
     </channel>
 </rss>
