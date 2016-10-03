@@ -62,6 +62,34 @@
 
 <!-- Listing -->
 <div class="ulist"><ul>
+<li><p>Monday, 03 October 2016<br /><a href="/blog/sw-smallcaps-toolbar-button.html">Small capitals toolbar button in LibreOffice Writer</a>
+(<a href="/blog/sw-smallcaps-toolbar-button.html#disqus_thread">Comments</a>)
+</p><p><div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://farm6.staticflickr.com/5235/29982452081_a9ca103f2f_o.png">
+<img src="https://farm6.staticflickr.com/5235/29982452081_187d99dece_z.jpg" alt="https://farm6.staticflickr.com/5235/29982452081_187d99dece_z.jpg" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>It was <a href="https://bugs.documentfoundation.org/show_bug.cgi?id=87914">requested</a> to
+be able to set the small capitals character property via a toolbar button in
+Writer, which was indeed not possible. Not only the toolbar button wasn&#8217;t
+there, but the underlying UNO command was also missing (which you can use e.g.
+from a macro to format the current selection).</p></div>
+<div class="paragraph"><p>So my
+<a href="https://gerrit.libreoffice.org/gitweb?p=core.git;a=commit;h=d378cd2f766eeb1fd1c98f62c9ae6b5b59fd00f1">commit</a>
+added a simple set of icons to the galaxy theme for the new toolbar button,
+defined the new UNO command for Writer text and added it to Writer&#8217;s text
+object bar, next to the upper case and lower case buttons (hidden by default).
+One difference from those buttons is that those buttons perform a
+transliteration, while this one really just sets a character property, you can
+easily undo the property later if needed.</p></div>
+<div class="paragraph"><p>Wrt. other icon themes, see
+<a href="http://listarchives.libreoffice.org/global/design/msg07922.html">this mail</a>,
+hopefully the design team can help there.</p></div>
+<div class="paragraph"><p>As usual, you can try this right now with a 5.3
+<a href="http://dev-builds.libreoffice.org/daily/master/">daily build</a>. :-)</p></div>
+</p><hr/></li>
 <li><p>Tuesday, 13 September 2016<br /><a href="/blog/clang-locon-brno-2k16.html">Using clang-based tools beyond loplugin LOCon lightning talk</a>
 (<a href="/blog/clang-locon-brno-2k16.html#disqus_thread">Comments</a>)
 </p><p><div class="imageblock" style="text-align:center;">
@@ -371,61 +399,6 @@ toolbar and of course you can also set all of them.</p></div>
 type parameter to get/set a given type of category, if wanted.  As usual, you
 can try this right now with a 5.2 or
 <a href="http://dev-builds.libreoffice.org/daily/master/">5.3 daily build</a>. :-)</p></div>
-</p><hr/></li>
-<li><p>Wednesday, 18 May 2016<br /><a href="/blog/sd-undo-fixes.html">Recent undo/redo fixes in LibreOffice Impress</a>
-(<a href="/blog/sd-undo-fixes.html#disqus_thread">Comments</a>)
-</p><p><div class="paragraph"><p>I&#8217;ve recently spent some time fixing a few bugs around undo/redo in Impress,
-in the area of table shapes. I&#8217;m mentioning these here as they&#8217;re all bugfixes, so
-they are backported to LibreOffice 5.1, and no major release notes will point
-them out. So if you are using Impress table shapes and you consider their
-usability suboptimal, then read on, I have some great news. :-)</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://lh3.googleusercontent.com/-4K07Iu7su4M/Vzs8dQCfx7I/AAAAAAAAGts/7GCj5T3Zs9UMyTaR277tHvlOHSk-9HGmACCo/s0/">
-<img src="https://lh3.googleusercontent.com/-4K07Iu7su4M/Vzs8dQCfx7I/AAAAAAAAGts/7GCj5T3Zs9UMyTaR277tHvlOHSk-9HGmACCo/s800/" alt="https://lh3.googleusercontent.com/-4K07Iu7su4M/Vzs8dQCfx7I/AAAAAAAAGts/7GCj5T3Zs9UMyTaR277tHvlOHSk-9HGmACCo/s800/" />
-</a>
-</div>
-</div>
-<div class="paragraph"><p>The first problem is
-<a href="https://bugs.documentfoundation.org/show_bug.cgi?id=99396">tdf#99396</a>, where
-there were actually two problems:</p></div>
-<div class="olist arabic"><ol class="arabic">
-<li>
-<p>
-Vertical alignment is a cell property, but when setting that property, the undo code was simply <a href="https://cgit.freedesktop.org/libreoffice/core/commit/?id=6819992113947e7a6272bf750fee712c2df41905">missing</a>.
-</p>
-</li>
-<li>
-<p>
-When editing cell text (the user is inside "text edit") the undo stack is in
-a special mode&#8201;&#8212;&#8201;and ending text edit made the cell property undo items go
-away. This wasn&#8217;t a problem for vertical alignment only, it was a problem for
-example when the background color of the cell was changed, too. These cell
-property changes are now
-<a href="https://cgit.freedesktop.org/libreoffice/core/commit/?id=100eb15b4d8529d7a11d98a28742f31f0f792fa1">added</a>
-to the undo stack after finishing text edit, so you can still undo them later.
-</p>
-</li>
-</ol></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://lh3.googleusercontent.com/-aCZDFOS8xR4/Vzs8bzEjtvI/AAAAAAAAGtw/ZESadiryhEAwAsLoxwztIRNvSjdwOEmDgCCo/s0/">
-<img src="https://lh3.googleusercontent.com/-aCZDFOS8xR4/Vzs8bzEjtvI/AAAAAAAAGtw/ZESadiryhEAwAsLoxwztIRNvSjdwOEmDgCCo/s600/" alt="https://lh3.googleusercontent.com/-aCZDFOS8xR4/Vzs8bzEjtvI/AAAAAAAAGtw/ZESadiryhEAwAsLoxwztIRNvSjdwOEmDgCCo/s600/" />
-</a>
-</div>
-</div>
-<div class="paragraph"><p>The second bugreport is
-<a href="https://bugs.documentfoundation.org/show_bug.cgi?id=99452">tdf#99452</a> where
-resizing a table shape row separator and then undoing the resize didn&#8217;t
-restore the original state. See the
-<a href="https://cgit.freedesktop.org/libreoffice/core/commit/?id=cafc53f8b4c08443524b1da6f4918d49afd45bb5">commit</a>
-for all the details, but the bottom line is: it isn&#8217;t a good idea to
-automatically re-layout the table when we&#8217;ve already resized the shape as part
-of undo, but the table rows were not yet resized to reflect their original
-sizes.</p></div>
-<div class="paragraph"><p>As usual, you can try this right now with a 5.2
-<a href="http://dev-builds.libreoffice.org/daily/master/">daily build</a>. :-) (Or even
-with an 5.1 one, actually.)</p></div>
 </p><hr/></li>
 </ul></div>
 <a href="/blog/archive.html">more &raquo;</a>
