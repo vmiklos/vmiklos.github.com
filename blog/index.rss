@@ -5,6 +5,101 @@
         <description></description>
         <link>http://vmiklos.hu/blog/</link>
         <item>
+            <title>Insert PDF as image in LibreOffice 5.3</title>
+            <description>&lt;div class="sect1"&gt;
+&lt;h2 id="_results"&gt;Results&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;LibreOffice 5.3 will add one more vector-based format that can be inserted as
+an image into documents: PDF. First, thanks to &lt;a href="http://pmg.be/"&gt;PMG&lt;/a&gt; who made
+this work possible. On the user interface you can now select PDF files when
+you choose e.g. Writer&amp;#8217;s Insert &amp;#8594; Image option:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;a class="image" href="https://farm6.staticflickr.com/5552/29583461353_0c2da79c8e_o.png"&gt;
+&lt;img src="https://farm6.staticflickr.com/5552/29583461353_02fc75dd7f_z.jpg" alt="https://farm6.staticflickr.com/5552/29583461353_02fc75dd7f_z.jpg" /&gt;
+&lt;/a&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The first page of the PDF document will be shown, which is handy if the PDF
+file is basically used as a vector image format.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Similarly to the SVG feature, the original vector image is stored in the
+document, but when saving to ODF, a replacement PNG file is also generated to
+be backwards compatible with older ODF readers. The image context menu &amp;#8594; Save
+menu item allows to extract your original PDF data from the image, too:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;a class="image" href="https://farm8.staticflickr.com/7501/30098334712_569ebbe55b_o.png"&gt;
+&lt;img src="https://farm8.staticflickr.com/7501/30098334712_535e16ea05_z.jpg" alt="https://farm8.staticflickr.com/7501/30098334712_535e16ea05_z.jpg" /&gt;
+&lt;/a&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;And that&amp;#8217;s it, as long as you save your document in ODF, your PDF-as-an-image
+will be kept without loosing any data. As usual, you can try this right now
+with a 5.3 &lt;a href="http://dev-builds.libreoffice.org/daily/master/"&gt;daily build&lt;/a&gt;. :-)&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;However, if you&amp;#8217;re interested in how this is implemented, keep reading&amp;#8230;&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_document_model"&gt;Document model&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The PDF image in the document model is really similar to how SVG is handled,
+next to &lt;code&gt;Graphic::getSvgData()&lt;/code&gt;, there is now a &lt;code&gt;Graphic::getPdfData()&lt;/code&gt;.
+This new member function exposes the original PDF data, otherwise the Graphic
+is just a metafile.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_uno_api"&gt;UNO API&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The &lt;code&gt;ReplacementGraphicURL&lt;/code&gt; property of the image at an UNO level now exposes
+the generated metafile for PDF images. This is implemented for both Draw and
+Writer images, and is used by the ODF export filter.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_layout"&gt;Layout&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;When the &lt;code&gt;Graphic&lt;/code&gt; instance is rendered, the layout knows nothing about the
+PDF data attached to the object, only parses the generated metafile. This way
+the display of the PDF image works out of the box.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_filters"&gt;Filters&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;First I&amp;#8217;ve implemented a
+&lt;a href="https://gerrit.libreoffice.org/gitweb?p=core.git;a=commit;h=878a860dff10bd91491d6c9f2f4e2308bfe4f0b2"&gt;PDF
+import-as-graphic filter&lt;/a&gt;, then the
+&lt;a href="https://gerrit.libreoffice.org/gitweb?p=core.git;a=commit;h=7d76bb251e0c88ff17282a33b801a5d17a434af5"&gt;export
+equivalent of it&lt;/a&gt;. As you can see, the PDF import-as-graphic filter isn&amp;#8217;t too
+complicated, it completely reuses the existing "import PDF into Draw" filter,
+it simply copies the first page of the resulting document model as a metafile.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Second, once the graphic filters were working, I&amp;#8217;ve also
+&lt;a href="https://gerrit.libreoffice.org/gitweb?p=core.git;a=commitdiff;h=d1c346ba848c54424d6ffa88df7a5ff6a3717430"&gt;improved&lt;/a&gt;
+the ODF import to recognize PDF data&amp;#8201;&amp;#8212;&amp;#8201;the export side needed no explicit
+work, once the &lt;code&gt;ReplacementGraphicURL&lt;/code&gt; bits were in place.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_tests"&gt;Tests&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;As mentioned above, the Draw and the Writer image implementation is separate,
+so first I&amp;#8217;ve added tests for ODT files in the &lt;code&gt;testEmbeddedPdf&lt;/code&gt; of
+&lt;code&gt;CppunitTest_sw_odfexport&lt;/code&gt;, and then &lt;code&gt;SdExportTest::testEmbeddedPdf()&lt;/code&gt; to
+cover ODP files (and other ODF formats).  Second, the PDF part of the graphic
+swapout/in code has a dedicated test in &lt;code&gt;GraphicObjectTest::testPdf()&lt;/code&gt;, and
+the UI&amp;#8217;s "Save original PDF" feature has a new
+&lt;code&gt;XOutdevTest::testPdfGraphicExport()&lt;/code&gt; test.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Oh, and if you intent to test this manually in a self-created build, make sure
+to avoid &lt;code&gt;--disable-pdfimport&lt;/code&gt;, otherwise this feature can&amp;#8217;t work. ;-)&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+            <link>http://vmiklos.hu/blog/lo-insert-pdf-image.html</link>
+            <pubDate>Mon, 10 Oct 2016 08:31:37 +0200</pubDate>
+            <guid isPermaLink="false">http://vmiklos.hu/blog/lo-insert-pdf-image.html</guid>
+        </item>
+        <item>
             <title>Small capitals toolbar button in LibreOffice Writer</title>
             <description>&lt;div class="imageblock" style="text-align:center;"&gt;
 &lt;div class="content"&gt;
@@ -344,43 +439,6 @@ master (towards LibreOffice 5.3) but also backported to LibreOffice 5.2. :-)&lt;
             <link>http://vmiklos.hu/blog/rtf-share-import-scale-flip.html</link>
             <pubDate>Mon, 27 Jun 2016 09:41:34 +0200</pubDate>
             <guid isPermaLink="false">http://vmiklos.hu/blog/rtf-share-import-scale-flip.html</guid>
-        </item>
-        <item>
-            <title>Classification toolbar in LibreOffice: Multiple Categories</title>
-            <description>&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;a class="image" href="https://farm8.staticflickr.com/7073/26791252053_5cd37892f2_o.png"&gt;
-&lt;img src="https://farm8.staticflickr.com/7073/26791252053_46f2c7d4ae_z.jpg" alt="https://farm8.staticflickr.com/7073/26791252053_46f2c7d4ae_z.jpg" /&gt;
-&lt;/a&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;I explained the concept of the classification toolbar appearing in LibreOffice
-5.2 in a &lt;a href="http://vmiklos.hu/blog/classification-toolbar.html"&gt;previous post&lt;/a&gt;.
-One incremental update on top of that is support for multiple categories,
-which I&amp;#8217;m describing here.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;&lt;a href="https://www.tscp.org/"&gt;TSCP&lt;/a&gt; in its
-&lt;a href="http://www.tscp.org/wp-content/uploads/2013/08/TSCP_BAILSv1.pdf"&gt;BAILSv1&lt;/a&gt; spec
-defines 3 different policy types (IntellectualProperty, NationalSecurity and
-ExportControl), and you can set different classification categories for
-different policy types. Giving a practical example, if you&amp;#8217;re communicating
-with someone, then you can declare what policy type will you be using for that
-communication, and tag a single document multiple times, once for all used
-policy types.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;This multiple-categories feature wasn&amp;#8217;t supported by LibreOffice previously,
-we simply read the IntellectualProperty type from the document, and also only
-wrote that. Now the user interface still reacts to the IntellectualProperty
-policy type (since in case there are multiple policies and each of them wants
-a different e.g. watermark, the UI has to pick one in some way), but other
-than that we read all types from the document, all values are shown on the
-toolbar and of course you can also set all of them.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;All internal APIs and the &lt;code&gt;.uno&lt;/code&gt; command that can be used from macros take a
-type parameter to get/set a given type of category, if wanted.  As usual, you
-can try this right now with a 5.2 or
-&lt;a href="http://dev-builds.libreoffice.org/daily/master/"&gt;5.3 daily build&lt;/a&gt;. :-)&lt;/p&gt;&lt;/div&gt;
-</description>
-            <link>http://vmiklos.hu/blog/classification-toolbar-multicat.html</link>
-            <pubDate>Thu, 02 Jun 2016 08:27:53 +0200</pubDate>
-            <guid isPermaLink="false">http://vmiklos.hu/blog/classification-toolbar-multicat.html</guid>
         </item>
     </channel>
 </rss>

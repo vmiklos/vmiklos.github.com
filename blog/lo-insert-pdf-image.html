@@ -1,0 +1,177 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.5.3" />
+<meta name="description" content="Insert PDF as image in LibreOffice 5.3 - Miklos' blog" />
+<meta name="keywords" content="vmiklos, libereoffice, swig, git, python, hacking, bitlbee" />
+<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="http://vmiklos.hu/blog/index.rss" />
+<link rel="stylesheet" href="/blog/xhtml11.css" type="text/css" />
+<link rel="stylesheet" href="/blog/xhtml11-quirks.css" type="text/css" />
+<link rel="stylesheet" href="/blog/layout.css" type="text/css" />
+<title>Insert PDF as image in LibreOffice 5.3</title>
+<!-- google analytics start -->
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-24726997-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<!-- google analytics end -->
+</head>
+<body>
+<div id="layout-banner-box">
+<div id="layout-banner">
+  <div id="layout-title">vmiklos.hu</div>
+  <div id="layout-description">shameless self-promoting website</div>
+</div>
+</div>
+<div id="layout-menu-box">
+<div id="layout-menu">
+  <div>&#187;<a href="/">Root</a></div>
+  <div>&#187;<a href="/blog/">Rejourn root</a></div>
+  <div>&#187;<a href="http://planet.documentfoundation.org/">LibreOffice Community Blogs</a></div>
+  <div>
+    Search:<br/>
+    <form action="http://www.google.com/cse" id="cse-search-box" target="_blank">
+    <input type="hidden" name="cx" value="007336731492173318056:bik8fqvatno"/><input type="hidden" name="ie" value="UTF-8"/><input type="text" name="q" size="15"/><br/>
+    <input type="submit" name="sa" value="&#187;"/></form>
+  </div>
+</div>
+
+</div>
+<div id="layout-content-box">
+<div id="layout-content">
+<div id="header">
+	<h1>Insert PDF as image in LibreOffice 5.3</h1>
+</div>
+<div id="preamble">
+<div class="sectionbody">
+
+<!-- Single entry -->
+<div class="verseblock">
+<div class="verseblock-content">Posted <span class="timeago" title="2016-10-10T08:31:37Z">Monday, 10 October 2016</span> by Miklos<br />
+    Tags:
+    <a href="tags/en.html">en</a>
+    <a href="tags/libreoffice.html">libreoffice</a>
+</div>
+</div>
+
+<!-- Body -->
+<div class="sect1">
+<h2 id="_results">Results</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>LibreOffice 5.3 will add one more vector-based format that can be inserted as
+an image into documents: PDF. First, thanks to <a href="http://pmg.be/">PMG</a> who made
+this work possible. On the user interface you can now select PDF files when
+you choose e.g. Writer&#8217;s Insert &#8594; Image option:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://farm6.staticflickr.com/5552/29583461353_0c2da79c8e_o.png">
+<img src="https://farm6.staticflickr.com/5552/29583461353_02fc75dd7f_z.jpg" alt="https://farm6.staticflickr.com/5552/29583461353_02fc75dd7f_z.jpg" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>The first page of the PDF document will be shown, which is handy if the PDF
+file is basically used as a vector image format.</p></div>
+<div class="paragraph"><p>Similarly to the SVG feature, the original vector image is stored in the
+document, but when saving to ODF, a replacement PNG file is also generated to
+be backwards compatible with older ODF readers. The image context menu &#8594; Save
+menu item allows to extract your original PDF data from the image, too:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://farm8.staticflickr.com/7501/30098334712_569ebbe55b_o.png">
+<img src="https://farm8.staticflickr.com/7501/30098334712_535e16ea05_z.jpg" alt="https://farm8.staticflickr.com/7501/30098334712_535e16ea05_z.jpg" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>And that&#8217;s it, as long as you save your document in ODF, your PDF-as-an-image
+will be kept without loosing any data. As usual, you can try this right now
+with a 5.3 <a href="http://dev-builds.libreoffice.org/daily/master/">daily build</a>. :-)</p></div>
+<div class="paragraph"><p>However, if you&#8217;re interested in how this is implemented, keep reading&#8230;</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_document_model">Document model</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>The PDF image in the document model is really similar to how SVG is handled,
+next to <code>Graphic::getSvgData()</code>, there is now a <code>Graphic::getPdfData()</code>.
+This new member function exposes the original PDF data, otherwise the Graphic
+is just a metafile.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_uno_api">UNO API</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>The <code>ReplacementGraphicURL</code> property of the image at an UNO level now exposes
+the generated metafile for PDF images. This is implemented for both Draw and
+Writer images, and is used by the ODF export filter.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_layout">Layout</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>When the <code>Graphic</code> instance is rendered, the layout knows nothing about the
+PDF data attached to the object, only parses the generated metafile. This way
+the display of the PDF image works out of the box.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_filters">Filters</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>First I&#8217;ve implemented a
+<a href="https://gerrit.libreoffice.org/gitweb?p=core.git;a=commit;h=878a860dff10bd91491d6c9f2f4e2308bfe4f0b2">PDF
+import-as-graphic filter</a>, then the
+<a href="https://gerrit.libreoffice.org/gitweb?p=core.git;a=commit;h=7d76bb251e0c88ff17282a33b801a5d17a434af5">export
+equivalent of it</a>. As you can see, the PDF import-as-graphic filter isn&#8217;t too
+complicated, it completely reuses the existing "import PDF into Draw" filter,
+it simply copies the first page of the resulting document model as a metafile.</p></div>
+<div class="paragraph"><p>Second, once the graphic filters were working, I&#8217;ve also
+<a href="https://gerrit.libreoffice.org/gitweb?p=core.git;a=commitdiff;h=d1c346ba848c54424d6ffa88df7a5ff6a3717430">improved</a>
+the ODF import to recognize PDF data&#8201;&#8212;&#8201;the export side needed no explicit
+work, once the <code>ReplacementGraphicURL</code> bits were in place.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_tests">Tests</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>As mentioned above, the Draw and the Writer image implementation is separate,
+so first I&#8217;ve added tests for ODT files in the <code>testEmbeddedPdf</code> of
+<code>CppunitTest_sw_odfexport</code>, and then <code>SdExportTest::testEmbeddedPdf()</code> to
+cover ODP files (and other ODF formats).  Second, the PDF part of the graphic
+swapout/in code has a dedicated test in <code>GraphicObjectTest::testPdf()</code>, and
+the UI&#8217;s "Save original PDF" feature has a new
+<code>XOutdevTest::testPdfGraphicExport()</code> test.</p></div>
+<div class="paragraph"><p>Oh, and if you intent to test this manually in a self-created build, make sure
+to avoid <code>--disable-pdfimport</code>, otherwise this feature can&#8217;t work. ;-)</p></div>
+</div>
+</div>
+
+
+<script src="https://apis.google.com/js/plusone.js"></script>
+<g:plus action="share"></g:plus>
+
+<!-- Disqus comments -->
+<h1 id="comment-header">Comments</h1>
+<div id="disqus_thread"></div>
+<script type="text/javascript" src="http://vmiklos.disqus.com/embed.js">
+	var disqus_developer = 1;
+</script>
+<noscript>
+  <p><a href="http://disqus.com/?ref_noscript=vmiklos">View the discussion thread.</a></p>
+</noscript>
+
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>
