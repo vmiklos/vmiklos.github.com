@@ -71,20 +71,18 @@ u.className="month",document.getElementsByTagName("body")[0].appendChild(u)
 var t=u.insertRow(u.rows.length),e=document.createElement("th")
 e.className="month",t.appendChild(e),e.colSpan=7
 var r=new Date,n=r.getFullYear(),o=r.getMonth()+1
-e.appendChild(document.createTextNode(n+" "+i.month_name[o]))
-var t=u.insertRow(u.rows.length)
-i.day_name.forEach(function(u){var e=document.createElement("th")
+e.appendChild(document.createTextNode(n+" "+i.month_name[o])),t=u.insertRow(u.rows.length),i.day_name.forEach(function(u){var e=document.createElement("th")
 t.appendChild(e),e.appendChild(document.createTextNode(u))})
-var a=new i.Calendar
-console.log(n),console.log(o)
-var s=a.monthdayscalendar(n,o)
-s.forEach(function(t){var e=u.insertRow(u.rows.length)
+var a=new i.Calendar,c=a.monthdayscalendar(n,o)
+c.forEach(function(t){var e=u.insertRow(u.rows.length)
 t.forEach(function(u){var t=document.createElement("td")
 if(t.className="day",e.appendChild(t),0==u)t.appendChild(document.createTextNode(" "))
 else{t.appendChild(document.createTextNode(u)),t.appendChild(document.createElement("br"))
-var r=tasks[Math.floor(Math.random()*tasks.length)]
+var r=s[Math.floor(Math.random()*s.length)]
 t.appendChild(document.createTextNode(r))}})})}var i=u("node-calendar"),o=u("domready"),a=u("seed-random")
-i.month_name=["","január","február","március","április","május","június","július","augusztus","szeptember","október","november","december"],i.day_name=["hétfő","kedd","szerda","csütörtök","péntek","szombat","vasárnap"],tasks=["Segítségnyújtés gyermekeinknek az érzéseik elfogadásában (35. o.)","Együttműködésre bírni gyermekeinket (79. o.)","Büntetés helyett (118. o.)","Az önállóság támogatása (151. o.)","Dicséret és önértékelés (182. o.)","Hogy ne kelljen gyermekeinknek szerepet játszaniuk (211. o.)"],o(function(){var u=r("seed")
+i.month_name=["","január","február","március","április","május","június","július","augusztus","szeptember","október","november","december"],i.day_name=["hétfő","kedd","szerda","csütörtök","péntek","szombat","vasárnap"]
+var s=["Segítségnyújtés gyermekeinknek az érzéseik elfogadásában (35. o.)","Együttműködésre bírni gyermekeinket (79. o.)","Büntetés helyett (118. o.)","Az önállóság támogatása (151. o.)","Dicséret és önértékelés (182. o.)","Hogy ne kelljen gyermekeinknek szerepet játszaniuk (211. o.)"]
+o(function(){var u=r("seed")
 u&&a(u,{global:!0}),n()})},{domready:50,"node-calendar":51,"seed-random":52}],6:[function(u,t,e){(function(e){function r(u,t,e){for(var r,n=!1,i=u.ranges.length-1;i>=0;i-=1){var o,a=u.ranges[i]
 "number"===a.type?o=["binary","===",t,["num",a.value]]:(n=!0,o=["binary","&&",["binary",">=",t,["num",a.min.value]],["binary","<=",t,["num",a.max.value]]]),r=r?["binary","||",o,r]:o}return n&&!e&&(r=["binary","&&",["binary","===",t,["call",["dot",["name","Math"],"floor"],[t]]],r]),r}function n(u){switch(u.type){case"number":return["num",u.value]
 case"n":case"i":case"v":case"w":case"f":case"t":return["name",u.type]
