@@ -1,0 +1,184 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.5.3" />
+<meta name="description" content="PAdES support for PDF files in LibreOffice - Miklos' blog" />
+<meta name="keywords" content="vmiklos, libereoffice, swig, git, python, hacking, bitlbee" />
+<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="http://vmiklos.hu/blog/index.rss" />
+<link rel="stylesheet" href="/blog/xhtml11.css" type="text/css" />
+<link rel="stylesheet" href="/blog/xhtml11-quirks.css" type="text/css" />
+<link rel="stylesheet" href="/blog/layout.css" type="text/css" />
+<title>PAdES support for PDF files in LibreOffice</title>
+<!-- google analytics start -->
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-24726997-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<!-- google analytics end -->
+</head>
+<body>
+<div id="layout-banner-box">
+<div id="layout-banner">
+  <div id="layout-title">vmiklos.hu</div>
+  <div id="layout-description">shameless self-promoting website</div>
+</div>
+</div>
+<div id="layout-menu-box">
+<div id="layout-menu">
+  <div>&#187;<a href="/">Root</a></div>
+  <div>&#187;<a href="/blog/">Rejourn root</a></div>
+  <div>&#187;<a href="http://planet.documentfoundation.org/">LibreOffice Community Blogs</a></div>
+  <div>
+    Search:<br/>
+    <form action="http://www.google.com/cse" id="cse-search-box" target="_blank">
+    <input type="hidden" name="cx" value="007336731492173318056:bik8fqvatno"/><input type="hidden" name="ie" value="UTF-8"/><input type="text" name="q" size="15"/><br/>
+    <input type="submit" name="sa" value="&#187;"/></form>
+  </div>
+</div>
+
+</div>
+<div id="layout-content-box">
+<div id="layout-content">
+<div id="header">
+	<h1>PAdES support for PDF files in LibreOffice</h1>
+</div>
+<div id="preamble">
+<div class="sectionbody">
+
+<!-- Single entry -->
+<div class="verseblock">
+<div class="verseblock-content">Posted <span class="timeago" title="2016-12-20T12:08:37Z">Tuesday, 20 December 2016</span> by Miklos<br />
+    Tags:
+    <a href="tags/en.html">en</a>
+    <a href="tags/libreoffice.html">libreoffice</a>
+</div>
+</div>
+
+<!-- Body -->
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://farm1.staticflickr.com/443/30919530974_5c5b3cb3a9_o.png">
+<img src="https://farm1.staticflickr.com/443/30919530974_7ab3d132d8_z.jpg" alt="https://farm1.staticflickr.com/443/30919530974_7ab3d132d8_z.jpg" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>Building on top of the previously mentioned
+<a href="http://vmiklos.hu/blog/pdf-sign.html">signing of existing PDF files</a> work, one
+more PDF feature coming in LibreOffice 5.3 is initial support for the PDF
+Advanced Electronic Signatures (<a href="https://en.wikipedia.org/wiki/PAdES">PAdES</a>)
+standard.  First, thanks to the Dutch Ministry of Defense in cooperation with
+<a href="http://nouenoff.nl/">Nou&amp;Off</a> who made this work possible.</p></div>
+<div class="sect1">
+<h2 id="_results">Results</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>PAdES is an extension of the ISO PDF signature with additional constraints, so
+that it conforms to the requirements of the European eIDAS regulation, which
+in turns makes it more likely that your signed PDF document will be actually
+legally binding in many EU member states.</p></div>
+<div class="paragraph"><p>The best way to check if LibreOffice produces such PDF signatures is to use a
+PAdES validator. So far I found two of them:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="http://signatures-conformance-checker.etsi.org/">the ETSI one</a>, which
+  requires registration and is a free web service
+</p>
+</li>
+<li>
+<p>
+<a href="https://github.com/esig/dss/">Digital Signature Service</a> (DSS), which is an
+  open source tool you can build and use and modify locally
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>As it can be seen above, the PDF signature produced by LibreOffice 5.3 by
+default conforms to the PAdES baseline spec.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_implementation">Implementation</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>I implemented the followings in LO to make this happen:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+PDF signature creation now default to the stronger SHA-256 (instead of the
+  previously used weaker SHA-1), and the PDF verifier understands SHA-256
+</p>
+</li>
+<li>
+<p>
+the PDF signature creation now embeds the signing certificate into the
+  PKCS#7 signature blob in the PDF, so the verifier can check not only the key
+  used for the signing, but the actual certificate as well
+</p>
+</li>
+<li>
+<p>
+the PDF signature import can now detect if such an embedded signing
+  certificate is present in the signature or not
+</p>
+</li>
+</ul></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">Don&#8217;t get confused, LO does signature verification (checks if the digest
+matches and validates the certificate) and now shows if the signing
+certificate is present in the signature or not, but it doesn&#8217;t do more than
+that, the above mentioned DSS tool is still superior when it comes to do a
+full validation of a PAdES signature.</td>
+</tr></table>
+</div>
+<div class="paragraph"><p>As usual, this works both with NSS and MS CryptoAPI. In the previous post I
+noted that one task was easier with CryptoAPI. Here I experienced the
+opposite: when writing the signing certificate hash, I could provide templates
+to NSS on how the ASN.1 encoding of it should happen, and NSS did the actual
+ASN.1 DER encoding for me. In the CryptoAPI case there is no such API, so I
+had to do this encoding manually (see
+<a href="https://github.com/LibreOffice/core/blob/master/vcl/source/gdi/pdfwriter_impl.cxx#L6202">CreateSigningCertificateAttribute()</a>),
+which is obviously much more complicated.</p></div>
+<div class="paragraph"><p>Another pain was that the DSS tool doesn&#8217;t really separate the validation of
+the signature itself and of the certificate. The above screenshot was created
+using a non-self-signed certificate, hence the unclear part in the signed-by
+row.</p></div>
+<div class="paragraph"><p>If you want to try these out yourself, get a
+<a href="http://dev-builds.libreoffice.org/daily/">daily build</a> and feel free to play
+with it. This work is part of both <code>master</code> or <code>libreoffice-5-3</code>, so those
+builds are of interest. Happy testing! :-)</p></div>
+</div>
+</div>
+
+
+<script src="https://apis.google.com/js/plusone.js"></script>
+<g:plus action="share"></g:plus>
+
+<!-- Disqus comments -->
+<h1 id="comment-header">Comments</h1>
+<div id="disqus_thread"></div>
+<script type="text/javascript" src="http://vmiklos.disqus.com/embed.js">
+	var disqus_developer = 1;
+</script>
+<noscript>
+  <p><a href="http://disqus.com/?ref_noscript=vmiklos">View the discussion thread.</a></p>
+</noscript>
+
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

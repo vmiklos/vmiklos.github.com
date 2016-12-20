@@ -62,6 +62,104 @@
 
 <!-- Listing -->
 <div class="ulist"><ul>
+<li><p>Tuesday, 20 December 2016<br /><a href="/blog/pades.html">PAdES support for PDF files in LibreOffice</a>
+(<a href="/blog/pades.html#disqus_thread">Comments</a>)
+</p><p><div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://farm1.staticflickr.com/443/30919530974_5c5b3cb3a9_o.png">
+<img src="https://farm1.staticflickr.com/443/30919530974_7ab3d132d8_z.jpg" alt="https://farm1.staticflickr.com/443/30919530974_7ab3d132d8_z.jpg" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>Building on top of the previously mentioned
+<a href="http://vmiklos.hu/blog/pdf-sign.html">signing of existing PDF files</a> work, one
+more PDF feature coming in LibreOffice 5.3 is initial support for the PDF
+Advanced Electronic Signatures (<a href="https://en.wikipedia.org/wiki/PAdES">PAdES</a>)
+standard.  First, thanks to the Dutch Ministry of Defense in cooperation with
+<a href="http://nouenoff.nl/">Nou&amp;Off</a> who made this work possible.</p></div>
+<div class="sect1">
+<h2 id="_results">Results</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>PAdES is an extension of the ISO PDF signature with additional constraints, so
+that it conforms to the requirements of the European eIDAS regulation, which
+in turns makes it more likely that your signed PDF document will be actually
+legally binding in many EU member states.</p></div>
+<div class="paragraph"><p>The best way to check if LibreOffice produces such PDF signatures is to use a
+PAdES validator. So far I found two of them:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="http://signatures-conformance-checker.etsi.org/">the ETSI one</a>, which
+  requires registration and is a free web service
+</p>
+</li>
+<li>
+<p>
+<a href="https://github.com/esig/dss/">Digital Signature Service</a> (DSS), which is an
+  open source tool you can build and use and modify locally
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>As it can be seen above, the PDF signature produced by LibreOffice 5.3 by
+default conforms to the PAdES baseline spec.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_implementation">Implementation</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>I implemented the followings in LO to make this happen:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+PDF signature creation now default to the stronger SHA-256 (instead of the
+  previously used weaker SHA-1), and the PDF verifier understands SHA-256
+</p>
+</li>
+<li>
+<p>
+the PDF signature creation now embeds the signing certificate into the
+  PKCS#7 signature blob in the PDF, so the verifier can check not only the key
+  used for the signing, but the actual certificate as well
+</p>
+</li>
+<li>
+<p>
+the PDF signature import can now detect if such an embedded signing
+  certificate is present in the signature or not
+</p>
+</li>
+</ul></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">Don&#8217;t get confused, LO does signature verification (checks if the digest
+matches and validates the certificate) and now shows if the signing
+certificate is present in the signature or not, but it doesn&#8217;t do more than
+that, the above mentioned DSS tool is still superior when it comes to do a
+full validation of a PAdES signature.</td>
+</tr></table>
+</div>
+<div class="paragraph"><p>As usual, this works both with NSS and MS CryptoAPI. In the previous post I
+noted that one task was easier with CryptoAPI. Here I experienced the
+opposite: when writing the signing certificate hash, I could provide templates
+to NSS on how the ASN.1 encoding of it should happen, and NSS did the actual
+ASN.1 DER encoding for me. In the CryptoAPI case there is no such API, so I
+had to do this encoding manually (see
+<a href="https://github.com/LibreOffice/core/blob/master/vcl/source/gdi/pdfwriter_impl.cxx#L6202">CreateSigningCertificateAttribute()</a>),
+which is obviously much more complicated.</p></div>
+<div class="paragraph"><p>Another pain was that the DSS tool doesn&#8217;t really separate the validation of
+the signature itself and of the certificate. The above screenshot was created
+using a non-self-signed certificate, hence the unclear part in the signed-by
+row.</p></div>
+<div class="paragraph"><p>If you want to try these out yourself, get a
+<a href="http://dev-builds.libreoffice.org/daily/">daily build</a> and feel free to play
+with it. This work is part of both <code>master</code> or <code>libreoffice-5-3</code>, so those
+builds are of interest. Happy testing! :-)</p></div>
+</div>
+</div>
+</p><hr/></li>
 <li><p>Monday, 12 December 2016<br /><a href="/blog/pdf-sign.html">Signing existing PDF files in LibreOffice</a>
 (<a href="/blog/pdf-sign.html#disqus_thread">Comments</a>)
 </p><p><div class="imageblock" style="text-align:center;">

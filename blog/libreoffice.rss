@@ -5,6 +5,108 @@
         <description></description>
         <link>http://vmiklos.hu/blog/</link>
         <item>
+            <title>PAdES support for PDF files in LibreOffice</title>
+            <description>&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;a class="image" href="https://farm1.staticflickr.com/443/30919530974_5c5b3cb3a9_o.png"&gt;
+&lt;img src="https://farm1.staticflickr.com/443/30919530974_7ab3d132d8_z.jpg" alt="https://farm1.staticflickr.com/443/30919530974_7ab3d132d8_z.jpg" /&gt;
+&lt;/a&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Building on top of the previously mentioned
+&lt;a href="http://vmiklos.hu/blog/pdf-sign.html"&gt;signing of existing PDF files&lt;/a&gt; work, one
+more PDF feature coming in LibreOffice 5.3 is initial support for the PDF
+Advanced Electronic Signatures (&lt;a href="https://en.wikipedia.org/wiki/PAdES"&gt;PAdES&lt;/a&gt;)
+standard.  First, thanks to the Dutch Ministry of Defense in cooperation with
+&lt;a href="http://nouenoff.nl/"&gt;Nou&amp;amp;Off&lt;/a&gt; who made this work possible.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_results"&gt;Results&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;PAdES is an extension of the ISO PDF signature with additional constraints, so
+that it conforms to the requirements of the European eIDAS regulation, which
+in turns makes it more likely that your signed PDF document will be actually
+legally binding in many EU member states.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The best way to check if LibreOffice produces such PDF signatures is to use a
+PAdES validator. So far I found two of them:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="http://signatures-conformance-checker.etsi.org/"&gt;the ETSI one&lt;/a&gt;, which
+  requires registration and is a free web service
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://github.com/esig/dss/"&gt;Digital Signature Service&lt;/a&gt; (DSS), which is an
+  open source tool you can build and use and modify locally
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;As it can be seen above, the PDF signature produced by LibreOffice 5.3 by
+default conforms to the PAdES baseline spec.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_implementation"&gt;Implementation&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;I implemented the followings in LO to make this happen:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+PDF signature creation now default to the stronger SHA-256 (instead of the
+  previously used weaker SHA-1), and the PDF verifier understands SHA-256
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+the PDF signature creation now embeds the signing certificate into the
+  PKCS#7 signature blob in the PDF, so the verifier can check not only the key
+  used for the signing, but the actual certificate as well
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+the PDF signature import can now detect if such an embedded signing
+  certificate is present in the signature or not
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="admonitionblock"&gt;
+&lt;table&gt;&lt;tr&gt;
+&lt;td class="icon"&gt;
+&lt;div class="title"&gt;Note&lt;/div&gt;
+&lt;/td&gt;
+&lt;td class="content"&gt;Don&amp;#8217;t get confused, LO does signature verification (checks if the digest
+matches and validates the certificate) and now shows if the signing
+certificate is present in the signature or not, but it doesn&amp;#8217;t do more than
+that, the above mentioned DSS tool is still superior when it comes to do a
+full validation of a PAdES signature.&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;As usual, this works both with NSS and MS CryptoAPI. In the previous post I
+noted that one task was easier with CryptoAPI. Here I experienced the
+opposite: when writing the signing certificate hash, I could provide templates
+to NSS on how the ASN.1 encoding of it should happen, and NSS did the actual
+ASN.1 DER encoding for me. In the CryptoAPI case there is no such API, so I
+had to do this encoding manually (see
+&lt;a href="https://github.com/LibreOffice/core/blob/master/vcl/source/gdi/pdfwriter_impl.cxx#L6202"&gt;CreateSigningCertificateAttribute()&lt;/a&gt;),
+which is obviously much more complicated.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Another pain was that the DSS tool doesn&amp;#8217;t really separate the validation of
+the signature itself and of the certificate. The above screenshot was created
+using a non-self-signed certificate, hence the unclear part in the signed-by
+row.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;If you want to try these out yourself, get a
+&lt;a href="http://dev-builds.libreoffice.org/daily/"&gt;daily build&lt;/a&gt; and feel free to play
+with it. This work is part of both &lt;code&gt;master&lt;/code&gt; or &lt;code&gt;libreoffice-5-3&lt;/code&gt;, so those
+builds are of interest. Happy testing! :-)&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+            <link>http://vmiklos.hu/blog/pades.html</link>
+            <pubDate>Tue, 20 Dec 2016 12:08:37 +0100</pubDate>
+            <guid isPermaLink="false">http://vmiklos.hu/blog/pades.html</guid>
+        </item>
+        <item>
             <title>Signing existing PDF files in LibreOffice</title>
             <description>&lt;div class="imageblock" style="text-align:center;"&gt;
 &lt;div class="content"&gt;
@@ -468,92 +570,6 @@ improvements into LibreOffice in the future.&lt;/p&gt;&lt;/div&gt;
             <link>http://vmiklos.hu/blog/libreoffice-xmlsec.html</link>
             <pubDate>Fri, 05 Aug 2016 09:13:51 +0200</pubDate>
             <guid isPermaLink="false">http://vmiklos.hu/blog/libreoffice-xmlsec.html</guid>
-        </item>
-        <item>
-            <title>A LibreOffice / AddressSanitizer setup</title>
-            <description>&lt;div class="paragraph"&gt;&lt;p&gt;&lt;a href="https://github.com/google/sanitizers"&gt;sanitizers&lt;/a&gt; (ASAN, UBSAN, etc.) is a
-collection of tools to detect memory corruption bugs, undefined behavior and
-more by instrumenting the code generated by the compiler. (That&amp;#8217;s the main
-difference from valgrind.) From LibreOffice&amp;#8217;s perspective one more important
-difference is that there is a
-&lt;a href="http://ci.libreoffice.org/job/lo_ubsan/"&gt;Jenkins_Linux_Ubsan&lt;/a&gt; tinderbox that
-makes sure that the master branch is kept clean from errors detected by a
-given configuration.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;So when the tinderbox failed after a commit of mine, I wanted to set up a
-similar environment locally, reproduce and fix the bug, and push the fix once
-I saw that the fix indeed solves the problem. You can set many options both at
-build and runtime, so while we have some
-&lt;a href="https://wiki.documentfoundation.org/Development/-fsanitize"&gt;documentation&lt;/a&gt; on
-the TDF wiki (and also Stephan was kind enough to share
-&lt;a href="https://people.freedesktop.org/~vmiklos/2016/sanitizers-config-sberg"&gt;his
-config&lt;/a&gt;) on how to use these sanitizers, it wasn&amp;#8217;t clear to me what to do step
-by step. So here is one possible setup that worked for me&amp;#8201;&amp;#8212;&amp;#8201;in my case I
-wanted to reproduce a stack-use-after-return problem. If you haven&amp;#8217;t ever built
-LibreOffice before, then go to
-&lt;a href="https://wiki.documentfoundation.org/Development"&gt;the Development wiki page&lt;/a&gt;,
-first do a normal build, and if everything went fine, came back here.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_build_options"&gt;Build options&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;My &lt;code&gt;autogen.input&lt;/code&gt; looks like this:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="listingblock"&gt;
-&lt;div class="content"&gt;
-&lt;pre&gt;&lt;code&gt;CC=clang -fsanitize=address
-CXX=clang++ -fsanitize=address
---enable-dbgutil
---disable-firebird-sdbc&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Which is a normal clang debug build, except:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-you need to add &lt;code&gt;-fsanitize=...&lt;/code&gt; to &lt;code&gt;CXX&lt;/code&gt; (not to &lt;code&gt;CXXFLAGS&lt;/code&gt;), as explained
-  on the wiki
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-you need to explicitly disable Firebird integration for now
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_building"&gt;Building&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;My first attempt failed at build time, as even the tools used only during the
-build are instrumented, and some memory leak was detected there, which means
-the build aborted before reaching the problem I was interested in. To disable
-leak detection during build, and disable parallelism (I needed this, as I did
-the build in the background while using the machine for something else):&lt;/p&gt;&lt;/div&gt;
-&lt;div class="listingblock"&gt;
-&lt;div class="content"&gt;
-&lt;pre&gt;&lt;code&gt;make build-nocheck ASAN_OPTIONS=detect_leaks=0 PARALLELISM=1&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;This also means that I explicitly disabled running any tests, as I knew which
-is the single unit test I want to run for the purposes of reproducing and
-fixing the problem.&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_testing"&gt;Testing&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Once the build completed, it turns out that the stack-use-after-return detection is disabled at runtime by default, which means I could not see any problem locally. Here is the commandline to run one specific CppunitTest with this detection on:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="listingblock"&gt;
-&lt;div class="content"&gt;
-&lt;pre&gt;&lt;code&gt;cd sw; make -sr CppunitTest_sw_tiledrendering ASAN_OPTIONS=detect_leaks=0:detect_stack_use_after_return=1&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Again, this is just one possible setup, you can use other &lt;code&gt;-fsanitize=...&lt;/code&gt;
-options, other environment variables during build and during testing&amp;#8201;&amp;#8212;&amp;#8201;but
-hopefully it helps in the future to avoid pushing fixes for such problems
-detected by sanitizers just blindly.&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-</description>
-            <link>http://vmiklos.hu/blog/libreoffice-asan-setup.html</link>
-            <pubDate>Mon, 25 Jul 2016 09:52:14 +0200</pubDate>
-            <guid isPermaLink="false">http://vmiklos.hu/blog/libreoffice-asan-setup.html</guid>
         </item>
     </channel>
 </rss>
