@@ -1,0 +1,70 @@
+title: PAdES support for PDF files in LibreOffice
+author: Miklos
+tags: en, libreoffice
+pubdate: 2016-12-20T12:08:37Z
+<<<
+image::https://farm1.staticflickr.com/443/30919530974_7ab3d132d8_z.jpg[align="center",link="https://farm1.staticflickr.com/443/30919530974_5c5b3cb3a9_o.png"]
+
+Building on top of the previously mentioned
+http://vmiklos.hu/blog/pdf-sign.html[signing of existing PDF files] work, one
+more PDF feature coming in LibreOffice 5.3 is initial support for the PDF
+Advanced Electronic Signatures (https://en.wikipedia.org/wiki/PAdES[PAdES])
+standard.  First, thanks to the Dutch Ministry of Defense in cooperation with
+http://nouenoff.nl/[Nou&Off] who made this work possible.
+
+== Results
+
+PAdES is an extension of the ISO PDF signature with additional constraints, so
+that it conforms to the requirements of the European eIDAS regulation, which
+in turns makes it more likely that your signed PDF document will be actually
+legally binding in many EU member states.
+
+The best way to check if LibreOffice produces such PDF signatures is to use a
+PAdES validator. So far I found two of them:
+
+- http://signatures-conformance-checker.etsi.org/[the ETSI one], which
+  requires registration and is a free web service
+- https://github.com/esig/dss/[Digital Signature Service] (DSS), which is an
+  open source tool you can build and use and modify locally
+
+As it can be seen above, the PDF signature produced by LibreOffice 5.3 by
+default conforms to the PAdES baseline spec.
+
+== Implementation
+
+I implemented the followings in LO to make this happen:
+
+- PDF signature creation now default to the stronger SHA-256 (instead of the
+  previously used weaker SHA-1), and the PDF verifier understands SHA-256
+- the PDF signature creation now embeds the signing certificate into the
+  PKCS#7 signature blob in the PDF, so the verifier can check not only the key
+  used for the signing, but the actual certificate as well
+- the PDF signature import can now detect if such an embedded signing
+  certificate is present in the signature or not
+
+NOTE: Don't get confused, LO does signature verification (checks if the digest
+matches and validates the certificate) and now shows if the signing
+certificate is present in the signature or not, but it doesn't do more than
+that, the above mentioned DSS tool is still superior when it comes to do a
+full validation of a PAdES signature.
+
+As usual, this works both with NSS and MS CryptoAPI. In the previous post I
+noted that one task was easier with CryptoAPI. Here I experienced the
+opposite: when writing the signing certificate hash, I could provide templates
+to NSS on how the ASN.1 encoding of it should happen, and NSS did the actual
+ASN.1 DER encoding for me. In the CryptoAPI case there is no such API, so I
+had to do this encoding manually (see
+https://github.com/LibreOffice/core/blob/master/vcl/source/gdi/pdfwriter_impl.cxx#L6202[CreateSigningCertificateAttribute()]),
+which is obviously much more complicated.
+
+Another pain was that the DSS tool doesn't really separate the validation of
+the signature itself and of the certificate. The above screenshot was created
+using a non-self-signed certificate, hence the unclear part in the signed-by
+row.
+
+If you want to try these out yourself, get a
+http://dev-builds.libreoffice.org/daily/[daily build] and feel free to play
+with it. This work is part of both `master` or `libreoffice-5-3`, so those
+builds are of interest. Happy testing! :-)
+
+// vim: ft=asciidoc
