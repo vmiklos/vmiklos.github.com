@@ -1,0 +1,50 @@
+title: Hack-(rest-of-the)-week at Collabora
+author: Miklos
+tags: en, libreoffice
+pubdate: 2017-01-17T09:50:25Z
+<<<
+image::https://farm1.staticflickr.com/726/32306648426_b4ee93f6a1_o.png[align="center"]
+
+As mentioned in
+https://mikekaganski.wordpress.com/2016/12/11/my-first-hack-rest-of-the-week-at-collabora/[the
+blog post of Mike] already, last month we were allowed to hack on anything we
+want in LibreOffice for a few days. I used this time to progress with 3
+different topics.
+
+== Stepping through TextBoxes using the keyboard
+
+Given that a Writer shape with a TextBox is internally two shapes, this needed
+explicit support. After my
+https://gerrit.libreoffice.org/gitweb?p=core.git;a=commitdiff;h=5d2c189aee5057d1533165c368227c9c4c49d330[TextBox
+bugfix] it's possible to have two such shapes in a document, and once you
+select one of them, tab properly jumps between the two shapes; previously
+nothing happened.
+
+What did happen is we tried to activate the TextBox of the selected shape,
+which selected the shape itself, so at the end nothing happened.
+
+== RTF improvements
+
+For some time it was already possible to import and export custom string
+document properties from/to RTF, but just in case the value type of the
+property was string. Now I extended support for these custom properties, so
+also the remaining types are handled:
+https://gerrit.libreoffice.org/gitweb?p=core.git;a=commitdiff;h=fc8c4606e0834cd2128a228c2c95fc7c8f9eb7b1[numbers],
+https://gerrit.libreoffice.org/gitweb?p=core.git;a=commitdiff;h=547de17fcb654e560a60d683c33482feeee84358[bools],
+https://gerrit.libreoffice.org/gitweb?p=core.git;a=commitdiff;h=51c400dc4cd6a88c01b245e41d0de737d4df4017[doubles]
+and
+https://gerrit.libreoffice.org/gitweb?p=core.git;a=commitdiff;h=07b0cde32a7eebce996b8c32aa58545e4ec15003[dates].
+
+== xmlsec patch upstreaming
+
+Last, I've started working on upstreaming
+`external/libxmlsec/xmlsec1-noverify.patch.1`. xmlsec has no ability to
+disable the verification of certificates (think of `curl -k` or `wget -k`), so
+in LibreOffice currently we just patch out that code as we don't need it. So I
+wanted to add a new verification flag to avoid patching, but it turns out that
+in the NSS case xmlsec didn't do the verification, so as a first step I fixed
+that instead in this https://github.com/lsh123/xmlsec/pull/72[xmlsec GitHub
+pull request]. Now that it's merged, the next step will be to add such a flag,
+and then LibreOffice can get rid of the patch after the next xmlsec release.
+
+// vim: ft=asciidoc
