@@ -1,0 +1,39 @@
+title: Impress bugfixes, in time for FOSDEM 2017
+author: Miklos
+tags: en, libreoffice
+pubdate: 2017-01-31T09:17:26Z
+<<<
+image::https://farm1.staticflickr.com/334/32605456735_ac88121be8_o.png[align="center"]
+
+https://fosdem.org/2017/[FOSDEM 2017] is here this weekend, and as Michael
+Stahl pointed out, this (together with the LibreOffice annual conference) are
+two time periods each year when lots of Impress bugfixes are made, as people
+start https://en.wikipedia.org/wiki/Eating_your_own_dog_food[dogfooding]. ;-)
+So below you can read about a pair of Impress bugs I fixed recently.
+
+== Changing font size now takes table selection into account
+
+https://bugs.documentfoundation.org/show_bug.cgi?id=105502[tdf#105502] is a
+situation where you have an Impress table shape, and you select part of the
+cells, then you click on the sidebar to change the font size. Previously this
+affected all cells of the table shape, now only the selected cells are
+updated.
+
+== Background fill for shapes
+
+image::https://farm1.staticflickr.com/277/31761747774_4b1e6b8d38_o.png[align="center"]
+
+https://bugs.documentfoundation.org/show_bug.cgi?id=105150[tdf#105150] is a
+PPT(X) filter bug where a shape was previously imported as transparent, but it
+actually has to have the same fill type as the slide background. In case of
+PPTX this was already handled in general, but not in case the slide had no
+explicit background. The result was that in case the shape was used to cover
+other shapes, they were visible, leading to e.g. this unexpected red rectangle
+on the screenshot.
+
+The same bug was present in the PPT import, though there existing support was
+even more limited: just the "background colored objects" were collected, but
+nothing was done to them. Now the above use-case should be as good for PPT as
+it is for PPTX.
+
+// vim: ft=asciidoc
