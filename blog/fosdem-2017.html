@@ -1,0 +1,131 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.5.3" />
+<meta name="description" content="Impress bugfixes, in time for FOSDEM 2017 - Miklos' blog" />
+<meta name="keywords" content="vmiklos, libereoffice, swig, git, python, hacking, bitlbee" />
+<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="/blog/index.rss" />
+<link rel="stylesheet" href="/blog/xhtml11.css" type="text/css" />
+<link rel="stylesheet" href="/blog/xhtml11-quirks.css" type="text/css" />
+<link rel="stylesheet" href="/blog/layout.css" type="text/css" />
+<title>Impress bugfixes, in time for FOSDEM 2017</title>
+<!-- google analytics start -->
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-24726997-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<!-- google analytics end -->
+</head>
+<body>
+<div id="layout-banner-box">
+<div id="layout-banner">
+  <div id="layout-title">vmiklos.hu</div>
+  <div id="layout-description">shameless self-promoting website</div>
+</div>
+</div>
+<div id="layout-menu-box">
+<div id="layout-menu">
+  <div>&#187;<a href="/">Root</a></div>
+  <div>&#187;<a href="/blog/">Rejourn root</a></div>
+  <div>&#187;<a href="http://planet.documentfoundation.org/">LibreOffice Community Blogs</a></div>
+  <div>
+    Search:<br/>
+    <form action="http://www.google.com/cse" id="cse-search-box" target="_blank">
+    <input type="hidden" name="cx" value="007336731492173318056:bik8fqvatno"/><input type="hidden" name="ie" value="UTF-8"/><input type="text" name="q" size="15"/><br/>
+    <input type="submit" name="sa" value="&#187;"/></form>
+  </div>
+</div>
+
+</div>
+<div id="layout-content-box">
+<div id="layout-content">
+<div id="header">
+	<h1>Impress bugfixes, in time for FOSDEM 2017</h1>
+</div>
+<div id="preamble">
+<div class="sectionbody">
+
+<!-- Single entry -->
+<div class="verseblock">
+<div class="verseblock-content">Posted <span class="timeago" title="2017-01-31T09:17:26Z">Tuesday, 31 January 2017</span> by Miklos<br />
+    Tags:
+    <a href="tags/en.html">en</a>
+    <a href="tags/libreoffice.html">libreoffice</a>
+<div class="nav-previous"><a href="/blog/hackweek-2016.html" rel="prev"><span class="meta-nav">&larr;</span> Hack-(rest-of-the)-week at Collabora</a></div>
+</div>
+</div>
+
+<!-- Body -->
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://farm1.staticflickr.com/334/32605456735_ac88121be8_o.png" alt="https://farm1.staticflickr.com/334/32605456735_ac88121be8_o.png" />
+</div>
+</div>
+<div class="paragraph"><p><a href="https://fosdem.org/2017/">FOSDEM 2017</a> is here this weekend, and as Michael
+Stahl pointed out, this (together with the LibreOffice annual conference) are
+two time periods each year when lots of Impress bugfixes are made, as people
+start <a href="https://en.wikipedia.org/wiki/Eating_your_own_dog_food">dogfooding</a>. ;-)
+So below you can read about a pair of Impress bugs I fixed recently.</p></div>
+<div class="sect1">
+<h2 id="_changing_font_size_now_takes_table_selection_into_account">Changing font size now takes table selection into account</h2>
+<div class="sectionbody">
+<div class="paragraph"><p><a href="https://bugs.documentfoundation.org/show_bug.cgi?id=105502">tdf#105502</a> is a
+situation where you have an Impress table shape, and you select part of the
+cells, then you click on the sidebar to change the font size. Previously this
+affected all cells of the table shape, now only the selected cells are
+updated.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_background_fill_for_shapes">Background fill for shapes</h2>
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://farm1.staticflickr.com/277/31761747774_4b1e6b8d38_o.png" alt="https://farm1.staticflickr.com/277/31761747774_4b1e6b8d38_o.png" />
+</div>
+</div>
+<div class="paragraph"><p><a href="https://bugs.documentfoundation.org/show_bug.cgi?id=105150">tdf#105150</a> is a
+PPT(X) filter bug where a shape was previously imported as transparent, but it
+actually has to have the same fill type as the slide background. In case of
+PPTX this was already handled in general, but not in case the slide had no
+explicit background. The result was that in case the shape was used to cover
+other shapes, they were visible, leading to e.g. this unexpected red rectangle
+on the screenshot.</p></div>
+<div class="paragraph"><p>The same bug was present in the PPT import, though there existing support was
+even more limited: just the "background colored objects" were collected, but
+nothing was done to them. Now the above use-case should be as good for PPT as
+it is for PPTX.</p></div>
+</div>
+</div>
+
+
+<script src="https://apis.google.com/js/plusone.js"></script>
+<g:plus action="share"></g:plus>
+
+<!-- Disqus comments -->
+<h1 id="comment-header">Comments</h1>
+<div id="disqus_thread"></div>
+<script type="text/javascript" src="//vmiklos.disqus.com/embed.js">
+	var disqus_developer = 1;
+</script>
+<noscript>
+  <p><a href="http://disqus.com/?ref_noscript=vmiklos">View the discussion thread.</a></p>
+</noscript>
+
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>
