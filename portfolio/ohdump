@@ -24,6 +24,7 @@ class ContentHandler(xml.sax.handler.ContentHandler):
         self.inProjectHTMLURL = False
         self.projectHTMLURL = None
         self.inLicenses = False
+        self.inSimilarProjects = False
         self.inCommits = False
         self.commits = None
         self.inHTMLURL = False
@@ -40,6 +41,10 @@ class ContentHandler(xml.sax.handler.ContentHandler):
         elif name == "licenses":
             self.inLicenses = True
         elif self.inLicenses:
+            pass
+        elif name == "similar_projects":
+            self.inSimilarProjects = True
+        elif self.inSimilarProjects:
             pass
         elif self.inProject and name == "name":
             self.inProjectName = True
@@ -73,6 +78,10 @@ class ContentHandler(xml.sax.handler.ContentHandler):
         elif name == "licenses":
             self.inLicenses = False
         elif self.inLicenses:
+            pass
+        elif name == "similar_projects":
+            self.inSimilarProjects = False
+        elif self.inSimilarProjects:
             pass
         elif self.inProject and name == "name":
             self.inProjectName = False
