@@ -1,0 +1,156 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.5.3" />
+<meta name="description" content="ECDSA support in xmlsec-nss, bundled by LibreOffice - Miklos' blog" />
+<meta name="keywords" content="vmiklos, libereoffice, swig, git, python, hacking, bitlbee" />
+<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="/blog/index.rss" />
+<link rel="stylesheet" href="/blog/xhtml11.css" type="text/css" />
+<link rel="stylesheet" href="/blog/xhtml11-quirks.css" type="text/css" />
+<link rel="stylesheet" href="/blog/layout.css" type="text/css" />
+<title>ECDSA support in xmlsec-nss, bundled by LibreOffice</title>
+<!-- google analytics start -->
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-24726997-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<!-- google analytics end -->
+</head>
+<body>
+<div id="layout-banner-box">
+<div id="layout-banner">
+  <div id="layout-title">vmiklos.hu</div>
+  <div id="layout-description">shameless self-promoting website</div>
+</div>
+</div>
+<div id="layout-menu-box">
+<div id="layout-menu">
+  <div>&#187;<a href="/">Root</a></div>
+  <div>&#187;<a href="/blog/">Rejourn root</a></div>
+  <div>&#187;<a href="http://planet.documentfoundation.org/">LibreOffice Community Blogs</a></div>
+  <div>
+    Search:<br/>
+    <form action="http://www.google.com/cse" id="cse-search-box" target="_blank">
+    <input type="hidden" name="cx" value="007336731492173318056:bik8fqvatno"/><input type="hidden" name="ie" value="UTF-8"/><input type="text" name="q" size="15"/><br/>
+    <input type="submit" name="sa" value="&#187;"/></form>
+  </div>
+</div>
+
+</div>
+<div id="layout-content-box">
+<div id="layout-content">
+<div id="header">
+	<h1>ECDSA support in xmlsec-nss, bundled by LibreOffice</h1>
+</div>
+<div id="preamble">
+<div class="sectionbody">
+
+<!-- Single entry -->
+<div class="verseblock">
+<div class="verseblock-content">Posted <span class="timeago" title="2017-03-13T09:57:17Z">Monday, 13 March 2017</span> by Miklos<br />
+    Tags:
+    <a href="tags/en.html">en</a>
+    <a href="tags/libreoffice.html">libreoffice</a>
+    <a href="tags/xmlsec.html">xmlsec</a>
+<div class="nav-previous"><a href="/blog/okular-linked-video.html" rel="prev"><span class="meta-nav">&larr;</span> okular now supports online videos in PDF files</a></div>
+</div>
+</div>
+
+<!-- Body -->
+<div class="paragraph"><p>Last month a
+<a href="https://bugs.documentfoundation.org/show_bug.cgi?id=105983">LibreOffice
+bugreport</a> was filed, as the ODF signature created with Hungarian citizen eID
+cards is not something LibreOffice can verify. After a bit of research it
+seemed that LibreOffice and NSS (what we use for crypto work on Linux/macOS)
+is not a problem, but xmlsec&#8217;s NSS backend does not recognize ECDSA keys (RSA
+or DSA keys work fine).</p></div>
+<div class="paragraph"><p>The xmlsec improvements happened in these pull requests:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="https://github.com/lsh123/xmlsec/pull/81">prepare the xmlsec ECDSA tests</a>, so
+  that they can test not only openssl, but NSS as well
+</p>
+</li>
+<li>
+<p>
+<a href="https://github.com/lsh123/xmlsec/pull/83">add initial ECDSA support</a> (SHA256
+  hashing only)
+</p>
+</li>
+<li>
+<p>
+<a href="https://github.com/lsh123/xmlsec/pull/88">SHA1 support</a>
+</p>
+</li>
+<li>
+<p>
+<a href="https://github.com/lsh123/xmlsec/pull/89">SHA512 support</a>
+</p>
+</li>
+<li>
+<p>
+<a href="https://github.com/lsh123/xmlsec/pull/91">fix read of uninitialized memory</a>
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>After this the xmlsec code looked good enough. I had to request an update of
+the bugdoc in the TDF bug twice, as the signature itself looked also incorrect
+initially:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+an attribute type in the signature that had no official abbreviation was
+  described as "UNDEF" instead of the dotted decimal form
+</p>
+</li>
+<li>
+<p>
+<a href="https://tools.ietf.org/html/rfc3279#section-2.2.3">RFC3279</a> specifies that an
+  ECDSA signature value in general should be ASN1-encoded in general, but
+  <a href="https://tools.ietf.org/html/rfc4050#section-3.3">RFC4050</a> is specific to XML
+  digital signatures and that one says it should <strong>not</strong> be ASN1-encoded. The
+  bugdoc was initially ASN1-encoded.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Finally a warning still remains: while trying to parse the text of the
+<code>&lt;X509IssuerName&gt;</code> element, the dotted decimal form is still not parsed (see
+this <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1342137">NSS bugreport</a>). The
+bug is confirmed on the mailing list, but no other progress have been made so
+far.</p></div>
+<div class="paragraph"><p>Oh, and of course: Windows is still untouched, there a bigger problem remains:
+we use CryptoAPI (not CNG) there, and that does not support ECDSA at all.
+Hooray for open-source libs where you can add such support yourself. ;-)</p></div>
+
+
+<script src="https://apis.google.com/js/plusone.js"></script>
+<g:plus action="share"></g:plus>
+
+<!-- Disqus comments -->
+<h1 id="comment-header">Comments</h1>
+<div id="disqus_thread"></div>
+<script type="text/javascript" src="//vmiklos.disqus.com/embed.js">
+	var disqus_developer = 1;
+</script>
+<noscript>
+  <p><a href="http://disqus.com/?ref_noscript=vmiklos">View the discussion thread.</a></p>
+</noscript>
+
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

@@ -5,6 +5,78 @@
         <description></description>
         <link>https://vmiklos.hu/blog/</link>
         <item>
+            <title>ECDSA support in xmlsec-nss, bundled by LibreOffice</title>
+            <description>&lt;div class="paragraph"&gt;&lt;p&gt;Last month a
+&lt;a href="https://bugs.documentfoundation.org/show_bug.cgi?id=105983"&gt;LibreOffice
+bugreport&lt;/a&gt; was filed, as the ODF signature created with Hungarian citizen eID
+cards is not something LibreOffice can verify. After a bit of research it
+seemed that LibreOffice and NSS (what we use for crypto work on Linux/macOS)
+is not a problem, but xmlsec&amp;#8217;s NSS backend does not recognize ECDSA keys (RSA
+or DSA keys work fine).&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The xmlsec improvements happened in these pull requests:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://github.com/lsh123/xmlsec/pull/81"&gt;prepare the xmlsec ECDSA tests&lt;/a&gt;, so
+  that they can test not only openssl, but NSS as well
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://github.com/lsh123/xmlsec/pull/83"&gt;add initial ECDSA support&lt;/a&gt; (SHA256
+  hashing only)
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://github.com/lsh123/xmlsec/pull/88"&gt;SHA1 support&lt;/a&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://github.com/lsh123/xmlsec/pull/89"&gt;SHA512 support&lt;/a&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://github.com/lsh123/xmlsec/pull/91"&gt;fix read of uninitialized memory&lt;/a&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;After this the xmlsec code looked good enough. I had to request an update of
+the bugdoc in the TDF bug twice, as the signature itself looked also incorrect
+initially:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+an attribute type in the signature that had no official abbreviation was
+  described as "UNDEF" instead of the dotted decimal form
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://tools.ietf.org/html/rfc3279#section-2.2.3"&gt;RFC3279&lt;/a&gt; specifies that an
+  ECDSA signature value in general should be ASN1-encoded in general, but
+  &lt;a href="https://tools.ietf.org/html/rfc4050#section-3.3"&gt;RFC4050&lt;/a&gt; is specific to XML
+  digital signatures and that one says it should &lt;strong&gt;not&lt;/strong&gt; be ASN1-encoded. The
+  bugdoc was initially ASN1-encoded.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Finally a warning still remains: while trying to parse the text of the
+&lt;code&gt;&amp;lt;X509IssuerName&amp;gt;&lt;/code&gt; element, the dotted decimal form is still not parsed (see
+this &lt;a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1342137"&gt;NSS bugreport&lt;/a&gt;). The
+bug is confirmed on the mailing list, but no other progress have been made so
+far.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Oh, and of course: Windows is still untouched, there a bigger problem remains:
+we use CryptoAPI (not CNG) there, and that does not support ECDSA at all.
+Hooray for open-source libs where you can add such support yourself. ;-)&lt;/p&gt;&lt;/div&gt;
+</description>
+            <link>https://vmiklos.hu/blog/xmlsec-nss-ecdsa.html</link>
+            <pubDate>Mon, 13 Mar 2017 09:57:17 +0100</pubDate>
+            <guid isPermaLink="false">https://vmiklos.hu/blog/xmlsec-nss-ecdsa.html</guid>
+        </item>
+        <item>
             <title>LibreOffice PDF export now supports videos</title>
             <description>&lt;div class="imageblock" style="text-align:center;"&gt;
 &lt;div class="content"&gt;
@@ -637,27 +709,6 @@ are really helpful.&lt;/p&gt;&lt;/div&gt;
             <link>https://vmiklos.hu/blog/clang-locon-brno-2k16.html</link>
             <pubDate>Tue, 13 Sep 2016 14:37:44 +0200</pubDate>
             <guid isPermaLink="false">https://vmiklos.hu/blog/clang-locon-brno-2k16.html</guid>
-        </item>
-        <item>
-            <title>A year in LibreOffice's RTF support LOCon talk</title>
-            <description>&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;a class="image" href="https://speakerd.s3.amazonaws.com/presentations/65dac04a99f146649b08cf66211469fd/rtf-locon-brno-2k16.pdf"&gt;
-&lt;img src="https://farm9.staticflickr.com/8004/29626765785_7f35c9bfd6_z.jpg" alt="https://farm9.staticflickr.com/8004/29626765785_7f35c9bfd6_z.jpg" /&gt;
-&lt;/a&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Last week I gave a
-&lt;a href="http://conference.libreoffice.org/2016/the-program/sept-8th-thursday/"&gt; year in
-LibreOffice&amp;#8217;s RTF support&lt;/a&gt; talk at LibreOffice conference 2016, in the
-development track. Click on the image to see all the slides.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;I&amp;#8217;ve also published a number of (mostly)
-&lt;a href="https://www.flickr.com/photos/vmiklos/albums/72157673517450165"&gt;sightseeing
-pictures&lt;/a&gt; based on wondering around in Brno before and after the conference.&lt;/p&gt;&lt;/div&gt;
-</description>
-            <link>https://vmiklos.hu/blog/rtf-locon-brno-2k16.html</link>
-            <pubDate>Mon, 12 Sep 2016 09:55:00 +0200</pubDate>
-            <guid isPermaLink="false">https://vmiklos.hu/blog/rtf-locon-brno-2k16.html</guid>
         </item>
     </channel>
 </rss>
