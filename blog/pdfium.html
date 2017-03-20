@@ -1,0 +1,135 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.5.3" />
+<meta name="description" content="LibreOffice now uses pdfium to render inserted PDF images - Miklos' blog" />
+<meta name="keywords" content="vmiklos, libereoffice, swig, git, python, hacking, bitlbee" />
+<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="/blog/index.rss" />
+<link rel="stylesheet" href="/blog/xhtml11.css" type="text/css" />
+<link rel="stylesheet" href="/blog/xhtml11-quirks.css" type="text/css" />
+<link rel="stylesheet" href="/blog/layout.css" type="text/css" />
+<title>LibreOffice now uses pdfium to render inserted PDF images</title>
+<!-- google analytics start -->
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-24726997-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<!-- google analytics end -->
+</head>
+<body>
+<div id="layout-banner-box">
+<div id="layout-banner">
+  <div id="layout-title">vmiklos.hu</div>
+  <div id="layout-description">shameless self-promoting website</div>
+</div>
+</div>
+<div id="layout-menu-box">
+<div id="layout-menu">
+  <div>&#187;<a href="/">Root</a></div>
+  <div>&#187;<a href="/blog/">Rejourn root</a></div>
+  <div>&#187;<a href="http://planet.documentfoundation.org/">LibreOffice Community Blogs</a></div>
+  <div>
+    Search:<br/>
+    <form action="http://www.google.com/cse" id="cse-search-box" target="_blank">
+    <input type="hidden" name="cx" value="007336731492173318056:bik8fqvatno"/><input type="hidden" name="ie" value="UTF-8"/><input type="text" name="q" size="15"/><br/>
+    <input type="submit" name="sa" value="&#187;"/></form>
+  </div>
+</div>
+
+</div>
+<div id="layout-content-box">
+<div id="layout-content">
+<div id="header">
+	<h1>LibreOffice now uses pdfium to render inserted PDF images</h1>
+</div>
+<div id="preamble">
+<div class="sectionbody">
+
+<!-- Single entry -->
+<div class="verseblock">
+<div class="verseblock-content">Posted <span class="timeago" title="2017-03-20T10:00:22Z">Monday, 20 March 2017</span> by Miklos<br />
+    Tags:
+    <a href="tags/en.html">en</a>
+    <a href="tags/libreoffice.html">libreoffice</a>
+<div class="nav-previous"><a href="/blog/xmlsec-nss-ecdsa.html" rel="prev"><span class="meta-nav">&larr;</span> ECDSA support in xmlsec-nss, bundled by LibreOffice</a></div>
+</div>
+</div>
+
+<!-- Body -->
+<div class="paragraph"><p>pdfium is the rendering library used in Chromium&#8217;s pdf viewer. It&#8217;s based on
+the foxit pdf renderer and its rendering quality is much better compared to
+the pre-existing "convert PDF to ODG, then to an image" code when it comes to
+just viewing a PDF file.  First, thanks to <a href="http://www.pmg.be/">PMG</a> who made
+this work possible.</p></div>
+<div class="paragraph"><p>Let&#8217;s look at a few samples that compare the old pdfimport rendering result
+and the new pdfium-based one. One important feature is that embedded fonts are
+handled. This is how this inserted PDF looked like previously:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://farm4.staticflickr.com/3727/33163219940_3a2a3278a0_o.png" alt="https://farm4.staticflickr.com/3727/33163219940_3a2a3278a0_o.png" />
+</div>
+</div>
+<div class="paragraph"><p>Compare it with the new result:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://farm3.staticflickr.com/2927/33547029855_92c1a5150d_o.png" alt="https://farm3.staticflickr.com/2927/33547029855_92c1a5150d_o.png" />
+</div>
+</div>
+<div class="paragraph"><p>Now let&#8217;s see the front page of a magazine, you can see 3 unexpected artifacts:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://farm4.staticflickr.com/3952/33163219890_c4ae5cf153_z.jpg" alt="https://farm4.staticflickr.com/3952/33163219890_c4ae5cf153_z.jpg" />
+</div>
+</div>
+<div class="paragraph"><p>New result:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://farm3.staticflickr.com/2809/33547029645_de7cbcd800_z.jpg" alt="https://farm3.staticflickr.com/2809/33547029645_de7cbcd800_z.jpg" />
+</div>
+</div>
+<div class="paragraph"><p>Finally a problem with pdfium was that LibreOffice got bitmaps from it, so in case you re-exported to PDF, the quality of these PDF images were worse than in the original PDF file. The PDF specification has a <em>reference XObject</em> feature that helps in this case: it allows the PDF export to still write the bitmap to the exported PDF, but in case the reader supports this feature, the vector-based original file will be shown, not the bitmap.</p></div>
+<div class="paragraph"><p>Here is a simple hand-crafted star in a PDF file, as it looked initially:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://farm3.staticflickr.com/2915/33163219680_30f63b4a82_z.jpg" alt="https://farm3.staticflickr.com/2915/33163219680_30f63b4a82_z.jpg" />
+</div>
+</div>
+<div class="paragraph"><p>This is how it looks after LibreOffice&#8217;s PDF export learned to emit reference XObjects:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://farm4.staticflickr.com/3933/33547029485_4f487bb26c_z.jpg" alt="https://farm4.staticflickr.com/3933/33547029485_4f487bb26c_z.jpg" />
+</div>
+</div>
+<div class="paragraph"><p>All this is available in LibreOffice master, towards 5.4.</p></div>
+
+
+<script src="https://apis.google.com/js/plusone.js"></script>
+<g:plus action="share"></g:plus>
+
+<!-- Disqus comments -->
+<h1 id="comment-header">Comments</h1>
+<div id="disqus_thread"></div>
+<script type="text/javascript" src="//vmiklos.disqus.com/embed.js">
+	var disqus_developer = 1;
+</script>
+<noscript>
+  <p><a href="http://disqus.com/?ref_noscript=vmiklos">View the discussion thread.</a></p>
+</noscript>
+
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

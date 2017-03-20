@@ -5,6 +5,58 @@
         <description></description>
         <link>https://vmiklos.hu/blog/</link>
         <item>
+            <title>LibreOffice now uses pdfium to render inserted PDF images</title>
+            <description>&lt;div class="paragraph"&gt;&lt;p&gt;pdfium is the rendering library used in Chromium&amp;#8217;s pdf viewer. It&amp;#8217;s based on
+the foxit pdf renderer and its rendering quality is much better compared to
+the pre-existing "convert PDF to ODG, then to an image" code when it comes to
+just viewing a PDF file.  First, thanks to &lt;a href="http://www.pmg.be/"&gt;PMG&lt;/a&gt; who made
+this work possible.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Let&amp;#8217;s look at a few samples that compare the old pdfimport rendering result
+and the new pdfium-based one. One important feature is that embedded fonts are
+handled. This is how this inserted PDF looked like previously:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://farm4.staticflickr.com/3727/33163219940_3a2a3278a0_o.png" alt="https://farm4.staticflickr.com/3727/33163219940_3a2a3278a0_o.png" /&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Compare it with the new result:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://farm3.staticflickr.com/2927/33547029855_92c1a5150d_o.png" alt="https://farm3.staticflickr.com/2927/33547029855_92c1a5150d_o.png" /&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Now let&amp;#8217;s see the front page of a magazine, you can see 3 unexpected artifacts:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://farm4.staticflickr.com/3952/33163219890_c4ae5cf153_z.jpg" alt="https://farm4.staticflickr.com/3952/33163219890_c4ae5cf153_z.jpg" /&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;New result:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://farm3.staticflickr.com/2809/33547029645_de7cbcd800_z.jpg" alt="https://farm3.staticflickr.com/2809/33547029645_de7cbcd800_z.jpg" /&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Finally a problem with pdfium was that LibreOffice got bitmaps from it, so in case you re-exported to PDF, the quality of these PDF images were worse than in the original PDF file. The PDF specification has a &lt;em&gt;reference XObject&lt;/em&gt; feature that helps in this case: it allows the PDF export to still write the bitmap to the exported PDF, but in case the reader supports this feature, the vector-based original file will be shown, not the bitmap.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Here is a simple hand-crafted star in a PDF file, as it looked initially:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://farm3.staticflickr.com/2915/33163219680_30f63b4a82_z.jpg" alt="https://farm3.staticflickr.com/2915/33163219680_30f63b4a82_z.jpg" /&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;This is how it looks after LibreOffice&amp;#8217;s PDF export learned to emit reference XObjects:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://farm4.staticflickr.com/3933/33547029485_4f487bb26c_z.jpg" alt="https://farm4.staticflickr.com/3933/33547029485_4f487bb26c_z.jpg" /&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;All this is available in LibreOffice master, towards 5.4.&lt;/p&gt;&lt;/div&gt;
+</description>
+            <link>https://vmiklos.hu/blog/pdfium.html</link>
+            <pubDate>Mon, 20 Mar 2017 10:00:22 +0100</pubDate>
+            <guid isPermaLink="false">https://vmiklos.hu/blog/pdfium.html</guid>
+        </item>
+        <item>
             <title>ECDSA support in xmlsec-nss, bundled by LibreOffice</title>
             <description>&lt;div class="paragraph"&gt;&lt;p&gt;Last month a
 &lt;a href="https://bugs.documentfoundation.org/show_bug.cgi?id=105983"&gt;LibreOffice
@@ -683,32 +735,6 @@ hopefully the design team can help there.&lt;/p&gt;&lt;/div&gt;
             <link>https://vmiklos.hu/blog/sw-smallcaps-toolbar-button.html</link>
             <pubDate>Mon, 03 Oct 2016 08:25:39 +0200</pubDate>
             <guid isPermaLink="false">https://vmiklos.hu/blog/sw-smallcaps-toolbar-button.html</guid>
-        </item>
-        <item>
-            <title>Using clang-based tools beyond loplugin LOCon lightning talk</title>
-            <description>&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;a class="image" href="https://speakerd.s3.amazonaws.com/presentations/731c4bb5277c48d8acbba1c867ece856/clang-locon-brno-2k16.pdf"&gt;
-&lt;img src="https://farm9.staticflickr.com/8074/29618061316_308e7e9b30_z.jpg" alt="https://farm9.staticflickr.com/8074/29618061316_308e7e9b30_z.jpg" /&gt;
-&lt;/a&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;The last week I gave a
-&lt;a href="http://conference.libreoffice.org/2016/the-program/sept-9th-friday/"&gt;Using
-clang-based tools beyond loplugin&lt;/a&gt; lightning talk at LibreOffice conference
-2016, on the last day. Click on the image to see all the slides.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;If you&amp;#8217;re a vim or emacs user and you work with C++11 code, you probably
-want to have a look at
-&lt;a href="http://clang.llvm.org/extra/clang-rename.html"&gt;clang-rename&lt;/a&gt;,
-&lt;a href="http://clang.llvm.org/extra/include-fixer.html"&gt;include-fixer&lt;/a&gt; and some editor
-plugin exposing the power of libclang (like
-&lt;a href="https://valloric.github.io/YouCompleteMe/"&gt;YouCompleteMe&lt;/a&gt; or
-&lt;a href="https://github.com/libclang-vim/libclang-vim"&gt;libclang-vim&lt;/a&gt;), sometimes these
-are really helpful.&lt;/p&gt;&lt;/div&gt;
-</description>
-            <link>https://vmiklos.hu/blog/clang-locon-brno-2k16.html</link>
-            <pubDate>Tue, 13 Sep 2016 14:37:44 +0200</pubDate>
-            <guid isPermaLink="false">https://vmiklos.hu/blog/clang-locon-brno-2k16.html</guid>
         </item>
     </channel>
 </rss>

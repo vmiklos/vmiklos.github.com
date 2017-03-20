@@ -5,6 +5,58 @@
         <description></description>
         <link>https://vmiklos.hu/blog/</link>
         <item>
+            <title>LibreOffice now uses pdfium to render inserted PDF images</title>
+            <description>&lt;div class="paragraph"&gt;&lt;p&gt;pdfium is the rendering library used in Chromium&amp;#8217;s pdf viewer. It&amp;#8217;s based on
+the foxit pdf renderer and its rendering quality is much better compared to
+the pre-existing "convert PDF to ODG, then to an image" code when it comes to
+just viewing a PDF file.  First, thanks to &lt;a href="http://www.pmg.be/"&gt;PMG&lt;/a&gt; who made
+this work possible.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Let&amp;#8217;s look at a few samples that compare the old pdfimport rendering result
+and the new pdfium-based one. One important feature is that embedded fonts are
+handled. This is how this inserted PDF looked like previously:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://farm4.staticflickr.com/3727/33163219940_3a2a3278a0_o.png" alt="https://farm4.staticflickr.com/3727/33163219940_3a2a3278a0_o.png" /&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Compare it with the new result:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://farm3.staticflickr.com/2927/33547029855_92c1a5150d_o.png" alt="https://farm3.staticflickr.com/2927/33547029855_92c1a5150d_o.png" /&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Now let&amp;#8217;s see the front page of a magazine, you can see 3 unexpected artifacts:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://farm4.staticflickr.com/3952/33163219890_c4ae5cf153_z.jpg" alt="https://farm4.staticflickr.com/3952/33163219890_c4ae5cf153_z.jpg" /&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;New result:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://farm3.staticflickr.com/2809/33547029645_de7cbcd800_z.jpg" alt="https://farm3.staticflickr.com/2809/33547029645_de7cbcd800_z.jpg" /&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Finally a problem with pdfium was that LibreOffice got bitmaps from it, so in case you re-exported to PDF, the quality of these PDF images were worse than in the original PDF file. The PDF specification has a &lt;em&gt;reference XObject&lt;/em&gt; feature that helps in this case: it allows the PDF export to still write the bitmap to the exported PDF, but in case the reader supports this feature, the vector-based original file will be shown, not the bitmap.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Here is a simple hand-crafted star in a PDF file, as it looked initially:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://farm3.staticflickr.com/2915/33163219680_30f63b4a82_z.jpg" alt="https://farm3.staticflickr.com/2915/33163219680_30f63b4a82_z.jpg" /&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;This is how it looks after LibreOffice&amp;#8217;s PDF export learned to emit reference XObjects:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://farm4.staticflickr.com/3933/33547029485_4f487bb26c_z.jpg" alt="https://farm4.staticflickr.com/3933/33547029485_4f487bb26c_z.jpg" /&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;All this is available in LibreOffice master, towards 5.4.&lt;/p&gt;&lt;/div&gt;
+</description>
+            <link>https://vmiklos.hu/blog/pdfium.html</link>
+            <pubDate>Mon, 20 Mar 2017 10:00:22 +0100</pubDate>
+            <guid isPermaLink="false">https://vmiklos.hu/blog/pdfium.html</guid>
+        </item>
+        <item>
             <title>ECDSA support in xmlsec-nss, bundled by LibreOffice</title>
             <description>&lt;div class="paragraph"&gt;&lt;p&gt;Last month a
 &lt;a href="https://bugs.documentfoundation.org/show_bug.cgi?id=105983"&gt;LibreOffice
@@ -666,38 +718,6 @@ to avoid &lt;code&gt;--disable-pdfimport&lt;/code&gt;, otherwise this feature ca
             <link>https://vmiklos.hu/blog/lo-insert-pdf-image.html</link>
             <pubDate>Mon, 10 Oct 2016 08:31:37 +0200</pubDate>
             <guid isPermaLink="false">https://vmiklos.hu/blog/lo-insert-pdf-image.html</guid>
-        </item>
-        <item>
-            <title>Small capitals toolbar button in LibreOffice Writer</title>
-            <description>&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;a class="image" href="https://farm6.staticflickr.com/5235/29982452081_a9ca103f2f_o.png"&gt;
-&lt;img src="https://farm6.staticflickr.com/5235/29982452081_187d99dece_z.jpg" alt="https://farm6.staticflickr.com/5235/29982452081_187d99dece_z.jpg" /&gt;
-&lt;/a&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;It was &lt;a href="https://bugs.documentfoundation.org/show_bug.cgi?id=87914"&gt;requested&lt;/a&gt; to
-be able to set the small capitals character property via a toolbar button in
-Writer, which was indeed not possible. Not only the toolbar button wasn&amp;#8217;t
-there, but the underlying UNO command was also missing (which you can use e.g.
-from a macro to format the current selection).&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;So my
-&lt;a href="https://gerrit.libreoffice.org/gitweb?p=core.git;a=commit;h=d378cd2f766eeb1fd1c98f62c9ae6b5b59fd00f1"&gt;commit&lt;/a&gt;
-added a simple set of icons to the galaxy theme for the new toolbar button,
-defined the new UNO command for Writer text and added it to Writer&amp;#8217;s text
-object bar, next to the upper case and lower case buttons (hidden by default).
-One difference from those buttons is that those buttons perform a
-transliteration, while this one really just sets a character property, you can
-easily undo the property later if needed.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Wrt. other icon themes, see
-&lt;a href="http://listarchives.libreoffice.org/global/design/msg07922.html"&gt;this mail&lt;/a&gt;,
-hopefully the design team can help there.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;As usual, you can try this right now with a 5.3
-&lt;a href="http://dev-builds.libreoffice.org/daily/master/"&gt;daily build&lt;/a&gt;. :-)&lt;/p&gt;&lt;/div&gt;
-</description>
-            <link>https://vmiklos.hu/blog/sw-smallcaps-toolbar-button.html</link>
-            <pubDate>Mon, 03 Oct 2016 08:25:39 +0200</pubDate>
-            <guid isPermaLink="false">https://vmiklos.hu/blog/sw-smallcaps-toolbar-button.html</guid>
         </item>
     </channel>
 </rss>
