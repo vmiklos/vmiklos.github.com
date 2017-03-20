@@ -1,0 +1,43 @@
+title: LibreOffice now uses pdfium to render inserted PDF images
+author: Miklos
+tags: en, libreoffice
+pubdate: 2017-03-20T10:00:22Z
+<<<
+
+pdfium is the rendering library used in Chromium's pdf viewer. It's based on
+the foxit pdf renderer and its rendering quality is much better compared to
+the pre-existing "convert PDF to ODG, then to an image" code when it comes to
+just viewing a PDF file.  First, thanks to http://www.pmg.be/[PMG] who made
+this work possible.
+
+Let's look at a few samples that compare the old pdfimport rendering result
+and the new pdfium-based one. One important feature is that embedded fonts are
+handled. This is how this inserted PDF looked like previously:
+
+image::https://farm4.staticflickr.com/3727/33163219940_3a2a3278a0_o.png[align="center"]
+
+Compare it with the new result:
+
+image::https://farm3.staticflickr.com/2927/33547029855_92c1a5150d_o.png[align="center"]
+
+Now let's see the front page of a magazine, you can see 3 unexpected artifacts:
+
+image::https://farm4.staticflickr.com/3952/33163219890_c4ae5cf153_z.jpg[align="center"]
+
+New result:
+
+image::https://farm3.staticflickr.com/2809/33547029645_de7cbcd800_z.jpg[align="center"]
+
+Finally a problem with pdfium was that LibreOffice got bitmaps from it, so in case you re-exported to PDF, the quality of these PDF images were worse than in the original PDF file. The PDF specification has a 'reference XObject' feature that helps in this case: it allows the PDF export to still write the bitmap to the exported PDF, but in case the reader supports this feature, the vector-based original file will be shown, not the bitmap.
+
+Here is a simple hand-crafted star in a PDF file, as it looked initially:
+
+image::https://farm3.staticflickr.com/2915/33163219680_30f63b4a82_z.jpg[align="center"]
+
+This is how it looks after LibreOffice's PDF export learned to emit reference XObjects:
+
+image::https://farm4.staticflickr.com/3933/33547029485_4f487bb26c_z.jpg[align="center"]
+
+All this is available in LibreOffice master, towards 5.4.
+
+// vim: ft=asciidoc
