@@ -5,6 +5,95 @@
         <description></description>
         <link>https://vmiklos.hu/blog/</link>
         <item>
+            <title>Improved rountrip of PDF images in LibreOffice</title>
+            <description>&lt;div class="paragraph"&gt;&lt;p&gt;This is a follow-up to the &lt;a href="/blog/pdfium.html"&gt;previous post&lt;/a&gt; that
+described how it is now possible to insert a PDF file as an image in
+LibreOffice and export that back to PDF, while keeping the original PDF
+contents. I&amp;#8217;ve recently improved this feature so the resulting file is smaller
+and the vector image can be viewed in more viewers. First, thanks to
+&lt;a href="http://www.pmg.be/"&gt;PMG&lt;/a&gt; who made this work possible.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Let&amp;#8217;s look at the previously mentioned &lt;em&gt;front page of a magazine&lt;/em&gt; sample when
+it&amp;#8217;s viewed in okular. (A KDE pdf viewer, i.e. something that&amp;#8217;s not Adobe
+Acrobat). The previously used &lt;em&gt;reference XObject&lt;/em&gt; PDF markup is not handled by
+it, so the bitmap fallback was displayed:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://farm4.staticflickr.com/3947/34031939205_5315a9afb4_o.png" alt="https://farm4.staticflickr.com/3947/34031939205_5315a9afb4_o.png" /&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Compare it with the new result:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://farm3.staticflickr.com/2830/34031939425_24b9a126ee_o.png" alt="https://farm3.staticflickr.com/2830/34031939425_24b9a126ee_o.png" /&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Notice the sharp text in the first line.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Also the size of this sample is smaller now, since we don&amp;#8217;t write a large
+bitmap, and the not shown second page of the PDF image: 2 385 984 &amp;#8594; 1 605 558
+bytes (about one third of the output is avoided).&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Both techniques have pros and cons, here is a summary:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+The &lt;em&gt;reference XObject&lt;/em&gt; approach allows you to preserve the full PDF data of
+  the image: if it was of multiple pages, even that. Also, the LibreOffice
+  code for this is simple: we just preserve a byte array&amp;#8201;&amp;#8212;&amp;#8201;that can hardly go
+  wrong. The problem is that no non-Acrobat PDF viewer implements this,
+  including e.g. your printer most probably.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+The new approach uses the tokenizer I originally wrote for
+  &lt;a href="/blog/pdf-sign.html"&gt;PDF signature verification&lt;/a&gt; purposes&amp;#8201;&amp;#8212;&amp;#8201;it extracts
+  the page stream of the first page from the original file and uses it as a
+  form XObject in the export result&amp;#8201;&amp;#8212;&amp;#8201;this is the same as how e.g. &lt;code&gt;pdfcrop&lt;/code&gt;
+  works.  This markup is handled by almost all PDF viewers and also the
+  resulting size is smaller, since the data of other pages is dropped and there
+  is no fallback bitmap. The problem may be that this is a much more complex
+  scenario, so it may go wrong (as usual, bugreports
+  &lt;a href="https://bugs.documentfoundation.org/enter_bug.cgi?product=LibreOffice"&gt;are
+  welcome&lt;/a&gt;).
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Nevertheless, the new approach seems like a much better default, so
+LibreOffice no longer writes the &lt;em&gt;reference XObject&lt;/em&gt; approach unless you
+explicitly request it in the PDF export dialog.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Some perhaps interesting details:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+PDF page streams may be provided by multiple objects, but form XObjects must
+  have a single stream, so it we handle the case when different parts of the
+  page stream are compressed in different ways.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+LibreOffice writes PDF-1.4 by default, in case you insert a PDF image that
+  uses PDF-1.5+, we use pdfium to downgrade that markup to 1.4, and only
+  then insert it.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+Copying the page stream of the image is not enough, we also recursively copy
+  all referenced objects from the source PDF, while rewriting all contained
+  references, since the objects IDs in the old and new files differ. We also
+  take care of proper scoping of named references in the resource dictionary, so
+  you can use this feature recursively (insert a document as a PDF image, even
+  if that document itself contains PDF images already). :-)
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;All this is available in LibreOffice master, towards 5.4.&lt;/p&gt;&lt;/div&gt;
+</description>
+            <link>https://vmiklos.hu/blog/pdf-image-rountrip.html</link>
+            <pubDate>Tue, 18 Apr 2017 09:13:23 +0200</pubDate>
+            <guid isPermaLink="false">https://vmiklos.hu/blog/pdf-image-rountrip.html</guid>
+        </item>
+        <item>
             <title>LibreOffice now uses pdfium to render inserted PDF images</title>
             <description>&lt;div class="paragraph"&gt;&lt;p&gt;pdfium is the rendering library used in Chromium&amp;#8217;s pdf viewer. It&amp;#8217;s based on
 the foxit pdf renderer and its rendering quality is much better compared to
@@ -703,38 +792,6 @@ to avoid &lt;code&gt;--disable-pdfimport&lt;/code&gt;, otherwise this feature ca
             <link>https://vmiklos.hu/blog/lo-insert-pdf-image.html</link>
             <pubDate>Mon, 10 Oct 2016 08:31:37 +0200</pubDate>
             <guid isPermaLink="false">https://vmiklos.hu/blog/lo-insert-pdf-image.html</guid>
-        </item>
-        <item>
-            <title>Small capitals toolbar button in LibreOffice Writer</title>
-            <description>&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;a class="image" href="https://farm6.staticflickr.com/5235/29982452081_a9ca103f2f_o.png"&gt;
-&lt;img src="https://farm6.staticflickr.com/5235/29982452081_187d99dece_z.jpg" alt="https://farm6.staticflickr.com/5235/29982452081_187d99dece_z.jpg" /&gt;
-&lt;/a&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;It was &lt;a href="https://bugs.documentfoundation.org/show_bug.cgi?id=87914"&gt;requested&lt;/a&gt; to
-be able to set the small capitals character property via a toolbar button in
-Writer, which was indeed not possible. Not only the toolbar button wasn&amp;#8217;t
-there, but the underlying UNO command was also missing (which you can use e.g.
-from a macro to format the current selection).&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;So my
-&lt;a href="https://gerrit.libreoffice.org/gitweb?p=core.git;a=commit;h=d378cd2f766eeb1fd1c98f62c9ae6b5b59fd00f1"&gt;commit&lt;/a&gt;
-added a simple set of icons to the galaxy theme for the new toolbar button,
-defined the new UNO command for Writer text and added it to Writer&amp;#8217;s text
-object bar, next to the upper case and lower case buttons (hidden by default).
-One difference from those buttons is that those buttons perform a
-transliteration, while this one really just sets a character property, you can
-easily undo the property later if needed.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Wrt. other icon themes, see
-&lt;a href="http://listarchives.libreoffice.org/global/design/msg07922.html"&gt;this mail&lt;/a&gt;,
-hopefully the design team can help there.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;As usual, you can try this right now with a 5.3
-&lt;a href="http://dev-builds.libreoffice.org/daily/master/"&gt;daily build&lt;/a&gt;. :-)&lt;/p&gt;&lt;/div&gt;
-</description>
-            <link>https://vmiklos.hu/blog/sw-smallcaps-toolbar-button.html</link>
-            <pubDate>Mon, 03 Oct 2016 08:25:39 +0200</pubDate>
-            <guid isPermaLink="false">https://vmiklos.hu/blog/sw-smallcaps-toolbar-button.html</guid>
         </item>
     </channel>
 </rss>

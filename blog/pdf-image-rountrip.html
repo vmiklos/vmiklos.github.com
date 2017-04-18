@@ -1,0 +1,172 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.5.3" />
+<meta name="description" content="Improved rountrip of PDF images in LibreOffice - Miklos' blog" />
+<meta name="keywords" content="vmiklos, libereoffice, swig, git, python, hacking, bitlbee" />
+<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="/blog/index.rss" />
+<link rel="stylesheet" href="/blog/xhtml11.css" type="text/css" />
+<link rel="stylesheet" href="/blog/xhtml11-quirks.css" type="text/css" />
+<link rel="stylesheet" href="/blog/layout.css" type="text/css" />
+<title>Improved rountrip of PDF images in LibreOffice</title>
+<!-- google analytics start -->
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-24726997-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<!-- google analytics end -->
+</head>
+<body>
+<div id="layout-banner-box">
+<div id="layout-banner">
+  <div id="layout-title">vmiklos.hu</div>
+  <div id="layout-description">shameless self-promoting website</div>
+</div>
+</div>
+<div id="layout-menu-box">
+<div id="layout-menu">
+  <div>&#187;<a href="/">Root</a></div>
+  <div>&#187;<a href="/blog/">Rejourn root</a></div>
+  <div>&#187;<a href="http://planet.documentfoundation.org/">LibreOffice Community Blogs</a></div>
+  <div>
+    Search:<br/>
+    <form action="http://www.google.com/cse" id="cse-search-box" target="_blank">
+    <input type="hidden" name="cx" value="007336731492173318056:bik8fqvatno"/><input type="hidden" name="ie" value="UTF-8"/><input type="text" name="q" size="15"/><br/>
+    <input type="submit" name="sa" value="&#187;"/></form>
+  </div>
+</div>
+
+</div>
+<div id="layout-content-box">
+<div id="layout-content">
+<div id="header">
+	<h1>Improved rountrip of PDF images in LibreOffice</h1>
+</div>
+<div id="preamble">
+<div class="sectionbody">
+
+<!-- Single entry -->
+<div class="verseblock">
+<div class="verseblock-content">Posted <span class="timeago" title="2017-04-18T09:13:23Z">Tuesday, 18 April 2017</span> by Miklos<br />
+    Tags:
+    <a href="tags/en.html">en</a>
+    <a href="tags/libreoffice.html">libreoffice</a>
+<div class="nav-previous"><a href="/blog/pdfium.html" rel="prev"><span class="meta-nav">&larr;</span> LibreOffice now uses pdfium to render inserted PDF images</a></div>
+</div>
+</div>
+
+<!-- Body -->
+<div class="paragraph"><p>This is a follow-up to the <a href="/blog/pdfium.html">previous post</a> that
+described how it is now possible to insert a PDF file as an image in
+LibreOffice and export that back to PDF, while keeping the original PDF
+contents. I&#8217;ve recently improved this feature so the resulting file is smaller
+and the vector image can be viewed in more viewers. First, thanks to
+<a href="http://www.pmg.be/">PMG</a> who made this work possible.</p></div>
+<div class="paragraph"><p>Let&#8217;s look at the previously mentioned <em>front page of a magazine</em> sample when
+it&#8217;s viewed in okular. (A KDE pdf viewer, i.e. something that&#8217;s not Adobe
+Acrobat). The previously used <em>reference XObject</em> PDF markup is not handled by
+it, so the bitmap fallback was displayed:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://farm4.staticflickr.com/3947/34031939205_5315a9afb4_o.png" alt="https://farm4.staticflickr.com/3947/34031939205_5315a9afb4_o.png" />
+</div>
+</div>
+<div class="paragraph"><p>Compare it with the new result:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://farm3.staticflickr.com/2830/34031939425_24b9a126ee_o.png" alt="https://farm3.staticflickr.com/2830/34031939425_24b9a126ee_o.png" />
+</div>
+</div>
+<div class="paragraph"><p>Notice the sharp text in the first line.</p></div>
+<div class="paragraph"><p>Also the size of this sample is smaller now, since we don&#8217;t write a large
+bitmap, and the not shown second page of the PDF image: 2 385 984 &#8594; 1 605 558
+bytes (about one third of the output is avoided).</p></div>
+<div class="paragraph"><p>Both techniques have pros and cons, here is a summary:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+The <em>reference XObject</em> approach allows you to preserve the full PDF data of
+  the image: if it was of multiple pages, even that. Also, the LibreOffice
+  code for this is simple: we just preserve a byte array&#8201;&#8212;&#8201;that can hardly go
+  wrong. The problem is that no non-Acrobat PDF viewer implements this,
+  including e.g. your printer most probably.
+</p>
+</li>
+<li>
+<p>
+The new approach uses the tokenizer I originally wrote for
+  <a href="/blog/pdf-sign.html">PDF signature verification</a> purposes&#8201;&#8212;&#8201;it extracts
+  the page stream of the first page from the original file and uses it as a
+  form XObject in the export result&#8201;&#8212;&#8201;this is the same as how e.g. <code>pdfcrop</code>
+  works.  This markup is handled by almost all PDF viewers and also the
+  resulting size is smaller, since the data of other pages is dropped and there
+  is no fallback bitmap. The problem may be that this is a much more complex
+  scenario, so it may go wrong (as usual, bugreports
+  <a href="https://bugs.documentfoundation.org/enter_bug.cgi?product=LibreOffice">are
+  welcome</a>).
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Nevertheless, the new approach seems like a much better default, so
+LibreOffice no longer writes the <em>reference XObject</em> approach unless you
+explicitly request it in the PDF export dialog.</p></div>
+<div class="paragraph"><p>Some perhaps interesting details:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+PDF page streams may be provided by multiple objects, but form XObjects must
+  have a single stream, so it we handle the case when different parts of the
+  page stream are compressed in different ways.
+</p>
+</li>
+<li>
+<p>
+LibreOffice writes PDF-1.4 by default, in case you insert a PDF image that
+  uses PDF-1.5+, we use pdfium to downgrade that markup to 1.4, and only
+  then insert it.
+</p>
+</li>
+<li>
+<p>
+Copying the page stream of the image is not enough, we also recursively copy
+  all referenced objects from the source PDF, while rewriting all contained
+  references, since the objects IDs in the old and new files differ. We also
+  take care of proper scoping of named references in the resource dictionary, so
+  you can use this feature recursively (insert a document as a PDF image, even
+  if that document itself contains PDF images already). :-)
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>All this is available in LibreOffice master, towards 5.4.</p></div>
+
+
+<script src="https://apis.google.com/js/plusone.js"></script>
+<g:plus action="share"></g:plus>
+
+<!-- Disqus comments -->
+<h1 id="comment-header">Comments</h1>
+<div id="disqus_thread"></div>
+<script type="text/javascript" src="//vmiklos.disqus.com/embed.js">
+	var disqus_developer = 1;
+</script>
+<noscript>
+  <p><a href="http://disqus.com/?ref_noscript=vmiklos">View the discussion thread.</a></p>
+</noscript>
+
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>
