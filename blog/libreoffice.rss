@@ -5,6 +5,45 @@
         <description></description>
         <link>https://vmiklos.hu/blog/</link>
         <item>
+            <title>xmlsec improvements in LibreOffice 5.4</title>
+            <description>&lt;div class="paragraph"&gt;&lt;p&gt;This post summarizes the plumbing work around ODF/OOXML digital signatures
+that I did on LibreOffice master after the 5.3 branch-off up to now. The big
+thing is the
+&lt;a href="https://gerrit.libreoffice.org/gitweb?p=core.git;a=commit;h=ad319fdfcaaa6092ea1ff76935e088c5122e0d2e"&gt;integration&lt;/a&gt;
+of the libxmlsec 1.2.24 release. Among other things, this contains 2 larger
+changes that I contributed upstream triggered by the needs of LibreOffice:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+The &lt;a href="/blog/xmlsec-nss-ecdsa.html"&gt;ECDSA-SHA256 feature&lt;/a&gt; is something I
+  already mentioned, but I did not bother to backport the SHA1 and the SHA256
+  part, so those now arrived to LibreOffice as well.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+xmlsec&amp;#8217;s &lt;code&gt;XMLSEC_KEYINFO_FLAGS_X509DATA_DONT_VERIFY_CERTS&lt;/code&gt; flag (while
+  verifying signatures) was there, but its behavior was not clear (neither
+  for &lt;a href="https://github.com/lsh123/xmlsec/pull/78"&gt;nss&lt;/a&gt; nor for
+  &lt;a href="https://github.com/lsh123/xmlsec/pull/79"&gt;mscrypto&lt;/a&gt;). I&amp;#8217;ve changed it to be in
+  sync what you have in other commands to avoid certificate validation (like
+  &lt;code&gt;wget -k&lt;/code&gt; or &lt;code&gt;curl -k&lt;/code&gt;), which means as a next step there will be one less
+  xmlsec patch in LibreOffice that prevents us from using xmlsec from the system
+  on Linux. (Adding tests also detected that in the nss case not using that flag
+  also didn&amp;#8217;t do verification by accident, this is now fixed as well.)
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;After the release I also noticed that creating signatures on Windows
+&lt;a href="https://www.aleksey.com/pipermail/xmlsec/2017/010143.html"&gt;was broken&lt;/a&gt;, this is
+now fixed on xmlsec master and also backported to LibreOffice.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;All this is available in LibreOffice master, towards 5.4.&lt;/p&gt;&lt;/div&gt;
+</description>
+            <link>https://vmiklos.hu/blog/xmlsec-lo54.html</link>
+            <pubDate>Wed, 17 May 2017 09:09:59 +0200</pubDate>
+            <guid isPermaLink="false">https://vmiklos.hu/blog/xmlsec-lo54.html</guid>
+        </item>
+        <item>
             <title>Improved rountrip of PDF images in LibreOffice</title>
             <description>&lt;div class="paragraph"&gt;&lt;p&gt;This is a follow-up to the &lt;a href="/blog/pdfium.html"&gt;previous post&lt;/a&gt; that
 described how it is now possible to insert a PDF file as an image in
@@ -697,101 +736,6 @@ developers.&lt;/p&gt;&lt;/div&gt;
             <link>https://vmiklos.hu/blog/devtalks.html</link>
             <pubDate>Sat, 12 Nov 2016 16:22:19 +0100</pubDate>
             <guid isPermaLink="false">https://vmiklos.hu/blog/devtalks.html</guid>
-        </item>
-        <item>
-            <title>Insert PDF as image in LibreOffice 5.3</title>
-            <description>&lt;div class="sect1"&gt;
-&lt;h2 id="_results"&gt;Results&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;LibreOffice 5.3 will add one more vector-based format that can be inserted as
-an image into documents: PDF. First, thanks to &lt;a href="http://pmg.be/"&gt;PMG&lt;/a&gt; who made
-this work possible. On the user interface you can now select PDF files when
-you choose e.g. Writer&amp;#8217;s Insert &amp;#8594; Image option:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;a class="image" href="https://farm6.staticflickr.com/5552/29583461353_0c2da79c8e_o.png"&gt;
-&lt;img src="https://farm6.staticflickr.com/5552/29583461353_02fc75dd7f_z.jpg" alt="https://farm6.staticflickr.com/5552/29583461353_02fc75dd7f_z.jpg" /&gt;
-&lt;/a&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;The first page of the PDF document will be shown, which is handy if the PDF
-file is basically used as a vector image format.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Similarly to the SVG feature, the original vector image is stored in the
-document, but when saving to ODF, a replacement PNG file is also generated to
-be backwards compatible with older ODF readers. The image context menu &amp;#8594; Save
-menu item allows to extract your original PDF data from the image, too:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;a class="image" href="https://farm8.staticflickr.com/7501/30098334712_569ebbe55b_o.png"&gt;
-&lt;img src="https://farm8.staticflickr.com/7501/30098334712_535e16ea05_z.jpg" alt="https://farm8.staticflickr.com/7501/30098334712_535e16ea05_z.jpg" /&gt;
-&lt;/a&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;And that&amp;#8217;s it, as long as you save your document in ODF, your PDF-as-an-image
-will be kept without loosing any data. As usual, you can try this right now
-with a 5.3 &lt;a href="http://dev-builds.libreoffice.org/daily/master/"&gt;daily build&lt;/a&gt;. :-)&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;However, if you&amp;#8217;re interested in how this is implemented, keep reading&amp;#8230;&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_document_model"&gt;Document model&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;The PDF image in the document model is really similar to how SVG is handled,
-next to &lt;code&gt;Graphic::getSvgData()&lt;/code&gt;, there is now a &lt;code&gt;Graphic::getPdfData()&lt;/code&gt;.
-This new member function exposes the original PDF data, otherwise the Graphic
-is just a metafile.&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_uno_api"&gt;UNO API&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;The &lt;code&gt;ReplacementGraphicURL&lt;/code&gt; property of the image at an UNO level now exposes
-the generated metafile for PDF images. This is implemented for both Draw and
-Writer images, and is used by the ODF export filter.&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_layout"&gt;Layout&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;When the &lt;code&gt;Graphic&lt;/code&gt; instance is rendered, the layout knows nothing about the
-PDF data attached to the object, only parses the generated metafile. This way
-the display of the PDF image works out of the box.&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_filters"&gt;Filters&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;First I&amp;#8217;ve implemented a
-&lt;a href="https://gerrit.libreoffice.org/gitweb?p=core.git;a=commit;h=878a860dff10bd91491d6c9f2f4e2308bfe4f0b2"&gt;PDF
-import-as-graphic filter&lt;/a&gt;, then the
-&lt;a href="https://gerrit.libreoffice.org/gitweb?p=core.git;a=commit;h=7d76bb251e0c88ff17282a33b801a5d17a434af5"&gt;export
-equivalent of it&lt;/a&gt;. As you can see, the PDF import-as-graphic filter isn&amp;#8217;t too
-complicated, it completely reuses the existing "import PDF into Draw" filter,
-it simply copies the first page of the resulting document model as a metafile.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Second, once the graphic filters were working, I&amp;#8217;ve also
-&lt;a href="https://gerrit.libreoffice.org/gitweb?p=core.git;a=commitdiff;h=d1c346ba848c54424d6ffa88df7a5ff6a3717430"&gt;improved&lt;/a&gt;
-the ODF import to recognize PDF data&amp;#8201;&amp;#8212;&amp;#8201;the export side needed no explicit
-work, once the &lt;code&gt;ReplacementGraphicURL&lt;/code&gt; bits were in place.&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_tests"&gt;Tests&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;As mentioned above, the Draw and the Writer image implementation is separate,
-so first I&amp;#8217;ve added tests for ODT files in the &lt;code&gt;testEmbeddedPdf&lt;/code&gt; of
-&lt;code&gt;CppunitTest_sw_odfexport&lt;/code&gt;, and then &lt;code&gt;SdExportTest::testEmbeddedPdf()&lt;/code&gt; to
-cover ODP files (and other ODF formats).  Second, the PDF part of the graphic
-swapout/in code has a dedicated test in &lt;code&gt;GraphicObjectTest::testPdf()&lt;/code&gt;, and
-the UI&amp;#8217;s "Save original PDF" feature has a new
-&lt;code&gt;XOutdevTest::testPdfGraphicExport()&lt;/code&gt; test.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Oh, and if you intent to test this manually in a self-created build, make sure
-to avoid &lt;code&gt;--disable-pdfimport&lt;/code&gt;, otherwise this feature can&amp;#8217;t work. ;-)&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-</description>
-            <link>https://vmiklos.hu/blog/lo-insert-pdf-image.html</link>
-            <pubDate>Mon, 10 Oct 2016 08:31:37 +0200</pubDate>
-            <guid isPermaLink="false">https://vmiklos.hu/blog/lo-insert-pdf-image.html</guid>
         </item>
     </channel>
 </rss>
