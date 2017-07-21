@@ -5,6 +5,36 @@
         <description></description>
         <link>https://vmiklos.hu/blog/</link>
         <item>
+            <title>Mail merge Writer data source</title>
+            <description>&lt;div class="paragraph"&gt;&lt;p&gt;If you ever used the
+&lt;a href="https://help.libreoffice.org/Writer/Mail_Merge_Wizard"&gt;mail merge wizard&lt;/a&gt; with
+data sources, then you know how it works: it typically needs some kind of data
+source (e.g. a Calc spreadsheet), a Writer document containing the email or
+letter (that contains fields), and then mail merge can generate the
+personalized documents for you.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;In case you have an existing document where you already have such data in a
+Writer table, you had to somehow transfer it to one of the formats for which
+there was a data source driver, and then you could use it inside mail merge.
+I&amp;#8217;ve now added a dedicated Writer driver in &lt;code&gt;connectivity/&lt;/code&gt;, so picking up
+data directly from Writer tables is now possible.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;If you are interested how this looks like, here is a demo (click on the image
+to see the video):&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;a class="image" href="https://youtu.be/thasVxlF5Fo"&gt;
+&lt;img src="https://farm5.staticflickr.com/4298/36060010585_900a1c7f1c_o.png" alt="https://farm5.staticflickr.com/4298/36060010585_900a1c7f1c_o.png" /&gt;
+&lt;/a&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;That&amp;#8217;s it for now&amp;#8201;&amp;#8212;&amp;#8201;as usual the commits are in master, so you can try this
+right now with a 6.0 &lt;a href="http://dev-builds.libreoffice.org/daily/master/"&gt;daily
+build&lt;/a&gt;. :-)&lt;/p&gt;&lt;/div&gt;
+</description>
+            <link>https://vmiklos.hu/blog/mail-merge-writer-data-source.html</link>
+            <pubDate>Fri, 21 Jul 2017 09:46:11 +0200</pubDate>
+            <guid isPermaLink="false">https://vmiklos.hu/blog/mail-merge-writer-data-source.html</guid>
+        </item>
+        <item>
             <title>Using LibreOffice with xmlsec from the system</title>
             <description>&lt;div class="paragraph"&gt;&lt;p&gt;LibreOffice uses a number of external libraries, and most of them can be
 configured to use a bundled version or a system version. libxmlsec was an
@@ -577,108 +607,6 @@ and then LibreOffice can get rid of the patch after the next xmlsec release.&lt;
             <link>https://vmiklos.hu/blog/hackweek-2016.html</link>
             <pubDate>Tue, 17 Jan 2017 09:50:25 +0100</pubDate>
             <guid isPermaLink="false">https://vmiklos.hu/blog/hackweek-2016.html</guid>
-        </item>
-        <item>
-            <title>PAdES support for PDF files in LibreOffice</title>
-            <description>&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;a class="image" href="https://farm1.staticflickr.com/443/30919530974_5c5b3cb3a9_o.png"&gt;
-&lt;img src="https://farm1.staticflickr.com/443/30919530974_7ab3d132d8_z.jpg" alt="https://farm1.staticflickr.com/443/30919530974_7ab3d132d8_z.jpg" /&gt;
-&lt;/a&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Building on top of the previously mentioned
-&lt;a href="/blog/pdf-sign.html"&gt;signing of existing PDF files&lt;/a&gt; work, one
-more PDF feature coming in LibreOffice 5.3 is initial support for the PDF
-Advanced Electronic Signatures (&lt;a href="https://en.wikipedia.org/wiki/PAdES"&gt;PAdES&lt;/a&gt;)
-standard.  First, thanks to the Dutch Ministry of Defense in cooperation with
-&lt;a href="http://nouenoff.nl/"&gt;Nou&amp;amp;Off&lt;/a&gt; who made this work possible.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_results"&gt;Results&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;PAdES is an extension of the ISO PDF signature with additional constraints, so
-that it conforms to the requirements of the European eIDAS regulation, which
-in turns makes it more likely that your signed PDF document will be actually
-legally binding in many EU member states.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;The best way to check if LibreOffice produces such PDF signatures is to use a
-PAdES validator. So far I found two of them:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="http://signatures-conformance-checker.etsi.org/"&gt;the ETSI one&lt;/a&gt;, which
-  requires registration and is a free web service
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://github.com/esig/dss/"&gt;Digital Signature Service&lt;/a&gt; (DSS), which is an
-  open source tool you can build, use and modify locally
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;As it can be seen above, the PDF signature produced by LibreOffice 5.3 by
-default conforms to the PAdES baseline spec.&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_implementation"&gt;Implementation&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;I implemented the followings in LO to make this happen:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-PDF signature creation now defaults to the stronger SHA-256 (instead of the
-  previously used weaker SHA-1), and the PDF verifier understands SHA-256
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-the PDF signature creation now embeds the signing certificate into the
-  PKCS#7 signature blob in the PDF, so the verifier can check not only the key
-  used for the signing, but the actual certificate as well
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-the PDF signature import can now detect if such an embedded signing
-  certificate is present in the signature or not
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-&lt;div class="admonitionblock"&gt;
-&lt;table&gt;&lt;tr&gt;
-&lt;td class="icon"&gt;
-&lt;div class="title"&gt;Note&lt;/div&gt;
-&lt;/td&gt;
-&lt;td class="content"&gt;Don&amp;#8217;t get confused, LO does signature verification (checks if the digest
-matches and validates the certificate) and now shows if the signing
-certificate is present in the signature or not, but it doesn&amp;#8217;t do more than
-that, the above mentioned DSS tool is still superior when it comes to do a
-full validation of a PAdES signature.&lt;/td&gt;
-&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;As usual, this works both with NSS and MS CryptoAPI. In the previous post I
-noted that one task was easier with CryptoAPI. Here I experienced the
-opposite: when writing the signing certificate hash, I could provide templates
-to NSS on how the ASN.1 encoding of it should happen, and NSS did the actual
-ASN.1 DER encoding for me. In the CryptoAPI case there is no such API, so I
-had to do this encoding manually (see
-&lt;a href="https://github.com/LibreOffice/core/blob/master/vcl/source/gdi/pdfwriter_impl.cxx#L6202"&gt;CreateSigningCertificateAttribute()&lt;/a&gt;),
-which is obviously much more complicated.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Another pain was that the DSS tool doesn&amp;#8217;t really separate the validation of
-the signature itself and of the certificate. The above screenshot was created
-using a non-self-signed certificate, hence the unclear part in the signed-by
-row.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;If you want to try these out yourself, get a
-&lt;a href="http://dev-builds.libreoffice.org/daily/"&gt;daily build&lt;/a&gt; and feel free to play
-with it. This work is part of both &lt;code&gt;master&lt;/code&gt; or &lt;code&gt;libreoffice-5-3&lt;/code&gt;, so those
-builds are of interest. Happy testing! :-)&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-</description>
-            <link>https://vmiklos.hu/blog/pades.html</link>
-            <pubDate>Tue, 20 Dec 2016 12:08:37 +0100</pubDate>
-            <guid isPermaLink="false">https://vmiklos.hu/blog/pades.html</guid>
         </item>
     </channel>
 </rss>
