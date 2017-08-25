@@ -1,0 +1,74 @@
+title: Split sections inside tables for LibreOffice Writer
+author: Miklos
+tags: en, libreoffice
+pubdate: 2017-08-25T11:09:40Z
+<<<
+
+Tables and sections in LibreOffice Writer are both containers, and in some
+cases it makes sense to have sections inside tables or tables inside sections.
+(For example you can mark a group of paragraphs as read-only by including them
+in a read-only section.) Tables in sections, split over multiple pages was
+already working, but now it's possible to have sections in tables split over
+multiple pages as well.
+
+First, thanks https://www.escriba.de/en/[Escriba] who made this work possible.
+
+There were 3 parts of this work, you can read some details about them below.
+
+== Split of multi-line paragraphs
+
+The first goal was to handle the split of multi-line paragraphs inside
+sections inside tables. Initially this looked like this:
+
+image::https://farm5.staticflickr.com/4430/35957293074_cfeabe6a51_o.png[align="center"]
+
+After commit
+http://cgit.freedesktop.org/libreoffice/core/commit/?id=f991b842addddeada6dc45c4054deeca5aa7f17b[tdf#108524
+sw: attempt to split section frames inside table cells] it looks like this:
+
+image::https://farm5.staticflickr.com/4393/35957293014_ae8f210542_o.png[align="center"]
+
+== Split of one-liner paragraphs
+
+Technically this is a situation different to the previous one, as split
+paragraphs have a master (first) frame and one or more follow (non-first)
+frames; and the previous stage only addressed the move of follow frames to
+next pages. Initially such a document looked like this:
+
+image::https://farm5.staticflickr.com/4360/35957292924_2af502ffc7_o.png[align="center"]
+
+After commit
+http://cgit.freedesktop.org/libreoffice/core/commit/?id=f8a76d218305a56d15b82b9dac4fafa558872780[tdf#108524
+sw: split section frames inside table cells, non-split text frames] it is laid
+out as expected:
+
+image::https://farm5.staticflickr.com/4399/35957292834_dc2ce35f85_o.png[align="center"]
+
+== Merge a split section
+
+The last piece was moving paragraphs back to previous pages when there is
+again space for them. Initially we did not use the newly available space:
+
+image::https://farm5.staticflickr.com/4432/35982835413_99a65febe2_o.png[align="center"]
+
+After commit
+http://cgit.freedesktop.org/libreoffice/core/commit/?id=850bf99e7d1abcf2e0cce731b6715f87420d0ee6[tdf#108524
+sw: handle sections inside tables in SwFrame::GetPrevSctLeaf()] the paragraph
+is moved back properly:
+
+image::https://farm5.staticflickr.com/4408/35982835283_1c2002254b_o.png[align="center"]
+
+== One more thing...
+
+Given that all code changes affect how sections in tables are handled in a
+parent frame in general (which is a body frame in all the above pictures), the
+same changes are also usable for other parent containers as well, e.g. linked
+TextFrames. Here is how that looks like:
+
+image::https://farm5.staticflickr.com/4342/35982835353_25d609548d_o.png[align="center"]
+
+That's it for now -- as usual the commits are in master, so you can try this
+right now with a 6.0 http://dev-builds.libreoffice.org/daily/master/[daily
+build]. :-)
+
+// vim: ft=asciidoc
