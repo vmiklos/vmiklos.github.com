@@ -5,6 +5,72 @@
         <description></description>
         <link>https://vmiklos.hu/blog/</link>
         <item>
+            <title>pdfium path segment API for LibreOffice's test needs</title>
+            <description>&lt;div class="paragraph"&gt;&lt;p&gt;I recently
+&lt;a href="https://cgit.freedesktop.org/libreoffice/core/commit/?id=da705eff910f512623a689aaf28604270fb8f1c4"&gt;fixed&lt;/a&gt;
+&lt;a href="https://bugs.documentfoundation.org/show_bug.cgi?id=108963"&gt;tdf#108963&lt;/a&gt;, which
+is a PDF export bug&amp;#8201;&amp;#8212;&amp;#8201;in case of highlighted and rotated text in e.g.
+Impress, the highlight rectangle in the PDF export was not rotated.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;This is how the export result looked like:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://farm5.staticflickr.com/4341/37305427601_db1cfb697e_o.png" alt="https://farm5.staticflickr.com/4341/37305427601_db1cfb697e_o.png" /&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;And this is how it now looks like, after fixing:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://farm5.staticflickr.com/4453/37258379126_b20fd39655_o.png" alt="https://farm5.staticflickr.com/4453/37258379126_b20fd39655_o.png" /&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;For a long time the PDF export filter had no tests at all; the current
+approach I introduced is that we parse the PDF export result with pdfium,
+which is an excellent PDF rendering library (I covered it in general in an
+&lt;a href="https://vmiklos.hu/blog/pdfium.html"&gt;earlier post&lt;/a&gt;).&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;So given that pdfium knows how that rectangle looks like, we should be able to
+query the details of it from a test as well, correct? It depends. Yes, it&amp;#8217;s
+possible technically, but no, most of the pdfium functionality is actually not
+exposed at its &lt;a href="https://pdfium.googlesource.com/pdfium/+/master/public/"&gt;public API&lt;/a&gt;.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The current situation is that one could use &lt;code&gt;FPDF_LoadMemDocument()&lt;/code&gt;,
+&lt;code&gt;FPDF_LoadPage()&lt;/code&gt; to get access to a PDF page, then &lt;code&gt;FPDFPage_CountObject()&lt;/code&gt; and
+&lt;code&gt;FPDFPage_GetObject()&lt;/code&gt; to iterate over objects on a page. We can filter for the
+relevant object by using &lt;code&gt;FPDFPageObj_GetType()&lt;/code&gt; and &lt;code&gt;FPDFPath_GetFillColor()&lt;/code&gt;,
+that will give us the only path that has a yellow fill color.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;But getting more info about the geometry of the path isn&amp;#8217;t really possible. As
+a workaround I went with &lt;code&gt;FPDFPageObj_GetBounds()&lt;/code&gt; for the test, but wouldn&amp;#8217;t it
+be nicer to get the individual segments (the objects that are the children of
+a path) and then get coordinates and other properties of a segment? This is
+what the recent API I added to pdfium now does. It provides the followings:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;code&gt;FPDFPath_CountSegments()&lt;/code&gt; gives you the number of segments of a path
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;code&gt;FPDFPath_GetPathSegment()&lt;/code&gt; gives you a given segment, via a new
+  &lt;code&gt;FPDF_PATHSEGMENT&lt;/code&gt; opaque type
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+you can use &lt;code&gt;FPDFPathSegment_GetPoint()&lt;/code&gt; to get the coordinates,
+  &lt;code&gt;FPDFPathSegment_GetType()&lt;/code&gt; to get the type (move to, line to, etc) and
+  &lt;code&gt;FPDFPathSegment_GetClose()&lt;/code&gt; to see if the segment closes the current subpath
+  of the path (or not)
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;This means that after the next pdfium update in LibreOffice, PDF export tests
+can nicely assert these properties of paths instead of hacky &lt;em&gt;bounding box
+should be larger after rotation&lt;/em&gt; assertions.&lt;/p&gt;&lt;/div&gt;
+</description>
+            <link>https://vmiklos.hu/blog/pdfium-pathsegment.html</link>
+            <pubDate>Mon, 25 Sep 2017 12:05:45 +0200</pubDate>
+            <guid isPermaLink="false">https://vmiklos.hu/blog/pdfium-pathsegment.html</guid>
+        </item>
+        <item>
             <title>Split sections inside tables for LibreOffice Writer</title>
             <description>&lt;div class="paragraph"&gt;&lt;p&gt;Tables and sections in LibreOffice Writer are both containers, and in some
 cases it makes sense to have sections inside tables or tables inside sections.
@@ -545,73 +611,6 @@ fixed!&lt;/p&gt;&lt;/div&gt;
             <link>https://vmiklos.hu/blog/okular-linked-video.html</link>
             <pubDate>Mon, 27 Feb 2017 09:53:06 +0100</pubDate>
             <guid isPermaLink="false">https://vmiklos.hu/blog/okular-linked-video.html</guid>
-        </item>
-        <item>
-            <title>LibreOffice PDF export now supports videos</title>
-            <description>&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;img src="https://farm4.staticflickr.com/3924/32549564340_4d0990cfa4_o.png" alt="https://farm4.staticflickr.com/3924/32549564340_4d0990cfa4_o.png" /&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;PDF supports screen annotations, which means it&amp;#8217;s possible to play embedded
-and linked videos on top of a static image. Given that LibreOffice also
-supports videos, it made sense to add support for this in our PDF export
-filter. First, thanks to &lt;a href="http://www.pmg.be/"&gt;PMG&lt;/a&gt; who made this work possible. This
-is currently added for Writer and Impress.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_linked_videos"&gt;Linked videos&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Linked videos are the situation when the video is not part of the document
-itself, but it&amp;#8217;s located somewhere else, e.g. a http:// location. This is
-helpful if you want to email around a PDF file, and want to avoid sending
-large files when it has video content.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;&lt;a href="https://bugs.documentfoundation.org/show_bug.cgi?id=104841"&gt;tdf#104841&lt;/a&gt; is
-about this situation, first I added support for
-&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=9d6a749bc664f1876c938afb9eba4adc9f6ee09a"&gt;linked
-videos in Impress&lt;/a&gt;, then
-&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=81aef113056270ce65f9dee5fe31b6f60617973c"&gt;also&lt;/a&gt;
-&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=0e71075bb7379af318482bb3abbb630c58db9ec9"&gt;in
-Writer&lt;/a&gt;.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;The result can be played using Adobe Acrobat Reader&amp;#8201;&amp;#8212;&amp;#8201;for some reason okular
-on Linux is a bit confused about http:// URLs, wants to convert them to
-relative ones, and then fails as of today.&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_embedded_videos"&gt;Embedded videos&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;img src="https://farm3.staticflickr.com/2666/32115175413_ec6f64243a_z.jpg" alt="https://farm3.staticflickr.com/2666/32115175413_ec6f64243a_z.jpg" /&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;&lt;a href="https://bugs.documentfoundation.org/show_bug.cgi?id=105093"&gt;tdf#105093&lt;/a&gt; is the
-embedded video case, this is handy in case you want to create an entirely
-self-contained PDF, where even the video content is inside the PDF file as an
-embedded file.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;After
-&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=4ad249af88d15f2c8a09f0721a59d82718fcc201"&gt;Impress
-support&lt;/a&gt; (and a trick around
-&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=64d80d22851a38eb3f320f4e2b2bdf875da4d8b4"&gt;Draw
-vs Impress shapes&lt;/a&gt;) the
-&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=46153bdcf2f89e88607dfb0dd0003108796424e9"&gt;Writer
-part&lt;/a&gt; wasn&amp;#8217;t too complicated.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Regarding the situation around various video containers and codecs, the above
-code is quite agnostic. :-) On the LibreOffice side all we require is to be
-able to extract a key frame from the video to provide a preview image, so e.g.
-on Linux the support depends on what gstreamer plugins you have installed. The
-video content is written to the PDF file as-is, so again if it will work in
-the PDF reader is up to the reader&amp;#8217;s codec support. On Linux e.g. okular uses
-vlc for video playback, so the range of supported formats is quite wide.  The
-same is true on Windows, what I personally tested is LibreOffice&amp;#8217;s VLC backend
-and the embedded QuickTime player in Acrobat Reader.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;All of this is available on LibreOffice master towards 5.4.&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-</description>
-            <link>https://vmiklos.hu/blog/pdf-video-export.html</link>
-            <pubDate>Thu, 16 Feb 2017 09:38:45 +0100</pubDate>
-            <guid isPermaLink="false">https://vmiklos.hu/blog/pdf-video-export.html</guid>
         </item>
     </channel>
 </rss>
