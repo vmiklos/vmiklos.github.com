@@ -1,0 +1,55 @@
+title: pdfium path segment API for LibreOffice's test needs
+author: Miklos
+tags: en, libreoffice
+pubdate: 2017-09-25T12:05:45Z
+<<<
+
+I recently
+https://cgit.freedesktop.org/libreoffice/core/commit/?id=da705eff910f512623a689aaf28604270fb8f1c4[fixed]
+https://bugs.documentfoundation.org/show_bug.cgi?id=108963[tdf#108963], which
+is a PDF export bug -- in case of highlighted and rotated text in e.g.
+Impress, the highlight rectangle in the PDF export was not rotated.
+
+This is how the export result looked like:
+
+image::https://farm5.staticflickr.com/4341/37305427601_db1cfb697e_o.png[align="center"]
+
+And this is how it now looks like, after fixing:
+
+image::https://farm5.staticflickr.com/4453/37258379126_b20fd39655_o.png[align="center"]
+
+For a long time the PDF export filter had no tests at all; the current
+approach I introduced is that we parse the PDF export result with pdfium,
+which is an excellent PDF rendering library (I covered it in general in an
+https://vmiklos.hu/blog/pdfium.html[earlier post]).
+
+So given that pdfium knows how that rectangle looks like, we should be able to
+query the details of it from a test as well, correct? It depends. Yes, it's
+possible technically, but no, most of the pdfium functionality is actually not
+exposed at its https://pdfium.googlesource.com/pdfium/+/master/public/[public API].
+
+The current situation is that one could use `FPDF_LoadMemDocument()`,
+`FPDF_LoadPage()` to get access to a PDF page, then `FPDFPage_CountObject()` and
+`FPDFPage_GetObject()` to iterate over objects on a page. We can filter for the
+relevant object by using `FPDFPageObj_GetType()` and `FPDFPath_GetFillColor()`,
+that will give us the only path that has a yellow fill color.
+
+But getting more info about the geometry of the path isn't really possible. As
+a workaround I went with `FPDFPageObj_GetBounds()` for the test, but wouldn't it
+be nicer to get the individual segments (the objects that are the children of
+a path) and then get coordinates and other properties of a segment? This is
+what the recent API I added to pdfium now does. It provides the followings:
+
+- `FPDFPath_CountSegments()` gives you the number of segments of a path
+- `FPDFPath_GetPathSegment()` gives you a given segment, via a new
+  `FPDF_PATHSEGMENT` opaque type
+- you can use `FPDFPathSegment_GetPoint()` to get the coordinates,
+  `FPDFPathSegment_GetType()` to get the type (move to, line to, etc) and
+  `FPDFPathSegment_GetClose()` to see if the segment closes the current subpath
+  of the path (or not)
+
+This means that after the next pdfium update in LibreOffice, PDF export tests
+can nicely assert these properties of paths instead of hacky 'bounding box
+should be larger after rotation' assertions.
+
+// vim: ft=asciidoc
