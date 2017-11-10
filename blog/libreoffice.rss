@@ -5,6 +5,116 @@
         <description></description>
         <link>https://vmiklos.hu/blog/</link>
         <item>
+            <title>Basic EPUB3 export in Libreoffice</title>
+            <description>&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://farm5.staticflickr.com/4577/37588898064_117dc4a933_o_d.png" alt="https://farm5.staticflickr.com/4577/37588898064_117dc4a933_o_d.png" /&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;I worked on a new EPUB3 export filter in LibreOffice recently. First, thanks
+to the Dutch Ministry of Defense in cooperation with
+&lt;a href="http://nouenoff.nl/"&gt;Nou&amp;amp;Off&lt;/a&gt; who made this work possible.  The current state
+is that basic features work nicely to the extent that the filter is probably
+usable for most books (they typically mostly have just text with minimal
+formatting), so this post aims to explain the architecture, how the various
+pieces fit together.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The above picture shows the building blocks. The idea is that nominally EPUB
+is a complete export filter, but instead of doing all the work, we offload
+various sub-tasks to other modules:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+First we invoke the existing (flat) ODT export, so we can work with ODF
+  instead of with the UNO API directly. This will be useful in the next step.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+Then we feed the SAX events from the ODT export to a new librevenge text
+  export. Given that the librevenge API is really close to ODF (and xmloff/
+  has quite some code to map the UNO API to ODF), here it pays off to work with
+  ODF and not with the UNO API directly.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+The librevenge text export talks to a librevenge generator, which is
+  David Tardon&amp;#8217;s excellent
+  &lt;a href="https://sourceforge.net/projects/libepubgen/"&gt;libepubgen&lt;/a&gt; in this case.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+Finally libepubgen calls back to LibreOffice, and our package code does the
+  ZIP compression.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The setup is a bit complicated, but it has a number of advantages:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+Instead of reinventing the wheel, LO and DLP now shares code, libepubgen is
+  now a dependency of LibreOffice.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+libepubgen doesn&amp;#8217;t bring its own ZIP writer code, it can nicely reuse our
+  existing one.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+This is a great opportunity to finally write an ODT&amp;#8594;librevenge bridge, so
+  other DLP-based export libs can be added in the future (e.g.
+  &lt;a href="https://sourceforge.net/projects/librvngabw/"&gt;librvngabw&lt;/a&gt;).
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+If we ever want to export to EPUB from Draw/Impress, libepubgen will help us
+  there as well.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;As a user, here is a list of features you can expect working:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+plan text should work fine (formatting may be lost, but not content should
+  be fine)
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+table of contents, as long as you properly use headings or you separate
+  chapters by page breaks
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+export options: EPUB3 vs EPUB2, split on headings vs page breaks
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+basic set of character and paragraph properties should work
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;During development I regularly used
+&lt;a href="https://github.com/IDPF/epubcheck"&gt;epubcheck&lt;/a&gt;, so hopefully the export result
+is usually valid.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;All this is available in master (towards LibreOffice 6.0), or you can grab a
+&lt;a href="http://dev-builds.libreoffice.org/daily/master/"&gt;daily build&lt;/a&gt; and try it out
+right now. :-)&lt;/p&gt;&lt;/div&gt;
+</description>
+            <link>https://vmiklos.hu/blog/basic-epub3-export.html</link>
+            <pubDate>Fri, 10 Nov 2017 11:19:36 +0100</pubDate>
+            <guid isPermaLink="false">https://vmiklos.hu/blog/basic-epub3-export.html</guid>
+        </item>
+        <item>
             <title>A year in LibreOffice’s PDF support LOCon talk</title>
             <description>&lt;div class="imageblock" style="text-align:center;"&gt;
 &lt;div class="content"&gt;
@@ -511,58 +621,6 @@ Copying the page stream of the image is not enough, we also recursively copy
             <link>https://vmiklos.hu/blog/pdf-image-rountrip.html</link>
             <pubDate>Tue, 18 Apr 2017 09:13:23 +0200</pubDate>
             <guid isPermaLink="false">https://vmiklos.hu/blog/pdf-image-rountrip.html</guid>
-        </item>
-        <item>
-            <title>LibreOffice now uses pdfium to render inserted PDF images</title>
-            <description>&lt;div class="paragraph"&gt;&lt;p&gt;pdfium is the rendering library used in Chromium&amp;#8217;s pdf viewer. It&amp;#8217;s based on
-the foxit pdf renderer and its rendering quality is much better compared to
-the pre-existing "convert PDF to ODG, then to an image" code when it comes to
-just viewing a PDF file.  First, thanks to &lt;a href="http://www.pmg.be/"&gt;PMG&lt;/a&gt; who made
-this work possible.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Let&amp;#8217;s look at a few samples that compare the old pdfimport rendering result
-and the new pdfium-based one. One important feature is that embedded fonts are
-handled. This is how this inserted PDF looked like previously:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;img src="https://farm4.staticflickr.com/3727/33163219940_3a2a3278a0_o.png" alt="https://farm4.staticflickr.com/3727/33163219940_3a2a3278a0_o.png" /&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Compare it with the new result:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;img src="https://farm3.staticflickr.com/2927/33547029855_92c1a5150d_o.png" alt="https://farm3.staticflickr.com/2927/33547029855_92c1a5150d_o.png" /&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Now let&amp;#8217;s see the front page of a magazine, you can see 4 unexpected artifacts:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;img src="https://farm4.staticflickr.com/3948/33563793222_8a6b8e8a6b_z.jpg" alt="https://farm4.staticflickr.com/3948/33563793222_8a6b8e8a6b_z.jpg" /&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;New result:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;img src="https://farm3.staticflickr.com/2809/33547029645_de7cbcd800_z.jpg" alt="https://farm3.staticflickr.com/2809/33547029645_de7cbcd800_z.jpg" /&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Finally a problem with pdfium was that LibreOffice got bitmaps from it, so in case you re-exported to PDF, the quality of these PDF images were worse than in the original PDF file. The PDF specification has a &lt;em&gt;reference XObject&lt;/em&gt; feature that helps in this case: it allows the PDF export to still write the bitmap to the exported PDF, but in case the reader supports this feature, the vector-based original file will be shown, not the bitmap.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Here is a simple hand-crafted star in a PDF file, as it looked initially:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;img src="https://farm3.staticflickr.com/2915/33163219680_30f63b4a82_z.jpg" alt="https://farm3.staticflickr.com/2915/33163219680_30f63b4a82_z.jpg" /&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;This is how it looks after LibreOffice&amp;#8217;s PDF export learned to emit reference XObjects:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;img src="https://farm4.staticflickr.com/3933/33547029485_4f487bb26c_z.jpg" alt="https://farm4.staticflickr.com/3933/33547029485_4f487bb26c_z.jpg" /&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;All this is available in LibreOffice master, towards 5.4.&lt;/p&gt;&lt;/div&gt;
-</description>
-            <link>https://vmiklos.hu/blog/pdfium.html</link>
-            <pubDate>Mon, 20 Mar 2017 10:00:22 +0100</pubDate>
-            <guid isPermaLink="false">https://vmiklos.hu/blog/pdfium.html</guid>
         </item>
     </channel>
 </rss>
