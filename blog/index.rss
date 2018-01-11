@@ -5,6 +5,110 @@
         <description></description>
         <link>https://vmiklos.hu/blog/</link>
         <item>
+            <title>EPUB3 export improvements in Libreoffice Writer, take two</title>
+            <description>&lt;div class="paragraph"&gt;&lt;p&gt;I worked on improving the EPUB3 export filter in LibreOffice further recently.
+First, thanks to the Dutch Ministry of Defense in cooperation with
+&lt;a href="http://nouenoff.nl/"&gt;Nou&amp;amp;Off&lt;/a&gt; who made this work possible. Since the
+&lt;a href="/blog/epub3-improvements.html"&gt;previous blog entry&lt;/a&gt; there have been a
+number of improvements around a next set of topics.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_cover_images"&gt;Cover images&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://farm5.staticflickr.com/4760/38920770224_b247fa89c4_o.png" alt="https://farm5.staticflickr.com/4760/38920770224_b247fa89c4_o.png" /&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;It is now possible to specify a cover image for the exported EPUB file. Given
+that a cover image is not naturally part of the Writer document model, I introduced the
+concept of a media directory for the EPUB export. The media directory is a
+directory next to the source file, with the &amp;lt;file name without extension&amp;gt;
+name. If that directory contains a file named cover.svg (or .gif, .jpg, .png),
+the exporter will automatically use it. Otherwise you can customize this
+default.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The picture shows two EPUB files in &lt;a href="http://readium.org/"&gt;Readium&lt;/a&gt; with
+different cover images.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_improved_metadata_support"&gt;Improved metadata support&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://farm5.staticflickr.com/4603/38920770174_142950782e_o.png" alt="https://farm5.staticflickr.com/4603/38920770174_142950782e_o.png" /&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;It&amp;#8217;s quite frequent that you are technically author of a document, but the
+logical author of the book is somebody else. Same for the date of the book,
+and so on. So the EPUB export dialog now has support for overwriting the
+defaults coming from the Writer document model. For mass-conversion of
+documents it&amp;#8217;s possible to place a &amp;lt;file name without extension&amp;gt;.xmp file in
+the media directory and &lt;a href="http://www.adobe.com/devnet/xmp.html"&gt;XMP&lt;/a&gt; metadata
+from that file will also overwrite metadata coming from the document model.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The picture shows the extended EPUB export options dialog.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_footnotes_and_image_popups"&gt;Footnotes and image popups&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://farm5.staticflickr.com/4612/38920770144_e90e2a8e92_o.png" alt="https://farm5.staticflickr.com/4612/38920770144_e90e2a8e92_o.png" /&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;I&amp;#8217;ve added support for footnotes. As a special case of this, image popups on
+images and text is now supported. This works by placing a relative link on a
+text portion or on an image, and placing an image with the same name (e.g. in
+high resolution) in the media directory. In this case the EPUB export will
+bundle the image from the media directory inside the EPUB file and clicking on
+the text or image will open the bundled image in a popup (or in some other
+container, depending on how your reader interprets footnotes).&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The picture shows such a popup in Microsoft Edge.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_fixed_layout"&gt;Fixed layout&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://farm5.staticflickr.com/4604/38920770104_108465bda1_o.png" alt="https://farm5.staticflickr.com/4604/38920770104_108465bda1_o.png" /&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The EPUB3 fixed layout is quite similar to PDF, just it is built on top of
+XHTML and SVG. Possible use-cases for this can be:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+exporting a document where presenting the content as reflowable text would
+  be misleading (e.g. comic books), but the publisher of the book only works
+  with EPUB (reflowable or fixed layout, but no PDF)
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+printing (again, in case for some reason you want to avoid PDF)
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;These might be very specific situations, but luckily supporting them is not
+too complex. I implemented an approach very similar to the PDF export, where
+we export individual pages of the Writer document&amp;#8217;s layout as a metafile, and
+then consume that&amp;#8201;&amp;#8212;&amp;#8201;this time with the SVG export. Building on top of the
+existing Writer layout and SVG export means the hard work is really done by
+these components, the EPUB fixed layout export just puts these together.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The picture shows a Writer document with a table of contents containing page
+numbers, a header and a footer in Readium.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;All this is available in master (towards LibreOffice 6.1), or you can grab a
+&lt;a href="http://dev-builds.libreoffice.org/daily/master/"&gt;daily build&lt;/a&gt; and try it out
+right now. :-)&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+            <link>https://vmiklos.hu/blog/epub3-improvements-2.html</link>
+            <pubDate>Thu, 11 Jan 2018 12:25:02 +0100</pubDate>
+            <guid isPermaLink="false">https://vmiklos.hu/blog/epub3-improvements-2.html</guid>
+        </item>
+        <item>
             <title>EPUB3 export improvements in Libreoffice Writer</title>
             <description>&lt;div class="paragraph"&gt;&lt;p&gt;I worked on improving the EPUB3 export filter in LibreOffice recently. First, thanks
 to the Dutch Ministry of Defense in cooperation with
@@ -613,45 +717,6 @@ mentors to come! :-)&lt;/p&gt;&lt;/div&gt;
             <link>https://vmiklos.hu/blog/perugia2017.html</link>
             <pubDate>Wed, 31 May 2017 10:07:43 +0200</pubDate>
             <guid isPermaLink="false">https://vmiklos.hu/blog/perugia2017.html</guid>
-        </item>
-        <item>
-            <title>xmlsec improvements in LibreOffice 5.4</title>
-            <description>&lt;div class="paragraph"&gt;&lt;p&gt;This post summarizes the plumbing work around ODF/OOXML digital signatures
-that I did on LibreOffice master after the 5.3 branch-off up to now. The big
-thing is the
-&lt;a href="https://gerrit.libreoffice.org/gitweb?p=core.git;a=commit;h=ad319fdfcaaa6092ea1ff76935e088c5122e0d2e"&gt;integration&lt;/a&gt;
-of the libxmlsec 1.2.24 release. Among other things, this contains 2 larger
-changes that I contributed upstream triggered by the needs of LibreOffice:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-The &lt;a href="/blog/xmlsec-nss-ecdsa.html"&gt;ECDSA-SHA256 feature&lt;/a&gt; is something I
-  already mentioned, but I did not bother to backport the SHA1 and the SHA256
-  part, so those now arrived to LibreOffice as well.
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-xmlsec&amp;#8217;s &lt;code&gt;XMLSEC_KEYINFO_FLAGS_X509DATA_DONT_VERIFY_CERTS&lt;/code&gt; flag (while
-  verifying signatures) was there, but its behavior was not clear (neither
-  for &lt;a href="https://github.com/lsh123/xmlsec/pull/78"&gt;nss&lt;/a&gt; nor for
-  &lt;a href="https://github.com/lsh123/xmlsec/pull/79"&gt;mscrypto&lt;/a&gt;). I&amp;#8217;ve changed it to be in
-  sync what you have in other commands to avoid certificate validation (like
-  &lt;code&gt;wget -k&lt;/code&gt; or &lt;code&gt;curl -k&lt;/code&gt;), which means as a next step there will be one less
-  xmlsec patch in LibreOffice that prevents us from using xmlsec from the system
-  on Linux. (Adding tests also detected that in the nss case not using that flag
-  also didn&amp;#8217;t do verification by accident, this is now fixed as well.)
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;After the release I also noticed that creating signatures on Windows
-&lt;a href="https://www.aleksey.com/pipermail/xmlsec/2017/010143.html"&gt;was broken&lt;/a&gt;, this is
-now fixed on xmlsec master and also backported to LibreOffice.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;All this is available in LibreOffice master, towards 5.4.&lt;/p&gt;&lt;/div&gt;
-</description>
-            <link>https://vmiklos.hu/blog/xmlsec-lo54.html</link>
-            <pubDate>Wed, 17 May 2017 09:09:59 +0200</pubDate>
-            <guid isPermaLink="false">https://vmiklos.hu/blog/xmlsec-lo54.html</guid>
         </item>
     </channel>
 </rss>
