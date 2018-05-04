@@ -5,6 +5,40 @@
         <description></description>
         <link>https://vmiklos.hu/blog/</link>
         <item>
+            <title>Lazy reading images from Microsoft formats in LibreOffice</title>
+            <description>&lt;div class="paragraph"&gt;&lt;p&gt;I worked on improving document load performance of Microsoft formats in
+general, and DOC/DOCX in particular in LibreOffice recently. First, thanks to
+&lt;a href="https://www.documentfoundation.org/"&gt;TDF&lt;/a&gt; and users that support the foundation
+by providing donations for funding &lt;a href="https://www.collaboraoffice.com/"&gt;Collabora&lt;/a&gt;
+to make this possible.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;I built on top of the
+&lt;a href="https://tomazvajngerl.blogspot.com/2018/04/improving-image-handling-in-libreoffice.html"&gt;great
+work of Tomaz&lt;/a&gt;, focusing on these secondary, but important formats.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The idea is that if you load an Microsoft binary or OOXML file, it should not
+be necessary to parse all images at load time, it&amp;#8217;s enough to lazy read it
+when we first render e.g. a Writer page containing that image.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The focus here was documents containing large images. I tested with an
+&lt;a href="https://www.theverge.com/2012/1/25/2732264/nasas-64-megapixel-photo-of-earth"&gt;Earth
+photo&lt;/a&gt; of size 8000x8000 pixels from NASA, making little modifications to it,
+so each picture has a different checksum, embedding them into a binary DOC file.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://farm1.staticflickr.com/980/41838412652_c1cbefcfc1_o.png" alt="https://farm1.staticflickr.com/980/41838412652_c1cbefcfc1_o.png" /&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;I measured the time from the &lt;code&gt;soffice&lt;/code&gt; process startup to rendering the first
+page. We defer the work of loading most images now, as you can see on the
+chart. In contrast, we used to decompress all images on file import in the
+past. This means the new cost for e.g. 4 images is 37% of the original.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;All this is available in master (towards LibreOffice 6.1), or you can grab a
+&lt;a href="http://dev-builds.libreoffice.org/daily/master/"&gt;daily build&lt;/a&gt; and try it out
+right now. :-)&lt;/p&gt;&lt;/div&gt;
+</description>
+            <link>https://vmiklos.hu/blog/image-lazy-read.html</link>
+            <pubDate>Fri, 04 May 2018 09:59:00 +0200</pubDate>
+            <guid isPermaLink="false">https://vmiklos.hu/blog/image-lazy-read.html</guid>
+        </item>
+        <item>
             <title>LibreOffice Hamburg Hackfest 2018</title>
             <description>&lt;div style="text-align: center; font-size: 0.6em;"&gt;
 &lt;img src="https://farm1.staticflickr.com/873/27489617988_4c2ce3fd59_z.jpg"/&gt;
@@ -626,102 +660,6 @@ should be larger after rotation&lt;/em&gt; assertions.&lt;/p&gt;&lt;/div&gt;
             <link>https://vmiklos.hu/blog/pdfium-pathsegment.html</link>
             <pubDate>Mon, 25 Sep 2017 12:05:45 +0200</pubDate>
             <guid isPermaLink="false">https://vmiklos.hu/blog/pdfium-pathsegment.html</guid>
-        </item>
-        <item>
-            <title>Split sections inside tables for LibreOffice Writer</title>
-            <description>&lt;div class="paragraph"&gt;&lt;p&gt;Tables and sections in LibreOffice Writer are both containers, and in some
-cases it makes sense to have sections inside tables or tables inside sections.
-(For example you can mark a group of paragraphs as read-only by including them
-in a read-only section.) Tables in sections, split over multiple pages was
-already working, but now it&amp;#8217;s possible to have sections in tables split over
-multiple pages as well.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;First, thanks &lt;a href="https://www.escriba.de/en/"&gt;Escriba&lt;/a&gt; who made this work possible.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;There were 3 parts of this work, you can read some details about them below.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_split_of_multi_line_paragraphs"&gt;Split of multi-line paragraphs&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;The first goal was to handle the split of multi-line paragraphs inside
-sections inside tables. Initially this looked like this:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;img src="https://farm5.staticflickr.com/4430/35957293074_cfeabe6a51_o.png" alt="https://farm5.staticflickr.com/4430/35957293074_cfeabe6a51_o.png" /&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;After commit
-&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=f991b842addddeada6dc45c4054deeca5aa7f17b"&gt;tdf#108524
-sw: attempt to split section frames inside table cells&lt;/a&gt; it looks like this:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;img src="https://farm5.staticflickr.com/4393/35957293014_ae8f210542_o.png" alt="https://farm5.staticflickr.com/4393/35957293014_ae8f210542_o.png" /&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_split_of_one_liner_paragraphs"&gt;Split of one-liner paragraphs&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Technically this is a situation different to the previous one, as split
-paragraphs have a master (first) frame and one or more follow (non-first)
-frames; and the previous stage only addressed the move of follow frames to
-next pages. Initially such a document looked like this:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;img src="https://farm5.staticflickr.com/4360/35957292924_2af502ffc7_o.png" alt="https://farm5.staticflickr.com/4360/35957292924_2af502ffc7_o.png" /&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;After commit
-&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=f8a76d218305a56d15b82b9dac4fafa558872780"&gt;tdf#108524
-sw: split section frames inside table cells, non-split text frames&lt;/a&gt; it is laid
-out as expected:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;img src="https://farm5.staticflickr.com/4399/35957292834_dc2ce35f85_o.png" alt="https://farm5.staticflickr.com/4399/35957292834_dc2ce35f85_o.png" /&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_merge_a_split_section"&gt;Merge a split section&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;The last piece was moving paragraphs back to previous pages when there is
-again space for them. Initially we did not use the newly available space:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;img src="https://farm5.staticflickr.com/4432/35982835413_99a65febe2_o.png" alt="https://farm5.staticflickr.com/4432/35982835413_99a65febe2_o.png" /&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;After commit
-&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=850bf99e7d1abcf2e0cce731b6715f87420d0ee6"&gt;tdf#108524
-sw: handle sections inside tables in SwFrame::GetPrevSctLeaf()&lt;/a&gt; the paragraph
-is moved back properly:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;img src="https://farm5.staticflickr.com/4408/35982835283_1c2002254b_o.png" alt="https://farm5.staticflickr.com/4408/35982835283_1c2002254b_o.png" /&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_one_more_thing_8230"&gt;One more thing&amp;#8230;&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Given that all code changes affect how sections in tables are handled in a
-parent frame in general (which is a body frame in all the above pictures), the
-same changes are also usable for other parent containers as well, e.g. linked
-text frames. Here is how that looks like:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;img src="https://farm5.staticflickr.com/4342/35982835353_25d609548d_o.png" alt="https://farm5.staticflickr.com/4342/35982835353_25d609548d_o.png" /&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;That&amp;#8217;s it for now&amp;#8201;&amp;#8212;&amp;#8201;as usual the commits are in master, so you can try this
-right now with a 6.0 &lt;a href="http://dev-builds.libreoffice.org/daily/master/"&gt;daily
-build&lt;/a&gt;. :-)&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-</description>
-            <link>https://vmiklos.hu/blog/sw-split-section-in-table.html</link>
-            <pubDate>Fri, 25 Aug 2017 11:09:40 +0200</pubDate>
-            <guid isPermaLink="false">https://vmiklos.hu/blog/sw-split-section-in-table.html</guid>
         </item>
     </channel>
 </rss>
