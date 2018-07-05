@@ -4,13 +4,13 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <meta name="generator" content="AsciiDoc 8.5.3" />
-<meta name="description" content="What is Miklos hacking - Tags: xmlsec - Miklos' blog" />
+<meta name="description" content="Improved ECDSA handling in LibreOffice - Miklos' blog" />
 <meta name="keywords" content="vmiklos, libereoffice, swig, git, python, hacking, bitlbee" />
 <link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="/blog/index.rss" />
 <link rel="stylesheet" href="/blog/xhtml11.css" type="text/css" />
 <link rel="stylesheet" href="/blog/xhtml11-quirks.css" type="text/css" />
 <link rel="stylesheet" href="/blog/layout.css" type="text/css" />
-<title>What is Miklos hacking - Tags: xmlsec</title>
+<title>Improved ECDSA handling in LibreOffice</title>
 <!-- google analytics start -->
 <script type="text/javascript">
 
@@ -47,23 +47,28 @@
   </div>
 </div>
 
-
 </div>
 <div id="layout-content-box">
 <div id="layout-content">
 <div id="header">
-	<h1>What is Miklos hacking - Tags: xmlsec</h1>
+	<h1>Improved ECDSA handling in LibreOffice</h1>
 </div>
 <div id="preamble">
 <div class="sectionbody">
 
+<!-- Single entry -->
+<div class="verseblock">
+<div class="verseblock-content">Posted <span class="timeago" title="2018-07-05T09:08:20Z">Thursday, 05 July 2018</span> by Miklos Vajna<br />
+    Tags:
+    <a href="tags/en.html">en</a>
+    <a href="tags/libreoffice.html">libreoffice</a>
+    <a href="tags/xmlsec.html">xmlsec</a>
+<div class="nav-previous"><a href="/blog/reqif-xhtml.html" rel="prev"><span class="meta-nav">&larr;</span> Editing ReqIF-XHTML fragments in LibreOffice Writer</a></div>
+</div>
+</div>
 
-
-
-<!-- Listing -->
-<div class="ulist"><ul>
-<li><p>Thursday, 05 July 2018<br /><a href="/blog/xmlsec-cng-ecsa.html">Improved ECDSA handling in LibreOffice</a>
-</p><p><div class="paragraph"><p>I wrote about ECDSA handling in LibreOffice
+<!-- Body -->
+<div class="paragraph"><p>I wrote about ECDSA handling in LibreOffice
 <a href="https://vmiklos.hu/blog/xmlsec-nss-ecdsa.html">last year</a>, back then the target
 was to be able to verify signatures using the ECDSA algorithm on Linux.</p></div>
 <div class="paragraph"><p>Lots of things happened since then, this post is meant to summarize those
@@ -166,76 +171,7 @@ reasonable driver support on Linux.</p></div>
 <div class="paragraph"><p>All this is available in master (towards LibreOffice 6.2), or you can grab a
 <a href="http://dev-builds.libreoffice.org/daily/master/">daily build</a> and try it out
 right now. :-)</p></div>
-</p><hr/></li>
-<li><p>Monday, 13 March 2017<br /><a href="/blog/xmlsec-nss-ecdsa.html">ECDSA support in xmlsec-nss, bundled by LibreOffice</a>
-</p><p><div class="paragraph"><p>Last month a
-<a href="https://bugs.documentfoundation.org/show_bug.cgi?id=105983">LibreOffice
-bugreport</a> was filed, as the ODF signature created with Hungarian citizen eID
-cards is not something LibreOffice can verify. After a bit of research it
-seemed that LibreOffice and NSS (what we use for crypto work on Linux/macOS)
-is not a problem, but xmlsec&#8217;s NSS backend does not recognize ECDSA keys (RSA
-or DSA keys work fine).</p></div>
-<div class="paragraph"><p>The xmlsec improvements happened in these pull requests:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-<a href="https://github.com/lsh123/xmlsec/pull/81">prepare the xmlsec ECDSA tests</a>, so
-  that they can test not only openssl, but NSS as well
-</p>
-</li>
-<li>
-<p>
-<a href="https://github.com/lsh123/xmlsec/pull/83">add initial ECDSA support</a> (SHA256
-  hashing only)
-</p>
-</li>
-<li>
-<p>
-<a href="https://github.com/lsh123/xmlsec/pull/88">SHA1 support</a>
-</p>
-</li>
-<li>
-<p>
-<a href="https://github.com/lsh123/xmlsec/pull/89">SHA512 support</a>
-</p>
-</li>
-<li>
-<p>
-<a href="https://github.com/lsh123/xmlsec/pull/91">fix read of uninitialized memory</a>
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>After this the xmlsec code looked good enough. I had to request an update of
-the bugdoc in the TDF bug twice, as the signature itself looked also incorrect
-initially:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-an attribute type in the signature that had no official abbreviation was
-  described as "UNDEF" instead of the dotted decimal form
-</p>
-</li>
-<li>
-<p>
-<a href="https://tools.ietf.org/html/rfc3279#section-2.2.3">RFC3279</a> specifies that an
-  ECDSA signature value in general should be ASN1-encoded in general, but
-  <a href="https://tools.ietf.org/html/rfc4050#section-3.3">RFC4050</a> is specific to XML
-  digital signatures and that one says it should <strong>not</strong> be ASN1-encoded. The
-  bugdoc was initially ASN1-encoded.
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>Finally a warning still remains: while trying to parse the text of the
-<code>&lt;X509IssuerName&gt;</code> element, the dotted decimal form is still not parsed (see
-this <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1342137">NSS bugreport</a>). The
-bug is confirmed on the mailing list, but no other progress have been made so
-far.</p></div>
-<div class="paragraph"><p>Oh, and of course: Windows is still untouched, there a bigger problem remains:
-we use CryptoAPI (not CNG) there, and that does not support ECDSA at all.
-Hooray for open-source libs where you can add such support yourself. ;-)</p></div>
-</p><hr/></li>
-</ul></div>
-<a href="/blog/archive.html">more &raquo;</a>
+
 
 </div>
 </div>
