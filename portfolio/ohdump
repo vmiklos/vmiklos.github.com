@@ -60,15 +60,16 @@ class ContentHandler(xml.sax.handler.ContentHandler):
     def endElement(self, name):
         if name == "position":
             self.inPosition = False
-            if int(self.commits) >= 25:
+            if int(self.commits) < 25:
                 # Let's see if this is a good limit to filter out noise.
-                self.outSock.write(".")
-                if self.smallLogoURL:
-                    self.outSock.write(' image:%s["%s"] ' % (self.smallLogoURL, self.projectName))
-                commits = "commit"
-                if self.commits != "1":
-                    commits += "s"
-                self.outSock.write(" %s[%s]: %s[%s %s]\n" % (self.projectHTMLURL, self.projectName, self.HTMLURL, self.commits, commits))
+                self.outSock.write("// ")
+            self.outSock.write(".")
+            if self.smallLogoURL:
+                self.outSock.write(' image:%s["%s"] ' % (self.smallLogoURL, self.projectName))
+            commits = "commit"
+            if self.commits != "1":
+                commits += "s"
+            self.outSock.write(" %s[%s]: %s[%s %s]\n" % (self.projectHTMLURL, self.projectName, self.HTMLURL, self.commits, commits))
             self.smallLogoURL = None
             self.projectHTMLURL = None
             self.projectName = None
