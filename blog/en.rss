@@ -5,6 +5,109 @@
         <description></description>
         <link>https://vmiklos.hu/blog/</link>
         <item>
+            <title>API improvements in LibreOffice</title>
+            <description>&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://farm2.staticflickr.com/1793/43859007612_ca207fed0f_o.png" alt="https://farm2.staticflickr.com/1793/43859007612_ca207fed0f_o.png" /&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;I worked on two small features to extend the public (UNO) API of LibreOffice.
+First, thanks to &lt;a href="https://vector.com/"&gt;Vector&lt;/a&gt; for funding
+&lt;a href="https://www.collaboraoffice.com/"&gt;Collabora&lt;/a&gt; to make this possible.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_aliased_paths_and_text_in_the_png_export_for_draw"&gt;Aliased paths and text in the PNG export for Draw&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The UNO API of Draw allows you to build quite complex and custom shapes, but
+you may want to export the rendered result to a bitmap for testing purposes,
+so you can assert that the actual result matches a reference one.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;One problem in this area is anti-aliasing, which can easily differ between
+machines. Given that normally aliased rendering is ugly, there is now a way to
+enable AA, but disable it just during a single invocation of the PNG exporter.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The above picture shows how the AA result looks like. You could write a Basic
+macro like this to trigger the PNG export from Draw:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="listingblock"&gt;
+&lt;div class="content"&gt;&lt;!-- Generator: GNU source-highlight
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite --&gt;
+&lt;pre&gt;&lt;tt&gt;xExporter &lt;span style="color: #990000"&gt;=&lt;/span&gt; &lt;span style="font-weight: bold"&gt;&lt;span style="color: #000000"&gt;createUnoService&lt;/span&gt;&lt;/span&gt;&lt;span style="color: #990000"&gt;(&lt;/span&gt;&lt;span style="color: #FF0000"&gt;"com.sun.star.drawing.GraphicExportFilter"&lt;/span&gt;&lt;span style="color: #990000"&gt;)&lt;/span&gt;
+xExporter&lt;span style="color: #990000"&gt;.&lt;/span&gt;&lt;span style="font-weight: bold"&gt;&lt;span style="color: #000000"&gt;SetSourceDocument&lt;/span&gt;&lt;/span&gt;&lt;span style="color: #990000"&gt;(&lt;/span&gt;ThisComponent&lt;span style="color: #990000"&gt;.&lt;/span&gt;&lt;span style="font-weight: bold"&gt;&lt;span style="color: #000000"&gt;DrawPages&lt;/span&gt;&lt;/span&gt;&lt;span style="color: #990000"&gt;(&lt;/span&gt;&lt;span style="color: #993399"&gt;0&lt;/span&gt;&lt;span style="color: #990000"&gt;))&lt;/span&gt;
+&lt;span style="font-weight: bold"&gt;&lt;span style="color: #0000FF"&gt;Dim&lt;/span&gt;&lt;/span&gt; &lt;span style="font-weight: bold"&gt;&lt;span style="color: #000000"&gt;aArgs&lt;/span&gt;&lt;/span&gt;&lt;span style="color: #990000"&gt;(&lt;/span&gt;&lt;span style="color: #993399"&gt;1&lt;/span&gt;&lt;span style="color: #990000"&gt;)&lt;/span&gt; As new com&lt;span style="color: #990000"&gt;.&lt;/span&gt;sun&lt;span style="color: #990000"&gt;.&lt;/span&gt;star&lt;span style="color: #990000"&gt;.&lt;/span&gt;beans&lt;span style="color: #990000"&gt;.&lt;/span&gt;PropertyValue
+&lt;span style="font-weight: bold"&gt;&lt;span style="color: #000000"&gt;aArgs&lt;/span&gt;&lt;/span&gt;&lt;span style="color: #990000"&gt;(&lt;/span&gt;&lt;span style="color: #993399"&gt;0&lt;/span&gt;&lt;span style="color: #990000"&gt;).&lt;/span&gt;Name  &lt;span style="color: #990000"&gt;=&lt;/span&gt; &lt;span style="color: #FF0000"&gt;"URL"&lt;/span&gt;
+&lt;span style="font-weight: bold"&gt;&lt;span style="color: #000000"&gt;aArgs&lt;/span&gt;&lt;/span&gt;&lt;span style="color: #990000"&gt;(&lt;/span&gt;&lt;span style="color: #993399"&gt;0&lt;/span&gt;&lt;span style="color: #990000"&gt;).&lt;/span&gt;Value &lt;span style="color: #990000"&gt;=&lt;/span&gt; &lt;span style="color: #FF0000"&gt;"file:///tmp/debug/aa.png"&lt;/span&gt;
+&lt;span style="font-weight: bold"&gt;&lt;span style="color: #000000"&gt;aArgs&lt;/span&gt;&lt;/span&gt;&lt;span style="color: #990000"&gt;(&lt;/span&gt;&lt;span style="color: #993399"&gt;1&lt;/span&gt;&lt;span style="color: #990000"&gt;).&lt;/span&gt;Name  &lt;span style="color: #990000"&gt;=&lt;/span&gt; &lt;span style="color: #FF0000"&gt;"MediaType"&lt;/span&gt;
+&lt;span style="font-weight: bold"&gt;&lt;span style="color: #000000"&gt;aArgs&lt;/span&gt;&lt;/span&gt;&lt;span style="color: #990000"&gt;(&lt;/span&gt;&lt;span style="color: #993399"&gt;1&lt;/span&gt;&lt;span style="color: #990000"&gt;).&lt;/span&gt;Value &lt;span style="color: #990000"&gt;=&lt;/span&gt; &lt;span style="color: #FF0000"&gt;"image/png"&lt;/span&gt;
+xExporter&lt;span style="color: #990000"&gt;.&lt;/span&gt;&lt;span style="font-weight: bold"&gt;&lt;span style="color: #000000"&gt;filter&lt;/span&gt;&lt;/span&gt;&lt;span style="color: #990000"&gt;(&lt;/span&gt;&lt;span style="font-weight: bold"&gt;&lt;span style="color: #000000"&gt;aArgs&lt;/span&gt;&lt;/span&gt;&lt;span style="color: #990000"&gt;())&lt;/span&gt;&lt;/tt&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Let&amp;#8217;s see how it looks like if you turn AA off:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://farm2.staticflickr.com/1832/43859007522_aeb4516f02_o.png" alt="https://farm2.staticflickr.com/1832/43859007522_aeb4516f02_o.png" /&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;You just need to specify a new &lt;code&gt;Antialiasing&lt;/code&gt; key under &lt;code&gt;FilterData&lt;/code&gt;:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="listingblock"&gt;
+&lt;div class="content"&gt;&lt;!-- Generator: GNU source-highlight
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite --&gt;
+&lt;pre&gt;&lt;tt&gt;&lt;span style="font-weight: bold"&gt;&lt;span style="color: #0000FF"&gt;Dim&lt;/span&gt;&lt;/span&gt; &lt;span style="font-weight: bold"&gt;&lt;span style="color: #000000"&gt;aFilterData&lt;/span&gt;&lt;/span&gt;&lt;span style="color: #990000"&gt;(&lt;/span&gt;&lt;span style="color: #993399"&gt;0&lt;/span&gt;&lt;span style="color: #990000"&gt;)&lt;/span&gt; As new com&lt;span style="color: #990000"&gt;.&lt;/span&gt;sun&lt;span style="color: #990000"&gt;.&lt;/span&gt;star&lt;span style="color: #990000"&gt;.&lt;/span&gt;beans&lt;span style="color: #990000"&gt;.&lt;/span&gt;PropertyValue
+&lt;span style="font-weight: bold"&gt;&lt;span style="color: #000000"&gt;aFilterData&lt;/span&gt;&lt;/span&gt;&lt;span style="color: #990000"&gt;(&lt;/span&gt;&lt;span style="color: #993399"&gt;0&lt;/span&gt;&lt;span style="color: #990000"&gt;).&lt;/span&gt;Name &lt;span style="color: #990000"&gt;=&lt;/span&gt; &lt;span style="color: #FF0000"&gt;"AntiAliasing"&lt;/span&gt;
+&lt;span style="font-weight: bold"&gt;&lt;span style="color: #000000"&gt;aFilterData&lt;/span&gt;&lt;/span&gt;&lt;span style="color: #990000"&gt;(&lt;/span&gt;&lt;span style="color: #993399"&gt;0&lt;/span&gt;&lt;span style="color: #990000"&gt;).&lt;/span&gt;Value &lt;span style="color: #990000"&gt;=&lt;/span&gt; &lt;span style="font-weight: bold"&gt;&lt;span style="color: #0000FF"&gt;False&lt;/span&gt;&lt;/span&gt;
+xExporter &lt;span style="color: #990000"&gt;=&lt;/span&gt; &lt;span style="font-weight: bold"&gt;&lt;span style="color: #000000"&gt;createUnoService&lt;/span&gt;&lt;/span&gt;&lt;span style="color: #990000"&gt;(&lt;/span&gt;&lt;span style="color: #FF0000"&gt;"com.sun.star.drawing.GraphicExportFilter"&lt;/span&gt;&lt;span style="color: #990000"&gt;)&lt;/span&gt;
+xExporter&lt;span style="color: #990000"&gt;.&lt;/span&gt;&lt;span style="font-weight: bold"&gt;&lt;span style="color: #000000"&gt;SetSourceDocument&lt;/span&gt;&lt;/span&gt;&lt;span style="color: #990000"&gt;(&lt;/span&gt;ThisComponent&lt;span style="color: #990000"&gt;.&lt;/span&gt;&lt;span style="font-weight: bold"&gt;&lt;span style="color: #000000"&gt;DrawPages&lt;/span&gt;&lt;/span&gt;&lt;span style="color: #990000"&gt;(&lt;/span&gt;&lt;span style="color: #993399"&gt;0&lt;/span&gt;&lt;span style="color: #990000"&gt;))&lt;/span&gt;
+&lt;span style="font-weight: bold"&gt;&lt;span style="color: #0000FF"&gt;Dim&lt;/span&gt;&lt;/span&gt; &lt;span style="font-weight: bold"&gt;&lt;span style="color: #000000"&gt;aArgs&lt;/span&gt;&lt;/span&gt;&lt;span style="color: #990000"&gt;(&lt;/span&gt;&lt;span style="color: #993399"&gt;2&lt;/span&gt;&lt;span style="color: #990000"&gt;)&lt;/span&gt; As new com&lt;span style="color: #990000"&gt;.&lt;/span&gt;sun&lt;span style="color: #990000"&gt;.&lt;/span&gt;star&lt;span style="color: #990000"&gt;.&lt;/span&gt;beans&lt;span style="color: #990000"&gt;.&lt;/span&gt;PropertyValue
+&lt;span style="font-weight: bold"&gt;&lt;span style="color: #000000"&gt;aArgs&lt;/span&gt;&lt;/span&gt;&lt;span style="color: #990000"&gt;(&lt;/span&gt;&lt;span style="color: #993399"&gt;0&lt;/span&gt;&lt;span style="color: #990000"&gt;).&lt;/span&gt;Name  &lt;span style="color: #990000"&gt;=&lt;/span&gt; &lt;span style="color: #FF0000"&gt;"URL"&lt;/span&gt;
+&lt;span style="font-weight: bold"&gt;&lt;span style="color: #000000"&gt;aArgs&lt;/span&gt;&lt;/span&gt;&lt;span style="color: #990000"&gt;(&lt;/span&gt;&lt;span style="color: #993399"&gt;0&lt;/span&gt;&lt;span style="color: #990000"&gt;).&lt;/span&gt;Value &lt;span style="color: #990000"&gt;=&lt;/span&gt; &lt;span style="color: #FF0000"&gt;"file:///tmp/debug/non-aa.png"&lt;/span&gt;
+&lt;span style="font-weight: bold"&gt;&lt;span style="color: #000000"&gt;aArgs&lt;/span&gt;&lt;/span&gt;&lt;span style="color: #990000"&gt;(&lt;/span&gt;&lt;span style="color: #993399"&gt;1&lt;/span&gt;&lt;span style="color: #990000"&gt;).&lt;/span&gt;Name  &lt;span style="color: #990000"&gt;=&lt;/span&gt; &lt;span style="color: #FF0000"&gt;"FilterData"&lt;/span&gt;
+&lt;span style="font-weight: bold"&gt;&lt;span style="color: #000000"&gt;aArgs&lt;/span&gt;&lt;/span&gt;&lt;span style="color: #990000"&gt;(&lt;/span&gt;&lt;span style="color: #993399"&gt;1&lt;/span&gt;&lt;span style="color: #990000"&gt;).&lt;/span&gt;Value &lt;span style="color: #990000"&gt;=&lt;/span&gt; &lt;span style="font-weight: bold"&gt;&lt;span style="color: #000000"&gt;aFilterData&lt;/span&gt;&lt;/span&gt;&lt;span style="color: #990000"&gt;()&lt;/span&gt;
+&lt;span style="font-weight: bold"&gt;&lt;span style="color: #000000"&gt;aArgs&lt;/span&gt;&lt;/span&gt;&lt;span style="color: #990000"&gt;(&lt;/span&gt;&lt;span style="color: #993399"&gt;2&lt;/span&gt;&lt;span style="color: #990000"&gt;).&lt;/span&gt;Name  &lt;span style="color: #990000"&gt;=&lt;/span&gt; &lt;span style="color: #FF0000"&gt;"MediaType"&lt;/span&gt;
+&lt;span style="font-weight: bold"&gt;&lt;span style="color: #000000"&gt;aArgs&lt;/span&gt;&lt;/span&gt;&lt;span style="color: #990000"&gt;(&lt;/span&gt;&lt;span style="color: #993399"&gt;2&lt;/span&gt;&lt;span style="color: #990000"&gt;).&lt;/span&gt;Value &lt;span style="color: #990000"&gt;=&lt;/span&gt; &lt;span style="color: #FF0000"&gt;"image/png"&lt;/span&gt;
+xExporter&lt;span style="color: #990000"&gt;.&lt;/span&gt;&lt;span style="font-weight: bold"&gt;&lt;span style="color: #000000"&gt;filter&lt;/span&gt;&lt;/span&gt;&lt;span style="color: #990000"&gt;(&lt;/span&gt;&lt;span style="font-weight: bold"&gt;&lt;span style="color: #000000"&gt;aArgs&lt;/span&gt;&lt;/span&gt;&lt;span style="color: #990000"&gt;())&lt;/span&gt;&lt;/tt&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;You can imagine which rendering result is easier to debug when the reference
+and the actual bitmap doesn&amp;#8217;t match. ;-)&lt;/p&gt;&lt;/div&gt;
+&lt;div class="admonitionblock"&gt;
+&lt;table&gt;&lt;tr&gt;
+&lt;td class="icon"&gt;
+&lt;div class="title"&gt;Note&lt;/div&gt;
+&lt;/td&gt;
+&lt;td class="content"&gt;This feature is available for other bitmap formats as well, PNG is only
+an example.&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_default_character_style_in_writer"&gt;Default character style in Writer&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;In most cases you don&amp;#8217;t really need a default character style: if you&amp;#8217;re fine
+with a default, then the default paragraph style should be enough for your
+needs. In general, paragraph styles can contain character properties, so if
+the default is fine for you, you just don&amp;#8217;t set a character style.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;However, there is an exception to all rules. If you want to reset the current
+character style, it makes sense to just set the &lt;code&gt;CharStyleName&lt;/code&gt; property to a
+default value, especially since this works with paragraph styles already.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Now you can write C++ code like this (see
+&lt;a href="https://cgit.freedesktop.org/libreoffice/core/tree/sw/qa/extras/unowriter/unowriter.cxx"&gt;SwUnoWriter::testDefaultCharStyle()&lt;/a&gt;
+for a full example):&lt;/p&gt;&lt;/div&gt;
+&lt;div class="listingblock"&gt;
+&lt;div class="content"&gt;&lt;!-- Generator: GNU source-highlight
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite --&gt;
+&lt;pre&gt;&lt;tt&gt;xCursorProps&lt;span style="color: #990000"&gt;-&amp;gt;&lt;/span&gt;&lt;span style="font-weight: bold"&gt;&lt;span style="color: #000000"&gt;setPropertyValue&lt;/span&gt;&lt;/span&gt;&lt;span style="color: #990000"&gt;(&lt;/span&gt;&lt;span style="color: #FF0000"&gt;"CharStyleName"&lt;/span&gt;&lt;span style="color: #990000"&gt;,&lt;/span&gt; uno&lt;span style="color: #990000"&gt;::&lt;/span&gt;&lt;span style="font-weight: bold"&gt;&lt;span style="color: #000000"&gt;makeAny&lt;/span&gt;&lt;/span&gt;&lt;span style="color: #990000"&gt;(&lt;/span&gt;&lt;span style="font-weight: bold"&gt;&lt;span style="color: #000000"&gt;OUString&lt;/span&gt;&lt;/span&gt;&lt;span style="color: #990000"&gt;(&lt;/span&gt;&lt;span style="color: #FF0000"&gt;"Standard"&lt;/span&gt;&lt;span style="color: #990000"&gt;)));&lt;/span&gt;&lt;/tt&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;And it&amp;#8217;ll be handled as &lt;code&gt;Default Style&lt;/code&gt; in English builds, or their localized
+versions in a non-English UI.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;All this is available in master (towards LibreOffice 6.2), or you can grab a
+&lt;a href="http://dev-builds.libreoffice.org/daily/master/"&gt;daily build&lt;/a&gt; and try it out
+right now. :-)&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+            <link>https://vmiklos.hu/blog/uno-api-improvements.html</link>
+            <pubDate>Wed, 08 Aug 2018 09:10:21 +0200</pubDate>
+            <guid isPermaLink="false">https://vmiklos.hu/blog/uno-api-improvements.html</guid>
+        </item>
+        <item>
             <title>Improved ECDSA handling in LibreOffice</title>
             <description>&lt;div class="paragraph"&gt;&lt;p&gt;I wrote about ECDSA handling in LibreOffice
 &lt;a href="https://vmiklos.hu/blog/xmlsec-nss-ecdsa.html"&gt;last year&lt;/a&gt;, back then the target
@@ -765,24 +868,6 @@ right now. :-)&lt;/p&gt;&lt;/div&gt;
             <link>https://vmiklos.hu/blog/basic-epub3-export.html</link>
             <pubDate>Fri, 10 Nov 2017 11:19:36 +0100</pubDate>
             <guid isPermaLink="false">https://vmiklos.hu/blog/basic-epub3-export.html</guid>
-        </item>
-        <item>
-            <title>A year in LibreOffice’s PDF support LOCon talk</title>
-            <description>&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;a class="image" href="https://speakerd.s3.amazonaws.com/presentations/71ba628d90704fa9aa06c985d0c5a344/pdf-locon-rome-2k17.pdf"&gt;
-&lt;img src="https://farm5.staticflickr.com/4468/37421553870_e33fe6329d_z.jpg" alt="https://farm5.staticflickr.com/4468/37421553870_e33fe6329d_z.jpg" /&gt;
-&lt;/a&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;&lt;a href="http://conference.libreoffice.org/2017/the-program-2/oct-13th-friday/"&gt;A year
-in LibreOffice’s PDF support&lt;/a&gt; was a talk I gave today at LibreOffice
-conference 2017. Given that this was one of the last talks at the whole
-conference, thanks to the ones who still did not go home, but listened. :-)&lt;/p&gt;&lt;/div&gt;
-</description>
-            <link>https://vmiklos.hu/blog/pdf-locon-rome-2k17.html</link>
-            <pubDate>Fri, 13 Oct 2017 23:53:47 +0200</pubDate>
-            <guid isPermaLink="false">https://vmiklos.hu/blog/pdf-locon-rome-2k17.html</guid>
         </item>
     </channel>
 </rss>
