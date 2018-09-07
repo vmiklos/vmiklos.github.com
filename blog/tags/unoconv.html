@@ -1,0 +1,112 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.5.3" />
+<meta name="description" content="What is Miklos hacking - Tags: unoconv - Miklos' blog" />
+<meta name="keywords" content="vmiklos, libereoffice, swig, git, python, hacking, bitlbee" />
+<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="/blog/index.rss" />
+<link rel="stylesheet" href="/blog/xhtml11.css" type="text/css" />
+<link rel="stylesheet" href="/blog/xhtml11-quirks.css" type="text/css" />
+<link rel="stylesheet" href="/blog/layout.css" type="text/css" />
+<title>What is Miklos hacking - Tags: unoconv</title>
+<!-- google analytics start -->
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-24726997-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<!-- google analytics end -->
+</head>
+<body>
+<div id="layout-banner-box">
+<div id="layout-banner">
+  <div id="layout-title">vmiklos.hu</div>
+  <div id="layout-description">shameless self-promoting website</div>
+</div>
+</div>
+<div id="layout-menu-box">
+<div id="layout-menu">
+  <div>&#187;<a href="/">Root</a></div>
+  <div>&#187;<a href="/blog/">Rejourn root</a></div>
+  <div>&#187;<a href="http://planet.documentfoundation.org/">LibreOffice Community Blogs</a></div>
+  <div>
+    Search:<br/>
+    <form action="http://www.google.com/cse" id="cse-search-box" target="_blank">
+    <input type="hidden" name="cx" value="007336731492173318056:bik8fqvatno"/><input type="hidden" name="ie" value="UTF-8"/><input type="text" name="q" size="15"/><br/>
+    <input type="submit" name="sa" value="&#187;"/></form>
+  </div>
+</div>
+
+
+</div>
+<div id="layout-content-box">
+<div id="layout-content">
+<div id="header">
+	<h1>What is Miklos hacking - Tags: unoconv</h1>
+</div>
+<div id="preamble">
+<div class="sectionbody">
+
+
+
+
+<!-- Listing -->
+<div class="ulist"><ul>
+<li><p>Friday, 07 September 2018<br /><a href="/blog/unoconv-user-profile.html">Custom user profiles with unoconv</a>
+</p><p><div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://farm2.staticflickr.com/1859/43598513125_55bed46184_o.png" alt="https://farm2.staticflickr.com/1859/43598513125_55bed46184_o.png" />
+</div>
+</div>
+<div class="paragraph"><p>Background: I was benchmarking Online vs jodconverter vs unoconv the other day
+for Collabora&#8217;s <a href="https://www.collaboraoffice.com/document-conversion/">document
+conversion</a> page. One problem with measuring unoconv performance was that it
+provided no ways to run multiple <code>unoconv</code> processes in parallel, while the
+underlying <code>soffice</code> binary obviously allows this.</p></div>
+<div class="paragraph"><p>So while <code>unoconv</code> is not capable of launching the <code>soffice</code> process in a chroot
+(improves security), nor is capable of forking an already pre-initialized
+<code>soffice</code> process (improves performance, both are things Online can do for you),
+there is no real reason why you should not be able to run multiple <code>unoconv</code>
+processes in parallel. The previously mentioned benchmarking would be quite
+unfair if even this kind of multiprocessing would be ignored, but unoconv had
+no way to specify a custom user profile, which has to be different for each
+<code>soffice</code> process.</p></div>
+<div class="paragraph"><p>So I filed a <a href="https://github.com/dagwieers/unoconv/pull/451">GitHub pull
+request</a> on 1st Jun, and finally it was merged on 10th Aug.</p></div>
+<div class="paragraph"><p>Here is how you can use it for example:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>unoconv --user-profile /tmp/tmpf_yreswi -f pdf --port 2002 test.txt</code></pre>
+</div></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">It&#8217;s your responsibility to give --port a unique value, but that&#8217;s not
+too hard: if you use a thread pool to launch the <code>unoconv</code> processes, then you
+can add the thread index to a base port and that will give you a unique port.</td>
+</tr></table>
+</div>
+<div class="paragraph"><p>So this is available in unoconv master (towards unoconv 0.8.2+1), you can grab
+the sources from git and try it out right now. :-)</p></div>
+</p><hr/></li>
+</ul></div>
+<a href="/blog/archive.html">more &raquo;</a>
+
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

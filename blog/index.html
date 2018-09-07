@@ -50,10 +50,10 @@
 <div id="alltags-menu">
 	Tags:
 	<div>&#187;<a href="/blog/tags/hu.html">hu</a> (1201)</div>
-	<div>&#187;<a href="/blog/tags/en.html">en</a> (587)</div>
+	<div>&#187;<a href="/blog/tags/en.html">en</a> (588)</div>
 	<div>&#187;<a href="/blog/tags/hacking.html">hacking</a> (416)</div>
 	<div>&#187;<a href="/blog/tags/film.html">film</a> (286)</div>
-	<div>&#187;<a href="/blog/tags/libreoffice.html">libreoffice</a> (137)</div>
+	<div>&#187;<a href="/blog/tags/libreoffice.html">libreoffice</a> (138)</div>
 	<div>&#187;<a href="/blog/tags/geek.html">geek</a> (82)</div>
 	<div>&#187;<a href="/blog/tags/bringa.html">bringa</a> (60)</div>
 	<div>&#187;<a href="/blog/tags/konyv.html">konyv</a> (44)</div>
@@ -72,6 +72,7 @@
 	<div>&#187;<a href="/blog/tags/gsoc2011.html">gsoc2011</a> (2)</div>
 	<div>&#187;<a href="/blog/tags/go-oo.html">go-oo</a> (2)</div>
 	<div>&#187;<a href="/blog/tags/xmlsec.html">xmlsec</a> (2)</div>
+	<div>&#187;<a href="/blog/tags/unoconv.html">unoconv</a> (1)</div>
 	<div>&#187;<a href="/blog/tags/kde.html">kde</a> (1)</div>
 	<div>&#187;<a href="/blog/tags/libwpd.html">libwpd</a> (1)</div>
 	<div>&#187;<a href="/blog/tags/karacsony.html">karacsony</a> (1)</div>
@@ -112,6 +113,45 @@
 
 <!-- Listing -->
 <div class="ulist"><ul>
+<li><p>Friday, 07 September 2018<br /><a href="/blog/unoconv-user-profile.html">Custom user profiles with unoconv</a>
+</p><p><div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://farm2.staticflickr.com/1859/43598513125_55bed46184_o.png" alt="https://farm2.staticflickr.com/1859/43598513125_55bed46184_o.png" />
+</div>
+</div>
+<div class="paragraph"><p>Background: I was benchmarking Online vs jodconverter vs unoconv the other day
+for Collabora&#8217;s <a href="https://www.collaboraoffice.com/document-conversion/">document
+conversion</a> page. One problem with measuring unoconv performance was that it
+provided no ways to run multiple <code>unoconv</code> processes in parallel, while the
+underlying <code>soffice</code> binary obviously allows this.</p></div>
+<div class="paragraph"><p>So while <code>unoconv</code> is not capable of launching the <code>soffice</code> process in a chroot
+(improves security), nor is capable of forking an already pre-initialized
+<code>soffice</code> process (improves performance, both are things Online can do for you),
+there is no real reason why you should not be able to run multiple <code>unoconv</code>
+processes in parallel. The previously mentioned benchmarking would be quite
+unfair if even this kind of multiprocessing would be ignored, but unoconv had
+no way to specify a custom user profile, which has to be different for each
+<code>soffice</code> process.</p></div>
+<div class="paragraph"><p>So I filed a <a href="https://github.com/dagwieers/unoconv/pull/451">GitHub pull
+request</a> on 1st Jun, and finally it was merged on 10th Aug.</p></div>
+<div class="paragraph"><p>Here is how you can use it for example:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>unoconv --user-profile /tmp/tmpf_yreswi -f pdf --port 2002 test.txt</code></pre>
+</div></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">It&#8217;s your responsibility to give --port a unique value, but that&#8217;s not
+too hard: if you use a thread pool to launch the <code>unoconv</code> processes, then you
+can add the thread index to a base port and that will give you a unique port.</td>
+</tr></table>
+</div>
+<div class="paragraph"><p>So this is available in unoconv master (towards unoconv 0.8.2+1), you can grab
+the sources from git and try it out right now. :-)</p></div>
+</p><hr/></li>
 <li><p>Wednesday, 08 August 2018<br /><a href="/blog/uno-api-improvements.html">API improvements in LibreOffice</a>
 </p><p><div class="imageblock" style="text-align:center;">
 <div class="content">
@@ -822,110 +862,6 @@ not available:</p></div>
 right now. :-)</p></div>
 </div>
 </div>
-</p><hr/></li>
-<li><p>Friday, 10 November 2017<br /><a href="/blog/basic-epub3-export.html">Basic EPUB3 export in Libreoffice</a>
-</p><p><div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://farm5.staticflickr.com/4577/37588898064_117dc4a933_o_d.png" alt="https://farm5.staticflickr.com/4577/37588898064_117dc4a933_o_d.png" />
-</div>
-</div>
-<div class="paragraph"><p>I worked on a new EPUB3 export filter in LibreOffice recently. First, thanks
-to <a href="http://nouenoff.nl/">Nou&amp;Off</a> in cooperation with a customer who made this
-work possible.  The current state is that basic features work nicely to the
-extent that the filter is probably usable for most books (they typically
-mostly have just text with minimal formatting), so this post aims to explain
-the architecture, how the various pieces fit together.</p></div>
-<div class="paragraph"><p>The above picture shows the building blocks. The idea is that nominally EPUB
-is a complete export filter, but instead of doing all the work, we offload
-various sub-tasks to other modules:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-First we invoke the existing (flat) ODT export, so we can work with ODF
-  instead of with the UNO API directly. This will be useful in the next step.
-</p>
-</li>
-<li>
-<p>
-Then we feed the SAX events from the ODT export to a new librevenge text
-  export. Given that the librevenge API is really close to ODF (and xmloff/
-  has quite some code to map the UNO API to ODF), here it pays off to work with
-  ODF and not with the UNO API directly.
-</p>
-</li>
-<li>
-<p>
-The librevenge text export talks to a librevenge generator, which is
-  David Tardon&#8217;s excellent
-  <a href="https://sourceforge.net/projects/libepubgen/">libepubgen</a> in this case.
-</p>
-</li>
-<li>
-<p>
-Finally libepubgen calls back to LibreOffice, and our package code does the
-  ZIP compression.
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>The setup is a bit complicated, but it has a number of advantages:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-Instead of reinventing the wheel, LO and DLP now shares code, libepubgen is
-  now a dependency of LibreOffice.
-</p>
-</li>
-<li>
-<p>
-libepubgen doesn&#8217;t bring its own ZIP writer code, it can nicely reuse our
-  existing one.
-</p>
-</li>
-<li>
-<p>
-This is a great opportunity to finally write an ODT&#8594;librevenge bridge, so
-  other DLP-based export libs can be added in the future (e.g.
-  <a href="https://sourceforge.net/projects/librvngabw/">librvngabw</a>).
-</p>
-</li>
-<li>
-<p>
-If we ever want to export to EPUB from Draw/Impress, libepubgen will help us
-  there as well.
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>As a user, here is a list of features you can expect working:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-plain text should work fine (formatting may be lost, but content should be
-  fine)
-</p>
-</li>
-<li>
-<p>
-table of contents, as long as you properly use headings or you separate
-  chapters by page breaks
-</p>
-</li>
-<li>
-<p>
-export options: EPUB3 vs EPUB2, split on headings vs page breaks
-</p>
-</li>
-<li>
-<p>
-basic set of character and paragraph properties should work
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>During development I regularly used
-<a href="https://github.com/IDPF/epubcheck">epubcheck</a>, so hopefully the export result
-is usually valid.</p></div>
-<div class="paragraph"><p>All this is available in master (towards LibreOffice 6.0), or you can grab a
-<a href="http://dev-builds.libreoffice.org/daily/master/">daily build</a> and try it out
-right now. :-)</p></div>
 </p><hr/></li>
 </ul></div>
 <a href="/blog/archive.html">more &raquo;</a>
