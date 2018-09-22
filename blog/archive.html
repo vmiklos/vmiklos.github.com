@@ -62,6 +62,41 @@
 
 <!-- Listing -->
 <div class="ulist"><ul>
+<li><p>Saturday, 22 September 2018<br /><a href="/blog/mutt-address-book.html">mutt/vim offline address book with multiple sources</a>
+</p><p><div class="paragraph"><p>I used to have a hackish setup to trigger address book in the form of code
+completion from vim, when mutt starts it. I recently migrated the last part of
+it from python2, so it&#8217;s now in a relatively consistent state. On a boring
+flight trip I finally got around to summarize how it works, perhaps it&#8217;s
+useful to someone else as well. :-)</p></div>
+<div class="paragraph"><p>By multiple sources, I mean Google Contacts for my private account, and LDAP
+for work-related accounts. I have one script for each to have a local backup:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="http://github.com/vmiklos/vmexam/tree/master/google/contacts/backup">google/contacts/backup</a>
+  backs up Google Contacts to <code>$HOME/.google-contacts/</code>
+</p>
+</li>
+<li>
+<p>
+<a href="https://github.com/vmiklos/vmexam/blob/master/ldap/contacts/backup">ldap/contacts/backup</a>
+  backs up from an LDAP source to <code>$HOME/.ldap-contacts/</code>
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Then comes
+<a href="https://github.com/vmiklos/vmexam/blob/master/mutt/contacts/search">mutt/contacts/search</a>,
+which can read these backups from <code>$HOME/.mutt/contacts/</code> (you can create
+symlinks to decide which backup should be included in the search results).</p></div>
+<div class="paragraph"><p>The rest is just a short
+<a href="https://github.com/vmiklos/vmexam/blob/master/mutt/contacts/search.vim">search.vim</a>
+that integrates the search script into vim, so when mutt starts it with
+<code>ft=mail</code>, the search script is invoked when you start typing and you press
+Ctrl-X Ctrl-O (trigger code completion).</p></div>
+<div class="paragraph"><p>And that&#8217;s it, I can start typing mails to friends and customers even without
+network connectivity, without manually maintaining an own address book just
+for mutt!</p></div>
+</p><hr/></li>
 <li><p>Friday, 07 September 2018<br /><a href="/blog/unoconv-user-profile.html">Custom user profiles with unoconv</a>
 </p><p><div class="imageblock" style="text-align:center;">
 <div class="content">
