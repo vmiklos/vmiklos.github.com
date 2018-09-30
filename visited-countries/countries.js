@@ -1,4 +1,5 @@
 countries = [
+	'al', // Albania: Tirana 2018
 	'at', // Austria: Murau 2005, Wien 2010
 	'ba', // Bosnia and Herzegovina: Jahorina 2013
 	'be', // Belgium: Brussels 2013, Brussels 2014, Brussels 2015
