@@ -5,6 +5,24 @@
         <description></description>
         <link>https://vmiklos.hu/blog/</link>
         <item>
+            <title>Text layout performance in LibreOffice conference lightning talk</title>
+            <description>&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;a class="image" href="https://speakerd.s3.amazonaws.com/presentations/6d1f7938f02f40da9a04bd2ce24b0940/vcllayout-locon-tirana-2k19.pdf"&gt;
+&lt;img src="https://farm2.staticflickr.com/1914/44115509595_ab58bf01f5_z.jpg" alt="https://farm2.staticflickr.com/1914/44115509595_ab58bf01f5_z.jpg" /&gt;
+&lt;/a&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Last Friday I gave a
+&lt;a href="https://conference.libreoffice.org/2018/the-program/sept-18th-friday/"&gt;Text
+layout performance&lt;/a&gt; lightning talk at LibreOffice Conference 2018. Click on
+the image to get the hybrid PDF slides!&lt;/p&gt;&lt;/div&gt;
+</description>
+            <link>https://vmiklos.hu/blog/libocon2018-lightning.html</link>
+            <pubDate>Mon, 01 Oct 2018 10:26:56 +0200</pubDate>
+            <guid isPermaLink="false">https://vmiklos.hu/blog/libocon2018-lightning.html</guid>
+        </item>
+        <item>
             <title>ReqIF import/export in LibreOffice Writer conference talk</title>
             <description>&lt;div class="imageblock" style="text-align:center;"&gt;
 &lt;div class="content"&gt;
@@ -536,108 +554,6 @@ really great event!&lt;/p&gt;&lt;/div&gt;
             <link>https://vmiklos.hu/blog/hamburg2018.html</link>
             <pubDate>Tue, 10 Apr 2018 10:35:35 +0200</pubDate>
             <guid isPermaLink="false">https://vmiklos.hu/blog/hamburg2018.html</guid>
-        </item>
-        <item>
-            <title>Optimizing ODT ↔ XHTML conversion performance for simple documents</title>
-            <description>&lt;div class="paragraph"&gt;&lt;p&gt;I worked on improving the ODT ↔ XHTML conversion performance for simple
-documents in LibreOffice recently.  First, thanks to
-&lt;a href="https://vector.com/"&gt;Vector&lt;/a&gt; for funding
-&lt;a href="https://www.collaboraoffice.com/"&gt;Collabora&lt;/a&gt; to make this possible.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_odt_8594_xhtml_conversion"&gt;ODT &amp;#8594; XHTML conversion&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;img src="https://farm5.staticflickr.com/4605/26697712598_2ace3f45a3_o.png" alt="https://farm5.staticflickr.com/4605/26697712598_2ace3f45a3_o.png" /&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;The focus here was &lt;strong&gt;really&lt;/strong&gt; simple documents, like just one sentence with
-minimal formatting. The use-case is to have thousands of these simple
-documents, only a minority containing complex formatting, the rest is just
-that simple.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Performance work usually focuses on one specific complex feature, e.g. lots of
-bookmarks, lots of document-level user-defined metadata, and so on&amp;#8201;&amp;#8212;&amp;#8201;this way
-there were room for improvements when it comes to trivial documents.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;I managed to reduce the cost of the conversion to the &lt;em&gt;fifth of the original&lt;/em&gt;
-cost in both directions&amp;#8201;&amp;#8212;&amp;#8201;the chart above shows the impact of my work for
-the ODT &amp;#8594; XHTML direction. The steps that helped:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-Recognize &lt;code&gt;XHTML&lt;/code&gt; as a value for the &lt;code&gt;FilterOptions&lt;/code&gt; key in the &lt;code&gt;HTML
-  (StarWriter)&lt;/code&gt; export filter, this way avoid the need to go via XSLT, which
-  would be expensive.
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-Add a new &lt;code&gt;NoFileSync&lt;/code&gt; flag to the &lt;code&gt;frame::XStorable::storeToURL()&lt;/code&gt; API, so
-  that if you know you&amp;#8217;ll read the result after the conversion finished, you
-  can avoid an expensive &lt;code&gt;fsync()&lt;/code&gt; call for each and every file, which helps
-  HDDs a lot, while means no overhead for SSDs.
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-If you know your input format already, then specifying an explicit
-  &lt;code&gt;FilterName&lt;/code&gt; key for the &lt;code&gt;frame::XComponentLoader::loadComponentFromURL()&lt;/code&gt;
-  API helps not spending time to detect the file format you already know.
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Note that the XHTML mode for the Writer HTML export is still a work in
-progress, but it already produces valid output for such simple documents.&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_xhtml_8594_odt_conversion"&gt;XHTML &amp;#8594; ODT conversion&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;img src="https://farm5.staticflickr.com/4608/39674632615_de78265c7f_o.png" alt="https://farm5.staticflickr.com/4608/39674632615_de78265c7f_o.png" /&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;The chart above shows the results of my work for the XHTML &amp;#8594; ODT direction.
-The steps to get to the final reduced cost were:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-The new &lt;code&gt;NoFileSync&lt;/code&gt; flag, as mentioned previously.
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-A new &lt;code&gt;NoThumbnail&lt;/code&gt; flag, which is useful if the ODT will be part of a next
-  step in the pipeline and you know that the thumbnail image won&amp;#8217;t be used anyway.
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-The default table autoformat definitions in Writer are now
-  &lt;a href="https://cgit.freedesktop.org/libreoffice/core/commit/?id=53ef918a6839c8d587dec1bb635e6b39397c53d0"&gt;lazy-loaded&lt;/a&gt;.
-  (This is my favorite one, you don&amp;#8217;t have to opt-in for this, so everyone
-  benefits.)
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-A new &lt;code&gt;HiddenForConversion&lt;/code&gt; flag for
-  &lt;code&gt;frame::XComponentLoader::loadComponentFromURL()&lt;/code&gt;, which means we don&amp;#8217;t lay
-  out the UI elements (toolbars, sidebar, status bar, etc.) when we know the
-  purpose of the document load is only to save the document model in an other
-  format.
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;All this is available in master (towards LibreOffice 6.1), or you can grab a
-&lt;a href="http://dev-builds.libreoffice.org/daily/master/"&gt;daily build&lt;/a&gt; and try it out
-right now. :-)&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-</description>
-            <link>https://vmiklos.hu/blog/odt-xhtml-performance.html</link>
-            <pubDate>Fri, 02 Mar 2018 09:20:04 +0100</pubDate>
-            <guid isPermaLink="false">https://vmiklos.hu/blog/odt-xhtml-performance.html</guid>
         </item>
     </channel>
 </rss>
