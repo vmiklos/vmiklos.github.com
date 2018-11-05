@@ -5,6 +5,113 @@
         <description></description>
         <link>https://vmiklos.hu/blog/</link>
         <item>
+            <title>SmartArt improvements in LibreOffice</title>
+            <description>&lt;div class="paragraph"&gt;&lt;p&gt;I recently dived into the SmartArt support of LibreOffice, which is the
+component responsible for displaying complex diagrams from PPTX, especially in
+case only document model and the layout constraints are given, not a
+pre-rendered result.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;First, thanks to &lt;a href="https://www.suse.com/"&gt;SUSE&lt;/a&gt; for funding
+&lt;a href="https://www.collaboraoffice.com/"&gt;Collabora&lt;/a&gt; to make this possible.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_the_problem"&gt;The problem&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;There are several ones. :-) If you are just interested in high quality viewing
+of PPTX files, then your problem started with PowerPoint 2007 not writing a
+pre-rendered drawingML markup of the diagram to the files, only PowerPoint
+2010 started behaving like this. Additionally, if a diagram is not edited,
+then re-saving with PowerPoint 2010 doesn&amp;#8217;t seem to generate the drawingML
+markup, either. This means that data + constraints cases are quite frequent
+even today.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Also, one day Impress should be able to actually edit these SmartArts as well,
+so having the knowledge how to lay out SmartArt (even if it&amp;#8217;s import-time-only
+at the moment) is a good thing.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_results_so_far"&gt;Results so far&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;I always write cppunit tests when I work on filter code (in this case OOXML), so
+far all fixes were visible in just two test files:
+&lt;a href="https://cgit.freedesktop.org/libreoffice/core/tree/sd/qa/unit/data/pptx/smartart-vertial-box-list.pptx"&gt;smartart-vertial-box-list.pptx&lt;/a&gt;
+and
+&lt;a href="https://cgit.freedesktop.org/libreoffice/core/tree/sd/qa/unit/data/pptx/vertical-bracket-list.pptx"&gt;vertical-bracket-list.pptx&lt;/a&gt;.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Here is how the baseline, the current and the reference rendering of these test documents look like:&lt;/p&gt;&lt;/div&gt;
+&lt;div style="text-align: center"&gt;
+&lt;img src="https://farm2.staticflickr.com/1924/45683201352_52e22af9dc_z.jpg"/&gt;
+&lt;p&gt;smartart-vertial-box-list.pptx, baseline&lt;/p&gt;
+&lt;/div&gt;
+&lt;div style="text-align: center"&gt;
+&lt;img src="https://farm5.staticflickr.com/4912/45683200942_8005cd433d_z.jpg"/&gt;
+&lt;p&gt;smartart-vertial-box-list.pptx, current&lt;/p&gt;
+&lt;/div&gt;
+&lt;div style="text-align: center"&gt;
+&lt;img src="https://farm2.staticflickr.com/1976/45683201252_edd6eddea4_z.jpg"/&gt;
+&lt;p&gt;smartart-vertial-box-list.pptx, reference&lt;/p&gt;
+&lt;/div&gt;
+&lt;div style="text-align: center"&gt;
+&lt;img src="https://farm2.staticflickr.com/1951/45683201002_4c93cc831c_z.jpg"/&gt;
+&lt;p&gt;vertical-bracket-list.pptx, baseline&lt;/p&gt;
+&lt;/div&gt;
+&lt;div style="text-align: center"&gt;
+&lt;img src="https://farm5.staticflickr.com/4876/45008491984_61f25e21ca_z.jpg"/&gt;
+&lt;p&gt;vertical-bracket-list.pptx, current&lt;/p&gt;
+&lt;/div&gt;
+&lt;div style="text-align: center"&gt;
+&lt;img src="https://farm2.staticflickr.com/1911/45683201082_3022aa8fe5_z.jpg"/&gt;
+&lt;p&gt;vertical-bracket-list.pptx, reference&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;In terms of code commits, the fixes are split into several ones:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=e49c42d17f50c8b0cac9db08dedc375dd5aa8a98"&gt;oox
+  smartart, vertical bracket list: fix node counter condition&lt;/a&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=397b64afc62a5632a6648598558a4d2c3ca0d283"&gt;oox
+  smartart, linear layout: take horizontal position from constraints&lt;/a&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=b083b0808121d19f398a9f6ead195ae7e14ed047"&gt;oox
+  smartart, linear layout: take width from constraints&lt;/a&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=923061d17d4b5b8bf0d4a8111b270c99a7c649a9"&gt;oox
+  smartart: work towards accessing parent constraints&lt;/a&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=b61d2784271bf8b042642c378f50e8b446682548"&gt;oox
+  smartart: fix width of shapes with agl=lin, linDir=fromT&lt;/a&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=a7e86beb00e9635ea4556ef4f8f8e24ff9965391"&gt;oox:
+  ignore SmartArt "fallback" with empty shape list&lt;/a&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Clearly the results are not perfect yet, but in both cases nothing was
+visible, and now all text is readable, so we&amp;#8217;re moving to the right direction!&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;All this is available in master (towards LibreOffice 6.2), so you can grab a
+&lt;a href="http://dev-builds.libreoffice.org/daily/master/"&gt;daily build&lt;/a&gt; and try it out
+right now. :-)&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+            <link>https://vmiklos.hu/blog/smartart-improvements.html</link>
+            <pubDate>Mon, 05 Nov 2018 16:35:25 +0100</pubDate>
+            <guid isPermaLink="false">https://vmiklos.hu/blog/smartart-improvements.html</guid>
+        </item>
+        <item>
             <title>Text layout performance in LibreOffice conference lightning talk</title>
             <description>&lt;div class="imageblock" style="text-align:center;"&gt;
 &lt;div class="content"&gt;
@@ -492,68 +599,6 @@ right now. :-)&lt;/p&gt;&lt;/div&gt;
             <link>https://vmiklos.hu/blog/image-lazy-read.html</link>
             <pubDate>Fri, 04 May 2018 09:59:00 +0200</pubDate>
             <guid isPermaLink="false">https://vmiklos.hu/blog/image-lazy-read.html</guid>
-        </item>
-        <item>
-            <title>LibreOffice Hamburg Hackfest 2018</title>
-            <description>&lt;div style="text-align: center; font-size: 0.6em;"&gt;
-&lt;img src="https://farm1.staticflickr.com/873/27489617988_4c2ce3fd59_z.jpg"/&gt;
-&lt;p&gt;(via &lt;a href="https://twitter.com/Sweet5hark/status/982560887927197696"&gt;Sweet5hark&lt;/a&gt;)&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;I arrived home from Hamburg yesterday where I participated in the
-&lt;a href="https://wiki.documentfoundation.org/Hackfest/Hamburg2018"&gt;LibreOffice hackfest&lt;/a&gt;
-over the weekend as a mentor.  First, thanks to The Document Foundation&amp;#8201;&amp;#8212;&amp;#8201;and
-all the &lt;a href="https://www.libreoffice.org/donate"&gt;donors&lt;/a&gt; for funding Collabora to
-make this possible.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;There were a few topics I mentored:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-Patrick was interested fixing
-  &lt;a href="https://bugs.documentfoundation.org/show_bug.cgi?id=116486"&gt;tdf#116486&lt;/a&gt;,
-  which required some background knowledge on the Writer document model and
-  layout, so we explored the relevant details together towards providing an
-  actual patch for the bug.
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-Nithin wanted to fix
-  &lt;a href="https://bugs.documentfoundation.org/show_bug.cgi?id=112384"&gt;tdf#112384&lt;/a&gt;,
-  which turned out to be an ideal task for a hackfest. On one hand, the scope is
-  limited so that you can implement this mini-feature over a weekened. On the
-  other hand, it required touching various parts of Writer (UI, document model,
-  UNO API, ODF filter), so it allowed seeing the process of adding a new
-  feature. The &lt;a href="https://gerrit.libreoffice.org/52561"&gt;patch&lt;/a&gt; is merged to master.
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-Linus looked for a task that is relatively easy, still useful, we looked at
-  &lt;a href="https://bugs.documentfoundation.org/show_bug.cgi?id=42949"&gt;tdf#42949&lt;/a&gt;, and he
-  identified and removed a number of unused includes himself. This should
-  especially help with slow incremental builds. Again, the
-  &lt;a href="https://gerrit.libreoffice.org/52594"&gt;patch&lt;/a&gt; is already in master.
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-Zdeněk (raal) wanted to write a uitest for
-  &lt;a href="https://bugs.documentfoundation.org/show_bug.cgi?id=106280"&gt;tdf#106280&lt;/a&gt; so we
-  were figuring out together how to select images from pyuno and how to avoid
-  using graphic URLs in uitests in general.
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;The full list of achievements is
-&lt;a href="https://wiki.documentfoundation.org/Hackfest/Hamburg2018#Achievements"&gt;on the
-wiki&lt;/a&gt;, if you were at the hackfest and you did not contribute to that section,
-please write a line about what did you hack on. :-)&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Finally, thanks for the organizers and the sponsors of the hackfest, it was a
-really great event!&lt;/p&gt;&lt;/div&gt;
-</description>
-            <link>https://vmiklos.hu/blog/hamburg2018.html</link>
-            <pubDate>Tue, 10 Apr 2018 10:35:35 +0200</pubDate>
-            <guid isPermaLink="false">https://vmiklos.hu/blog/hamburg2018.html</guid>
         </item>
     </channel>
 </rss>
