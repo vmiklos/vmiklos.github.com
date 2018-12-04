@@ -1,0 +1,79 @@
+title: SmartArt improvements in LibreOffice, part 2
+author: Miklos
+tags: en, libreoffice
+pubdate: 2018-12-04T13:00:19Z
+<<<
+
+I recently link:/blog/smartart-improvements.html[dived into] the SmartArt
+support of LibreOffice, which is the component responsible for displaying
+complex diagrams from PPTX. I focused especially on the case when only
+document model and the layout constraints are given, not a pre-rendered
+result.
+
+First, thanks to our partner https://www.suse.com/[SUSE] for working with
+https://www.collaboraoffice.com/[Collabora] to make this possible.
+
+== Accent Process
+
+In this post I would like to present the progress regarding the Accent Process
+preset, available in PowerPoint -- which is used in many documents.
+
+This exposed several shortcomings of the current diagram layout we have in LibreOffice:
+
+- Values are not read from constraints (there was a reason for this, they can
+  be complex, given that depending on the context, the unit is points or
+  millimeters and the unit is always implicit).
+
+- ZOrder offsets were ignored.
+
+- Linear algorithm did not take size from constraints when it came to
+  recursing into child algorithms.
+
+- Data point assumed that all text for it is a single "run" (i.e. either all
+  text is bold or nothing, not half of it).
+
+- `followSib` axis was not implemented for `forEach`, so when you have arrow
+  shapes between objects, we created `N` arrows, not `N - 1` ones.
+
+- Connectors were created as invisible shapes and had the wrong width/height
+  aspect.
+
+With all these fixed, we reach a much better state for handling accent
+process.
+
+== Results so far
+
+https://cgit.freedesktop.org/libreoffice/core/tree/sd/qa/unit/data/pptx/smartart-accent-process.pptx[smartart-accent-process.pptx]
+is what I used for testing of this work.
+
+Here is how the baseline, the current and the reference rendering of the test documents look like:
+
+++++
+<div style="text-align: center">
+<img src="https://lh3.googleusercontent.com/e4uMwQRLHPsvVTwvnnwkyEIMmE0L-Piv55XreEW9wmA3y29348TWxgUbaCkYGBz-yXf8D55rhEC6Y3-kAp6BbLxNadWQfcxuUB57Z8dXFYPmlw8kjTPcOXNpqeZFKyBvtPiI7eSBhQ=w2400"/>
+<p>smartart-accent-process.pptx, baseline</p>
+</div>
+++++
+
+++++
+<div style="text-align: center">
+<img src="https://lh3.googleusercontent.com/12c8vCrucm23guXlwYvj51MwAYOsePn7znwKBPq9qFzlgPx9XUTyX0wDcUgb0PR9tFVyTKoZPNXkhEur5Nqp7aosUCDuTVXE6yNj-58x3yLudJdqOnionMab6L-5wZ0rLvn1-bg5zA=w2400"/>
+<p>smartart-accent-process.pptx, current</p>
+</div>
+++++
+
+++++
+<div style="text-align: center">
+<img src="https://lh3.googleusercontent.com/FBDUqsXyyBI6-abopLSrzHEYbm4YHHZwxFWxnfUsTO0dwl17HdP6sBcKzW_BvTjMWiRuPX6HC1I7aEOcHzeiZBzE-EnJZ_3fkfaOzxDHtiIc0QoFe9T4V9K3jq9_yRkNELx2tEQYpA=w2400"/>
+<p>smartart-accent-process.pptx, reference</p>
+</div>
+++++
+
+This is not not perfect yet, but it's clearly a large improvement, all text is
+now readable from the diagram!
+
+All this is available in master (towards LibreOffice 6.3), so you can grab a
+http://dev-builds.libreoffice.org/daily/master/[daily build] and try it out
+right now. :-)
+
+// vim: ft=asciidoc
