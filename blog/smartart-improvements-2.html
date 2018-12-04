@@ -1,0 +1,156 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.5.3" />
+<meta name="description" content="SmartArt improvements in LibreOffice, part 2 - Miklos' blog" />
+<meta name="keywords" content="vmiklos, libereoffice, swig, git, python, hacking, bitlbee" />
+<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="/blog/index.rss" />
+<link rel="stylesheet" href="/blog/xhtml11.css" type="text/css" />
+<link rel="stylesheet" href="/blog/xhtml11-quirks.css" type="text/css" />
+<link rel="stylesheet" href="/blog/layout.css" type="text/css" />
+<title>SmartArt improvements in LibreOffice, part 2</title>
+<!-- google analytics start -->
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-24726997-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<!-- google analytics end -->
+</head>
+<body>
+<div id="layout-banner-box">
+<div id="layout-banner">
+  <div id="layout-title">vmiklos.hu</div>
+  <div id="layout-description">shameless self-promoting website</div>
+</div>
+</div>
+<div id="layout-menu-box">
+<div id="layout-menu">
+  <div>&#187;<a href="/">Root</a></div>
+  <div>&#187;<a href="/blog/">Rejourn root</a></div>
+  <div>&#187;<a href="http://planet.documentfoundation.org/">LibreOffice Community Blogs</a></div>
+  <div>
+    Search:<br/>
+    <form action="http://www.google.com/cse" id="cse-search-box" target="_blank">
+    <input type="hidden" name="cx" value="007336731492173318056:bik8fqvatno"/><input type="hidden" name="ie" value="UTF-8"/><input type="text" name="q" size="15"/><br/>
+    <input type="submit" name="sa" value="&#187;"/></form>
+  </div>
+</div>
+
+</div>
+<div id="layout-content-box">
+<div id="layout-content">
+<div id="header">
+	<h1>SmartArt improvements in LibreOffice, part 2</h1>
+</div>
+<div id="preamble">
+<div class="sectionbody">
+
+<!-- Single entry -->
+<div class="verseblock">
+<div class="verseblock-content">Posted <span class="timeago" title="2018-12-04T13:00:19Z">Tuesday, 04 December 2018</span> by Miklos<br />
+    Tags:
+    <a href="tags/en.html">en</a>
+    <a href="tags/libreoffice.html">libreoffice</a>
+<div class="nav-previous"><a href="/blog/smartart-improvements.html" rel="prev"><span class="meta-nav">&larr;</span> SmartArt improvements in LibreOffice</a></div>
+</div>
+</div>
+
+<!-- Body -->
+<div class="paragraph"><p>I recently <a href="/blog/smartart-improvements.html">dived into</a> the SmartArt
+support of LibreOffice, which is the component responsible for displaying
+complex diagrams from PPTX, especially in case only document model and the
+layout constraints are given, not a pre-rendered result.</p></div>
+<div class="paragraph"><p>First, thanks to our partner <a href="https://www.suse.com/">SUSE</a> for working with
+<a href="https://www.collaboraoffice.com/">Collabora</a> to make this possible.</p></div>
+<div class="sect1">
+<h2 id="_accent_process">Accent Process</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>In this post I would like to present the progress regarding the Accent Process
+preset, available in PowerPoint&#8201;&#8212;&#8201;which is used in many documents.</p></div>
+<div class="paragraph"><p>This exposed several shortcomings of the current diagram layout we have in LibreOffice:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Values are not read from constraints (there was a reason for this, they can
+  be complex, given that depending on the context, the unit is points or
+  millimeters and the unit is always implicit).
+</p>
+</li>
+<li>
+<p>
+ZOrder offsets were ignored.
+</p>
+</li>
+<li>
+<p>
+Linear algorithm did not take size from constraints when it came to
+  recursing into child algorithms.
+</p>
+</li>
+<li>
+<p>
+Data point assumed that all text for it is a single "run" (i.e. either all
+  text is bold or nothing, not half of it).
+</p>
+</li>
+<li>
+<p>
+<code>followSib</code> axis was not implemented for <code>forEach</code>, so when you have arrow
+  shapes between objects, we created <code>N</code> arrows, not <code>N - 1</code> ones.
+</p>
+</li>
+<li>
+<p>
+Connectors were created as invisible shapes and had the wrong width/height
+  aspect.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>With all these fixed, we reach a much better state for handling accent
+process.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_results_so_far">Results so far</h2>
+<div class="sectionbody">
+<div class="paragraph"><p><a href="https://cgit.freedesktop.org/libreoffice/core/tree/sd/qa/unit/data/pptx/smartart-accent-process.pptx">smartart-accent-process.pptx</a>
+is what I used for testing of this work.</p></div>
+<div class="paragraph"><p>Here is how the baseline, the current and the reference rendering of the test documents look like:</p></div>
+<div style="text-align: center">
+<img src="https://lh3.googleusercontent.com/e4uMwQRLHPsvVTwvnnwkyEIMmE0L-Piv55XreEW9wmA3y29348TWxgUbaCkYGBz-yXf8D55rhEC6Y3-kAp6BbLxNadWQfcxuUB57Z8dXFYPmlw8kjTPcOXNpqeZFKyBvtPiI7eSBhQ=w2400"/>
+<p>smartart-accent-process.pptx, baseline</p>
+</div>
+<div style="text-align: center">
+<img src="https://lh3.googleusercontent.com/12c8vCrucm23guXlwYvj51MwAYOsePn7znwKBPq9qFzlgPx9XUTyX0wDcUgb0PR9tFVyTKoZPNXkhEur5Nqp7aosUCDuTVXE6yNj-58x3yLudJdqOnionMab6L-5wZ0rLvn1-bg5zA=w2400"/>
+<p>smartart-accent-process.pptx, current</p>
+</div>
+<div style="text-align: center">
+<img src="https://lh3.googleusercontent.com/FBDUqsXyyBI6-abopLSrzHEYbm4YHHZwxFWxnfUsTO0dwl17HdP6sBcKzW_BvTjMWiRuPX6HC1I7aEOcHzeiZBzE-EnJZ_3fkfaOzxDHtiIc0QoFe9T4V9K3jq9_yRkNELx2tEQYpA=w2400"/>
+<p>smartart-accent-process.pptx, reference</p>
+</div>
+<div class="paragraph"><p>This is not not perfect yet, but it&#8217;s clearly a large improvement, all text is
+now readable from the diagram!</p></div>
+<div class="paragraph"><p>All this is available in master (towards LibreOffice 6.3), so you can grab a
+<a href="http://dev-builds.libreoffice.org/daily/master/">daily build</a> and try it out
+right now. :-)</p></div>
+</div>
+</div>
+
+
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>
