@@ -5,6 +5,90 @@
         <description></description>
         <link>https://vmiklos.hu/blog/</link>
         <item>
+            <title>SmartArt improvements in LibreOffice, part 3</title>
+            <description>&lt;div class="paragraph"&gt;&lt;p&gt;I recently &lt;a href="/blog/smartart-improvements-2.html"&gt;dived into&lt;/a&gt; the SmartArt
+support of LibreOffice, which is the component responsible for displaying
+complex diagrams from PPTX. I focus on the case when only the document model
+and the layout constraints are given, not a pre-rendered result.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;First, thanks to our partner &lt;a href="https://www.suse.com/"&gt;SUSE&lt;/a&gt; for working with
+&lt;a href="https://www.collaboraoffice.com/"&gt;Collabora&lt;/a&gt; to make this possible.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_continuous_block_process_accent_process_and_organization_chart"&gt;Continuous Block Process, Accent Process and Organization Chart&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;In this post I would like to present the progress done last month regarding
+the above mentioned diagram types&amp;#8201;&amp;#8212;&amp;#8201;these are used in many documents.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The improvement (as always) come in small incremental steps:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+Continuous Block Process now reads space width from constraints.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+Accent Process now has the missing bullets and fixes an incorrect large
+  paragraph-level indent.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+Organization Chart now has an initial implementation of the &lt;code&gt;hierRoot&lt;/code&gt; and
+  &lt;code&gt;hierChild&lt;/code&gt; algorithms.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+Organization Chart now handles multiple employees for a manager.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;With all these fixed, we reach a much better state for the mentioned diagram
+types.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_results_so_far"&gt;Results so far&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The SmartArt test documents from &lt;a href="https://cgit.freedesktop.org/libreoffice/core/tree/sd/qa/unit/data/pptx/"&gt;sd/qa/unit/data/pptx/&lt;/a&gt; is what I used for testing this work.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Here is how the baseline, the current and the reference rendering of Accent Process looks like:&lt;/p&gt;&lt;/div&gt;
+&lt;div style="text-align: center"&gt;
+&lt;img src="https://lh3.googleusercontent.com/8CH3lhBMrhnNPvcptRvw0R0RUGIW5Jaeh1LxqnuTxcvWFg95OyrZqgAYl2YWMwTJbdyUeGrAB52K-WXu8mSfjPw2k-4NVb0lbXKpnTjtoBuIenqhlX70r8gP3AFuP6RDbgKEl7vPvQ=w640" style="max-width: 100%;"/&gt;
+&lt;p&gt;smartart-accent-process.pptx, baseline&lt;/p&gt;
+&lt;/div&gt;
+&lt;div style="text-align: center"&gt;
+&lt;img src="https://lh3.googleusercontent.com/i62jSfzKrCRQmv-EMEPx_ujXepB0qFzWtMOD8F_HIJzqxxHcsIH1fADQQr3eIsRjiJcyAdx95b4f3jckpzASk2Ifks7bAAWDqJQUJBGLWuDmXXrFHO5q769PEBw3UghmMoS_0ihHTA=w640" style="max-width: 100%;"/&gt;
+&lt;p&gt;smartart-accent-process.pptx, current&lt;/p&gt;
+&lt;/div&gt;
+&lt;div style="text-align: center"&gt;
+&lt;img src="https://lh3.googleusercontent.com/g9cJmO8PPcqOwgYN18uE6RdfFgq5fWi-bpGSOLOLFGYjEq_B0pLFPz_royCoHhz8_58L5GT71Xu62OtEj8IwLeNI631b_DqXHuSAWSEMbaF-ZU8XM4RykbUTE-egq1FhYE9b8p_Ejg=w640" style="max-width: 100%;"/&gt;
+&lt;p&gt;smartart-accent-process.pptx, reference&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;And here is how the baseline, the current and the reference rendering of Organization Chart looks like:&lt;/p&gt;&lt;/div&gt;
+&lt;div style="text-align: center"&gt;
+&lt;img src="https://lh3.googleusercontent.com/ze6x3LugJJBPjzEgJaWUVc_l3yiLtCQrcj_H_SN91YrYeR9f6E9Buzs6wrRp7T9mW4Mcho9jmVR3K0dItcGKiBK8ucs08YMkC9qW7kHQGCSE_m5fcEgK0z4srQnSUCJBD7NaYY-LWA=w640" style="max-width: 100%;"/&gt;
+&lt;p&gt;smartart-org-chart.pptx, baseline&lt;/p&gt;
+&lt;/div&gt;
+&lt;div style="text-align: center"&gt;
+&lt;img src="https://lh3.googleusercontent.com/fT_as5kTDmnbZQpO0MtV_VYu0LqfrRLSewvEkjl3K4nQ4VmFkWSGWJ7RjUjFJyXcOFqpl5fqEQjU7shiqHotkFIDPEJE5s70Ysdnscxf7oVJcV0R4qjpdePU4CnUN9_HxUdEfYjPlw=w640" style="max-width: 100%;"/&gt;
+&lt;p&gt;smartart-org-chart.pptx, current&lt;/p&gt;
+&lt;/div&gt;
+&lt;div style="text-align: center"&gt;
+&lt;img src="https://lh3.googleusercontent.com/Mdoqtf2-u4JISXJsKLp1tLQXnxDDvDg1vPOI5bNpOnAjhM02og80Lz6BnBzA-YkdlT__9lfU-pxFqUOzKpL9ySyJK9EmXnV6ipG5x6SmJTYY92KSzr_0e9qbp5pmZERiBSeBTPbVqg=w640" style="max-width: 100%;"/&gt;
+&lt;p&gt;smartart-org-chart.pptx, reference&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;This is not not perfect yet, but it&amp;#8217;s clearly a large improvement, all text is
+now readable from the diagrams and bullets are no longer missing!&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;All this is available in master (towards LibreOffice 6.3), so you can grab a
+&lt;a href="http://dev-builds.libreoffice.org/daily/master/"&gt;daily build&lt;/a&gt; and try it out
+right now. :-)&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+            <link>https://vmiklos.hu/blog/smartart-improvements-3.html</link>
+            <pubDate>Fri, 04 Jan 2019 14:35:29 +0100</pubDate>
+            <guid isPermaLink="false">https://vmiklos.hu/blog/smartart-improvements-3.html</guid>
+        </item>
+        <item>
             <title>SmartArt improvements in LibreOffice, part 2</title>
             <description>&lt;div class="paragraph"&gt;&lt;p&gt;I recently &lt;a href="/blog/smartart-improvements.html"&gt;dived into&lt;/a&gt; the SmartArt
 support of LibreOffice, which is the component responsible for displaying
@@ -552,106 +636,6 @@ right now. :-)&lt;/p&gt;&lt;/div&gt;
             <link>https://vmiklos.hu/blog/xmlsec-cng-ecsa.html</link>
             <pubDate>Thu, 05 Jul 2018 09:08:20 +0200</pubDate>
             <guid isPermaLink="false">https://vmiklos.hu/blog/xmlsec-cng-ecsa.html</guid>
-        </item>
-        <item>
-            <title>Editing ReqIF-XHTML fragments in LibreOffice Writer</title>
-            <description>&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;a class="image" href="https://youtu.be/hesL0TWZ5JQ"&gt;
-&lt;img src="https://farm2.staticflickr.com/1752/28703474708_bde744fb13_o.png" alt="https://farm2.staticflickr.com/1752/28703474708_bde744fb13_o.png" /&gt;
-&lt;/a&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;I worked on a small feature to use Writer as an editor for the XHTML fragments
-inside
-&lt;a href="https://en.wikipedia.org/wiki/Requirements_Interchange_Format"&gt;Requirements
-Interchange Format&lt;/a&gt; (ReqIF) files.  First, thanks to
-&lt;a href="https://vector.com/"&gt;Vector&lt;/a&gt; for funding
-&lt;a href="https://www.collaboraoffice.com/"&gt;Collabora&lt;/a&gt; to make this possible.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Writer already supported XHTML import and export before (see my
-&lt;a href="http://vmiklos.hu/blog/odt-xhtml-performance.html"&gt;previous post&lt;/a&gt;) as a special
-mode of the HTML filter, this work builds on top of that. The main speciality
-around XHTML as used for fragments inside a ReqIF file is embedded objects.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;The special mode to opt-in for ReqIF-XHTML behavior can actived like this:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-during import: &lt;code&gt;--infilter="HTML (StarWriter):xhtmlns=reqif-xhtml"&lt;/code&gt;
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-during export: &lt;code&gt;-convert-to "xhtml:HTML (StarWriter):xhtmlns=reqif-xhtml"&lt;/code&gt;
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Three different cases are handled:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="olist arabic"&gt;&lt;ol class="arabic"&gt;
-&lt;li&gt;
-&lt;p&gt;
-Image with native data we don&amp;#8217;t understand and just preserve.
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-Image with OLE2 data, which we hand out to external applications (at least
-on Windows). On the above video this is an embedded PPSX file, handled by PowerPoint.
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-Image with ODF data, which we handle internally. This is a Draw document on the above video.
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ol&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Regarding how it works, the import is a series of unwrapping containers till
-you get to the real data and the export is the opposite of this. Here are the layers:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-Larger ReqIF files have the &lt;code&gt;.reqifz&lt;/code&gt; extension, and are ZIP files
-  containing an XML file, having the XHTML fragments. This is not relevant for
-  this post, as Writer assumes that extracting the XHTML fragment from ReqIF is
-  done before you load the content into Writer.
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-XHTML always has a PNG image for the object, and optionally it has RTF as
-  native data for the object.
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-The RTF file is a fragment, containing just an embedded OLE1 container.
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-The OLE1 container is just a wrapper around the real OLE2 container.
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-The OLE2 container either has the data directly or MSO has a convention on
-  how to include OOXML files in it (see the PPSX example above), and we handle
-  that.
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;On export we do the opposite: save the file, put it into OLE2, then into OLE1,
-then into RTF, finally into XHTML.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;There is no specification on how to put ODF files into OLE2, so I extracted
-the relevant code from LibreOffice&amp;#8217;s binary MSO filters and now the Writer
-HTML filter uses that as well. This avoids code duplication and also could
-avoid inventing some new markup this way.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;All this is available in master (towards LibreOffice 6.2), or you can grab a
-&lt;a href="http://dev-builds.libreoffice.org/daily/master/"&gt;daily build&lt;/a&gt; and try it out
-right now. :-)&lt;/p&gt;&lt;/div&gt;
-</description>
-            <link>https://vmiklos.hu/blog/reqif-xhtml.html</link>
-            <pubDate>Tue, 05 Jun 2018 10:43:47 +0200</pubDate>
-            <guid isPermaLink="false">https://vmiklos.hu/blog/reqif-xhtml.html</guid>
         </item>
     </channel>
 </rss>
