@@ -73,4 +73,59 @@ options, other environment variables during build and during testing -- but
 hopefully it helps in the future to avoid pushing fixes for such problems
 detected by sanitizers just blindly.
 
+== Update, 2019-01-25
+
+The above described "do it yourself" way doesn't work with LibreOffice master
+(towards 6.3) and openSUSE Leap 15.0 anymore. I tried to debug what is the
+exact problem, but there are many moving parts here:
+
+- gcc version (providing libstdc++)
+
+- clang version (5.0.2 is too old; 7 failed to build the plugins, trunk
+  towards 9 also generated false positives for me)
+
+- various sanitizer-related environment variables
+
+- various sanitizer-related compiler options
+
+So it's much easier to just use the combination used by the
+`Jenkins_Linux_Ubsan` tinderbox than something custom. Doing that is
+reasonably straightforward, but still there are a couple of non-trivial steps.
+What worked for me is:
+
+- Set up LODE according to its
+  https://wiki.documentfoundation.org/Development/lode[wiki page].
+
+- Instead of plain `./setup --dev`, do:
+
+----
+./setup --jenkins
+./setup --jenkins-san
+./setup --dev
+cd $LODE_HOME/dev/core
+----
+
+This will build a working version of both gcc and clang for you.
+
+- Instead of manually setting up the environment variables, do:
+
+----
+. $LODE_HOME/bin/lode_ubsan_env
+----
+
+- Instead of manually setting autogen options, use this autogen.input:
+
+----
+--with-distro=Jenkins/Linux_ubsan_master
+--disable-avahi
+--with-lang=en-US
+----
+
+- Finally to build the code and run a specific test based on tinderbox mail:
+
+----
+make build-nocheck
+cd sw; make -sr CppunitTest_sw_unowriter CPPUNIT_TEST_NAME="testPasteListener"
+----
+
 // vim: ft=asciidoc
