@@ -2594,6 +2594,98 @@ hopefully it helps in the future to avoid pushing fixes for such problems
 detected by sanitizers just blindly.</p></div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="_update_2019_01_25">Update, 2019-01-25</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>The above described "do it yourself" way doesn&#8217;t work with LibreOffice master
+(towards 6.3) and openSUSE Leap 15.0 anymore. I tried to debug what is the
+exact problem, but there are many moving parts here:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+gcc version (providing libstdc++)
+</p>
+</li>
+<li>
+<p>
+clang version (5.0.2 is too old; 7 failed to build the plugins, trunk
+  towards 9 also generated false positives for me)
+</p>
+</li>
+<li>
+<p>
+various sanitizer-related environment variables
+</p>
+</li>
+<li>
+<p>
+various sanitizer-related compiler options
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>So it&#8217;s much easier to just use the combination used by the
+<code>Jenkins_Linux_Ubsan</code> tinderbox than something custom. Doing that is
+reasonably straightforward, but still there are a couple of non-trivial steps.
+What worked for me is:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Set up LODE according to its
+  <a href="https://wiki.documentfoundation.org/Development/lode">wiki page</a>.
+</p>
+</li>
+<li>
+<p>
+Instead of plain <code>./setup --dev</code>, do:
+</p>
+</li>
+</ul></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>./setup --jenkins
+./setup --jenkins-san
+./setup --dev
+cd $LODE_HOME/dev/core</code></pre>
+</div></div>
+<div class="paragraph"><p>This will build a working version of both gcc and clang for you.</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Instead of manually setting up the environment variables, do:
+</p>
+</li>
+</ul></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>. $LODE_HOME/bin/lode_ubsan_env</code></pre>
+</div></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Instead of manually setting autogen options, use this autogen.input:
+</p>
+</li>
+</ul></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>--with-distro=Jenkins/Linux_ubsan_master
+--disable-avahi
+--with-lang=en-US</code></pre>
+</div></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Finally to build the code and run a specific test based on tinderbox mail:
+</p>
+</li>
+</ul></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>make build-nocheck
+cd sw; make -sr CppunitTest_sw_unowriter CPPUNIT_TEST_NAME="testPasteListener"</code></pre>
+</div></div>
+</div>
+</div>
 </p><hr/></li>
 <li><p>Monday, 18 July 2016<br /><a href="/blog/vc-voc-oc.html">On LibreOffice's ViewContact/ViewObjectContact/ObjectContact</a>
 </p><p><div class="imageblock" style="text-align:center;">
