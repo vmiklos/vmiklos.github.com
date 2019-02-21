@@ -5,6 +5,148 @@
         <description></description>
         <link>https://vmiklos.hu/blog/</link>
         <item>
+            <title>My hack week at Collabora: btLr text direction in Writer</title>
+            <description>&lt;div class="paragraph"&gt;&lt;p&gt;As mentioned in my &lt;a href="https://vmiklos.hu/blog/hackweek-2016.html"&gt;previous&lt;/a&gt; such
+report, a hack week is when we are allowed to hack on anything we want in
+LibreOffice for a few days at &lt;a href="https://www.collaboraoffice.com/"&gt;Collabora&lt;/a&gt;. I
+used this time to implement core support for the btLr text direction in
+Writer.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_motivation"&gt;Motivation&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;If you work with tables in Word, it&amp;#8217;s very easy to create this writing
+direction: the context menu in a table cell has a menu item to set the
+direction of the text, where you can rotate the text by 90 degrees
+counter-clockwise or clockwise. The counter-clockwise btLr direction is the
+problematic one. Support for tbRl was fine already, since that is needed
+typically for Chinese/Japanese scripts as well.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_results_so_far"&gt;Results so far&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Here is how the baseline, the current and the reference rendering of btLr text looks like:&lt;/p&gt;&lt;/div&gt;
+&lt;div style="text-align: center"&gt;
+&lt;img src="https://lh3.googleusercontent.com/o5t6-JQeeNaZpx0YURMvS6xUJv7L4KbkbKnn6VPQ0yzULxHFI15ufkwaw_m0FVY7B2tv8gOnTw1CEY2Uxq6BFTgXHlcorXS52J8X1-mNjsyHKYDmoNG-MQ9X1LtdUWmrLl_W3b2ifQ=w640" style="max-width: 100%;"/&gt;
+&lt;p&gt;btlr-cell.docx, baseline&lt;/p&gt;
+&lt;/div&gt;
+&lt;div style="text-align: center"&gt;
+&lt;img src="https://lh3.googleusercontent.com/Y8jXvq7TFyNoKVjwWd_QvJNJaOySZdKZE_HqqBaTwGoi_rExCee3eDAHx4AS49E7d7bcjG8SEgxnXOmdKFXaJx0MzmadungQ7D0SVqdSqC2trMC9InsHdKUTq1iwu5p8bDwUfIizng=w640" style="max-width: 100%;"/&gt;
+&lt;p&gt;btlr-cell.docx, current&lt;/p&gt;
+&lt;/div&gt;
+&lt;div style="text-align: center"&gt;
+&lt;img src="https://lh3.googleusercontent.com/KYSBaOiAMdy_U8shsb4zoS8J5uyZzwkFPZY4qIKTrHKlo-M-pCdiHHBUxZ9OmQ-uv_QkBiktXeprTQD6gANDvzDVi8JWs4-Ng2RL-uoMcQCrQNL6Hk7tjXSJBaaqxc2skfZzmepkqA=w640" style="max-width: 100%;"/&gt;
+&lt;p&gt;btlr-cell.docx, reference&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;You can see how the second paragraph in the cell was missing from the rendered
+result and now we basically pixel-by-pixel match the reference.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_how_is_this_implemented"&gt;How is this implemented?&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;If you would like to know a bit more about how this works, continue reading&amp;#8230; :-)&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The
+&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=db346dde6179e7414289681d91b153a6ed259d05"&gt;document
+model&lt;/a&gt; and
+&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=052b5d375307245223e694bb835d86966c370d3b"&gt;UNO
+API&lt;/a&gt; were reasonably straightforward to implement, but the layout was much
+more challenging. Writer already supported 3 writing directions:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+typically used for Latin (left to right, top to bottom)
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+Chinese/Japanese (top to bottom, right to left)
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+Mongolian (top to bottom, left to right) text.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;This new one is also a vertical direction, also left to right, but bottom to
+top. The
+&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=e8b9572bf89f55463f2c879a401ed62efc165d95"&gt;initial
+layout&lt;/a&gt; contained code to read the new enumerator from doc model, extend the
+SwFrame class to handle this new bottom to top mode, some handling of
+switching between horizontal/vertical mode and at the end mapping from Writer
+layout&amp;#8217;s direction to VCL&amp;#8217;s "900" font orientation. There are more things to
+handle in layout, but this was good enough to look at other areas as well.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The
+&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=8af98ac8bf0ac8795999ecbf061d3c094f7c3be4"&gt;ODF
+filter&lt;/a&gt; required updating, which was a bit challenging as it was necessary to
+write different attribute names depending on which enumerator is used from an
+emumeration, and we don&amp;#8217;t have good support for this. Once the filter code was
+in place, I could write some
+&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=bef3818dbedba467a257e2573e298d98062be37b"&gt;layout-level
+tests&lt;/a&gt; as well.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Since we have .ui files for UI descriptions, adding
+&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=081b753d4cb4f4a25073ca7de12a7bdaa9fc2be4"&gt;UI
+support&lt;/a&gt; was really easy.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Time came to step away from coding for a moment and write up paperwork to
+&lt;a href="https://issues.oasis-open.org/browse/OFFICE-4030"&gt;propose&lt;/a&gt; this feature to be
+part of the next ODF version (thanks to Andras for the help there!).&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Finally I went back to layout, and improved things a bit more: after
+&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=a0bb480364c80192111ecab3501d63584e651ea3"&gt;fixing
+baseline offsets&lt;/a&gt;, the positioning of the text was exactly matching what Word
+does. How do I know? I used this little script:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="listingblock"&gt;
+&lt;div class="content"&gt;
+&lt;pre&gt;&lt;code&gt;gs -dNOPROMPT -dBATCH -sDEVICE=jpeg -r75 -dNOPAUSE -sOutputFile=btlr.jpg btlr.pdf
+gs -dNOPROMPT -dBATCH -sDEVICE=jpeg -r75 -dNOPAUSE -sOutputFile=btlr-word.jpg btlr-word.pdf
+composite -compose difference btlr-word.jpg btlr.jpg out.jpg&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Which allows seeing the differences between our and Word&amp;#8217;s PDF output.
+Additional work was needed to handle
+&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=835d054434d0000a5741a5bfa5f577e855594c40"&gt;multiple
+paragraphs&lt;/a&gt; in a table cell. At this stage I was happy enough with the
+rendering result, so finally pulled the trigger and replaced the old DOCX
+filter hack (using character-level rotation) with
+&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=8fdbda18b593e7014e44a0fd590bbf98d83258b7"&gt;simple
+DOCX filter mapping&lt;/a&gt; from OOXML&amp;#8217;s btLr direction to Writer&amp;#8217;s btLr direction&amp;#8201;&amp;#8212;&amp;#8201;i.e. what was already done for the tbRl case.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_future_work"&gt;Future work&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The feature works good enough already so that this new core feature can be
+used by the DOCX filter by default, but there are still a few rough edges:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+the shell code (cursor travelling, selection painting, etc) only has
+  &lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=61bb90aac5038b5ff051668f7ae86eb61658e4f3"&gt;partial
+  support&lt;/a&gt; for this new direction
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+RTF and DOC filters are not yet updated
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+the ODF proposal has a list of contexts other than table cells where the new
+  writing direction could be used, which lack UI/filter support/etc at the moment.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;All this is available in master (towards LibreOffice 6.3), so you can grab a
+&lt;a href="http://dev-builds.libreoffice.org/daily/master/"&gt;daily build&lt;/a&gt; and try it out
+right now. :-)&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+            <link>https://vmiklos.hu/blog/hackweek-2019.html</link>
+            <pubDate>Thu, 21 Feb 2019 15:19:04 +0100</pubDate>
+            <guid isPermaLink="false">https://vmiklos.hu/blog/hackweek-2019.html</guid>
+        </item>
+        <item>
             <title>Improving SmartArt import in Impress FOSDEM talk</title>
             <description>&lt;div style="text-align: center; font-size: 0.6em"&gt;
 &lt;img src="https://lh3.googleusercontent.com/bA1u6JMB7OZnPeRmSv2AqMFbAlrJ2vUtiRnZcS9RFT3ftsYuRbyIStd3c0-WvWwUlwuPz-oJRRpGaA09POJJk1S3rNZmsLEwslo06ZtY97R8W4Gp6sK1r0NcvYip2FBF7jsv-k_W8w=w640" style="max-width: 100%;"/&gt;
@@ -509,116 +651,6 @@ right now. :-)&lt;/p&gt;&lt;/div&gt;
             <link>https://vmiklos.hu/blog/uno-api-improvements.html</link>
             <pubDate>Wed, 08 Aug 2018 09:10:21 +0200</pubDate>
             <guid isPermaLink="false">https://vmiklos.hu/blog/uno-api-improvements.html</guid>
-        </item>
-        <item>
-            <title>Improved ECDSA handling in LibreOffice</title>
-            <description>&lt;div class="paragraph"&gt;&lt;p&gt;I wrote about ECDSA handling in LibreOffice
-&lt;a href="https://vmiklos.hu/blog/xmlsec-nss-ecdsa.html"&gt;last year&lt;/a&gt;, back then the target
-was to be able to verify signatures using the ECDSA algorithm on Linux.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Lots of things happened since then, this post is meant to summarize those
-improvements. My personal motivation is that Hungarian eID cards come with a
-gov-trusted ECDSA (x509) cert, so handling those in LibreOffice would be nice.
-My goals were:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-platforms: handling Windows as well, not only Linux/macOS
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-operations: handling signing as well, not only verification
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-formats: cover all of ODF, OOXML and PDF
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Let&amp;#8217;s see what has happened:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-Linux, ODF, sign: we had hardcoded RSA algorithm when generating a signature, now
-  we infer the sign algorithm from the signing cert algorithm
-  (&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=fd1bc178b02e05cd12ec784ff87f5c97069bc5f5"&gt;commit&lt;/a&gt;)
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-Linux, OOXML, sign: same problem with hardcoded RSA
-  (&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=6b1b8ef51b752f9711d6581283d6c515d3c50d9b"&gt;commit&lt;/a&gt;)
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-Windows, PDF, sign: the certificate chooser had to be ported to from
-  CryptoAPI to
-  &lt;a href="https://docs.microsoft.com/en-us/windows/desktop/SecCNG/cng-portal"&gt;CNG&lt;/a&gt;
-  (&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=93e33ba279e837356e157745177d7f6061d442b7"&gt;commit&lt;/a&gt;)
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-Windows, ODF, verify / sign: this was the largest problem, this required a
-  whole new libxmlsec backend
-  (&lt;a href="https://github.com/lsh123/xmlsec/tree/master/include/xmlsec/mscng"&gt;interface&lt;/a&gt;,
-  &lt;a href="https://github.com/lsh123/xmlsec/tree/master/src/mscng"&gt;implementation&lt;/a&gt;, all in
-  C90) and also required conditionally using that new backend in LibreOffice
-  (&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=71d02f5b6ca78935df3d09ec0a5817f5870b056e"&gt;commit&lt;/a&gt;)
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-Windows, OOXML, sign: this was almost functional, except that the UI
-  recently regressed, now fixed
-  (&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=02119ce226ef7c1fcf419aa0933aa95381ee309b"&gt;commit&lt;/a&gt;)
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-Finally now that everything is ported on Windows to use CNG, I could enable
-  it by default yesterday.
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;I could test hardware-based signing after this, which was fine out of the box
-on both platforms. Some screenshots:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-Linux:
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;img src="https://farm2.staticflickr.com/1784/29321634078_8818b2d7ba_o.png" alt="https://farm2.staticflickr.com/1784/29321634078_8818b2d7ba_o.png" /&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-Windows:
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;img src="https://farm1.staticflickr.com/927/42288765505_db72ee48f2_o.png" alt="https://farm1.staticflickr.com/927/42288765505_db72ee48f2_o.png" /&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;(There is no reason why this would not work on macOS, but I did not test that.)&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Thanks Gabor Kelemen who helped me to get a sane card reader that has
-reasonable driver support on Linux.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;All this is available in master (towards LibreOffice 6.2), or you can grab a
-&lt;a href="http://dev-builds.libreoffice.org/daily/master/"&gt;daily build&lt;/a&gt; and try it out
-right now. :-)&lt;/p&gt;&lt;/div&gt;
-</description>
-            <link>https://vmiklos.hu/blog/xmlsec-cng-ecsa.html</link>
-            <pubDate>Thu, 05 Jul 2018 09:08:20 +0200</pubDate>
-            <guid isPermaLink="false">https://vmiklos.hu/blog/xmlsec-cng-ecsa.html</guid>
         </item>
     </channel>
 </rss>
