@@ -21,5 +21,4 @@ check:
 	$(MAKE) -C ../rejourn/in check
 
 server:
-	@echo "http://$(shell ip addr show |grep 'inet ' |grep -v 127.0.0.1 |sed 's|.*inet \([^ /]*\)/.*|\1|;q'):8000/"
-	python -m SimpleHTTPServer 8000
+	python3 -m http.server
