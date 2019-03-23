@@ -2,11 +2,14 @@
 # -*- coding: utf-8 -*- #
 from __future__ import unicode_literals
 
+# This config is for pelican-4.0.1.
+
 AUTHOR = 'Miklos Vajna'
 SITENAME = 'What is Miklos hacking'
 SITEURL = 'http://localhost:8000/blog2'
 
 PATH = '.'
+# Clone this from <https://github.com/vmiklos/vmiklos.github.com>.
 OUTPUT_PATH = '../htdocs/blog2'
 
 TIMEZONE = 'Europe/Budapest'
@@ -29,11 +32,12 @@ LINKS = (('Root', '/'),
 # Default is to disable pagination.
 DEFAULT_PAGINATION = 10
 
-# Asciidoc is not in core.
+# Asciidoc is not in core, clone this from <https://github.com/getpelican/pelican-plugins>, check
+# out commit 000fc5acbce7328fcd94a5d9395465fadc3d544d (master as of 2019-03-02).
 PLUGIN_PATHS = ['/home/vmiklos/git/pelican-plugins']
 PLUGINS = ['asciidoc_reader']
 
-# I don't link the default theme.
+# I don't like the default theme, clone this from <https://github.com/vmiklos/pelican-svbhack>.
 THEME = '/home/vmiklos/git/pelican-svbhack'
 
 # Setting to None will cause the summary to be a copy of the original content.
