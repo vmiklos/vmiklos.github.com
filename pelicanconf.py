@@ -45,3 +45,10 @@ SUMMARY_MAX_LENGTH = None
 
 # Feed item quantity is unrestricted by default.
 FEED_MAX_ITEMS = 10
+
+# This can be useful in preventing older, unnecessary files from persisting in your output.
+DELETE_OUTPUT_DIRECTORY = True
+
+# To speed up the build process.
+CACHE_CONTENT = True
+CACHE_PATH = '../cache'

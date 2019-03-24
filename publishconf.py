@@ -8,5 +8,4 @@ sys.path.append(os.curdir)
 from pelicanconf import *
 
 SITEURL = 'https://vmiklos.hu/blog'
-DELETE_OUTPUT_DIRECTORY = True
 #GOOGLE_ANALYTICS = ""
