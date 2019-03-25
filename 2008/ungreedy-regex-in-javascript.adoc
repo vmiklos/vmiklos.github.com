@@ -1,0 +1,12 @@
+= ungreedy regex in javascript
+
+:slug: ungreedy-regex-in-javascript
+:category: hacking
+:tags: en
+:date: 2008-04-26T00:16:51Z
+++++
+<p>a few days ago i wanted to use ungreedy regexs in javascript. first, let's see what an ungreedy regex is. look at the following example:</p><p><pre>>>> "<p>foo</p><p>bar</p>".replace(/<p>f.*<\/p>/, '')
+""</pre></p><p>this is greedy. you want to get something like:</p><p><pre>"<p>bar</p>"</pre></p><p>right?</p><p>that would be ungreedy. in some other languages, there is a flag for this (php has 'U'), but in javascript, you need an other trick:</p><p><pre>>>> "<p>foo</p><p>bar</p>".replace(/<p>f.*?<\/p>/, '')
+"<p>bar</p>"</pre></p><p>and yes, that's what we wanted. also it works for .+?, and so on.</p><p>ah and as a side note, it seems '.' does not match newlines, so you'll have to work around it like:</p><p><pre>>>> "<p>foo\nbar</p><p>baz</p>".replace(/<p>f[\s\S]*?<\/p>/, '')
+"<p>baz</p>"</pre></p>
+++++

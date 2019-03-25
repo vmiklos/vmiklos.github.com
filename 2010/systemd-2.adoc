@@ -1,0 +1,43 @@
+= Systemd Podcast
+
+:slug: systemd-2
+:category: frugalware
+:tags: en
+:date: 2010-12-20T19:30:16Z
+I just found
+http://media.libsyn.com/media/linuxoutlaws/linuxoutlaws160.ogg[this]
+podcast, it's a bit dated since it happened in August and things have
+been improved a bit since then, but still I was happy to listen it. (The
+interesting part starts at 1:10:50; 17 minutes.)
+
+I already had a short link:/blog/systemd[post] about systemd, and I
+mentioned the killer feature for me is the compact distro-independent
+service file (initscript for sysvinit) format it uses, since even if the
+initscript format we use in Frugalware right now is mostly
+bullshit-free, it's still more bloated than the systemd service files.
+
+Now back to why I began writing this post. :) So there is
+http://0pointer.de/blog/projects/systemd.html[the post] about systemd,
+but it's rather long, and it's easy to miss the point. Since the
+previous post, I think there are a few more killer features in systemd:
+
+- Every service is started in a separate control group (cgroup). Do you
+  remember the situation when you wanted to know who the hell started a
+  given particular process? This is typically a problem if the process is
+  running as root. Now this is no longer a problem, systemd-cgls will show
+  you if it was started by a user or a given service, etc. (Yes, I
+  consider this a security feature.)
+- Upstart already had this "restart if it crashed" feature, but systemd
+  does it better: if the daemon supports socket activation, then
+  messages sent to the socket are buffered by the kernel, and no message
+  will be lost during the restart.
+- systemd provides this on-demand feature, which is pretty much like
+  inetd, so hopefully we can get rid of inetd, which was a constant
+  problem previously. (We inherited a fork of the OpenBSD inetd from
+  Slackware, and being a fork it did not improve since years, causing a
+  constant problem.)
+
+Why writing this post today? Because this morning systemd
+http://frugalware.org/packages/103609[appeared] in -current, so you can
+even http://wiki.frugalware.org/index.php/Systemd#Installation[try it
+out] without installing any unofficial package.

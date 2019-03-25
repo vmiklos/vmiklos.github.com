@@ -1,0 +1,59 @@
+= Poor man's PDF duplex printing
+
+:slug: pdf-duplex-printing
+:category: hacking
+:tags: en
+:date: 2010-11-27T16:17:16Z
+Yesterday I wanted to print a PDF document: two pages per sheet, and of
+course I wanted duplex printing as well (on the short side).
+
+Given that the hardware (the printer) was not capable of duplex
+printing, I needed some software workaround. If you want one page per
+sheet, this is trivial, as the print dialog of any PDF reader will let
+you select "odd pages", then you re-feed the printer with the output
+paper and you select "even pages" and that's it.
+
+OTOH, if you want 2 pages per sheet, then first you need some trick
+first to create two PDF from the original: the first containing the
+pages 1, 2, 5, 6, etc. - and the other containing 3, 4, 7, 8, etc.
+
+After all this isn't really hard using `pdftk`. First, the input PDF was
+around 150 pages, so I wanted to split the input to one file / page:
+
+----
+pdftk in.pdf burst output out/%03d.pdf
+----
+
+Then let's move the pages to the subdirs `a` or `b`, based on the above
+pattern:
+
+[source,sh]
+----
+cd out
+mkdir a b
+for i in *.pdf
+do
+	base=$(basename $i .pdf)
+	if [ $base -lt 100 ]; then
+		rem=$(($(echo $i|sed 's/^0\+\(.*\)\.pdf/\1/')%4))
+	else
+		rem=$(($base%4))
+	fi
+        if [ "$rem" = 1 -o "$rem" = 2 ]; then
+                mv $i a
+        else
+                mv $i b
+        fi
+done
+----
+
+Finally concat the files from the `a` and the `b` dir to a single file:
+
+----
+cd a
+pdftk *.pdf cat output ../a.pdf
+cd ../b
+pdftk *.pdf cat output ../b.pdf
+----
+
+That's it!

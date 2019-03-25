@@ -1,0 +1,95 @@
+= API improvements in LibreOffice
+
+:slug: uno-api-improvements
+:category: libreoffice
+:tags: en
+:date: 2018-08-08T09:10:21Z
+
+image::https://farm2.staticflickr.com/1793/43859007612_ca207fed0f_o.png[align="center"]
+
+I worked on two small features to extend the public (UNO) API of LibreOffice.
+First, thanks to https://vector.com/[Vector] for funding
+https://www.collaboraoffice.com/[Collabora] to make this possible.
+
+== Aliased paths and text in the PNG export for Draw
+
+The UNO API of Draw allows you to build quite complex and custom shapes, but
+you may want to export the rendered result to a bitmap for testing purposes,
+so you can assert that the actual result matches a reference one.
+
+One problem in this area is anti-aliasing, which can easily differ between
+machines. Given that normally aliased rendering is ugly, there is now a way to
+enable AA, but disable it just during a single invocation of the PNG exporter.
+
+The above picture shows how the AA result looks like. You could write a Basic
+macro like this to trigger the PNG export from Draw:
+
+[source,vbs]
+----
+xExporter = createUnoService("com.sun.star.drawing.GraphicExportFilter")
+xExporter.SetSourceDocument(ThisComponent.DrawPages(0))
+Dim aArgs(1) As new com.sun.star.beans.PropertyValue
+aArgs(0).Name  = "URL"
+aArgs(0).Value = "file:///tmp/debug/aa.png"
+aArgs(1).Name  = "MediaType"
+aArgs(1).Value = "image/png"
+xExporter.filter(aArgs())
+----
+
+Let's see how it looks like if you turn AA off:
+
+image::https://farm2.staticflickr.com/1832/43859007522_aeb4516f02_o.png[align="center"]
+
+You just need to specify a new `Antialiasing` key under `FilterData`:
+
+[source,vbs]
+----
+Dim aFilterData(0) As new com.sun.star.beans.PropertyValue
+aFilterData(0).Name = "AntiAliasing"
+aFilterData(0).Value = False
+xExporter = createUnoService("com.sun.star.drawing.GraphicExportFilter")
+xExporter.SetSourceDocument(ThisComponent.DrawPages(0))
+Dim aArgs(2) As new com.sun.star.beans.PropertyValue
+aArgs(0).Name  = "URL"
+aArgs(0).Value = "file:///tmp/debug/non-aa.png"
+aArgs(1).Name  = "FilterData"
+aArgs(1).Value = aFilterData()
+aArgs(2).Name  = "MediaType"
+aArgs(2).Value = "image/png"
+xExporter.filter(aArgs())
+----
+
+You can imagine which rendering result is easier to debug when the reference
+and the actual bitmap doesn't match. ;-)
+
+NOTE: This feature is available for other bitmap formats as well, PNG is only
+an example.
+
+== Default character style in Writer
+
+In most cases you don't really need a default character style: if you're fine
+with a default, then the default paragraph style should be enough for your
+needs. In general, paragraph styles can contain character properties, so if
+the default is fine for you, you just don't set a character style.
+
+However, there is an exception to all rules. If you want to reset the current
+character style, it makes sense to just set the `CharStyleName` property to a
+default value, especially since this works with paragraph styles already.
+
+Now you can write $$C++$$ code like this (see
+https://cgit.freedesktop.org/libreoffice/core/tree/sw/qa/extras/unowriter/unowriter.cxx[SwUnoWriter::testDefaultCharStyle()]
+for a full example):
+
+[source,cpp]
+----
+xCursorProps->setPropertyValue("CharStyleName", uno::makeAny(OUString("Standard")));
+----
+
+And it'll be handled as `Default Style` in English builds, or their localized
+versions in a non-English UI.
+
+All this is available in master (towards LibreOffice 6.2), or you can grab a
+http://dev-builds.libreoffice.org/daily/master/[daily build] and try it out
+right now. :-)
+
+// vim: ft=asciidoc

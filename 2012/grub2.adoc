@@ -1,0 +1,75 @@
+= GRUB2 vs. RAID1, cfdisk and serial console
+
+:slug: grub2
+:category: frugalware
+:tags: en
+:date: 2012-07-29T15:46:22Z
+Since the Frugalware 1.7 release is near, and it uses GRUB2 by default, I
+created a virtual machine, that is similar to the one we use under
+`genesis.frugalware.org`, which hosts this blog as well.
+
+The relevant details:
+
+- it has two RAID1 arrays with ext3:
+
+----
+$ mount|grep /md
+/dev/md126 on / type ext3 (rw,relatime,errors=continue,barrier=1,data=ordered)
+/dev/md127 on /home/ftp/pub type ext3 (rw,relatime,errors=continue,barrier=1,data=ordered)
+----
+
+- the partition tables are created by cfdisk:
+
+----
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sda1              63  1465144064   732572001   fd  Linux raid autodetect
+----
+
+- the machine has a serial console configured:
+
+----
+# cat /proc/cmdline 
+root=/dev/disk/by-uuid/7e41c95d-cd73-4043-b0ba-4797af6ddeff ro vga=normal nomodeset console=ttyS1,115200
+----
+
+Now the question is how does this config deal with the GRUB2 upgrade. First,
+don't miss the official http://frugalware.org/docs/upgrade[upgrade howto], it
+covers most cases. What I want to detail here is how did I avoid starting from
+scratch and creating a proper partition table using fdisk.
+
+Here are the steps I needed:
+
+- Backup. Yes, I did screw up for the first time, so it's really needed.
+- Resize parts of the / RAID1 (/dev/sda1 and /dev/sdb1) with gparted livecd (resizing ext3 from cmdline parted didn't work for me).
+- mdadm re-creation as described in the upgrade howto, from fw install cd, so you'll have the required 1.0 metadata.
+- Reinstall GRUB1 to sda and sdb, since the physical location of GRUB1's stage* changed.
+- Boot back to 1.6, run `pacman-g2 -Syu`, and `grub-install` -- again, see the upgrade howto for details.
+- Now given that serial console needs a custom GRUB config and kernel parameters, you need to modify GRUB2's `/etc/default/grub`. Here is my diff:
++
+[source,diff]
+----
+/etc/default# diff -u grub.orig grub
+--- grub.orig   2012-07-19 01:57:20.000000000 +0200
++++ grub        2012-07-29 14:45:50.000000000 +0200
+@@ -1,11 +1,12 @@
+ GRUB_DEFAULT=0
+ GRUB_TIMEOUT=5
+ GRUB_DISTRIBUTOR="Frugalware 1.6"
+-GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"
++GRUB_CMDLINE_LINUX_DEFAULT="vga=normal nomodeset plymouth.enable=0 console=ttyS0,115200"
+ GRUB_CMDLINE_LINUX=""
+ GRUB_PRELOAD_MODULES=""
+-GRUB_TERMINAL_INPUT=console
+-GRUB_TERMINAL_OUTPUT=gfxterm
++GRUB_TERMINAL_INPUT=serial
++GRUB_SERIAL_COMMAND="serial --speed=115200 --port=0x3f8"
++GRUB_TERMINAL_OUTPUT=serial
+ #GRUB_GFXPAYLOAD_LINUX=keep
+ GRUB_GFXMODE=auto
+ #GRUB_DISABLE_LINUX_UUID=true
+----
++
+(Refer to link:/blog/amtterm[this post] if you don't know the needed port number.)
+
+- Finally run `grub-mkconfig` to create the real config from the just modified default settings.
+- Reboot, and GRUB2, the boot process and the login prompt should be accessible over the serial console again.

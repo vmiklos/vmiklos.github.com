@@ -1,0 +1,55 @@
+= lcov
+
+:slug: lcov
+:category: opensuse
+:tags: en, lcov, bitlbee
+:date: 2013-01-27T21:33:02Z
+There are multiple strategies how to add testcases for code that sort of works,
+but has no or too few tests. One approach (that works quite well in
+LibreOffice, for example) is to just add tests for new code, and there the test
+is "good", if it passes, but it fails if you revert the corresponding real
+change.
+
+An other approach to avoid duplicated tests is to use a tool like `lcov`, that
+can perform line or function coverage analysis for you, so a test is "good" if
+it increases the coverage. I wanted to look into this later approach for
+LibreOffice, but I decided it's more fun to try this out for a smaller project
+first. That's when adding testcases for BitlBee's Skype plugin came into my
+mind.
+
+The problem there is that manual testing typically includes multiple online
+Skype clients and an IRC client as well, and such tests are extremely
+unreliable. So I thought: if I'm able to
+http://en.wikipedia.org/wiki/Mock_object[mock] both the interactive IRC and
+Skype clients, then it'll be easy to test the C Skype plugin itself, even for
+very special scenarios (like changing a groupchat topic in the middle of
+inviting somebody to a groupchat or similar).
+
+So here is the result looks like:
+
+----
+ skyped mock file   +--------+         +---------+   pyexpect mock file
+------------------> | skyped | <-----> | bitlbee | <--------------------
+                    +--------+   TCP   +---------+
+----
+
+For skyped, the exact traffic is recorded and played back later; for BitlBee,
+only the outgoing traffic is exact, for the incoming traffic `pyexpect` allows
+just patterns (to allow tolerance for not interesting changes). Once the
+framework was available, it was quite easy to add testcases: I already have
+70%+ coverage, and I think approaching the 100% function coverage is realistic.
+:-)
+
+What was also interesting is that it turned out the latest upstream lcov
+release is
+http://sourceforge.net/mailarchive/forum.php?thread_name=50F3ECB7.7070505%40linux.vnet.ibm.com&forum_name=ltp-coverage[not
+compatible] with gcc-4.7, but the necessary patches are
+https://build.opensuse.org/request/show/148334[now]
+https://build.opensuse.org/request/show/148408[integrated], and the next
+upstream release will work out of the box.
+
+The BitlBee mock files can be found
+http://code.bitlbee.org/lh/bitlbee/files/head:/protocols/skype/t[here]. Given
+that there are now instructions to do similar analysis for
+http://wiki.documentfoundation.org/Development/Lcov[LibreOffice as well], I
+hope to look into increasing test coverage for the classes I maintain as well.

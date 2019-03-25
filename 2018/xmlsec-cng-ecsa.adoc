@@ -1,0 +1,69 @@
+= Improved ECDSA handling in LibreOffice
+
+:slug: xmlsec-cng-ecsa
+:category: xmlsec
+:tags: en, libreoffice
+:date: 2018-07-05T09:08:20Z
+
+I wrote about ECDSA handling in LibreOffice
+https://vmiklos.hu/blog/xmlsec-nss-ecdsa.html[last year], back then the target
+was to be able to verify signatures using the ECDSA algorithm on Linux.
+
+Lots of things happened since then, this post is meant to summarize those
+improvements. My personal motivation is that Hungarian eID cards come with a
+gov-trusted ECDSA (x509) cert, so handling those in LibreOffice would be nice.
+My goals were:
+
+- platforms: handling Windows as well, not only Linux/macOS
+- operations: handling signing as well, not only verification
+- formats: cover all of ODF, OOXML and PDF
+
+Let's see what has happened:
+
+- Linux, ODF, sign: we had hardcoded RSA algorithm when generating a signature, now
+  we infer the sign algorithm from the signing cert algorithm
+  (http://cgit.freedesktop.org/libreoffice/core/commit/?id=fd1bc178b02e05cd12ec784ff87f5c97069bc5f5[commit])
+
+- Linux, OOXML, sign: same problem with hardcoded RSA
+  (http://cgit.freedesktop.org/libreoffice/core/commit/?id=6b1b8ef51b752f9711d6581283d6c515d3c50d9b[commit])
+
+- Windows, PDF, sign: the certificate chooser had to be ported to from
+  CryptoAPI to
+  https://docs.microsoft.com/en-us/windows/desktop/SecCNG/cng-portal[CNG]
+  (http://cgit.freedesktop.org/libreoffice/core/commit/?id=93e33ba279e837356e157745177d7f6061d442b7[commit])
+
+- Windows, ODF, verify / sign: this was the largest problem, this required a
+  whole new libxmlsec backend
+  (https://github.com/lsh123/xmlsec/tree/master/include/xmlsec/mscng[interface],
+  https://github.com/lsh123/xmlsec/tree/master/src/mscng[implementation], all in
+  C90) and also required conditionally using that new backend in LibreOffice
+  (http://cgit.freedesktop.org/libreoffice/core/commit/?id=71d02f5b6ca78935df3d09ec0a5817f5870b056e[commit])
+
+- Windows, OOXML, sign: this was almost functional, except that the UI
+  recently regressed, now fixed
+  (http://cgit.freedesktop.org/libreoffice/core/commit/?id=02119ce226ef7c1fcf419aa0933aa95381ee309b[commit])
+
+- Finally now that everything is ported on Windows to use CNG, I could enable
+  it by default yesterday.
+
+I could test hardware-based signing after this, which was fine out of the box
+on both platforms. Some screenshots:
+
+- Linux:
+
+image::https://farm2.staticflickr.com/1784/29321634078_8818b2d7ba_o.png[align="center"]
+
+- Windows:
+
+image::https://farm1.staticflickr.com/927/42288765505_db72ee48f2_o.png[align="center"]
+
+(There is no reason why this would not work on macOS, but I did not test that.)
+
+Thanks Gabor Kelemen who helped me to get a sane card reader that has
+reasonable driver support on Linux.
+
+All this is available in master (towards LibreOffice 6.2), or you can grab a
+http://dev-builds.libreoffice.org/daily/master/[daily build] and try it out
+right now. :-)
+
+// vim: ft=asciidoc

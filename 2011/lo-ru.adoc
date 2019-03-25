@@ -1,0 +1,28 @@
+= Russian characters in RTF export
+
+:slug: lo-ru
+:category: libreoffice
+:tags: en
+:date: 2011-01-27T01:47:22Z
+I got https://bugs.freedesktop.org/show_bug.cgi?id=33478[a report] about
+two problems which got fixed in master now.
+
+The first error is triggered, if you have special (in RTF terms, so for
+example `{` or `}`) characters in style names. The result was not so
+friendly when you opened such a document:
+
+image::http://vmiklos.hu/pic/loru1.png[align="center"]
+
+After applying the
+http://cgit.freedesktop.org/libreoffice/writer/commit/?id=1482475880c2902d8e041bdc211fc52afd4a7efb[first
+fix], the document was imported but the original
+&#1058;&#1077;&#1089;&#1090; text was replaced by something
+non-unicode:
+
+image::http://vmiklos.hu/pic/loru2.png[align="center"]
+
+The
+http://cgit.freedesktop.org/libreoffice/writer/commit/?id=a37fae128b4badc8f9f2201e28dca3e08948ddec[second
+fix] addresses this, and now the result is the expected one:
+
+image::http://vmiklos.hu/pic/loru3.png[align="center"]

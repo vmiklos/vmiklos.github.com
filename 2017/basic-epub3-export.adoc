@@ -1,0 +1,61 @@
+= Basic EPUB3 export in Libreoffice
+
+:slug: basic-epub3-export
+:category: libreoffice
+:tags: en
+:date: 2017-11-10T11:19:36Z
+image::https://farm5.staticflickr.com/4577/37588898064_117dc4a933_o_d.png[align="center"]
+
+I worked on a new EPUB3 export filter in LibreOffice recently. First, thanks
+to http://nouenoff.nl/[Nou&Off] in cooperation with a customer who made this
+work possible.  The current state is that basic features work nicely to the
+extent that the filter is probably usable for most books (they typically
+mostly have just text with minimal formatting), so this post aims to explain
+the architecture, how the various pieces fit together.
+
+The above picture shows the building blocks. The idea is that nominally EPUB
+is a complete export filter, but instead of doing all the work, we offload
+various sub-tasks to other modules:
+
+- First we invoke the existing (flat) ODT export, so we can work with ODF
+  instead of with the UNO API directly. This will be useful in the next step.
+- Then we feed the SAX events from the ODT export to a new librevenge text
+  export. Given that the librevenge API is really close to ODF (and xmloff/
+  has quite some code to map the UNO API to ODF), here it pays off to work with
+  ODF and not with the UNO API directly.
+- The librevenge text export talks to a librevenge generator, which is
+  David Tardon's excellent
+  https://sourceforge.net/projects/libepubgen/[libepubgen] in this case.
+- Finally libepubgen calls back to LibreOffice, and our package code does the
+  ZIP compression.
+
+The setup is a bit complicated, but it has a number of advantages:
+
+- Instead of reinventing the wheel, LO and DLP now shares code, libepubgen is
+  now a dependency of LibreOffice.
+- libepubgen doesn't bring its own ZIP writer code, it can nicely reuse our
+  existing one.
+- This is a great opportunity to finally write an ODT->librevenge bridge, so
+  other DLP-based export libs can be added in the future (e.g.
+  https://sourceforge.net/projects/librvngabw/[librvngabw]).
+- If we ever want to export to EPUB from Draw/Impress, libepubgen will help us
+  there as well.
+
+As a user, here is a list of features you can expect working:
+
+- plain text should work fine (formatting may be lost, but content should be
+  fine)
+- table of contents, as long as you properly use headings or you separate
+  chapters by page breaks
+- export options: EPUB3 vs EPUB2, split on headings vs page breaks
+- basic set of character and paragraph properties should work
+
+During development I regularly used
+https://github.com/IDPF/epubcheck[epubcheck], so hopefully the export result
+is usually valid.
+
+All this is available in master (towards LibreOffice 6.0), or you can grab a
+http://dev-builds.libreoffice.org/daily/master/[daily build] and try it out
+right now. :-)
+
+// vim: ft=asciidoc

@@ -1,0 +1,46 @@
+= OTRS plugin for Supybot
+
+:slug: supybot-otrs
+:category: python
+:tags: en, supybot, otrs
+:date: 2014-05-18T11:03:46Z
+
+OTRS is quite different to Bugzilla (what we use for upstream LibreOffice
+development for quite some time). On the plus side, e.g. it has strong support
+for multiple customers. OTOH, it deals with tickets instead of bugs, and sadly
+it doesn't have a single identifier for tickets. It has a ticket _number_
+(which by default even includes the date), which is searchable, and it has a
+ticket _ID_, which is used for URL's.
+
+In case of Bugzilla, you can easily lookup "bug#12345" in Firefox. Create a
+bookmark with the following properties:
+
+- Location: https://localhost/bugzilla/show_bug.cgi?id=%s
+- Keyword: bug
+
+and then you can just copy&paste bug#12345 to Firefox, replace the # with a
+space, and Firefox will do the right thing.
+
+Unfortunately (due to the above detailed reasons), this is not possible with
+OTRS. So I decided to write a Supybot plugin that can notice "bug#12345" on an
+IRC channel, and give you the clickable URL (after finding out the ticket ID
+from the ticket number).
+
+The result is available
+https://github.com/vmiklos/vmexam/tree/master/python/supybot-otrs[on GitHub],
+it looks like this:
+
+----
+09:58 < vmiklos> bug#1000068
+09:58 < supybot> https://localhost/otrs/index.pl?Action=AgentTicketZoom;TicketID=73
+----
+
+Given that I found no relevant hits when
+https://www.google.com/search?q=supybot+%22otrs%22[searching] for 'supybot
+otrs', I hope this code may be useful for others as well.
+
+Thanks to James Scott for his
+https://github.com/scottjab/supybot-youtube[YouTube] plugin that helped to
+quickly figure out the relevant Supybot API's.
+
+// vim: ft=asciidoc

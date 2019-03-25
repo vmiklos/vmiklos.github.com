@@ -1,0 +1,69 @@
+= MathType import in the RTF and DOCX filter
+
+:slug: mathtype-import
+:category: libreoffice
+:tags: en
+:date: 2015-05-03T21:15:59Z
+TL;DR: Import of old-style (pre-2010 for RTF, pre-2007 for DOCX) math
+equations embedded into text documents should be now imported as editable
+embedded math objects.
+
+Longer version: if you want to embed math equations into RTF or DOCX files,
+you have two choices. The older approach is to embed a MathType OLE object
+into the file, the newer one is a native OOXML markup, which has an RTF markup
+equivalent as well. Handling of the later has been implemented by
+http://llunak.blogspot.com/[Luboš Luňák] for DOCX a long time ago, and I
+contributed the RTF equivalent almost
+link:/blog/lo-rtf-math-native.html[3 years ago].
+
+What remains is the handling of the older version, the embedded OLE object.
+Previously only the replacement graphic was imported, so regardless of the
+Tools -> Options -> Load / Save -> Microsoft Office -> MathType to Math
+checkbox, the result was never editable.
+
+Here is how it looks like now:
+
+image::https://lh3.googleusercontent.com/-V3SqO3Rz88s/VUZvFcBNMPI/AAAAAAAAFb4/QARDYqQVQGY/s0/[align="center"]
+
+Given that the RTF and the DOCX importers share lots of code in the
+`writerfilter/` module, I implemented the same for the DOCX import at the same
+time, too. The interesting challenge was that writerfilter wants an
+http://api.libreoffice.org/docs/idl/ref/interfacecom_1_1sun_1_1star_1_1document_1_1XFilter.html[XFilter]
+implementation for the embedded object if it is to be handled internally by
+LibreOffice, but the MathType filter (originally created to handle math
+objects inside binary DOC files) didn't have one. Once I implemented such a
+http://cgit.freedesktop.org/libreoffice/core/commit/?id=add60d233f70ff56472448bd50b3771f38974c52[filter
+wrapper], the
+http://cgit.freedesktop.org/libreoffice/core/commit/?id=2a3e8b470edf2fe76188f9ccf6b0f32dfc817ea4[rest]
+wasn't too hard.
+
+Here are
+http://cgit.freedesktop.org/libreoffice/core/tree/sw/qa/extras/rtfimport/data/mathtype.rtf[test]
+http://cgit.freedesktop.org/libreoffice/core/tree/sw/qa/extras/ooxmlimport/data/mathtype.docx[documents]
+if you want to try it yourself. You'll need a 5.0
+http://dev-builds.libreoffice.org/daily/master/[daily build] for that, though.
+;-)
+
+If I'm at describing features new in LibreOffice Writer 5.0 file filters, here are a few more:
+
+- http://cgit.freedesktop.org/libreoffice/core/commit/?id=830abf307aab9f9611db60b5c734fbafd3b3d8a3[Automatic hyphenation at a document
+  level] and http://cgit.freedesktop.org/libreoffice/core/commit/?id=a3ec386c2283a196f8d9f1edd0ff97c38ddb281a[exceptions to it] is now
+  imported in RTF. I also adjusted the
+  http://cgit.freedesktop.org/libreoffice/core/commit/?id=a2fea109e6454b10e8e85148b93bdca89066fe8d[exporter], so now Word sort of
+  understands our hyphenation rules, replacing the OOo-specific custom
+  hyphenation RTF extension that Word just ignored.
+- http://cgit.freedesktop.org/libreoffice/core/commit/?id=7546a904265cc0d0a0e3795cdb411cbb945a39fe[picture wrap distance properties]
+  are now handled in the RTF importer -- previously that was only handled for
+  shapes.
+
+And a number of bugfixes for the RTF filter:
+
+- https://bugs.documentfoundation.org/show_bug.cgi?id=86182[tdf#86182] better RTL paragraph handling
+- https://bugs.documentfoundation.org/show_bug.cgi?id=80708[tdf#80708] related to the improved old-style Writer table export handling work
+- https://bugs.documentfoundation.org/show_bug.cgi?id=90421[tdf#90421] hyperlink export tweak
+
+Do these sound interesting? Look at what others did for LibreOffice 5.0 on
+https://wiki.documentfoundation.org/ReleaseNotes/5.0[the TDF wiki], even if
+it's far from complete, as the 5.0 branch is not yet created. :-)
+
+// vim: ft=asciidoc

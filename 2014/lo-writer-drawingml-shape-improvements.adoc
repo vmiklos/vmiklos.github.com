@@ -1,0 +1,108 @@
+= OOXML shape improvements in LibreOffice Writer 4.3
+
+:slug: lo-writer-drawingml-shape-improvements
+:category: libreoffice
+:tags: en
+:date: 2014-01-11T16:51:26Z
+Although LibreOffice 4.2.0 is
+https://wiki.documentfoundation.org/ReleasePlan/4.2[not yet released], it was
+already branched off from `master` in November last year, and improvements for
+the next release are already cooking in `master`. One of these will be a major
+improvement of shape handling in the DOCX import/export filter.
+
+Some background: when DOCX was initially introduced, it still used
+http://en.wikipedia.org/wiki/Vector_Markup_Language[VML] (which is in short
+an XML equivalent of the binary shape format), and only Word 2010 started to
+write shapes using
+http://en.wikipedia.org/wiki/Office_Open_XML_file_formats#DrawingML[drawingML].
+Given that Word still understands VML, it wasn't urgent for us to write shapes
+using the drawingML markup. As for import, Word still writes an approximate
+version of the shape in VML as a fallback -- that's what we read till now.
+Needless to say, newer drawingML features have no VML equivalent so with time
+it became more and more important for us to finally read and write shapes in
+DOCX using drawingML, which just happened in Writer.
+
+I'm posting here a few screenshots showing the improvements I've implemented.
+Note that final 4.3 is still far from being released, so this is not a
+complete list. :-) In each case I'm providing a screenshot showing how it
+looked (at the end of an import/export/import again roundtrip) _before_, how
+it looks _now_ in 4.3 and the _reference_ layout. Click on the images to get a
+larger image:
+
+- document with different colors
+  (http://people.freedesktop.org/~vmiklos/2014/docx-drawingml/color.docx[test doc]):
+
+++++
+<div align="center">
+++++
+image:$$https://lh3.googleusercontent.com/-9mP2CfnGea4/UtFifqpPAII/AAAAAAAAD7k/5vJFQNHZOew/s400/color-lo42.png$$[align="center",link="$$https://lh3.googleusercontent.com/-9mP2CfnGea4/UtFifqpPAII/AAAAAAAAD7k/5vJFQNHZOew/s500/color-lo42.png$$"]
+image:$$https://lh4.googleusercontent.com/-zVLbX6nvZLY/UtFifqBENbI/AAAAAAAAD7c/r9PQuAd5g18/s400/color-lo43.png$$[align="center",link="$$https://lh4.googleusercontent.com/-zVLbX6nvZLY/UtFifqBENbI/AAAAAAAAD7c/r9PQuAd5g18/s500/color-lo43.png$$"]
+image:$$https://lh6.googleusercontent.com/-OQdaaTTH0Aw/UtFifrL-jTI/AAAAAAAAD7U/inr0Zx0lHmo/s400/color-word2007.png$$[align="center",link="$$https://lh6.googleusercontent.com/-OQdaaTTH0Aw/UtFifrL-jTI/AAAAAAAAD7U/inr0Zx0lHmo/s500/color-word2007.png$$"]
+image:$$https://lh4.googleusercontent.com/-Yb2am1Vc65g/UtFigUF9fkI/AAAAAAAAD7w/nRZhF0iUYMA/s400/color-word2010.png$$[align="center",link="$$https://lh4.googleusercontent.com/-Yb2am1Vc65g/UtFigUF9fkI/AAAAAAAAD7w/nRZhF0iUYMA/s500/color-word2010.png$$"]
+++++
+</div>
+++++
+
+OK, this has four pictures: before, now, Word 2007 and Word2010. As you can see now we're now on par with Word 2010. ;-)
+
+- document with textboxes inside a group shape
+  (http://people.freedesktop.org/~vmiklos/2014/docx-drawingml/groupshape-textbox.docx[test doc]):
+
+++++
+<div align="center">
+++++
+image:$$https://lh6.googleusercontent.com/-G4vltiHehvQ/UtFigLmY6fI/AAAAAAAAD8Q/I1iPtoh4hHE/s400/groupshape-textbox-lo42.png$$[align="center",link="$$https://lh6.googleusercontent.com/-G4vltiHehvQ/UtFigLmY6fI/AAAAAAAAD8Q/I1iPtoh4hHE/s500/groupshape-textbox-lo42.png$$"]
+image:$$https://lh6.googleusercontent.com/-wncA0mX92hA/UtFighZK4HI/AAAAAAAAD70/pwB6tGwyPbk/s400/groupshape-textbox-lo43.png$$[align="center",link="$$https://lh6.googleusercontent.com/-wncA0mX92hA/UtFighZK4HI/AAAAAAAAD70/pwB6tGwyPbk/s500/groupshape-textbox-lo43.png$$"]
+image:$$https://lh6.googleusercontent.com/-X3X_AXClLyw/UtFig15lsrI/AAAAAAAAD74/_YntDxB1pUk/s400/groupshape-textbox-word2010.png$$[align="center",link="$$https://lh6.googleusercontent.com/-X3X_AXClLyw/UtFig15lsrI/AAAAAAAAD74/_YntDxB1pUk/s500/groupshape-textbox-word2010.png$$"]
+++++
+</div>
+++++
+
+- document with textbox, having a special
+  http://api.libreoffice.org/docs/idl/ref/namespacecom_1_1sun_1_1star_1_1text_1_1RelOrientation.html[RelOrientation]
+  (http://people.freedesktop.org/~vmiklos/2014/docx-drawingml/relorentation-textbox.docx[test doc]):
+
+++++
+<div align="center">
+++++
+image:$$https://lh3.googleusercontent.com/-hpAhQ8Jd2R4/UtFihLad6RI/AAAAAAAAD8M/sgFpaLTRnAE/s400/relorientaton-textbox-lo42.png$$[align="center",link="$$https://lh3.googleusercontent.com/-hpAhQ8Jd2R4/UtFihLad6RI/AAAAAAAAD8M/sgFpaLTRnAE/s800/relorientaton-textbox-lo42.png$$"]
+image:$$https://lh6.googleusercontent.com/-1Ca-ZW3ugKg/UtFihSSXf0I/AAAAAAAAD8I/lQt2qu7XDQA/s400/relorientaton-textbox-lo43.png$$[align="center",link="$$https://lh6.googleusercontent.com/-1Ca-ZW3ugKg/UtFihSSXf0I/AAAAAAAAD8I/lQt2qu7XDQA/s800/relorientaton-textbox-lo43.png$$"]
+image:$$https://lh6.googleusercontent.com/-LgNJNRlraq8/UtFikZ2L43I/AAAAAAAAD9I/VgOKGQt0o9M/s400/relorientaton-textbox-word2010.png$$[align="center",link="$$https://lh6.googleusercontent.com/-LgNJNRlraq8/UtFikZ2L43I/AAAAAAAAD9I/VgOKGQt0o9M/s800/relorientaton-textbox-word2010.png$$"]
+++++
+</div>
+++++
+
+- document with a shape having a custom adjustment
+  (http://people.freedesktop.org/~vmiklos/2014/docx-drawingml/shape-adj.docx[test doc]):
+
+++++
+<div align="center">
+++++
+image:$$https://lh3.googleusercontent.com/-VeqomDNiRDg/UtFiiM9h93I/AAAAAAAAD8k/5iGiGUEan4s/s400/shape-adj-lo42.png$$[align="center",link="$$https://lh3.googleusercontent.com/-VeqomDNiRDg/UtFiiM9h93I/AAAAAAAAD8k/5iGiGUEan4s/s500/shape-adj-lo42.png$$"]
+image:$$https://lh6.googleusercontent.com/-Jd3N1X6jvcA/UtFiiTc_GWI/AAAAAAAAD8g/-ExLQkNqMfQ/s400/shape-adj-lo43.png$$[align="center",link="$$https://lh6.googleusercontent.com/-Jd3N1X6jvcA/UtFiiTc_GWI/AAAAAAAAD8g/-ExLQkNqMfQ/s500/shape-adj-lo43.png$$"]
+image:$$https://lh4.googleusercontent.com/-aLbCIiyql48/UtFii62b47I/AAAAAAAAD8o/W0EDNoQtCl0/s400/shape-adj-word2010.png$$[align="center",link="$$https://lh4.googleusercontent.com/-aLbCIiyql48/UtFii62b47I/AAAAAAAAD8o/W0EDNoQtCl0/s500/shape-adj-word2010.png$$"]
+++++
+</div>
+++++
+
+- document with different colors
+  (http://people.freedesktop.org/~vmiklos/2014/docx-drawingml/smiley.docx[test doc]):
+
+++++
+<div align="center">
+++++
+image:$$https://lh6.googleusercontent.com/-HRRivr0f-a0/UtFijDe8cfI/AAAAAAAAD88/rnVTutXIE84/s400/smiley-lo42.png$$[align="center",link="$$https://lh6.googleusercontent.com/-HRRivr0f-a0/UtFijDe8cfI/AAAAAAAAD88/rnVTutXIE84/s500/smiley-lo42.png$$"]
+image:$$https://lh5.googleusercontent.com/-mITRnHUfrqA/UtFijZriQeI/AAAAAAAAD84/92BbOA8DRfk/s400/smiley-lo43.png$$[align="center",link="$$https://lh5.googleusercontent.com/-mITRnHUfrqA/UtFijZriQeI/AAAAAAAAD84/92BbOA8DRfk/s500/smiley-lo43.png$$"]
+image:$$https://lh6.googleusercontent.com/--_LhqgTxNM0/UtFij6NNYaI/AAAAAAAAD9A/5UFA4kEvBp0/s400/smiley-word2010.png$$[align="center",link="$$https://lh6.googleusercontent.com/--_LhqgTxNM0/UtFij6NNYaI/AAAAAAAAD9A/5UFA4kEvBp0/s500/smiley-word2010.png$$"]
+++++
+</div>
+++++
+
+If you want to try these out yourself, get a
+http://dev-builds.libreoffice.org/daily/[daily build] and play with it! If
+something goes wrong, report it to us in the
+https://www.libreoffice.org/get-help/bug/[Bugzilla], so we can try fix it
+before 4.3 gets branched off. Last, but not at least, thanks for
+http://www.cloudon.com/[CloudOn] for funding these improvements! :-)
+
+// vim: ft=asciidoc

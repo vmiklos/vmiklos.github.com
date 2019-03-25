@@ -1,0 +1,35 @@
+= incremental bzr -> git conversion
+
+:slug: incremental-bzr-g-git-conversion
+:category: hacking
+:tags: en
+:date: 2008-01-10T14:56:07Z
+++++
+<p>i recently had problems with bzr -> git conversion using tailor and now Lele pulled my patches so here is a mini-howto about how i did the conversion.</p><p>i did all this in a ~/scm/tailor/bitlbee dir (to convert the bitlbee bzr repo), but of course you can do it somewhere else, too.</p><p>create the dir and place there the tailor config. mine is like:</p><p><code>
+$ cat bitlbee.conf
+[DEFAULT]
+verbose = True
+[bitlbee]
+target = git:target
+start-revision = INITIAL
+root-directory = /home/vmiklos/scm/tailor/bitlbee
+state-file = bitlbee.state
+source = bzr:source
+subdir = bitlbee.git
+[bzr:source]
+repository = /home/vmiklos/scm/tailor/bitlbee/bitlbee.bzr
+[git:target]
+repository = /home/vmiklos/scm/tailor/bitlbee/bitlbee.git
+</code></p><p>and here is the update script:
+<code>
+$ cat update.sh
+#!/bin/sh -e
+cd `dirname $0`
+cd bitlbee.bzr
+bzr pull
+cd ..
+tailor -c bitlbee.conf
+</code></p><p>to update the import daily i added the followings to my crontab:</p><p><code>
+40 4 * * * ~/scm/tailor/bitlbee/update.sh &>/dev/null
+</code></p><p>and we're ready, you'll have a daily updated git import.</p><p>one minor note: the bitlbee.git dir is a non-bare repo and it's also a bzr repo which is not a problem (you can clone it and gitweb handles it) but if you plan to switch to git later, you probably want to clone it once get rid of that junk :)</p>
+++++

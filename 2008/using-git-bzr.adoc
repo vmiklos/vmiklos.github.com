@@ -1,0 +1,20 @@
+= using git-bzr
+
+:slug: using-git-bzr
+:category: hacking
+:tags: en
+:date: 2008-07-31T23:44:19Z
+++++
+<p>It seems recently one of my favorite topics is 'how to convert from $random SCM to git' ;)</p><p>So, I already had a configuration using tailor, but that was slow. I know this already. Tailor is good because it always works, it isn't good because it's fast.</p><p>First, you need git-1.6.0rc0 or higher, you can find an fpm in my <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/bmf/frugalware-i686/">bmf repo</a>.</p><p>Second, you need the bzr fastimport plugin:</p><p><code>bzr branch lp:bzr-fastimport</code></p><p>Then enable the plugin:</p><p><code>cd ~/.bzr/plugins; ln -s /path/to/bzr-fastimport fastimport</code></p><p>Now you can clone git-bzr itself:</p><p><code>git clone git://github.com/pieter/git-bzr.git</code></p><p>Put it to your PATH:</p><p><code>cd ~/bin; ln -s /path/to/git-bzr/git-bzr .</code></p><p>NOTE: so you should not symlink the dir, but the script inside the dir.</p><p>Okay, this is done, now clone (branch in bzr terms) the bzr repo you want to convert. For example:</p><p><code>bzr branch http://code.bitlbee.org/bitlbee/</code></p><p>Finally do the conversion (from the git-bzr README):</p><p><pre>
+git bzr add upstream ../bzr-branch
+git bzr fetch upstream
+git checkout -b local_branch bzr/upstream
+: hack hack hack
+git bzr push upstream
+</pre></p><p>Actually for now I only needed a one-directional convert, so my update-bitlbee.sh now looks like:</p><p><pre>
+cd ~/scm/bzr/bitlbee
+bzr pull
+cd - # so we are again under bitlbee.git, it works in bare repos as well!
+git bzr fetch upstream
+</pre></p><p>And yes, the resulting trees match perfectly! ;)</p><p>(Yes, I plan to package git-bzr and bzr-fastimport but I want to give it a good testing first.)</p>
+++++

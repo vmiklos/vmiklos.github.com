@@ -1,0 +1,23 @@
+= asciidoc vs dblatex
+
+:slug: asciidoc-vs-dblatex
+:category: hacking
+:tags: en
+:date: 2008-07-14T00:41:58Z
+++++
+<p>so, in the latest stable version of asciidoc, the default pdf backend of a2x is dblatex, not fop.</p><p>given that this way we can avoid Java, that must be a good thing ;) (faster, freeer, etc)</p><p>here are a few tricks:</p><p><ul>
+  <li>if you want to hide the "revision history" page:
+<pre><xsl:param name="latex.output.revhistory">0</xsl:param></pre></li>
+  <li>if you want to avoid the dblatex logo, just comment out the line:
+<pre><xsl:param name="doc.publisher.show">1</xsl:param></pre></li>
+  <li>it seems that atm the $$$ math expression $$$ form is not supported, but you can do for example:
+<pre>
+++++
+<inlineequation><alt>
+\[ \$\alpha + \$\beta = \$(\alpha + \beta) \]
+</alt></inlineequation>
+++++
+</pre>
+AFAIK this was not possible till now, using fop. :)</li>
+</ul></p>
+++++

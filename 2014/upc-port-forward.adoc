@@ -1,0 +1,41 @@
+= UPC vs port forwarding
+
+:slug: upc-port-forward
+:category: networking
+:tags: en, upc
+:date: 2014-09-20T20:56:33Z
+
+http://en.wikipedia.org/wiki/UPC_Broadband[UPC] traditionally had a setup
+consisting of a cable modem providing internet access to a single computer,
+and then it was up to the users if they use that access to really connect to a
+computer or to a router, providing wireless access and so on.  It seems, these
+days they are more after actually _encouraging_ people to use their
+subscription on multiple devices -- possibly that way it's easier to sell
+larger packages (like 60 MBit/s download rate instead of 30 MBit/s, etc).  One
+fallout from this move is that they started to replace modems with a
+combination of modems and routers, in this case this is an
+http://www.ubeeinteractive.com/products/cable/evw3226[Ubee EVW3226], with the
+brand removed. I wanted to try out if this new device could replace my
+previous router or not -- so far it seems to be good enough, though there was
+one pitfall, hence this post.
+
+It's possible to define a range of IP addresses to be used for DHCP purposes,
+though you can't serve fixed IP addresses based on the MAC address of the
+clients. Given that my home network isn't that large, I can tolerate that: as
+long as there is a range that can be safely used for fixed addresses, I can
+configure that manually.  It's also possible to do port forwarding, e.g.
+redirecting the incoming ssh traffic to a given address -- except you can't do
+both at the same time: you can't redirect traffic to an address that's not
+known (served via DHCP) to the router. Which is a shame, the #1 use case for
+port forwarding is to redirect traffic to a home-server that will then also
+have a fixed IP internally...
+
+So here is a hack that allowed me to still do this: set the start of the range
+of the DHCP served IP's exactly to the address of the (to be used in future
+as) fixed address, e.g. 192.168.0.5. Connect with one client, so that the
+address will be _known_ to the router. Then add the port-forwarding rule,
+finally set the DHCP range back to its original value (in my case I use
+192.168.0.1..99 for fixed addresses and 100+ for dynamic purposes). It's a
+stupid trick, but it works... ;-)
+
+// vim: ft=asciidoc

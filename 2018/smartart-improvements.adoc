@@ -1,0 +1,104 @@
+= SmartArt improvements in LibreOffice
+
+:slug: smartart-improvements
+:category: libreoffice
+:tags: en
+:date: 2018-11-05T16:35:25Z
+
+I recently dived into the SmartArt support of LibreOffice, which is the
+component responsible for displaying complex diagrams from PPTX, especially in
+case only document model and the layout constraints are given, not a
+pre-rendered result.
+
+First, thanks to our partner https://www.suse.com/[SUSE] for working with
+https://www.collaboraoffice.com/[Collabora] to make this possible.
+
+== The problem
+
+There are several ones. :-) If you are just interested in high quality viewing
+of PPTX files, then your problem started with PowerPoint 2007 not writing a
+pre-rendered drawingML markup of the diagram to the files, only PowerPoint
+2010 started behaving like this. Additionally, if a diagram is not edited,
+then re-saving with PowerPoint 2010 doesn't seem to generate the drawingML
+markup, either. This means that data + constraints cases are quite frequent
+even today.
+
+Also, one day Impress should be able to actually edit these SmartArts as well,
+so having the knowledge how to lay out SmartArt (even if it's import-time-only
+at the moment) is a good thing.
+
+== Results so far
+
+I always write cppunit tests when I work on filter code (in this case OOXML), so
+far all fixes were visible in just two test files:
+https://cgit.freedesktop.org/libreoffice/core/tree/sd/qa/unit/data/pptx/smartart-vertial-box-list.pptx[smartart-vertial-box-list.pptx]
+and
+https://cgit.freedesktop.org/libreoffice/core/tree/sd/qa/unit/data/pptx/vertical-bracket-list.pptx[vertical-bracket-list.pptx].
+
+Here is how the baseline, the current and the reference rendering of these test documents look like:
+
+++++
+<div style="text-align: center">
+<img src="https://farm2.staticflickr.com/1924/45683201352_52e22af9dc_z.jpg"/>
+<p>smartart-vertial-box-list.pptx, baseline</p>
+</div>
+++++
+
+++++
+<div style="text-align: center">
+<img src="https://farm5.staticflickr.com/4912/45683200942_8005cd433d_z.jpg"/>
+<p>smartart-vertial-box-list.pptx, current</p>
+</div>
+++++
+
+++++
+<div style="text-align: center">
+<img src="https://farm2.staticflickr.com/1976/45683201252_edd6eddea4_z.jpg"/>
+<p>smartart-vertial-box-list.pptx, reference</p>
+</div>
+++++
+
+++++
+<div style="text-align: center">
+<img src="https://farm2.staticflickr.com/1951/45683201002_4c93cc831c_z.jpg"/>
+<p>vertical-bracket-list.pptx, baseline</p>
+</div>
+++++
+
+++++
+<div style="text-align: center">
+<img src="https://farm5.staticflickr.com/4876/45008491984_61f25e21ca_z.jpg"/>
+<p>vertical-bracket-list.pptx, current</p>
+</div>
+++++
+
+++++
+<div style="text-align: center">
+<img src="https://farm2.staticflickr.com/1911/45683201082_3022aa8fe5_z.jpg"/>
+<p>vertical-bracket-list.pptx, reference</p>
+</div>
+++++
+
+In terms of code commits, the fixes are split into several ones:
+
+- http://cgit.freedesktop.org/libreoffice/core/commit/?id=e49c42d17f50c8b0cac9db08dedc375dd5aa8a98[oox
+  smartart, vertical bracket list: fix node counter condition]
+- http://cgit.freedesktop.org/libreoffice/core/commit/?id=397b64afc62a5632a6648598558a4d2c3ca0d283[oox
+  smartart, linear layout: take horizontal position from constraints]
+- http://cgit.freedesktop.org/libreoffice/core/commit/?id=b083b0808121d19f398a9f6ead195ae7e14ed047[oox
+  smartart, linear layout: take width from constraints]
+- http://cgit.freedesktop.org/libreoffice/core/commit/?id=923061d17d4b5b8bf0d4a8111b270c99a7c649a9[oox
+  smartart: work towards accessing parent constraints]
+- http://cgit.freedesktop.org/libreoffice/core/commit/?id=b61d2784271bf8b042642c378f50e8b446682548[oox
+  smartart: fix width of shapes with agl=lin, linDir=fromT]
+- http://cgit.freedesktop.org/libreoffice/core/commit/?id=a7e86beb00e9635ea4556ef4f8f8e24ff9965391[oox:
+  ignore SmartArt "fallback" with empty shape list]
+
+Clearly the results are not perfect yet, but in both cases nothing was
+visible, and now all text is readable, so we're moving in the right direction!
+
+All this is available in master (towards LibreOffice 6.2), so you can grab a
+http://dev-builds.libreoffice.org/daily/master/[daily build] and try it out
+right now. :-)
+
+// vim: ft=asciidoc

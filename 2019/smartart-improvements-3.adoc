@@ -1,0 +1,93 @@
+= SmartArt improvements in LibreOffice, part 3
+
+:slug: smartart-improvements-3
+:category: libreoffice
+:tags: en
+:date: 2019-01-04T14:35:29Z
+
+I recently link:/blog/smartart-improvements-2.html[dived into] the SmartArt
+support of LibreOffice, which is the component responsible for displaying
+complex diagrams from PPTX. I focus on the case when only the document model
+and the layout constraints are given, not a pre-rendered result.
+
+First, thanks to our partner https://www.suse.com/[SUSE] for working with
+https://www.collaboraoffice.com/[Collabora] to make this possible.
+
+== Continuous Block Process, Accent Process and Organization Chart
+
+In this post I would like to present the progress done last month regarding
+the above mentioned diagram types -- these are used in many documents.
+
+The improvement (as always) come in small incremental steps:
+
+- Continuous Block Process now reads space width from constraints.
+
+- Accent Process now has the missing bullets and fixes an incorrect large
+  paragraph-level indent.
+
+- Organization Chart now has an initial implementation of the `hierRoot` and
+  `hierChild` algorithms.
+
+- Organization Chart now handles multiple employees for a manager.
+
+With all these fixed, we reach a much better state for the mentioned diagram
+types.
+
+== Results so far
+
+The SmartArt test documents from https://cgit.freedesktop.org/libreoffice/core/tree/sd/qa/unit/data/pptx/[sd/qa/unit/data/pptx/] is what I used for testing this work.
+
+Here is how the baseline, the current and the reference rendering of Accent Process looks like:
+
+++++
+<div style="text-align: center">
+<img src="https://lh3.googleusercontent.com/8CH3lhBMrhnNPvcptRvw0R0RUGIW5Jaeh1LxqnuTxcvWFg95OyrZqgAYl2YWMwTJbdyUeGrAB52K-WXu8mSfjPw2k-4NVb0lbXKpnTjtoBuIenqhlX70r8gP3AFuP6RDbgKEl7vPvQ=w640" style="max-width: 100%;"/>
+<p>smartart-accent-process.pptx, baseline</p>
+</div>
+++++
+
+++++
+<div style="text-align: center">
+<img src="https://lh3.googleusercontent.com/i62jSfzKrCRQmv-EMEPx_ujXepB0qFzWtMOD8F_HIJzqxxHcsIH1fADQQr3eIsRjiJcyAdx95b4f3jckpzASk2Ifks7bAAWDqJQUJBGLWuDmXXrFHO5q769PEBw3UghmMoS_0ihHTA=w640" style="max-width: 100%;"/>
+<p>smartart-accent-process.pptx, current</p>
+</div>
+++++
+
+++++
+<div style="text-align: center">
+<img src="https://lh3.googleusercontent.com/g9cJmO8PPcqOwgYN18uE6RdfFgq5fWi-bpGSOLOLFGYjEq_B0pLFPz_royCoHhz8_58L5GT71Xu62OtEj8IwLeNI631b_DqXHuSAWSEMbaF-ZU8XM4RykbUTE-egq1FhYE9b8p_Ejg=w640" style="max-width: 100%;"/>
+<p>smartart-accent-process.pptx, reference</p>
+</div>
+++++
+
+And here is how the baseline, the current and the reference rendering of Organization Chart looks like:
+
+++++
+<div style="text-align: center">
+<img src="https://lh3.googleusercontent.com/ze6x3LugJJBPjzEgJaWUVc_l3yiLtCQrcj_H_SN91YrYeR9f6E9Buzs6wrRp7T9mW4Mcho9jmVR3K0dItcGKiBK8ucs08YMkC9qW7kHQGCSE_m5fcEgK0z4srQnSUCJBD7NaYY-LWA=w640" style="max-width: 100%;"/>
+<p>smartart-org-chart.pptx, baseline</p>
+</div>
+++++
+
+++++
+<div style="text-align: center">
+<img src="https://lh3.googleusercontent.com/fT_as5kTDmnbZQpO0MtV_VYu0LqfrRLSewvEkjl3K4nQ4VmFkWSGWJ7RjUjFJyXcOFqpl5fqEQjU7shiqHotkFIDPEJE5s70Ysdnscxf7oVJcV0R4qjpdePU4CnUN9_HxUdEfYjPlw=w640" style="max-width: 100%;"/>
+<p>smartart-org-chart.pptx, current</p>
+</div>
+++++
+
+++++
+<div style="text-align: center">
+<img src="https://lh3.googleusercontent.com/Mdoqtf2-u4JISXJsKLp1tLQXnxDDvDg1vPOI5bNpOnAjhM02og80Lz6BnBzA-YkdlT__9lfU-pxFqUOzKpL9ySyJK9EmXnV6ipG5x6SmJTYY92KSzr_0e9qbp5pmZERiBSeBTPbVqg=w640" style="max-width: 100%;"/>
+<p>smartart-org-chart.pptx, reference</p>
+</div>
+++++
+
+This is not not perfect yet, but it's clearly a large improvement, all text is
+now readable from the diagrams and bullets are no longer missing!
+
+All this is available in master (towards LibreOffice 6.3), so you can grab a
+http://dev-builds.libreoffice.org/daily/master/[daily build] and try it out
+right now. :-)
+
+// vim: ft=asciidoc

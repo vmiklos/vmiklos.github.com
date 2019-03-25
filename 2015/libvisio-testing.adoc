@@ -1,0 +1,66 @@
+= Document Liberation Project regression testing
+
+:slug: libvisio-testing
+:category: libreoffice
+:tags: en
+:date: 2015-03-14T20:09:44Z
+
+image::https://lh5.googleusercontent.com/-0Qh5cUx4gGA/VQR_RkRe2jI/AAAAAAAAFU8/5KIPToOna4Q/s0/[align="center"]
+
+link:/blog/libvisio-setup.html[Earlier] I wrote about my setup to
+hack libvisio. One missing bit was testing the contributed code. Testing can
+be performed at various levels, so far DLP libraries were tested by recording
+the output of the various `foo2raw` tools and then comparing the current output
+to some previously known good state. This has a number of benefits:
+
+- If you know that the current state is good, then there is no need write
+  testcases, you can just record your state automatically.
+- Any change in the output fill signal instant failure, so it gives pretty
+  good test coverage.
+
+The same technique was used in LibreOffice for Impress testcases initially,
+however we saw a drawback there: Being automatically generated, you have no
+control over what part of the output is important and what part is not -- both
+parts are recorded and when some part changes, you have to carefully evaluate
+on a case by case basis if the change is OK or not. The upshot is that from
+time to time you just end up regenerating your reference testsuite and till
+the maintainer doesn't do that, everyone can only ignore the test results --
+so it doesn't really scale.
+
+In short, both techniques have some benefits, but given that the
+https://gerrit.libreoffice.org/gitweb?p=libvisio-test.git[libvisio test repo]
+is quite empty, I thought it's a good time to give an other method (what we
+use quite successfully in LO code) a go, too. This method is easy: instead of
+recording the whole output of some test tool, output a structured format (in
+this case XML), and then just assert the interesting part of it using XPath.
+Additionally, these tests
+https://gerrit.libreoffice.org/gitweb?p=libvisio.git;a=tree;f=src/test;hb=HEAD[are
+in libvisio.git], so you can nicely put the code change and the testcase
+https://gerrit.libreoffice.org/gitweb?p=libvisio.git;a=commitdiff;h=1bda66b9c0c1cc2b9dcf323a0a45e314b5d4410f[in
+the same commit]. So the hope is that this is a more scalable technique:
+
+- Provided that `make distcheck` is ran before committing, you can't forget to
+  clone and run the tests.
+- Writing explicit assertions means that it's rarely needed to adjust existing
+  tests. Which is a good thing, as there are no tests for the tests, so
+  touching existing tests should be avoided, if possible. ;-)
+- Having testcase + code change in the same commit is one step closer to the
+  dream e.g. the git.git guys do -- they usually require documentation, code
+  and test parts in each patchset. :-)
+
+Technically this method is implemented using a
+`librevenge::RVNGDrawingInterface` implementation that generates XML. For now,
+this is part of libvisio, so in case you want to re-use it in some other DLP
+library, you need to copy it to your import library, though if indeed multiple
+importers start to use it, perhaps it'll be moved to librevenge. The rest of
+the test framework is a simple
+https://gerrit.libreoffice.org/gitweb?p=libvisio.git;a=blob;f=src/test/test.cpp;hb=HEAD[testsuite
+runner] and a
+https://gerrit.libreoffice.org/gitweb?p=libvisio.git;a=blob;f=src/test/importtest.cpp;hb=HEAD[cppunit
+TestFixture] subclass that contains the actual test cases.
+
+So in case you are planning how to test your import library, then now you have
+two options, evaluate them and choose what seems to be the better tool for
+your purpose.
+
+// vim: ft=asciidoc shiftwidth=4 softtabstop=4 expandtab:

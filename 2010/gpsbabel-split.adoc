@@ -1,0 +1,35 @@
+= How to split gpx files using gpsbabel
+
+:slug: gpsbabel-split
+:category: gpsbabel
+:tags: en
+:date: 2010-11-17T13:43:51Z
+I usually just download the gpx track from my GPS and delete the track
+from device each time I arrive home and I was at some interesting place
+before. Last week this was not the case, I was at
+http://maps.google.com/?q=Gy%FAr%F3,+Hungary[Gyúró] two weeks ago, then
+I borrowed by device, without clearing the log from it.
+
+So the task was easy: I had a timestamp and I had the full log from the
+device, and I want to split it: before and after a given timestamp. It
+turned out that I had some log from Oct 28th as well, so I wanted:
+
+- The log till Oct 28th
+- The log between Nov 5th and 8th
+- The log after 10th.
+
+Luckily the
+http://www.gpsbabel.org/htmldoc-1.3.0/filter_track.html[gpsbabel
+documentation] is quite clear in this area (see Example 4.8), I just
+needed the following commands:
+
+----
+$ gpsbabel -t -i gpx -f in.gpx -x track,stop=20101028 -o gpx -F out1.gpx
+$ gpsbabel -t -i gpx -f in.gpx -x track,start=20101105,stop=20101108 -o gpx -F out2.gpx
+$ gpsbabel -t -i gpx -f in.gpx -x track,start=20101110 -o gpx -F out3.gpx
+----
+
+Update: two more notes:
+
+- the stop is exclusive, start is inclusive
+- when using the result in digikam, the camera time zone has to be set to "manual: gmt+0", even if both the gpx result and the camera time is in local time

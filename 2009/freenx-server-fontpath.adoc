@@ -1,0 +1,13 @@
+= freenx server fontpath
+
+:slug: freenx-server-fontpath
+:category: hacking
+:tags: en
+:date: 2009-05-31T03:35:47Z
+++++
+<p>I wasted some hours debugging till I found out how to set the fontpath of a freenx-server if not using XFS.</p><p>Basically just need to fine-tune /etc/nxserver/node.conf:</p><p><pre>
+DEFAULT_FONT_PATH=$(echo $(grep -v '^ *#' /etc/X11/xorg.conf | grep FontPath | awk \
+'{print $2}' | sed -r "s/^[\"']|[\"']$//g") | sed 's/ /,/g')
+AGENT_EXTRA_OPTIONS_X="-fp $DEFAULT_FONT_PATH"
+</pre></p><p>Based on <a href="http://lists.kde.org/?l=freenx-knx&amp;m=113735435205146&amp;w=2">this post</a>.</p>
+++++

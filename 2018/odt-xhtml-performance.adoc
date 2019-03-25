@@ -1,0 +1,68 @@
+= Optimizing ODT ↔ XHTML conversion performance for simple documents
+
+:slug: odt-xhtml-performance
+:category: libreoffice
+:tags: en
+:date: 2018-03-02T09:20:04Z
+
+I worked on improving the ODT ↔ XHTML conversion performance for simple
+documents in LibreOffice recently.  First, thanks to
+https://vector.com/[Vector] for funding
+https://www.collaboraoffice.com/[Collabora] to make this possible.
+
+== ODT -> XHTML conversion
+
+image::https://farm5.staticflickr.com/4605/26697712598_2ace3f45a3_o.png[align="center"]
+
+The focus here was *really* simple documents, like just one sentence with
+minimal formatting. The use-case is to have thousands of these simple
+documents, only a minority containing complex formatting, the rest is just
+that simple.
+
+Performance work usually focuses on one specific complex feature, e.g. lots of
+bookmarks, lots of document-level user-defined metadata, and so on -- this way
+there were room for improvements when it comes to trivial documents.
+
+I managed to reduce the cost of the conversion to the _fifth of the original_
+cost in both directions -- the chart above shows the impact of my work for
+the ODT -> XHTML direction. The steps that helped:
+
+- Recognize `XHTML` as a value for the `FilterOptions` key in the `HTML
+  (StarWriter)` export filter, this way avoid the need to go via XSLT, which
+  would be expensive.
+- Add a new `NoFileSync` flag to the `frame::XStorable::storeToURL()` API, so
+  that if you know you'll read the result after the conversion finished, you
+  can avoid an expensive `fsync()` call for each and every file, which helps
+  HDDs a lot, while means no overhead for SSDs.
+- If you know your input format already, then specifying an explicit
+  `FilterName` key for the `frame::XComponentLoader::loadComponentFromURL()`
+  API helps not spending time to detect the file format you already know.
+
+Note that the XHTML mode for the Writer HTML export is still a work in
+progress, but it already produces valid output for such simple documents.
+
+== XHTML -> ODT conversion
+
+image::https://farm5.staticflickr.com/4608/39674632615_de78265c7f_o.png[align="center"]
+
+The chart above shows the results of my work for the XHTML -> ODT direction.
+The steps to get to the final reduced cost were:
+
+- The new `NoFileSync` flag, as mentioned previously.
+- A new `NoThumbnail` flag, which is useful if the ODT will be part of a next
+  step in the pipeline and you know that the thumbnail image won't be used anyway.
+- The default table autoformat definitions in Writer are now
+  https://cgit.freedesktop.org/libreoffice/core/commit/?id=53ef918a6839c8d587dec1bb635e6b39397c53d0[lazy-loaded].
+  (This is my favorite one, you don't have to opt-in for this, so everyone
+  benefits.)
+- A new `HiddenForConversion` flag for
+  `frame::XComponentLoader::loadComponentFromURL()`, which means we don't lay
+  out the UI elements (toolbars, sidebar, status bar, etc.) when we know the
+  purpose of the document load is only to save the document model in an other
+  format.
+
+All this is available in master (towards LibreOffice 6.1), or you can grab a
+http://dev-builds.libreoffice.org/daily/master/[daily build] and try it out
+right now. :-)
+
+// vim: ft=asciidoc

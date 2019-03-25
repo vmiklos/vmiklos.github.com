@@ -1,0 +1,12 @@
+= Installing Oracle Client on Frugalware
+
+:slug: installing-oracle-client-on-frugalware
+:category: hacking
+:tags: en
+:date: 2009-02-28T19:52:48Z
+++++
+<p>The full name is Oracle Enterprise Manager Console. You can download the 10g version from <a href="http://www.oracle.com/technology/software/products/database/oracle10g/htdocs/10201linuxsoft.html">here</a>. You can find a user/pass on bugmenot. After unzipping, just running '/path/toclient/runInstaller -ignoreSysPrereqs' (I only tried with an absolute path) should be enough. It can be installed a user, later it'll prepare some scripts to run as root.</p><p>I always replaced $HOME/orafoo with $HOME/.orafoo, when the installer asked. If you get 'no such file or directory' errors, you can just edit the relevant script and fix the path - I needed to fix /bin/rpm, /bin/awk and /bin/sed. (All of them are under /usr/bin.) A hack for the lazy ones: just symlink these to /bin, then no modification of the scripts is needed.</p><p>To your ~/.bash_login:</p><p><pre>
+export LIBXCB_ALLOW_SLOPPY_LOCK=true
+export ORACLE_HOME=~/.oracle/product/10.2.0/client_1/
+</pre></p><p>Then you can start the manager with 'LANG= LC_ALL= ${ORACLE_HOME}/bin/oemapp console'.</p><p>I think that's all I needed.</p><p>Just for fun, I made a <a href="http://frugalware.org/~vmiklos/pics/shots/orappc.png">screenshot</a>, running it on my iBook. (In fact of course it's running via ssh on an i686 machine. ;-) )</p>
+++++

@@ -6,11 +6,11 @@ from __future__ import unicode_literals
 
 AUTHOR = 'Miklos Vajna'
 SITENAME = 'What is Miklos hacking'
-SITEURL = 'http://localhost:8000/blog2'
+SITEURL = 'http://localhost:8000/blog'
 
 PATH = '.'
 # Clone this from <https://github.com/vmiklos/vmiklos.github.com>.
-OUTPUT_PATH = '../htdocs/blog2'
+OUTPUT_PATH = '../htdocs/blog'
 
 TIMEZONE = 'Europe/Budapest'
 DEFAULT_LANG = 'en'
