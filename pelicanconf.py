@@ -52,3 +52,4 @@ DELETE_OUTPUT_DIRECTORY = True
 # To speed up the build process.
 CACHE_CONTENT = True
 CACHE_PATH = '../cache'
+LOAD_CONTENT_CACHE = True
