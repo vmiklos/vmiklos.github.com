@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"><channel><title>What is Miklos hacking - git</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Thu, 07 Jun 2012 19:31:30 +0000</lastBuildDate><item><title>Merging git notes</title><link>https://vmiklos.hu/blog/git-notes-merge.html</link><description>&lt;div id="preamble"&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The &lt;code&gt;git notes&lt;/code&gt; command is really about local annotation of commits&amp;#8201;&amp;#8212;&amp;#8201;nothing
+to share. If you decide to still do so, for example the
+&lt;a href="http://git-scm.com/2010/08/25/notes.html"&gt;git-scm.com&lt;/a&gt; HOWTO can show you how to
+pull and push them. But what about merging?  There is no UI for that, but&amp;#8201;&amp;#8212;&amp;#8201;given that with git, everything is possible&amp;#8201;&amp;#8212;&amp;#8201;you can still do so manually.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;So the problem comes when Alice fetches notes, Bob does so, Alice pushes her
+notes back, Bob annotates a different commit and when Bob wants to push, he
+gets &lt;code&gt;rejected, non-fast-forward&lt;/code&gt;. Normally you would merge or rebase in this
+situation, but given that &lt;code&gt;git notes&lt;/code&gt; by default updates the
+&lt;code&gt;refs/notes/commits&lt;/code&gt; ref and you typically have a different branch checked out,
+you can&amp;#8217;t use &lt;code&gt;git merge&lt;/code&gt; or &lt;code&gt;git rebase&lt;/code&gt; directly.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;What works is:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="listingblock"&gt;
+&lt;div class="content"&gt;
+&lt;pre&gt;&lt;code&gt;git checkout refs/notes/commits
+git fetch origin refs/notes/commits
+git merge FETCH_HEAD
+git update-ref refs/notes/commits HEAD
+git checkout master&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;&lt;/div&gt;
+&lt;div class="colist arabic"&gt;&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;
+Check out the notes, so if you have conflicts, you can resolve them.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+Fetch remote notes to FETCH_HEAD.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+Do the merge.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+Necessary, as &lt;code&gt;git merge&lt;/code&gt; won&amp;#8217;t update the ref automatically, since we&amp;#8217;re not on a branch.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+Or whereever you were before.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;And now you can push your notes, as detailed in the above referred blog post.
+Yes, rebasing would be possible as well, that&amp;#8217;s left as an exercise for the
+reader. ;-)&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Thu, 07 Jun 2012 19:31:30 +0000</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2012-06-07:/blog/git-notes-merge.html</guid><category>en</category></item></channel></rss>

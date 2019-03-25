@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/pygments.css">
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=PT+Sans|PT+Serif|PT+Mono">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Miklos Vajna">
+  <meta name="description" content="Posts and writings by Miklos Vajna">
+
+  <link href="https://vmiklos.hu/blog/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking RSS" />
+
+<link href="https://vmiklos.hu/blog/feeds/hacking.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking hacking Category RSS" />
+
+  <title>
+    What is Miklos hacking
+&ndash; Category: hacking  </title>
+
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <!--<a href="https://vmiklos.hu/blog">
+        <img src="https://vmiklos.hu/blog/theme/images/logo.png" alt="logo">
+      </a>-->
+      <h2><a href="https://vmiklos.hu/blog">What is Miklos hacking</a></h2>
+      <p></p>
+      <ul>
+        <li><a href="/" target="_blank">Root</a></li>
+        <li><a href="https://planet.documentfoundation.org/" target="_blank">LibreOffice Blogs</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://vmiklos.hu/blog">Index</a> &brvbar; <a href="https://vmiklos.hu/blog/archives.html">Archives</a>
+      &brvbar; <a href="https://vmiklos.hu/blog/feeds/all.rss.xml">RSS</a>
+&gt; Category: hacking
+&brvbar; <a href="https://vmiklos.hu/blog/feeds/hacking.rss.xml">RSS</a>
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/playing-with-compiz-fusion.html">playing with compiz fusion</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>Priyank recently removed Beryl from -current and added Compiz Fusion. so i did a base install then i followed the instructions in xgl's README.Frugalware. a few impressions:</p><p>pros:
+<ul>
+  <li>i have an i810 card, not nvidia, or anything extra, it's a cheap one. the only effect that was slow for me is when i marked the cube 100% transparent. but all the other effect were really fast.</li>
+  <li>compiz initially worked fine only with gnome. i'm a kde fan so i tried compiz with kde and it worked fine. i think this is something new</li>
+  <li>thanks to aiglx, i did not have to - in fact - start xgl, no editing in kdm.conf or anything, just xorg.conf</li>
+</ul></p><p>cons:<ul>
+  <li>i have 4 virtual desktops like:
+<pre>1 | 2
+----
+3 | 4</pre></p><p>compiz translates this to: a simple paper with two side and on each size there is another side on top of the other one. so it says it's not a cube. how crappy</li>
+  <li>i can't select to hide windows from other virtual desktops from the taskbar. a basic feature @ kde</li>
+</ul></p><p>conclusion? it's really nice, well done - but for daily work of course i won't enable it :)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/removing-uids-in-gpg.html">removing uids in gpg</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>here is the problem:</p><p>you hava gpg key since 5 years. you had various mail addresses over the time and every mail address is attached to a key. so it'll look ugly, like <a href="http://frugalware.org/~vmiklos/pics/shots/gpg-bloated.png">this</a>.</p><p>the problem is that once you pushed a uid (read: email address, attached to a key) to the keyserver, you can no longer remove it. but here is the solution: you can revoke it! :)</p><p>how to do so?</p><p>it's easy:</p><p><code>$ gpg --edit-key <a href="mailto:john@foo">john@foo</a>.org</code></p><p>a list of your ids with numbers are displayed. select a uid:</p><p><code>Command> uid 2</code></p><p>then you can revoke it:</p><p><code>Command> revuid 3
+Really revoke this user ID? (y/N) y
+Please select the reason for the revocation:
+  0 = No reason specified
+  4 = User ID is no longer valid
+  Q = Cancel
+(Probably you want to select 4 here)
+Your decision? 4
+Enter an optional description; end it with an empty line:
+>
+Reason for revocation: User ID is no longer valid
+(No description given)
+Is this okay? (y/N) y</code></p><p>you can notice that the uid is now listed as "revoked" instead of "ultimate"</p><p>now you can exit using:</p><p><code>Command> save</code></p><p>and send it to the key server:</p><p><code>$ gpg --send-key 03915096</code></p><p>of course the uids will be still there, but that bloated list should be now short and tiny :)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/dhcpcd-vs-zeroconf.html">dhcpcd vs zeroconf</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>maybe you know a situation that is regular for me: when testing a new wireless network - if dhcp is misconfigured, dhcpcd would just have to timeout. though - thanks to zeroconf support - it uses to pick up some ip addresses instead, making debugging hard. so here is a trick to disable zeroconf support (so that dhcpcd will just timeout):</p><p>append</p><p><code>dhcp_opts = -L</code></p><p>to your /etc/sysconfig/network/default (or other) profile for the section of the wireless interface</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/rtorrent-with-dht-support.html">rtorrent with dht support</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>dht support means support for trackerless torrents</p><p>currently rtorrent does not support it, but after a bit googling, i've found <a href="http://libtorrent.rakshasa.no/ticket/98">this ticket</a>. it mentions that there is a patch <a href="http://tk.ttdpatch.net/~jdrexler/dht/">here</a>. so i've split up the patch for libtorrent and rtorrent and uploaded these packages to my <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/bmf/">bmf</a> repo.</p><p>you need to add two extra lines to your ~/.rtorrent.rc:</p><p><pre>
+dht = auto
+dht_port = 6986
+</pre></p><p>of course the port can be anything else.</p><p>during testing, i had one "server" - where i had the test file already - and one "client" - where i had only the torrent.</p><p>i opened one port for torrent communication and one port for the dht server on the server, of course no ports were open on the client. and yes, it did work fine! :)</p><p>(<a href="http://frugalware.org/~vmiklos/pics/shots/trackerless.png">screenshot</a>)</p><p>let's hope the patch will be included in the vanilla rtorrent soon!</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/using-git-request-pull.html">using git request-pull</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>it's a nice simple script to generate a message body for you when you have no write access to a repo and you want to request the m8r to pull from you. here is how to use it:</p><p><pre>$ git request-pull origin/master \
+<a href="mailto:vmiklos@vmiklos.dev.frugalware.org">vmiklos@vmiklos.dev.frugalware.org</a>:git/pacman-g2/
+The following changes since commit 52a29e40a52bb09e0db7f167712a9be3ad8d0d3c:
+  Priyank (1):
+        Merge branch 'master' of \
+git.frugalware.org:/home/ftp/pub/other/pacman-g2/pacman-g2</p><p>are available in the git repository at:</p><p>  <a href="mailto:vmiklos@vmiklos.dev.frugalware.org">vmiklos@vmiklos.dev.frugalware.org</a>:git/pacman-g2/ master</p><p>VMiklos (4):
+      new NOARCH trans flag for _pacman_pkg_load()
+      _pacman_pkg_load(): indentation fix
+      parseargs(): new --noarch option
+      tests/upgrade071.py: new test for --noarch</p><p> lib/libpacman/package.c     |   36 +-----------------
+ lib/libpacman/pacman.h      |    1 +
+ pactest/tests/upgrade071.py |   10 +
+ src/pacman-g2/pacman-g2.c   |    3 
+ 4 files changed, 33 insertions(+), 17 deletions(-)
+ create mode 100644 pactest/tests/upgrade071.py</pre></p><p>of course in real life, you want to use http:// or git:// since probably the m8r won't be be able to login to your own machine via ssh :)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/you-can-test-openoffice-org-2-0-3rc3.html">You can test OpenOffice.org 2.0.3rc3</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>after a long time, openoffice now builds again out of the box without any patches as all our fixes are in ooo-build :)</p><p>also, i recently started to re-use my "bmf" repo for packaging pre/rc versions, so it was logical to get rid of the "ooodev" repo and merge it to bmf. so openoffice.org-2.3oog680_m5-1 (alias 2.3.0rc3) is available for my bmf repo for both i686 and x86_64. compared to 2.2.x, the two notable improvements (imho) are the working mozilla plugin and the ooxml support.</p><p>thanks boobaa for building it for i686! :)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/git-vs-rsync.html">git vs rsync</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>if you use rsync to copy your git repo (i mean a non-bare repo here: a repo with a working dir + a .git one), <code>git diff</code> will show that you touched your files. using <code>git checkout -f</code> can be a workaround to hide those changes, but then when you rsync again, it'll see that git thouched those files, so it'll re-download all the tracked files. infinite loop. so here is a trick from <a href="http://colabti.de/irclogger/irclogger_log/git?date=2007-09-10,Mon&sel=676#l1067">gitte</a>: using</p><p><code>git update-index --refresh</code></p><p>the index itself will be updated, not the tracked files. this was rsync will only re-download the index which is far less time, compared to the original one :)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/mplayer-with-dvdnav-support.html">mplayer with dvdnav support</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>i've uploaded an updated mplayer package to <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/bmf/">my repo</a> which includes dvdnav support to mplayer. at the moment it seems you need to</p><p><code># pacman -R codecs</code></p><p>otherwise mplayer will crash</p><p>many thanks to <a href="http://onebithq.com/root/mplayer/dvdnav">Otvos Attila</a>, the dvdnav patch author for his help (two additional build fixes was needed for our "enable everything what is possible" mplayer configuration)</p><p>hopefully we'll figure out soon how to resolve the conflict with the binary codecs, too :)</p><p>(a <a href="http://frugalware.org/~vmiklos/pics/shots/mplayer-dvdnav.png">screenshot</a>)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/git-svn-howto.html">git-svn howto</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>i think using git-svn is really easy, once you figured out how to use it. so here is how i use it. no, i'm not a git-svn expert, just a user. and the way i use it - i think it's easy. so here is our situation:</p><p>1) foo project uses svn for managing their code
+2) you wish they would use git</p><p>how to do both:</p><p>1) get the full svn repo:</p><p><code>$ git svn clone --prefix=origin/ url</code></p><p>yes, in my situation this project does not use the trunk/tags/branches structure, see the git-svn manpage if the project you clone does (s/clone/clone -s/ should do the trick)</p><p>the --prefix parameter is needed so that you'll see the svn branches as if they were normal git remote branches</p><p>2) your local repo is a git repo, so you can do whatever you want, commit, revert, bisect, etc</p><p>3) instead of git pull, you need</p><p><code>$ git svn rebase</code></p><p>this does the same as git fetch + git rebase (since you can't merge because of svn)</p><p>4) instead of git push, you need</p><p><code>$ git svn dcommit</code></p><p>and we're ready. 3 and not more command, right? :)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/coloured-manpages.html">coloured manpages</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+this is always a subject of flamewars and Frugalware did not have any support for coloured manpages so far. i've now added (in man-1.6e-2) support for it, but it's still disabled. see the <a href="http://frugalware.org/packages/369/documentation">documentation</a> on how to enable it if you like. you can reach a screenshot <a href="http://frugalware.org/~vmiklos/pics/shots/colorman2.png">here</a> if you use the default colors.
+</div>
+</div>
+
+  </div>
+</article>
+
+<footer>
+<div id="paginator">
+<a href="https://vmiklos.hu/blog/category/hacking24.html" class="button_accent">&larr; Older Posts</a>
+
+<a href="https://vmiklos.hu/blog/category/hacking22.html" class="button_accent">Newer Posts &rarr;</a>
+</div>
+</footer>
+
+    <div id="ending_message">
+      <p>&copy; Miklos Vajna. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
+</body>
+</html>

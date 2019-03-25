@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/pygments.css">
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=PT+Sans|PT+Serif|PT+Mono">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Miklos Vajna">
+  <meta name="description" content="Posts and writings by Miklos Vajna">
+
+  <link href="https://vmiklos.hu/blog/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking RSS" />
+
+
+  <title>
+    What is Miklos hacking
+  </title>
+
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <!--<a href="https://vmiklos.hu/blog">
+        <img src="https://vmiklos.hu/blog/theme/images/logo.png" alt="logo">
+      </a>-->
+      <h2><a href="https://vmiklos.hu/blog">What is Miklos hacking</a></h2>
+      <p></p>
+      <ul>
+        <li><a href="/" target="_blank">Root</a></li>
+        <li><a href="https://planet.documentfoundation.org/" target="_blank">LibreOffice Blogs</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://vmiklos.hu/blog">Index</a> &brvbar; <a href="https://vmiklos.hu/blog/archives.html">Archives</a>
+      &brvbar; <a href="https://vmiklos.hu/blog/feeds/all.rss.xml">RSS</a>
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/four-rtffilter-fixes.html">Four RtfFilter fixes</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>During the week I got some feedback from Oliver Specht on my GSoC work. I decided to dedicate a whole day to address those issues (these were all regressions compared to the old RTF exporter). Here are the results:</p><p><ul>
+  <li>Numbering indentations were problematic, this is now <a href="http://hg.services.openoffice.org/cws/vmiklos01/rev/697e294cb900">fixed</a>.</li>
+  <li>Outline numbering was missing, <a href="http://hg.services.openoffice.org/cws/vmiklos01/rev/9f6a7c44c7d8">fixed</a> as well.</li>
+  <li>Explicit character style support was missing, I now <a href="http://hg.services.openoffice.org/cws/vmiklos01/rev/d37003e71907">implemented</a> it.</li>
+  <li>Finally (which was the most time-consuming), text frames were now exported, this is now <a href="http://hg.services.openoffice.org/cws/vmiklos01/rev/b935ac15ff37">implemented</a>, too.</li>
+</ul></p><p>One remaining question is that he mentioned something is problematic with the table of contents export, but I could not reproduce the bug so far.</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/titanic.html">Titanic</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p><div align="center"><img src="/pic/titanic.t.jpg" alt="" title="" /></div></p><p>Mert mar annyian kerdeztek, hogy "es azt te nem is lattad?" - hat megneztem. Tetszett.</p><p>(<a href="http://www.imdb.com/title/tt0120338/">imdb</a>, <a href="http://www.youtube.com/watch?v=zCy5WQ9S4c0">trailer</a>)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/globalsat-bt-338x-gps.html">Globalsat BT-338X GPS</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>Yesterday I bought a cheap GPS data logger / receiver, and given that the attached install CD did not support Linux, I'm collecting some hopefully useful links here.</p><p><ul>
+  <li>The <a href="http://wiki.openstreetmap.org/wiki/GPS_Reviews#Globalsat_BT-338">OpenStreetMap</a> wiki had an incorrect statement about the device has no memory - it has.</li>
+  <li><a href="http://www.globalsat.com.tw/products-page.php?menu=2&amp;gs_en_product_id=6&amp;gs_en_product_cnt_id=56">Vendor homepage</a>. (<a href="http://speedshop.hu/main.php?page=termek&amp;iid=44261">Hungarian one</a>.)</li>
+  <li>A <a href="http://blog.pjvenda.net/2007/09/my-new-toy-globalsat-dg-100-gps-data.html">blog post</a> about <a href="http://frugalware.org/packages/23237">gpsbabel</a> usage.</li>
+  <li>More gpsbabel docs: the <a href="http://www.gpsbabel.org/htmldoc-development/fmt_dg-100.html">dg-100</a> and the <a href="http://www.gpsbabel.org/htmldoc-development/fmt_skytraq.html">skytraq</a> formats.</li>
+</ul></p><p>Putting everything together, to get the log from the device using bluetooth I first had to create an rfcomm interface, as gpsbabel does not support bluetooth natively:</p><p><pre>
+# rfcomm bind 0 00:0D:B5:38:BA:C6
+</pre></p><p>Then to download and erase the log from the device:</p><p><pre>
+$ gpsbabel -i dg-100,erase=1 -f /dev/rfcomm0 -o gpx \
+        -F $(date +%Y-%m-%d).gpx
+</pre></p><p>The gpx format is fine in case you want to later reuse log with digikam's gpssync plugin (available from <a href="http://frugalware.org/packages/9654">kipi-plugins</a>).</p><p>Now in case you want to convert it to kml to show on Google Maps:</p><p><pre>
+$ gpsbabel -i gpx -f $(date +%Y-%m-%d).gpx -o kml -F $(date +%Y-%m-%d).kml
+</pre></p><p>Finally release the rfcomm interface in case you don't need it anymore:</p><p><pre>
+# rfcomm release 0
+</pre></p><p>Update: there is also a <a href="http://code.google.com/p/globdog-dg100/">gui</a> which can be used to enable logging of altitude info, etc - just <a href="http://frugalware.org/~vmiklos/patches/globdog-dg100-enable-rtcomm.patch">trivial patching</a> is needed and it works with BT-338X as well.</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/upgrading-to-haven.html">Upgrading to Haven</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>I just upgraded my box at work to Haven, here is a short post to mention two links:</p><p><ul>
+  <li>ATM you need to <a href="http://www.nvnews.net/vbulletin/showthread.php?p=2288105">manually upgrade</a> nvidia-173xx if you have it installed (after -Syu) due to lack of xorg-server-1.8 support.</li>
+  <li>I needed <a href="http://bugs.gentoo.org/show_bug.cgi?id=153115#c8">this xorg config tweak</a> to get my up arrow working again.</li>
+</ul></p><p>Other than that, I removed my xorg.conf and instead I put <a href="http://frugalware.org/~vmiklos/docs/config/xorg.conf.d/30-nvidia173.conf">this</a> to the xorg.conf.d dir. I also added "nouveau.modeset=0" to /boot/grub/menu.lst.</p><p>What else.. ah yes, I needed to change the keyboard model to evdev in the KDE System Settings.</p><p>Other than that, it went fine. :)</p><p>Update: the nvidia-173xx part is now fixed in both <a href="http://frugalware.org/pipermail/frugalware-git/2010-August/047941.html">current</a> and <a href="http://frugalware.org/pipermail/frugalware-git/2010-August/047942.html">stable</a>.</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/the-lovely-bones.html">The Lovely Bones</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p><div align="center"><img src="/pic/lovelyb.t.jpg" alt="" title="" /></div></p><p>Leginkabb <a href="/blog/csodas_almok_jonnek">ehhez</a> tudnam hasonlitani, a "mi lesz velunk a halal utan" temat jarja korul, eleg szerencsetlen modon.</p><p>Ami miatt talan megis erdemes lehet megnezni, az egyreszt a szerencses szereposztas: Mark Wahlberg (olasz melo), Susan Sarandon (alfie), Saoirse Ronan (atonement); valamint a jol megirt forgatokonyv: a rendezo vegig fenntartja a figyelmet azzal, hogy nem arulja el, lesz-e megegy gyilkossag a film vegeig.</p><p>(<a href="http://www.imdb.com/title/tt0380510/">imdb</a>, <a href="http://www.youtube.com/watch?v=ikUWKi0W5_g">trailer</a>)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/zemplen.html">Zemplen</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>Az utvonal ilyesmi volt: Tokaj - Bodrogkeresztur - Erdobenye - Abaujalpar - Boldogkoujfalu - Boldogkovaralja - Boldogko vara - Abaujszanto - Mad - Tarcal - Tokaj</p><p>Tokajba kocsival mentunk, meg a vegen Bp-en belul volt egy kisebb bringas szakasz.</p><p>Ido: 5h03m18s, tav 103.8 km, atlag 20.5km/h (tehat nem siettunk), max 63.5 km/h.</p><p>Resztvevok: LGee, Ventura, en.</p><p><a href="http://hup.hu/node/91747">tovabb</a></p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/hackerspace-budapest.html">Hackerspace Budapest</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>A cimben emlegetett helyrol mar tobbszor hallottam <a href="http://twitter.com/dn3t">dnettol</a>, de idaig nem allt modomban szemelyesen megtekinteni <a href="http://hspbp.org/fogashaz">a helyet</a>. Ma <a href="http://hspbp.org/tiki-calendar_edit_item.php?viewcalitemId=202">tartott</a> viszont Erlang temaban workshopot, igy mar megvolt a szukseges motivacio, hogy elkarikazzak odaig.</p><p>A hely zsenialis, professzionalis bringatarolo fogadott, majd onnan felfele egy igencsak lepusztult, de a gyerekkori kuckokat felnottes stilusban megvalosito latvany fogadott, idealis terep arra ha valaki otthonrol elvonulva nyugodtan akar valamit butykolni.</p><p>Az eloadason kivul legjobban a <a href="http://hspbp.org/hack2o">viragontozo</a> tetszett:</p><p><pre>
+22:36 &lt;@dnet&gt; a rossz szkennert ingyen kaptuk egy cegtol, a csovek loot
+                    UTP kabel boritasok, a virag ajandek, a vodor meg a
+                    space kifestesekor kerult be
+</pre></p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/praga.html">Praga</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p><div align="center"><img src="/pic/praga.t.jpg" alt="" title="" /></div></p><p>A multheten par napot toltottunk Pragaban, az ut soran felgyulemlett online tartalmakat igyekszem most egy csokorba gyujteni:</p><p><ul>
+  <li><a href="/file/praga/mgmapscache-praga.tar.xz">mgmaps tarball</a>, mivel az utikonyvben levo terkepen tul sok volt a "majus elseje hid" es hasonlo elnevezes</li>
+  <li><a href="/file/praga/mirror-maze.mp3">a mirror maze (ld kepek lenn) introja</a>, ezt minden telefonra elkuldtek aki az objektum kozelebe ment es be volt kapcsolva a bluetooth+lathatosag a telefonjan</li>
+  <li><a href="/file/praga/praguetowers.jar">cseh/angol/nemet tajekoztato midlet</a>, ezt u.ugy broadcastoltak mint az elozo introt</li>
+</ul></p><p>Mielott vegeztunk volna a valogatassal/feliratozassal, masok megtettek gyorsabban, de vegul ma vegre sikerult idot szakitani a <a href="https://www.flickr.com/photos/vmiklos/albums/72157670562819412">sajat kepeink</a> publikalasara is.</p><p>Elso korben ennyi, reszletesebb beszamolora most nem vallalkoznek, a kepekbol lathato, hogy az ido nagy reszet varosnezessel toltottuk. :)</p><p>Frissites: meg par info amit mar nem akarok a TODO-mban tartani, ugyhogy ide irok:</p><p><ul>
+  <li>A Budapestrol befuto vonat a "Hlavni Nadrazi" nevu palyaudvarra erkezik.</li>
+  <li>A szallasunk (a bences <a href="http://www.brevnov.cz/">rendhaz</a>) mellett levo hotelt Szent Adalbert hotelnak hivjak, postacime Markétská 28/1 Praha.</li>
+  <li></li></ul></p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/minimalisata-beszamolo-ejjeli-bringazasrol.html">Minimalisata beszamolo ejjeli bringazasrol</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p><pre>
+01:31 &lt; LGee&gt; mik a mai adatok?
+01:31 &lt; vmiklos&gt; mindjart megnezem
+01:31 &lt; vmiklos&gt; en most nem terveztem beszamolot irni
+01:32 &lt; vmiklos&gt; 2h27m21s, 36.94km, 15os atlag, max 59.6
+</pre></p><p>Bovebben <a href="http://hup.hu/node/91319">itt</a>. Ja es ez volt az elso alkalom SPD-vel terepen, de errol majd egy masik postban.</p><p><a href="http://hup.hu/node/91319">tovabb</a></p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/szent-laszlo-kilato-kapolna.html">Szent Laszlo kilato-kapolna</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p><div align="center"><img src="/pic/kilato-kapolna.t.jpg" alt="" title="" /></div></p><p>Szoval itt (<a href="http://www.kirandulastervezo.hu/Main.php?do=detailViewAction&amp;id=301">bovebb info</a>) jartunk, de kicsit elobbrol kezdtem.</p><p>Az alapotlet az volt, hogy csinaljuk meg a <a href="/blog/godollo-30">k30-as</a> turat. Szokas szerint Godollore is mar bringaval mentem ki, ott talalkoztam batyammal, aztan vele indultunk tovabb. Mogyorod es Fot kozott figyeltunk fel a cimben szereplo epitmenyre. Sajnos a tegnapi eso miatt eleg saros volt a kornyek + az ut teteje mar tul meredek volt a biciklizeshez, de szerencsere igy is max 50m-t kellett tolni a gepeket. Teljesen veletlenul osszetalalkoztunk ott egy parral akik elmeseltek, hogy az epitmeny by default zarva van, a Mogyorodi onkormanyzaton lehet elkerni a kulcsat, amit ok meg is tettek, igy felmehettunk. ;)</p><p>Aztan Foton a minimalis magammal hozott kajat megettuk, vizvetel kozben egy helyi bacsi elmagyarazta, hogy azert a viz a legerosebb folyadek, mert az meg a hajokat is elbirja. (!)</p><p>Vegul Godollon a Friczy altal nepszerusitett vendeglatoipari egysegbe tertunk be, ahonnan mar csak a szokasos hazagurulas volt hatra.</p><p>Netto ido 4h59m01s, brutto ido 7 ora, tav 110.64km, atlag 22.1km/h (kifele siettem, mert nem akartam sokat kesni, igy meglepo modon Bptol Godolloig sikerult 24.9es atlagot produkalni), max 61.2km/h (Gellerthegyrol lefele vasarnap reggel kifejezetten tagak a lehetosegek).</p>
+</div>
+</div>
+
+  </div>
+</article>
+
+<footer>
+<div id="paginator">
+<a href="https://vmiklos.hu/blog/index35.html" class="button_accent">&larr; Older Posts</a>
+
+<a href="https://vmiklos.hu/blog/index33.html" class="button_accent">Newer Posts &rarr;</a>
+</div>
+</footer>
+
+    <div id="ending_message">
+      <p>&copy; Miklos Vajna. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
+</body>
+</html>

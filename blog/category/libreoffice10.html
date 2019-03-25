@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/pygments.css">
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=PT+Sans|PT+Serif|PT+Mono">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Miklos Vajna">
+  <meta name="description" content="Posts and writings by Miklos Vajna">
+
+  <link href="https://vmiklos.hu/blog/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking RSS" />
+
+<link href="https://vmiklos.hu/blog/feeds/libreoffice.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking libreoffice Category RSS" />
+
+  <title>
+    What is Miklos hacking
+&ndash; Category: libreoffice  </title>
+
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <!--<a href="https://vmiklos.hu/blog">
+        <img src="https://vmiklos.hu/blog/theme/images/logo.png" alt="logo">
+      </a>-->
+      <h2><a href="https://vmiklos.hu/blog">What is Miklos hacking</a></h2>
+      <p></p>
+      <ul>
+        <li><a href="/" target="_blank">Root</a></li>
+        <li><a href="https://planet.documentfoundation.org/" target="_blank">LibreOffice Blogs</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://vmiklos.hu/blog">Index</a> &brvbar; <a href="https://vmiklos.hu/blog/archives.html">Archives</a>
+      &brvbar; <a href="https://vmiklos.hu/blog/feeds/all.rss.xml">RSS</a>
+&gt; Category: libreoffice
+&brvbar; <a href="https://vmiklos.hu/blog/feeds/libreoffice.rss.xml">RSS</a>
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/docx-import-progressbar-in-libreoffice.html">DOCX import progressbar in LibreOffice Writer</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh5.googleusercontent.com/-sW_Ccet7HMU/Uy2hcmf7ZsI/AAAAAAAAEHg/IGwPJI6h6vE/w643-h518-no/">
+<img src="https://lh5.googleusercontent.com/-sW_Ccet7HMU/Uy2hcmf7ZsI/AAAAAAAAEHg/IGwPJI6h6vE/s400/" alt="https://lh5.googleusercontent.com/-sW_Ccet7HMU/Uy2hcmf7ZsI/AAAAAAAAEHg/IGwPJI6h6vE/s400/" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>I&#8217;m sure in this case a few words are worth more than the above picture, so
+let me describe what you see above. :-)</p></div>
+<div class="paragraph"><p>In case of opening an ODT, DOC or RTF document in LibreOffice Writer, you
+already got some feedback on where the importer is, in case the process needed
+more time than what you feel "instant". However, this wasn&#8217;t supported for
+DOCX.  According to <code>git blame</code>, I added this to my todo on 2012-10-29, and a
+few months later also a
+<a href="https://bugs.freedesktop.org/show_bug.cgi?id=58044">bugreport</a> was opened,
+requesting the same, but up to yesterday, nothing changed.  However, now I&#8217;ve
+implemented this on master, it&#8217;ll be part of the 4.3 release.</p></div>
+<div class="paragraph"><p>Back to where I started, what you actually see there is when LibreOffice is in
+the middle of the import process of the Holy Bible in DOCX format, which takes
+around 12 seconds on my machine. One could say that speed up quite acceptable
+for that amount of data, but with a progressbar, it&#8217;s definitely better. ;-)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/doctok.html">Death of doctok in LibreOffice</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh5.googleusercontent.com/-IumGq3jzNdI/UxxG3Deg6QI/AAAAAAAAEFY/Ij7oMS7YyoY/s809/">
+<img src="https://lh5.googleusercontent.com/-IumGq3jzNdI/UxxG3Deg6QI/AAAAAAAAEFY/Ij7oMS7YyoY/s300/" alt="https://lh5.googleusercontent.com/-IumGq3jzNdI/UxxG3Deg6QI/AAAAAAAAEFY/Ij7oMS7YyoY/s300/" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>Last year in September we
+<a href="http://lists.freedesktop.org/archives/libreoffice/2013-September/055976.html">decided</a>
+to get rid of the writerfilter-based DOC tokenizer, and I volunteered to
+actually do this. As cleanups in general have a low priority, I only
+progressed with this slowly, though yesterday I completed it, that&#8217;s why I&#8217;m
+writing this post. :-)</p></div>
+<div class="paragraph"><p>Some background: the writerfilter module is responsible for RTF and DOCX
+import in Writer. As the above picture shows, the currently used DOC import is
+independent from it, and there was also an <em>other</em> DOC import filter, that was
+in writerfilter which was disabled at runtime. As I don&#8217;t like duplication, I
+examined the state of the two filters, and the linked minutes mail details
+how we decided that the old filter will stay, and we&#8217;ll get rid of the
+writerfilter one. It&#8217;s just a matter of deleting that code, right? :-) That&#8217;s
+what I thought first. But then I had to realize that the architecture of
+writerfilter is a bit more complex:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh3.googleusercontent.com/-vBMsCsYLRZE/UxxG3PsuI2I/AAAAAAAAEFc/Ly8sQ0ydY1A/s831/">
+<img src="https://lh3.googleusercontent.com/-vBMsCsYLRZE/UxxG3PsuI2I/AAAAAAAAEFc/Ly8sQ0ydY1A/s400/" alt="https://lh3.googleusercontent.com/-vBMsCsYLRZE/UxxG3PsuI2I/AAAAAAAAEFc/Ly8sQ0ydY1A/s400/" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>It has the following components:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+the dmapper (domain mapper), that handles all the nasty complexities of
+  mapping Word concepts to Writer concepts (think of e.g. sections ↔ page
+  styles)
+</p>
+</li>
+<li>
+<p>
+one tokenizer for each (RTF, DOCX, DOC) format
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>The traffic between the tokenizers and dmapper is called tokens. Naturally
+it&#8217;s not enough that tokenizers send and dmapper receives these tokens, they
+should be <em>defined</em> somewhere as well. And that&#8217;s where I realized this work
+will take a bit more time: instead of having a single token definition,
+actually the ooxml tokenizer defined its own grammar, and doctok also defined
+two <em>additional</em> grammars. And of course dmapper had to handle all of that.
+;-) Given that OOXML is a superset of the DOC/RTF format, it makes sense to
+just use the ooxml grammar, and get rid of the other two.</p></div>
+<div class="paragraph"><p>Especially that&#8201;&#8212;&#8201;by now you probably found this out&#8201;&#8212;&#8201;if I wanted to kill
+doctok, I had to kill the sprm and rtf grammars as well. Otherwise just
+removing doctok would break the RTF and DOCX import as well, as those also
+used the rtf/sprm grammars.</p></div>
+<div class="paragraph"><p>So at the end, the cleaned up architecture now looks like this:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh5.googleusercontent.com/-Iki8jKN61vE/UxxG3FaQc2I/AAAAAAAAEFQ/hWFsR20qB5o/s813/">
+<img src="https://lh5.googleusercontent.com/-Iki8jKN61vE/UxxG3FaQc2I/AAAAAAAAEFQ/hWFsR20qB5o/s400/" alt="https://lh5.googleusercontent.com/-Iki8jKN61vE/UxxG3FaQc2I/AAAAAAAAEFQ/hWFsR20qB5o/s400/" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>And that has multiple advantages:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+It removes quite some code: In <code>libreoffice-4-1</code>, the doctok was 78849 (!)
+  lines of code (well, part of that was XML data, and some scripts generated
+  C++ code from that).
+</p>
+</li>
+<li>
+<p>
+dmapper now doesn&#8217;t have to handle the rtf and sprm grammars anymore, so now
+  there is a <em>single</em> place in dmapper that handles e.g. the italic character
+  property.
+</p>
+</li>
+<li>
+<p>
+Smaller writerfilter binary for the end user: even if doctok wasn&#8217;t enabled
+  at runtime, it was shipped in the installation set.
+</p>
+</li>
+<li>
+<p>
+Hopefully it&#8217;s now a bit more easy to understand writerfilter: at least e.g.
+  if you want to look up the place where dmapper handles the character bold
+  ("b") XML tag of OOXML, you don&#8217;t have to know that the binary DOC
+  equivalent of that is sprmCFBold, just because we have an unused DOC tokenizer
+  there as well. :-)
+</p>
+</li>
+<li>
+<p>
+Given that DOC and RTF formats are a dead end, I think it&#8217;s a good thing
+  that in writerfilter now <em>the</em> grammar is OOXML (that keeps introducing new
+  features), rather than some dead format. ;-)
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/comments-nested.html">LibreOffice Writer now supports nested comments in its DOC/RTF filters</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh3.googleusercontent.com/-FdnXBOBQWjc/UxA1LD0-fyI/AAAAAAAAEDk/2hYmN8ASkxA/s1024/comments-nested.png">
+<img src="https://lh3.googleusercontent.com/-FdnXBOBQWjc/UxA1LD0-fyI/AAAAAAAAEDk/2hYmN8ASkxA/s400/comments-nested.png" alt="https://lh3.googleusercontent.com/-FdnXBOBQWjc/UxA1LD0-fyI/AAAAAAAAEDk/2hYmN8ASkxA/s400/comments-nested.png" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>If you ever tried to use nested comments in Writer (make a selection, Insert
+&#8594; Comment, then make an overlapping selection, and do it again), you may have
+noticed that only the ODF filter can load and save such a document properly.
+Recently I have improved this situation a lot. Motivated by seeing this is now
+supported in the DOCX import filter, I now added support for this also to the
+DOCX export, RTF import/export and binary DOC import/export filters.</p></div>
+<div class="paragraph"><p>If you want to try this out, core.git has a
+<a href="http://cgit.freedesktop.org/libreoffice/core/tree/sw/qa/extras/ooxmlexport/data/comments-nested.odt">ODT</a>
+and
+<a href="http://cgit.freedesktop.org/libreoffice/core/tree/sw/qa/extras/ww8export/data/comments-nested.doc">DOC</a>
+samples to play with.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/fosdem2014.html">InteropGrabBag in LibreOffice Writer</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://speakerdeck.com/vmiklos/interopgrabbag-in-libreoffice-writer">
+<img src="https://lh5.googleusercontent.com/-XoQPls8ulH4/UvOP_KUNG8I/AAAAAAAAEA0/BSJLDOfvLUA/s400/interopgrabbag-fosdem-brussels-2k14-0.jpg" alt="https://lh5.googleusercontent.com/-XoQPls8ulH4/UvOP_KUNG8I/AAAAAAAAEA0/BSJLDOfvLUA/s400/interopgrabbag-fosdem-brussels-2k14-0.jpg" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>I&#8217;ve arrived home yesterday from Brussels where I
+<a href="https://fosdem.org/2014/schedule/event/interopgrabbag_in_libreoffice_writer/">presented</a>
+at FOSDEM 2014, in the
+<a href="https://fosdem.org/2014/schedule/track/open_document_editors/">Open document
+editors devroom</a>.</p></div>
+<div class="paragraph"><p>We also had a
+<a href="https://wiki.documentfoundation.org/Hackfest/FOSDEM2014">Hackfest</a>, kindly
+hosted by <a href="http://www.betacowork.com/">Betacowork</a> on Monday and Tuesday.</p></div>
+<div class="paragraph"><p>Here are a few talks I enjoyed, not counting the LibreOffice ones:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="https://fosdem.org/2014/schedule/event/simplifying_reuse_with_metadata_support_in_odf_and_plugin_apis/">Simplifying
+  reuse with metadata support in ODF and plugin APIs</a>&#8201;&#8212;&#8201;finally a simple way
+  to copy&amp;paste images from Firefox to LibreOffice with source attribution.
+</p>
+</li>
+<li>
+<p>
+<a href="https://fosdem.org/2014/schedule/event/valgrind_gdb/">Combining the power of
+  Valgrind and GDB</a>&#8201;&#8212;&#8201;useful to know about this possibility
+</p>
+</li>
+<li>
+<p>
+<a href="https://fosdem.org/2014/schedule/event/usecasesclangcppparser/">Two uses
+  cases for the clang C++ parser: Online Code Browser and Qt moc Replacement.</a>
+ &#8201;&#8212;&#8201;maybe the first could replace our crappy Java-based opengrok? We&#8217;ll see.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>I was also happy to meet Jacobo, Matus, Tim and Tomaž finally personally. :-)</p></div>
+<div class="paragraph"><p>Quite some other slides are now available on
+<a href="http://planet.documentfoundation.org/">Planet</a>, don&#8217;t miss them. I also took
+some pictures, available
+<a href="https://www.flickr.com/photos/vmiklos/albums/72157672332838272">here</a>,
+including photos of all speakers in our devroom.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/lo-writer-drawingml-shape-improvements.html">OOXML shape improvements in LibreOffice Writer 4.3</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>Although LibreOffice 4.2.0 is
+<a href="https://wiki.documentfoundation.org/ReleasePlan/4.2">not yet released</a>, it was
+already branched off from <code>master</code> in November last year, and improvements for
+the next release are already cooking in <code>master</code>. One of these will be a major
+improvement of shape handling in the DOCX import/export filter.</p></div>
+<div class="paragraph"><p>Some background: when DOCX was initially introduced, it still used
+<a href="http://en.wikipedia.org/wiki/Vector_Markup_Language">VML</a> (which is in short
+an XML equivalent of the binary shape format), and only Word 2010 started to
+write shapes using
+<a href="http://en.wikipedia.org/wiki/Office_Open_XML_file_formats#DrawingML">drawingML</a>.
+Given that Word still understands VML, it wasn&#8217;t urgent for us to write shapes
+using the drawingML markup. As for import, Word still writes an approximate
+version of the shape in VML as a fallback&#8201;&#8212;&#8201;that&#8217;s what we read till now.
+Needless to say, newer drawingML features have no VML equivalent so with time
+it became more and more important for us to finally read and write shapes in
+DOCX using drawingML, which just happened in Writer.</p></div>
+<div class="paragraph"><p>I&#8217;m posting here a few screenshots showing the improvements I&#8217;ve implemented.
+Note that final 4.3 is still far from being released, so this is not a
+complete list. :-) In each case I&#8217;m providing a screenshot showing how it
+looked (at the end of an import/export/import again roundtrip) <em>before</em>, how
+it looks <em>now</em> in 4.3 and the <em>reference</em> layout. Click on the images to get a
+larger image:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+document with different colors
+  (<a href="http://people.freedesktop.org/~vmiklos/2014/docx-drawingml/color.docx">test doc</a>):
+</p>
+</li>
+</ul></div>
+<div align="center">
+<div class="paragraph"><p><span class="image">
+<a class="image" href="https://lh3.googleusercontent.com/-9mP2CfnGea4/UtFifqpPAII/AAAAAAAAD7k/5vJFQNHZOew/s500/color-lo42.png">
+<img src="https://lh3.googleusercontent.com/-9mP2CfnGea4/UtFifqpPAII/AAAAAAAAD7k/5vJFQNHZOew/s400/color-lo42.png" alt="https://lh3.googleusercontent.com/-9mP2CfnGea4/UtFifqpPAII/AAAAAAAAD7k/5vJFQNHZOew/s400/color-lo42.png" />
+</a>
+</span>
+<span class="image">
+<a class="image" href="https://lh4.googleusercontent.com/-zVLbX6nvZLY/UtFifqBENbI/AAAAAAAAD7c/r9PQuAd5g18/s500/color-lo43.png">
+<img src="https://lh4.googleusercontent.com/-zVLbX6nvZLY/UtFifqBENbI/AAAAAAAAD7c/r9PQuAd5g18/s400/color-lo43.png" alt="https://lh4.googleusercontent.com/-zVLbX6nvZLY/UtFifqBENbI/AAAAAAAAD7c/r9PQuAd5g18/s400/color-lo43.png" />
+</a>
+</span>
+<span class="image">
+<a class="image" href="https://lh6.googleusercontent.com/-OQdaaTTH0Aw/UtFifrL-jTI/AAAAAAAAD7U/inr0Zx0lHmo/s500/color-word2007.png">
+<img src="https://lh6.googleusercontent.com/-OQdaaTTH0Aw/UtFifrL-jTI/AAAAAAAAD7U/inr0Zx0lHmo/s400/color-word2007.png" alt="https://lh6.googleusercontent.com/-OQdaaTTH0Aw/UtFifrL-jTI/AAAAAAAAD7U/inr0Zx0lHmo/s400/color-word2007.png" />
+</a>
+</span>
+<span class="image">
+<a class="image" href="https://lh4.googleusercontent.com/-Yb2am1Vc65g/UtFigUF9fkI/AAAAAAAAD7w/nRZhF0iUYMA/s500/color-word2010.png">
+<img src="https://lh4.googleusercontent.com/-Yb2am1Vc65g/UtFigUF9fkI/AAAAAAAAD7w/nRZhF0iUYMA/s400/color-word2010.png" alt="https://lh4.googleusercontent.com/-Yb2am1Vc65g/UtFigUF9fkI/AAAAAAAAD7w/nRZhF0iUYMA/s400/color-word2010.png" />
+</a>
+</span></p></div>
+</div>
+<div class="paragraph"><p>OK, this has four pictures: before, now, Word 2007 and Word2010. As you can see now we&#8217;re now on par with Word 2010. ;-)</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+document with textboxes inside a group shape
+  (<a href="http://people.freedesktop.org/~vmiklos/2014/docx-drawingml/groupshape-textbox.docx">test doc</a>):
+</p>
+</li>
+</ul></div>
+<div align="center">
+<div class="paragraph"><p><span class="image">
+<a class="image" href="https://lh6.googleusercontent.com/-G4vltiHehvQ/UtFigLmY6fI/AAAAAAAAD8Q/I1iPtoh4hHE/s500/groupshape-textbox-lo42.png">
+<img src="https://lh6.googleusercontent.com/-G4vltiHehvQ/UtFigLmY6fI/AAAAAAAAD8Q/I1iPtoh4hHE/s400/groupshape-textbox-lo42.png" alt="https://lh6.googleusercontent.com/-G4vltiHehvQ/UtFigLmY6fI/AAAAAAAAD8Q/I1iPtoh4hHE/s400/groupshape-textbox-lo42.png" />
+</a>
+</span>
+<span class="image">
+<a class="image" href="https://lh6.googleusercontent.com/-wncA0mX92hA/UtFighZK4HI/AAAAAAAAD70/pwB6tGwyPbk/s500/groupshape-textbox-lo43.png">
+<img src="https://lh6.googleusercontent.com/-wncA0mX92hA/UtFighZK4HI/AAAAAAAAD70/pwB6tGwyPbk/s400/groupshape-textbox-lo43.png" alt="https://lh6.googleusercontent.com/-wncA0mX92hA/UtFighZK4HI/AAAAAAAAD70/pwB6tGwyPbk/s400/groupshape-textbox-lo43.png" />
+</a>
+</span>
+<span class="image">
+<a class="image" href="https://lh6.googleusercontent.com/-X3X_AXClLyw/UtFig15lsrI/AAAAAAAAD74/_YntDxB1pUk/s500/groupshape-textbox-word2010.png">
+<img src="https://lh6.googleusercontent.com/-X3X_AXClLyw/UtFig15lsrI/AAAAAAAAD74/_YntDxB1pUk/s400/groupshape-textbox-word2010.png" alt="https://lh6.googleusercontent.com/-X3X_AXClLyw/UtFig15lsrI/AAAAAAAAD74/_YntDxB1pUk/s400/groupshape-textbox-word2010.png" />
+</a>
+</span></p></div>
+</div>
+<div class="ulist"><ul>
+<li>
+<p>
+document with textbox, having a special
+  <a href="http://api.libreoffice.org/docs/idl/ref/namespacecom_1_1sun_1_1star_1_1text_1_1RelOrientation.html">RelOrientation</a>
+  (<a href="http://people.freedesktop.org/~vmiklos/2014/docx-drawingml/relorentation-textbox.docx">test doc</a>):
+</p>
+</li>
+</ul></div>
+<div align="center">
+<div class="paragraph"><p><span class="image">
+<a class="image" href="https://lh3.googleusercontent.com/-hpAhQ8Jd2R4/UtFihLad6RI/AAAAAAAAD8M/sgFpaLTRnAE/s800/relorientaton-textbox-lo42.png">
+<img src="https://lh3.googleusercontent.com/-hpAhQ8Jd2R4/UtFihLad6RI/AAAAAAAAD8M/sgFpaLTRnAE/s400/relorientaton-textbox-lo42.png" alt="https://lh3.googleusercontent.com/-hpAhQ8Jd2R4/UtFihLad6RI/AAAAAAAAD8M/sgFpaLTRnAE/s400/relorientaton-textbox-lo42.png" />
+</a>
+</span>
+<span class="image">
+<a class="image" href="https://lh6.googleusercontent.com/-1Ca-ZW3ugKg/UtFihSSXf0I/AAAAAAAAD8I/lQt2qu7XDQA/s800/relorientaton-textbox-lo43.png">
+<img src="https://lh6.googleusercontent.com/-1Ca-ZW3ugKg/UtFihSSXf0I/AAAAAAAAD8I/lQt2qu7XDQA/s400/relorientaton-textbox-lo43.png" alt="https://lh6.googleusercontent.com/-1Ca-ZW3ugKg/UtFihSSXf0I/AAAAAAAAD8I/lQt2qu7XDQA/s400/relorientaton-textbox-lo43.png" />
+</a>
+</span>
+<span class="image">
+<a class="image" href="https://lh6.googleusercontent.com/-LgNJNRlraq8/UtFikZ2L43I/AAAAAAAAD9I/VgOKGQt0o9M/s800/relorientaton-textbox-word2010.png">
+<img src="https://lh6.googleusercontent.com/-LgNJNRlraq8/UtFikZ2L43I/AAAAAAAAD9I/VgOKGQt0o9M/s400/relorientaton-textbox-word2010.png" alt="https://lh6.googleusercontent.com/-LgNJNRlraq8/UtFikZ2L43I/AAAAAAAAD9I/VgOKGQt0o9M/s400/relorientaton-textbox-word2010.png" />
+</a>
+</span></p></div>
+</div>
+<div class="ulist"><ul>
+<li>
+<p>
+document with a shape having a custom adjustment
+  (<a href="http://people.freedesktop.org/~vmiklos/2014/docx-drawingml/shape-adj.docx">test doc</a>):
+</p>
+</li>
+</ul></div>
+<div align="center">
+<div class="paragraph"><p><span class="image">
+<a class="image" href="https://lh3.googleusercontent.com/-VeqomDNiRDg/UtFiiM9h93I/AAAAAAAAD8k/5iGiGUEan4s/s500/shape-adj-lo42.png">
+<img src="https://lh3.googleusercontent.com/-VeqomDNiRDg/UtFiiM9h93I/AAAAAAAAD8k/5iGiGUEan4s/s400/shape-adj-lo42.png" alt="https://lh3.googleusercontent.com/-VeqomDNiRDg/UtFiiM9h93I/AAAAAAAAD8k/5iGiGUEan4s/s400/shape-adj-lo42.png" />
+</a>
+</span>
+<span class="image">
+<a class="image" href="https://lh6.googleusercontent.com/-Jd3N1X6jvcA/UtFiiTc_GWI/AAAAAAAAD8g/-ExLQkNqMfQ/s500/shape-adj-lo43.png">
+<img src="https://lh6.googleusercontent.com/-Jd3N1X6jvcA/UtFiiTc_GWI/AAAAAAAAD8g/-ExLQkNqMfQ/s400/shape-adj-lo43.png" alt="https://lh6.googleusercontent.com/-Jd3N1X6jvcA/UtFiiTc_GWI/AAAAAAAAD8g/-ExLQkNqMfQ/s400/shape-adj-lo43.png" />
+</a>
+</span>
+<span class="image">
+<a class="image" href="https://lh4.googleusercontent.com/-aLbCIiyql48/UtFii62b47I/AAAAAAAAD8o/W0EDNoQtCl0/s500/shape-adj-word2010.png">
+<img src="https://lh4.googleusercontent.com/-aLbCIiyql48/UtFii62b47I/AAAAAAAAD8o/W0EDNoQtCl0/s400/shape-adj-word2010.png" alt="https://lh4.googleusercontent.com/-aLbCIiyql48/UtFii62b47I/AAAAAAAAD8o/W0EDNoQtCl0/s400/shape-adj-word2010.png" />
+</a>
+</span></p></div>
+</div>
+<div class="ulist"><ul>
+<li>
+<p>
+document with different colors
+  (<a href="http://people.freedesktop.org/~vmiklos/2014/docx-drawingml/smiley.docx">test doc</a>):
+</p>
+</li>
+</ul></div>
+<div align="center">
+<div class="paragraph"><p><span class="image">
+<a class="image" href="https://lh6.googleusercontent.com/-HRRivr0f-a0/UtFijDe8cfI/AAAAAAAAD88/rnVTutXIE84/s500/smiley-lo42.png">
+<img src="https://lh6.googleusercontent.com/-HRRivr0f-a0/UtFijDe8cfI/AAAAAAAAD88/rnVTutXIE84/s400/smiley-lo42.png" alt="https://lh6.googleusercontent.com/-HRRivr0f-a0/UtFijDe8cfI/AAAAAAAAD88/rnVTutXIE84/s400/smiley-lo42.png" />
+</a>
+</span>
+<span class="image">
+<a class="image" href="https://lh5.googleusercontent.com/-mITRnHUfrqA/UtFijZriQeI/AAAAAAAAD84/92BbOA8DRfk/s500/smiley-lo43.png">
+<img src="https://lh5.googleusercontent.com/-mITRnHUfrqA/UtFijZriQeI/AAAAAAAAD84/92BbOA8DRfk/s400/smiley-lo43.png" alt="https://lh5.googleusercontent.com/-mITRnHUfrqA/UtFijZriQeI/AAAAAAAAD84/92BbOA8DRfk/s400/smiley-lo43.png" />
+</a>
+</span>
+<span class="image">
+<a class="image" href="https://lh6.googleusercontent.com/--_LhqgTxNM0/UtFij6NNYaI/AAAAAAAAD9A/5UFA4kEvBp0/s500/smiley-word2010.png">
+<img src="https://lh6.googleusercontent.com/--_LhqgTxNM0/UtFij6NNYaI/AAAAAAAAD9A/5UFA4kEvBp0/s400/smiley-word2010.png" alt="https://lh6.googleusercontent.com/--_LhqgTxNM0/UtFij6NNYaI/AAAAAAAAD9A/5UFA4kEvBp0/s400/smiley-word2010.png" />
+</a>
+</span></p></div>
+</div>
+<div class="paragraph"><p>If you want to try these out yourself, get a
+<a href="http://dev-builds.libreoffice.org/daily/">daily build</a> and play with it! If
+something goes wrong, report it to us in the
+<a href="https://www.libreoffice.org/get-help/bug/">Bugzilla</a>, so we can try fix it
+before 4.3 gets branched off. Last, but not at least, thanks for
+<a href="http://www.cloudon.com/">CloudOn</a> for funding these improvements! :-)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/libreoffice-draw-gedcom-import-filter.html">A LibreOffice Draw GEDCOM import filter</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh4.googleusercontent.com/-4110I0vkRE4/Ur8-uJ6YcII/AAAAAAAAD44/u1pNo4z1y-M/s1440/screenshot.png">
+<img src="https://lh4.googleusercontent.com/-4110I0vkRE4/Ur8-uJ6YcII/AAAAAAAAD44/u1pNo4z1y-M/s400/screenshot.png" alt="https://lh4.googleusercontent.com/-4110I0vkRE4/Ur8-uJ6YcII/AAAAAAAAD44/u1pNo4z1y-M/s400/screenshot.png" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>You may remember that I wrote about my little
+<a href="/blog/ged2dot.html">ged2dot project</a> about two months ago.
+It&#8217;s a Python script that can be used from commandline with quite some
+options. I&#8217;m happy to announce that there is a GUI for it now, in the form of
+a LibreOffice Draw import filter. If you open
+<a href="https://github.com/vmiklos/ged2dot/blob/master/test/screenshot.ged">this GEDCOM
+file</a>, you&#8217;ll see something similar to the above image.  You can simply build
+the <code>.oxt</code> from the <a href="https://github.com/vmiklos/ged2dot">Git repo</a>, or just get
+it from the
+<a href="http://extensions.libreoffice.org/extension-center/gedcom">LibreOffice
+Extensions site</a>.</p></div>
+<div class="paragraph"><p>Technical details for the interested readers: the import filter just glues
+together existing pieces. First it runs <code>ged2dot</code>, then <code>dot</code> to generate an
+SVG. To keep things simple, then the filter "inlineizes" all the included
+images, finally the already existing SVG import filter does the real work. I
+find it elegant that each step works from and to the memory, and not ugly
+temporary files. :-) It works on Linux and Windows, feedback on if it works on
+Mac is appreciated.</p></div>
+<div class="paragraph"><p>Also, if you ask why this is an extension, not part of LibreOffice core: I
+guess most users are not interested in building family trees; also being
+someone who works on the core most of the time, I wanted to try out how
+implementing an import filter as an extension (filter detection, import
+options dialog, etc.) works. ;-)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sfd-2013.html">Software Freedom Day Hungary, 2013</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh5.googleusercontent.com/-_PCiCvnpRa8/UpoG4lCMFFI/AAAAAAAADyI/0n0ZpQsXREQ/s640/sfd-plakat-2013-kicsi.png">
+<img src="https://lh5.googleusercontent.com/-_PCiCvnpRa8/UpoG4lCMFFI/AAAAAAAADyI/0n0ZpQsXREQ/s400/sfd-plakat-2013-kicsi.png" alt="https://lh5.googleusercontent.com/-_PCiCvnpRa8/UpoG4lCMFFI/AAAAAAAADyI/0n0ZpQsXREQ/s400/sfd-plakat-2013-kicsi.png" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>This year&#8217;s Software Freedom Day event was held yesterday at Szeged, here at
+Hungary. I gave a talk about the news of LibreOffice 4.1 / 4.2
+(<a href="https://speakerdeck.com/vmiklos/4-dot-2-es-kiadasban">slides</a>), and I was
+happy to notice there were other LibreOffice-related talks as well:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Péter Mátó was talking about
+  <a href="http://sfd.org.hu/egy-uj-magyar-fejlesztes-koezponti-rendszer-menedzsment">central
+  configuration management</a>, the LibreOffice-related bit is
+  <a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=5a02076358a547bae8a9b596d9722a7cd2d46c34">this
+  commit</a>;
+</p>
+</li>
+<li>
+<p>
+László Németh was talking about a
+  <a href="http://sfd.org.hu/magyar-wollmux-platformfueggetlen-intezmenyi-vallalati-dokumentumkezeles-nyilt-szabvany-szabad-szoft">LibreOffice
+  extension</a>, but in practice he shared quite some details about how to
+  contribute (and his usual topics like LibreLogo ;-) )
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>I would like to thank the organizers all their work, it was a pleasure to
+attend this event! :-)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/lo-dotexport.html">LibreOffice Writer can now write .dot files</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh6.googleusercontent.com/-MFCwDOTVK1o/UoHtE8V1k8I/AAAAAAAADuU/dKjop88lNxo/s2000/dotexport.png">
+<img src="https://lh6.googleusercontent.com/-MFCwDOTVK1o/UoHtE8V1k8I/AAAAAAAADuU/dKjop88lNxo/s400/dotexport.png" alt="https://lh6.googleusercontent.com/-MFCwDOTVK1o/UoHtE8V1k8I/AAAAAAAADuU/dKjop88lNxo/s400/dotexport.png" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>It was pointed out that LibreOffice Writer is only able to open, not save
+<code>.dot</code> (Word binary template) files. From mso-dumper experience, I knew that
+the difference is quite small between <code>.doc</code> (which we already export) and
+<code>.dot</code> files. The feature freeze for LibreOffice 4.2 is here next week, so why
+not adding this feature before that deadline? You can see above the result. :-)</p></div>
+<div class="paragraph"><p>For the ones who love our <code>--convert-to</code> commandline switch, an extra fix was
+necessary to make <code>--convert-to dot</code> work as well, both commits are now in
+master. You can try it out yourself using a
+<a href="http://dev-builds.libreoffice.org/daily/">daily build</a> or just wait for the
+<code>libreoffice-4-2</code> branchoff and the first beta from that branch.</p></div>
+<div class="paragraph"><p>Happy templating! ;-)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/swspellpopup-redline.html">Change tracking improvements in LibreOffice Writer spellcheck popup</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh6.googleusercontent.com/-P4Z0GsEN48I/Ul7MxmR1-eI/AAAAAAAADkg/VF9XqYqiwtY/s640/swspellpopup-redline.png">
+<img src="https://lh6.googleusercontent.com/-P4Z0GsEN48I/Ul7MxmR1-eI/AAAAAAAADkg/VF9XqYqiwtY/s400/swspellpopup-redline.png" alt="https://lh6.googleusercontent.com/-P4Z0GsEN48I/Ul7MxmR1-eI/AAAAAAAADkg/VF9XqYqiwtY/s400/swspellpopup-redline.png" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>If you ever had to review a document that had change tracking enabled in
+LibreOffice Writer, you might have noticed an odd behaviour: if e.g. the
+inserted text has a spelling error, it&#8217;s not easy to reject that change. The
+reason for this is that in case of spelling errors, right mouse click activates
+the spellcheck popup menu, which lacked the change tracking operations
+previously.</p></div>
+<div class="paragraph"><p>As you can see in the above screenshot, this is no longer an issue: LibreOffice
+4.2 will have the previous change, next change, accept change and reject change
+operations in the spellcheck popup menu as well.</p></div>
+<div class="paragraph"><p>In one sentence, with LibreOffice 4.2, Writer allows to reject a spelling error
+it detected itself. ;-)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/locon2013-milan.html">LibreOffice Conference 2013, Milan</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh5.googleusercontent.com/-6IYTqTeNzHk/UkgSI1IZH7I/AAAAAAAAB8A/r7inHHArGbU/s2000/DSC_9581.JPG">
+<img src="https://lh5.googleusercontent.com/-6IYTqTeNzHk/UkgSI1IZH7I/AAAAAAAAB8A/r7inHHArGbU/s400/DSC_9581.JPG" alt="https://lh5.googleusercontent.com/-6IYTqTeNzHk/UkgSI1IZH7I/AAAAAAAAB8A/r7inHHArGbU/s400/DSC_9581.JPG" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>This year&#8217;s LibreOffice conference was held in Milan, Italy. Links to my slides:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="https://speakerdeck.com/vmiklos/export-filters">Status of the Writer import/export filters</a>
+</p>
+</li>
+<li>
+<p>
+<a href="https://speakerdeck.com/vmiklos/gsoc-students-panel">GSoC students' panel</a> (I only organized this one)
+</p>
+</li>
+<li>
+<p>
+<a href="https://speakerdeck.com/vmiklos/vim-efficient-code-search-and-pretty-printing">VIM: efficient code search and pretty-printing</a> (Lighting Talk)
+</p>
+</li>
+<li>
+<p>
+<a href="https://speakerdeck.com/vmiklos/git-crash-course">Git crash course</a>
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Why so many talks? I couldn&#8217;t decide what topic to pick up (git or Writer
+filters), so I did both, the rest&#8201;&#8212;&#8201;those weren&#8217;t sessions where I spoke for
+30+ minutes, so those don&#8217;t really count. :-)</p></div>
+<div class="paragraph"><p>Regarding the number of attendees, draw your own conclusions from the
+<a href="https://plus.google.com/116265564718884370181/posts/f3irfQkHsDj">group picture</a>,
+made on 26th&#8201;&#8212;&#8201;probably more than 100 attendees, counting all days.</p></div>
+<div class="paragraph"><p>Thanks for the organizers for this beautiful event&#8201;&#8212;&#8201;and also the sponsors,
+including Google (free food/beer during one hackathon) and CloudOn (fee
+free/beer during the other hackathon + tablets for the best commits)!</p></div>
+<div class="paragraph"><p>My pictures are available
+<a href="https://www.flickr.com/photos/vmiklos/albums/72157670068747484">here</a>.</p></div>
+<div class="paragraph"><p>For Hungarian readers, Gábor Kelemen (maintainer of the LibreOffice Hungarian
+translation) also provided blog posts for the
+<a href="http://fsf.hu/2013/09/26/libreoffice-konferencia-2013-1-nap/">first</a> and
+<a href="http://fsf.hu/2013/09/27/libreoffice-konferencia-2013-2-nap/">second</a> day, also
+<a href="http://libreoffice.hu/2013/09/27/magyar-siker-a-milanoi-libreoffice-konferencian/">libreoffice.hu</a>
+had a related article.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+
+<footer>
+<div id="paginator">
+<a href="https://vmiklos.hu/blog/category/libreoffice11.html" class="button_accent">&larr; Older Posts</a>
+
+<a href="https://vmiklos.hu/blog/category/libreoffice9.html" class="button_accent">Newer Posts &rarr;</a>
+</div>
+</footer>
+
+    <div id="ending_message">
+      <p>&copy; Miklos Vajna. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
+</body>
+</html>

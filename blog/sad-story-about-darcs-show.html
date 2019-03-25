@@ -1,85 +1,81 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
-    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<meta name="generator" content="AsciiDoc 8.5.3" />
-<meta name="description" content="Sad story about darcs show - Miklos' blog" />
-<meta name="keywords" content="vmiklos, libereoffice, swig, git, python, hacking, bitlbee" />
-<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="http://vmiklos.hu/blog/index.rss" />
-<link rel="stylesheet" href="/blog/xhtml11.css" type="text/css" />
-<link rel="stylesheet" href="/blog/xhtml11-quirks.css" type="text/css" />
-<link rel="stylesheet" href="/blog/layout.css" type="text/css" />
-<title>Sad story about darcs show</title>
-<!-- google analytics start -->
-<script type="text/javascript">
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/pygments.css">
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=PT+Sans|PT+Serif|PT+Mono">
 
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-24726997-1']);
-  _gaq.push(['_trackPageview']);
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Miklos Vajna">
+  <meta name="description" content="Posts and writings by Miklos Vajna">
 
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
+  <link href="https://vmiklos.hu/blog/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking RSS" />
 
-</script>
-<!-- google analytics end -->
+<meta name="keywords" content="en">
+
+  <title>
+    What is Miklos hacking
+&ndash; Sad story about darcs show  </title>
+
 </head>
+
 <body>
-<div id="layout-banner-box">
-<div id="layout-banner">
-  <div id="layout-title">vmiklos.hu</div>
-  <div id="layout-description">shameless self-promoting website</div>
-</div>
-</div>
-<div id="layout-menu-box">
-<div id="layout-menu">
-  <div>&#187;<a href="/">Root</a></div>
-  <div>&#187;<a href="/blog/">Rejourn root</a></div>
-</div>
+  <aside>
+    <div id="user_meta">
+      <!--<a href="https://vmiklos.hu/blog">
+        <img src="https://vmiklos.hu/blog/theme/images/logo.png" alt="logo">
+      </a>-->
+      <h2><a href="https://vmiklos.hu/blog">What is Miklos hacking</a></h2>
+      <p></p>
+      <ul>
+        <li><a href="/" target="_blank">Root</a></li>
+        <li><a href="https://planet.documentfoundation.org/" target="_blank">LibreOffice Blogs</a></li>
+      </ul>
+    </div>
+  </aside>
 
-</div>
-<div id="layout-content-box">
-<div id="layout-content">
-<div id="header">
-	<h1>Sad story about darcs show</h1>
-</div>
-<div id="preamble">
+  <main>
+    <header>
+      <p>
+      <a href="https://vmiklos.hu/blog">Index</a> &brvbar; <a href="https://vmiklos.hu/blog/archives.html">Archives</a>
+      &brvbar; <a href="https://vmiklos.hu/blog/feeds/all.rss.xml">RSS</a>
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sad-story-about-darcs-show.html">Sad story about darcs show</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
 <div class="sectionbody">
-
-<!-- Single entry -->
-<div class="verseblock">
-<div class="verseblock-content">Posted <span class="timeago" title="2008-11-27T00:06:22Z">Thursday, 27 November 2008</span> by Miklos<br />
-    Tags:
-    <a href="tags/en.html">en</a>
-    <a href="tags/hacking.html">hacking</a>
-</div>
-</div>
-
-<!-- Body -->
 <p>So today I did what I have in my TODO for some time: make darcs-fast-export produce the fast-import stream on the fly, without a tmp working dir (that's how tailor and darcs2git works, and I think that's just ugly).</p><p>And the result? I thought this will be the trick that makes it a lot faster, compared to tailor and at the end it turns out that it slows it down about 3 times. :-(</p><p>Not counting speed issues, it's a huge cleanup:</p><p><pre> 12 files changed, 34 insertions(+), 106 deletions(-)</pre></p><p>Dunno what to do with it now. I'll try to poke the darcs devs, maybe they can optimize it a bit.</p><p>The sad fact is the comparision to git:</p><p><pre>
 $ time darcs show contents --match "hash 20040523231834-97f81-2bca6242bec169bd01079378524a33e0310e0b65.gz" tailor.py >/dev/null</p><p>real    0m2.780s
 $ time git show 451ae1176d56a579d3d7bd236fe7d7dd9df59326:tailor.py >/dev/null</p><p>real    0m0.004s</pre></p>
-
-
-<script src="https://apis.google.com/js/plusone.js"></script>
-<g:plus action="share"></g:plus>
-
-<!-- Disqus comments -->
-<h1 id="comment-header">Comments</h1>
-<div id="disqus_thread"></div>
-<script type="text/javascript" src="http://vmiklos.disqus.com/embed.js">
-	var disqus_developer = 1;
-</script>
-<noscript>
-  <p><a href="http://disqus.com/?ref_noscript=vmiklos">View the discussion thread.</a></p>
-</noscript>
-
 </div>
 </div>
-</div>
-</div>
+
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Thu 27 November 2008</p>
+    <p>Category: <a href="https://vmiklos.hu/blog/category/hacking.html">hacking</a>
+ &ndash; Tags:
+      <a href="https://vmiklos.hu/blog/tag/en.html">en</a>    </p>
+  </div>
+
+
+</article>
+
+
+    <div id="ending_message">
+      <p>&copy; Miklos Vajna. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
 </body>
 </html>

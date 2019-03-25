@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/pygments.css">
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=PT+Sans|PT+Serif|PT+Mono">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Miklos Vajna">
+  <meta name="description" content="Posts and writings by Miklos Vajna">
+
+  <link href="https://vmiklos.hu/blog/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking RSS" />
+
+
+  <title>
+    What is Miklos hacking
+&ndash; Tag: mutt  </title>
+
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <!--<a href="https://vmiklos.hu/blog">
+        <img src="https://vmiklos.hu/blog/theme/images/logo.png" alt="logo">
+      </a>-->
+      <h2><a href="https://vmiklos.hu/blog">What is Miklos hacking</a></h2>
+      <p></p>
+      <ul>
+        <li><a href="/" target="_blank">Root</a></li>
+        <li><a href="https://planet.documentfoundation.org/" target="_blank">LibreOffice Blogs</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://vmiklos.hu/blog">Index</a> &brvbar; <a href="https://vmiklos.hu/blog/archives.html">Archives</a>
+      &brvbar; <a href="https://vmiklos.hu/blog/feeds/all.rss.xml">RSS</a>
+&gt; Tag: mutt
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/mutt-address-book.html">mutt/vim offline address book with multiple sources</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>I used to have a hackish setup to trigger address book in the form of code
+completion from vim, when mutt starts it. I recently migrated the last part of
+it from python2, so it&#8217;s now in a relatively consistent state. On a boring
+flight trip I finally got around to summarize how it works, perhaps it&#8217;s
+useful to someone else as well. :-)</p></div>
+<div class="paragraph"><p>By multiple sources, I mean Google Contacts for my private account, and LDAP
+for work-related accounts. I have one script for each to have a local backup:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="http://github.com/vmiklos/vmexam/tree/master/google/contacts/backup">google/contacts/backup</a>
+  backs up Google Contacts to <code>$HOME/.google-contacts/</code>
+</p>
+</li>
+<li>
+<p>
+<a href="https://github.com/vmiklos/vmexam/blob/master/ldap/contacts/backup">ldap/contacts/backup</a>
+  backs up from an LDAP source to <code>$HOME/.ldap-contacts/</code>
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Then comes
+<a href="https://github.com/vmiklos/vmexam/blob/master/mutt/contacts/search">mutt/contacts/search</a>,
+which can read these backups from <code>$HOME/.mutt/contacts/</code> (you can create
+symlinks to decide which backup should be included in the search results).</p></div>
+<div class="paragraph"><p>The rest is just a short
+<a href="https://github.com/vmiklos/vmexam/blob/master/mutt/contacts/search.vim">search.vim</a>
+that integrates the search script into vim, so when mutt starts it with
+<code>ft=mail</code>, the search script is invoked when you start typing and you press
+Ctrl-X Ctrl-O (trigger code completion).</p></div>
+<div class="paragraph"><p>And that&#8217;s it, I can start typing mails to friends and customers even without
+network connectivity, without manually maintaining an own address book just
+for mutt!</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+
+<footer>
+<div id="paginator">
+
+</div>
+</footer>
+
+    <div id="ending_message">
+      <p>&copy; Miklos Vajna. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/pygments.css">
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=PT+Sans|PT+Serif|PT+Mono">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Miklos Vajna">
+  <meta name="description" content="Posts and writings by Miklos Vajna">
+
+  <link href="https://vmiklos.hu/blog/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking RSS" />
+
+<link href="https://vmiklos.hu/blog/feeds/frugalware.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking frugalware Category RSS" />
+
+  <title>
+    What is Miklos hacking
+&ndash; Category: frugalware  </title>
+
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <!--<a href="https://vmiklos.hu/blog">
+        <img src="https://vmiklos.hu/blog/theme/images/logo.png" alt="logo">
+      </a>-->
+      <h2><a href="https://vmiklos.hu/blog">What is Miklos hacking</a></h2>
+      <p></p>
+      <ul>
+        <li><a href="/" target="_blank">Root</a></li>
+        <li><a href="https://planet.documentfoundation.org/" target="_blank">LibreOffice Blogs</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://vmiklos.hu/blog">Index</a> &brvbar; <a href="https://vmiklos.hu/blog/archives.html">Archives</a>
+      &brvbar; <a href="https://vmiklos.hu/blog/feeds/all.rss.xml">RSS</a>
+&gt; Category: frugalware
+&brvbar; <a href="https://vmiklos.hu/blog/feeds/frugalware.rss.xml">RSS</a>
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/openoffice-org-3-3-early-snapshots.html">openoffice.org 3.3 early snapshots</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>In case you got bored and you want to try something blending edge, have a look at my <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/ooo33/">ooo33</a> repo.</p><p>It contains an early snapshot of OpenOffice.org 3.3 (+ ooo-build patches, of course), including <a href="http://socghop.appspot.com/gsoc/student_project/show/google/gsoc2010/go_oo/t127230759830">this work</a>.</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/googlecl-and-geeqie.html">googlecl and geeqie</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>I recently tested two new Frugalware packages.</p><p>googlecl is a commandline utility, I wanted to try it out as it has browser-based authentication, which is supposed to be compatible with Google Apps, while the API-based method used by picu is not. To make it short, in case you are in a directory containing photos for an album and you just want to upload all of them to an album named after the directory name, you need:</p><p><pre>
+google picasa create --title $(basename $(pwd)) *.jpg
+</pre></p><p>The other package I recently tested is geeqie, it's a replacement (see history <a href="http://geeqie.sourceforge.net/">here</a>) for gqview I usually use to watch a lot of photos in a directory. And yes, they seem not to break any of the nice feature of the old gqview project, good work! ;)</p><p>Update: there is a <a href="http://code.google.com/p/googlecl/issues/detail?id=170">patch</a> to add sync support, it's usage:</p><p><pre>
+google picasa post --title $(basename $(pwd)) --sync *.jpg
+</pre></p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/chkdep-improvements.html">chkdep improvements</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>Yesterday I finally had a look at how chkdep removes duplicated dependencies. The whole idea behind the removal is that in case ldd says a package depends on libfoo and libbar + we know from pacman that libfoo already depends on libbar, then there is no point adding libbar to depends in most cases.</p><p>The old code did the followings: it searched the depends of the packages found by ldd and in case a depend was found in the depend list of an other depend then it removed the depend from the list. The problem with this is that in case foo depends on bar depends baz and ldd finds foo and baz only, then baz won't be removed.</p><p>The <a href="http://git.frugalware.org/gitweb/gitweb.cgi?p=pacman-tools.git;a=commitdiff;h=d8b015f7870332e9c236e488b9692b20f5fb783a">new code</a> does the same but depends are detected recursively to avoid the problem mentioned above.</p><p>As a result, makepkg -a output should be less noisy. ;)</p>
+</div>
+</div>
+
+  </div>
+</article>
+
+<footer>
+<div id="paginator">
+
+<a href="https://vmiklos.hu/blog/category/frugalware2.html" class="button_accent">Newer Posts &rarr;</a>
+</div>
+</footer>
+
+    <div id="ending_message">
+      <p>&copy; Miklos Vajna. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
+</body>
+</html>

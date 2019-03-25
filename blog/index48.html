@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/pygments.css">
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=PT+Sans|PT+Serif|PT+Mono">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Miklos Vajna">
+  <meta name="description" content="Posts and writings by Miklos Vajna">
+
+  <link href="https://vmiklos.hu/blog/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking RSS" />
+
+
+  <title>
+    What is Miklos hacking
+  </title>
+
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <!--<a href="https://vmiklos.hu/blog">
+        <img src="https://vmiklos.hu/blog/theme/images/logo.png" alt="logo">
+      </a>-->
+      <h2><a href="https://vmiklos.hu/blog">What is Miklos hacking</a></h2>
+      <p></p>
+      <ul>
+        <li><a href="/" target="_blank">Root</a></li>
+        <li><a href="https://planet.documentfoundation.org/" target="_blank">LibreOffice Blogs</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://vmiklos.hu/blog">Index</a> &brvbar; <a href="https://vmiklos.hu/blog/archives.html">Archives</a>
+      &brvbar; <a href="https://vmiklos.hu/blog/feeds/all.rss.xml">RSS</a>
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/asciidoc-newtable-bug-solved.html">asciidoc newtable bug solved</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>We hit <a href="http://groups.google.com/group/asciidoc/browse_thread/thread/fd27add515597c06?pli=1">this bug</a> after I upgraded asciidoc on the server where we build the Frugalware documentation, luckily I just had to backport the given patch from hg and it now works fine.</p><p>I like how responsible the upstream (Stuart) is. Asciidoc is not bug-free, but as long as one provides simple reproducers, he quickly fixes bugs, yay! :)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/iscsi-fun.html">iSCSI fun</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>So I was playing with iSCSI, and the tricky part was that I shared out a block device to a Windows one and the silly OS created a partition table on it, but the block device was an LVM LV. So it was like /dev/mapper/foo-lvol0, and of udev did not create /dev/mapper/foo-lvol0p1, so it was hard the mount.</p><p>Next example about hacking Frugalware is useful, we had this problem while generating the USB installer image as well, the trick was to mount /dev/mapper/foo-lvol0 with -o offset=32256, and this works generally as long as the partition table is an old PC one (so it's not an MS dynamic disk or anything).</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/godollo-30.html">Godollo 30</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>az utvonal ilyesmi volt, hogy: godollo - szada - mogyorod - fot - csomad - veresegyhaz - szada - godollo. kicsit bovebb info <a href="http://www.freeweb.hu/margita/tt/bringa/k30/index.html">itt</a>.</p><p>haztol hazig: netto ido 4:29:24, brutto ido ~6.5 ora, tav 104.88km, atlag 23.3, max 54.0</p><p>lassan kozeledik a szumma 3000, 2986nal jarok. :)</p><p>egyeb resztvevok: <a href="http://www.criticalmass.hu/tagok/zaivaldi">zai</a>, <a href="http://hup.hu/user/6">Friczy</a>, meg osszefutottunk <a href="http://www.criticalmass.hu/tagok/Varanus">Varanus</a>-szal is.</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/emulating-an-old-jdk-with-openjdk-on-ppc.html">Emulating an old jdk with openjdk on ppc</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>Okay, so this was a bit tricky, I was about to give it up, but then after 2 hours of RTFMing I got the solution. ;)</p><p>The goal was to emulate jdk1.3 with openjdk.</p><p>The first trick is to enable the binfmt_misc handler of qemu, as you'll need jre1.3, and the self-extractor of it is an i386 code. pacman -S qemu, service qemu start should do it.</p><p>The rest is just a Makefile, something like <a href="http://vmiklos.hu/bme/8/itlabor1/1/Makefile">this</a>.</p><p>It was tricky to figure out the right options for the postprocessor (as I was using an odbms) options as well, but that's not a so interesting problem anyway.</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/kaudiocreator.html">kaudiocreator</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>I just got an audio CD and they wanted me to grab it (copy+compress to mp3). I think last time I did so about 8 years ago? :) Those days I used xfce and I used first grip then I wrote a perl script that used lame, cdparanoia, mp3info and cdlabelgen (it lacked cddb support).</p><p>Of course I did not maintain my script so it stopped working with the updated upstream tools, so I was searching something simple, like grip but preferably a qt/kde one.</p><p>When I inserted the audio CD, it offered to compress it, it started KAudioCreator. And yes, the usual kde quality, it just worked. :)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/final-gsoc-2oo9-proposal.html">Final gsoc 2oo9 proposal</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+So today was the deadline, I posted <a href="http://vmiklos.hu/doc/gsoc-2k9.html">this</a>. (IIRC I linked it once already in this blog but it was updated since then.) This year proposals can't be updated after the deadline, so it doesn't matter if it will be accepted or not, this is the final version. ;)
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/freedesktop-git-account.html">freedesktop git account</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>I just got my freedesktop.org git account, since ooo-build is moving there from svn.gnome.org. The interesting part is account maintainance - basically I had to submit my gpg key and as long as I gpg-sign my messages, I even can change ssh keys via email, automatically. That's nice, but the reply to my messages are weird - they are gpg-encrypted, but not in a way mutt can automatically decrypt.</p><p>They note in the wiki that they borrowed the account admin system from Debian - problem located. :P</p><p>Snip. When I created the tmp libwpd-java homepage, I used hilight in asciidoc documents to color Java code. The syntax used to be:</p><p><pre>
+[java]
+source~~~~
+foo
+source~~~~
+</pre></p><p>Now I needed this feature again and it seems that the recommended (required?) syntax is something new (tested with c++ only, as I needed that one):</p><p><pre>
+[source,cpp]
+----
+foo
+----
+</pre></p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/playing-with-openjdk-on-ppc.html">Playing with openjdk on ppc</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>So we just got a Java task at the uni and I wanted to see what can I do on Frugalware-ppc about it, in case I build openjdk from hg.</p><p>The result is quite surprising, it works very well.</p><p>My only big problem is that it has a totally different build number, currently they are at 1.6.0b14, while the binary version is at '6 update 13', and till the source versioning schema does not match the binary one, I would not use it in a production environment.</p><p>It also seems that packaging this would take a hell of time (and even after it's done, maintaining it would be time-consuming as well), so in case they would publish prebuilt binaries, I could live with that. I just found some bin tarballs on the archlinuxppc ftp site - mailed them about them (if they just mirror it or where is the build script), but no response so far.</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/pointers-to-member-functions-in-c.html">Pointers to member functions in C++</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>Okay, I learned something new, you can have a special pointer type in C++ which is not really a pointer at all.</p><p>So let's say you have a Foo class with a lot of void foo(int param); methods. Then you can have a "pointer" type 'int (Foo::*)(int)' which is in fact a pointer to Foo and it has an offset about what function does it point to.</p><p>And given that it contains an address and an offset as well, you can't cast it to void*, like you can do so with real pointers.</p><p>I had to look up the Bjarne book since I didn't really know about this at all... ;-)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/first-swig-patch.html">first swig patch!</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p><a href="http://swig.svn.sourceforge.net/viewvc/swig?view=rev&amp;revision=11174">Here</a>. :-)</p><p>I have an <a href="http://frugalware.org/~vmiklos/patches/swig-Fix-the-arrays_global_runme.php-test.patch">other one</a> as well, but that's not yet commited (and it may be even wrong).</p>
+</div>
+</div>
+
+  </div>
+</article>
+
+<footer>
+<div id="paginator">
+<a href="https://vmiklos.hu/blog/index49.html" class="button_accent">&larr; Older Posts</a>
+
+<a href="https://vmiklos.hu/blog/index47.html" class="button_accent">Newer Posts &rarr;</a>
+</div>
+</footer>
+
+    <div id="ending_message">
+      <p>&copy; Miklos Vajna. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
+</body>
+</html>

@@ -1,101 +1,99 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
-    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<meta name="generator" content="AsciiDoc 8.5.3" />
-<meta name="description" content="Frugalware arm port install HOWTO - Miklos' blog" />
-<meta name="keywords" content="vmiklos, libereoffice, swig, git, python, hacking, bitlbee" />
-<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="http://vmiklos.hu/blog/index.rss" />
-<link rel="stylesheet" href="/blog/xhtml11.css" type="text/css" />
-<link rel="stylesheet" href="/blog/xhtml11-quirks.css" type="text/css" />
-<link rel="stylesheet" href="/blog/layout.css" type="text/css" />
-<title>Frugalware arm port install HOWTO</title>
-<!-- google analytics start -->
-<script type="text/javascript">
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/pygments.css">
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=PT+Sans|PT+Serif|PT+Mono">
 
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-24726997-1']);
-  _gaq.push(['_trackPageview']);
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Miklos Vajna">
+  <meta name="description" content="Posts and writings by Miklos Vajna">
 
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
+  <link href="https://vmiklos.hu/blog/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking RSS" />
 
-</script>
-<!-- google analytics end -->
+<meta name="keywords" content="en">
+
+  <title>
+    What is Miklos hacking
+&ndash; Frugalware arm port install HOWTO  </title>
+
 </head>
+
 <body>
-<div id="layout-banner-box">
-<div id="layout-banner">
-  <div id="layout-title">vmiklos.hu</div>
-  <div id="layout-description">shameless self-promoting website</div>
-</div>
-</div>
-<div id="layout-menu-box">
-<div id="layout-menu">
-  <div>&#187;<a href="/">Root</a></div>
-  <div>&#187;<a href="/blog/">Rejourn root</a></div>
-</div>
+  <aside>
+    <div id="user_meta">
+      <!--<a href="https://vmiklos.hu/blog">
+        <img src="https://vmiklos.hu/blog/theme/images/logo.png" alt="logo">
+      </a>-->
+      <h2><a href="https://vmiklos.hu/blog">What is Miklos hacking</a></h2>
+      <p></p>
+      <ul>
+        <li><a href="/" target="_blank">Root</a></li>
+        <li><a href="https://planet.documentfoundation.org/" target="_blank">LibreOffice Blogs</a></li>
+      </ul>
+    </div>
+  </aside>
 
-</div>
-<div id="layout-content-box">
-<div id="layout-content">
-<div id="header">
-	<h1>Frugalware arm port install HOWTO</h1>
-</div>
-<div id="preamble">
+  <main>
+    <header>
+      <p>
+      <a href="https://vmiklos.hu/blog">Index</a> &brvbar; <a href="https://vmiklos.hu/blog/archives.html">Archives</a>
+      &brvbar; <a href="https://vmiklos.hu/blog/feeds/all.rss.xml">RSS</a>
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/frugalware-arm-install-howto.html">Frugalware arm port install HOWTO</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
 <div class="sectionbody">
-
-<!-- Single entry -->
-<div class="verseblock">
-<div class="verseblock-content">Posted <span class="timeago" title="2012-01-04T01:29:49Z">Wednesday, 04 January 2012</span> by Miklos<br />
-    Tags:
-    <a href="tags/en.html">en</a>
-    <a href="tags/frugalware.html">frugalware</a>
-</div>
-</div>
-
-<!-- Body -->
 <div class="paragraph"><p>I recently got a <a href="http://en.wikipedia.org/wiki/GuruPlug">GuruPlug</a>. It has Debian
-by default, and it&#8217;s apt config is set to <tt>stable</tt>, while in fact at the moment
-what&#8217;s the factory default is considered as <tt>oldstable</tt> by upstream. So if you
-blindly do a few <tt>apt-get install foo</tt>, soon you&#8217;ll have newer userspace than
+by default, and it&#8217;s apt config is set to <code>stable</code>, while in fact at the moment
+what&#8217;s the factory default is considered as <code>oldstable</code> by upstream. So if you
+blindly do a few <code>apt-get install foo</code>, soon you&#8217;ll have newer userspace than
 kernel, and your device will no longer boot (based on true story - and yes,
 this is not Debian&#8217;s fault). Moreover, I was interested in how to install
 Frugalware on this device, so here is a quick howto.</p></div>
+</div>
+</div>
 <div class="sect1">
 <h2 id="_install_rootfs">Install rootfs</h2>
 <div class="sectionbody">
 <div class="paragraph"><p>First you need to bootstrap Frugalware from Debian. It&#8217;s a good idea to install
 Frugalware on a USB stick, so you can switch back to Debian in case you messed
 up something and start from scratch again.</p></div>
-<div class="paragraph"><p>Partitioning is up to you, you&#8217;re recommended to have a small FAT (type: <tt>0x0b</tt>)
+<div class="paragraph"><p>Partitioning is up to you, you&#8217;re recommended to have a small FAT (type: <code>0x0b</code>)
 partition (32MB for example) at the beginning, we&#8217;ll use that later. The second
 can be the rest, ext4 or so.</p></div>
 <div class="paragraph"><p>Format and mount it (your device name may differ!):</p></div>
 <div class="listingblock">
 <div class="content">
-<pre><tt>mkfs.ext4 /dev/sda2
+<pre><code>mkfs.ext4 /dev/sda2
 mkdir -p /mnt/sda2
-mount /dev/sda2 /mnt/sda2</tt></pre>
+mount /dev/sda2 /mnt/sda2</code></pre>
 </div></div>
 <div class="paragraph"><p>Then install our pacman-g2 binary to the Debian system, so you can bootstrap:</p></div>
 <div class="listingblock">
 <div class="content">
-<pre><tt>wget http://ftp.frugalware.org/pub/frugalware/frugalware-stable/frugalware-arm/pacman-g2-3.8.3-2mores2-arm.fpm
+<pre><code>wget http://ftp.frugalware.org/pub/frugalware/frugalware-stable/frugalware-arm/pacman-g2-3.8.3-2mores2-arm.fpm
 unxz pacman-g2-3.8.3-2mores2-arm.tar.xz
 cd /
 tar xf /path/to/pacman-g2-3.8.3-2mores2-arm.tar
-rm .CHANGELOG .FILELIST .PKGINFO</tt></pre>
+rm .CHANGELOG .FILELIST .PKGINFO</code></pre>
 </div></div>
 <div class="paragraph"><p>Installing the required packages is a single command, as described
 <a href="http://frugalware.org/docs/install#_a_manual_bootstrap">here</a>:</p></div>
 <div class="listingblock">
 <div class="content">
-<pre><tt>pacman-g2.static --noconfirm -Sy core base -r /mnt/sda2/</tt></pre>
+<pre><code>pacman-g2.static --noconfirm -Sy core base -r /mnt/sda2/</code></pre>
 </div></div>
 </div>
 </div>
@@ -109,7 +107,7 @@ Board</a>, so you can access the serial console. If you connect the USB cable to
 you PC, you can use for example</p></div>
 <div class="listingblock">
 <div class="content">
-<pre><tt>screen /dev/ttyUSB0 115200</tt></pre>
+<pre><code>screen /dev/ttyUSB0 115200</code></pre>
 </div></div>
 <div class="paragraph"><p>to access the device.</p></div>
 <div class="paragraph"><p>Given that we want to boot a vanilla kernel, we need a vanilla bootloader as
@@ -118,7 +116,7 @@ its config (there is a 3 second timeout during boot - if you press any key
 there, you get the Marvell prompt). Here is my config:</p></div>
 <div class="listingblock">
 <div class="content">
-<pre><tt>Marvell&gt;&gt; printenv
+<pre><code>Marvell&gt;&gt; printenv
 bootcmd=${x_bootcmd_ethernet}; ${x_bootcmd_usb}; ${x_bootcmd_kernel}; setenv bootargs ${x_bootargs} ${x_bootargs_root}; bootm 0x6400000;
 bootdelay=3
 baudrate=115200
@@ -134,7 +132,7 @@ serverip=10.10.10.179
 ethaddr=F0:AD:4E:00:CE:C3
 stdin=serial
 stdout=serial
-stderr=serial</tt></pre>
+stderr=serial</code></pre>
 </div></div>
 <div class="paragraph"><p>The only semi-unique part is the MAC address of the network interface(s).</p></div>
 <div class="paragraph"><p>If you want to update the bootloader, a possible way is to put the new binary
@@ -143,7 +141,7 @@ a fat filesystem. So format the first small partition we created already (the
 device name may be different in your case!):</p></div>
 <div class="listingblock">
 <div class="content">
-<pre><tt>mkdosfs /dev/sda1</tt></pre>
+<pre><code>mkdosfs /dev/sda1</code></pre>
 </div></div>
 <div class="paragraph"><p>Till Frugalware 1.6 is released, support for GuruPlug is available in
 Frugalware -current only, so download the
@@ -151,26 +149,26 @@ Frugalware -current only, so download the
 package</a> from there, extract the u-boot.kwb file from the guruplug directory,
 put it to the new partition. (A few other models are explained
 <a href="http://www.cyrius.com/debian/kirkwood/sheevaplug/uboot-upgrade.html">here</a>).</p></div>
-<div class="paragraph"><p>Before you reboot, copy also <tt>/boot/uImage</tt> to the fat partition, you may have
+<div class="paragraph"><p>Before you reboot, copy also <code>/boot/uImage</code> to the fat partition, you may have
 problems problems with reading the kernel from the ext4 partition with u-boot.</p></div>
 <div class="paragraph"><p>Once copying the kernel is done, reboot and in the u-boot shell do:</p></div>
 <div class="listingblock">
 <div class="content">
-<pre><tt>usb start
+<pre><code>usb start
 fatload usb 0:1 0x0800000 u-boot.kwb
 nand erase 0x0 0x60000
 nand write 0x0800000 0x0 0x60000
-reset</tt></pre>
+reset</code></pre>
 </div></div>
-<div class="paragraph"><p>You can verify the updated bootloader with the <tt>version</tt> command:</p></div>
+<div class="paragraph"><p>You can verify the updated bootloader with the <code>version</code> command:</p></div>
 <div class="listingblock">
 <div class="content">
-<pre><tt>Marvell&gt;&gt; version
+<pre><code>Marvell&gt;&gt; version
 
 U-Boot 2011.12 (Jan 03 2012 - 16:55:38)
 Marvell-GuruPlug
 gcc (Frugalware Linux) 4.6.2
-GNU ld (GNU Binutils) 2.22</tt></pre>
+GNU ld (GNU Binutils) 2.22</code></pre>
 </div></div>
 <div class="paragraph"><p>If Frugalware is mentioned, that&#8217;s a good sign. :)</p></div>
 </div>
@@ -181,18 +179,18 @@ GNU ld (GNU Binutils) 2.22</tt></pre>
 <div class="paragraph"><p>Now you can boot your new rootfs:</p></div>
 <div class="listingblock">
 <div class="content">
-<pre><tt>usb start
+<pre><code>usb start
 fatload usb 0:1 0x00800000 /uImage
 setenv bootargs console=ttyS0,115200 root=/dev/sda2 rootdelay=5
-bootm 0x00800000</tt></pre>
+bootm 0x00800000</code></pre>
 </div></div>
 <div class="paragraph"><p>If it booted fine, you may want to make this the default:</p></div>
 <div class="listingblock">
 <div class="content">
-<pre><tt>setenv bootargs 'console=ttyS0,115200 root=/dev/sda2 rootdelay=5'
+<pre><code>setenv bootargs 'console=ttyS0,115200 root=/dev/sda2 rootdelay=5'
 setenv bootcmd_usb 'usb start; fatload usb 0:1 0x00800000 /uImage'
 setenv bootcmd 'run bootcmd_usb; bootm 0x00800000'
-saveenv</tt></pre>
+saveenv</code></pre>
 </div></div>
 </div>
 </div>
@@ -216,7 +214,7 @@ setting up network by default using netconfig
 <div class="paragraph"><p>For the reference, here is the tested CPU and Frugalware version:</p></div>
 <div class="listingblock">
 <div class="content">
-<pre><tt>$ cat /proc/cpuinfo
+<pre><code>$ cat /proc/cpuinfo
 Processor       : Feroceon 88FR131 rev 1 (v5l)
 BogoMIPS        : 1191.11
 Features        : swp half thumb fastmult edsp
@@ -230,28 +228,26 @@ Hardware        : Marvell GuruPlug Reference Board
 Revision        : 0000
 Serial          : 0000000000000000
 $ cat /etc/frugalware-release
-Frugalware 1.5 (Mores)</tt></pre>
+Frugalware 1.5 (Mores)</code></pre>
 </div></div>
 </div>
 </div>
 
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Wed 04 January 2012</p>
+    <p>Category: <a href="https://vmiklos.hu/blog/category/frugalware.html">frugalware</a>
+ &ndash; Tags:
+      <a href="https://vmiklos.hu/blog/tag/en.html">en</a>    </p>
+  </div>
 
-<script src="https://apis.google.com/js/plusone.js"></script>
-<g:plus action="share"></g:plus>
 
-<!-- Disqus comments -->
-<h1 id="comment-header">Comments</h1>
-<div id="disqus_thread"></div>
-<script type="text/javascript" src="http://vmiklos.disqus.com/embed.js">
-	var disqus_developer = 1;
-</script>
-<noscript>
-  <p><a href="http://disqus.com/?ref_noscript=vmiklos">View the discussion thread.</a></p>
-</noscript>
+</article>
 
-</div>
-</div>
-</div>
-</div>
+
+    <div id="ending_message">
+      <p>&copy; Miklos Vajna. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
 </body>
 </html>

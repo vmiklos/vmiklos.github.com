@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/pygments.css">
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=PT+Sans|PT+Serif|PT+Mono">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Miklos Vajna">
+  <meta name="description" content="Posts and writings by Miklos Vajna">
+
+  <link href="https://vmiklos.hu/blog/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking RSS" />
+
+
+  <title>
+    What is Miklos hacking
+  </title>
+
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <!--<a href="https://vmiklos.hu/blog">
+        <img src="https://vmiklos.hu/blog/theme/images/logo.png" alt="logo">
+      </a>-->
+      <h2><a href="https://vmiklos.hu/blog">What is Miklos hacking</a></h2>
+      <p></p>
+      <ul>
+        <li><a href="/" target="_blank">Root</a></li>
+        <li><a href="https://planet.documentfoundation.org/" target="_blank">LibreOffice Blogs</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://vmiklos.hu/blog">Index</a> &brvbar; <a href="https://vmiklos.hu/blog/archives.html">Archives</a>
+      &brvbar; <a href="https://vmiklos.hu/blog/feeds/all.rss.xml">RSS</a>
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/undocumented-modprobe-switches.html">Undocumented modprobe switches</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>I just sent <a href="http://frugalware.org/~vmiklos/patches/0001-modprobe-document-undocumented-options.patch">this patch</a>, because I hated I had to look up the source about what -b does.</p><p>BTW, I did the d-f-e benchmark for the ghc repo as well, the results are <a href="http://vmiklos.hu/project/darcs-fast-export/t/bench-results/">here</a>. I hope I can get tailor to somehow convert the darcs and ghc darcs repo as well, then I can draw some nice chart about how fast d-f-e is. ;-)</p><p>Currently it can't convert darcs.darcs because I specified latin2 as input/output charset and it considered that as invalid. Given that d-f-e detected ISO-8859-2, I wonder WTF is this, I unspecified the output charset and changed latin2 to ISO-8859-2 on the input side, we'll see if that helps or not.</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/darcs-fast-export-git-dramatic-speedup.html">darcs-fast-export.git: dramatic speedup</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>I got to implement the direct patch technique for darcs2 repos in darcs-fast-export, and it seems to be a dramatic speedup.</p><p>The benchmark was done using darcs' darcs.</p><p><a href="http://vmiklos.hu/project/darcs-fast-export/t/bench-results/darcs-repo_play.tar.gz.d-f-e-0.6.log">Before</a>:</p><p><pre>real    786m16.035s</pre></p><p><a href="http://vmiklos.hu/project/darcs-fast-export/t/bench-results/darcs-repo_play.tar.gz.d-f-e-0.6-21-gb2abee1.log">After</a>:</p><p><pre>real       29m39.458s</pre></p><p>I plan to do a similar benchmark with ghc's darcs repo as well (it contains about 19k patches).</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sad-story-about-darcs-show.html">Sad story about darcs show</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>So today I did what I have in my TODO for some time: make darcs-fast-export produce the fast-import stream on the fly, without a tmp working dir (that's how tailor and darcs2git works, and I think that's just ugly).</p><p>And the result? I thought this will be the trick that makes it a lot faster, compared to tailor and at the end it turns out that it slows it down about 3 times. :-(</p><p>Not counting speed issues, it's a huge cleanup:</p><p><pre> 12 files changed, 34 insertions(+), 106 deletions(-)</pre></p><p>Dunno what to do with it now. I'll try to poke the darcs devs, maybe they can optimize it a bit.</p><p>The sad fact is the comparision to git:</p><p><pre>
+$ time darcs show contents --match "hash 20040523231834-97f81-2bca6242bec169bd01079378524a33e0310e0b65.gz" tailor.py >/dev/null</p><p>real    0m2.780s
+$ time git show 451ae1176d56a579d3d7bd236fe7d7dd9df59326:tailor.py >/dev/null</p><p>real    0m0.004s</pre></p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/benchmarking-darcs-fast-export.html">Benchmarking darcs-fast-export</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>OK, so I got this idea in the darcs-user mailing list that it would be nice to do some benchmarks on how fast and correct darcs-fast-export is. Actually I already have a TODO item about an idea that would make it faster, but doing a benchmark before doing the speedup is required in that case as well, so that I can show "hey, this is cool, it results in foo% speedup!11". ;-)</p><p>And if I'm already there, I plan to do it with tailor as well, I'm just curious about how fast it is. Ideally fast-import is much faster, but I guess the current darcs exporter does not make use of it, so I expect something like 1:1 for now.</p><p>The test repo is darcs' darcs, current status with darcs-fast-export is like:</p><p><pre>progress [2008-11-25 16:02:28] getting list of patches
+progress [2008-11-26 00:53:25] 4000/6548 patches</pre></p><p>Yeah, darcs apply is slow.</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/nights-in-rodanthe.html">nights in rodanthe</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p><div align="center"><img src="/pic/nor.jpg" alt="" title="" height="75%" width="75%" /></div></p><p>tekintsunk el attol, hogy a cimbol alkotott mozaikszo eppen egy nor kapu ;)</p><p>amolyan atlagos romantikus drama, elolvastam elotte egy ajanlot, nem tobb es nem kevesebb annal amit vartam. tekintve, hogy nem talaltam angol feliratot, ra voltam kenyszeritve, hogy gyakoroljam vegre egy kicsit a felirat nelkuli angol filmnezest. (valszeg nem jogos, de ettol fuggetlenul azert mindig sikerelmeny, mikor a film vegen feltunik, hogy "je, ez nem volt szinkronos" ;) ).</p><p>visszaterve a mozikban mar egy honapja jatszott filmre, a ket foszereplo Diane Lane (untraceable) es Richard Gere (na ovele meg nem talalkoztam). a tobbi szereplo gyakorlatilag elhanyagolhato, bar a harrypotter-arcu Charlie Tahan (i am legend) itt nemigazan artatlan kisgyerket jatszik, inkabb az igazi 12eves geek megtesitoje. :)</p><p>(<a href="http://www.imdb.com/title/tt0956038/">imdb</a>, <a href="http://www.youtube.com/watch?v=wABFdUIIxlw">trailer</a>)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sample-a-implementation-in-java.html">Sample A* implementation in Java</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>I got this exercise at the uni, and I thought it's easier if I split the problem: first the logical one (implement the <a href="http://en.wikipedia.org/wiki/A*#Algorithm_description">pseudocode from Wikipedia</a> in Python) then the RTFM one (figure out the right Java API).</p><p>Of course I wasted the whole evening by not starting working on it, so it was 0:30 when I started. It took about 2 hours to do the <a href="http://vmiklos.hu/gitweb/?p=ai2k8.git;a=blob;f=1/hazi.py;hb=HEAD">Python implementation</a>, and then again two hours to transform it to Java. And of course the code is two times longer. Guess what? One of the guy I talked today was surprised about how short my Java code is. :-P</p><p>BTW, the day before I finally got to write <a href="http://vmiklos.hu/gitweb/?p=darcs-fast-export.git;a=blob;f=git-darcs;hb=HEAD">git-darcs</a>. An old vision that is now reality. :-)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/initial-bidirectional-gateway-between-da.html">Initial bidirectional gateway between darcs and git</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>There is now a <a href="http://vmiklos.hu/project/darcs-fast-export/t/testimport-git-twoway.sh">testcase</a> that checks if the feature mentioned in the post title works.</p><p>Basically I hope I can write - based on this - a git-darcs wrapper that will make it easy to convert a darcs repo to a git one, work in git, then push the result back to the darcs repo, something I wish a long time ago. ;-)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/mutt-upgrade.html">Mutt upgrade</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>I use Frugalware's mutt-ng package for e-mail, which is mutt-devel + a more-or-less small <a href="http://ftp.frugalware.org/pub/other/sources/mutt-ng/">patchset</a>, maintained by voroskoi. Given that he was quite inactive recently, I poked him regularly to update the package (+ the patches, of course) to 1.5.18. I just noticed today that he did so about a month ago. :-)</p><p>Two changes I noticed so far are: 1) when you open a large folder, not only the current/total value is printed for processed mails, but the percentage as well, and 2) the sidebar shows again the number of flagged mails, which feature disappeared IIRC after we switched from "mutt-ng as a fork" to "mutt-ng is mutt-devel + patches".</p><p>Snip. I bumped our kernel to 2.6.27.7 and it seems now I have to update the kernel config even for a new -stable release, which is quite annoying. :-/</p><p>Snip. This evening I got some time to work on this darcs-git stuff again and I tagged darcs-fast-export 0.5 + pushed an initial darcs-fast-import.</p><p>Of course it does not support incremental import, it does not import tags yet and such, but it works! ;-)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/codeswarm.html">Codeswarm</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+The <a href="http://github.com/felipec/codeswarm.rb/tree">project</a> was linked on a news site today, but <a href="http://frugalware.org/~voroskoi/">voroskoi</a> already poked me about "hey, you should try it out with Frugalware", so I was aware of the project already. The reason I point it out is that now they create a <a href="http://www.youtube.com/watch?v=PxjLbj8oT1k">sample</a> for Git as well, and I seem to appear in it at 4m25s, heh.
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/life-without-ipv6-for-a-day.html">Life without IPv6 for a day</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+The IPv6 tunnel I use changed its IPv4 address. This caused some great silence in my IRC client, basically none of the freenode people was able to poke me with random problems. ;-) But the party is over, since the <a href="http://koszik.net/">tunnel guy</a> was kind enough to mail the new IP.
+</div>
+</div>
+
+  </div>
+</article>
+
+<footer>
+<div id="paginator">
+<a href="https://vmiklos.hu/blog/index65.html" class="button_accent">&larr; Older Posts</a>
+
+<a href="https://vmiklos.hu/blog/index63.html" class="button_accent">Newer Posts &rarr;</a>
+</div>
+</footer>
+
+    <div id="ending_message">
+      <p>&copy; Miklos Vajna. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
+</body>
+</html>

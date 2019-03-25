@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/pygments.css">
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=PT+Sans|PT+Serif|PT+Mono">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Miklos Vajna">
+  <meta name="description" content="Posts and writings by Miklos Vajna">
+
+  <link href="https://vmiklos.hu/blog/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking RSS" />
+
+<link href="https://vmiklos.hu/blog/feeds/git.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking git Category RSS" />
+
+  <title>
+    What is Miklos hacking
+&ndash; Category: git  </title>
+
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <!--<a href="https://vmiklos.hu/blog">
+        <img src="https://vmiklos.hu/blog/theme/images/logo.png" alt="logo">
+      </a>-->
+      <h2><a href="https://vmiklos.hu/blog">What is Miklos hacking</a></h2>
+      <p></p>
+      <ul>
+        <li><a href="/" target="_blank">Root</a></li>
+        <li><a href="https://planet.documentfoundation.org/" target="_blank">LibreOffice Blogs</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://vmiklos.hu/blog">Index</a> &brvbar; <a href="https://vmiklos.hu/blog/archives.html">Archives</a>
+      &brvbar; <a href="https://vmiklos.hu/blog/feeds/all.rss.xml">RSS</a>
+&gt; Category: git
+&brvbar; <a href="https://vmiklos.hu/blog/feeds/git.rss.xml">RSS</a>
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/git-notes-merge.html">Merging git notes</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>The <code>git notes</code> command is really about local annotation of commits&#8201;&#8212;&#8201;nothing
+to share. If you decide to still do so, for example the
+<a href="http://git-scm.com/2010/08/25/notes.html">git-scm.com</a> HOWTO can show you how to
+pull and push them. But what about merging?  There is no UI for that, but&#8201;&#8212;&#8201;given that with git, everything is possible&#8201;&#8212;&#8201;you can still do so manually.</p></div>
+<div class="paragraph"><p>So the problem comes when Alice fetches notes, Bob does so, Alice pushes her
+notes back, Bob annotates a different commit and when Bob wants to push, he
+gets <code>rejected, non-fast-forward</code>. Normally you would merge or rebase in this
+situation, but given that <code>git notes</code> by default updates the
+<code>refs/notes/commits</code> ref and you typically have a different branch checked out,
+you can&#8217;t use <code>git merge</code> or <code>git rebase</code> directly.</p></div>
+<div class="paragraph"><p>What works is:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>git checkout refs/notes/commits
+git fetch origin refs/notes/commits
+git merge FETCH_HEAD
+git update-ref refs/notes/commits HEAD
+git checkout master</code></pre>
+</div></div>
+<div class="colist arabic"><ol>
+<li>
+<p>
+Check out the notes, so if you have conflicts, you can resolve them.
+</p>
+</li>
+<li>
+<p>
+Fetch remote notes to FETCH_HEAD.
+</p>
+</li>
+<li>
+<p>
+Do the merge.
+</p>
+</li>
+<li>
+<p>
+Necessary, as <code>git merge</code> won&#8217;t update the ref automatically, since we&#8217;re not on a branch.
+</p>
+</li>
+<li>
+<p>
+Or whereever you were before.
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p>And now you can push your notes, as detailed in the above referred blog post.
+Yes, rebasing would be possible as well, that&#8217;s left as an exercise for the
+reader. ;-)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+
+<footer>
+<div id="paginator">
+
+</div>
+</footer>
+
+    <div id="ending_message">
+      <p>&copy; Miklos Vajna. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
+</body>
+</html>

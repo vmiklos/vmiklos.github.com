@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/pygments.css">
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=PT+Sans|PT+Serif|PT+Mono">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Miklos Vajna">
+  <meta name="description" content="Posts and writings by Miklos Vajna">
+
+  <link href="https://vmiklos.hu/blog/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking RSS" />
+
+
+  <title>
+    What is Miklos hacking
+&ndash; Tag: en  </title>
+
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <!--<a href="https://vmiklos.hu/blog">
+        <img src="https://vmiklos.hu/blog/theme/images/logo.png" alt="logo">
+      </a>-->
+      <h2><a href="https://vmiklos.hu/blog">What is Miklos hacking</a></h2>
+      <p></p>
+      <ul>
+        <li><a href="/" target="_blank">Root</a></li>
+        <li><a href="https://planet.documentfoundation.org/" target="_blank">LibreOffice Blogs</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://vmiklos.hu/blog">Index</a> &brvbar; <a href="https://vmiklos.hu/blog/archives.html">Archives</a>
+      &brvbar; <a href="https://vmiklos.hu/blog/feeds/all.rss.xml">RSS</a>
+&gt; Tag: en
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/resourcemodel.html">Cleanup of resourcemodel in LibreOffice</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div style="text-align: center; font-size: 0.6em;">
+<img src="https://lh3.googleusercontent.com/-YxMHx754A4A/VXQbB0-TMBI/AAAAAAAAFos/Nx6SlKp1JF4/s400/"/>
+<p>(via <a href="https://www.flickr.com/photos/jbparrott/9381120992/">jbparrott</a>)</p>
+</div>
+<div class="paragraph"><p>The <code>libreoffice-5-0</code> branch is created, and in each release cycle there is at
+least one topic that was a long overdue cleanup. In this post, I&#8217;m describing
+how and why the <code>writerfilter/inc/resourcemodel/</code> and
+<code>writerfilter/source/resourcemodel/</code> directories disappeared&#8201;&#8212;&#8201;though
+probably nobody will miss them. :-)</p></div>
+<div class="paragraph"><p>The resourcemodel building block of writerfilter (that handles Writer&#8217;s DOCX
+and RTF import in LibreOffice) was basically a bucket of old and unused
+<a href="https://www.youtube.com/watch?v=MvgN5gCuLac">stuff</a>.  After the removal of the
+unused <a href="/blog/doctok.html">.DOC tokenizer</a>, it turned out that
+most of that code was just referring to itself or template code that was used
+with a single type only (hello
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=45234fd21ad76b7732be4e5783cc7dd5dcf2daa2">TableManager</a>).
+resourcemodel was about 6000 lines of code at the time LibreOffice was
+started, and after some manual cleanup and moving the still needed small part
+to dmapper (the shared part of the RTF / DOCX import), tools like
+<a href="http://cgit.freedesktop.org/libreoffice/core/tree/compilerplugins/clang/unreffun.cxx">loplugin:unreffun</a>
+and <a href="https://github.com/caolanm/callcatcher">callcatcher</a> helped to detect what
+became truly unused&#8201;&#8212;&#8201;at the end resulting in the complete removal of these
+directories.</p></div>
+<div class="paragraph"><p>That means that after folding the
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=fcec34ffcc93f98be005b06c223e25c9c4e77cde">last
+remaining header into dmapper</a>, the relevant
+<a href="http://cgit.freedesktop.org/libreoffice/core/tree/writerfilter/README">documentation</a>
+can hopefully now describe source contents easier, having just 4 directories:
+the RTF and the DOCX tokenizer, the shared part and the UNO service
+implementations. One less cryptic leftover nobody really knows what it is! ;-)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/cambridge.html">LibreOffice Cambridge Hackfest</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://lh3.googleusercontent.com/-dGY38VD7z0M/VWNqvkXDLwI/AAAAAAAAFlE/8yurKsu0NcA/s400/" alt="https://lh3.googleusercontent.com/-dGY38VD7z0M/VWNqvkXDLwI/AAAAAAAAFlE/8yurKsu0NcA/s400/" />
+</div>
+</div>
+<div class="paragraph"><p>The first ever UK LibreOffice Hackfest took place in the city of Cambridge on
+May 21st to 23rd (Thursday &#8594; Saturday), kindly hosted by
+<a href="https://libreoffice-from-collabora.com/">Collabora</a>.</p></div>
+<div class="paragraph"><p>My starter idea was to fix
+<a href="https://bugs.documentfoundation.org/show_bug.cgi?id=90315">tdf#90315</a>, i.e. to
+support both nested tables and multiple columns with the proper spacing in
+between them in the RTF import. For comparison, here is how this looked in
+LibreOffice 3.4:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://lh3.googleusercontent.com/-KX9Z8y1ojYc/VWNzgg1gQeI/AAAAAAAAFlk/TRwfvnklEOI/s400/" alt="https://lh3.googleusercontent.com/-KX9Z8y1ojYc/VWNzgg1gQeI/AAAAAAAAFlk/TRwfvnklEOI/s400/" />
+</div>
+</div>
+<div class="paragraph"><p>The table borders looked OK due to correct column spacing, but the nested
+table is missing. Then here is the LibreOffice 4.4 state:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://lh3.googleusercontent.com/-wz4OZdsYf5I/VWNzgu5OhUI/AAAAAAAAFlg/CG37pRlGggY/s400/" alt="https://lh3.googleusercontent.com/-wz4OZdsYf5I/VWNzgu5OhUI/AAAAAAAAFlg/CG37pRlGggY/s400/" />
+</div>
+</div>
+<div class="paragraph"><p>Nested table is OK, but the table borders are strange due to incorrect column
+spacing. Finally here is how it looks like now, when the import result is
+correct:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://lh3.googleusercontent.com/-Zul_8xTSOkA/VWNzguGZf-I/AAAAAAAAFlY/L88WkfCpL1E/s400/" alt="https://lh3.googleusercontent.com/-Zul_8xTSOkA/VWNzguGZf-I/AAAAAAAAFlY/L88WkfCpL1E/s400/" />
+</div>
+</div>
+<div class="paragraph"><p>Other than this, here is a list of other topics I hacked on:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/gitweb?p=dev-tools.git;a=commit;h=9107601036fc9af9e67b37f0fc26296dddfd6eb1">clang
+  libtooling-based compiler tools</a> (so far an example analizer and a rewriter)
+</p>
+</li>
+<li>
+<p>
+some
+  <a href="https://gerrit.libreoffice.org/gitweb?p=core.git;a=tree;f=libreofficekit;hb=HEAD">gtktiledviewer</a>
+  tweaks like handling of the "Search key not found" or the "Page count changed"
+  callback event
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/gitweb?p=core.git;a=commitdiff;h=821b72886f1e407a492f881a2efb27ead2c22b5c">o3tl::make_unique</a>,
+  till we can&#8217;t use C++ 14 std::make_unique
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>After fixing two more less interesting regressions, now it seems we&#8217;re down to
+0 for the
+<a href="https://bugs.documentfoundation.org/buglist.cgi?keywords=regression&amp;keywords_type=allwords&amp;product=LibreOffice&amp;query_format=advanced&amp;resolution=---&amp;short_desc=RTF&amp;short_desc_type=allwordssubstr">regressions
+having RTF in their summary</a>, which is promising. :-)</p></div>
+<div class="paragraph"><p>I few
+<a href="https://www.flickr.com/photos/vmiklos/albums/72157673531303691">pictures</a>
+I took while punting and a
+<a href="/panoramas/cambridge.html">panorama</a> is available, too.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/plugfest2015.html">Protocols Plugfest Europe 2015</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div style="text-align: center; font-size: 0.6em;">
+<img src="https://lh3.googleusercontent.com/-Z9Pml365x6s/VVdBsMKPYVI/AAAAAAAAFfk/9PXnepbXuak/s400/"/>
+<p>(via <a href="https://twitter.com/plugfestcon/status/598062244711309312">plugfestcon</a>)</p>
+</div>
+<div class="paragraph"><p>Last week I went to Zaragoza to give a talk on
+<a href="https://speakerdeck.com/vmiklos/libreoffice-how-we-handle-interoperability">how
+LibreOffice handles interoperability</a> at Protocols Plugfest Europe 2015 on
+<a href="http://www.protocolsplugfest.com/europe/program/">Tuesday</a>. Although I was told
+this conference is a successor of the previous Zentyal Summit (and I were not
+there) the conference seemed well-attended&#8201;&#8212;&#8201;proof above. :-)</p></div>
+<div class="paragraph"><p>Jacobo also
+<a href="http://blogs.igalia.com/jaragunde/2015/05/11/speaking-at-protocols-plugfest-2015/">gave
+a LibreOffice-related talk</a> on Wednesday.</p></div>
+<div class="paragraph"><p>On the same day, there were some explicit spare time, so I took the
+opportunity to walk in the historical parts of the city, see
+<a href="https://www.flickr.com/photos/vmiklos/albums/72157673233248251">my
+photos</a> and a <a href="/panoramas/zaragoza.html">panorama</a> if that kind
+of pictures are of your interest. FWIW, <a href="http://www.hotelsauce.com/en/">Hotel
+Sauce</a> has free wifi in the rooms, that&#8217;s kind of impressing for a two-star
+category. ;-)</p></div>
+<div class="paragraph"><p>As usual, thanks <a href="https://libreoffice-from-collabora.com/">Collabora</a> for sponsoring this travel!</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/mathtype-import.html">MathType import in the RTF and DOCX filter</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>TL;DR: Import of old-style (pre-2010 for RTF, pre-2007 for DOCX) math
+equations embedded into text documents should be now imported as editable
+embedded math objects.</p></div>
+<div class="paragraph"><p>Longer version: if you want to embed math equations into RTF or DOCX files,
+you have two choices. The older approach is to embed a MathType OLE object
+into the file, the newer one is a native OOXML markup, which has an RTF markup
+equivalent as well. Handling of the later has been implemented by
+<a href="http://llunak.blogspot.com/">Luboš Luňák</a> for DOCX a long time ago, and I
+contributed the RTF equivalent almost
+<a href="/blog/lo-rtf-math-native.html">3 years ago</a>.</p></div>
+<div class="paragraph"><p>What remains is the handling of the older version, the embedded OLE object.
+Previously only the replacement graphic was imported, so regardless of the
+Tools &#8594; Options &#8594; Load / Save &#8594; Microsoft Office &#8594; MathType to Math
+checkbox, the result was never editable.</p></div>
+<div class="paragraph"><p>Here is how it looks like now:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://lh3.googleusercontent.com/-V3SqO3Rz88s/VUZvFcBNMPI/AAAAAAAAFb4/QARDYqQVQGY/s0/" alt="https://lh3.googleusercontent.com/-V3SqO3Rz88s/VUZvFcBNMPI/AAAAAAAAFb4/QARDYqQVQGY/s0/" />
+</div>
+</div>
+<div class="paragraph"><p>Given that the RTF and the DOCX importers share lots of code in the
+<code>writerfilter/</code> module, I implemented the same for the DOCX import at the same
+time, too. The interesting challenge was that writerfilter wants an
+<a href="http://api.libreoffice.org/docs/idl/ref/interfacecom_1_1sun_1_1star_1_1document_1_1XFilter.html">XFilter</a>
+implementation for the embedded object if it is to be handled internally by
+LibreOffice, but the MathType filter (originally created to handle math
+objects inside binary DOC files) didn&#8217;t have one. Once I implemented such a
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=add60d233f70ff56472448bd50b3771f38974c52">filter
+wrapper</a>, the
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=2a3e8b470edf2fe76188f9ccf6b0f32dfc817ea4">rest</a>
+wasn&#8217;t too hard.</p></div>
+<div class="paragraph"><p>Here are
+<a href="http://cgit.freedesktop.org/libreoffice/core/tree/sw/qa/extras/rtfimport/data/mathtype.rtf">test</a>
+<a href="http://cgit.freedesktop.org/libreoffice/core/tree/sw/qa/extras/ooxmlimport/data/mathtype.docx">documents</a>
+if you want to try it yourself. You&#8217;ll need a 5.0
+<a href="http://dev-builds.libreoffice.org/daily/master/">daily build</a> for that, though.
+;-)</p></div>
+<div class="paragraph"><p>If I&#8217;m at describing features new in LibreOffice Writer 5.0 file filters, here are a few more:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=830abf307aab9f9611db60b5c734fbafd3b3d8a3">Automatic hyphenation at a document
+  level</a> and <a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=a3ec386c2283a196f8d9f1edd0ff97c38ddb281a">exceptions to it</a> is now
+  imported in RTF. I also adjusted the
+  <a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=a2fea109e6454b10e8e85148b93bdca89066fe8d">exporter</a>, so now Word sort of
+  understands our hyphenation rules, replacing the OOo-specific custom
+  hyphenation RTF extension that Word just ignored.
+</p>
+</li>
+<li>
+<p>
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=7546a904265cc0d0a0e3795cdb411cbb945a39fe">picture wrap distance properties</a>
+  are now handled in the RTF importer&#8201;&#8212;&#8201;previously that was only handled for
+  shapes.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>And a number of bugfixes for the RTF filter:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="https://bugs.documentfoundation.org/show_bug.cgi?id=86182">tdf#86182</a> better RTL paragraph handling
+</p>
+</li>
+<li>
+<p>
+<a href="https://bugs.documentfoundation.org/show_bug.cgi?id=80708">tdf#80708</a> related to the improved old-style Writer table export handling work
+</p>
+</li>
+<li>
+<p>
+<a href="https://bugs.documentfoundation.org/show_bug.cgi?id=90421">tdf#90421</a> hyperlink export tweak
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Do these sound interesting? Look at what others did for LibreOffice 5.0 on
+<a href="https://wiki.documentfoundation.org/ReleaseNotes/5.0">the TDF wiki</a>, even if
+it&#8217;s far from complete, as the 5.0 branch is not yet created. :-)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/openit-2015.html">Open IT 2015</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://lh3.googleusercontent.com/-bcwPYUJF04A/VTY_cdBo8bI/AAAAAAAAFac/B5ICyiGoKaY/s0/" alt="https://lh3.googleusercontent.com/-bcwPYUJF04A/VTY_cdBo8bI/AAAAAAAAFac/B5ICyiGoKaY/s0/" />
+</div>
+</div>
+<div class="paragraph"><p>On Saturday I gave a talk at the <a href="http://openit.eventbrite.com/">Open IT 2015</a>
+conference about the new features of LibreOffice 4.3 and 4.4.  My uploaded
+slides are available
+<a href="https://speakerdeck.com/vmiklos/4-dot-4-es-kiadasban">here</a>.</p></div>
+<div class="paragraph"><p>Thanks <a href="https://www.uni-obuda.hu/en">Óbuda University</a> for hosting us, it was a
+great event! Other than talking to the usual suspects like
+<a href="http://zolnaitamas.blogspot.com/">Tamás Zolnai</a> or
+<a href="https://plus.google.com/117194932353487735021/posts">Gábor Kelemen</a>, I enjoyed
+two OpenStreetMap talks: it was extermely cool to hear that finally the
+<a href="http://turistautak.hu/">turistautak.hu</a> community
+<a href="http://wiki.openstreetmap.org/wiki/WikiProject_Hungary/Import%C3%A1l%C3%A1s/turistautak.hu">changed
+their license</a> in February so that all their free maps can be imported to
+OpenStreetMap&#8201;&#8212;&#8201;finally one pointless fight ends.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/open-source-budapest-5.html">Open Source Budapest 5. meetup</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div style="text-align: center; font-size: 0.6em;">
+<img src="https://lh3.googleusercontent.com/-ZPI3opPIqYE/VTIW5Igo5SI/AAAAAAAAFZc/rTmjqi14fZY/s800/"/>
+<p>(via <a href="https://www.youtube.com/watch?v=cKTpJtRQaCM">Open Source Budapest Meetup</a>)</p>
+</div>
+<div class="paragraph"><p>On Tuesday the 5th Open Source Budapest meetup was held, I was one of the
+invited speakers, and gave a lightning talk about
+<a href="https://github.com/vmiklos/ged2dot">ged2dot</a>, both as a standalone Python
+script and as a
+<a href="http://extensions.libreoffice.org/extension-center/gedcom">LibreOffice
+extension</a>.</p></div>
+<div class="paragraph"><p>My uploaded slides are available
+<a href="https://speakerdeck.com/vmiklos/csaladfak-abrazolasa-szabad-szoftverekkel">here</a>.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/android-editing-part-5.html">Android editing: from graphic handling to formatting</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>In <a href="/blog/tiled-editing-part-4.html">from selections to graphic
+handling</a>, I wrote about how we let the LibreOffice Android app select, resize
+and move images and shapes.  Now that we have all type of selections (at least
+for Writer) in this
+<a href="http://blog.documentfoundation.org/2015/01/27/the-document-foundation-announces-the-results-of-the-android-tender/">TDF-funded
+project</a>, let&#8217;s do some formatting! The example implemented by
+<a href="http://holesovsky.blogspot.com/">Jan Holesovsky</a> here is to mark the text bold,
+but you can imagine that using the same technique a number of other character
+or paragraph properties could be set the same way with little work.</p></div>
+<div class="paragraph"><p>Here is how it works:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+When you click on toolbar buttons on the desktop UI, so-called UNO commands
+  are invoked, bold is <code>.uno:Bold</code>.
+</p>
+</li>
+<li>
+<p>
+This command is generated by the native Android UI as well, and passed to
+  the <code>lok::Document::postUnoCommand()</code> LOK API.
+</p>
+</li>
+<li>
+<p>
+Then the LOK implementation uses the recently introduced
+  <code>comphelper::dispatchCommand()</code> internal API to actually execute it.
+</p>
+</li>
+<li>
+<p>
+In all applications (Writer, Calc, Draw and Impress) this command is then
+  evaluated on the current selection: so if you have a cursor position, then
+  from now on the new characters will be bold&#8201;&#8212;&#8201;or if you have a selection,
+  then that will be adjusted. The point is that this works exactly how it
+  happens with the desktop UI, reusing the same code.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>If you are interested how this looks like, here is a demo (click on the image to see the video):</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://youtu.be/5fmjQ6PmBQw">
+<img src="https://lh6.googleusercontent.com/-t3TbtyU1BG4/VR05HL8srKI/AAAAAAAAFYQ/cM2Ex5MTkoo/s800/" alt="https://lh6.googleusercontent.com/-t3TbtyU1BG4/VR05HL8srKI/AAAAAAAAFYQ/cM2Ex5MTkoo/s800/" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>Notice that Calc also gained a number of new features, like cell selection,
+blinking cursor, text selection with much help from Henry Castro.</p></div>
+<div class="paragraph"><p>Now that Writer is nearly functional for the basic editing features that would
+be good to see in all four applications, time to look at what&#8217;s new in
+Impress-land!</p></div>
+<div class="paragraph"><p>To bring Impress in line with Writer, we implemented the followings with
+<a href="http://tomazvajngerl.blogspot.com/">Tomaž Vajngerl</a>:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+shape text now has a blinking cursor with a cursor handle that can be
+  dragged
+</p>
+</li>
+<li>
+<p>
+long push on a word results in a shape text selection with selection handles
+  that can be dragged
+</p>
+</li>
+<li>
+<p>
+it&#8217;s now possible to resize shapes
+</p>
+</li>
+<li>
+<p>
+Impress table selections can be created in two ways: either by long pushing
+  on an empty Impress table cell, or by long pushing on shape text inside a
+  cell, and then turning that shape text selection into a table one.
+</p>
+</li>
+<li>
+<p>
+it&#8217;s possible to tap on a selected shape without text to add text to it.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Here is a demo to show this in action:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="http://youtu.be/4KdFMZJK7uY">
+<img src="https://lh3.googleusercontent.com/-IwBuKW9bI6Y/VR05HO5Fa_I/AAAAAAAAFYM/YNCT3k56j5I/s800/" alt="https://lh3.googleusercontent.com/-IwBuKW9bI6Y/VR05HO5Fa_I/AAAAAAAAFYM/YNCT3k56j5I/s800/" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>For many of the above features, the core part was already implemented due to
+Writer shapes, what was missing is to call the same editeng methods from
+Impress and/or do missing core coordinates &#8594; LOK coordinates conversions. The
+later is twips for both cases in Writer, but Impress works in 100th millimeters
+internally, so it was necessary to do a number of conversions here and there
+so that LOK callbacks always emit coordinates in twips.</p></div>
+<div class="paragraph"><p>We also prepared more in-depth technical documentation about the Android
+editing work, <code>libreofficekit/README</code> and <code>android/README</code> now has much more
+details about how exactly the editing works.</p></div>
+<div class="paragraph"><p>That&#8217;s it for now&#8201;&#8212;&#8201;as usual the commits are in master (a few of them is only
+in feature/tiled-editing for now), so you can try this right now, or wait till
+the next Tuesday and get the
+<a href="http://dev-builds.libreoffice.org/daily/master/Android-ARM@24-Bytemark-Hosting/current/">Android
+daily build</a>. :-)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/tiled-editing-part-4.html">Android editing: from selections to graphic handling</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>In <a href="/blog/tiled-editing-part-3.html">from input handling to
+selections</a>, I wrote about how we let LibreOffice Android app draw the
+selections around text content natively. A next step in this
+<a href="http://blog.documentfoundation.org/2015/01/27/the-document-foundation-announces-the-results-of-the-android-tender/">TDF-funded
+project</a> is to provide selections around more UI elements: images and shapes.</p></div>
+<div class="paragraph"><p>Here are a number of challenges we (<a href="http://tomazvajngerl.blogspot.com/">Tomaž Vajngerl</a> and me) faced while we implemented this:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+On Linux (the desktop), the move and resize operations are really similar:
+  if you click near a resize handle (you "hit it"), then it&#8217;ll be a resize,
+  otherwise it&#8217;ll be a move. Defining "near" means that you don&#8217;t have to
+  click exactly at the center of the handle, but we allow some tolerance. Turns
+  out that the tolerance depended on the pixel size of the handle drawn on the
+  desktop: and because we don&#8217;t package the bitmaps of the desktop UI, that
+  tolerance was 0.
+</p>
+</li>
+<li>
+<p>
+Writer normally requires a click and a double-click to start editing shape
+  text. One to select the shape and another to actually start the text
+  editing. Instead of literally translating this to a tap and a long push, we
+  wanted to start text editing right away if the user tapped on shape text.
+</p>
+</li>
+<li>
+<p>
+Shape text doesn&#8217;t use the normal Writer text, but editeng&#8201;&#8212;&#8201;used by
+  Impress and Calc, too. So we had to instrument the editeng module as well to
+  expose the blinking cursor, so that if you tap inside the editeng text, you
+  have some feedback where you are. Same is true for the cursor handle: once we
+  knew where the cursor is, we could draw the cursor handle, but dragging it did
+  nothing: now the <code>setTextSelection()</code> LOK API handles the case when the cursor
+  is inside editeng text and can adjust the cursor position there, too.
+</p>
+</li>
+<li>
+<p>
+On Linux, users got used to the following resize behavior: when images are
+  resized, the aspect ratio is kept, but this is not the case for shapes. We
+  wanted to keep this behavior on Android, too.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>If you are interested how this looks like, here is a demo (click on the image to see the video):</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="http://youtu.be/bTWLz_4YQtA">
+<img src="https://lh5.googleusercontent.com/-JEuiW789JEM/VQqrR8zDHjI/AAAAAAAAFVo/ORgDKNBIIJA/s800/" alt="https://lh5.googleusercontent.com/-JEuiW789JEM/VQqrR8zDHjI/AAAAAAAAFVo/ORgDKNBIIJA/s800/" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>Notice how the word selection in a table turns into a table selection, or how
+a long push inside an empty cell creates a selection containing only the empty
+cell.</p></div>
+<div class="paragraph"><p>An other direction we&#8217;re working towards is to show / hide the soft keyboard
+of Android as you would expect it. On Linux, it&#8217;s easy: the keyboard is always
+available. However on Android you should track when it makes sense to use the
+keyboard and when not&#8201;&#8212;&#8201;and show/hide automatically according to the context.
+Examples:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+When you tap inside text, we show the keyboard.
+</p>
+</li>
+<li>
+<p>
+When you finish editing, we hide it.
+</p>
+</li>
+<li>
+<p>
+When you start scrolling, we hide it.
+</p>
+</li>
+<li>
+<p>
+When you select an image, we hide it.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Additionally, we need to handle the situation when this automagic goes wrong.
+The Android soft keyboard has a button to hide itself, but we added a toolbar
+button to force-show it, too (click on the image to see the video):</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="http://youtu.be/36MsGe-7Mpo">
+<img src="https://lh6.googleusercontent.com/-rUxX9gC9z4M/VQqrR0rIyMI/AAAAAAAAFVk/y5GluM-u5eg/s800/" alt="https://lh6.googleusercontent.com/-rUxX9gC9z4M/VQqrR0rIyMI/AAAAAAAAFVk/y5GluM-u5eg/s800/" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>Finally, <a href="https://siqi43.wordpress.com/">Siqi Liu</a> added a new callback type,
+allowing to tap on hyperlinks and handle them according to how you
+configured URL handling on your Android device. Here is a demo to show this in
+action:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="http://youtu.be/dBcGVu5pcSk">
+<img src="https://lh6.googleusercontent.com/-tNnSAiN3p-o/VQqrR5UslSI/AAAAAAAAFVg/xCbkq7-Vark/s800/" alt="https://lh6.googleusercontent.com/-tNnSAiN3p-o/VQqrR5UslSI/AAAAAAAAFVg/xCbkq7-Vark/s800/" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>That&#8217;s it for now&#8201;&#8212;&#8201;as usual the commits are in master (a few of them is only
+in feature/tiled-editing for now), so you can try this right now, or wait till
+the next Tuesday and get the
+<a href="http://dev-builds.libreoffice.org/daily/master/Android-ARM@24-Bytemark-Hosting/current/">Android
+daily build</a>. :-)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/libvisio-testing.html">Document Liberation Project regression testing</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://lh5.googleusercontent.com/-0Qh5cUx4gGA/VQR_RkRe2jI/AAAAAAAAFU8/5KIPToOna4Q/s0/" alt="https://lh5.googleusercontent.com/-0Qh5cUx4gGA/VQR_RkRe2jI/AAAAAAAAFU8/5KIPToOna4Q/s0/" />
+</div>
+</div>
+<div class="paragraph"><p><a href="/blog/libvisio-setup.html">Earlier</a> I wrote about my setup to
+hack libvisio. One missing bit was testing the contributed code. Testing can
+be performed at various levels, so far DLP libraries were tested by recording
+the output of the various <code>foo2raw</code> tools and then comparing the current output
+to some previously known good state. This has a number of benefits:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+If you know that the current state is good, then there is no need write
+  testcases, you can just record your state automatically.
+</p>
+</li>
+<li>
+<p>
+Any change in the output fill signal instant failure, so it gives pretty
+  good test coverage.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>The same technique was used in LibreOffice for Impress testcases initially,
+however we saw a drawback there: Being automatically generated, you have no
+control over what part of the output is important and what part is not&#8201;&#8212;&#8201;both
+parts are recorded and when some part changes, you have to carefully evaluate
+on a case by case basis if the change is OK or not. The upshot is that from
+time to time you just end up regenerating your reference testsuite and till
+the maintainer doesn&#8217;t do that, everyone can only ignore the test results&#8201;&#8212;&#8201;so it doesn&#8217;t really scale.</p></div>
+<div class="paragraph"><p>In short, both techniques have some benefits, but given that the
+<a href="https://gerrit.libreoffice.org/gitweb?p=libvisio-test.git">libvisio test repo</a>
+is quite empty, I thought it&#8217;s a good time to give an other method (what we
+use quite successfully in LO code) a go, too. This method is easy: instead of
+recording the whole output of some test tool, output a structured format (in
+this case XML), and then just assert the interesting part of it using XPath.
+Additionally, these tests
+<a href="https://gerrit.libreoffice.org/gitweb?p=libvisio.git;a=tree;f=src/test;hb=HEAD">are
+in libvisio.git</a>, so you can nicely put the code change and the testcase
+<a href="https://gerrit.libreoffice.org/gitweb?p=libvisio.git;a=commitdiff;h=1bda66b9c0c1cc2b9dcf323a0a45e314b5d4410f">in
+the same commit</a>. So the hope is that this is a more scalable technique:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Provided that <code>make distcheck</code> is ran before committing, you can&#8217;t forget to
+  clone and run the tests.
+</p>
+</li>
+<li>
+<p>
+Writing explicit assertions means that it&#8217;s rarely needed to adjust existing
+  tests. Which is a good thing, as there are no tests for the tests, so
+  touching existing tests should be avoided, if possible. ;-)
+</p>
+</li>
+<li>
+<p>
+Having testcase + code change in the same commit is one step closer to the
+  dream e.g. the git.git guys do&#8201;&#8212;&#8201;they usually require documentation, code
+  and test parts in each patchset. :-)
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Technically this method is implemented using a
+<code>librevenge::RVNGDrawingInterface</code> implementation that generates XML. For now,
+this is part of libvisio, so in case you want to re-use it in some other DLP
+library, you need to copy it to your import library, though if indeed multiple
+importers start to use it, perhaps it&#8217;ll be moved to librevenge. The rest of
+the test framework is a simple
+<a href="https://gerrit.libreoffice.org/gitweb?p=libvisio.git;a=blob;f=src/test/test.cpp;hb=HEAD">testsuite
+runner</a> and a
+<a href="https://gerrit.libreoffice.org/gitweb?p=libvisio.git;a=blob;f=src/test/importtest.cpp;hb=HEAD">cppunit
+TestFixture</a> subclass that contains the actual test cases.</p></div>
+<div class="paragraph"><p>So in case you are planning how to test your import library, then now you have
+two options, evaluate them and choose what seems to be the better tool for
+your purpose.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/tiled-editing-part-3.html">Tiled editing: from input handling to selections</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>In <a href="/blog/tiled-editing-part-2.html">from a living document to
+input handling</a>, I wrote about how we handle touch and on-screen keyboard
+events in the LibreOffice Android app. A next step in this
+<a href="http://blog.documentfoundation.org/2015/01/27/the-document-foundation-announces-the-results-of-the-android-tender/">TDF-funded
+project</a> is to provide more UI elements which are specific to touch devices:
+selections is one of them.</p></div>
+<div class="paragraph"><p>Here are the problems we had to solve to get this working:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Long push is not an event core would recognize.
+</p>
+</li>
+<li>
+<p>
+If you use the mouse and have a selection in Writer, it&#8217;s only possible to
+  extend the end of it. If you use the keyboard, then it&#8217;s possible to shrink
+  the end of it, but still no adjustment of the start. On touch devices, it&#8217;s
+  natural to have selection handles at the start and end of the selection and be
+  able to adjust both, in both directions.
+</p>
+</li>
+<li>
+<p>
+Additionally, when the user drags the selection handles, the expected
+  behavior is that the position of the selection and the handle are never the
+  same: the handle is placed below the selection position and when you drag the
+  handle, the new selection position is above the handle&#8230; ;-)
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Long push is reasonable to map to double mouse click, as in both cases e.g. in
+Writer the user expects to have a <em>select word</em> action. But for the adjustment
+of selections, we really had to define a new API
+(<code>lok::Document::setTextSelection()</code>) to allow setting the start or end of the
+selection to a new logical (in document coordinates, not paragraph / character
+indexes) point.</p></div>
+<div class="paragraph"><p>If you are interested how this looks like, here is a demo:</p></div>
+<center>
+<iframe width="420" height="315" src="https://www.youtube.com/embed/dmZtxA2HD5o" frameborder="0" allowfullscreen></iframe>
+</center>
+<div class="paragraph"><p>An other direction we&#8217;re working towards is to have the same features in other
+applications as well: Impress and Calc. Perhaps not so surprisingly, we hit
+similar problems in these applications as well that we had to solve in Writer.
+The typical problems are:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+LibreOffice assumes a given portion of the document is visible (visual
+  area), but the Android view is independent from what LO thinks is visible.
+  Example: LO thinks a table is not visible, so it doesn&#8217;t send the selection
+  events for the text inside the table, even if it&#8217;s in fact visible on the
+  Android app.
+</p>
+</li>
+<li>
+<p>
+Instead of calling Invalidate() and waiting for a timer to call Paint(), at
+  some places direct Paint() is performed, so the tile invalidation
+  notification triggered by Invalidate() is missing &#8594; lack of content on
+  Android.
+</p>
+</li>
+<li>
+<p>
+We render each tile into a VirtualDevice&#8201;&#8212;&#8201;kind of an off-screen rendering
+ &#8201;&#8212;&#8201;and at some places LO assumed that certain content like the actively edited
+  shape&#8217;s text is not interesting, as it&#8217;s not interesting "during printing".
+</p>
+</li>
+<li>
+<p>
+LO&#8217;s mouse events are in pixels, and then this is translated to mm100
+  (hunderd of milimeters) or twips in core. So counting in pixels is the
+  common language, while the Android app counts everything in twips, and
+  doesn&#8217;t want to care about what would be visible at what pixel on the screen,
+  if LO would run in desktop mode. So we had to make sure that we can pass in
+  event coordinates in twips, and get invalidation coordinates in twips, even if
+  previously it was a mix of mm100, twips and pixels.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Here is how Impress looks like, with working tile invalidation, touch and
+keyboard handling:</p></div>
+<center>
+<iframe width="420" height="315" src="https://www.youtube.com/embed/P2cF8zsNnrg" frameborder="0" allowfullscreen></iframe>
+</center>
+<div class="paragraph"><p>Calc is lagging a bit behind, but it also has working tile invalidation and
+keyboard handling:</p></div>
+<center>
+<iframe width="420" height="315" src="https://www.youtube.com/embed/kQDRpoDkb0s" frameborder="0" allowfullscreen></iframe>
+</center>
+<div class="paragraph"><p>That&#8217;s it for now&#8201;&#8212;&#8201;as usual the commits of me and
+<a href="http://tomazvajngerl.blogspot.com/">Tomaž Vajngerl</a> are in master (a few of
+them is only in feature/tiled-editing for now), so you can try this right now,
+or wait till the next Tuesday and get the
+<a href="http://dev-builds.libreoffice.org/daily/master/Android-ARM@24-Bytemark-Hosting/current/">Android
+daily build</a>. :-)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+
+<footer>
+<div id="paginator">
+<a href="https://vmiklos.hu/blog/tag/en9.html" class="button_accent">&larr; Older Posts</a>
+
+<a href="https://vmiklos.hu/blog/tag/en7.html" class="button_accent">Newer Posts &rarr;</a>
+</div>
+</footer>
+
+    <div id="ending_message">
+      <p>&copy; Miklos Vajna. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
+</body>
+</html>

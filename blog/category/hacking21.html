@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/pygments.css">
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=PT+Sans|PT+Serif|PT+Mono">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Miklos Vajna">
+  <meta name="description" content="Posts and writings by Miklos Vajna">
+
+  <link href="https://vmiklos.hu/blog/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking RSS" />
+
+<link href="https://vmiklos.hu/blog/feeds/hacking.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking hacking Category RSS" />
+
+  <title>
+    What is Miklos hacking
+&ndash; Category: hacking  </title>
+
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <!--<a href="https://vmiklos.hu/blog">
+        <img src="https://vmiklos.hu/blog/theme/images/logo.png" alt="logo">
+      </a>-->
+      <h2><a href="https://vmiklos.hu/blog">What is Miklos hacking</a></h2>
+      <p></p>
+      <ul>
+        <li><a href="/" target="_blank">Root</a></li>
+        <li><a href="https://planet.documentfoundation.org/" target="_blank">LibreOffice Blogs</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://vmiklos.hu/blog">Index</a> &brvbar; <a href="https://vmiklos.hu/blog/archives.html">Archives</a>
+      &brvbar; <a href="https://vmiklos.hu/blog/feeds/all.rss.xml">RSS</a>
+&gt; Category: hacking
+&brvbar; <a href="https://vmiklos.hu/blog/feeds/hacking.rss.xml">RSS</a>
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/playing-with-a-ppc-box.html">playing with a ppc box</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>many of you asked, so it's better if i describe it here.</p><p>i recently started working on ppc packages, without any kind of big announcement. that was on purpose. i don't have too much time for this (so surely i won't maintain - at least not manually - a full ppc port with security fixes, etc), but i'm interested at least getting a working toolchain, so that anybody who has such a machine and time can easily help.</p><p>so no, this will not be in 0.9, we didn't plan anything like that.</p><p>maybe for 1.0, we'll see :)</p><p>ah, as a side not, it was interesting today, i met (unintentionally) one of the Hungarian summer of code guys. i previously collected such a list, and i was surprised about i did not know about him. so i asked to type "blogs.frugalware.org", and search for "summer of code" to see if he is really missing from the list. actually he was not missing. but the funny fact was that - as usually - i was prepared to be forced to spell "frugalware", but this was not the case this time, he typed the word properly without asking. heh, we're getting known! :]</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/using-git-bzr.html">using git-bzr</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>It seems recently one of my favorite topics is 'how to convert from $random SCM to git' ;)</p><p>So, I already had a configuration using tailor, but that was slow. I know this already. Tailor is good because it always works, it isn't good because it's fast.</p><p>First, you need git-1.6.0rc0 or higher, you can find an fpm in my <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/bmf/frugalware-i686/">bmf repo</a>.</p><p>Second, you need the bzr fastimport plugin:</p><p><code>bzr branch lp:bzr-fastimport</code></p><p>Then enable the plugin:</p><p><code>cd ~/.bzr/plugins; ln -s /path/to/bzr-fastimport fastimport</code></p><p>Now you can clone git-bzr itself:</p><p><code>git clone git://github.com/pieter/git-bzr.git</code></p><p>Put it to your PATH:</p><p><code>cd ~/bin; ln -s /path/to/git-bzr/git-bzr .</code></p><p>NOTE: so you should not symlink the dir, but the script inside the dir.</p><p>Okay, this is done, now clone (branch in bzr terms) the bzr repo you want to convert. For example:</p><p><code>bzr branch <a href="http://code.bitlbee.org/bitlbee/">http://code.bitlbee.org/bitlbee/</a></code></p><p>Finally do the conversion (from the git-bzr README):</p><p><pre>
+git bzr add upstream ../bzr-branch
+git bzr fetch upstream
+git checkout -b local_branch bzr/upstream
+: hack hack hack
+git bzr push upstream
+</pre></p><p>Actually for now I only needed a one-directional convert, so my update-bitlbee.sh now looks like:</p><p><pre>
+cd ~/scm/bzr/bitlbee
+bzr pull
+cd - # so we are again under bitlbee.git, it works in bare repos as well!
+git bzr fetch upstream
+</pre></p><p>And yes, the resulting trees match perfectly! ;)</p><p>(Yes, I plan to package git-bzr and bzr-fastimport but I want to give it a good testing first.)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/asciidoc-vs-dblatex.html">asciidoc vs dblatex</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>so, in the latest stable version of asciidoc, the default pdf backend of a2x is dblatex, not fop.</p><p>given that this way we can avoid Java, that must be a good thing ;) (faster, freeer, etc)</p><p>here are a few tricks:</p><p><ul>
+  <li>if you want to hide the "revision history" page:
+<pre><xsl:param name="latex.output.revhistory">0</xsl:param></pre></li>
+  <li>if you want to avoid the dblatex logo, just comment out the line:
+<pre><xsl:param name="doc.publisher.show">1</xsl:param></pre></li>
+  <li>it seems that atm the $ math expression $ form is not supported, but you can do for example:
+<pre>
+<div class="paragraph"><p>&lt;inlineequation&gt;&lt;alt&gt;
+\[ \$\alpha + \$\beta = \$(\alpha + \beta) \]
+&lt;/alt&gt;&lt;/inlineequation&gt;</p></div>
+</pre>
+AFAIK this was not possible till now, using fop. :)</li>
+</ul></p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/security-through-obscurity.html">security through obscurity</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>okay, this won't be a happy post either, but i thought i would just share a few links here.</p><p>first, there was <a href="http://www.heise-online.co.uk/security/Ghostly-threat-to-Internet-Explorer-users--/news/111017">this</a> article about some microsoft ie security problem, and the opensource evangelists started to hype again linux about being open, etc, etc. you know the story.</p><p>the sad fact is that, just being opensource, or let's say even having an open scm will not guarantee that all the details are published. i want to pick up a minor issue, so that i can be sure about i don't publish any details here which may not public.</p><p>let's take <a href="http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commit;h=5816339310b2d9623cf413d33e538b45e815da5d">this commit</a>. it's a bugfix, right? umm, if it would be security-related, they would mention it. hm, no.</p><p>to make the long story short, the <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2008-2137">relevant cve</a> is there, even secunia released an <a href="http://secunia.com/advisories/30258/">advisory</a>.</p><p>i could add few more details (no cve on the secunia page, the "from remote" is probably wrong), and finally make some conclustions, but i would avoid that this sime.</p><p>take care.</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/non-public-scm-for-free-software.html">non-public scm for free software</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>i find it really interesting that some people think that the scm for free software doesn't matter that much. just think about the "open"suse buildscripts, where the svn (in which they are tracked) is closed, or about "free"bsd, where the perforce repos (where _real_ development happens) is not checkoutable anonymously.</p><p>and no, i'm not rms who says you must use a free scm to develop free software, i just think a public access to it would be nice.</p><p>of course there are other projects like archlinux as well (no anonsvn), but i didn't wanted to start with it, since this post is not (just) about distro war..</p><p>ah and yes, the best of these is Debian where many maintainer use just a single huge generated diff and the real scm where they develop such diffs isn't public, either.</p><p>(finally a bad example is Ubuntu where the whole webapp behind the distro where all the bzr code and bugs are stored is closed source as well.)</p><p>so at the end it'll turn out that we're more free, without having any "open" or "free" in our name, without having a frugalware-legal@ and such? ;)</p><p>update:</p><p>the blacklist seem to grow.</p><p>see <a href="http://www.gentoo.org/proj/en/releng/release/2008.0/index.xml">gentoo</a>, where the releng repo isn't public, either.</p><p>an other funny fact is that they refuse to give security support for the <a href="http://www.gentoo.org/security/en/vulnerability-policy.xml">kernel</a>, the base of your system..</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/new-in-git-1-5-6-git-cvsexportcommit-w.html">new in git-1.5.6: git cvsexportcommit -W</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>git-1.5.6 will be released soon (probably in a few weeks) and there are some interesting news in it.</p><p>one of them is the new git cvsimport -W switch which makes it easy to do bi-directional changes between git and cvs.</p><p>to set up your local repo:</p><p><pre>$ CVSROOT=$URL cvs co module
+$ cd module
+$ git cvsimport</pre></p><p>this will do a fresh checkout of the cvs module and will import it to git. you will have two interesting git branch: origin is the "reference" one, you should not touch it, and you can work in master.</p><p>you can commit to master, etc.</p><p>then there are two tricky operations:</p><p>first, you may want to commit back your local commits.</p><p>to do this:</p><p><pre>$ for i in $(git rev-list --reverse origin..master)
+do
+        git cvsexportcommit -W -c -p -u $i
+done</pre></p><p>second, you may want to fetch upstream changes and rebase your local changes on top of them:</p><p><pre>$ git cvsimport -i
+$ git rebase origin</pre></p><p>that's all.</p><p>cookies goes to Dscho in commit <a href="http://git.kernel.org/?p=git/git.git;a=commit;h=d775734c40afed216160437c59a45c93bdf28689">d775734</a>. :)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/interesting-git-talk.html">interesting git talk</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>yesterday somebody mentioned on #git <a href="http://www.gitcasts.com/posts/railsconf-git-talk">this talk</a>. it's not a real video, just audio + slides but it's really nice. i would say if the "Linus one" made you say "heh, this may worth to check out" then this one will be the "hey, this one prevented me from learning things the hard way".</p><p>it's just one hour and it describes so many important tricks that i haven't encountered elsewhere yet.</p><p>just watch it.</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/fop-0-9x.html">fop 0.9x</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>uhm, this will be a long post, but i'll try to keep it short :)</p><p>a few words about fop. we write our documentation in asciidoc. asciidoc is plain text with a very simple markup, asciidoc can convert this to docbook. then docbook-xsl can convert this to .fo, finally fop can convert .fo to .pdf.</p><p>my problem with fop is that it's written in java and we just used the upstream binary. this is primarily a security problem.</p><p>so, about one and a half months ago got the crazy idea to compile fop from source. of course the correct way to do this is to package first the depends. this is really a avalanche, becase we didn't have too much generic java libs packaged, so i had to package many. namely:</p><p>jflex, piccolo, gnu.regexp, jarjar, jmock, qdox, easymock, hamcrest, iso-relax, relaxngdatatype, xsdlib, msv, xpp3, xpp2, gnu-crypto, apache-log4j, xmldb-api, ws-jaxme, dom4j, jdom, icu4j, jaxp, jaxp, xom, jaxen, rhino, batik, servletapi, jaf, gnuinetlib, gnumail, avalon-logkit, avalon-framework, commons-logging, commons-io and xmlgraphics-commons.</p><p>hm. that's 36. horrible ;)</p><p>the nice thing is that all these (except xmlgraphics-commons because classpath still lacks jpeg support) are compiled with the ecj/gcj toolchain, without any sun blob.</p><p>the other benefits are:
+<ul>
+  <li>a native fop binary:<pre>$ file /usr/bin/fop
+/usr/bin/fop: ELF 32-bit LSB executable, Intel 80386, version 1 (SYSV), for GNU/Linux 2.6.0, dynamically linked (uses shared libs), stripped</pre></li>
+  <li>now we got rid of fop-devel, since this version can both convert ttf fonts to xml ones (needed if you want to embed custom fonts into pdf) and convert fo documents to pdf ones.</li>
+</ul></p><p>yay!</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/message-ids.html">message-ids</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>ok, this post will be a big generic, but it seems this is still totally new to some people. so, the Message-ID header in an email is ideally unique and you can easily use it to refer to an email in an other discussion.</p><p>in this post i want to deal with 3 issues:</p><p>first, how to display it in your mail client. ok, this depends on your mue, in mutt, you need to add <pre>unignore message-id</pre> to your muttrc.</p><p>second, if you want to search for a message-id in a folder, that's your mua's task as well. in mutt, you can do it by for example <pre>~i <a href="mailto:200804281829.11866.henrikau@orakel.ntnu">200804281829.11866.henrikau@orakel.ntnu</a>.no</pre></p><p>the third trick isn't mua-specific. if you want to link the message, and the list is indexed by gmane, then you can just type <pre>http://mid.gmane.org/200804281829.11866.henrikau@orakel.ntnu.no</pre> and it'll redirect to <pre>http://article.gmane.org/gmane.comp.version-control.git/80566</pre></p><p>ok, that's all for today :)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/source-highlight-in-asciidoc.html">source highlight in asciidoc</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+i recently packaged <code>source-highlight</code>, and asciidoc can nicely use it. an example page (example codes using pacman-g2 bindings in 4 different languages) available <a href="http://frugalware.org/~vmiklos/docs/asciidoc/hightlight.html">here</a>. yay! :)
+</div>
+</div>
+
+  </div>
+</article>
+
+<footer>
+<div id="paginator">
+<a href="https://vmiklos.hu/blog/category/hacking22.html" class="button_accent">&larr; Older Posts</a>
+
+<a href="https://vmiklos.hu/blog/category/hacking20.html" class="button_accent">Newer Posts &rarr;</a>
+</div>
+</footer>
+
+    <div id="ending_message">
+      <p>&copy; Miklos Vajna. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
+</body>
+</html>

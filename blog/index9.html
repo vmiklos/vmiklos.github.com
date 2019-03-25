@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/pygments.css">
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=PT+Sans|PT+Serif|PT+Mono">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Miklos Vajna">
+  <meta name="description" content="Posts and writings by Miklos Vajna">
+
+  <link href="https://vmiklos.hu/blog/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking RSS" />
+
+
+  <title>
+    What is Miklos hacking
+  </title>
+
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <!--<a href="https://vmiklos.hu/blog">
+        <img src="https://vmiklos.hu/blog/theme/images/logo.png" alt="logo">
+      </a>-->
+      <h2><a href="https://vmiklos.hu/blog">What is Miklos hacking</a></h2>
+      <p></p>
+      <ul>
+        <li><a href="/" target="_blank">Root</a></li>
+        <li><a href="https://planet.documentfoundation.org/" target="_blank">LibreOffice Blogs</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://vmiklos.hu/blog">Index</a> &brvbar; <a href="https://vmiklos.hu/blog/archives.html">Archives</a>
+      &brvbar; <a href="https://vmiklos.hu/blog/feeds/all.rss.xml">RSS</a>
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/tiled-editing-part-2.html">Tiled editing: from a living document to input handling</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>In <a href="/blog/tiled-editing-part-1.html">from viewing only to a
+living document</a>, I wrote about how tile invalidation can handle updates in
+the Android app in case what should be displayed on the screen changes. A next
+step in this
+<a href="http://blog.documentfoundation.org/2015/01/27/the-document-foundation-announces-the-results-of-the-android-tender/">TDF-funded
+project</a> is to handle more than blinking text: keyboard and mouse/touch events
+from the user.</p></div>
+<div class="paragraph"><p>First let me enumerate over the issues we had to face:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Gtk, Android and LibreOffice&#8217;s VCL use different key codes for the same
+  physical keys. We solved this by mapping the special keys manually on the
+  Gtk/Android side (using the C++ and Java UNO binding), and for the rest,
+  we simply use the unicode representation of the keys.
+</p>
+</li>
+<li>
+<p>
+Special keys: while "return" was easy to map, getting "backspace" to work
+  was more challenging. It worked fine on the Gtk side, but on Android we had
+  to make sure that the whole sfx2 dispatching framework works properly, only
+  then could map the backspace key to the correct UNO command, which is
+  <code>.uno:SwBackspace</code> in case of Writer.
+</p>
+</li>
+<li>
+<p>
+Mouse handling: VCL sends pixel coordinates to the editing windows, they
+  then calculate the offset of the editing area (think about toolbars and
+  menus that have to be excluded), and then converts the pixel values to
+  document coordinates. In case of tiled editing, we always work with document
+  coordinates in logical units (twips), so we had to add the possibility to send
+  the coordinates in document ones. This allows core not knowing where the user
+  exactly is (in case the tiles are already ready, swiping can be handled
+  without any LOK calls), and also allows Android not knowing the implementation
+  details of the desktop app (where menus and toolbars would be).
+</p>
+</li>
+<li>
+<p>
+Cursor caret overlay: we wanted to be sure that it&#8217;s not necessary to
+  re-render the affected tiles each time the cursor blinks, so we added a LOK
+  API to send the rectangle (its width is nearly zero) of the cursor to Android,
+  and then it can handle the blinking cursor itself in a transparent overlay.
+  This overlay will be useful for presenting selections as well.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>As usual the commits of me and <a href="http://tomazvajngerl.blogspot.com/">Tomaž
+Vajngerl</a> are in master, so you can try this right now, or wait till tomorrow
+and get the
+<a href="http://dev-builds.libreoffice.org/daily/master/Android-ARM@24-Bytemark-Hosting/current/">Android
+daily build</a>. However, if you are just interested how this looks like, here are some demos:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Keyboard handling in gtktiledviewer:
+</p>
+</li>
+</ul></div>
+<center>
+<iframe width="420" height="315" src="https://www.youtube.com/embed/Hi9N9IumMZY" frameborder="0" allowfullscreen></iframe>
+</center>
+<div class="ulist"><ul>
+<li>
+<p>
+Same on Android, including newlines and backspace handling:
+</p>
+</li>
+</ul></div>
+<center>
+<iframe width="420" height="315" src="https://www.youtube.com/embed/4CJbu_QNUh0" frameborder="0" allowfullscreen></iframe>
+</center>
+<div class="ulist"><ul>
+<li>
+<p>
+Mouse handling in gtktiledviewer:
+</p>
+</li>
+</ul></div>
+<center>
+<iframe width="420" height="315" src="https://www.youtube.com/embed/4jH_Ek1p1OA" frameborder="0" allowfullscreen></iframe>
+</center>
+<div class="ulist"><ul>
+<li>
+<p>
+Same on Android, including the transparent selection overlay that can
+  efficiently blink the cursor:
+</p>
+</li>
+</ul></div>
+<center>
+<iframe width="420" height="315" src="https://www.youtube.com/embed/frQWyjjsl3I" frameborder="0" allowfullscreen></iframe>
+</center>
+<div class="paragraph"><p>That&#8217;s it for now&#8201;&#8212;&#8201;next on our list are selections, so you can delete and
+overwrite more easily. :-)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/fosdem2015.html">LibreOffice on Android FOSDEM talk</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div style="text-align: center; font-size: 0.6em;">
+<img src="https://lh4.googleusercontent.com/-3Z-6BCCwldk/VNEQnkMAl8I/AAAAAAAAFO8/m-5535Gu_IM/s400/"/>
+<p>(via <a href="https://twitter.com/LOfCollabora/status/561521715550113793">LOfCollabora</a>)</p>
+</div>
+<div class="paragraph"><p>Today is my last day in Brussels where I
+gave a <a href="https://fosdem.org/2015/schedule/event/editors_texboxes_writer/">TextBoxes: complex shapes with complex content</a> and a <a href="https://fosdem.org/2015/schedule/event/editors_libreoffice_android/">LibreOffice on Android</a> talk
+at FOSDEM 2015, in the
+<a href="https://fosdem.org/2015/schedule/track/open_document_editors/">Open document
+editors devroom</a>. The devroom was well-crowded, with about 100 users in the
+rows of the audience&#8201;&#8212;&#8201;proof pictures above and below. ;-)</p></div>
+<div style="text-align: center; font-size: 0.6em;">
+<img src="https://lh3.googleusercontent.com/-sR6rLYO-TWA/VNEQngonBHI/AAAAAAAAFPE/b6wHnfcQ49s/s400/"/>
+<p>(via <a href="https://twitter.com/deneb_alpha/status/561559104536477698">deneb_alpha</a>)</p>
+</div>
+<div class="paragraph"><p>We also had a
+<a href="https://wiki.documentfoundation.org/Hackfest/FOSDEM2015">Hackfest</a> with about
+20 hackers attending, (again) kindly hosted by
+<a href="http://www.betacowork.com/">Betacowork</a> on Monday and Tuesday:</p></div>
+<div style="text-align: center; font-size: 0.6em;">
+<img src="https://lh5.googleusercontent.com/-yjkNg7omYrI/VNEQnjxF4JI/AAAAAAAAFPA/rO_EtimqYMg/s800/"/>
+<p>(via <a href="https://twitter.com/floeff/status/562598533577322496">floeff</a>)</p>
+</div>
+<div class="paragraph"><p>There were a few topics I hacked on:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="https://bugs.documentfoundation.org/show_bug.cgi?id=88583">tdf#88583</a>: a fallout from the Writer fillattributes work introduced in
+  LibreOffice 4.4
+</p>
+</li>
+<li>
+<p>
+<a href="https://bugs.documentfoundation.org/show_bug.cgi?id=68183">tdf#68183</a>: a small new feature missing since the RSID GSoC project ended
+</p>
+</li>
+<li>
+<p>
+build on HiDPI screens should now
+  <a href="https://gerrit.libreoffice.org/gitweb?p=core.git;a=commitdiff;h=1ade66e7e70ce13c419f1ffff5222dcedec281bd">no longer fail</a>
+</p>
+</li>
+<li>
+<p>
+<a href="https://bugs.documentfoundation.org/show_bug.cgi?id=88811">tdf#88811</a>: an RTF regression fix, so that now the
+  <a href="https://bugs.documentfoundation.org/buglist.cgi?keywords=regression&amp;keywords_type=allwords&amp;status_whiteboard_type=allwordssubstr&amp;query_format=advanced&amp;status_whiteboard=rtf_filter&amp;resolution=---">counter</a> is down to zero again
+</p>
+</li>
+<li>
+<p>
+we no longer produce invalid ODF output when writing
+  <a href="https://gerrit.libreoffice.org/gitweb?p=core.git;a=commitdiff;h=f1f6b6db730ae67a427c7974b59a5e19ab571984">character borders</a>
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>A full list of achievements is
+<a href="https://wiki.documentfoundation.org/Hackfest/FOSDEM2015#Achievements">available</a>, if
+you were at the hackfest and you did not contribute to that section, please
+write a line about what did you hack on. :-)</p></div>
+<div class="paragraph"><p>Quite some other slides are now available on
+<a href="http://planet.documentfoundation.org/">Planet</a>, don&#8217;t miss them. Mines are
+<a href="https://speakerdeck.com/vmiklos/textboxes-in-libreoffice-writer">also</a>
+<a href="https://speakerdeck.com/vmiklos/libreoffice-on-android">uploaded</a>.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/tiled-editing-part-1.html">Tiled editing: from viewing only to a living document</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>As it has been announced
+<a href="http://blog.documentfoundation.org/2015/01/21/libreoffice-viewer-for-android/">last
+week</a>, an Android port of LibreOffice in the form of a viewer app is now
+available for download.  What&#8217;s next?
+<a href="http://blog.documentfoundation.org/2015/01/27/the-document-foundation-announces-the-results-of-the-android-tender/">Editing</a>,
+naturally.  First, thanks again to The Document Foundation&#8201;&#8212;&#8201;and all the
+<a href="http://donate.libreoffice.org/">donors</a> who made this (ongoing) work possible.
+In this post I would like to explain what did we do with
+<a href="http://tomazvajngerl.blogspot.com/">Tomaž Vajngerl</a> at Collabora so far in that
+direction.</p></div>
+<div class="paragraph"><p>If you ever touched the Android port of LibreOffice, you probably noticed that
+sadly developing for Android is much harder compared to Linux (desktop). On
+Linux, if you just touch a single module, it&#8217;s possible to rebuild just that
+module in a few seconds, and then you can run soffice again with your
+modifications included. On Android, this is much harder:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+due to a limitation of the Android linker, we link all the native code into
+  a single shared object, that has to be re-linked after each native code
+  modification
+</p>
+</li>
+<li>
+<p>
+the native + the Java code has to be packed into a .apk archive
+</p>
+</li>
+<li>
+<p>
+the .apk archive has to be uploaded to the device (or emulator) and
+  installed there
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>and only then can you test your changes. To partly sidestep from this problem,
+we split the "Android editing" into two:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+tiled editing: this can be tested on Linux using the gtktiledviewer test
+  application (and ideally any core problem can be seen here already)
+</p>
+</li>
+<li>
+<p>
+Android LibreOfficeKit client: replacing gtktiledviewer with the real
+  Android client code, and this time testing it on the device
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>One problem with this approach was that while Android properly rendered small
+tiles of 256x256 pixels, gtktiledviewer rendered a single huge tile. This
+means that in case part of the document changes and we need to re-draw it, we
+always repainted the whole document in gtktiledviewer, while we only repainted
+the necessary parts on Android. Guess what, if the area to be repainted is
+wrong, it&#8217;ll be visible on Android but not on gtktiledviewer. So the first
+task we solved was to let gtktiledviewer also render small tiles. For
+debugging purposes, small red rectangles are painted at the top left corners
+of each rectangle, so the size and position of the tiles can be seen easily:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh5.googleusercontent.com/-VvQFF-Kg270/VMYqe9G76-I/AAAAAAAAFL4/Fnh9_ig03Ww/s0/">
+<img src="https://lh5.googleusercontent.com/-VvQFF-Kg270/VMYqe9G76-I/AAAAAAAAFL4/Fnh9_ig03Ww/s420/" alt="https://lh5.googleusercontent.com/-VvQFF-Kg270/VMYqe9G76-I/AAAAAAAAFL4/Fnh9_ig03Ww/s420/" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>The next step was to somehow start work on real editing&#8201;&#8212;&#8201;but where to start? We identified two critical building blocks:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+there should be some way for the user to provide input (e.g. press a key on
+  the software keyboard)
+</p>
+</li>
+<li>
+<p>
+once the document changed, the application has to redraw the changed part of
+  the view
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>To avoid solving two problems at the same time, we first went after the
+second. One use case that only requires the update of the view is blinking
+text. Even if no touch or key events are available, a blinking text wants to
+update the view using a timer, so it&#8217;s a good testcase. It&#8217;s now possible for
+LibreOfficeKit clients to register a notification callback, and using that,
+LibreOffice can notify clients if part of the view has to be redrawn. Here is
+how it looks using gtktiledviewer:</p></div>
+<center>
+<iframe width="420" height="315" src="http://www.youtube.com/embed/rgv76GPlMRU" frameborder="0" allowfullscreen></iframe>
+</center>
+<div class="paragraph"><p>This demonstrates that the LibreOfficeKit implementation in LibreOffice core
+and also the gtktiledviewer client code handle correctly tile invalidations.
+Once that was done, we could also implement a similar client code in the
+Android app&#8201;&#8212;&#8201;it looks like this:</p></div>
+<center>
+<iframe width="420" height="315" src="http://www.youtube.com/embed/EkGpCrGlhiY" frameborder="0" allowfullscreen></iframe>
+</center>
+<div class="paragraph"><p>That&#8217;s it for now&#8201;&#8212;&#8201;next on our list is adding support for input handling, so
+it&#8217;s possible to type in some text. :-)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/perfect-ww8-comment-import.html">Perfect WW8 comment import</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>TL;DR: Import of annotated text ranges from binary DOC format was a problem
+for quite some time, now it should be as good as it always was in the
+ODT/DOCX/RTF filter.</p></div>
+<div class="paragraph"><p>Longer version: the import of annotation marks from binary DOC was never
+perfect. My
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=7907cc0ef9751d553014bd3bab49be9e7fc31bca">initial
+implementation</a> had a somewhat hidden, but important shortcoming, in the form
+of a "Don&#8217;t support ranges affecting multiple SwTxtNode for now." comment. The
+underlying problem was that annotation marks have a start and end position,
+and this is described as an offset into the piece table (so the unit was a
+character position, CP) in the binary DOC format, while in Writer, we work
+with document model positions (text node and content indexes, SwPosition), and it isn&#8217;t
+trivial to map between these two.</p></div>
+<div class="paragraph"><p><a href="http://zolnaitamas.blogspot.com/">Tamás</a> somewhat
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=f2945255df273404ee2457dcf761cb8f334b732b">improved</a>
+this homegrown CP &#8594; SwPosition mapping code, but was still far from perfect. Here is an example. This is how <a href="http://people.freedesktop.org/~vmiklos/2015/perfect-ww8-comment-import.doc">this demo document</a> looks like now in LibreOffice Writer:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh6.googleusercontent.com/-SYW-7l2Otpo/VMQDQ-Fme1I/AAAAAAAAFLg/nkGHlfIV85Y/s0/">
+<img src="https://lh6.googleusercontent.com/-SYW-7l2Otpo/VMQDQ-Fme1I/AAAAAAAAFLg/nkGHlfIV85Y/s800/" alt="https://lh6.googleusercontent.com/-SYW-7l2Otpo/VMQDQ-Fme1I/AAAAAAAAFLg/nkGHlfIV85Y/s800/" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>And this is how it looked like before the end of last year:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh4.googleusercontent.com/-geD82nPpzC4/VMQDQ9souvI/AAAAAAAAFLk/Mhuqrib2DEs/s0/">
+<img src="https://lh4.googleusercontent.com/-geD82nPpzC4/VMQDQ9souvI/AAAAAAAAFLk/Mhuqrib2DEs/s800/" alt="https://lh4.googleusercontent.com/-geD82nPpzC4/VMQDQ9souvI/AAAAAAAAFLk/Mhuqrib2DEs/s800/" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>Notice how "Start" is commented and it wasn&#8217;t before. Which one is correct? Here is the reference:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh5.googleusercontent.com/-L_LmD_wIZks/VMQDQ76Jn3I/AAAAAAAAFLo/mMHr5h5p4oM/s0/">
+<img src="https://lh5.googleusercontent.com/-L_LmD_wIZks/VMQDQ76Jn3I/AAAAAAAAFLo/mMHr5h5p4oM/s800/" alt="https://lh5.googleusercontent.com/-L_LmD_wIZks/VMQDQ76Jn3I/AAAAAAAAFLo/mMHr5h5p4oM/s800/" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>The reason is that the document has fields and tables, and the homegrown CP &#8594;
+SwPosition mapping did not handle this. A much better approach is to handle
+the mapping as we do it for bookmarks: even if at the end annotation marks and
+bookmarks are entires in <code>sw::mark::MarkManager</code>, it&#8217;s possible to set the
+start position as a character attribute during import (since mapping the
+<em>current</em> CP to the current SwPosition is easy) and when we know both the
+start and end, delete the character attribute and turn it into a mark manager
+entry. That&#8217;s exactly what I&#8217;ve done. The first screenshot is the result of 3
+changes:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=271722d923610d128a358528e64d7233641ea0dc">add
+  a annotationmark-start character attribute</a>
+</p>
+</li>
+<li>
+<p>
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=677fdd4fa235466649911042577bc4980d42deb6">tokenize
+  the annitationmark start and end structures from binary DOC</a>
+</p>
+</li>
+<li>
+<p>
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=0ec0ec267986644084baaa5bda5ba917dc5744df">handle
+  annotation marks via the character attribute added in the first change</a>
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Hopefully this makes LibreOffice not only
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=b1cd83c625a2afeb9da43cc9745d79c01963c797">avoid
+crashing</a> on such complex annotated contents, but also puts an end to the
+long story of "annotation marks from binary DOC" problems.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">Just like how C++11 perfect forwarding isn&#8217;t perfect&#8201;&#8212;&#8201;if you think
+it is, see "Familiarize yourself with perfect forwarding failure cases." in
+<a href="http://scottmeyers.blogspot.hu/2014/08/near-final-draft-of-effective-modern-c.html">this
+post of Scoot</a>&#8201;&#8212;&#8201;the above changes may still not result in a truly perfect
+import result of DOC annotation marks. But I think the #1 problem in this area
+is now solved. :-)</td>
+</tr></table>
+</div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/export-validation.html">Export validation as a new year's resolution</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>TL;DR: If you touch the ODF and/or OOXML filters in LibreOffice, please use
+the <code>--with-export-validation</code> configure option after you ran the
+<a href="https://gerrit.libreoffice.org/gitweb?p=dev-tools.git;a=blob;f=export-validation/setup.sh;hb=HEAD">setup.sh</a>
+script.</p></div>
+<div class="paragraph"><p><a href="https://mmohrhard.wordpress.com/">Markus Mohrhard</a> did an excellent job with
+adding the <code>--with-export-validation</code> build switch to LibreOffice. It does the
+following:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+it validates every Calc and Impress zipped XML document (both ODF and
+  OOXML) produced during the build by export filters
+</p>
+</li>
+<li>
+<p>
+it does the same for Writer, except there only a subset of documents are
+  validated
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>One remaining <a href="https://bugs.freedesktop.org/show_bug.cgi?id=84600">problem</a> was
+that it required setting up both
+<a href="http://incubator.apache.org/odftoolkit/conformance/ODFValidator.html">odfvalidator</a>
+and <a href="https://code.google.com/p/officeotron/">officeotron</a>, neither of them are
+standard GNU projects but Java beasts. So even if I and a number of other
+developers do use this option, it happens from time to time that we need to
+fix new validation regressions, as others don&#8217;t see the problem; and even if
+we point it out, it&#8217;s hard to reproduce for the author of the problematic
+commit.</p></div>
+<div class="paragraph"><p>This has just changed, all you need is to get <code>export-validation/setup.sh</code>
+from <a href="https://gerrit.libreoffice.org/gitweb?p=dev-tools.git">dev-tools.git</a>, and run it like this:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>./setup.sh ~/svn /opt/lo/bin</code></pre>
+</div></div>
+<div class="paragraph"><p>I.e. the first parameter is a working directory and the second is a directory
+that&#8217;s writable by you and is already in your path. And then wait a bit&#8230; ODF
+validator uses maven as a build system, so how much you have to wait depends
+on how much of the maven dependencies you already have in your local cache&#8230;
+it&#8217;s typically 5 to 15 minutes.</p></div>
+<div class="paragraph"><p>Once it&#8217;s done, you can add <code>--with-export-validation</code> to your autogen.input
+and then toplevel <code>make</code> will invoke odfvalidator and officeotron for the
+above mentioned documents.</p></div>
+<div class="paragraph"><p>The new year is here, if you don&#8217;t have a new year&#8217;s resolution yet&#8201;&#8212;&#8201;or if
+you hate those, but you&#8217;re willing to adopt a new habit from time to time&#8201;&#8212;&#8201;then please consider <code>--with-export-validation</code>, so that such regressions can
+be detected before you publish your changes. Thanks! ;-)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/cloud.html">Fixing the cloud problem</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh3.googleusercontent.com/-0aWZ5rvDWI4/VJ3tCCh9wcI/AAAAAAAAFHA/A1P8Un5ksrw/s0/">
+<img src="https://lh3.googleusercontent.com/-0aWZ5rvDWI4/VJ3tCCh9wcI/AAAAAAAAFHA/A1P8Un5ksrw/s400/" alt="https://lh3.googleusercontent.com/-0aWZ5rvDWI4/VJ3tCCh9wcI/AAAAAAAAFHA/A1P8Un5ksrw/s400/" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>TL;DR: see above -- a number of preset shapes are now rendered correctly at
+any scale factors, where previously rendering problems occurred.</p></div>
+<div class="paragraph"><p><a href="https://bugs.freedesktop.org/show_bug.cgi?id=87448">fdo#87448</a> has a reproducer
+document that shows rendering errors with the scaled cloud preset shape
+definition. At first I thought that the OOXML spec has wrong definition for
+this shape type, but that turned out to be not the case. What was a problem is
+our implementation of the drawingML arcTo command. This implementation defines
+how we render such arcs as polygons when the shape is to be painted, and given
+that LibreOffice has native support for the drawingML arcTo / ODF G command,
+this implementation is invoked during rendering, it&#8217;s not an import/export
+problem.</p></div>
+<div class="paragraph"><p>The rendering result looked like this before:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh3.googleusercontent.com/-tYg4cifemAs/VJ3tCEHtf9I/AAAAAAAAFG8/WzioMo1AkMA/s0/">
+<img src="https://lh3.googleusercontent.com/-tYg4cifemAs/VJ3tCEHtf9I/AAAAAAAAFG8/WzioMo1AkMA/s400/" alt="https://lh3.googleusercontent.com/-tYg4cifemAs/VJ3tCEHtf9I/AAAAAAAAFG8/WzioMo1AkMA/s400/" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>The cloud is drawn using a set of moveTo and arcTo commands. MoveTo is easier,
+as it uses explicit coordinates, but arcTo is more complex. It has 4
+parameters: the height and width of a "circle", and the start / end angle of
+an arc on that circle. (Of course if height and width do not equal, than
+that&#8217;s no longer a circle&#8230; ;-) ) The problem is that due to this, the
+distance vector between the arc&#8217;s start and end points is implicit&#8201;&#8212;&#8201;so if
+something is miscalculated, errors are nicely added to each other as more and
+more arcs are drawn. This is especially a problem if you later return to the
+end of an earlier arc using moveTo: if arcTo has some problem, then it&#8217;ll be
+clearly visible.</p></div>
+<div class="paragraph"><p>After
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=20f8006e21943b08f1f152e4a0359c9ebe4786f2">fixing
+UNO ARCANGLETO</a> to only take care of scaling / translation only after counting
+the actual arc, we started to produce correct end points for the arcs and
+shapes started to appear correctly at any scale factor, yay! :-)</p></div>
+<div class="paragraph"><p>One remaining problem was how to test this from cppunit, in the above commit I
+exported the shape to a metafile, and then I could use Tomaž's excellent
+MetafileXmlDump to assert that the end of an arc (implicit location) and the
+parameters of a moveTo command (explicit location) equal&#8201;&#8212;&#8201;when they do not,
+that&#8217;s what your eyes call a "rendering problem".</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/libvisio-setup.html">Document Liberation Project hacking experience</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>As someone who usually hacks on LibreOffice, external import filters produced
+by the Document Liberation Project cut both ways: they are great, as they deal
+with obscure formats and we get them for free, OTOH hacking such code is more
+complex than the usual LO code. I recently contributed a few patches to
+<a href="http://cgit.freedesktop.org/libreoffice/libvisio/commit/?id=2060d364bc0f7df97b864bf01fc5a27da12061c3">libvisio</a>
+and
+<a href="http://sourceforge.net/p/libwpd/libodfgen/ci/fb43d79e12ce132fc127cc0481ff5a6bdbcd1afe/">libodfgen</a>,
+but before I was able to do actual code changes, I had to set up a number of
+repositories and configure them to talk to each other&#8201;&#8212;&#8201;this post describes one
+possible setup that suited my needs.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_building_blocks">Building blocks</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>DLP&#8217;s central project is librevenge and everything builds on top of that,
+either by calling it or called by it. In case the task is to turn VSDX files
+into ODG ones, it looks like this:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh3.googleusercontent.com/-cxQ9QnWmyAo/VHoyKdHXSAI/AAAAAAAAFAY/Rqqr8xPorNM/s0/">
+<img src="https://lh3.googleusercontent.com/-cxQ9QnWmyAo/VHoyKdHXSAI/AAAAAAAAFAY/Rqqr8xPorNM/s400/" alt="https://lh3.googleusercontent.com/-cxQ9QnWmyAo/VHoyKdHXSAI/AAAAAAAAFAY/Rqqr8xPorNM/s400/" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>libvisio can build a librevenge document model from Visio files (more on the
+various librevenge-based libraries
+<a href="http://davetardon.wordpress.com/2014/05/06/writing-import-libraries-with-librevenge-part-i-getting-started/">here</a>),
+libodfgen can generate ODF output from such document models (one other
+possibility would be e.g.
+<a href="http://sourceforge.net/projects/libepubgen/">libepubgen</a>), and the
+writerperfect module provides kind of a controller for the remaining modules,
+e.g. for our purpose, a vsd2odg binary.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_alternatives_considered">Alternatives considered</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>One possibility is to build LibreOffice, use <code>--with-system-libvisio</code> and
+similar switches, then clone the repos, install them system-wide (possibly
+with your modifications), and then you can test your changes just with
+building the various libs, without changing your LO build (more
+<a href="http://fridrich.blogspot.hu/2012/01/fosdem-2012-how-to-make-best-of-it-and.html">here</a>).
+The drawback is that this way you pollute your system with unstable versions
+of those libs.</p></div>
+<div class="paragraph"><p>An other possibility is to build LibreOffice as usual, and then use the
+<a href="https://wiki.documentfoundation.org/Development/Patching_External_Libraries">external
+libraries patching mechanism</a> to hack on the code. The drawback is that you
+have to work without git on the code, and also you can only work with a
+released version.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_the_pkg_config_approach">The pkg-config approach</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>So here is what I did to avoid the above mentioned drawbacks: all DLP projects
+use pkg-config to find the required libraries, so you can configure them in a
+way that allows building as a user, avoid installing them at all, and still
+execute vsd2odg using the libs with your changes. Here is how to do it:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+librevenge:
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p><code>git clone git://git.code.sf.net/p/libwpd/librevenge</code><br />
+<code>cd librevenge</code><br />
+<code>./autogen.sh</code><br />
+<code>./configure --enable-debug</code><br />
+<code>make</code></p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+libvisio:
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p><code>git clone git://gerrit.libreoffice.org/libvisio</code><br />
+<code>cd libvisio</code><br />
+<code>./autogen.sh</code><br />
+<code>./configure REVENGE_CFLAGS="-I/home/vmiklos/git/libreoffice/librevenge/inc" REVENGE_LIBS="-L/home/vmiklos/git/libreoffice/librevenge/src/lib/.libs/ -lrevenge-0.0" REVENGE_GENERATORS_CFLAGS="-I/home/vmiklos/git/libreoffice/librevenge/inc" REVENGE_GENERATORS_LIBS="-L/home/vmiklos/git/libreoffice/librevenge/src/lib/.libs/ -lrevenge-generators-0.0" REVENGE_STREAM_CFLAGS="-I/home/vmiklos/git/libreoffice/librevenge/inc" REVENGE_STREAM_LIBS="-L/home/vmiklos/git/libreoffice/librevenge/src/lib/.libs/ -lrevenge-stream-0.0" --enable-debug --enable-werror</code><br />
+<code>make</code></p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+libodfgen:
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p><code>git clone git://git.code.sf.net/p/libwpd/libodfgen</code><br />
+<code>cd libodfgen</code><br />
+<code>./autogen.sh</code><br />
+<code>./configure REVENGE_CFLAGS="-I/home/vmiklos/git/libreoffice/librevenge/inc" REVENGE_LIBS="-L/home/vmiklos/git/libreoffice/librevenge/src/lib/.libs/ -lrevenge-0.0" REVENGE_STREAM_CFLAGS="-I/home/vmiklos/git/libreoffice/librevenge/inc" REVENGE_STREAM_LIBS="-L/home/vmiklos/git/libreoffice/librevenge/src/lib/.libs/ -lrevenge-stream-0.0" --enable-debug</code><br />
+<code>make</code></p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+writerperfect:
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p><code>git clone git://git.code.sf.net/p/libwpd/writerperfect</code><br />
+<code>cd writerperfect</code><br />
+<code>./autogen.sh</code><br />
+<code>./configure REVENGE_CFLAGS="-I/home/vmiklos/git/libreoffice/librevenge/inc" REVENGE_LIBS="-L/home/vmiklos/git/libreoffice/librevenge/src/lib/.libs/ -lrevenge-0.0" REVENGE_STREAM_CFLAGS="-I/home/vmiklos/git/libreoffice/librevenge/inc" REVENGE_STREAM_LIBS="-L/home/vmiklos/git/libreoffice/librevenge/src/lib/.libs/ -lrevenge-stream-0.0" ODFGEN_CFLAGS="-I/home/vmiklos/git/libreoffice/libodfgen/inc" ODFGEN_LIBS="-L/home/vmiklos/git/libreoffice/libodfgen/src/.libs -lodfgen-0.1 -lrevenge-0.0 -lrevenge-stream-0.0" VISIO_CFLAGS="-I/home/vmiklos/git/libreoffice/libvisio/inc" VISIO_LIBS="-L/home/vmiklos/git/libreoffice/libvisio/src/lib/.libs -lvisio-0.1 -lrevenge-0.0" --enable-debug --with-libvisio</code><br /></p></div>
+<div class="paragraph"><p>Of course, replace <code>/home/vmiklos/git/libreoffice/</code> with any other directory
+you like, just be consistent. ;-)</p></div>
+<div class="paragraph"><p>Now you can hack on any of these libraries, you just need to build your
+changes, and then vsd2odg will produce a flat ODG that you can quickly test
+with any ODF processor, like LibreOffice. One remaining trick (in case you&#8217;re
+not an autotools expert) is that vsd2odg is a libtool shell script, not a
+binary. If you still want to run the underlying binary in gdb, here is how you
+can do that:</p></div>
+<div class="paragraph"><p><code>libtool --mode=execute gdb --args vsd2odg /home/vmiklos/git/libreoffice/test.vsdx</code></p></div>
+<div class="paragraph"><p>In case the above considered two alternatives are not sufficient for your
+purposes, then I hope you find this setup useful. ;-)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/kasa.html">Kása</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh5.googleusercontent.com/-_vm--J4931U/VE0TDPtzt5I/AAAAAAAAE4w/MzrG6VYGuWo/s0/">
+<img src="https://lh5.googleusercontent.com/-_vm--J4931U/VE0TDPtzt5I/AAAAAAAAE4w/MzrG6VYGuWo/s400/" alt="https://lh5.googleusercontent.com/-_vm--J4931U/VE0TDPtzt5I/AAAAAAAAE4w/MzrG6VYGuWo/s400/" />
+</a>
+</div>
+</div>
+<div class="quoteblock">
+<div class="content">
+<div class="paragraph"><p>A vízben jó. Ez nagyon hamar tudatosult bennem, és a mai napig a víz a kedvenc
+közegem. Megnyugtat. Magabiztossá tesz. Otthon vagyok benne.  Ha beugrom és
+elmerülök, megszűnik minden más. Csak a víz van, és én meg a csend.  Simogató
+csend. De a külvilág akkor sem jut el hozzám, ha följövök. A vízben más
+tudatállapotba kerülök.</p></div>
+</div>
+<div class="attribution">
+&#8212; M. Kiss Csaba - Kásás Tamás: Kása avagy egy pólós világsztár életének első harminchat éve
+</div></div>
+<div class="paragraph"><p>(<a href="http://bookline.hu/product/home.action?id=116270&amp;type=22">bookline</a>, de a
+lira.hu is
+<a href="http://www.lira.hu/hu/ekonyv/tortenelem-1/eletrajzok/kasa-avagy-egy-polos-vilagsztar-eletenek-elso-harminchat-eve-ekonyv-epub-mobi-1">árulja</a>
+DRM-mentes ebookban)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/yellow-pig.html">The yellow border around the pig</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh3.googleusercontent.com/-IhaYMXbDVyo/VEufBghNiHI/AAAAAAAAE4g/8n2DuQ_Edeo/s0/">
+<img src="https://lh3.googleusercontent.com/-IhaYMXbDVyo/VEufBghNiHI/AAAAAAAAE4g/8n2DuQ_Edeo/s400/" alt="https://lh3.googleusercontent.com/-IhaYMXbDVyo/VEufBghNiHI/AAAAAAAAE4g/8n2DuQ_Edeo/s400/" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>It turns out LibreOffice&#8217;s RTF and DOCX import filter ignored borders around Writer
+pictures. Given that this
+<a href="https://bugs.freedesktop.org/show_bug.cgi?id=85179">worked</a> in the RTF case in
+the past, it&#8217;s a bit amusing that now the very same commit implements a new
+feature for the DOCX case and at the same time fixes a regression in the RTF
+filter. Code sharing FTW! :-)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/a-grand-budapest-hotel.html">A Grand Budapest Hotel</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh5.googleusercontent.com/-zqusYBTQOVw/VDgwVzNttGI/AAAAAAAAE2A/_N58DlMJ2mk/s0/">
+<img src="https://lh5.googleusercontent.com/-zqusYBTQOVw/VDgwVzNttGI/AAAAAAAAE2A/_N58DlMJ2mk/s400/" alt="https://lh5.googleusercontent.com/-zqusYBTQOVw/VDgwVzNttGI/AAAAAAAAE2A/_N58DlMJ2mk/s400/" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>Végre egy film ami nem romantikus vígjáték, nem háborús dráma és még nem is
+bántam meg a rászánt időt. Persze nem is véletlenül kapott 10-ből 8.2 pontot.
+;-)</p></div>
+<div class="paragraph"><p>(<a href="http://www.imdb.com/title/tt2278388/">imdb</a>, <a href="http://www.youtube.com/watch?v=1Fg5iWmQjwk">trailer</a>)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+
+<footer>
+<div id="paginator">
+<a href="https://vmiklos.hu/blog/index10.html" class="button_accent">&larr; Older Posts</a>
+
+<a href="https://vmiklos.hu/blog/index8.html" class="button_accent">Newer Posts &rarr;</a>
+</div>
+</footer>
+
+    <div id="ending_message">
+      <p>&copy; Miklos Vajna. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
+</body>
+</html>

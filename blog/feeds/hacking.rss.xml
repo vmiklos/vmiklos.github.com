@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"><channel><title>What is Miklos hacking - hacking</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Sun, 30 Dec 2012 13:56:54 +0000</lastBuildDate><item><title>Recent contributions</title><link>https://vmiklos.hu/blog/recent-contributions-2012.html</link><description>&lt;div id="preamble"&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Here are a few contributions I made recently:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+Git: &lt;a href="http://git.kernel.org/?p=git/git.git;a=commit;h=5ed75e2a3fb30f93fea7772e481ec6091e9a2c5f"&gt;cherry-pick: don&amp;#8217;t forget -s on failure&lt;/a&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+openSUSE / mutt package: &lt;a href="https://build.opensuse.org/request/show/134918"&gt;add back lost sidebar color patch&lt;/a&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+irker-cia-proxy: &lt;a href="https://github.com/nenolod/irker-cia-proxy/commit/60a7f36a4285eeff21533549a6361b3a3e1ab796"&gt;make it possible to read input from stdin&lt;/a&gt;, &lt;a href="https://github.com/nenolod/irker-cia-proxy/commit/7ca987f7deae17f8a7170e0b0f292dc1f1aebbeb"&gt;add support for branch-specific templates&lt;/a&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+BitlBee: &lt;a href="http://code.bitlbee.org/lh/bitlbee/revision/960"&gt;skype: make it not hang with &amp;gt;=2.2.0.35&lt;/a&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Sun, 30 Dec 2012 13:56:54 +0000</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2012-12-30:/blog/recent-contributions-2012.html</guid><category>en</category></item><item><title>Sorting photos by date using exif date info</title><link>https://vmiklos.hu/blog/exif-date-sort.html</link><description>&lt;div id="preamble"&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;For a family event I received photos from about 6 persons, and wanted to view
+all of them, sorted by date. The problem was that the timestamps of the files
+were sometimes incorrect, and also in all but one cases the exif timestamp was
+incorrect as well (but at least that was consistently incorrect, e.g. all
+behind of time by 20 mins, etc.)&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;So first I searched for a photo where a clock is shown, then matched photos by
+different authors showing the same action to know the time delta of each
+camera. The rest can be scripted: just read the exif info, apply the necessary
+time correction based on the camera model, and touch the file with the correct
+date. Then any image viewer can show the photos, sorted by date.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Here is the script I came up with:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="listingblock"&gt;
+&lt;div class="content"&gt;&lt;!-- Generator: GNU source-highlight
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite --&gt;
+&lt;pre&gt;&lt;tt&gt;&lt;span style="font-weight: bold"&gt;&lt;span style="color: #0000FF"&gt;for&lt;/span&gt;&lt;/span&gt; i &lt;span style="font-weight: bold"&gt;&lt;span style="color: #0000FF"&gt;in&lt;/span&gt;&lt;/span&gt; &lt;span style="color: #990000"&gt;*.&lt;/span&gt;jpg
+&lt;span style="font-weight: bold"&gt;&lt;span style="color: #0000FF"&gt;do&lt;/span&gt;&lt;/span&gt;
+    &lt;span style="font-style: italic"&gt;&lt;span style="color: #9A1900"&gt;# 2012:01:01 01:01:01 -&amp;gt; 2012-01-01 01:01:01&lt;/span&gt;&lt;/span&gt;
+    &lt;span style="color: #009900"&gt;date&lt;/span&gt;&lt;span style="color: #990000"&gt;=&lt;/span&gt;&lt;span style="color: #009900"&gt;$(&lt;/span&gt;exiv2 &lt;span style="color: #009900"&gt;$i&lt;/span&gt; &lt;span style="color: #990000"&gt;|&lt;/span&gt;grep timestamp&lt;span style="color: #990000"&gt;|&lt;/span&gt;sed &lt;span style="color: #FF0000"&gt;'s/.* : //'&lt;/span&gt;&lt;span style="color: #990000"&gt;|&lt;/span&gt;sed &lt;span style="color: #FF0000"&gt;'s/^&lt;/span&gt;&lt;span style="color: #CC33CC"&gt;\(&lt;/span&gt;&lt;span style="color: #FF0000"&gt;[0-9][0-9][0-9][0-9]&lt;/span&gt;&lt;span style="color: #CC33CC"&gt;\)&lt;/span&gt;&lt;span style="color: #FF0000"&gt;:&lt;/span&gt;&lt;span style="color: #CC33CC"&gt;\(&lt;/span&gt;&lt;span style="color: #FF0000"&gt;[0-9][0-9]&lt;/span&gt;&lt;span style="color: #CC33CC"&gt;\)&lt;/span&gt;&lt;span style="color: #FF0000"&gt;:&lt;/span&gt;&lt;span style="color: #CC33CC"&gt;\(&lt;/span&gt;&lt;span style="color: #FF0000"&gt;[0-9][0-9]&lt;/span&gt;&lt;span style="color: #CC33CC"&gt;\)&lt;/span&gt;&lt;span style="color: #FF0000"&gt;/&lt;/span&gt;&lt;span style="color: #CC33CC"&gt;\1&lt;/span&gt;&lt;span style="color: #FF0000"&gt;-&lt;/span&gt;&lt;span style="color: #CC33CC"&gt;\2&lt;/span&gt;&lt;span style="color: #FF0000"&gt;-&lt;/span&gt;&lt;span style="color: #CC33CC"&gt;\3&lt;/span&gt;&lt;span style="color: #FF0000"&gt;/'&lt;/span&gt;&lt;span style="color: #990000"&gt;)&lt;/span&gt;
+    &lt;span style="font-style: italic"&gt;&lt;span style="color: #9A1900"&gt;# date string -&amp;gt; epoch&lt;/span&gt;&lt;/span&gt;
+    &lt;span style="color: #009900"&gt;unix&lt;/span&gt;&lt;span style="color: #990000"&gt;=&lt;/span&gt;&lt;span style="color: #009900"&gt;$(&lt;/span&gt;date --date&lt;span style="color: #990000"&gt;=&lt;/span&gt;&lt;span style="color: #FF0000"&gt;"$date"&lt;/span&gt; &lt;span style="color: #990000"&gt;+%&lt;/span&gt;s&lt;span style="color: #990000"&gt;)&lt;/span&gt;
+
+    &lt;span style="color: #009900"&gt;model&lt;/span&gt;&lt;span style="color: #990000"&gt;=&lt;/span&gt;&lt;span style="color: #009900"&gt;$(&lt;/span&gt;exiv2 &lt;span style="color: #009900"&gt;$i&lt;/span&gt; &lt;span style="color: #990000"&gt;|&lt;/span&gt;grep model&lt;span style="color: #990000"&gt;|&lt;/span&gt;sed &lt;span style="color: #FF0000"&gt;'s/.*: //'&lt;/span&gt;&lt;span style="color: #990000"&gt;)&lt;/span&gt;
+
+    &lt;span style="font-weight: bold"&gt;&lt;span style="color: #0000FF"&gt;if&lt;/span&gt;&lt;/span&gt; &lt;span style="color: #990000"&gt;[&lt;/span&gt; &lt;span style="color: #FF0000"&gt;"$model"&lt;/span&gt; &lt;span style="color: #990000"&gt;==&lt;/span&gt; &lt;span style="color: #FF0000"&gt;"NIKON D40"&lt;/span&gt; &lt;span style="color: #990000"&gt;];&lt;/span&gt; &lt;span style="font-weight: bold"&gt;&lt;span style="color: #0000FF"&gt;then&lt;/span&gt;&lt;/span&gt;
+        &lt;span style="color: #009900"&gt;unix&lt;/span&gt;&lt;span style="color: #990000"&gt;=&lt;/span&gt;&lt;span style="color: #009900"&gt;$(($unix-1320))&lt;/span&gt; &lt;span style="font-style: italic"&gt;&lt;span style="color: #9A1900"&gt;# Alice&lt;/span&gt;&lt;/span&gt;
+    &lt;span style="font-weight: bold"&gt;&lt;span style="color: #0000FF"&gt;else&lt;/span&gt;&lt;/span&gt;
+        &lt;span style="color: #009900"&gt;unix&lt;/span&gt;&lt;span style="color: #990000"&gt;=&lt;/span&gt;&lt;span style="color: #009900"&gt;$(($unix+3600))&lt;/span&gt; &lt;span style="font-style: italic"&gt;&lt;span style="color: #9A1900"&gt;# Bob&lt;/span&gt;&lt;/span&gt;
+    &lt;span style="font-weight: bold"&gt;&lt;span style="color: #0000FF"&gt;fi&lt;/span&gt;&lt;/span&gt;
+
+    &lt;span style="font-style: italic"&gt;&lt;span style="color: #9A1900"&gt;# epoch -&amp;gt; date string&lt;/span&gt;&lt;/span&gt;
+    &lt;span style="color: #009900"&gt;date&lt;/span&gt;&lt;span style="color: #990000"&gt;=&lt;/span&gt;&lt;span style="color: #009900"&gt;$(&lt;/span&gt;python -c &lt;span style="color: #FF0000"&gt;"import time; print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime($unix))"&lt;/span&gt;&lt;span style="color: #990000"&gt;)&lt;/span&gt;
+    &lt;span style="font-style: italic"&gt;&lt;span style="color: #9A1900"&gt;# profit!&lt;/span&gt;&lt;/span&gt;
+    touch --date&lt;span style="color: #990000"&gt;=&lt;/span&gt;&lt;span style="color: #FF0000"&gt;"$date"&lt;/span&gt; &lt;span style="color: #009900"&gt;$i&lt;/span&gt;
+&lt;span style="font-weight: bold"&gt;&lt;span style="color: #0000FF"&gt;done&lt;/span&gt;&lt;/span&gt;
+&lt;span style="font-style: italic"&gt;&lt;span style="color: #9A1900"&gt;# write back the timestamps to the exif info (thx boobaa)&lt;/span&gt;&lt;/span&gt;
+jhead -dsft &lt;span style="color: #990000"&gt;*.&lt;/span&gt;jpg&lt;/tt&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;And additionally if you don&amp;#8217;t want to mess up the settings of the image viewer, you can use:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="listingblock"&gt;
+&lt;div class="content"&gt;
+&lt;pre&gt;&lt;code&gt;c=0; for i in $(ls -lhtr *.jpg|sed 's/.* //'); do c=$((c+1)); cp -a $i new/$(printf "%03d" $c).jpg; done&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;to order filenames based on the file timestamp.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Mon, 11 Jun 2012 10:56:43 +0000</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2012-06-11:/blog/exif-date-sort.html</guid><category>en</category></item><item><title>Recent contributions</title><link>https://vmiklos.hu/blog/recent-contributions.html</link><description>&lt;div id="preamble"&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+BitlBee: a patch for skyped got &lt;a href="http://code.bitlbee.org/lh/bitlbee/revision/848"&gt;merged&lt;/a&gt;, helping to avoid the cryptic openssl error messages when the certificate is missing.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+openSUSE: the mutt package now &lt;a href="https://build.opensuse.org/request/show/93695"&gt;contains&lt;/a&gt; one more patch from Frugalware&amp;#8217;s mutt-ng package, which means my mutt config can be used unmodified (no more unknown config settings)
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+jBPM and bpm-console: these were part of my &lt;a href="https://github.com/vmiklos/msc-thesis/downloads"&gt;MSc thesis&lt;/a&gt;, github branches &lt;a href="https://github.com/vmiklos/jbpm/tree/5.1.x-thesis"&gt;are&lt;/a&gt; &lt;a href="https://github.com/vmiklos/bpm-console/tree/thesis"&gt;available&lt;/a&gt;, upstreaming is &lt;a href="https://github.com/droolsjbpm/jbpm/pull/43"&gt;in progress&lt;/a&gt; (on IRC they confirmed that they are interested in the feature, at least)
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Sun, 18 Dec 2011 01:04:52 +0000</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2011-12-18:/blog/recent-contributions.html</guid><category>en</category></item><item><title>Patience, please!</title><link>https://vmiklos.hu/blog/patience-please.html</link><description>&lt;div id="preamble"&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;So Lennart already had
+&lt;a href="http://0pointer.de/blog/projects/hinter-den-kulissen.html"&gt;great slides&lt;/a&gt; about
+what is the preferred attitude when you&amp;#8217;re hacking Free Software (don&amp;#8217;t expect
+gratefulness &amp;amp;&amp;amp; be grateful), but recently there was such a great example, I
+wanted to mention it. :)&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;So I saw there is a new etckeeper release and I checked its changelog,
+&lt;a href="http://joey.kitenet.net/code/etckeeper/#code-etckeeper-news-version-0.58.default"&gt;mentioning
+me&lt;/a&gt;. What the hell? I didn&amp;#8217;t contribute anything to that project in the past 3
+years! It turned out it was a patch that was considered "too new" at that time,
+but now got merged. ;) Remember, if you contribute, usually integration takes
+much less time, so no need to whine about it.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Mon, 28 Nov 2011 21:38:43 +0000</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2011-11-28:/blog/patience-please.html</guid><category>en</category></item><item><title>From gammu to Google Contacts</title><link>https://vmiklos.hu/blog/gammu2gcontacts.html</link><description>&lt;div id="preamble"&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;One typical migration people do when changing phones is migration of contacts
+and calendar items. In case of mine, this is about migrating data from an S40
+phone to Google apps, where every smartphone can sync from.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Migrating calendar items is easy: gammu can save the data from the phone to a
+&lt;code&gt;.ics&lt;/code&gt; file and Google Calendar can just import that.  The situation is a bit
+harder for the phonebook, as Google Contacts would take a &lt;code&gt;.csv&lt;/code&gt;, while gammu
+as its own ini-like format for storing this data.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;I already found &lt;a href="http://dblaci.hu/wammu2csv.pl"&gt;a script&lt;/a&gt; doing something
+similar, but the result was unusable. ;) Given that the whole task is not that
+complex, I decided to write my own converter, available
+&lt;a href="https://github.com/vmiklos/vmexam/blob/master/gammu/gammu2gcontacts"&gt;here&lt;/a&gt;.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Thu, 24 Nov 2011 13:26:15 +0000</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2011-11-24:/blog/gammu2gcontacts.html</guid><category>en</category></item><item><title>Replying to SCM commits using Gmane</title><link>https://vmiklos.hu/blog/gmane-scm-reply.html</link><description>&lt;div id="preamble"&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;SCM commit mailing lists are handy in case you want to comment others' commits
+in an email. OTOH they are problematic, as they generate a lot of mails, and in
+case I subscribe to the list, usually I don&amp;#8217;t read those commits at all. (In
+case you have time to read them, that&amp;#8217;s a different use case.)&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;So here is an example how to reply properly&amp;#8201;&amp;#8212;&amp;#8201;without having to subscribe.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="http://search.gmane.org/search.php?group=gmane.comp.documentfoundation.libreoffice.scm&amp;amp;query=b863767bd1ddc2af18900fa1df0cd61ef2fa6edb"&gt;search&lt;/a&gt;
+  for the commit ID you want to comment (here b863767bd1ddc2af18900fa1df0cd61ef2fa6edb)
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+extract the article ID associated to the push from the link (here 1643)
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="http://download.gmane.org/gmane.comp.documentfoundation.libreoffice.scm/1643/1644"&gt;download&lt;/a&gt;
+  the article in mbox format, so you can reply to it from mutt (or your other
+favorite MUA).
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Mon, 21 Nov 2011 00:41:31 +0000</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2011-11-21:/blog/gmane-scm-reply.html</guid><category>en</category></item><item><title>systemctl now supports auto-paging</title><link>https://vmiklos.hu/blog/systemctl-pager.html</link><description>&lt;div id="preamble"&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;If you use systemd, you know &lt;code&gt;systemctl&lt;/code&gt;. That&amp;#8217;s the command that
+controls systemd: you can use it to start, stop or list (and so on)
+services. Now in case you use list, there is a lot of output, probably
+it won&amp;#8217;t fit your screen. git already invented auto-paging, which means
+it&amp;#8217;ll feed its output to a pager if the output is more than a screen,
+for example when using &lt;code&gt;git log&lt;/code&gt;. With my
+&lt;a href="http://cgit.freedesktop.org/systemd/commit/?id=0736af98c6fae9c7d31e3dd17589421b7e883ef5"&gt;recent
+commit&lt;/a&gt; this now the case with systemctl as well. :)&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Wed, 05 Jan 2011 02:03:20 +0000</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2011-01-05:/blog/systemctl-pager.html</guid><category>en</category></item><item><title>CSP</title><link>https://vmiklos.hu/blog/csp.html</link><description>&lt;div id="preamble"&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;CSP, as in Constraint satisfaction problem. A while back I wrote a
+custom sudoku solver &lt;a href="http://vmiklos.hu/file/sudoku.erl"&gt;in Erlang&lt;/a&gt;, and
+now I hit something similar. Of course, since then I learned that there
+are nice CSP engines, so this time I did not try to write my own. :)&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;First, I checked out
+&lt;a href="http://codespeak.net/svn/user/niemeyer/constraint/trunk/"&gt;python-constraint&lt;/a&gt;,
+and then I sticked with it, as it fulfilled my needs.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;So, the problem. Here is a Christmas tree:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="/pic/csp.t.png" alt="/pic/csp.t.png" /&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The tree has 4 chains, each one contains 7 items. A few ones already has
+a number. The exercise: number the empty items with numbers between 1
+and 7 so that:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+Each chain contains the numbers 1..7 exactly once.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+All the horizontal and diagonal lines cannot contain the same number
+  twice.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;A possible solution is &lt;a href="http://vmiklos.hu/file/csp.py"&gt;here&lt;/a&gt;. If you get
+less or more than one solution, you did something wrong. :) (I&amp;#8217;m not
+pasting here the output of the script to leave some exercise for the
+readers. ;) )&lt;/p&gt;&lt;/div&gt;
+&lt;div class="admonitionblock"&gt;
+&lt;table&gt;&lt;tr&gt;
+&lt;td class="icon"&gt;
+&lt;div class="title"&gt;Note&lt;/div&gt;
+&lt;/td&gt;
+&lt;td class="content"&gt;As an experiment this time I draw the image using TikZ. Based on
+&lt;a href="http://stackoverflow.com/questions/2701902/standalone-diagrams-with-tikz"&gt;these
+ideas&lt;/a&gt; I converted &lt;a href="http://vmiklos.hu/pic/csp.tex"&gt;the source&lt;/a&gt; to PNG
+using &lt;a href="https://github.com/vmiklos/vmexam/blob/master/convert/tikz2png"&gt;tikz2png&lt;/a&gt;.&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Tue, 28 Dec 2010 03:58:43 +0000</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2010-12-28:/blog/csp.html</guid><category>en</category></item><item><title>pcal</title><link>https://vmiklos.hu/blog/pcal.html</link><description>&lt;div id="preamble"&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;I wanted to create some calendar present for Christmas in the family
+with pictures and Hungarian year / month order, national holidays, etc.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;After looking at a few solutions,
+&lt;a href="http://pcal.sourceforge.net/pcal-help.html"&gt;pcal&lt;/a&gt; seemed to be the best
+choice.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;There are 3 key points here:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+The order of the year / month can be changed only in build-time. If
+  your locale has "year month" and not "month year" order, then you need
+  &lt;a href="https://github.com/vmiklos/vmexam/blob/master/pcal/pcal-4.11.0-order.patch"&gt;this patch&lt;/a&gt;.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+You need some config for each locale,
+  &lt;a href="https://github.com/vmiklos/vmexam/blob/master/pcal/calendar_hu.txt"&gt;here is mine&lt;/a&gt;, containing
+  the Hungarian national holidays.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+Finally you need a script
+  &lt;a href="https://github.com/vmiklos/vmexam/blob/master/pcal/build-from-scratch.sh"&gt;like this&lt;/a&gt; to put in
+  the pictures.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The result fully localized, free software, contains my custom images and
+support custom marks for days using a quite flexible syntax.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;(Let me know if you know some other project where you can set the
+year/month order runtime and the result can be still generated from a
+script, ie. it&amp;#8217;s not some LibreOffice or similar template. ;) )&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Sun, 26 Dec 2010 23:41:22 +0000</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2010-12-26:/blog/pcal.html</guid><category>en</category></item><item><title>idl2dot</title><link>https://vmiklos.hu/blog/idl2dot.html</link><description>&lt;div id="preamble"&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;I needed a tiny tool to generate something classdiagram-like from CORBA
+IDL files. Given that I did not find such a tool, I wrote it.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;You can find it
+&lt;a href="http://vmiklos.hu/gitweb/?p=swar.git;a=blob;f=doc/idl2dot;hb=HEAD"&gt;here&lt;/a&gt;.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;An example: &lt;a href="http://vmiklos.hu/file/swar.idl"&gt;idl&lt;/a&gt; &amp;#8594;
+&lt;a href="http://vmiklos.hu/file/swar-classdiagram.pdf"&gt;scalable output&lt;/a&gt;.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="admonitionblock"&gt;
+&lt;table&gt;&lt;tr&gt;
+&lt;td class="icon"&gt;
+&lt;div class="title"&gt;Note&lt;/div&gt;
+&lt;/td&gt;
+&lt;td class="content"&gt;Right now it does not support typedefs, enums and exceptions. If
+you need such a feature, patches are welcome. :)&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Thu, 23 Dec 2010 02:29:22 +0000</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2010-12-23:/blog/idl2dot.html</guid><category>en</category></item></channel></rss>

@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/pygments.css">
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=PT+Sans|PT+Serif|PT+Mono">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Miklos Vajna">
+  <meta name="description" content="Posts and writings by Miklos Vajna">
+
+  <link href="https://vmiklos.hu/blog/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking RSS" />
+
+<link href="https://vmiklos.hu/blog/feeds/frugalware.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking frugalware Category RSS" />
+
+  <title>
+    What is Miklos hacking
+&ndash; Category: frugalware  </title>
+
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <!--<a href="https://vmiklos.hu/blog">
+        <img src="https://vmiklos.hu/blog/theme/images/logo.png" alt="logo">
+      </a>-->
+      <h2><a href="https://vmiklos.hu/blog">What is Miklos hacking</a></h2>
+      <p></p>
+      <ul>
+        <li><a href="/" target="_blank">Root</a></li>
+        <li><a href="https://planet.documentfoundation.org/" target="_blank">LibreOffice Blogs</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://vmiklos.hu/blog">Index</a> &brvbar; <a href="https://vmiklos.hu/blog/archives.html">Archives</a>
+      &brvbar; <a href="https://vmiklos.hu/blog/feeds/all.rss.xml">RSS</a>
+&gt; Category: frugalware
+&brvbar; <a href="https://vmiklos.hu/blog/feeds/frugalware.rss.xml">RSS</a>
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/amtterm.html">amtterm</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>So we have two machines next to each other: genesis and helicon. The
+original idea years ago was to put a serial cable between the two so
+that it&#8217;s possible to manage the machines even in case ssh dies for some
+reason. Of course we never did that, because we were lazy - but in the
+meantime both machines were replaced by a newer mainboard, supporting
+<a href="http://www.intel.com/technology/platform-technology/intel-amt/">Intel
+AMT</a>.</p></div>
+<div class="paragraph"><p>In short, this is a poor man&#8217;s IP console, it supports serial-over-lan,
+so with a bit of configuration and a special client tool you can control
+grub, watch the bootup process (will you miss the risky few minutes
+after a reboot till it turned out if a remote machine boots up after a
+kernel upgrade or not?) and finally can even log in when ssh is not
+running.</p></div>
+<div class="paragraph"><p>First you need to set up grub to listen on the serial port as well. To
+do this, you need to know the device name and I/O port of your
+serial-over-lan port. The boxes mentioned above have one physical and
+one virtual serial port, so we need the later - that will be
+<code>/dev/ttyS1</code>. Now let&#8217;s grep in dmesg to get the port:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>$ dmesg|grep 'ttyS1 at'
+0000:00:03.3: ttyS1 at I/O 0xf1c0 (irq = 17) is a 16550A</code></pre>
+</div></div>
+<div class="paragraph"><p>Now we know everything to set up grub. Just prepend the following lines
+to your <code>/boot/grub/menu.lst</code>:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>serial --port=0xf1c0 --speed=115200
+terminal --timeout=30 console serial</code></pre>
+</div></div>
+<div class="paragraph"><p>The speed is AFAIK the same for each SoL port, so you can just
+copy&amp;paste it.</p></div>
+<div class="paragraph"><p>It&#8217;s also recommended to change the timeout line to 30 as well, this way
+you will have half minute to press any key to tell grub you want to
+control is on the serial port and you&#8217;ll again have half minute to hit
+any key to edit the kernel parameters, etc. (The whole grub part is
+useful because this way in case you upgraded the machine and it fails to
+boot up, you can still boot using init=/bin/sh and fix the system.)</p></div>
+<div class="paragraph"><p>Second, you want to see the boot process, this way you can fix the
+system remotely, even if fsck fails and asks for root password, etc.</p></div>
+<div class="paragraph"><p>For this, you need to change your kernel parameters, so that messages
+sent to <code>/dev/console</code> will end up on the serial port.</p></div>
+<div class="paragraph"><p>I changed</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>root=/dev/md0 ro quiet vga=791</code></pre>
+</div></div>
+<div class="paragraph"><p>to</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>root=/dev/md0 ro vga=normal nomodeset console=ttyS1,115200</code></pre>
+</div></div>
+<div class="paragraph"><p>and that achieved this.</p></div>
+<div class="paragraph"><p>Third, you want to start a getty on ttyS1 once the machine booted up, in
+case ssh fails to start up. If you don&#8217;t use systemd yet, add the following
+line to <code>/etc/inittab</code>:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>s1:12345:respawn:/sbin/agetty ttyS1 115200 vt100-nav</code></pre>
+</div></div>
+<div class="paragraph"><p>(Don&#8217;t forget to run <code>init q</code> to reload the config!)</p></div>
+<div class="paragraph"><p>Finally, you need <a href="http://dl.bytesex.org/releases/amtterm/">amtterm</a> on
+the client side - I plan to package it for Frugalware once 1.4pre2 is
+out. Till then you can just download, unpack and build the source
+tarball using <code>make</code> - no installation is necessary, you can run
+<code>amtterm</code> in-place. In my case I can&#8217;t connect directly to the machine
+as (for obvious reasons) the AMT is reachable from the local subnet
+only. So I build an ssh tunnel to the other machine and use <code>socksify</code>
+to pretend I run amtterm on the local subnet. The commandline I use is:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>$ socksify ./amtterm -p &lt;pass&gt; &lt;ip&gt;</code></pre>
+</div></div>
+<div class="paragraph"><p>And that&#8217;s it - enjoy editing your kernel parameters, watching your boot
+process and login to the box even if ssh is not running and you don&#8217;t
+have IP console. :)</p></div>
+<div class="paragraph"><p>If you can&#8217;t try it out right now but you want to see it in action:
+<a href="http://frugalware.org/~vmiklos/pics/shots/helicon-amt-grub.png">grub
+in amtterm</a> and
+<a href="http://frugalware.org/~vmiklos/pics/shots/helicon-amt.png">boot
+in amtterm</a> - without any virtualization! ;)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/iscsi-target.html">tgt is now available as a package</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>Today I packaged <a href="http://frugalware.org/packages/103291">tgt</a> an iSCSI
+target (server). The upstream package provides a large number of
+examples, though I thought it&#8217;s a good idea to note what I used for
+testing:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code># egrep -v '#|^$' /etc/tgt/targets.conf
+default-driver iscsi
+&lt;target iqn.2010-11.local.test:storage&gt;
+    backing-store /dev/sdb
+&lt;/target&gt;</code></pre>
+</div></div>
+<div class="paragraph"><p>Something offtopic: a
+<a href="https://github.com/artagnon/rejourn/commit/3b87aab385647ea8e5dd8844aec913ab3c02252f">rejourn</a>
+patch accepted and a
+<a href="https://bugs.freedesktop.org/show_bug.cgi?id=31362">LibreOffice</a> bug
+fixed today.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/frugalware-song.html">A song mentioning Frugalware!</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p><code>chee</code> on <code>#frugalware</code> linked a <a href="http://ompldr.org/vNXhlMw">song</a> and its
+<a href="http://ompldr.org/vNXhlZQ">lyrics</a>, mentioning Frugalware. Please don&#8217;t
+compare it to an OpenBSD professional release song, then you&#8217;ll like it!
+:)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/libreoffice-even-on-ppc.html">LibreOffice: even on ppc</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>You probably have read that ooo-build has been <a href="http://www.documentfoundation.org/contact/tdf_release.xml">renamed</a> to LibreOffice (technically it's just a rename).</p><p>Test packages for i686 available <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/ooo33/frugalware-i686/">here</a> if you want to test it on Frugalware.</p><p>Aaand this time, as a very special gift, ppc packages are <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/ooo33/frugalware-ppc/">available</a> as well! :)</p><p>I just built it, but Bouleetbil was kind enough to provide a <a href="http://dors.frugalware.org/libreofficeppc.png">screenshot</a> when he tested it.</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/gammu-1-28-issue.html">gammu-1.28 issue</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>I recently upgraded gammu from 1.27 to 1.28 in -current and I noticed that the backup of my phone is now way slower than before. The <a href="http://gitorious.org/gammu/mainline/commit/9e7b902b8b80dd953bf491e494e42865b0f232d5.patch">fix</a> was trivial (already backported to the Frugalware package as well) for the maintainer so it's now fine again.</p><p>Well done, mcihar! :)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/playing-with-libvirt.html">Playing with libvirt</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>I've been playing with <a href="http://frugalware.org/packages/14204">libvirt</a> in the last two days. My motivation was that I saw:<ol>
+  <li>plain kvm is not that fast</li>
+  <li>there is this virtio framework which aims to make it faster</li>
+  <li>using virtio directly is hard, better not reinventing the wheel and just try libvirt</li>
+</ol></p><p>So if you want to try it yourself, you need to pacman -S libvirt, service libvirtd start. Check /var/log/syslog for error messages, in case it can't find some commands (bridge-utils, dnsmasq, etc.), install them.</p><p>If you want to create a new virtual machine, you need pacman -S virtinst. Then you can use something like:</p><p><code>virt-install --name=syncpkgcd-helicon --arch=x86_64 --vcpus=1 --ram=1024 --os-type=linux --os-variant=virtio26 --connect=qemu:///system --network network=default --cdrom=/virt/iso/frugalware-1.3-i686-net.iso --disk path=/virt/syncpkgcd/syncpkgcd.img,size=40 --accelerate --vnc --noautoconsole --keymap=us</code></p><p>See man virt-isntall for more info about the meaning of the switches. One trick: kvm can't handle the gfxmenu in our grub on the install cd, so you need to disable that. One way to do it is to use <code>vim -b frugalware-1.3-i686-net.iso</code>, search for "menu /boot", and change "gfx" to "#fx". Then you can run virt-install. It'll start the install in the background. The easiest way (for me) to connect to the console is to create an ssh tunnel to the server running the kvm machine (for example ssh -L 5900:localhost:5900 server), then run <code>krdc localhost:0</code> on my own machine.</p><p>Next trick is that you need kernel support to boot from virtio disks (/dev/vda), that's enabled in frugalware-current.git but there were no rebuild yet, so you need to build it yourself for now.</p><p>Once the installation finished, the machine will be shut down. You can use <code>virsh</code> to start it. <a href="http://acidborg.wordpress.com/2010/02/19/how-to-manage-kvm-virtual-machines-using-virsh/">Here</a> is a great summary about virsh subcommands. Something not to forget: if you want to automatically start the machine after the host booted, use <code>virsh autostart $name</code>.</p><p>(You can also do a service libvirt-guests add, that way all guests will be automatically suspended/resumed on shutdown/boot. Just to be clear: if you want the "resume if it was a proper shutdown, start if there was a power cut" feature: you need both init scripts because libvirtd will always start/resume autostart guests, but it will never suspend them on shutdown.)</p><p>If grub hangs after reboot, try creating a small (I used 32MB) separate /boot partition first, that should fix the issue.</p><p><code>virsh shutdown $machine</code> won't work if you don't install acpid and enable it as well, so it's a good idea to do so.</p><p>The last trick: if you want to use the virt-manager gui from your local machine to manage a remote host, it isn't trivial to do so. First, it would try to login via ssh as root, and that's disabled by default. (And why would you enable it?). Also, even if you allow that, it would try to use <code>nc -U</code> which is supported by the openbsd nc only, the gnu nc does not have such a switch. Instead, we can use socat to connect to unix sockets. So I created a wrapper script under ~/bin with the following contents:</p><p><pre>
+#!/bin/sh
+if [ "$1" == "-U" ]; then
+        sudo socat - unix-client:$2
+else
+        /usr/bin/netcat $@
+fi
+</pre></p><p>Don't forget to add PATH=what_you_want line to ~/.ssh/environment, and include the full path of ~/bin there. This way you can keep using gnu nc and you can also login as a user to manage your machines, as long as you set up nopasswd sudo for your user for socat.</p><p>Finally a mini-benchmark:</p><p>The SBU of yugo (i686 buildserver, a bit old HW) is 645 seconds, SBU of an i686 guest on helicon (c2q machine with 8g ram) is 264, SBU of the host build on helicon is 76.</p><p>I would call this usable (not right now, but once we sort out the kernel part). Finally something that is free software and is comparable to VMware ESX. :)</p><p>Update: I recently did the same install with 1.4pre1 (which installs -current, so the kernel is 2.6.36), the list of tricks you still need:</p><p><ul>
+  <li>separate /boot (haven't tried without)</li>
+  <li>edit iso image to get rid of gfxboot (tried, still fails without)</li>
+  <li>some problem with grub, you need to manually add "(hd0) /dev/vda" to /boot/grub/device.map, then run grub-install /dev/vda</li>
+</ul></p><p>So no more custom kernel, boot from virtio works by default! :)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/anyremote.html">Anyremote</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>I've been testing <a href="http://frugalware.org/packages/103074">anyremote</a> during the last week. I'm aware that there is kanyremote and ganyremote available, but I wasn't really interested in those, since they would hide the glory details. :)</p><p>So I decided to give the server mode mode a try and I choosed okular as a test application. My commandline is:</p><p><code>anyremote -s bluetooth:19 -f /usr/share/anyremote/cfg-data/Server-mode/okular.cfg</code></p><p>Once I started the server on my notebook I could choose it in the midlet on my phone in the j2me client and it worked as expected.</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/scripts-used-in-the-python-2-7-rebuild.html">Scripts used in the Python 2.7 rebuild</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>First, I could almost reuse the same set of scripts as described <a href="/blog/scripts-used-in-the-python-2-6-mass-rebu">here</a>. The only change I needed to do is that aborting the build loop after each fail is a waste of time, so now I did:</p><p><pre>
+for i in $(cat ~/test.list)
+do
+        echo $i
+        cd ~/git/python27/source/*/$i || continue
+        sudo makepkg -t python27,current -C
+        git clean -x -d -f
+        git checkout -f
+        sed -i 's|python>=2.6|python>=2.7|g' FrugalBuild
+        if bumppkg -t python27,current --rebuild "- rebuilt with python-2.7"; then
+                repoman -t python27 -k push
+        else
+                echo $i >> ~/failed.list
+        fi
+done
+</pre></p><p>Then investigated the failed builds manually.</p><p>Oh, and obviously I no longer had to build the x86_64/ppc fpms manually, I just enabled syncpkgd for the python27 WIP repo.</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/globalsat-bt-338x-gps.html">Globalsat BT-338X GPS</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>Yesterday I bought a cheap GPS data logger / receiver, and given that the attached install CD did not support Linux, I'm collecting some hopefully useful links here.</p><p><ul>
+  <li>The <a href="http://wiki.openstreetmap.org/wiki/GPS_Reviews#Globalsat_BT-338">OpenStreetMap</a> wiki had an incorrect statement about the device has no memory - it has.</li>
+  <li><a href="http://www.globalsat.com.tw/products-page.php?menu=2&amp;gs_en_product_id=6&amp;gs_en_product_cnt_id=56">Vendor homepage</a>. (<a href="http://speedshop.hu/main.php?page=termek&amp;iid=44261">Hungarian one</a>.)</li>
+  <li>A <a href="http://blog.pjvenda.net/2007/09/my-new-toy-globalsat-dg-100-gps-data.html">blog post</a> about <a href="http://frugalware.org/packages/23237">gpsbabel</a> usage.</li>
+  <li>More gpsbabel docs: the <a href="http://www.gpsbabel.org/htmldoc-development/fmt_dg-100.html">dg-100</a> and the <a href="http://www.gpsbabel.org/htmldoc-development/fmt_skytraq.html">skytraq</a> formats.</li>
+</ul></p><p>Putting everything together, to get the log from the device using bluetooth I first had to create an rfcomm interface, as gpsbabel does not support bluetooth natively:</p><p><pre>
+# rfcomm bind 0 00:0D:B5:38:BA:C6
+</pre></p><p>Then to download and erase the log from the device:</p><p><pre>
+$ gpsbabel -i dg-100,erase=1 -f /dev/rfcomm0 -o gpx \
+        -F $(date +%Y-%m-%d).gpx
+</pre></p><p>The gpx format is fine in case you want to later reuse log with digikam's gpssync plugin (available from <a href="http://frugalware.org/packages/9654">kipi-plugins</a>).</p><p>Now in case you want to convert it to kml to show on Google Maps:</p><p><pre>
+$ gpsbabel -i gpx -f $(date +%Y-%m-%d).gpx -o kml -F $(date +%Y-%m-%d).kml
+</pre></p><p>Finally release the rfcomm interface in case you don't need it anymore:</p><p><pre>
+# rfcomm release 0
+</pre></p><p>Update: there is also a <a href="http://code.google.com/p/globdog-dg100/">gui</a> which can be used to enable logging of altitude info, etc - just <a href="http://frugalware.org/~vmiklos/patches/globdog-dg100-enable-rtcomm.patch">trivial patching</a> is needed and it works with BT-338X as well.</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/upgrading-to-haven.html">Upgrading to Haven</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>I just upgraded my box at work to Haven, here is a short post to mention two links:</p><p><ul>
+  <li>ATM you need to <a href="http://www.nvnews.net/vbulletin/showthread.php?p=2288105">manually upgrade</a> nvidia-173xx if you have it installed (after -Syu) due to lack of xorg-server-1.8 support.</li>
+  <li>I needed <a href="http://bugs.gentoo.org/show_bug.cgi?id=153115#c8">this xorg config tweak</a> to get my up arrow working again.</li>
+</ul></p><p>Other than that, I removed my xorg.conf and instead I put <a href="http://frugalware.org/~vmiklos/docs/config/xorg.conf.d/30-nvidia173.conf">this</a> to the xorg.conf.d dir. I also added "nouveau.modeset=0" to /boot/grub/menu.lst.</p><p>What else.. ah yes, I needed to change the keyboard model to evdev in the KDE System Settings.</p><p>Other than that, it went fine. :)</p><p>Update: the nvidia-173xx part is now fixed in both <a href="http://frugalware.org/pipermail/frugalware-git/2010-August/047941.html">current</a> and <a href="http://frugalware.org/pipermail/frugalware-git/2010-August/047942.html">stable</a>.</p>
+</div>
+</div>
+
+  </div>
+</article>
+
+<footer>
+<div id="paginator">
+<a href="https://vmiklos.hu/blog/category/frugalware3.html" class="button_accent">&larr; Older Posts</a>
+
+<a href="https://vmiklos.hu/blog/category/frugalware.html" class="button_accent">Newer Posts &rarr;</a>
+</div>
+</footer>
+
+    <div id="ending_message">
+      <p>&copy; Miklos Vajna. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
+</body>
+</html>

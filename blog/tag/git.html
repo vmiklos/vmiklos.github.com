@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/pygments.css">
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=PT+Sans|PT+Serif|PT+Mono">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Miklos Vajna">
+  <meta name="description" content="Posts and writings by Miklos Vajna">
+
+  <link href="https://vmiklos.hu/blog/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking RSS" />
+
+
+  <title>
+    What is Miklos hacking
+&ndash; Tag: git  </title>
+
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <!--<a href="https://vmiklos.hu/blog">
+        <img src="https://vmiklos.hu/blog/theme/images/logo.png" alt="logo">
+      </a>-->
+      <h2><a href="https://vmiklos.hu/blog">What is Miklos hacking</a></h2>
+      <p></p>
+      <ul>
+        <li><a href="/" target="_blank">Root</a></li>
+        <li><a href="https://planet.documentfoundation.org/" target="_blank">LibreOffice Blogs</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://vmiklos.hu/blog">Index</a> &brvbar; <a href="https://vmiklos.hu/blog/archives.html">Archives</a>
+      &brvbar; <a href="https://vmiklos.hu/blog/feeds/all.rss.xml">RSS</a>
+&gt; Tag: git
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/push-tree.html">Using a git push tree</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>I just checked, I created my git <em>push tree</em> more than a year ago, but
+yesterday I was reminded that this technique isn&#8217;t really documented anywhere,
+so let me describe it.</p></div>
+<div class="paragraph"><p>Some background: for the LibreOffice codebase, we decided to do all
+micro-features directly on the <code>master</code> branch. This means that we typically
+rebase our local <code>master</code> branch against <code>origin/master</code>, then push it. The
+benefit of this is that code gets wider testing quickly and the commit history
+is not polluted with meaningless merge commits.</p></div>
+<div class="paragraph"><p>The problem: one drawback of the above situation is that after you pull, some
+changes of other developers in the lower layers may trigger a full rebuild,
+typically wasting about an hour of your life (or more, in case of slower
+machines).</p></div>
+<div class="paragraph"><p>Push tree is one hack to avoid this problem. Using a push tree, you have two
+separate repositories locally, you update your main one less regularly, and
+when you have a commit to push, you push it from the push tree to be able to
+avoid pulling in your main tree.</p></div>
+<div class="paragraph"><p>Here is how to do it. To set this up:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>git clone --reference /path/to/master ssh://logerrit/core master-push</code></pre>
+</div></div>
+<div class="paragraph"><p>Then to use it, instead of <code>git pull -r &amp;&amp; git push</code> in your <code>master</code> tree, do these:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>cd /path/to/master
+git show -s <b>&lt;1&gt;</b>
+cd /path/to/master-push
+git pull -r
+git cherry-pick $sha1 <b>&lt;2&gt;</b>
+git push</code></pre>
+</div></div>
+<div class="colist arabic"><ol>
+<li>
+<p>
+copy the sha1 hash from the output
+</p>
+</li>
+<li>
+<p>
+replace $sha1 with the sha1 hash you got in the previous step
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p>(There is a trick here, given that master-push already references the original
+tree, you can go ahead with cherry-pick directly, without fetching branches
+from your <code>master</code> tree.)</p></div>
+<div class="paragraph"><p>And that&#8217;s it, you were able to push without waiting for a long rebuild!</p></div>
+<div class="paragraph"><p>Note: of course this technique has some drawbacks as well, so use with care.
+Keep in mind the followings:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+If your local <code>master</code> is not up-to-date enough, you&#8217;ll get conflicts while
+  cherry-picking. I usually update my <code>master</code> tree once a day in the morning.
+  If you have a slower machine, do it once a week in the night, or so.
+</p>
+</li>
+<li>
+<p>
+Even if you don&#8217;t get conflicts, there can be cases when the result of the
+  cherry-pick in the push tree won&#8217;t be what you want. Chances that this
+  happens is pretty low if your <code>master</code> tree is not super-old, see the previous
+  note.
+</p>
+</li>
+<li>
+<p>
+An other non-technical but social reason to still update your <code>master</code> tree
+  regularly is that if everyone uses an infrequently updated <code>master</code> tree,
+  then nobody will fix breakages caused by others on <code>origin/master</code>. So updating
+  your real tree infrequently is a bit unfair to other developers.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Other than these, I can just recommend using a push tree, it helped me many
+times not to loose focus in the middle of the day. (And as we all know, pushing
+all your risky changes on Friday afternoon is also a bad idea. :-) )</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/jgit-ea.html">JGit eloadas</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>Holnap lesz 5 hete, hogy eloadtam JGit / EGit / Gerrit temaban a BME-n,
+<a href="https://www.vik.bme.hu/kepzes/targyak/VIIIAV51">e targy</a> kereteben. Az
+elaodas eleje gyakorlatilag copy&amp;paste a korabbi Git eloadasombol, de
+mivel a targy kifejezetten Javaval foglalkozik, igy az elobb emlitett
+harom temat is feloleli. A slide-ok megtalalhatoak a
+<a href="http://vmiklos.hu/odp/">szokasos helyen</a>.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+
+<footer>
+<div id="paginator">
+
+</div>
+</footer>
+
+    <div id="ending_message">
+      <p>&copy; Miklos Vajna. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
+</body>
+</html>

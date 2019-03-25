@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/pygments.css">
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=PT+Sans|PT+Serif|PT+Mono">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Miklos Vajna">
+  <meta name="description" content="Posts and writings by Miklos Vajna">
+
+  <link href="https://vmiklos.hu/blog/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking RSS" />
+
+
+  <title>
+    What is Miklos hacking
+  </title>
+
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <!--<a href="https://vmiklos.hu/blog">
+        <img src="https://vmiklos.hu/blog/theme/images/logo.png" alt="logo">
+      </a>-->
+      <h2><a href="https://vmiklos.hu/blog">What is Miklos hacking</a></h2>
+      <p></p>
+      <ul>
+        <li><a href="/" target="_blank">Root</a></li>
+        <li><a href="https://planet.documentfoundation.org/" target="_blank">LibreOffice Blogs</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://vmiklos.hu/blog">Index</a> &brvbar; <a href="https://vmiklos.hu/blog/archives.html">Archives</a>
+      &brvbar; <a href="https://vmiklos.hu/blog/feeds/all.rss.xml">RSS</a>
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/recording-the-audio-output-of-flash-vide.html">Recording the audio output of flash videos</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>This is useful if you really want to record the audio of a clip, which is not on youtube (you can use youtube-dl there).</p><p>The <a href="http://carthick.wordpress.com/2007/11/26/linux-recording-soundcard-output-using-arecord/">howto</a> explains pretty much everything.</p><p>Here are the amixer parameters I needed:</p><p>amixer cset numid=24,iface=MIXER,name='Capture Source' 5</p><p>~/.asoundrc:</p><p>pcm.copy {
+type plug
+slave {
+pcm hw
+}
+route_policy copy
+}</p><p>record commandline:</p><p>arecord -f cd -t wav -D copy foo.wav</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/twitter.html">twitter</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>Not that I'm a web2.0 maniac, but I <a href="https://twitter.com/vmiklos">registered</a> on twitter.</p><p>I think the only purpose I will use it - for now - is to microblog when I'm offline for multiple days, since blogging in that case is expenseve. We'll see.</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/openoffice-org-3-0-1-vs-boost-1-37.html">OpenOffice.org 3.0.1 vs Boost 1.37</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>So it seems OOo 3.0.1 triggers a bug in boost 1.37, hopefully <a href="http://git.frugalware.org/gitweb/gitweb.cgi?p=frugalware-current.git;a=commitdiff;h=ee5fe05c559eeec21cfa94c4860e68a04c56e931">this commit</a> will fix the issue. At least the OOo build did not stop so far..</p><p>But my "law" is still true: every openoffice upgrade shows at least one problem in some other package. ;)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/successful-qemu-ppc-install-with-frugalw.html">Successful qemu-ppc install with frugalware-current</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>Tonight I synced the 2.6.28 kernel on PPC, enabled the Realtek driver
+needed by Qemu and tried again: the whole installation procedure goes
+fine.</p></div>
+<div class="paragraph"><p>Of course (it couldn&#8217;t be true ;) ) the boot after the install fails,
+which is interesting - if boot from CD works fine, I don&#8217;t see why can&#8217;t
+it work from a HDD, but oh well.</p></div>
+<div class="paragraph"><p>I just saw a recent commit in Qemu SVN about fixing qemu-system-ppc
+-kernel, so I&#8217;ll give it a try later.</p></div>
+<div class="paragraph"><p>Ah, and the speed is really promising. I did the installation on my
+laptop, not on a fast machine, and a base install really completed not
+so slow. ;)</p></div>
+<div class="paragraph"><p>Update: After upgrading to svn6463, it boots with:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>qemu-system-ppc -kernel boot/vmlinux-2.6.28-fw1-ppc -append "ro root=/dev/hda3" -hda ~/documents/qemu/hda.img</code></pre>
+</div></div>
+<div class="paragraph"><p>\o/</p></div>
+<div class="paragraph"><p>Update 2: Up to date install/run ppc scripts <a href="http://git.frugalware.org/repos/vmexam/virt/">here</a>.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/libarchive-vs-lzma.html">libarchive vs lzma</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+So I wanted to see how is the lzma support in libarchive, since there is now a stable release having my lzma patch, but pacman-g2's make check fails with the new version, sigh.. It looks like some file descriptor leak, it does not like when we try to install 1000 packages with pacman at once.
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/miro-vs-py26.html">miro vs py26</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>So we had <a href="http://bugs.frugalware.org/3549">this</a> bugreport, just building miro against python 2.6 did not work out very well. Then I pushed a python-2.5 package, before I would realise all the miro deps would have to built against py25 as well, if I want to achieve this approach. OK, that's a no-go. Then I found the right few-liner solution in the #<a href="mailto:python@freenode">python@freenode</a> logs. :)</p><p>I sent it to upstream, we'll see how will they handle it.</p><p>Oh, and I got a <a href="http://vmiklos.hu/gitweb/?p=darcs-fast-export.git;a=commit;h=66fd4e73c87a85516bb4651c5e90209e2320f706">new patch</a> to darcs-fast-export. A second contributor, yay! :)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/irssiscripts.html">irssiscripts</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>I got a reply to patches I sent one and a half year ago. ;)</p><p>My patches to anames.pl and sockter-interface.pl are now applied in f0rked's <a href="http://github.com/msparks/irssiscripts">irssiscripts</a> repo.</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/pretty-woman.html">pretty woman</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p><div align="center"><img src="/pic/prettywoman.png" alt="" title="" height="75%" width="75%" /></div></p><p>ha magyar filmhez kene hasonlitani akkor egyertelmuen a <a href="/blog/majdnem-szuz">majdnem szuz</a> jut rola eszembe, nyilvan a 18evvel kesobbi magyar film az eros koppintas.</p><p>az egeszet ajanlasra neztem meg <a href="/blog/nights-in-rodanthe#c243">ugyebar</a>, es nem is bantam meg, nem volt rossz. jo, tobbszor valszeg nem neznem meg, de egyreszt kivancsi voltam, hogy az idaig csak a Nights in Rodanthe-ban latott Richard Gere egy masik filmben milyen (ugyanolyan, keresni kene egy filmet amiben nem becsajozos uzletembert jatszik), masreszt Julia Roberts (Ocean's trilogia) is megiscsak mashogy nez ki huszonevesen.</p><p>(<a href="http://www.imdb.com/title/tt0100405/">imdb</a>, <a href="http://www.youtube.com/watch?v=-r8N6I4ENL4">trailer</a>)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/clock-runs-way-faster-than-necessary-bug.html">"clock runs way faster than necessary" bug solved</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>Heh, it took my whole day. So the <a href="http://thread.gmane.org/gmane.linux.kernel/784192">solution</a> was that I needed to disable two CONFIG setting Crazy enabled (+ I enabled KVM again, not sure if that is related or not).</p><p>And of course bisecting was totally damn unnecessary, since the bug is triggered by a given config line, not by a bad commit.</p><p>Life is good.</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/linux-bisecting.html">Linux bisecting</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>So I reported this "timer runs too fast" bug to LKML and they asked me to bisect it. I know bisect already, but I only bisected userspace software which is easy. Basically you write a script that reproduces the issue, then git bisect will find the first bad commit automatically.</p><p>With the kernel, this is much slower, because you must manually test each step.</p><p>Of course I wanted to speed things up, so I wrote a small testcase and run it right after init=/bin/sh. This is bad. I haven't noticed until almost the end of the bisect that the bug occurs only after udev is loaded. Now that I'm sure the corrected test script really reports GOOD for 2.6.27 and BAD for 2.6.28, I can do the real bisect...</p><p>As a side note, doing this with 1 machine would be really annoying. Luckily I can do whatever I want on my iBook, the build is done one of our fast Frugalware servers (dream) and I just download and test the bzImage on my notebook. I guess network booting would make it a bit faster (because currently I boot the test kernel, boot back the working one, download the next test one, goto 1), but I won't set up a whole tftp server on my iBook just for this. ;)</p><p>So hopefully tomorrow we'll know what is the real first bad commit.</p>
+</div>
+</div>
+
+  </div>
+</article>
+
+<footer>
+<div id="paginator">
+<a href="https://vmiklos.hu/blog/index57.html" class="button_accent">&larr; Older Posts</a>
+
+<a href="https://vmiklos.hu/blog/index55.html" class="button_accent">Newer Posts &rarr;</a>
+</div>
+</footer>
+
+    <div id="ending_message">
+      <p>&copy; Miklos Vajna. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
+</body>
+</html>

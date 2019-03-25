@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/pygments.css">
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=PT+Sans|PT+Serif|PT+Mono">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Miklos Vajna">
+  <meta name="description" content="Posts and writings by Miklos Vajna">
+
+  <link href="https://vmiklos.hu/blog/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking RSS" />
+
+
+  <title>
+    What is Miklos hacking
+&ndash; Posts by: Miklos Vajna  </title>
+
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <!--<a href="https://vmiklos.hu/blog">
+        <img src="https://vmiklos.hu/blog/theme/images/logo.png" alt="logo">
+      </a>-->
+      <h2><a href="https://vmiklos.hu/blog">What is Miklos hacking</a></h2>
+      <p></p>
+      <ul>
+        <li><a href="/" target="_blank">Root</a></li>
+        <li><a href="https://planet.documentfoundation.org/" target="_blank">LibreOffice Blogs</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://vmiklos.hu/blog">Index</a> &brvbar; <a href="https://vmiklos.hu/blog/archives.html">Archives</a>
+      &brvbar; <a href="https://vmiklos.hu/blog/feeds/all.rss.xml">RSS</a>
+&gt; Author: Miklos Vajna
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/using-git-bzr.html">using git-bzr</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>It seems recently one of my favorite topics is 'how to convert from $random SCM to git' ;)</p><p>So, I already had a configuration using tailor, but that was slow. I know this already. Tailor is good because it always works, it isn't good because it's fast.</p><p>First, you need git-1.6.0rc0 or higher, you can find an fpm in my <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/bmf/frugalware-i686/">bmf repo</a>.</p><p>Second, you need the bzr fastimport plugin:</p><p><code>bzr branch lp:bzr-fastimport</code></p><p>Then enable the plugin:</p><p><code>cd ~/.bzr/plugins; ln -s /path/to/bzr-fastimport fastimport</code></p><p>Now you can clone git-bzr itself:</p><p><code>git clone git://github.com/pieter/git-bzr.git</code></p><p>Put it to your PATH:</p><p><code>cd ~/bin; ln -s /path/to/git-bzr/git-bzr .</code></p><p>NOTE: so you should not symlink the dir, but the script inside the dir.</p><p>Okay, this is done, now clone (branch in bzr terms) the bzr repo you want to convert. For example:</p><p><code>bzr branch <a href="http://code.bitlbee.org/bitlbee/">http://code.bitlbee.org/bitlbee/</a></code></p><p>Finally do the conversion (from the git-bzr README):</p><p><pre>
+git bzr add upstream ../bzr-branch
+git bzr fetch upstream
+git checkout -b local_branch bzr/upstream
+: hack hack hack
+git bzr push upstream
+</pre></p><p>Actually for now I only needed a one-directional convert, so my update-bitlbee.sh now looks like:</p><p><pre>
+cd ~/scm/bzr/bitlbee
+bzr pull
+cd - # so we are again under bitlbee.git, it works in bare repos as well!
+git bzr fetch upstream
+</pre></p><p>And yes, the resulting trees match perfectly! ;)</p><p>(Yes, I plan to package git-bzr and bzr-fastimport but I want to give it a good testing first.)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/12-duhos-ember.html">12 duhos ember</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p><div align="center"><img src="/pic/12-duhos-ember.jpg" alt="" title="" height="75%" width="75%" /></div></p><p>regi film, idaig valahogy kimaradt. erdemes. kicsit muveszfilm-beutesu, de szerintem zsenialias. es ez az eredeti, nem a '97-es remake ;)</p><p>bar <a href="http://www.youtube.com/watch?v=yZ5b2RoB5g4">annak a traileret</a> is erdemes megnezni, csak azert, hogy legyen osszehasonlitasi alap. (szerintem az eredeti messze jobb.)</p><p>(<a href="http://www.imdb.com/title/tt0050083/">imdb</a>, <a href="http://www.youtube.com/watch?v=A7CBKT0PWFA">trailer</a>)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/fun-on-the-gsoc-list.html">fun on the gsoc list</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>The GSoC student list is not public, and to be honest, usually it's boring. In most cases you just want to read the mails matching ^From:.*google.com, and just delete the remaining junk. However, there was a funny thread there, about how others deal with the usual problem: if you want to describe others (read: who is not a geek) what do you do (hack PaX, rewrite git-merge, etc.) you probably need a half an hour. Or maybe it's better not describing your job at all. Let's see some funny quotes:</p><p>The "I gave up" one:</p><p><blockquote>After the first 10 fails, I decided to say the following as fast as I can:
+Me: "I am doing "something" and Google is paying me to do it. I don't know why they are, but I assume its' because they aren't evil and stuff. End of story".
+Other: Oh.
+(Coding resumes)</blockquote></p><p>BTW, the guy adds vim support to anjuta. :)</p><p>If you have nice friends, you'll get:</p><p><blockquote>People who don't understand usually state as much, followed by, "...but if Google is paying you, that's pretty neat."</blockquote></p><p>The "involved" one:</p><p><blockquote>Unfortunately, I end up rambling for twenty-plus minutes and they are sorry they ever asked...</blockquote></p><p>The "practical" one:</p><p><blockquote>In my case, everyone in my university thinks it is an intern program so they ask me when I am going to travel. I have memorized the response.</blockquote></p><p>The "religious":</p><p><blockquote>I spent about twenty minutes explaining to a reporter from business week the finer points of open source vs free software.</blockquote></p><p>And the typo kign:</p><p><blockquote>> thanks very much gays ......
+>
+GUYS .... really, I was  miss typed ...
+now, again. Thanks very much  GUYS</blockquote></p><p>(I hope this post does not count as a leak, though. :P)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/caravan-palace.html">caravan palace</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p><div align="center"><img src="/pic/caravan-palace.jpg" alt="next" title="" height="75%" width="75%" /></div></p><p>Voltunk szerda este Veszpremben az <a href="http://www.utcazene.hu/">Utrazene Fesztivalon</a>, es ott lepett fel a cimben szereplo francia zenekar.</p><p>Erdekes mufajban jatszanak, gyakorlatilag egy eleg eros dob az alap, mikor neha megallnak es csak az megy akkor teljesen trace-es, de amugy felette meg jazzt jatszanak, enekessel, gitarral, nagybogovel, hegeduvel, klarinettal.</p><p>Szerencsetlen modon ami <a href="http://www.youtube.com/watch?v=FNdf-M7p7Hk">van video youtube-on</a> az meg az elozo enekesnojukkel keszult (legalabbis en egyet se talaltam az ujjal) aki viszont szerintem nem annyira jo mint ez az uj.</p><p>Szoval eloben meg ennel is jobb volt; tisztesseges jo-masfel-oras koncert. :)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/git-podcast.html">git podcast</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>in <a href="http://article.gmane.org/gmane.comp.version-control.git/88784">this</a> mailing list post, the recent gsoc podcast is linked, which is actually about git. two times my project is explained as well, about 11m14s and about 26m09s.</p><p>it's usually hard to describe to people what i'm doing in my project, maybe this'll help a bit? :)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/asciidoc-vs-dblatex.html">asciidoc vs dblatex</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>so, in the latest stable version of asciidoc, the default pdf backend of a2x is dblatex, not fop.</p><p>given that this way we can avoid Java, that must be a good thing ;) (faster, freeer, etc)</p><p>here are a few tricks:</p><p><ul>
+  <li>if you want to hide the "revision history" page:
+<pre><xsl:param name="latex.output.revhistory">0</xsl:param></pre></li>
+  <li>if you want to avoid the dblatex logo, just comment out the line:
+<pre><xsl:param name="doc.publisher.show">1</xsl:param></pre></li>
+  <li>it seems that atm the $ math expression $ form is not supported, but you can do for example:
+<pre>
+<div class="paragraph"><p>&lt;inlineequation&gt;&lt;alt&gt;
+\[ \$\alpha + \$\beta = \$(\alpha + \beta) \]
+&lt;/alt&gt;&lt;/inlineequation&gt;</p></div>
+</pre>
+AFAIK this was not possible till now, using fop. :)</li>
+</ul></p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/taxi4.html">taxi4</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p><div align="center"><img src="/pic/taxi4.jpg" alt="next" title="" height="75%" width="75%" /></div></p><p>visszaterek a kepekez, ez a flash-mania eleg gay ;)</p><p>szoval a szeria (idaigi) befejezo resze. kicsit gyengebb mint az eddigiek, de a trio (Samy Naceri / Frédéric Diefenthal / Emma Wiklund) azert hozza a formajat. sajna Marion Cotillard ebbol kimaradt ;/</p><p>(<a href="http://www.imdb.com/title/tt0804540/">imdb</a>, <a href="http://www.youtube.com/watch?v=iyug7gbnSAY">trailer</a>)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/rafiki-banza-3.html">rafiki banza 3</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://lh3.googleusercontent.com/-fUd_gqrVp9U/UfbPcLvMvGI/AAAAAAAADRA/p8w1t0ix-LY/s240/rafiki_banza_3_sator.jpg" alt="https://lh3.googleusercontent.com/-fUd_gqrVp9U/UfbPcLvMvGI/AAAAAAAADRA/p8w1t0ix-LY/s240/rafiki_banza_3_sator.jpg" />
+</div>
+</div>
+<div class="paragraph"><p>nah szoval ilyet vettem. a project mar egy ideje huzodik mert altalaban mindig valakitol kerek kolcson de mostmar szerettem volna, h legyen sajatom, amit max tolem kernek kolcson es nem forditva :)</p></div>
+<div class="paragraph"><p>ilyesmi, hogy</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+ferohely: 3+1 (felallitva a satrat ezt a +1et ugy kepzelem el, hogy a negyedik szemelyt hosszaban v keresztben kettevagjuk es az elso es hatso bejaratnal helyezzuk a test egyik es masik felet, bar lancfureszt nem mellekeltek)
+</p>
+</li>
+<li>
+<p>
+bejarat: 2
+</p>
+</li>
+<li>
+<p>
+eloter: 90 cm
+</p>
+</li>
+<li>
+<p>
+belso sator alapterulete: 205 x 205 cm (megorultem mikor 180x180 volt egy kolcsonkert sator es nem egyedul voltam benne igy aztan nem lehetett nyujtott labbal aludni..)
+</p>
+</li>
+<li>
+<p>
+belmagassag: 130 cm (ez erdekes mert az abran 125 van; felfele szoktak csalni az ilyen marketinganyagokkal pedig ez tenyleg 130 irl)
+</p>
+</li>
+<li>
+<p>
+kulso sator meretei (szel/hossz/magassag): 400 x 210 x 115 cm
+</p>
+</li>
+<li>
+<p>
+vizallosag: 3000 mm, padlon meg 5000 mm (kerek youtube deeplinket ahol ezt kiprobaltak, tuti mokas lehetett)
+</p>
+</li>
+<li>
+<p>
+rudazat: uvegszalas (8,5 mm)
+</p>
+</li>
+<li>
+<p>
+suly: 3,75 kg
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>elsore nem is gondolna az ember, hogy milyen nehez talalni egy ilyen 2x2meteres szabad padlofeluletet a lakasban, ahol legalabb a belso satrat fel lehet allitani probakepp ;)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/bloff.html">bloff</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>[video:youtube:Q8jbt0wBkMI]</p><p>az olasz melobol ismeros Jason Statham. Brad Pitt felelmetesen jol kepviseli barnaboru baratainkat. a zenejebol ismeros a scooterek altal is feldolgozott "The Shadows - Apache". az ajanlatert meg koszonet LGeenek :)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/taxi3.html">taxi3</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>[video:youtube:1Ejnib14rMU]</p><p>hasonloan mokas mint a masodik. gorkorcsolyas mikulasok nyaron es tarsaik :P</p>
+</div>
+</div>
+
+  </div>
+</article>
+
+<footer>
+<div id="paginator">
+<a href="https://vmiklos.hu/blog/author/miklos-vajna70.html" class="button_accent">&larr; Older Posts</a>
+
+<a href="https://vmiklos.hu/blog/author/miklos-vajna68.html" class="button_accent">Newer Posts &rarr;</a>
+</div>
+</footer>
+
+    <div id="ending_message">
+      <p>&copy; Miklos Vajna. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
+</body>
+</html>

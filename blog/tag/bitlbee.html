@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/pygments.css">
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=PT+Sans|PT+Serif|PT+Mono">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Miklos Vajna">
+  <meta name="description" content="Posts and writings by Miklos Vajna">
+
+  <link href="https://vmiklos.hu/blog/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking RSS" />
+
+
+  <title>
+    What is Miklos hacking
+&ndash; Tag: bitlbee  </title>
+
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <!--<a href="https://vmiklos.hu/blog">
+        <img src="https://vmiklos.hu/blog/theme/images/logo.png" alt="logo">
+      </a>-->
+      <h2><a href="https://vmiklos.hu/blog">What is Miklos hacking</a></h2>
+      <p></p>
+      <ul>
+        <li><a href="/" target="_blank">Root</a></li>
+        <li><a href="https://planet.documentfoundation.org/" target="_blank">LibreOffice Blogs</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://vmiklos.hu/blog">Index</a> &brvbar; <a href="https://vmiklos.hu/blog/archives.html">Archives</a>
+      &brvbar; <a href="https://vmiklos.hu/blog/feeds/all.rss.xml">RSS</a>
+&gt; Tag: bitlbee
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/lcov.html">lcov</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>There are multiple strategies how to add testcases for code that sort of works,
+but has no or too few tests. One approach (that works quite well in
+LibreOffice, for example) is to just add tests for new code, and there the test
+is "good", if it passes, but it fails if you revert the corresponding real
+change.</p></div>
+<div class="paragraph"><p>An other approach to avoid duplicated tests is to use a tool like <code>lcov</code>, that
+can perform line or function coverage analysis for you, so a test is "good" if
+it increases the coverage. I wanted to look into this later approach for
+LibreOffice, but I decided it&#8217;s more fun to try this out for a smaller project
+first. That&#8217;s when adding testcases for BitlBee&#8217;s Skype plugin came into my
+mind.</p></div>
+<div class="paragraph"><p>The problem there is that manual testing typically includes multiple online
+Skype clients and an IRC client as well, and such tests are extremely
+unreliable. So I thought: if I&#8217;m able to
+<a href="http://en.wikipedia.org/wiki/Mock_object">mock</a> both the interactive IRC and
+Skype clients, then it&#8217;ll be easy to test the C Skype plugin itself, even for
+very special scenarios (like changing a groupchat topic in the middle of
+inviting somebody to a groupchat or similar).</p></div>
+<div class="paragraph"><p>So here is the result looks like:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code> skyped mock file   +--------+         +---------+   pyexpect mock file
+------------------&gt; | skyped | &lt;-----&gt; | bitlbee | &lt;--------------------
+                    +--------+   TCP   +---------+</code></pre>
+</div></div>
+<div class="paragraph"><p>For skyped, the exact traffic is recorded and played back later; for BitlBee,
+only the outgoing traffic is exact, for the incoming traffic <code>pyexpect</code> allows
+just patterns (to allow tolerance for not interesting changes). Once the
+framework was available, it was quite easy to add testcases: I already have
+70%+ coverage, and I think approaching the 100% function coverage is realistic.
+:-)</p></div>
+<div class="paragraph"><p>What was also interesting is that it turned out the latest upstream lcov
+release is
+<a href="http://sourceforge.net/mailarchive/forum.php?thread_name=50F3ECB7.7070505%40linux.vnet.ibm.com&amp;forum_name=ltp-coverage">not
+compatible</a> with gcc-4.7, but the necessary patches are
+<a href="https://build.opensuse.org/request/show/148334">now</a>
+<a href="https://build.opensuse.org/request/show/148408">integrated</a>, and the next
+upstream release will work out of the box.</p></div>
+<div class="paragraph"><p>The BitlBee mock files can be found
+<a href="http://code.bitlbee.org/lh/bitlbee/files/head:/protocols/skype/t">here</a>. Given
+that there are now instructions to do similar analysis for
+<a href="http://wiki.documentfoundation.org/Development/Lcov">LibreOffice as well</a>, I
+hope to look into increasing test coverage for the classes I maintain as well.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+
+<footer>
+<div id="paginator">
+
+</div>
+</footer>
+
+    <div id="ending_message">
+      <p>&copy; Miklos Vajna. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
+</body>
+</html>

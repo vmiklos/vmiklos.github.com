@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/pygments.css">
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=PT+Sans|PT+Serif|PT+Mono">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Miklos Vajna">
+  <meta name="description" content="Posts and writings by Miklos Vajna">
+
+  <link href="https://vmiklos.hu/blog/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking RSS" />
+
+
+  <title>
+    What is Miklos hacking
+&ndash; Tag: en  </title>
+
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <!--<a href="https://vmiklos.hu/blog">
+        <img src="https://vmiklos.hu/blog/theme/images/logo.png" alt="logo">
+      </a>-->
+      <h2><a href="https://vmiklos.hu/blog">What is Miklos hacking</a></h2>
+      <p></p>
+      <ul>
+        <li><a href="/" target="_blank">Root</a></li>
+        <li><a href="https://planet.documentfoundation.org/" target="_blank">LibreOffice Blogs</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://vmiklos.hu/blog">Index</a> &brvbar; <a href="https://vmiklos.hu/blog/archives.html">Archives</a>
+      &brvbar; <a href="https://vmiklos.hu/blog/feeds/all.rss.xml">RSS</a>
+&gt; Tag: en
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/lo-floattable-ooxml-improvements.html">OOXML floating table improvements in LibreOffice Writer 4.2</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>I&#8217;m posting here a few screenshots showing improvements I&#8217;ve recently
+implemented in our DOCX import and export filter, done in the 4.2 development
+cycle. Note that final 4.2 is still far from being released, so this is not a
+complete list. :-) In each case I&#8217;m providing a screenshot showing how it looks
+<em>now</em> on 4.2, how it looked <em>before</em> and the <em>reference</em> layout. Click on the
+images to get a larger image:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+document with paragraph shadow (<a href="http://cgit.freedesktop.org/libreoffice/core/tree/sw/qa/extras/ooxmlexport/data/para-shadow.docx">test doc</a>):
+</p>
+</li>
+</ul></div>
+<div align="center">
+<div class="paragraph"><p><span class="image">
+<a class="image" href="https://lh3.googleusercontent.com/-RhO6JT8FoJA/UiOTmbPGDpI/AAAAAAAADWk/QV86bPIGdqU/s890/para-shadow-new.png">
+<img src="https://lh3.googleusercontent.com/-RhO6JT8FoJA/UiOTmbPGDpI/AAAAAAAADWk/QV86bPIGdqU/s400/para-shadow-new.png" alt="https://lh3.googleusercontent.com/-RhO6JT8FoJA/UiOTmbPGDpI/AAAAAAAADWk/QV86bPIGdqU/s400/para-shadow-new.png" />
+</a>
+</span>
+<span class="image">
+<a class="image" href="https://lh4.googleusercontent.com/-VwBuUQ2NPfY/UiOTmjHm8fI/AAAAAAAADWw/vuGNooOT3NA/s890/para-shadow-old.png">
+<img src="https://lh4.googleusercontent.com/-VwBuUQ2NPfY/UiOTmjHm8fI/AAAAAAAADWw/vuGNooOT3NA/s400/para-shadow-old.png" alt="https://lh4.googleusercontent.com/-VwBuUQ2NPfY/UiOTmjHm8fI/AAAAAAAADWw/vuGNooOT3NA/s400/para-shadow-old.png" />
+</a>
+</span>
+<span class="image">
+<a class="image" href="https://lh5.googleusercontent.com/-_2HFes-of6Q/UiOTmh_3OAI/AAAAAAAADWo/Idou9CvREPM/s646/para-shadow-reference.png">
+<img src="https://lh5.googleusercontent.com/-_2HFes-of6Q/UiOTmh_3OAI/AAAAAAAADWo/Idou9CvREPM/s400/para-shadow-reference.png" alt="https://lh5.googleusercontent.com/-_2HFes-of6Q/UiOTmh_3OAI/AAAAAAAADWo/Idou9CvREPM/s400/para-shadow-reference.png" />
+</a>
+</span></p></div>
+</div>
+<div class="paragraph"><p>OK, this has nothing to do with floating tables. But I promise the rest is all related to that. ;-)</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+document with floating table (<a href="http://cgit.freedesktop.org/libreoffice/core/tree/sw/qa/extras/ooxmlexport/data/table-floating.docx">test doc</a>):
+</p>
+</li>
+</ul></div>
+<div align="center">
+<div class="paragraph"><p><span class="image">
+<a class="image" href="https://lh4.googleusercontent.com/-vqwNUVppu1U/UiOTolPyUhI/AAAAAAAADX0/OqKonLHsBTE/s890/table-floating-new.png">
+<img src="https://lh4.googleusercontent.com/-vqwNUVppu1U/UiOTolPyUhI/AAAAAAAADX0/OqKonLHsBTE/s400/table-floating-new.png" alt="https://lh4.googleusercontent.com/-vqwNUVppu1U/UiOTolPyUhI/AAAAAAAADX0/OqKonLHsBTE/s400/table-floating-new.png" />
+</a>
+</span>
+<span class="image">
+<a class="image" href="https://lh4.googleusercontent.com/-VWKnAf98KUI/UiOTo3ptPoI/AAAAAAAADXs/w71fqHxDdt4/s890/table-floating-old.png">
+<img src="https://lh4.googleusercontent.com/-VWKnAf98KUI/UiOTo3ptPoI/AAAAAAAADXs/w71fqHxDdt4/s400/table-floating-old.png" alt="https://lh4.googleusercontent.com/-VWKnAf98KUI/UiOTo3ptPoI/AAAAAAAADXs/w71fqHxDdt4/s400/table-floating-old.png" />
+</a>
+</span>
+<span class="image">
+<a class="image" href="https://lh6.googleusercontent.com/-nIjJh5m5aoM/UiOTpCHWqZI/AAAAAAAADXw/11JLrKyu2AA/s646/table-floating-reference.png">
+<img src="https://lh6.googleusercontent.com/-nIjJh5m5aoM/UiOTpCHWqZI/AAAAAAAADXw/11JLrKyu2AA/s400/table-floating-reference.png" alt="https://lh6.googleusercontent.com/-nIjJh5m5aoM/UiOTpCHWqZI/AAAAAAAADXw/11JLrKyu2AA/s400/table-floating-reference.png" />
+</a>
+</span></p></div>
+</div>
+<div class="ulist"><ul>
+<li>
+<p>
+document with floating table and special margins (<a href="http://cgit.freedesktop.org/libreoffice/core/tree/sw/qa/extras/ooxmlexport/data/table-floating-margins.docx">test doc</a>):
+</p>
+</li>
+</ul></div>
+<div align="center">
+<div class="paragraph"><p><span class="image">
+<a class="image" href="https://lh5.googleusercontent.com/-cQrbF3idIGw/UiOTmy5CwRI/AAAAAAAADXg/t8aOc7-EFH4/s890/table-floating-margins-new.png">
+<img src="https://lh5.googleusercontent.com/-cQrbF3idIGw/UiOTmy5CwRI/AAAAAAAADXg/t8aOc7-EFH4/s400/table-floating-margins-new.png" alt="https://lh5.googleusercontent.com/-cQrbF3idIGw/UiOTmy5CwRI/AAAAAAAADXg/t8aOc7-EFH4/s400/table-floating-margins-new.png" />
+</a>
+</span>
+<span class="image">
+<a class="image" href="https://lh6.googleusercontent.com/-Oj5zi3rL4y4/UiOTnJnSn7I/AAAAAAAADW4/p22Zn5aFDYg/s890/table-floating-margins-old.png">
+<img src="https://lh6.googleusercontent.com/-Oj5zi3rL4y4/UiOTnJnSn7I/AAAAAAAADW4/p22Zn5aFDYg/s400/table-floating-margins-old.png" alt="https://lh6.googleusercontent.com/-Oj5zi3rL4y4/UiOTnJnSn7I/AAAAAAAADW4/p22Zn5aFDYg/s400/table-floating-margins-old.png" />
+</a>
+</span>
+<span class="image">
+<a class="image" href="https://lh4.googleusercontent.com/-fD_jwONtFdA/UiOTnM-0EpI/AAAAAAAADXA/rIQdIUOWwxo/s646/table-floating-margins-reference.png">
+<img src="https://lh4.googleusercontent.com/-fD_jwONtFdA/UiOTnM-0EpI/AAAAAAAADXA/rIQdIUOWwxo/s400/table-floating-margins-reference.png" alt="https://lh4.googleusercontent.com/-fD_jwONtFdA/UiOTnM-0EpI/AAAAAAAADXA/rIQdIUOWwxo/s400/table-floating-margins-reference.png" />
+</a>
+</span></p></div>
+</div>
+<div class="ulist"><ul>
+<li>
+<p>
+the same document after roundtrip (load, save and load again):
+</p>
+</li>
+</ul></div>
+<div align="center">
+<div class="paragraph"><p><span class="image">
+<a class="image" href="https://lh6.googleusercontent.com/-lLKfUNXLDgU/UiOTnpr4vRI/AAAAAAAADXM/q3Fcd5AiDTU/s890/table-floating-margins-roundtrip-new.png">
+<img src="https://lh6.googleusercontent.com/-lLKfUNXLDgU/UiOTnpr4vRI/AAAAAAAADXM/q3Fcd5AiDTU/s400/table-floating-margins-roundtrip-new.png" alt="https://lh6.googleusercontent.com/-lLKfUNXLDgU/UiOTnpr4vRI/AAAAAAAADXM/q3Fcd5AiDTU/s400/table-floating-margins-roundtrip-new.png" />
+</a>
+</span>
+<span class="image">
+<a class="image" href="https://lh6.googleusercontent.com/-EigIZsr3WqE/UiOTn78PmEI/AAAAAAAADXU/eaeWSEij59E/s890/table-floating-margins-roundtrip-old.png">
+<img src="https://lh6.googleusercontent.com/-EigIZsr3WqE/UiOTn78PmEI/AAAAAAAADXU/eaeWSEij59E/s400/table-floating-margins-roundtrip-old.png" alt="https://lh6.googleusercontent.com/-EigIZsr3WqE/UiOTn78PmEI/AAAAAAAADXU/eaeWSEij59E/s400/table-floating-margins-roundtrip-old.png" />
+</a>
+</span>
+<span class="image">
+<a class="image" href="https://lh6.googleusercontent.com/-neGqO1p_Cyw/UiOToZQt7hI/AAAAAAAADXY/_PJbf3WoCwI/s646/table-floating-margins-roundtrip-reference.png">
+<img src="https://lh6.googleusercontent.com/-neGqO1p_Cyw/UiOToZQt7hI/AAAAAAAADXY/_PJbf3WoCwI/s400/table-floating-margins-roundtrip-reference.png" alt="https://lh6.googleusercontent.com/-neGqO1p_Cyw/UiOToZQt7hI/AAAAAAAADXY/_PJbf3WoCwI/s400/table-floating-margins-roundtrip-reference.png" />
+</a>
+</span></p></div>
+</div>
+<div class="paragraph"><p>If you want to try these out yourself, get a
+<a href="http://dev-builds.libreoffice.org/daily/">daily build</a> and play with it! :-) If
+something goes wrong, report it to us in the
+<a href="https://www.libreoffice.org/get-help/bug/">Bugzilla</a>, so we can try fix it
+before 4.2 gets branched off. And remember, there are lots more improvements
+<a href="http://wiki.documentfoundation.org/ReleaseNotes/4.2">coming</a> in LibreOffice 4.2
+(even if some of them is not yet documented), stay tuned! ;-)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/push-tree.html">Using a git push tree</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>I just checked, I created my git <em>push tree</em> more than a year ago, but
+yesterday I was reminded that this technique isn&#8217;t really documented anywhere,
+so let me describe it.</p></div>
+<div class="paragraph"><p>Some background: for the LibreOffice codebase, we decided to do all
+micro-features directly on the <code>master</code> branch. This means that we typically
+rebase our local <code>master</code> branch against <code>origin/master</code>, then push it. The
+benefit of this is that code gets wider testing quickly and the commit history
+is not polluted with meaningless merge commits.</p></div>
+<div class="paragraph"><p>The problem: one drawback of the above situation is that after you pull, some
+changes of other developers in the lower layers may trigger a full rebuild,
+typically wasting about an hour of your life (or more, in case of slower
+machines).</p></div>
+<div class="paragraph"><p>Push tree is one hack to avoid this problem. Using a push tree, you have two
+separate repositories locally, you update your main one less regularly, and
+when you have a commit to push, you push it from the push tree to be able to
+avoid pulling in your main tree.</p></div>
+<div class="paragraph"><p>Here is how to do it. To set this up:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>git clone --reference /path/to/master ssh://logerrit/core master-push</code></pre>
+</div></div>
+<div class="paragraph"><p>Then to use it, instead of <code>git pull -r &amp;&amp; git push</code> in your <code>master</code> tree, do these:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>cd /path/to/master
+git show -s <b>&lt;1&gt;</b>
+cd /path/to/master-push
+git pull -r
+git cherry-pick $sha1 <b>&lt;2&gt;</b>
+git push</code></pre>
+</div></div>
+<div class="colist arabic"><ol>
+<li>
+<p>
+copy the sha1 hash from the output
+</p>
+</li>
+<li>
+<p>
+replace $sha1 with the sha1 hash you got in the previous step
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p>(There is a trick here, given that master-push already references the original
+tree, you can go ahead with cherry-pick directly, without fetching branches
+from your <code>master</code> tree.)</p></div>
+<div class="paragraph"><p>And that&#8217;s it, you were able to push without waiting for a long rebuild!</p></div>
+<div class="paragraph"><p>Note: of course this technique has some drawbacks as well, so use with care.
+Keep in mind the followings:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+If your local <code>master</code> is not up-to-date enough, you&#8217;ll get conflicts while
+  cherry-picking. I usually update my <code>master</code> tree once a day in the morning.
+  If you have a slower machine, do it once a week in the night, or so.
+</p>
+</li>
+<li>
+<p>
+Even if you don&#8217;t get conflicts, there can be cases when the result of the
+  cherry-pick in the push tree won&#8217;t be what you want. Chances that this
+  happens is pretty low if your <code>master</code> tree is not super-old, see the previous
+  note.
+</p>
+</li>
+<li>
+<p>
+An other non-technical but social reason to still update your <code>master</code> tree
+  regularly is that if everyone uses an infrequently updated <code>master</code> tree,
+  then nobody will fix breakages caused by others on <code>origin/master</code>. So updating
+  your real tree infrequently is a bit unfair to other developers.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Other than these, I can just recommend using a push tree, it helped me many
+times not to loose focus in the middle of the day. (And as we all know, pushing
+all your risky changes on Friday afternoon is also a bad idea. :-) )</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/lo-41-ooxml-improvements.html">OOXML improvements in LibreOffice Writer 4.1</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>See <a href="/blog/lo-ooxml-improvements.html">here</a> for a 3.6/4.0
+version of this post.</p></div>
+<div class="paragraph"><p>I&#8217;m posting here a few screenshots showing improvements in our DOCX filter,
+done in the 4.1 development cycle. In each case I&#8217;m providing a link to the
+test document, a screenshot showing how it looked before and how it now looks
+on 4.1. Click on the images to get a larger image:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+document with a complex groupshape: multiple shapes had text (<a href="http://cgit.freedesktop.org/libreoffice/core/tree/sw/qa/extras/ooxmlimport/data/n792778.docx">test doc</a>):
+</p>
+</li>
+</ul></div>
+<div align="center">
+<div class="paragraph"><p><span class="image">
+<a class="image" href="https://lh4.googleusercontent.com/-sYXxjhypoQ8/Uez38Xv2tmI/AAAAAAAADPI/u5Dzu0pTTXc/s912/groupshape-lo40.png">
+<img src="https://lh4.googleusercontent.com/-sYXxjhypoQ8/Uez38Xv2tmI/AAAAAAAADPI/u5Dzu0pTTXc/s400/groupshape-lo40.png" alt="https://lh4.googleusercontent.com/-sYXxjhypoQ8/Uez38Xv2tmI/AAAAAAAADPI/u5Dzu0pTTXc/s400/groupshape-lo40.png" />
+</a>
+</span>
+<span class="image">
+<a class="image" href="https://lh3.googleusercontent.com/-SOZjbpmdvXw/Uez38brF6bI/AAAAAAAADOM/KSsbMkgSQlg/s912/groupshape-lo41.png">
+<img src="https://lh3.googleusercontent.com/-SOZjbpmdvXw/Uez38brF6bI/AAAAAAAADOM/KSsbMkgSQlg/s400/groupshape-lo41.png" alt="https://lh3.googleusercontent.com/-SOZjbpmdvXw/Uez38brF6bI/AAAAAAAADOM/KSsbMkgSQlg/s400/groupshape-lo41.png" />
+</a>
+</span></p></div>
+</div>
+<div class="ulist"><ul>
+<li>
+<p>
+document with tabs over the margin (<a href="http://cgit.freedesktop.org/libreoffice/core/tree/sw/qa/extras/ooxmlimport/data/n793998.docx">test doc</a>):
+</p>
+</li>
+</ul></div>
+<div align="center">
+<div class="paragraph"><p><span class="image">
+<a class="image" href="https://lh6.googleusercontent.com/-56Vj5pUGX-I/Uez38_AGTRI/AAAAAAAADOs/aVKQ_qPbMdg/s800/tabovermargin-lo40.png">
+<img src="https://lh6.googleusercontent.com/-56Vj5pUGX-I/Uez38_AGTRI/AAAAAAAADOs/aVKQ_qPbMdg/s400/tabovermargin-lo40.png" alt="https://lh6.googleusercontent.com/-56Vj5pUGX-I/Uez38_AGTRI/AAAAAAAADOs/aVKQ_qPbMdg/s400/tabovermargin-lo40.png" />
+</a>
+</span>
+<span class="image">
+<a class="image" href="https://lh5.googleusercontent.com/-vLbiQ55TWtQ/Uez39MNwS2I/AAAAAAAADOY/AtIVReP1_LI/s800/tabovermargin-lo41.png">
+<img src="https://lh5.googleusercontent.com/-vLbiQ55TWtQ/Uez39MNwS2I/AAAAAAAADOY/AtIVReP1_LI/s400/tabovermargin-lo41.png" alt="https://lh5.googleusercontent.com/-vLbiQ55TWtQ/Uez39MNwS2I/AAAAAAAADOY/AtIVReP1_LI/s400/tabovermargin-lo41.png" />
+</a>
+</span></p></div>
+</div>
+<div class="ulist"><ul>
+<li>
+<p>
+document with rotated text: content should not fit the cell size (<a href="http://cgit.freedesktop.org/libreoffice/core/tree/sw/qa/extras/ooxmlimport/data/tblr-height.docx">test doc</a>):
+</p>
+</li>
+</ul></div>
+<div align="center">
+<div class="paragraph"><p><span class="image">
+<a class="image" href="https://lh6.googleusercontent.com/-QfKy9rLa1oU/Uez39sijDtI/AAAAAAAADOk/ptcg831fH34/s700/tblr-cell-overflow-lo40.png">
+<img src="https://lh6.googleusercontent.com/-QfKy9rLa1oU/Uez39sijDtI/AAAAAAAADOk/ptcg831fH34/s400/tblr-cell-overflow-lo40.png" alt="https://lh6.googleusercontent.com/-QfKy9rLa1oU/Uez39sijDtI/AAAAAAAADOk/ptcg831fH34/s400/tblr-cell-overflow-lo40.png" />
+</a>
+</span>
+<span class="image">
+<a class="image" href="https://lh4.googleusercontent.com/-zsjH1yutGBU/Uez39yHwi8I/AAAAAAAADOw/FtXf_8CUeRg/s700/tblr-cell-overflow-lo41.png">
+<img src="https://lh4.googleusercontent.com/-zsjH1yutGBU/Uez39yHwi8I/AAAAAAAADOw/FtXf_8CUeRg/s400/tblr-cell-overflow-lo41.png" alt="https://lh4.googleusercontent.com/-zsjH1yutGBU/Uez39yHwi8I/AAAAAAAADOw/FtXf_8CUeRg/s400/tblr-cell-overflow-lo41.png" />
+</a>
+</span></p></div>
+</div>
+<div class="ulist"><ul>
+<li>
+<p>
+document with numbering, where bullets are pictures (<a href="http://cgit.freedesktop.org/libreoffice/core/tree/sw/qa/extras/ooxmlexport/data/i120928.docx">test doc</a>):
+</p>
+</li>
+</ul></div>
+<div align="center">
+<div class="paragraph"><p><span class="image">
+<a class="image" href="https://lh3.googleusercontent.com/-fuMz-_o3h9Y/Uez38WN94YI/AAAAAAAADOE/4m2KvenRodM/s200/numpic-lo40.png">
+<img src="https://lh3.googleusercontent.com/-fuMz-_o3h9Y/Uez38WN94YI/AAAAAAAADOE/4m2KvenRodM/s200/numpic-lo40.png" alt="https://lh3.googleusercontent.com/-fuMz-_o3h9Y/Uez38WN94YI/AAAAAAAADOE/4m2KvenRodM/s200/numpic-lo40.png" />
+</a>
+</span>
+<span class="image">
+<a class="image" href="https://lh6.googleusercontent.com/-MG9E8l0FVWI/Uez382lWcHI/AAAAAAAADOU/aLNZI8GoEBI/s200/numpic-lo41.png">
+<img src="https://lh6.googleusercontent.com/-MG9E8l0FVWI/Uez382lWcHI/AAAAAAAADOU/aLNZI8GoEBI/s200/numpic-lo41.png" alt="https://lh6.googleusercontent.com/-MG9E8l0FVWI/Uez382lWcHI/AAAAAAAADOU/aLNZI8GoEBI/s200/numpic-lo41.png" />
+</a>
+</span></p></div>
+</div>
+<div class="ulist"><ul>
+<li>
+<p>
+document with watermark (<a href="http://cgit.freedesktop.org/libreoffice/core/tree/sw/qa/extras/ooxmlimport/data/watermark.docx">test doc</a>):
+</p>
+</li>
+</ul></div>
+<div align="center">
+<div class="paragraph"><p><span class="image">
+<a class="image" href="https://lh5.googleusercontent.com/-mM-RGgEX2M8/Uez3-Gh8CMI/AAAAAAAADPA/1QqJeg4atiM/s600/watermark-lo40.png">
+<img src="https://lh5.googleusercontent.com/-mM-RGgEX2M8/Uez3-Gh8CMI/AAAAAAAADPA/1QqJeg4atiM/s400/watermark-lo40.png" alt="https://lh5.googleusercontent.com/-mM-RGgEX2M8/Uez3-Gh8CMI/AAAAAAAADPA/1QqJeg4atiM/s400/watermark-lo40.png" />
+</a>
+</span>
+<span class="image">
+<a class="image" href="https://lh3.googleusercontent.com/-zaW8P_cvMQM/Uez3-el1Z8I/AAAAAAAADO8/yz-boOrYMLo/s600/watermark-lo41.png">
+<img src="https://lh3.googleusercontent.com/-zaW8P_cvMQM/Uez3-el1Z8I/AAAAAAAADO8/yz-boOrYMLo/s400/watermark-lo41.png" alt="https://lh3.googleusercontent.com/-zaW8P_cvMQM/Uez3-el1Z8I/AAAAAAAADO8/yz-boOrYMLo/s400/watermark-lo41.png" />
+</a>
+</span></p></div>
+</div>
+<div class="paragraph"><p>If you want to try these out yourself, get a
+<a href="http://dev-builds.libreoffice.org/daily/">daily build</a> and play with it! :) If
+something goes wrong, report it to us in the
+<a href="https://www.libreoffice.org/get-help/bug/">Bugzilla</a>, so we can try fix it in
+the next 4.1 bugfix release. And remember, there are lots more improvements
+<a href="http://wiki.documentfoundation.org/ReleaseNotes/4.1">coming</a> in LibreOffice 4.1,
+stay tuned!</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/suse-hu-conf-2013.html">SUSE Conference 2013 @ Budapest</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh5.googleusercontent.com/-hCCgdACtL7Y/Ucw5OlY2yhI/AAAAAAAADIc/3oCgDUxEZWc/s2560/IMG_20130627_125531.jpg">
+<img src="https://lh5.googleusercontent.com/-hCCgdACtL7Y/Ucw5OlY2yhI/AAAAAAAADIc/3oCgDUxEZWc/s400/IMG_20130627_125531.jpg" alt="https://lh5.googleusercontent.com/-hCCgdACtL7Y/Ucw5OlY2yhI/AAAAAAAADIc/3oCgDUxEZWc/s400/IMG_20130627_125531.jpg" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>Yesterday Novell Hungary organized
+<a href="https://www.suse.com/hu-hu/events/suseconf2013/">SUSE Conference 2013</a> here at
+Budapest. As you can see above Andras held a LibreOffice-related presentation
+there&#8201;&#8212;&#8201;and we also ran a LibreOffice booth. As it was requested, we set up
+quite some
+(<a href="http://dev-builds.libreoffice.org/daily/master/Android-ARM@24-Bytemark-Hosting/current/">publicly
+available</a>) Android demos:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Impress remote
+</p>
+</li>
+<li>
+<p>
+LibreOffice4Android (document viewer) on my phone (I needed a
+  <a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=015e1b84446077df9c226cf87c19bef056dcf3b7">fix</a>
+to get it running on a non-tablet, though)
+</p>
+</li>
+<li>
+<p>
+The desktop app on a tablet&#8201;&#8212;&#8201;thanks goes to the organizers who provided that for us!
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>About 200 visitors attended the conference, which counts as a great success in
+this category. :-)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/lo-hamburg-hackfest-2013.html">LibreOffice Hamburg Hackfest 2013</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh6.googleusercontent.com/-VWFdyXddsj4/UcAmItG7LdI/AAAAAAAAC0M/aduHC_-oanA/s714/HHHackfest2013.png">
+<img src="https://lh6.googleusercontent.com/-VWFdyXddsj4/UcAmItG7LdI/AAAAAAAAC0M/aduHC_-oanA/s400/HHHackfest2013.png" alt="https://lh6.googleusercontent.com/-VWFdyXddsj4/UcAmItG7LdI/AAAAAAAAC0M/aduHC_-oanA/s400/HHHackfest2013.png" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>This year, LibreOffice&#8217;s Hamburg hackfest happened last weekend, with more than
+20 attendees. Thanks to the
+<a href="https://wiki.documentfoundation.org/Hackfest/Hamburg2013#Sponsors">sponsors</a>, we
+had free drink and food during the whole hackfest. ;-)</p></div>
+<div class="paragraph"><p>My original plan was to add support for tables inside text frames
+in Writer, when importing from RTF. At the end I managed to do that, though not
+the way I originally wanted to implement that feature. :-)</p></div>
+<div class="paragraph"><p>Here is how this looked with the RTF importer we inherited from OpenOffice.org (LO 3.4),
+and then with the new RTF import filter (LO 3.6):</p></div>
+<div align="center">
+<div class="paragraph"><p><span class="image">
+<a class="image" href="https://lh6.googleusercontent.com/-8ltBBFaWW8E/UcAmQvIrchI/AAAAAAAAC0c/B6-aazoJpm0/s514/rtf-textframe-table-lo34.png">
+<img src="https://lh6.googleusercontent.com/-8ltBBFaWW8E/UcAmQvIrchI/AAAAAAAAC0c/B6-aazoJpm0/s400/rtf-textframe-table-lo34.png" alt="https://lh6.googleusercontent.com/-8ltBBFaWW8E/UcAmQvIrchI/AAAAAAAAC0c/B6-aazoJpm0/s400/rtf-textframe-table-lo34.png" />
+</a>
+</span>
+<span class="image">
+<a class="image" href="https://lh5.googleusercontent.com/-wcelxQuT94k/UcAmQ2uBEHI/AAAAAAAAC0o/wOgnKwhFGJI/s659/rtf-textframe-table-lo36.png">
+<img src="https://lh5.googleusercontent.com/-wcelxQuT94k/UcAmQ2uBEHI/AAAAAAAAC0o/wOgnKwhFGJI/s400/rtf-textframe-table-lo36.png" alt="https://lh5.googleusercontent.com/-wcelxQuT94k/UcAmQ2uBEHI/AAAAAAAAC0o/wOgnKwhFGJI/s400/rtf-textframe-table-lo36.png" />
+</a>
+</span></p></div>
+</div>
+<div class="paragraph"><p>Here is how this looks like in latest master, and how it should look like:</p></div>
+<div align="center">
+<div class="paragraph"><p><span class="image">
+<a class="image" href="https://lh4.googleusercontent.com/-NpZdA5p2ZVI/UcAmQ1cIC8I/AAAAAAAAC0k/fvKJRMvlRFI/s900/rtf-textframe-table-lo42.png">
+<img src="https://lh4.googleusercontent.com/-NpZdA5p2ZVI/UcAmQ1cIC8I/AAAAAAAAC0k/fvKJRMvlRFI/s400/rtf-textframe-table-lo42.png" alt="https://lh4.googleusercontent.com/-NpZdA5p2ZVI/UcAmQ1cIC8I/AAAAAAAAC0k/fvKJRMvlRFI/s400/rtf-textframe-table-lo42.png" />
+</a>
+</span>
+<span class="image">
+<a class="image" href="https://lh6.googleusercontent.com/-5s9O3RJD0MI/UcAmRfFQBMI/AAAAAAAAC0s/uS47fqc-QZU/s687/rtf-textframe-table-word2007.png">
+<img src="https://lh6.googleusercontent.com/-5s9O3RJD0MI/UcAmRfFQBMI/AAAAAAAAC0s/uS47fqc-QZU/s400/rtf-textframe-table-word2007.png" alt="https://lh6.googleusercontent.com/-5s9O3RJD0MI/UcAmRfFQBMI/AAAAAAAAC0s/uS47fqc-QZU/s400/rtf-textframe-table-word2007.png" />
+</a>
+</span></p></div>
+</div>
+<div class="paragraph"><p>Other than that, there were a few other topics I hacked on:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+various additional fixes for
+  <a href="https://bugs.freedesktop.org/show_bug.cgi?id=58819">fdo#58819</a>, so watermark
+  is exported (with correct size, position, rotation, opacity, etc.), and
+  reasonably imported
+</p>
+</li>
+<li>
+<p>
+the last character of the git hash is no longer missing from the about dialog
+  (<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=216fe5cf3c41713fa2a11731e4c3d514236b2480">commit</a>)
+</p>
+</li>
+<li>
+<p>
+number of leaking files when running the writer filter tests is now down to 2
+  from 527
+  (<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=c03a1e46460e4255d7709df9ba8147947f66acfb">commit</a>)
+</p>
+</li>
+<li>
+<p>
+RTF import of text frame&#8217;s AutoSize property
+  (<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=aa0f3ca1cd285e8ffbc10de5510d447a72de980a">commit</a>)
+</p>
+</li>
+<li>
+<p>
+File &#8594; Properties &#8594; Security &#8594; Record Changes is now imported and exported
+  in the RTF filter
+  (<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=ae85b56a9a18657a57fd5033faff34e7ee4ff2f8">commit</a>)
+</p>
+</li>
+<li>
+<p>
+finally added UI for fine dashing&#8201;&#8212;&#8201;so not only existing documents are
+  rendered correctly, but you can create such documents as well
+  (<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=4c3d2dcdadbcb8f2ffc2caab07d50a286341df96">commit</a>)
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>You can see some photos <a href="https://www.flickr.com/photos/vmiklos/albums/72157669575452373">here</a>.</p></div>
+<div class="paragraph"><p>Last, but not at least, thank you Eike and Bjoern for organizing this event! :-)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/szszk-2013.html">Free Software Conference and Exhibition 2013</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="http://konf.fsf.hu/cgis/ossc/2013/">
+<img src="https://lh6.googleusercontent.com/-uoQeGkRqjrA/UbRVYVbk25I/AAAAAAAACzE/sOVvcUNZpc4/s400/konf2013_logo_web.png" alt="https://lh6.googleusercontent.com/-uoQeGkRqjrA/UbRVYVbk25I/AAAAAAAACzE/sOVvcUNZpc4/s400/konf2013_logo_web.png" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>The Free Software Conference and Exhibition 2013&#8201;&#8212;&#8201;organized by FSF.hu&#8201;&#8212;&#8201;was held yesterday @
+Budapest. I gave a talk about hacking on Writer file format problems
+(<a href="https://speakerdeck.com/vmiklos/libreoffice-writer-fajlformatum-problemak-es-megoldasuk">slides</a>), this time in Hungarian.</p></div>
+<div class="paragraph"><p>After the talk I also held a one-hour workshop, showing how to start hacking on LO in practice:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+first we did a build (using package manager to install dependencies, git clone, autogen, make, make dev-install)
+</p>
+</li>
+<li>
+<p>
+then we did the <a href="http://wiki.openoffice.org/wiki/Hacking#My_first_hack">vcl Menu::SetItemText() hack</a>&#8201;&#8212;&#8201;actually using <code>comphelper::string::reverseString()</code>
+</p>
+</li>
+<li>
+<p>
+finally I spent some time explaining a few bugfixes from the recent past: I explained a <a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=a22ef599bd3fdcf0bd5c3616aa566a5922624ff3">VML import problem</a>, an <a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=3d4fef85d05269e613316a7af6245f05d207d76e">RTF import problem</a>, a <a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=4144cd5a851466778004af9de98dbcfb019067bb">WW8 export mismerge</a>, finally a <a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=f06cc552a0699f7c2c34db981e77d4c8efe5e9e7">WW8 import issue</a>
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>We (with Andras Timar and Tamas Zolnai) also ran the LibreOffice booth. This
+year speakers got a free t-shirt and lunch, thanks for the organizers! :)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/mso-dumper.html">DOC support in mso-dumper</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p><a href="http://cgit.freedesktop.org/libreoffice/contrib/mso-dumper/">mso-dumper</a> is a
+project that creates some&#8201;&#8212;&#8201;more or less human-readable&#8201;&#8212;&#8201;dump from binary
+files. Initially Kohei Yoshida developed it to dump XLS, then Thorsten Behrens
+added support for PPT files, finally during last November I started to add DOC
+support.</p></div>
+<div class="paragraph"><p>You may ask: why that is useful? My answer is that I spend quite some time on
+the import/export filters of LibreOffice Writer, and to be able to improve or
+fix such filters, some knowledge of the file format in question and Writer
+internals is needed. Regarding the file format knowledge, I find it much easier
+to read the specification once and implement some simple dumper based on that&#8201;&#8212;&#8201;than reading the specification again and again, and just trying to
+understand what&#8217;s going on inside a binary file using a hex editor.</p></div>
+<div class="paragraph"><p>To my knowledge, such a dumper for the DOC format (in particular the WW8
+version of it) did not exist previously.
+<a href="http://gitorious.org/ww8dumper">WW8Dumper</a> was the closest match, but that was
+far from complete and I found extending mso-dumper easier.</p></div>
+<div class="paragraph"><p>To stress-test the parser, I used
+<a href="http://cgit.freedesktop.org/libreoffice/core/tree/bin/get-bugzilla-attachments-by-mimetype">get-bugzilla-attachments-by-mimetype</a>
+to get all DOC attachements from the Freedesktop bugzilla, and during the last
+days I fixed the remaining crashes (actually this is why I write this post now
+;-) ). If you want to try it out you can do so by:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>git clone git://anongit.freedesktop.org/libreoffice/contrib/mso-dumper
+cd mso-dumper
+./doc-dump.py /path/to/doc/file.doc</code></pre>
+</div></div>
+<div class="paragraph"><p>The idea is that on any input the dumper should not crash: instead either it
+should give you usable result, or in case some unhandled structure is reached,
+it should print a <code>&lt;todo&gt;</code> XML tag. Other than that, of course patches welcome&#8201;&#8212;&#8201;that said, Maxime de Roucy already contributed a patch to the DOC part of
+mso-dumper, thanks! :-)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/hackweek-9.html">Hackweek 9</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh6.googleusercontent.com/-o4L02197n38/UW-lp9UHX2I/AAAAAAAACiU/XetdnZpBpp4/s700/hackweek.jpg">
+<img src="https://lh6.googleusercontent.com/-o4L02197n38/UW-lp9UHX2I/AAAAAAAACiU/XetdnZpBpp4/s400/hackweek.jpg" alt="https://lh6.googleusercontent.com/-o4L02197n38/UW-lp9UHX2I/AAAAAAAACiU/XetdnZpBpp4/s400/hackweek.jpg" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>Last week was <a href="http://hackweek.suse.com/">Hackweek</a> at SUSE&#8201;&#8212;&#8201;below is a quick
+summary on what experiments did I do during that timeframe.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_lcov">lcov</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>I did some experiments with using lcov on the LibreOffice codebase. The goal is
+to have a quick iteration, so you can see the current coverage of a file or a
+directory, select a method that is not yet tested, add a test for it, and
+"test" the test by checking if the coverage indeed got improved. As a first
+step, I tried this out on the Writer RTF import:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>cd writerfilter
+touch source/rtftok/*
+make -sr -j8 gb_GCOV=YES <b>&lt;1&gt;</b>
+cd ../sw; make -sr -j8 CppunitTest_sw_rtfexport CppunitTest_sw_rtfimport <b>&lt;2&gt;</b>
+lcov --directory workdir/unxlngx6/CxxObject/writerfilter/source/rtftok/ --capture --output-file libreoffice.info <b>&lt;3&gt;</b>
+genhtml -o coverage libreoffice.info <b>&lt;4&gt;</b></code></pre>
+</div></div>
+<div class="colist arabic"><ol>
+<li>
+<p>
+rebuild selected files with lcov options
+</p>
+</li>
+<li>
+<p>
+run the tests
+</p>
+</li>
+<li>
+<p>
+extract coverage information to a single .info file
+</p>
+</li>
+<li>
+<p>
+generate some nice HTML output from the .info file
+</p>
+</li>
+</ol></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">lcov
+<a href="https://build.opensuse.org/project/show?project=openSUSE%3AMaintenance%3A1336">had
+problems</a> with gcc-4.7, fully updated openSUSE 12.2 or 12.3 is known to work.</td>
+</tr></table>
+</div>
+<div class="paragraph"><p>There is a
+<a href="http://cgit.freedesktop.org/libreoffice/contrib/dev-tools/plain/lcov/coverage.sh">script</a>
+available to make the above a bit more automated.</p></div>
+<div class="paragraph"><p>The speed of the above depends on the amount of code needing a rebuild + the
+number of tests, but it should not take more than a minute.</p></div>
+<div class="paragraph"><p>E.g. I noticed the bookmark import code isn&#8217;t tested, added a
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=7b515a57eb6a644860715018656ac0b843b62baf">test
+for it</a>, and that indeed improved the line coverage of rtfdocumentimpl.cxx:
+84.1% &#8594; 85.0%.</p></div>
+<div class="paragraph"><p>A next area I wanted to test is the Writer RTF export. Let&#8217;s pick something in
+rtfattributeoutput.cxx&#8230; StartURL() is not tested, so a
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=85c8252e13e9234253494f96ffd70df35be056dc">hyperlink
+testcase</a> should help. Indeed it did: 50.2% &#8594; 52.0%.</p></div>
+<div class="paragraph"><p>Last, but not at least, thanks to Norbert Thiebaud, who added <code>gb_GCOV</code> to
+gbuild.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_gdb_pretty_printers">gdb pretty-printers</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Then I experimented with improving our Writer gdb Python pretty-printers. One
+annoying shortcoming was the lack of handling uno::Reference&lt;text::XTextRange&gt;.
+Imagine one searches for a bug related to table import for DOCX or RTF. One
+idea is to check the arguments of the convertToTable() method call. The first
+argument is a 2D array of XTextRange pairs, that describe what will be the
+input for cell contents. So if you want to check the first cell, you do
+something like this:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>(gdb) b DomainMapperTableHandler.cxx:798
+(gdb) r
+(gdb) print (*m_pTableSeq)[0][0]
+$1 = uno::Sequence of length 2 = {uno::Reference to (XInterface) 0x1a73648, uno::Reference to (XInterface) 0x1a77f68}
+(gdb) print (*m_pTableSeq)[0][0][0]
+$2 = uno::Reference to (XInterface) 0x1a73648
+(gdb) print (*m_pTableSeq)[0][0][1]
+$3 = uno::Reference to (XInterface) 0x1a77f68</code></pre>
+</div></div>
+<div class="paragraph"><p>Not that helpful. Here is how one could work it around:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>(gdb) print (*m_pTableSeq)[0][0][0]._pInterface-&gt;m_pImpl-&gt;m_pMark-&gt;m_pPos1
+$4 = boost::scoped_ptr SwPosition (node 10, offset 0)
+(gdb) print (*m_pTableSeq)[0][0][1]._pInterface-&gt;m_pImpl-&gt;m_pMark-&gt;m_pPos1
+$5 = boost::scoped_ptr SwPosition (node 10, offset 20)</code></pre>
+</div></div>
+<div class="paragraph"><p>But this is not something anyone will remember. After adding a few new
+pretty-printers, now it&#8217;s like this:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>(gdb) print (*m_pTableSeq)[0][0]
+$1 = uno::Sequence of length 2 = {uno::Reference to (SwXTextRange *) 0x1a72b98, uno::Reference to (SwXTextRange *) 0x1a773b8}
+(gdb) print *(*m_pTableSeq)[0][0][0]._pInterface
+$2 = (SwXTextRange) SwXTextRange sw::UnoImplPtr SwXTextRange::Impl = {mark = sw::mark::IMark = {pos1 = boost::scoped_ptr SwPosition (node 10, offset 0), pos2 = empty boost::scoped_ptr}}
+(gdb) print *(*m_pTableSeq)[0][0][1]._pInterface
+$3 = (SwXTextRange) SwXTextRange sw::UnoImplPtr SwXTextRange::Impl = {mark = sw::mark::IMark = {pos1 = boost::scoped_ptr SwPosition (node 10, offset 20), pos2 = empty boost::scoped_ptr}}</code></pre>
+</div></div>
+<div class="paragraph"><p>Technically, it would be possible to make <code>print (*m_pTableSeq)[0][0][0]</code> work
+as well, but for a larger class without a pretty-printer that would result in
+multiple pages of output. Anyway, <code>_pInterface</code> is the same for all UNO
+objects, so something that is not too hard to remember.</p></div>
+<div class="paragraph"><p>An other improvement is the XTextCursor pretty-printer. Example usage:
+debugging of the commented text range ODF import. Before:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>(gdb) b txtfldi.cxx:559
+(gdb) print *rHlp.GetCursor()._pInterface-&gt;m_pImpl-&gt;pRegisteredIn-&gt;m_pMark
+$1 = SwPosition (node 9, offset 4)</code></pre>
+</div></div>
+<div class="paragraph"><p>After the new pretty-printers one doesn&#8217;t have to type that much:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>(gdb) print *rHlp.GetCursor()._pInterface
+$1 = (SwXTextCursor)
+    SwXTextCursor sw::UnoImplPtr SwXTextCursor::Impl = {registeredIn = SwModify = {point = SwPosition (node 9, offset 4), mark = SwPosition (node 9, offset 4), next = 0x1a28b88, prev = 0x1a28b88}}</code></pre>
+</div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_rtf_filter_text_frame_rework">RTF filter text frame rework</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Finally, I experimented with reworking the textframe code in the RTF filter. In
+short, the motivation is to bring the RTF filter in sync with the OOXML one,
+which can nicely import and export text box gradients. To get there, there are
+3 different problems to solve:</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+The RTF import filter currently imports rectangle and textbox shapes as
+  drawinglayer rectangles, even if they have some text inside. Just like the
+  OOXML import filter, we would better import these shapes as Writer textframes,
+  as long as they contain some text.
+</p>
+</li>
+<li>
+<p>
+The RTF export writes Writer textframes as old-style Word frames, not as text
+  box shapes. This should be changed, as the old syntax doesn&#8217;t support
+  gradients, and in general both the DOC and DOCX export filters already export
+  new-style Word frames, so there is no reason why the RTF filter would not do
+  the same.
+</p>
+</li>
+<li>
+<p>
+Once all the above is done, add support for gradients in the RTF filter, in a
+  similar way OOXML filters were already improved to handle gradients.
+</p>
+</li>
+<li>
+<p>
+Once this all is done, add new testcases to cover the new code.
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p>First I had hacked on #1, sadly Writer textframes and drawinglayer rectangles
+don&#8217;t share the exactly same UNO API, like drawinglayer has <code>TextWritingMode</code>
+and a <code>Name</code> property, Writer textframes have a <code>WritingMode</code> property instead,
+and additionally they implement the <code>XNamed</code> UNO interface, etc.</p></div>
+<div class="paragraph"><p>Then I switched to #3&#8201;&#8212;&#8201;there I managed to reuse our existing VML import to do
+the hard work: the RTF tokenizer reads the RTF shape properties, then
+constructs the same VML model what is normally built from v:fill and v:shadow
+XML elements inside DOCX files, finally the VML import does the mapping of
+Word&#8217;s gradient concept to the Writer gradient concept.</p></div>
+<div class="paragraph"><p>At the end of the week I also hacked on #2 and #4&#8201;&#8212;&#8201;and while I did so, I
+noticed two more interesting details of Word&#8217;s new-style RTF textframe markup:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+The bad news: Writer supports having different top/left/bottom/right borders,
+  RTF still just supports the concept of a single line around the textframe.
+</p>
+</li>
+<li>
+<p>
+The good news: old-style RTF frames didn&#8217;t support different left/right or
+  top/bottom external margins, but Writer does&#8201;&#8212;&#8201;so now using the new syntax,
+  this is exported properly.
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_git">git</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Unrelated to the above, I
+<a href="http://git.kernel.org/cgit/git/git.git/commit/?id=21246dbb9e0af278bc671e32e45a6cae4ad38b6f">fixed</a>
+an annoying git bug, when one tried to cherry-pick multiple commits at the same
+time, and copy&amp;paste went wrong, the "unrecognized" arguments were just
+silently ignored. Now one gets an error instead.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_docs_libreoffice_org">docs.libreoffice.org</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>In parallel to the above, Thorsten was kind enough to explain how to update
+<a href="http://docs.libreoffice.org/">docs.libreoffice.org</a>: The new output is generated
+using doxygen 1.8, it contains a bit more eye-candy. E.g. notice the new
+foldable subsections
+<a href="http://docs.libreoffice.org/sw/html/classSwUnoCrsr.html">here</a>. ;-)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/graphic-bullets.html">LibreOffice Writer now supports graphic bullets in its DOCX/RTF filters</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh5.googleusercontent.com/-fhN5_7nf5A8/UWG83Z5qLqI/AAAAAAAAChY/cehOqHVomas/s628/ooxml-graphic-bullet.png">
+<img src="https://lh5.googleusercontent.com/-fhN5_7nf5A8/UWG83Z5qLqI/AAAAAAAAChY/cehOqHVomas/s400/ooxml-graphic-bullet.png" alt="https://lh5.googleusercontent.com/-fhN5_7nf5A8/UWG83Z5qLqI/AAAAAAAAChY/cehOqHVomas/s400/ooxml-graphic-bullet.png" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>If you ever tried to use graphical bullets in Writer (Format &#8594; Bullets and
+Numbering &#8594; Graphics), you may have noticed that only the ODF filter can load
+and save such a numbering. This is now improved a lot. Motivated by seeing this
+is now handled in the binary DOC filter, I now added support for this also to
+the DOCX and RTF import and export filters. If you want to play with this
+feature, core.git also contains a
+<a href="http://cgit.freedesktop.org/libreoffice/core/plain/sw/qa/extras/ooxmlexport/data/i120928.docx">DOCX</a>
+and an
+<a href="http://cgit.freedesktop.org/libreoffice/core/plain/sw/qa/extras/rtfexport/data/i120928.rtf">RTF</a>
+sample as well.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/git-review.html">git-review</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>LibreOffice started to use <a href="https://gerrit.libreoffice.org/">Gerrit</a> for code
+review, and while occasional contributors
+<a href="https://wiki.documentfoundation.org/Development/gerrit/SubmitPatch">can submit
+patches manually</a>, in case one does many reviews, it&#8217;s handy to use a dedicated
+tool. In core.git, we have
+<a href="http://cgit.freedesktop.org/libreoffice/core/tree/logerrit">logerrit</a>, but
+that&#8217;s not advised for regular reviewers, either,
+<a href="https://github.com/openstack-infra/git-review">git-review</a> is recommended
+instead.</p></div>
+<div class="paragraph"><p>So I looked into git-review. The good news is that it&#8217;s packaged already for most distributions, e.g. a simple</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>zypper in python-git-review</code></pre>
+</div></div>
+<div class="paragraph"><p>on openSUSE installs it.</p></div>
+<div class="paragraph"><p>I wanted to use this tool for two tasks:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Submitting changes to Gerrit: <code>git review -R</code> could do that. <code>-R</code> prevents
+  automatic rebase, so a test build won&#8217;t fail because your patch is based on
+  an already broken commit. The other good thing is that you don&#8217;t have to
+  remember where to submit: both the master and libreoffice-4-0 branches contain
+  a <code>.gitreview</code> file that contains the necessary server / branch information.
+</p>
+</li>
+<li>
+<p>
+Cherry-picking changes from Gerrit: I found no option for this. A cherry-pick
+  command is generated on the web interface, but it&#8217;s more complicated than a
+  simple <code>&lt;some command&gt; &lt;number of the change&gt;</code>. So I submitted
+  <a href="https://review.openstack.org/17290">this change</a> to git-review itself, the next
+  release will be able to do <code>git review -x &lt;number of the change&gt;</code>.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Probably the browser interface is still the best to comment (especially inline
+comment) and approve changes, though David even submitted a
+<a href="https://review.openstack.org/17423">proof of concept patch</a> for that as well.</p></div>
+<div class="paragraph"><p>Finally, let me just clear two myths:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+If you use Google for OpenID login, you can have multiple OpenID accounts
+  associated with your Gerrit login, so it&#8217;s not a problem (first I thought it
+  is) if you use one email for Gerrit and an other one for accessing other
+  Google services.
+</p>
+</li>
+<li>
+<p>
+Somewhere I read that the stock LibreOffice hooks conflict with git-review:
+  nope, git-review didn&#8217;t touch the hooks, you can use the tool without
+  corrupting them in any way.
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+
+  </div>
+</article>
+
+<footer>
+<div id="paginator">
+<a href="https://vmiklos.hu/blog/tag/en13.html" class="button_accent">&larr; Older Posts</a>
+
+<a href="https://vmiklos.hu/blog/tag/en11.html" class="button_accent">Newer Posts &rarr;</a>
+</div>
+</footer>
+
+    <div id="ending_message">
+      <p>&copy; Miklos Vajna. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
+</body>
+</html>

@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/pygments.css">
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=PT+Sans|PT+Serif|PT+Mono">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Miklos Vajna">
+  <meta name="description" content="Posts and writings by Miklos Vajna">
+
+  <link href="https://vmiklos.hu/blog/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking RSS" />
+
+
+  <title>
+    What is Miklos hacking
+  </title>
+
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <!--<a href="https://vmiklos.hu/blog">
+        <img src="https://vmiklos.hu/blog/theme/images/logo.png" alt="logo">
+      </a>-->
+      <h2><a href="https://vmiklos.hu/blog">What is Miklos hacking</a></h2>
+      <p></p>
+      <ul>
+        <li><a href="/" target="_blank">Root</a></li>
+        <li><a href="https://planet.documentfoundation.org/" target="_blank">LibreOffice Blogs</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://vmiklos.hu/blog">Index</a> &brvbar; <a href="https://vmiklos.hu/blog/archives.html">Archives</a>
+      &brvbar; <a href="https://vmiklos.hu/blog/feeds/all.rss.xml">RSS</a>
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/osl-trace.html">OSL_TRACE()</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>Background: <code>OSL_TRACE()</code> is an internal LibreOffice macro that is like
+<code>printf()</code>, but it&#8217;s only enabled in debug mode. Without it, you would
+add a debug printf during development:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #000000">printf</span></span><span style="color: #990000">(</span><span style="color: #FF0000">"debug, foo</span><span style="color: #CC33CC">\n</span><span style="color: #FF0000">"</span><span style="color: #990000">);</span></tt></pre></div></div>
+<div class="paragraph"><p>then you would comment it out when the code started working,:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900">//printf("debug, foo\n");</span></span></tt></pre></div></div>
+<div class="paragraph"><p>then remove the comment when it breaks again, etc.</p></div>
+<div class="paragraph"><p>In the past, if you built a LibreOffice module, then you executed:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>build</code></pre>
+</div></div>
+<div class="paragraph"><p>inside a module, and in case you wanted debug symbols and such messages you built using:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>build debug=t</code></pre>
+</div></div>
+<div class="paragraph"><p>which increased the debug level to 2 (from 0), where 1 is required for
+debug symbols, 2 for debug messages. (See the OOo
+<a href="http://wiki.services.openoffice.org/wiki/Debug_Levels">wiki page</a>.)</p></div>
+<div class="paragraph"><p>The recent update, why I&#8217;m writing this post: Now this has been
+<a href="http://cgit.freedesktop.org/libreoffice/bootstrap/commit/?id=47d09469e96485f93623a6fbeb42f709c2ce49bb">changed</a>,
+and <code>debug=t</code> gives you debug symbols only, but no extra debug output.
+While this is
+<a href="http://lists.freedesktop.org/archives/libreoffice/2010-November/002894.html">great
+in most cases</a>, sometimes you still want the old behaviour to get the
+debug messages. In that case the solution (as pointed out in the mailing
+list post) is to use:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>build debug=t dbglevel=2</code></pre>
+</div></div>
+<div class="paragraph"><p>(Hopefully this post will be handy for who missed that post, like I did
+the first time.)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/systemd.html">Systemd</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>I first heard about
+<a href="http://freedesktop.org/wiki/Software/systemd">systemd</a> from
+<a href="http://frugalware.org/~voroskoi/">voroskoi</a>, later
+<a href="http://people.gnome.org/~michael/blog/">Michael</a> pointed it out again
+during the <a href="http://www.ooocon.org/index.php/ooocon/2010">OOoCon 2010</a>,
+finally it somehow came up on <code>#frugalware.dev</code> today.</p></div>
+<div class="paragraph"><p>So I read up some documentation in this area, and I definitely like it.
+(Note: I didn&#8217;t say I&#8217;m willing to do all the work to integrate this
+into Frugalware, but I like the idea.) For me, the killer post is
+<a href="http://0pointer.de/blog/projects/systemd-for-admins-3.html">this one</a>: a
+distro-independent init script in 8 lines is very much like our
+<code>FrugalBuild</code> scripts which are no longer than 11 lines for a project
+with a standard build-system.</p></div>
+<div class="paragraph"><p>I like that minimalism a lot.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/mkk-katalin-bal-2010.html">MKK Katalin bal 2010</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>Visszakeresve ugy tunik, hogy <a href="/blog/mkk-tavaszi-bal-2009">csak
+egyszer</a> irtam az ilyen balokrol, pedig egy evben 3x szokott lenni
+(tavaszi, Katalin, szilveszter) - mindenesetre
+<a href="http://hatos.dsd.sztaki.hu/~mkkweb/index.php?do=sh&amp;pg=programs%3Ekatalin2010%3Ekatalin2010">tegnap
+is volt</a>. Es mint mindig, most is jol ereztuk magunkat, csak ajanlani
+tudom barkinek aki amugy szeret tancolni.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/rejourn-vanilla.html">Rejourn: Using an unpatched version</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>One may have noticed that right now my
+<a href="http://vmiklos.hu/gitweb/?p=rejourn.git;a=summary">rejourn tree</a> is
+empty. That&#8217;s not an accident, after Ram accepted my 15th patch, finally
+the site runs an unpatched version of <a href="/blog/rejourn">rejourn</a> - of
+course with a custom config and design.</p></div>
+<div class="paragraph"><p>Of course I still have a few ideas on what to improve, so this is not
+the end of the story, but still - I&#8217;m happy he was so open for changes
+and new features that we reached this post. :)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/gpsbabel-split.html">How to split gpx files using gpsbabel</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>I usually just download the gpx track from my GPS and delete the track
+from device each time I arrive home and I was at some interesting place
+before. Last week this was not the case, I was at
+<a href="http://maps.google.com/?q=Gy%FAr%F3,+Hungary">Gyúró</a> two weeks ago, then
+I borrowed by device, without clearing the log from it.</p></div>
+<div class="paragraph"><p>So the task was easy: I had a timestamp and I had the full log from the
+device, and I want to split it: before and after a given timestamp. It
+turned out that I had some log from Oct 28th as well, so I wanted:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+The log till Oct 28th
+</p>
+</li>
+<li>
+<p>
+The log between Nov 5th and 8th
+</p>
+</li>
+<li>
+<p>
+The log after 10th.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Luckily the
+<a href="http://www.gpsbabel.org/htmldoc-1.3.0/filter_track.html">gpsbabel
+documentation</a> is quite clear in this area (see Example 4.8), I just
+needed the following commands:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>$ gpsbabel -t -i gpx -f in.gpx -x track,stop=20101028 -o gpx -F out1.gpx
+$ gpsbabel -t -i gpx -f in.gpx -x track,start=20101105,stop=20101108 -o gpx -F out2.gpx
+$ gpsbabel -t -i gpx -f in.gpx -x track,start=20101110 -o gpx -F out3.gpx</code></pre>
+</div></div>
+<div class="paragraph"><p>Update: two more notes:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+the stop is exclusive, start is inclusive
+</p>
+</li>
+<li>
+<p>
+when using the result in digikam, the camera time zone has to be set to "manual: gmt+0", even if both the gpx result and the camera time is in local time
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/ooo-vmiklos01-merged.html">OpenOffice.org: vmiklos01 CWS integrated</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>Once I was ready with this year&#8217;s GSoC work I started to submit it back
+to OpenOffice.org. Before that was completed, LibreOffice was launched,
+though I thought if I started working on submitting it to OpenOffice.org
+as well, I&#8217;ll finish it. About 6 weeks later they now
+<a href="http://hg.services.openoffice.org/DEV300/rev/5a2d87e7a414">integrated</a>
+(merged) the <code>vmiklos01</code> CWS (the branch containing my GSoC work) to
+DEV300, what will became OpenOffice.org 3.4 later.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/the-social-network.html">The Social Network</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="/pic/thesocialnetwork.t.jpg" alt="/pic/thesocialnetwork.t.jpg" />
+</div>
+</div>
+<div class="paragraph"><p>Tegnap lattuk a cimben szereplo filmet. Egy tipikus <em>valos tortenet
+alapjan</em> jellegu film, szoval nyilvan van alapja, de azert nem kell
+szoszerint venni mindent:</p></div>
+<div class="quoteblock">
+<div class="content">
+<div class="paragraph"><p>In real life, he (Mark Zuckerberg) was just sitting around with his
+friends in front of his computer, ordering pizza &#8230; Who wants to go see
+that for two hours?</p></div>
+</div>
+<div class="attribution">
+&#8212; Sheryl Sandberg
+</div></div>
+<div class="paragraph"><p>Az mindenesetre tetszik, hogy Mark Zuckerberg nem feher vagy fekete
+embernek van beallitva.</p></div>
+<div class="paragraph"><p>Pozitivan allitja be (szakmai reszletek):</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+LAMP mania (meg akkor is, ha nem vagyok LAMP fanatikus, meg mindig
+    jobb, mint valami Java vagy Microsoft technologia ;) )
+</p>
+</li>
+<li>
+<p>
+tul nagy baromsag nem hangzik el, leszamitva a film vegen levo <code>ping
+    localhost</code> es egyebeket. :)
+</p>
+</li>
+<li>
+<p>
+vegre egy film ahol nem mindenki Mac-ezik, hanem KDE-t tol. ;)
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Ezen kivul az is elhangzott, hogy nem az egoja miatt keszult a film:</p></div>
+<div class="quoteblock">
+<div class="content">
+<div class="paragraph"><p>I just wished that nobody made a movie of me while I was still alive.</p></div>
+</div>
+<div class="attribution">
+&#8212; Mark Zuckerberg
+</div></div>
+<div class="paragraph"><p>Meg talan ehhez hozzaadodik meg a Wikipedian olvashato egyeb pozitiv
+sztorik, mint pl a donation-ok, stb.</p></div>
+<div class="paragraph"><p>Es szerencsere nem feledkezik meg a negativumokrol se:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+a nem tul legalis kezdes ;)
+</p>
+</li>
+<li>
+<p>
+a kezdeti penzugyi segito kikozositese
+</p>
+</li>
+<li>
+<p>
+az otlet lopas (bar az is egy erdekes gondolat, ami elhangzik a
+  filmben, hogyha valakinek jo otletei vannak, akkor nem gaz ha ellopnak
+  egyet, majd kitalal masikat)
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Ezen kivul amugy vannak a filmben jo poenok, az evezos jelenet filmes
+szemponbol is jol meg van csinalva, szoval elgondolkodtato film sztem,
+csak ajanlani tudom.</p></div>
+<div class="paragraph"><p>(<a href="http://www.imdb.com/title/tt1285016/">imdb</a>, <a href="http://www.youtube.com/watch?v=9bzpS239Gas">trailer</a>)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/google-account-migration.html">Google account migration</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>The whole story starts
+<a href="http://www.google.com/support/a/bin/answer.py?hl=en&amp;answer=182075">here</a>.
+The whole conflict is about I had a google account with my vmiklos.hu
+domain already, but now the google apps account took it over and they
+asked me to rename the old account to something else.</p></div>
+<div class="paragraph"><p>I joined the early adopter program and I was happy about it, finally I
+could access Picasa with my google apps account, though I could not make
+it to picasa.vmiklos.hu or something. But at least I could use it.</p></div>
+<div class="paragraph"><p>Why I&#8217;m writing is that now they changed something regarding google
+groups as well, since I just noticed I can no longer post to the
+invite-only lists hosted on google groups where I use my personal
+address&#8230; It turns out the trick is to get the old (renamed) address
+unsubscribed and get the new one subscribed.</p></div>
+<div class="paragraph"><p>I&#8217;m not really claiming, since the new state is much more clear, but
+this unsubscribe + subscribe dance is rather uncomfortable&#8230;</p></div>
+<div class="paragraph"><p>Oh, and a related
+<a href="http://www.google.com/support/a/bin/answer.py?hl=en&amp;answer=60227">doc
+link</a> in case you want to use gtalk on your domain as well (for now I
+decided not to use it).</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/german-comment-finder-mentioned.html">German comment finder mentioned on LWN</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>So we had
+<a href="http://thread.gmane.org/gmane.comp.documentfoundation.libreoffice.devel/844">this
+script</a> with Jonas, and the current news about it is that it&#8217;s mentioned
+by in <a href="https://lwn.net/Articles/414051/">this LWN article</a>. I just
+innocently read the article and noticed:</p></div>
+<div class="quoteblock">
+<div class="content">
+<div class="paragraph"><p>After ten years, the code still has over 100,000 lines of
+German-language comments; those are now being targeted with the help of
+a script which repurposes the built-in language-guessing code which is
+part of the spelling checker.</p></div>
+</div>
+<div class="attribution">
+&#8212; LPC: Michael Meeks on LibreOffice and code ownership
+</div></div>
+<div class="paragraph"><p>Nice! :)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/marty-ashton.html">Marty Ashton: 101 dolog, amit jo lett volna tudni az autokrol</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="/pic/101auto.jpg" alt="/pic/101auto.jpg" />
+</div>
+</div>
+<div class="paragraph"><p>A cimben szereplo konyvbe szombaton botlottam bele, amolyan egypercesek
+gyujtemenye. Tehat tipikusan nem egyben elolvasando - talan nem meglepo,
+hogy en megis igy tettem. ;)</p></div>
+<div class="paragraph"><p>(<a href="http://bookline.hu/product/home!execute.action?id=2100731895&amp;type=10">bookline</a>)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+
+<footer>
+<div id="paginator">
+<a href="https://vmiklos.hu/blog/index32.html" class="button_accent">&larr; Older Posts</a>
+
+<a href="https://vmiklos.hu/blog/index30.html" class="button_accent">Newer Posts &rarr;</a>
+</div>
+</footer>
+
+    <div id="ending_message">
+      <p>&copy; Miklos Vajna. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
+</body>
+</html>

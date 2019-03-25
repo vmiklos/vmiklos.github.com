@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/pygments.css">
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=PT+Sans|PT+Serif|PT+Mono">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Miklos Vajna">
+  <meta name="description" content="Posts and writings by Miklos Vajna">
+
+  <link href="https://vmiklos.hu/blog/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking RSS" />
+
+<link href="https://vmiklos.hu/blog/feeds/networking.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking networking Category RSS" />
+
+  <title>
+    What is Miklos hacking
+&ndash; Category: networking  </title>
+
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <!--<a href="https://vmiklos.hu/blog">
+        <img src="https://vmiklos.hu/blog/theme/images/logo.png" alt="logo">
+      </a>-->
+      <h2><a href="https://vmiklos.hu/blog">What is Miklos hacking</a></h2>
+      <p></p>
+      <ul>
+        <li><a href="/" target="_blank">Root</a></li>
+        <li><a href="https://planet.documentfoundation.org/" target="_blank">LibreOffice Blogs</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://vmiklos.hu/blog">Index</a> &brvbar; <a href="https://vmiklos.hu/blog/archives.html">Archives</a>
+      &brvbar; <a href="https://vmiklos.hu/blog/feeds/all.rss.xml">RSS</a>
+&gt; Category: networking
+&brvbar; <a href="https://vmiklos.hu/blog/feeds/networking.rss.xml">RSS</a>
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/upc-port-forward.html">UPC vs port forwarding</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p><a href="http://en.wikipedia.org/wiki/UPC_Broadband">UPC</a> traditionally had a setup
+consisting of a cable modem providing internet access to a single computer,
+and then it was up to the users if they use that access to really connect to a
+computer or to a router, providing wireless access and so on.  It seems, these
+days they are more after actually <em>encouraging</em> people to use their
+subscription on multiple devices&#8201;&#8212;&#8201;possibly that way it&#8217;s easier to sell
+larger packages (like 60 MBit/s download rate instead of 30 MBit/s, etc).  One
+fallout from this move is that they started to replace modems with a
+combination of modems and routers, in this case this is an
+<a href="http://www.ubeeinteractive.com/products/cable/evw3226">Ubee EVW3226</a>, with the
+brand removed. I wanted to try out if this new device could replace my
+previous router or not&#8201;&#8212;&#8201;so far it seems to be good enough, though there was
+one pitfall, hence this post.</p></div>
+<div class="paragraph"><p>It&#8217;s possible to define a range of IP addresses to be used for DHCP purposes,
+though you can&#8217;t serve fixed IP addresses based on the MAC address of the
+clients. Given that my home network isn&#8217;t that large, I can tolerate that: as
+long as there is a range that can be safely used for fixed addresses, I can
+configure that manually.  It&#8217;s also possible to do port forwarding, e.g.
+redirecting the incoming ssh traffic to a given address&#8201;&#8212;&#8201;except you can&#8217;t do
+both at the same time: you can&#8217;t redirect traffic to an address that&#8217;s not
+known (served via DHCP) to the router. Which is a shame, the #1 use case for
+port forwarding is to redirect traffic to a home-server that will then also
+have a fixed IP internally&#8230;</p></div>
+<div class="paragraph"><p>So here is a hack that allowed me to still do this: set the start of the range
+of the DHCP served IP&#8217;s exactly to the address of the (to be used in future
+as) fixed address, e.g. 192.168.0.5. Connect with one client, so that the
+address will be <em>known</em> to the router. Then add the port-forwarding rule,
+finally set the DHCP range back to its original value (in my case I use
+192.168.0.1..99 for fixed addresses and 100+ for dynamic purposes). It&#8217;s a
+stupid trick, but it works&#8230; ;-)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+
+<footer>
+<div id="paginator">
+
+</div>
+</footer>
+
+    <div id="ending_message">
+      <p>&copy; Miklos Vajna. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/pygments.css">
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=PT+Sans|PT+Serif|PT+Mono">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Miklos Vajna">
+  <meta name="description" content="Posts and writings by Miklos Vajna">
+
+  <link href="https://vmiklos.hu/blog/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking RSS" />
+
+<link href="https://vmiklos.hu/blog/feeds/mdadm.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking mdadm Category RSS" />
+
+  <title>
+    What is Miklos hacking
+&ndash; Category: mdadm  </title>
+
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <!--<a href="https://vmiklos.hu/blog">
+        <img src="https://vmiklos.hu/blog/theme/images/logo.png" alt="logo">
+      </a>-->
+      <h2><a href="https://vmiklos.hu/blog">What is Miklos hacking</a></h2>
+      <p></p>
+      <ul>
+        <li><a href="/" target="_blank">Root</a></li>
+        <li><a href="https://planet.documentfoundation.org/" target="_blank">LibreOffice Blogs</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://vmiklos.hu/blog">Index</a> &brvbar; <a href="https://vmiklos.hu/blog/archives.html">Archives</a>
+      &brvbar; <a href="https://vmiklos.hu/blog/feeds/all.rss.xml">RSS</a>
+&gt; Category: mdadm
+&brvbar; <a href="https://vmiklos.hu/blog/feeds/mdadm.rss.xml">RSS</a>
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/mdadm-upgrade.html">mdadm upgrade</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>Even though I spend little of my free time with sysadmin stuff these days, this
+came up recently. A few years ago I hit an issue about <code>mdadm</code> creating too new
+metadata that wasn&#8217;t handled by the installed kernel, so I remembered to use
+<code>--metadata 0.90</code> when creating a new array. Additionally, I preferred using
+<code>cfdisk</code> for partitioning.</p></div>
+<div class="paragraph"><p>It turns out this caused quite some grief when it came to <code>grub2</code>, I wrote about
+this <a href="/blog/grub2">earlier</a>&#8201;&#8212;&#8201;that was about the theory, in a VM. This is
+about the practice. In practice, <code>gparted</code> turned out to be too risky, and I
+choose the following approach to repartition the hard drives (so there is
+enough space for <code>grub2</code>) and upgrade the <code>mdadm</code> metadata.</p></div>
+<div class="paragraph"><p>First, I broke the mirror by removing one leg of the RAID1 array:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>mdadm --manage /dev/md126 --fail /dev/sdd1
+mdadm --manage /dev/md126 --remove /dev/sdd1</code></pre>
+</div></div>
+<div class="paragraph"><p>Then I created a new array (with a single leg) with the new metadata and formatted it:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>fdisk /dev/sdd
+mdadm --create /dev/md125 --metadata=1.0 --level=1 --assume-clean --raid-devices=2 missing /dev/sdd1
+mkfs.ext4 /dev/md125</code></pre>
+</div></div>
+<div class="paragraph"><p>Finally I copied over the live system:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>mkdir /mnt/md125
+mount /dev/md125 /mnt/md125
+rsync --delete -avxP / /mnt/md125
+umount /mnt/md125</code></pre>
+</div></div>
+<div class="paragraph"><p>The rest was easy: I booted a livecd to do the <code>rsync</code> once again (taking a few
+minutes only), and once the system was running from the new array, added the
+leg of the old array to the new one as well&#8201;&#8212;&#8201;and that&#8217;s it.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+
+<footer>
+<div id="paginator">
+
+</div>
+</footer>
+
+    <div id="ending_message">
+      <p>&copy; Miklos Vajna. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
+</body>
+</html>

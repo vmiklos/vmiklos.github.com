@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/pygments.css">
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=PT+Sans|PT+Serif|PT+Mono">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Miklos Vajna">
+  <meta name="description" content="Posts and writings by Miklos Vajna">
+
+  <link href="https://vmiklos.hu/blog/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking RSS" />
+
+
+  <title>
+    What is Miklos hacking
+&ndash; Tag: en  </title>
+
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <!--<a href="https://vmiklos.hu/blog">
+        <img src="https://vmiklos.hu/blog/theme/images/logo.png" alt="logo">
+      </a>-->
+      <h2><a href="https://vmiklos.hu/blog">What is Miklos hacking</a></h2>
+      <p></p>
+      <ul>
+        <li><a href="/" target="_blank">Root</a></li>
+        <li><a href="https://planet.documentfoundation.org/" target="_blank">LibreOffice Blogs</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://vmiklos.hu/blog">Index</a> &brvbar; <a href="https://vmiklos.hu/blog/archives.html">Archives</a>
+      &brvbar; <a href="https://vmiklos.hu/blog/feeds/all.rss.xml">RSS</a>
+&gt; Tag: en
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/clock-runs-way-faster-than-necessary-bug.html">"clock runs way faster than necessary" bug solved</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>Heh, it took my whole day. So the <a href="http://thread.gmane.org/gmane.linux.kernel/784192">solution</a> was that I needed to disable two CONFIG setting Crazy enabled (+ I enabled KVM again, not sure if that is related or not).</p><p>And of course bisecting was totally damn unnecessary, since the bug is triggered by a given config line, not by a bad commit.</p><p>Life is good.</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/linux-bisecting.html">Linux bisecting</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>So I reported this "timer runs too fast" bug to LKML and they asked me to bisect it. I know bisect already, but I only bisected userspace software which is easy. Basically you write a script that reproduces the issue, then git bisect will find the first bad commit automatically.</p><p>With the kernel, this is much slower, because you must manually test each step.</p><p>Of course I wanted to speed things up, so I wrote a small testcase and run it right after init=/bin/sh. This is bad. I haven't noticed until almost the end of the bisect that the bug occurs only after udev is loaded. Now that I'm sure the corrected test script really reports GOOD for 2.6.27 and BAD for 2.6.28, I can do the real bisect...</p><p>As a side note, doing this with 1 machine would be really annoying. Luckily I can do whatever I want on my iBook, the build is done one of our fast Frugalware servers (dream) and I just download and test the bzImage on my notebook. I guess network booting would make it a bit faster (because currently I boot the test kernel, boot back the working one, download the next test one, goto 1), but I won't set up a whole tftp server on my iBook just for this. ;)</p><p>So hopefully tomorrow we'll know what is the real first bad commit.</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/done-and-need-to-be-done-kernel-updates.html">Done and need-to-be-done kernel updates</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>I finished the update to 2.6.28 (I mean fixing external modules) in a WIP repo, will merge it tonight, if everything goes fine.</p><p>OTOH it turns out that the net in qemu-ppc is disabled because the driver is disabled in the ppc config. So I'll have to enable those drivers when I sync.</p><p>Oh and a trick. mplayer -vo null -vc null will stop playing audio if video finishes earlier. mplayer -novideo won't. So that'll be the solution for my "sample music gets truncated in an flv-wav-mp3 conversion" problem. ;)</p><p>Finally the W3C css validator guys are nice, see <a href="http://thread.gmane.org/gmane.org.w3c.validator.css/2346">this thread</a>, basically it works fine now! :)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/fast-clock.html">Fast clock</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>After upgrading kernel to 2.6.28 my clock measures about 70 mins in an hour, sigh. We are debugging the issue with crazy, but probably it's not a user error, so we'll need to mail the lkml.</p><p>I just tried qemu svn, and it's amazing.</p><p>qemu-system-ppc -prom-env 'boot-device=cd:,\boot\yaboot\yaboot' -prom-env 'boot-args=conf=cd:,\boot\yaboot\yaboot.conf' -cdrom frugalware-1.0pre2-ppc-net.iso -hda ~/documents/qemu/hda.img</p><p>can boot the 1.0pre2 ppc netinstall iso! :)</p><p>The current problem is that the network card the machine emulates is not supported by the installer, but that'll be tomorrow's problem.</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/ppc-entry.html">PPC entry</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>I recently ported our Qemu package to PPC, and just tested that it really works. We have a Linux binary (compiled for i386) for some 'plan making' exercise (inside the AI course at the uni), and of course I wanted to run it on my iBook. And yes, just wrapping the command with qemu-i386 made it work! :)</p><p>The other problem I noticed is that building external modules on PPC does not work. It seem to be a <a href="http://bugzilla.kernel.org/show_bug.cgi?id=11143">known bug</a>. PLD has a patch that changes the error message - to a permission problem. Given that on x86 building a kernel module is possible as a user - the goal would be the same on PPC as well. Not yet resolved...</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sudo-segfault.html">sudo segfault</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>Quoting a mail I just sent to Miller:</p><p>,,It seems I hit a bug in sudo-1.7.0 (at least I can't reproduce it with
+1.6.9p17):</p><p>$ sudo chown vmiklos /etc/sudoers
+$ sudo false
+sudo: /etc/sudoers is owned by uid 1003, should be 0
+Segmentation fault</p><p>According to gdb, it seem to be a nullpointer-dereference bug, and given
+that it is reproducible only in case the permission and/or owner is
+wrong, I don't think it has a security impact. But who knows. ;)''</p><p>We'll see how does he handle the problem.</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/less-1-tweaks.html">less(1) tweaks</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>First, to allow latin{1,2,whatever} accents in the pager to be non-escaped:</p><p><pre>
+export LESSCHARSET="iso8859"
+</pre></p><p>Second, I use:</p><p><pre>
+# F: quit if input is less then one page
+# M: no more-like short prompt
+# R: accept colors
+# X: don't throw away the output after quit under x
+export LESS="FMRX"
+</pre></p><p>Finally to send utf8 and other exotic chars in latin2 to stdout in git (OK, this is not strictly related):</p><p><pre>
+git config i18n.logOutputEncoding latin2
+</pre></p><p>Done!</p><p>Old:</p><p><pre>
+Author: Andr??s V??r??sk?&lt;91&gt;i &lt;<a href="mailto:voroskoi@frugalware.org">voroskoi@frugalware.org</a>&gt;
+</pre></p><p>New:</p><p><pre>
+Author: András Vörösk?i &lt;<a href="mailto:voroskoi@frugalware.org">voroskoi@frugalware.org</a>&gt;
+</pre></p><p>You can choose... ;-)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/ideal-git-cflags-for-development.html">Ideal Git CFLAGS for development</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>This is always an interesting area. The avarage user needs a whole day to test a oneliner patch, just because she never built the software in question, etc. The other end of the line is a regular developer, she modifies the source and she is able to test in seconds.</p><p>Regarding git, the testing part is not that hard: I usually work on builtins, so I edit the source code, then type 'make git-foo', and run ./tnumber-desc.sh from the testsuite.</p><p>The other part is that you need special compiler flags, since you are interested in extra warnings, debug symbols and such.</p><p>The default CFLAGS is defined in the Makefile, which is a tracked file, so modifying that is a no-go. You need 'make configure', then ./configure, and then you can edit config.mak.autogen.</p><p>Junio a few days ago <a href="http://article.gmane.org/gmane.comp.version-control.git/105297">mentioned</a> the CFLAGS he uses.</p><p>Here comes the interesting part:</p><p><pre>
+CC = ccache cc
+CFLAGS = -g -O2 -Wall -Werror -fno-inline -Wold-style-definition -Wdeclaration-after-statement
+</pre></p><p>-Werror so that I'm forced not to ignore warnings, -fno-inline to be able to debug inline functions, and I just stole the two others from Junio.</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/more-lilypond-adventures.html">More lilypond adventures</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>To expand my little lilypond knowledge, I just took an old song and tried to re-create in lilypond. Mostly finished, available <a href="http://vmiklos.hu/ly/lemon-tree/lemon-tree.html">here</a>.</p><p>Now time to find a working printer to see how does it look like on a real paper. :)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/w3c-s-css-validator.html">W3C's css validator</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>I wasted almost 8 hours with trying to get it working from CVS, no luck so far.</p><p>OK, I'm not a Java wizard, but.. most buildtime and runtime errors can be solved by scanning the list archives, but finally the Apache template engine it uses really can't initialize itself.</p><p>I started to debug it, but working with CVS is really a pain, so I want to set up a git mirror first, then hopefully I can send my results till now to the w3c css list, and ask for help.</p><p>Sigh. Java is still a pain.</p>
+</div>
+</div>
+
+  </div>
+</article>
+
+<footer>
+<div id="paginator">
+<a href="https://vmiklos.hu/blog/tag/en35.html" class="button_accent">&larr; Older Posts</a>
+
+<a href="https://vmiklos.hu/blog/tag/en33.html" class="button_accent">Newer Posts &rarr;</a>
+</div>
+</footer>
+
+    <div id="ending_message">
+      <p>&copy; Miklos Vajna. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
+</body>
+</html>

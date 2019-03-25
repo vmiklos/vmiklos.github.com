@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/pygments.css">
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=PT+Sans|PT+Serif|PT+Mono">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Miklos Vajna">
+  <meta name="description" content="Posts and writings by Miklos Vajna">
+
+  <link href="https://vmiklos.hu/blog/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking RSS" />
+
+
+  <title>
+    What is Miklos hacking
+&ndash; Tag: en  </title>
+
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <!--<a href="https://vmiklos.hu/blog">
+        <img src="https://vmiklos.hu/blog/theme/images/logo.png" alt="logo">
+      </a>-->
+      <h2><a href="https://vmiklos.hu/blog">What is Miklos hacking</a></h2>
+      <p></p>
+      <ul>
+        <li><a href="/" target="_blank">Root</a></li>
+        <li><a href="https://planet.documentfoundation.org/" target="_blank">LibreOffice Blogs</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://vmiklos.hu/blog">Index</a> &brvbar; <a href="https://vmiklos.hu/blog/archives.html">Archives</a>
+      &brvbar; <a href="https://vmiklos.hu/blog/feeds/all.rss.xml">RSS</a>
+&gt; Tag: en
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/unoconv-user-profile.html">Custom user profiles with unoconv</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://farm2.staticflickr.com/1859/43598513125_55bed46184_o.png" alt="https://farm2.staticflickr.com/1859/43598513125_55bed46184_o.png" />
+</div>
+</div>
+<div class="paragraph"><p>Background: I was benchmarking Online vs jodconverter vs unoconv the other day
+for Collabora&#8217;s <a href="https://www.collaboraoffice.com/document-conversion/">document
+conversion</a> page. One problem with measuring unoconv performance was that it
+provided no ways to run multiple <code>unoconv</code> processes in parallel, while the
+underlying <code>soffice</code> binary obviously allows this.</p></div>
+<div class="paragraph"><p>So while <code>unoconv</code> is not capable of launching the <code>soffice</code> process in a chroot
+(improves security), nor is capable of forking an already pre-initialized
+<code>soffice</code> process (improves performance, both are things Online can do for you),
+there is no real reason why you should not be able to run multiple <code>unoconv</code>
+processes in parallel. The previously mentioned benchmarking would be quite
+unfair if even this kind of multiprocessing would be ignored, but unoconv had
+no way to specify a custom user profile, which has to be different for each
+<code>soffice</code> process.</p></div>
+<div class="paragraph"><p>So I filed a <a href="https://github.com/dagwieers/unoconv/pull/451">GitHub pull
+request</a> on 1st Jun, and finally it was merged on 10th Aug.</p></div>
+<div class="paragraph"><p>Here is how you can use it for example:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>unoconv --user-profile /tmp/tmpf_yreswi -f pdf --port 2002 test.txt</code></pre>
+</div></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">It&#8217;s your responsibility to give --port a unique value, but that&#8217;s not
+too hard: if you use a thread pool to launch the <code>unoconv</code> processes, then you
+can add the thread index to a base port and that will give you a unique port.</td>
+</tr></table>
+</div>
+<div class="paragraph"><p>So this is available in unoconv master (towards unoconv 0.8.2+1), you can grab
+the sources from git and try it out right now. :-)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/uno-api-improvements.html">API improvements in LibreOffice</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://farm2.staticflickr.com/1793/43859007612_ca207fed0f_o.png" alt="https://farm2.staticflickr.com/1793/43859007612_ca207fed0f_o.png" />
+</div>
+</div>
+<div class="paragraph"><p>I worked on two small features to extend the public (UNO) API of LibreOffice.
+First, thanks to <a href="https://vector.com/">Vector</a> for funding
+<a href="https://www.collaboraoffice.com/">Collabora</a> to make this possible.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_aliased_paths_and_text_in_the_png_export_for_draw">Aliased paths and text in the PNG export for Draw</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>The UNO API of Draw allows you to build quite complex and custom shapes, but
+you may want to export the rendered result to a bitmap for testing purposes,
+so you can assert that the actual result matches a reference one.</p></div>
+<div class="paragraph"><p>One problem in this area is anti-aliasing, which can easily differ between
+machines. Given that normally aliased rendering is ugly, there is now a way to
+enable AA, but disable it just during a single invocation of the PNG exporter.</p></div>
+<div class="paragraph"><p>The above picture shows how the AA result looks like. You could write a Basic
+macro like this to trigger the PNG export from Draw:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>xExporter <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">createUnoService</span></span><span style="color: #990000">(</span><span style="color: #FF0000">"com.sun.star.drawing.GraphicExportFilter"</span><span style="color: #990000">)</span>
+xExporter<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">SetSourceDocument</span></span><span style="color: #990000">(</span>ThisComponent<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">DrawPages</span></span><span style="color: #990000">(</span><span style="color: #993399">0</span><span style="color: #990000">))</span>
+<span style="font-weight: bold"><span style="color: #0000FF">Dim</span></span> <span style="font-weight: bold"><span style="color: #000000">aArgs</span></span><span style="color: #990000">(</span><span style="color: #993399">1</span><span style="color: #990000">)</span> As new com<span style="color: #990000">.</span>sun<span style="color: #990000">.</span>star<span style="color: #990000">.</span>beans<span style="color: #990000">.</span>PropertyValue
+<span style="font-weight: bold"><span style="color: #000000">aArgs</span></span><span style="color: #990000">(</span><span style="color: #993399">0</span><span style="color: #990000">).</span>Name  <span style="color: #990000">=</span> <span style="color: #FF0000">"URL"</span>
+<span style="font-weight: bold"><span style="color: #000000">aArgs</span></span><span style="color: #990000">(</span><span style="color: #993399">0</span><span style="color: #990000">).</span>Value <span style="color: #990000">=</span> <span style="color: #FF0000">"file:///tmp/debug/aa.png"</span>
+<span style="font-weight: bold"><span style="color: #000000">aArgs</span></span><span style="color: #990000">(</span><span style="color: #993399">1</span><span style="color: #990000">).</span>Name  <span style="color: #990000">=</span> <span style="color: #FF0000">"MediaType"</span>
+<span style="font-weight: bold"><span style="color: #000000">aArgs</span></span><span style="color: #990000">(</span><span style="color: #993399">1</span><span style="color: #990000">).</span>Value <span style="color: #990000">=</span> <span style="color: #FF0000">"image/png"</span>
+xExporter<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">filter</span></span><span style="color: #990000">(</span><span style="font-weight: bold"><span style="color: #000000">aArgs</span></span><span style="color: #990000">())</span></tt></pre></div></div>
+<div class="paragraph"><p>Let&#8217;s see how it looks like if you turn AA off:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://farm2.staticflickr.com/1832/43859007522_aeb4516f02_o.png" alt="https://farm2.staticflickr.com/1832/43859007522_aeb4516f02_o.png" />
+</div>
+</div>
+<div class="paragraph"><p>You just need to specify a new <code>Antialiasing</code> key under <code>FilterData</code>:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">Dim</span></span> <span style="font-weight: bold"><span style="color: #000000">aFilterData</span></span><span style="color: #990000">(</span><span style="color: #993399">0</span><span style="color: #990000">)</span> As new com<span style="color: #990000">.</span>sun<span style="color: #990000">.</span>star<span style="color: #990000">.</span>beans<span style="color: #990000">.</span>PropertyValue
+<span style="font-weight: bold"><span style="color: #000000">aFilterData</span></span><span style="color: #990000">(</span><span style="color: #993399">0</span><span style="color: #990000">).</span>Name <span style="color: #990000">=</span> <span style="color: #FF0000">"AntiAliasing"</span>
+<span style="font-weight: bold"><span style="color: #000000">aFilterData</span></span><span style="color: #990000">(</span><span style="color: #993399">0</span><span style="color: #990000">).</span>Value <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #0000FF">False</span></span>
+xExporter <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">createUnoService</span></span><span style="color: #990000">(</span><span style="color: #FF0000">"com.sun.star.drawing.GraphicExportFilter"</span><span style="color: #990000">)</span>
+xExporter<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">SetSourceDocument</span></span><span style="color: #990000">(</span>ThisComponent<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">DrawPages</span></span><span style="color: #990000">(</span><span style="color: #993399">0</span><span style="color: #990000">))</span>
+<span style="font-weight: bold"><span style="color: #0000FF">Dim</span></span> <span style="font-weight: bold"><span style="color: #000000">aArgs</span></span><span style="color: #990000">(</span><span style="color: #993399">2</span><span style="color: #990000">)</span> As new com<span style="color: #990000">.</span>sun<span style="color: #990000">.</span>star<span style="color: #990000">.</span>beans<span style="color: #990000">.</span>PropertyValue
+<span style="font-weight: bold"><span style="color: #000000">aArgs</span></span><span style="color: #990000">(</span><span style="color: #993399">0</span><span style="color: #990000">).</span>Name  <span style="color: #990000">=</span> <span style="color: #FF0000">"URL"</span>
+<span style="font-weight: bold"><span style="color: #000000">aArgs</span></span><span style="color: #990000">(</span><span style="color: #993399">0</span><span style="color: #990000">).</span>Value <span style="color: #990000">=</span> <span style="color: #FF0000">"file:///tmp/debug/non-aa.png"</span>
+<span style="font-weight: bold"><span style="color: #000000">aArgs</span></span><span style="color: #990000">(</span><span style="color: #993399">1</span><span style="color: #990000">).</span>Name  <span style="color: #990000">=</span> <span style="color: #FF0000">"FilterData"</span>
+<span style="font-weight: bold"><span style="color: #000000">aArgs</span></span><span style="color: #990000">(</span><span style="color: #993399">1</span><span style="color: #990000">).</span>Value <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">aFilterData</span></span><span style="color: #990000">()</span>
+<span style="font-weight: bold"><span style="color: #000000">aArgs</span></span><span style="color: #990000">(</span><span style="color: #993399">2</span><span style="color: #990000">).</span>Name  <span style="color: #990000">=</span> <span style="color: #FF0000">"MediaType"</span>
+<span style="font-weight: bold"><span style="color: #000000">aArgs</span></span><span style="color: #990000">(</span><span style="color: #993399">2</span><span style="color: #990000">).</span>Value <span style="color: #990000">=</span> <span style="color: #FF0000">"image/png"</span>
+xExporter<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">filter</span></span><span style="color: #990000">(</span><span style="font-weight: bold"><span style="color: #000000">aArgs</span></span><span style="color: #990000">())</span></tt></pre></div></div>
+<div class="paragraph"><p>You can imagine which rendering result is easier to debug when the reference
+and the actual bitmap doesn&#8217;t match. ;-)</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">This feature is available for other bitmap formats as well, PNG is only
+an example.</td>
+</tr></table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_default_character_style_in_writer">Default character style in Writer</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>In most cases you don&#8217;t really need a default character style: if you&#8217;re fine
+with a default, then the default paragraph style should be enough for your
+needs. In general, paragraph styles can contain character properties, so if
+the default is fine for you, you just don&#8217;t set a character style.</p></div>
+<div class="paragraph"><p>However, there is an exception to all rules. If you want to reset the current
+character style, it makes sense to just set the <code>CharStyleName</code> property to a
+default value, especially since this works with paragraph styles already.</p></div>
+<div class="paragraph"><p>Now you can write C++ code like this (see
+<a href="https://cgit.freedesktop.org/libreoffice/core/tree/sw/qa/extras/unowriter/unowriter.cxx">SwUnoWriter::testDefaultCharStyle()</a>
+for a full example):</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>xCursorProps<span style="color: #990000">-&gt;</span><span style="font-weight: bold"><span style="color: #000000">setPropertyValue</span></span><span style="color: #990000">(</span><span style="color: #FF0000">"CharStyleName"</span><span style="color: #990000">,</span> uno<span style="color: #990000">::</span><span style="font-weight: bold"><span style="color: #000000">makeAny</span></span><span style="color: #990000">(</span><span style="font-weight: bold"><span style="color: #000000">OUString</span></span><span style="color: #990000">(</span><span style="color: #FF0000">"Standard"</span><span style="color: #990000">)));</span></tt></pre></div></div>
+<div class="paragraph"><p>And it&#8217;ll be handled as <code>Default Style</code> in English builds, or their localized
+versions in a non-English UI.</p></div>
+<div class="paragraph"><p>All this is available in master (towards LibreOffice 6.2), or you can grab a
+<a href="http://dev-builds.libreoffice.org/daily/master/">daily build</a> and try it out
+right now. :-)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/xmlsec-cng-ecsa.html">Improved ECDSA handling in LibreOffice</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>I wrote about ECDSA handling in LibreOffice
+<a href="https://vmiklos.hu/blog/xmlsec-nss-ecdsa.html">last year</a>, back then the target
+was to be able to verify signatures using the ECDSA algorithm on Linux.</p></div>
+<div class="paragraph"><p>Lots of things happened since then, this post is meant to summarize those
+improvements. My personal motivation is that Hungarian eID cards come with a
+gov-trusted ECDSA (x509) cert, so handling those in LibreOffice would be nice.
+My goals were:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+platforms: handling Windows as well, not only Linux/macOS
+</p>
+</li>
+<li>
+<p>
+operations: handling signing as well, not only verification
+</p>
+</li>
+<li>
+<p>
+formats: cover all of ODF, OOXML and PDF
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Let&#8217;s see what has happened:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Linux, ODF, sign: we had hardcoded RSA algorithm when generating a signature, now
+  we infer the sign algorithm from the signing cert algorithm
+  (<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=fd1bc178b02e05cd12ec784ff87f5c97069bc5f5">commit</a>)
+</p>
+</li>
+<li>
+<p>
+Linux, OOXML, sign: same problem with hardcoded RSA
+  (<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=6b1b8ef51b752f9711d6581283d6c515d3c50d9b">commit</a>)
+</p>
+</li>
+<li>
+<p>
+Windows, PDF, sign: the certificate chooser had to be ported to from
+  CryptoAPI to
+  <a href="https://docs.microsoft.com/en-us/windows/desktop/SecCNG/cng-portal">CNG</a>
+  (<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=93e33ba279e837356e157745177d7f6061d442b7">commit</a>)
+</p>
+</li>
+<li>
+<p>
+Windows, ODF, verify / sign: this was the largest problem, this required a
+  whole new libxmlsec backend
+  (<a href="https://github.com/lsh123/xmlsec/tree/master/include/xmlsec/mscng">interface</a>,
+  <a href="https://github.com/lsh123/xmlsec/tree/master/src/mscng">implementation</a>, all in
+  C90) and also required conditionally using that new backend in LibreOffice
+  (<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=71d02f5b6ca78935df3d09ec0a5817f5870b056e">commit</a>)
+</p>
+</li>
+<li>
+<p>
+Windows, OOXML, sign: this was almost functional, except that the UI
+  recently regressed, now fixed
+  (<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=02119ce226ef7c1fcf419aa0933aa95381ee309b">commit</a>)
+</p>
+</li>
+<li>
+<p>
+Finally now that everything is ported on Windows to use CNG, I could enable
+  it by default yesterday.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>I could test hardware-based signing after this, which was fine out of the box
+on both platforms. Some screenshots:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Linux:
+</p>
+</li>
+</ul></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://farm2.staticflickr.com/1784/29321634078_8818b2d7ba_o.png" alt="https://farm2.staticflickr.com/1784/29321634078_8818b2d7ba_o.png" />
+</div>
+</div>
+<div class="ulist"><ul>
+<li>
+<p>
+Windows:
+</p>
+</li>
+</ul></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://farm1.staticflickr.com/927/42288765505_db72ee48f2_o.png" alt="https://farm1.staticflickr.com/927/42288765505_db72ee48f2_o.png" />
+</div>
+</div>
+<div class="paragraph"><p>(There is no reason why this would not work on macOS, but I did not test that.)</p></div>
+<div class="paragraph"><p>Thanks Gabor Kelemen who helped me to get a sane card reader that has
+reasonable driver support on Linux.</p></div>
+<div class="paragraph"><p>All this is available in master (towards LibreOffice 6.2), or you can grab a
+<a href="http://dev-builds.libreoffice.org/daily/master/">daily build</a> and try it out
+right now. :-)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/reqif-xhtml.html">Editing ReqIF-XHTML fragments in LibreOffice Writer</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://youtu.be/hesL0TWZ5JQ">
+<img src="https://farm2.staticflickr.com/1752/28703474708_bde744fb13_o.png" alt="https://farm2.staticflickr.com/1752/28703474708_bde744fb13_o.png" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>I worked on a small feature to use Writer as an editor for the XHTML fragments
+inside
+<a href="https://en.wikipedia.org/wiki/Requirements_Interchange_Format">Requirements
+Interchange Format</a> (ReqIF) files.  First, thanks to
+<a href="https://vector.com/">Vector</a> for funding
+<a href="https://www.collaboraoffice.com/">Collabora</a> to make this possible.</p></div>
+<div class="paragraph"><p>Writer already supported XHTML import and export before (see my
+<a href="http://vmiklos.hu/blog/odt-xhtml-performance.html">previous post</a>) as a special
+mode of the HTML filter, this work builds on top of that. The main speciality
+around XHTML as used for fragments inside a ReqIF file is embedded objects.</p></div>
+<div class="paragraph"><p>The special mode to opt-in for ReqIF-XHTML behavior can actived like this:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+during import: <code>--infilter="HTML (StarWriter):xhtmlns=reqif-xhtml"</code>
+</p>
+</li>
+<li>
+<p>
+during export: <code>-convert-to "xhtml:HTML (StarWriter):xhtmlns=reqif-xhtml"</code>
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Three different cases are handled:</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Image with native data we don&#8217;t understand and just preserve.
+</p>
+</li>
+<li>
+<p>
+Image with OLE2 data, which we hand out to external applications (at least
+on Windows). On the above video this is an embedded PPSX file, handled by PowerPoint.
+</p>
+</li>
+<li>
+<p>
+Image with ODF data, which we handle internally. This is a Draw document on the above video.
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p>Regarding how it works, the import is a series of unwrapping containers till
+you get to the real data and the export is the opposite of this. Here are the layers:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Larger ReqIF files have the <code>.reqifz</code> extension, and are ZIP files
+  containing an XML file, having the XHTML fragments. This is not relevant for
+  this post, as Writer assumes that extracting the XHTML fragment from ReqIF is
+  done before you load the content into Writer.
+</p>
+</li>
+<li>
+<p>
+XHTML always has a PNG image for the object, and optionally it has RTF as
+  native data for the object.
+</p>
+</li>
+<li>
+<p>
+The RTF file is a fragment, containing just an embedded OLE1 container.
+</p>
+</li>
+<li>
+<p>
+The OLE1 container is just a wrapper around the real OLE2 container.
+</p>
+</li>
+<li>
+<p>
+The OLE2 container either has the data directly or MSO has a convention on
+  how to include OOXML files in it (see the PPSX example above), and we handle
+  that.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>On export we do the opposite: save the file, put it into OLE2, then into OLE1,
+then into RTF, finally into XHTML.</p></div>
+<div class="paragraph"><p>There is no specification on how to put ODF files into OLE2, so I extracted
+the relevant code from LibreOffice&#8217;s binary MSO filters and now the Writer
+HTML filter uses that as well. This avoids code duplication and also could
+avoid inventing some new markup this way.</p></div>
+<div class="paragraph"><p>All this is available in master (towards LibreOffice 6.2), or you can grab a
+<a href="http://dev-builds.libreoffice.org/daily/master/">daily build</a> and try it out
+right now. :-)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/image-lazy-read.html">Lazy reading images from Microsoft formats in LibreOffice</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>I worked on improving document load performance of Microsoft formats in
+general, and DOC/DOCX in particular in LibreOffice recently. First, thanks to
+<a href="https://www.documentfoundation.org/">TDF</a> and users that support the foundation
+by providing donations for funding <a href="https://www.collaboraoffice.com/">Collabora</a>
+to make this possible.</p></div>
+<div class="paragraph"><p>I built on top of the
+<a href="https://tomazvajngerl.blogspot.com/2018/04/improving-image-handling-in-libreoffice.html">great
+work of Tomaz</a>, focusing on these secondary, but important formats.</p></div>
+<div class="paragraph"><p>The idea is that if you load an Microsoft binary or OOXML file, it should not
+be necessary to parse all images at load time, it&#8217;s enough to lazy read it
+when we first render e.g. a Writer page containing that image.</p></div>
+<div class="paragraph"><p>The focus here was documents containing large images. I tested with an
+<a href="https://www.theverge.com/2012/1/25/2732264/nasas-64-megapixel-photo-of-earth">Earth
+photo</a> of size 8000x8000 pixels from NASA, making little modifications to it,
+so each picture has a different checksum, embedding them into a binary DOC file.</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://farm1.staticflickr.com/980/41838412652_c1cbefcfc1_o.png" alt="https://farm1.staticflickr.com/980/41838412652_c1cbefcfc1_o.png" />
+</div>
+</div>
+<div class="paragraph"><p>I measured the time from the <code>soffice</code> process startup to rendering the first
+page. We defer the work of loading most images now, as you can see on the
+chart. In contrast, we used to decompress all images on file import in the
+past. This means the new cost for e.g. 4 images is 37% of the original.</p></div>
+<div class="paragraph"><p>All this is available in master (towards LibreOffice 6.1), or you can grab a
+<a href="http://dev-builds.libreoffice.org/daily/master/">daily build</a> and try it out
+right now. :-)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/hamburg2018.html">LibreOffice Hamburg Hackfest 2018</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div style="text-align: center; font-size: 0.6em;">
+<img src="https://farm1.staticflickr.com/873/27489617988_4c2ce3fd59_z.jpg"/>
+<p>(via <a href="https://twitter.com/Sweet5hark/status/982560887927197696">Sweet5hark</a>)</p>
+</div>
+<div class="paragraph"><p>I arrived home from Hamburg yesterday where I participated in the
+<a href="https://wiki.documentfoundation.org/Hackfest/Hamburg2018">LibreOffice hackfest</a>
+over the weekend as a mentor.  First, thanks to The Document Foundation&#8201;&#8212;&#8201;and
+all the <a href="https://www.libreoffice.org/donate">donors</a> for funding Collabora to
+make this possible.</p></div>
+<div class="paragraph"><p>There were a few topics I mentored:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Patrick was interested fixing
+  <a href="https://bugs.documentfoundation.org/show_bug.cgi?id=116486">tdf#116486</a>,
+  which required some background knowledge on the Writer document model and
+  layout, so we explored the relevant details together towards providing an
+  actual patch for the bug.
+</p>
+</li>
+<li>
+<p>
+Nithin wanted to fix
+  <a href="https://bugs.documentfoundation.org/show_bug.cgi?id=112384">tdf#112384</a>,
+  which turned out to be an ideal task for a hackfest. On one hand, the scope is
+  limited so that you can implement this mini-feature over a weekened. On the
+  other hand, it required touching various parts of Writer (UI, document model,
+  UNO API, ODF filter), so it allowed seeing the process of adding a new
+  feature. The <a href="https://gerrit.libreoffice.org/52561">patch</a> is merged to master.
+</p>
+</li>
+<li>
+<p>
+Linus looked for a task that is relatively easy, still useful, we looked at
+  <a href="https://bugs.documentfoundation.org/show_bug.cgi?id=42949">tdf#42949</a>, and he
+  identified and removed a number of unused includes himself. This should
+  especially help with slow incremental builds. Again, the
+  <a href="https://gerrit.libreoffice.org/52594">patch</a> is already in master.
+</p>
+</li>
+<li>
+<p>
+Zdeněk (raal) wanted to write a uitest for
+  <a href="https://bugs.documentfoundation.org/show_bug.cgi?id=106280">tdf#106280</a> so we
+  were figuring out together how to select images from pyuno and how to avoid
+  using graphic URLs in uitests in general.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>The full list of achievements is
+<a href="https://wiki.documentfoundation.org/Hackfest/Hamburg2018#Achievements">on the
+wiki</a>, if you were at the hackfest and you did not contribute to that section,
+please write a line about what did you hack on. :-)</p></div>
+<div class="paragraph"><p>Finally, thanks for the organizers and the sponsors of the hackfest, it was a
+really great event!</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/odt-xhtml-performance.html">Optimizing ODT ↔ XHTML conversion performance for simple documents</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>I worked on improving the ODT ↔ XHTML conversion performance for simple
+documents in LibreOffice recently.  First, thanks to
+<a href="https://vector.com/">Vector</a> for funding
+<a href="https://www.collaboraoffice.com/">Collabora</a> to make this possible.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_odt_8594_xhtml_conversion">ODT &#8594; XHTML conversion</h2>
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://farm5.staticflickr.com/4605/26697712598_2ace3f45a3_o.png" alt="https://farm5.staticflickr.com/4605/26697712598_2ace3f45a3_o.png" />
+</div>
+</div>
+<div class="paragraph"><p>The focus here was <strong>really</strong> simple documents, like just one sentence with
+minimal formatting. The use-case is to have thousands of these simple
+documents, only a minority containing complex formatting, the rest is just
+that simple.</p></div>
+<div class="paragraph"><p>Performance work usually focuses on one specific complex feature, e.g. lots of
+bookmarks, lots of document-level user-defined metadata, and so on&#8201;&#8212;&#8201;this way
+there were room for improvements when it comes to trivial documents.</p></div>
+<div class="paragraph"><p>I managed to reduce the cost of the conversion to the <em>fifth of the original</em>
+cost in both directions&#8201;&#8212;&#8201;the chart above shows the impact of my work for
+the ODT &#8594; XHTML direction. The steps that helped:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Recognize <code>XHTML</code> as a value for the <code>FilterOptions</code> key in the <code>HTML
+  (StarWriter)</code> export filter, this way avoid the need to go via XSLT, which
+  would be expensive.
+</p>
+</li>
+<li>
+<p>
+Add a new <code>NoFileSync</code> flag to the <code>frame::XStorable::storeToURL()</code> API, so
+  that if you know you&#8217;ll read the result after the conversion finished, you
+  can avoid an expensive <code>fsync()</code> call for each and every file, which helps
+  HDDs a lot, while means no overhead for SSDs.
+</p>
+</li>
+<li>
+<p>
+If you know your input format already, then specifying an explicit
+  <code>FilterName</code> key for the <code>frame::XComponentLoader::loadComponentFromURL()</code>
+  API helps not spending time to detect the file format you already know.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Note that the XHTML mode for the Writer HTML export is still a work in
+progress, but it already produces valid output for such simple documents.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_xhtml_8594_odt_conversion">XHTML &#8594; ODT conversion</h2>
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://farm5.staticflickr.com/4608/39674632615_de78265c7f_o.png" alt="https://farm5.staticflickr.com/4608/39674632615_de78265c7f_o.png" />
+</div>
+</div>
+<div class="paragraph"><p>The chart above shows the results of my work for the XHTML &#8594; ODT direction.
+The steps to get to the final reduced cost were:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+The new <code>NoFileSync</code> flag, as mentioned previously.
+</p>
+</li>
+<li>
+<p>
+A new <code>NoThumbnail</code> flag, which is useful if the ODT will be part of a next
+  step in the pipeline and you know that the thumbnail image won&#8217;t be used anyway.
+</p>
+</li>
+<li>
+<p>
+The default table autoformat definitions in Writer are now
+  <a href="https://cgit.freedesktop.org/libreoffice/core/commit/?id=53ef918a6839c8d587dec1bb635e6b39397c53d0">lazy-loaded</a>.
+  (This is my favorite one, you don&#8217;t have to opt-in for this, so everyone
+  benefits.)
+</p>
+</li>
+<li>
+<p>
+A new <code>HiddenForConversion</code> flag for
+  <code>frame::XComponentLoader::loadComponentFromURL()</code>, which means we don&#8217;t lay
+  out the UI elements (toolbars, sidebar, status bar, etc.) when we know the
+  purpose of the document load is only to save the document model in an other
+  format.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>All this is available in master (towards LibreOffice 6.1), or you can grab a
+<a href="http://dev-builds.libreoffice.org/daily/master/">daily build</a> and try it out
+right now. :-)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/fosdem2018.html">EPUB export in LibreOffice Writer FOSDEM talk</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://speakerd.s3.amazonaws.com/presentations/540497a4ac8443d2a42c92dd0ee1d298/epub-fosdem-brussels-2k18.pdf">
+<img src="https://farm5.staticflickr.com/4613/39363415464_1ed88d85f3_z.jpg" alt="https://farm5.staticflickr.com/4613/39363415464_1ed88d85f3_z.jpg" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>Yesterday I gave an
+<a href="https://fosdem.org/2018/schedule/event/ode_epub_export/">EPUB export in
+LibreOffice Writer FOSDEM</a> talk at FOSDEM 2018, in the
+<a href="https://fosdem.org/2018/schedule/track/open_document_editors/">Open document
+editors developer room</a>. The room was well-crowded&#8201;&#8212;&#8201;perhaps because the next
+talk was about LibreOffice/Collabora Online. ;-)</p></div>
+<div class="paragraph"><p>Quite some other slides will be available on
+<a href="http://planet.documentfoundation.org/">Planet</a> I expect, don&#8217;t miss them.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/epub3-improvements-2.html">EPUB3 export improvements in Libreoffice Writer, take two</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>I worked on improving the EPUB3 export filter in LibreOffice further recently.
+First, thanks to <a href="http://nouenoff.nl/">Nou&amp;Off</a> in cooperation with a customer
+who made this work possible. Since the
+<a href="/blog/epub3-improvements.html">previous blog entry</a> there have been a
+number of improvements around a next set of topics.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_cover_images">Cover images</h2>
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://farm5.staticflickr.com/4760/38920770224_b247fa89c4_o.png" alt="https://farm5.staticflickr.com/4760/38920770224_b247fa89c4_o.png" />
+</div>
+</div>
+<div class="paragraph"><p>It is now possible to specify a cover image for the exported EPUB file. Given
+that a cover image is not naturally part of the Writer document model, I introduced the
+concept of a media directory for the EPUB export. The media directory is a
+directory next to the source file, with the &lt;file name without extension&gt;
+name. If that directory contains a file named cover.svg (or .gif, .jpg, .png),
+the exporter will automatically use it. Otherwise you can customize this
+default.</p></div>
+<div class="paragraph"><p>The picture shows two EPUB files in <a href="http://readium.org/">Readium</a> with
+different cover images.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_improved_metadata_support">Improved metadata support</h2>
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://farm5.staticflickr.com/4603/38920770174_142950782e_o.png" alt="https://farm5.staticflickr.com/4603/38920770174_142950782e_o.png" />
+</div>
+</div>
+<div class="paragraph"><p>It&#8217;s quite frequent that you are technically author of a document, but the
+logical author of the book is somebody else. Same for the date of the book,
+and so on. So the EPUB export dialog now has support for overwriting the
+defaults coming from the Writer document model. For mass-conversion of
+documents it&#8217;s possible to place a &lt;file name without extension&gt;.xmp file in
+the media directory and <a href="http://www.adobe.com/devnet/xmp.html">XMP</a> metadata
+from that file will also overwrite metadata coming from the document model.</p></div>
+<div class="paragraph"><p>The picture shows the extended EPUB export options dialog.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_footnotes_and_image_popups">Footnotes and image popups</h2>
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://farm5.staticflickr.com/4612/38920770144_e90e2a8e92_o.png" alt="https://farm5.staticflickr.com/4612/38920770144_e90e2a8e92_o.png" />
+</div>
+</div>
+<div class="paragraph"><p>I&#8217;ve added support for footnotes. As a special case of this, image popups on
+images and text is now supported. This works by placing a relative link on a
+text portion or on an image, and placing an image with the same name (e.g. in
+high resolution) in the media directory. In this case the EPUB export will
+bundle the image from the media directory inside the EPUB file and clicking on
+the text or image will open the bundled image in a popup (or in some other
+container, depending on how your reader interprets footnotes).</p></div>
+<div class="paragraph"><p>The picture shows such a popup in Microsoft Edge.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_fixed_layout">Fixed layout</h2>
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://farm5.staticflickr.com/4604/38920770104_108465bda1_o.png" alt="https://farm5.staticflickr.com/4604/38920770104_108465bda1_o.png" />
+</div>
+</div>
+<div class="paragraph"><p>The EPUB3 fixed layout is quite similar to PDF, just it is built on top of
+XHTML and SVG. Possible use-cases for this can be:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+exporting a document where presenting the content as reflowable text would
+  be misleading (e.g. comic books), but the publisher of the book only works
+  with EPUB (reflowable or fixed layout, but no PDF)
+</p>
+</li>
+<li>
+<p>
+printing (again, in case for some reason you want to avoid PDF)
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>These might be very specific situations, but luckily supporting them is not
+too complex. I implemented an approach very similar to the PDF export, where
+we export individual pages of the Writer document&#8217;s layout as a metafile, and
+then consume that&#8201;&#8212;&#8201;this time with the SVG export. Building on top of the
+existing Writer layout and SVG export means the hard work is really done by
+these components, the EPUB fixed layout export just puts these together.</p></div>
+<div class="paragraph"><p>The picture shows a Writer document with a table of contents containing page
+numbers, a header and a footer in Readium.</p></div>
+<div class="paragraph"><p>All this is available in master (towards LibreOffice 6.1), or you can grab a
+<a href="http://dev-builds.libreoffice.org/daily/master/">daily build</a> and try it out
+right now. :-)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/epub3-improvements.html">EPUB3 export improvements in Libreoffice Writer</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>I worked on improving the EPUB3 export filter in LibreOffice recently. First,
+thanks to <a href="http://nouenoff.nl/">Nou&amp;Off</a> in cooperation with a customer who made
+this work possible. Since the <a href="/blog/basic-epub3-export.html">previous blog
+entry</a> there have been a number of improvements around 4 topics.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_improved_links">Improved links</h2>
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://farm5.staticflickr.com/4540/38847800651_d5271ced3a_o.png" alt="https://farm5.staticflickr.com/4540/38847800651_d5271ced3a_o.png" />
+</div>
+</div>
+<div class="paragraph"><p>The character properties of link text is now handled correctly, in the above
+example you can see that the text is red, and this comes from a character
+style.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_improved_table_support">Improved table support</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Previously the support for tables was there just to not loose content, now all
+kinds cell, row and table properties are handled correctly. A few samples</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+custom cell width:
+</p>
+</li>
+</ul></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://farm5.staticflickr.com/4566/38847800611_38b8483d7f_o.png" alt="https://farm5.staticflickr.com/4566/38847800611_38b8483d7f_o.png" />
+</div>
+</div>
+<div class="ulist"><ul>
+<li>
+<p>
+custom row height:
+</p>
+</li>
+</ul></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://farm5.staticflickr.com/4580/38847800521_26285a9152_o.png" alt="https://farm5.staticflickr.com/4580/38847800521_26285a9152_o.png" />
+</div>
+</div>
+<div class="ulist"><ul>
+<li>
+<p>
+row span:
+</p>
+</li>
+</ul></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://farm5.staticflickr.com/4540/38847800461_359651bc3d_o.png" alt="https://farm5.staticflickr.com/4540/38847800461_359651bc3d_o.png" />
+</div>
+</div>
+<div class="paragraph"><p>So the table support should be now decent, covering row and column spanning
+and various cell border properties.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_improved_image_support">Improved image support</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Previously only the simplest as-character anchoring was supported. Now much
+more cases are handled. Two examples:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+image borders:
+</p>
+</li>
+</ul></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://farm5.staticflickr.com/4541/24975193838_94818bd1ed_o.png" alt="https://farm5.staticflickr.com/4541/24975193838_94818bd1ed_o.png" />
+</div>
+</div>
+<div class="ulist"><ul>
+<li>
+<p>
+image with a caption:
+</p>
+</li>
+</ul></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://farm5.staticflickr.com/4568/24975193608_83239bf287_o.png" alt="https://farm5.staticflickr.com/4568/24975193608_83239bf287_o.png" />
+</div>
+</div>
+<div class="paragraph"><p>This includes various wrap types (to the extent HTML5 allows representing ODF
+wrap types).</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_font_embedding">Font embedding</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>If the user chooses to embed fonts (via File &#8594; Properties &#8594; Font &#8594; Embed),
+then the EPUB export now handles this. Here is a custom font that is typically
+not available:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://farm5.staticflickr.com/4561/38847800811_613d6fbbd2_o.png" alt="https://farm5.staticflickr.com/4561/38847800811_613d6fbbd2_o.png" />
+</div>
+</div>
+<div class="paragraph"><p>(The screenshot is from the Calibre ebook reader.)</p></div>
+<div class="paragraph"><p>All this is available in master (towards LibreOffice 6.1), or you can grab a
+<a href="http://dev-builds.libreoffice.org/daily/master/">daily build</a> and try it out
+right now. :-)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+
+<footer>
+<div id="paginator">
+<a href="https://vmiklos.hu/blog/tag/en3.html" class="button_accent">&larr; Older Posts</a>
+
+<a href="https://vmiklos.hu/blog/tag/en.html" class="button_accent">Newer Posts &rarr;</a>
+</div>
+</footer>
+
+    <div id="ending_message">
+      <p>&copy; Miklos Vajna. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
+</body>
+</html>
