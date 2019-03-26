@@ -8,4 +8,4 @@ sys.path.append(os.curdir)
 from pelicanconf import *
 
 SITEURL = 'https://vmiklos.hu/blog'
-#GOOGLE_ANALYTICS = ""
+GOOGLE_ANALYTICS = "UA-24726997-1"
