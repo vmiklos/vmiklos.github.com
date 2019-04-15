@@ -58,6 +58,26 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/nokia-fbus-from-python.html">Nokia fbus from Python</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>So yesterday I found <a href="http://www.embedtronics.com/nokia/fbus.html">this</a> article and I wanted to try it out from Python.</p><p>Here is a few lines of code to send that "get hw and firmware version" message to the phone and at least read an ACK:</p><p><code>
+import serial, time</p><p>ser = serial.Serial("/dev/ttyUSB0", 115200)
+ser.setRTS(False)
+ser.write("\x1E\x00\x0C\xD1\x00\x07\x00\x01\x00\x03\x00\x01\x40\x00\x52\xD5")
+print repr(ser.read(1))
+print repr(ser.read(10))
+</code></p><p>Of course this is just a PoC, the first read could be avoided and we could just read one char till we hit the 0x1e one. But that .setRTS() took a few hours to figure out. ;-)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/wip-support-in-syncd.html">WIP support in syncd</a></h1>
   </div>
   <div class="article_text">
@@ -176,20 +196,6 @@
     <div id="preamble">
 <div class="sectionbody">
 <p>We all know the usual problem with sql escaping, there is even a <a href="http://xkcd.com/327/">comic</a> about it.</p><p>There is an other SQL-related project, <a href="http://www.sphinxsearch.com/">sphinx</a>, which is a quite efficient search indexer (especially for whole word search), but it also needs escaping. Given that in sphinx "foo-bar" means "all records containing foo, but not bar", if you really want a single-word "foo-bar", then you need to use "foo\-bar".</p><p>And that's the fun part, as the escaping order matters a lot. Basically if you escape mysql first and then just insert the sphinx query, then you just created an injection yourself. ;)</p><p>So the <em>final</em> query will look like "foo\\-bar" if you did the escaping in the right order.</p><p>It's also notable that the official sphinx php API seems not escaping the ";" char, which is also a bug, as this way you can modify the search query in the way you want.</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/virtualbox.html">Virtualbox</a></h1>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>I earlier wrote about I was experimenting with PowerShell, so I had to install Windows in a virtual machine. It's not a big problem, we at the uni get a license to use it for free till the end of our studies (or something like that), so I started to search for what emulator should I use.</p><p>Of course my favorite is qemu, but till I don't have kvm-enabled hw and kvm support isn't fully merged from kvm, it's slow.</p><p>Given that I had to use some other emulator, I thought I gave vmware a try, they offer a 30-day trial and I wanted to see what's new in their recent versions - I think I last tried it about 2 years ago. It seems the automagic gui screwed up something and there is no more vmware-config.pl, so I gave it up.</p><p>Last, I tried Virtualbox. Man, it's fast! Of course it's bloated as well (external kernel module, guest addons, etc) - but if I forget about these issues, it really gaves me the same experience vmware gave me when I last tried it. Impressive.</p><p>As a side note, git-1.6.2 is out, sadly I haven't got much time for it - only 5 patches of mine are in the changelog. But at least now the pdf version of the user manual is supported out of the box.</p>
 </div>
 </div>
 

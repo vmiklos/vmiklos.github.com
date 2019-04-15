@@ -57,6 +57,42 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/ctags-sal-override.html">ctags vs override/SAL_OVERRIDE</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://lh3.googleusercontent.com/-9Hd40EVT8aw/VZBhBTZQdTI/AAAAAAAAFyM/AfymfTqKDFw/s0/" alt="https://lh3.googleusercontent.com/-9Hd40EVT8aw/VZBhBTZQdTI/AAAAAAAAFyM/AfymfTqKDFw/s0/" />
+</div>
+</div>
+<div class="paragraph"><p>If you use <a href="http://ctags.sourceforge.net/">ctags</a> to help your LibreOffice
+development, there are already good descriptions for that&#8201;&#8212;&#8201;e.g. for vim
+there is one <a href="https://wiki.documentfoundation.org/Development/Vim#ctags">on the
+TDF wiki</a>.</p></div>
+<div class="paragraph"><p>What was problematic is that since C++11, <code>override</code> is a valid keyword
+after a member function declaration, and we have our <code>SAL_OVERRIDE</code> macro that
+I
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=3891d323cdc3c03154f5682baaeaa4b2ef015a63">added</a>
+to be able to use it before all our supported compilers recognize it.
+Unsupported parsers include ctags, so if a member function have SAL_OVERRIDE,
+ctags only indexed the definition, not the declaration.</p></div>
+<div class="paragraph"><p>I created patches to fix these problems in ctags, the
+<a href="https://sourceforge.net/p/ctags/bugs/367/">override one</a> is probably
+interesting for all C++ projects, the
+<a href="https://github.com/vmiklos/ctags-svn/commit/ef53a231db5b428585324f266072b884e17bae52">SAL_OVERRIDE
+one</a> is LibreOffice-specific.</p></div>
+<div class="paragraph"><p>The hope is that the later will go away in the long run, so it won&#8217;t really be
+a problem that ctags do not recognize that macro out of the box. :-)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/resourcemodel.html">Cleanup of resourcemodel in LibreOffice</a></h1>
   </div>
   <div class="article_text">
@@ -682,117 +718,6 @@ TestFixture</a> subclass that contains the actual test cases.</p></div>
 <div class="paragraph"><p>So in case you are planning how to test your import library, then now you have
 two options, evaluate them and choose what seems to be the better tool for
 your purpose.</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/tiled-editing-part-3.html">Tiled editing: from input handling to selections</a></h1>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>In <a href="/blog/tiled-editing-part-2.html">from a living document to
-input handling</a>, I wrote about how we handle touch and on-screen keyboard
-events in the LibreOffice Android app. A next step in this
-<a href="http://blog.documentfoundation.org/2015/01/27/the-document-foundation-announces-the-results-of-the-android-tender/">TDF-funded
-project</a> is to provide more UI elements which are specific to touch devices:
-selections is one of them.</p></div>
-<div class="paragraph"><p>Here are the problems we had to solve to get this working:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-Long push is not an event core would recognize.
-</p>
-</li>
-<li>
-<p>
-If you use the mouse and have a selection in Writer, it&#8217;s only possible to
-  extend the end of it. If you use the keyboard, then it&#8217;s possible to shrink
-  the end of it, but still no adjustment of the start. On touch devices, it&#8217;s
-  natural to have selection handles at the start and end of the selection and be
-  able to adjust both, in both directions.
-</p>
-</li>
-<li>
-<p>
-Additionally, when the user drags the selection handles, the expected
-  behavior is that the position of the selection and the handle are never the
-  same: the handle is placed below the selection position and when you drag the
-  handle, the new selection position is above the handle&#8230; ;-)
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>Long push is reasonable to map to double mouse click, as in both cases e.g. in
-Writer the user expects to have a <em>select word</em> action. But for the adjustment
-of selections, we really had to define a new API
-(<code>lok::Document::setTextSelection()</code>) to allow setting the start or end of the
-selection to a new logical (in document coordinates, not paragraph / character
-indexes) point.</p></div>
-<div class="paragraph"><p>If you are interested how this looks like, here is a demo:</p></div>
-<center>
-<iframe width="420" height="315" src="https://www.youtube.com/embed/dmZtxA2HD5o" frameborder="0" allowfullscreen></iframe>
-</center>
-<div class="paragraph"><p>An other direction we&#8217;re working towards is to have the same features in other
-applications as well: Impress and Calc. Perhaps not so surprisingly, we hit
-similar problems in these applications as well that we had to solve in Writer.
-The typical problems are:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-LibreOffice assumes a given portion of the document is visible (visual
-  area), but the Android view is independent from what LO thinks is visible.
-  Example: LO thinks a table is not visible, so it doesn&#8217;t send the selection
-  events for the text inside the table, even if it&#8217;s in fact visible on the
-  Android app.
-</p>
-</li>
-<li>
-<p>
-Instead of calling Invalidate() and waiting for a timer to call Paint(), at
-  some places direct Paint() is performed, so the tile invalidation
-  notification triggered by Invalidate() is missing &#8594; lack of content on
-  Android.
-</p>
-</li>
-<li>
-<p>
-We render each tile into a VirtualDevice&#8201;&#8212;&#8201;kind of an off-screen rendering
- &#8201;&#8212;&#8201;and at some places LO assumed that certain content like the actively edited
-  shape&#8217;s text is not interesting, as it&#8217;s not interesting "during printing".
-</p>
-</li>
-<li>
-<p>
-LO&#8217;s mouse events are in pixels, and then this is translated to mm100
-  (hunderd of milimeters) or twips in core. So counting in pixels is the
-  common language, while the Android app counts everything in twips, and
-  doesn&#8217;t want to care about what would be visible at what pixel on the screen,
-  if LO would run in desktop mode. So we had to make sure that we can pass in
-  event coordinates in twips, and get invalidation coordinates in twips, even if
-  previously it was a mix of mm100, twips and pixels.
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>Here is how Impress looks like, with working tile invalidation, touch and
-keyboard handling:</p></div>
-<center>
-<iframe width="420" height="315" src="https://www.youtube.com/embed/P2cF8zsNnrg" frameborder="0" allowfullscreen></iframe>
-</center>
-<div class="paragraph"><p>Calc is lagging a bit behind, but it also has working tile invalidation and
-keyboard handling:</p></div>
-<center>
-<iframe width="420" height="315" src="https://www.youtube.com/embed/kQDRpoDkb0s" frameborder="0" allowfullscreen></iframe>
-</center>
-<div class="paragraph"><p>That&#8217;s it for now&#8201;&#8212;&#8201;as usual the commits of me and
-<a href="http://tomazvajngerl.blogspot.com/">Tomaž Vajngerl</a> are in master (a few of
-them is only in feature/tiled-editing for now), so you can try this right now,
-or wait till the next Tuesday and get the
-<a href="http://dev-builds.libreoffice.org/daily/master/Android-ARM@24-Bytemark-Hosting/current/">Android
-daily build</a>. :-)</p></div>
 </div>
 </div>
 

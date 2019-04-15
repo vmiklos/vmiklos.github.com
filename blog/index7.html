@@ -57,6 +57,48 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/rtf-rich-comment-export.html">Rich RTF comment export in LibreOffice Writer</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh3.googleusercontent.com/-cPX4gcKiTxI/VmnrtwdnTXI/AAAAAAAAGTE/cYj_XZONoRg/s0-Ic42/">
+<img src="https://lh3.googleusercontent.com/-cPX4gcKiTxI/VmnrtwdnTXI/AAAAAAAAGTE/cYj_XZONoRg/s400-Ic42/" alt="https://lh3.googleusercontent.com/-cPX4gcKiTxI/VmnrtwdnTXI/AAAAAAAAGTE/cYj_XZONoRg/s400-Ic42/" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>As it has been reported in
+<a href="https://bugs.documentfoundation.org/show_bug.cgi?id=94377">tdf#94377</a>, the
+state of Writer comment contents in the RTF export filter wasn&#8217;t great.</p></div>
+<div class="paragraph"><p>With two recent changes, however, the situation is now much better:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+I&#8217;ve added support for multiple paragraphs
+</p>
+</li>
+<li>
+<p>
+I&#8217;ve added support for both paragraph and text portion formatting
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>It wasn&#8217;t necessary to implement this from scratch, because comment contents
+uses the same editeng store as the shape text, and there formatting was already
+handled. A benefit of this code sharing is that shape text also handles
+multiple paragraphs without a problem now. :-)</p></div>
+<div class="paragraph"><p>The commits are backported to <code>libreoffice-5-1</code>, so users will see them
+already in the upcoming 5.1.0 release.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/sanitizing-member-variable-names.html">Sanitizing member variable names in LibreOffice Writer</a></h1>
   </div>
   <div class="article_text">
@@ -442,42 +484,6 @@ to see the video):</p></div>
 <div class="paragraph"><p>That&#8217;s it for now&#8201;&#8212;&#8201;as usual the commits are in master, so you can try this
 right now with a 5.1 <a href="http://dev-builds.libreoffice.org/daily/master/">daily
 build</a>. :-)</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/ctags-sal-override.html">ctags vs override/SAL_OVERRIDE</a></h1>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/-9Hd40EVT8aw/VZBhBTZQdTI/AAAAAAAAFyM/AfymfTqKDFw/s0/" alt="https://lh3.googleusercontent.com/-9Hd40EVT8aw/VZBhBTZQdTI/AAAAAAAAFyM/AfymfTqKDFw/s0/" />
-</div>
-</div>
-<div class="paragraph"><p>If you use <a href="http://ctags.sourceforge.net/">ctags</a> to help your LibreOffice
-development, there are already good descriptions for that&#8201;&#8212;&#8201;e.g. for vim
-there is one <a href="https://wiki.documentfoundation.org/Development/Vim#ctags">on the
-TDF wiki</a>.</p></div>
-<div class="paragraph"><p>What was problematic is that since C++11, <code>override</code> is a valid keyword
-after a member function declaration, and we have our <code>SAL_OVERRIDE</code> macro that
-I
-<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=3891d323cdc3c03154f5682baaeaa4b2ef015a63">added</a>
-to be able to use it before all our supported compilers recognize it.
-Unsupported parsers include ctags, so if a member function have SAL_OVERRIDE,
-ctags only indexed the definition, not the declaration.</p></div>
-<div class="paragraph"><p>I created patches to fix these problems in ctags, the
-<a href="https://sourceforge.net/p/ctags/bugs/367/">override one</a> is probably
-interesting for all C++ projects, the
-<a href="https://github.com/vmiklos/ctags-svn/commit/ef53a231db5b428585324f266072b884e17bae52">SAL_OVERRIDE
-one</a> is LibreOffice-specific.</p></div>
-<div class="paragraph"><p>The hope is that the later will go away in the long run, so it won&#8217;t really be
-a problem that ctags do not recognize that macro out of the box. :-)</p></div>
 </div>
 </div>
 

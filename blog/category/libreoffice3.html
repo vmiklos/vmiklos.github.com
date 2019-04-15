@@ -60,6 +60,78 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/pdfium-pathsegment.html">pdfium path segment API for LibreOffice's test needs</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>I recently
+<a href="https://cgit.freedesktop.org/libreoffice/core/commit/?id=da705eff910f512623a689aaf28604270fb8f1c4">fixed</a>
+<a href="https://bugs.documentfoundation.org/show_bug.cgi?id=108963">tdf#108963</a>, which
+is a PDF export bug&#8201;&#8212;&#8201;in case of highlighted and rotated text in e.g.
+Impress, the highlight rectangle in the PDF export was not rotated.</p></div>
+<div class="paragraph"><p>This is how the export result looked like:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://farm5.staticflickr.com/4341/37305427601_db1cfb697e_o.png" alt="https://farm5.staticflickr.com/4341/37305427601_db1cfb697e_o.png" />
+</div>
+</div>
+<div class="paragraph"><p>And this is how it now looks like, after fixing:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://farm5.staticflickr.com/4453/37258379126_b20fd39655_o.png" alt="https://farm5.staticflickr.com/4453/37258379126_b20fd39655_o.png" />
+</div>
+</div>
+<div class="paragraph"><p>For a long time the PDF export filter had no tests at all; the current
+approach I introduced is that we parse the PDF export result with pdfium,
+which is an excellent PDF rendering library (I covered it in general in an
+<a href="https://vmiklos.hu/blog/pdfium.html">earlier post</a>).</p></div>
+<div class="paragraph"><p>So given that pdfium knows how that rectangle looks like, we should be able to
+query the details of it from a test as well, correct? It depends. Yes, it&#8217;s
+possible technically, but no, most of the pdfium functionality is actually not
+exposed at its <a href="https://pdfium.googlesource.com/pdfium/+/master/public/">public API</a>.</p></div>
+<div class="paragraph"><p>The current situation is that one could use <code>FPDF_LoadMemDocument()</code>,
+<code>FPDF_LoadPage()</code> to get access to a PDF page, then <code>FPDFPage_CountObject()</code> and
+<code>FPDFPage_GetObject()</code> to iterate over objects on a page. We can filter for the
+relevant object by using <code>FPDFPageObj_GetType()</code> and <code>FPDFPath_GetFillColor()</code>,
+that will give us the only path that has a yellow fill color.</p></div>
+<div class="paragraph"><p>But getting more info about the geometry of the path isn&#8217;t really possible. As
+a workaround I went with <code>FPDFPageObj_GetBounds()</code> for the test, but wouldn&#8217;t it
+be nicer to get the individual segments (the objects that are the children of
+a path) and then get coordinates and other properties of a segment? This is
+what the recent API I added to pdfium now does. It provides the followings:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<code>FPDFPath_CountSegments()</code> gives you the number of segments of a path
+</p>
+</li>
+<li>
+<p>
+<code>FPDFPath_GetPathSegment()</code> gives you a given segment, via a new
+  <code>FPDF_PATHSEGMENT</code> opaque type
+</p>
+</li>
+<li>
+<p>
+you can use <code>FPDFPathSegment_GetPoint()</code> to get the coordinates,
+  <code>FPDFPathSegment_GetType()</code> to get the type (move to, line to, etc.) and
+  <code>FPDFPathSegment_GetClose()</code> to see if the segment closes the current subpath
+  of the path (or not)
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>This means that after the next pdfium update in LibreOffice, PDF export tests
+can nicely assert these properties of paths instead of dubious <em>bounding box
+should be larger after rotation</em> assertions.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/sw-split-section-in-table.html">Split sections inside tables for LibreOffice Writer</a></h1>
   </div>
   <div class="article_text">
@@ -676,70 +748,6 @@ on the screenshot.</p></div>
 even more limited: just the "background colored objects" were collected, but
 nothing was done to them. Now the above use-case should be as good for PPT as
 it is for PPTX.</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/hackweek-2016.html">Hack-(rest-of-the)-week at Collabora</a></h1>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://farm1.staticflickr.com/726/32306648426_b4ee93f6a1_o.png" alt="https://farm1.staticflickr.com/726/32306648426_b4ee93f6a1_o.png" />
-</div>
-</div>
-<div class="paragraph"><p>As mentioned in
-<a href="https://mikekaganski.wordpress.com/2016/12/11/my-first-hack-rest-of-the-week-at-collabora/">the
-blog post of Mike</a> already, last month we were allowed to hack on anything we
-want in LibreOffice for a few days. I used this time to progress with 3
-different topics.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_stepping_through_textboxes_using_the_keyboard">Stepping through TextBoxes using the keyboard</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Given that a Writer shape with a TextBox is internally two shapes, this needed
-explicit support. After my
-<a href="https://gerrit.libreoffice.org/gitweb?p=core.git;a=commitdiff;h=5d2c189aee5057d1533165c368227c9c4c49d330">TextBox
-bugfix</a> it&#8217;s possible to have two such shapes in a document, and once you
-select one of them, tab properly jumps between the two shapes; previously
-nothing happened.</p></div>
-<div class="paragraph"><p>What did happen is we tried to activate the TextBox of the selected shape,
-which selected the shape itself, so at the end nothing happened.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_rtf_improvements">RTF improvements</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>For some time it was already possible to import and export custom string
-document properties from/to RTF, but just in case the value type of the
-property was string. Now I extended support for these custom properties, so
-also the remaining types are handled:
-<a href="https://gerrit.libreoffice.org/gitweb?p=core.git;a=commitdiff;h=fc8c4606e0834cd2128a228c2c95fc7c8f9eb7b1">numbers</a>,
-<a href="https://gerrit.libreoffice.org/gitweb?p=core.git;a=commitdiff;h=547de17fcb654e560a60d683c33482feeee84358">bools</a>,
-<a href="https://gerrit.libreoffice.org/gitweb?p=core.git;a=commitdiff;h=51c400dc4cd6a88c01b245e41d0de737d4df4017">doubles</a>
-and
-<a href="https://gerrit.libreoffice.org/gitweb?p=core.git;a=commitdiff;h=07b0cde32a7eebce996b8c32aa58545e4ec15003">dates</a>.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_xmlsec_patch_upstreaming">xmlsec patch upstreaming</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Last, I&#8217;ve started working on upstreaming
-<code>external/libxmlsec/xmlsec1-noverify.patch.1</code>. xmlsec has no ability to
-disable the verification of certificates (think of <code>curl -k</code> or <code>wget -k</code>), so
-in LibreOffice currently we just patch out that code as we don&#8217;t need it. So I
-wanted to add a new verification flag to avoid patching, but it turns out that
-in the NSS case xmlsec didn&#8217;t do the verification, so as a first step I fixed
-that instead in this <a href="https://github.com/lsh123/xmlsec/pull/72">xmlsec GitHub
-pull request</a>. Now that it&#8217;s merged, the next step will be to add such a flag,
-and then LibreOffice can get rid of the patch after the next xmlsec release.</p></div>
 </div>
 </div>
 
