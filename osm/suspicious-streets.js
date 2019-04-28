@@ -16,7 +16,7 @@ var tracks = [
   {description : "Németvölgy", url : "nemetvolgy.kml", strokeColor : "green"},
   {description : "Őrmező", url : "ormezo.kml", strokeColor : "green"},
   {description : "Farkasvölgy", url : "farkasvolgy.kml", strokeColor : "green"},
-  {description : "Magasút", url : "magasut.kml", strokeColor : "orange"},
+  {description : "Magasút", url : "magasut.kml", strokeColor : "green"},
 ];
 
 // Boilerplate below.
