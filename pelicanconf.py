@@ -40,6 +40,7 @@ PLUGINS = ['asciidoc_reader']
 # I don't like the default theme, clone this from <https://github.com/vmiklos/pelican-svbhack>.
 THEME = '/home/vmiklos/git/pelican-svbhack'
 HIDE_USER_LOGO = True
+DISPLAY_CATEGORIES_ON_MENU = False
 
 # Setting to None will cause the summary to be a copy of the original content.
 SUMMARY_MAX_LENGTH = None
