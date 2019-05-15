@@ -58,6 +58,66 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/systemd-2.html">Systemd Podcast</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>I just found
+<a href="http://media.libsyn.com/media/linuxoutlaws/linuxoutlaws160.ogg">this</a>
+podcast, it&#8217;s a bit dated since it happened in August and things have
+been improved a bit since then, but still I was happy to listen it. (The
+interesting part starts at 1:10:50; 17 minutes.)</p></div>
+<div class="paragraph"><p>I already had a short <a href="/blog/systemd">post</a> about systemd, and I
+mentioned the killer feature for me is the compact distro-independent
+service file (initscript for sysvinit) format it uses, since even if the
+initscript format we use in Frugalware right now is mostly
+bullshit-free, it&#8217;s still more bloated than the systemd service files.</p></div>
+<div class="paragraph"><p>Now back to why I began writing this post. :) So there is
+<a href="http://0pointer.de/blog/projects/systemd.html">the post</a> about systemd,
+but it&#8217;s rather long, and it&#8217;s easy to miss the point. Since the
+previous post, I think there are a few more killer features in systemd:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Every service is started in a separate control group (cgroup). Do you
+  remember the situation when you wanted to know who the hell started a
+  given particular process? This is typically a problem if the process is
+  running as root. Now this is no longer a problem, systemd-cgls will show
+  you if it was started by a user or a given service, etc. (Yes, I
+  consider this a security feature.)
+</p>
+</li>
+<li>
+<p>
+Upstart already had this "restart if it crashed" feature, but systemd
+  does it better: if the daemon supports socket activation, then
+  messages sent to the socket are buffered by the kernel, and no message
+  will be lost during the restart.
+</p>
+</li>
+<li>
+<p>
+systemd provides this on-demand feature, which is pretty much like
+  inetd, so hopefully we can get rid of inetd, which was a constant
+  problem previously. (We inherited a fork of the OpenBSD inetd from
+  Slackware, and being a fork it did not improve since years, causing a
+  constant problem.)
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Why writing this post today? Because this morning systemd
+<a href="http://frugalware.org/packages/103609">appeared</a> in -current, so you can
+even <a href="http://wiki.frugalware.org/index.php/Systemd#Installation">try it
+out</a> without installing any unofficial package.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/splashy-vs-systemd.html">Splashy vs. systemd</a></h1>
   </div>
   <div class="article_text">
@@ -420,67 +480,6 @@ harom temat is feloleli. A slide-ok megtalalhatoak a
 <div class="paragraph"><p>Zsenialis film a repulon, kocsiban, hotelban, hoban es tengerparon
 tengerparton jatszodo almokrol. ;)</p></div>
 <div class="paragraph"><p>(<a href="http://www.imdb.com/title/tt1375666/">imdb</a>, <a href="http://www.youtube.com/watch?v=mmkQ7fw-l0g">trailer</a>)</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/pdf-duplex-printing.html">Poor man's PDF duplex printing</a></h1>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Yesterday I wanted to print a PDF document: two pages per sheet, and of
-course I wanted duplex printing as well (on the short side).</p></div>
-<div class="paragraph"><p>Given that the hardware (the printer) was not capable of duplex
-printing, I needed some software workaround. If you want one page per
-sheet, this is trivial, as the print dialog of any PDF reader will let
-you select "odd pages", then you re-feed the printer with the output
-paper and you select "even pages" and that&#8217;s it.</p></div>
-<div class="paragraph"><p>OTOH, if you want 2 pages per sheet, then first you need some trick
-first to create two PDF from the original: the first containing the
-pages 1, 2, 5, 6, etc. - and the other containing 3, 4, 7, 8, etc.</p></div>
-<div class="paragraph"><p>After all this isn&#8217;t really hard using <code>pdftk</code>. First, the input PDF was
-around 150 pages, so I wanted to split the input to one file / page:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>pdftk in.pdf burst output out/%03d.pdf</code></pre>
-</div></div>
-<div class="paragraph"><p>Then let&#8217;s move the pages to the subdirs <code>a</code> or <code>b</code>, based on the above
-pattern:</p></div>
-<div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight
-by Lorenzo Bettini
-http://www.lorenzobettini.it
-http://www.gnu.org/software/src-highlite -->
-<pre><tt>cd out
-mkdir a b
-<span style="font-weight: bold"><span style="color: #0000FF">for</span></span> i <span style="font-weight: bold"><span style="color: #0000FF">in</span></span> <span style="color: #990000">*.</span>pdf
-<span style="font-weight: bold"><span style="color: #0000FF">do</span></span>
-        <span style="color: #009900">base</span><span style="color: #990000">=</span><span style="color: #009900">$(</span>basename <span style="color: #009900">$i</span> <span style="color: #990000">.</span>pdf<span style="color: #990000">)</span>
-        <span style="font-weight: bold"><span style="color: #0000FF">if</span></span> <span style="color: #990000">[</span> <span style="color: #009900">$base</span> -lt <span style="color: #993399">100</span> <span style="color: #990000">];</span> <span style="font-weight: bold"><span style="color: #0000FF">then</span></span>
-                <span style="color: #009900">rem</span><span style="color: #990000">=</span><span style="color: #009900">$(</span><span style="color: #990000">(</span><span style="color: #009900">$(</span>echo <span style="color: #009900">$i</span><span style="color: #990000">|</span>sed <span style="color: #FF0000">'s/^0</span><span style="color: #CC33CC">\+\(</span><span style="color: #FF0000">.*</span><span style="color: #CC33CC">\)\.</span><span style="color: #FF0000">pdf/</span><span style="color: #CC33CC">\1</span><span style="color: #FF0000">/'</span><span style="color: #990000">)%</span><span style="color: #993399">4</span><span style="color: #990000">))</span>
-        <span style="font-weight: bold"><span style="color: #0000FF">else</span></span>
-                <span style="color: #009900">rem</span><span style="color: #990000">=</span><span style="color: #009900">$(($base%4))</span>
-        <span style="font-weight: bold"><span style="color: #0000FF">fi</span></span>
-        <span style="font-weight: bold"><span style="color: #0000FF">if</span></span> <span style="color: #990000">[</span> <span style="color: #FF0000">"$rem"</span> <span style="color: #990000">=</span> <span style="color: #993399">1</span> -o <span style="color: #FF0000">"$rem"</span> <span style="color: #990000">=</span> <span style="color: #993399">2</span> <span style="color: #990000">];</span> <span style="font-weight: bold"><span style="color: #0000FF">then</span></span>
-                mv <span style="color: #009900">$i</span> a
-        <span style="font-weight: bold"><span style="color: #0000FF">else</span></span>
-                mv <span style="color: #009900">$i</span> b
-        <span style="font-weight: bold"><span style="color: #0000FF">fi</span></span>
-<span style="font-weight: bold"><span style="color: #0000FF">done</span></span></tt></pre></div></div>
-<div class="paragraph"><p>Finally concat the files from the <code>a</code> and the <code>b</code> dir to a single file:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>cd a
-pdftk *.pdf cat output ../a.pdf
-cd ../b
-pdftk *.pdf cat output ../b.pdf</code></pre>
-</div></div>
-<div class="paragraph"><p>That&#8217;s it!</p></div>
 </div>
 </div>
 

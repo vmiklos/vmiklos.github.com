@@ -57,6 +57,23 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/ideal-git-cflags-for-development.html">Ideal Git CFLAGS for development</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>This is always an interesting area. The avarage user needs a whole day to test a oneliner patch, just because she never built the software in question, etc. The other end of the line is a regular developer, she modifies the source and she is able to test in seconds.</p><p>Regarding git, the testing part is not that hard: I usually work on builtins, so I edit the source code, then type 'make git-foo', and run ./tnumber-desc.sh from the testsuite.</p><p>The other part is that you need special compiler flags, since you are interested in extra warnings, debug symbols and such.</p><p>The default CFLAGS is defined in the Makefile, which is a tracked file, so modifying that is a no-go. You need 'make configure', then ./configure, and then you can edit config.mak.autogen.</p><p>Junio a few days ago <a href="http://article.gmane.org/gmane.comp.version-control.git/105297">mentioned</a> the CFLAGS he uses.</p><p>Here comes the interesting part:</p><p><pre>
+CC = ccache cc
+CFLAGS = -g -O2 -Wall -Werror -fno-inline -Wold-style-definition -Wdeclaration-after-statement
+</pre></p><p>-Werror so that I'm forced not to ignore warnings, -fno-inline to be able to debug inline functions, and I just stole the two others from Junio.</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/more-lilypond-adventures.html">More lilypond adventures</a></h1>
   </div>
   <div class="article_text">
@@ -232,24 +249,6 @@ leven kevesebb hely van a hurok kozott. balkez szempontjabol meg persze erosebbe
 duplaannyi hurt es jobban szetszedi az ember kezet (nylonhuros gitar eseten a hurok feszitoereje
 ilyen 40kg korul van, femnel duplaennyi, es egy ilyennek megtobb, 100kg korul).</p></div>
 <div class="paragraph"><p>ja es hangero szempontjabol se semmi, siman lekoroz egy kisebb erositot. ;)</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/bitlbee-skype-0-7.html">bitlbee-skype 0.7.0</a></h1>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>It's out, the only recent change is that I added a new setting to be able to see what is the raw stream BitlBee received. The other interesting part is that after the release I finally decided to split up that huge read callback and now each part is handled by a separate function, and I have a nice array of function pointers. BTW, this also made checkpatch happy about skype.c without doing hacks like:</p><p><pre>
-printf("%s %s",
-        foo,
-        bar);
-</pre></p><p>Which would really just make the code ugly.</p><p>Yay! :)</p>
 </div>
 </div>
 

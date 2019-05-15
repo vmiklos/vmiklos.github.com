@@ -58,6 +58,20 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/libblkid-meets-hal-0-5-11.html">libblkid meets hal 0.5.11</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>So upstream recently released hal 0.5.12 and it's maintained by crazy who seem to be a bit busy currently, and I don't really wanted to bump his pkg (actually I tried and I failed), but I bumped our udev pkg yesterday so we no longer has libvolume_id. So I <a href="http://ftp.frugalware.org/pub/frugalware/frugalware-current/source/apps/hal/move-from-libvolume_id-to-libblkid.patch">backported</a> the relevant patch from git and it seems to work. ;)</p><p>(Actually the header is informative, but fake as I created the patch from scratch, based on the one which was in git.)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/writing-ppt-presentations-from-asciidoc.html">Writing ppt presentations from asciidoc</a></h1>
   </div>
   <div class="article_text">
@@ -200,20 +214,6 @@ code
     <div id="preamble">
 <div class="sectionbody">
 <p>We hit <a href="http://groups.google.com/group/asciidoc/browse_thread/thread/fd27add515597c06?pli=1">this bug</a> after I upgraded asciidoc on the server where we build the Frugalware documentation, luckily I just had to backport the given patch from hg and it now works fine.</p><p>I like how responsible the upstream (Stuart) is. Asciidoc is not bug-free, but as long as one provides simple reproducers, he quickly fixes bugs, yay! :)</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/iscsi-fun.html">iSCSI fun</a></h1>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>So I was playing with iSCSI, and the tricky part was that I shared out a block device to a Windows one and the silly OS created a partition table on it, but the block device was an LVM LV. So it was like /dev/mapper/foo-lvol0, and of udev did not create /dev/mapper/foo-lvol0p1, so it was hard the mount.</p><p>Next example about hacking Frugalware is useful, we had this problem while generating the USB installer image as well, the trick was to mount /dev/mapper/foo-lvol0 with -o offset=32256, and this works generally as long as the partition table is an old PC one (so it's not an MS dynamic disk or anything).</p>
 </div>
 </div>
 

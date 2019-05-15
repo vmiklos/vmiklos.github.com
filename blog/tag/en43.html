@@ -58,6 +58,32 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/removing-uids-in-gpg.html">removing uids in gpg</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>here is the problem:</p><p>you hava gpg key since 5 years. you had various mail addresses over the time and every mail address is attached to a key. so it'll look ugly, like <a href="http://frugalware.org/~vmiklos/pics/shots/gpg-bloated.png">this</a>.</p><p>the problem is that once you pushed a uid (read: email address, attached to a key) to the keyserver, you can no longer remove it. but here is the solution: you can revoke it! :)</p><p>how to do so?</p><p>it's easy:</p><p><code>$ gpg --edit-key <a href="mailto:john@foo">john@foo</a>.org</code></p><p>a list of your ids with numbers are displayed. select a uid:</p><p><code>Command> uid 2</code></p><p>then you can revoke it:</p><p><code>Command> revuid 3
+Really revoke this user ID? (y/N) y
+Please select the reason for the revocation:
+  0 = No reason specified
+  4 = User ID is no longer valid
+  Q = Cancel
+(Probably you want to select 4 here)
+Your decision? 4
+Enter an optional description; end it with an empty line:
+>
+Reason for revocation: User ID is no longer valid
+(No description given)
+Is this okay? (y/N) y</code></p><p>you can notice that the uid is now listed as "revoked" instead of "ultimate"</p><p>now you can exit using:</p><p><code>Command> save</code></p><p>and send it to the key server:</p><p><code>$ gpg --send-key 03915096</code></p><p>of course the uids will be still there, but that bloated list should be now short and tiny :)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/dhcpcd-vs-zeroconf.html">dhcpcd vs zeroconf</a></h1>
   </div>
   <div class="article_text">
@@ -194,20 +220,6 @@ this is always a subject of flamewars and Frugalware did not have any support fo
     <div id="preamble">
 <div class="sectionbody">
 <p>when we switched to git, our <a href="http://frugalware.org/~vmiklos/stats/frugalware-current.html">darcs stat page</a> was no longer updated. now i've created <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/gitstats/">gitstats</a>, which serves the same purpose. it's written in python and it was a few more features compared to darcsstats, ie. alias support, so that the stats for a dev are not lost when he/she changes his/her email addr.</p><p>the new stat page is <a href="http://frugalware.org/~vmiklos/stats/frugalware-current/">here</a>. enjoy! :)</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/bitlbee-skype.html">bitlbee-skype</a></h1>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>well, it truns out what i'm mentioned at <a href="http://www.bitlbee.org">bitlbee.org</a> :)</p><p>the story is about my <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/bitlbee-skype/">skype plugin</a> for bitlbee. google doesn't even find it (mostly because nobody links my page), so i asked the devs to link the page. now they posted a news entry about it ;)</p><p>/me goes to sleep..</p>
 </div>
 </div>
 

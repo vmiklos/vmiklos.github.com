@@ -58,6 +58,51 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/xmlsec-lo54.html">xmlsec improvements in LibreOffice 5.4</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>This post summarizes the plumbing work around ODF/OOXML digital signatures
+that I did on LibreOffice master after the 5.3 branch-off up to now. The big
+thing is the
+<a href="https://gerrit.libreoffice.org/gitweb?p=core.git;a=commit;h=ad319fdfcaaa6092ea1ff76935e088c5122e0d2e">integration</a>
+of the libxmlsec 1.2.24 release. Among other things, this contains 2 larger
+changes that I contributed upstream triggered by the needs of LibreOffice:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+The <a href="/blog/xmlsec-nss-ecdsa.html">ECDSA-SHA256 feature</a> is something I
+  already mentioned, but I did not bother to backport the SHA1 and the SHA256
+  part, so those now arrived to LibreOffice as well.
+</p>
+</li>
+<li>
+<p>
+xmlsec&#8217;s <code>XMLSEC_KEYINFO_FLAGS_X509DATA_DONT_VERIFY_CERTS</code> flag (while
+  verifying signatures) was there, but its behavior was not clear (neither
+  for <a href="https://github.com/lsh123/xmlsec/pull/78">nss</a> nor for
+  <a href="https://github.com/lsh123/xmlsec/pull/79">mscrypto</a>). I&#8217;ve changed it to be in
+  sync what you have in other commands to avoid certificate validation (like
+  <code>wget -k</code> or <code>curl -k</code>), which means as a next step there will be one less
+  xmlsec patch in LibreOffice that prevents us from using xmlsec from the system
+  on Linux. (Adding tests also detected that in the nss case not using that flag
+  also didn&#8217;t do verification by accident, this is now fixed as well.)
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>After the release I also noticed that creating signatures on Windows
+<a href="https://www.aleksey.com/pipermail/xmlsec/2017/010143.html">was broken</a>, this is
+now fixed on xmlsec master and also backported to LibreOffice.</p></div>
+<div class="paragraph"><p>All this is available in LibreOffice master, towards 5.4.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/pdf-image-rountrip.html">Improved rountrip of PDF images in LibreOffice</a></h1>
   </div>
   <div class="article_text">
@@ -794,31 +839,6 @@ the signature status. ;-)</p></div>
 <a href="http://dev-builds.libreoffice.org/daily/">daily build</a> and play with it! This
 work is part of both <code>master</code> or <code>libreoffice-5-3</code>, so those builds are of
 interest. Happy testing! :-)</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/devtalks.html">LibreOffice session at DevTalks Jr.</a></h1>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div style="text-align: center; font-size: 0.6em;">
-<img src="https://farm6.staticflickr.com/5687/30900149756_0abd3a3218_z.jpg"/>
-<p>(via <a href="https://twitter.com/DevTalksRo/status/797429977968939008">DevTalksRo</a>)</p>
-</div>
-<div class="paragraph"><p>Today I gave a
-<a href="https://speakerdeck.com/vmiklos/getting-involved-with-libreoffice-online-and-android">Getting
-involved with LibreOffice Online and Android</a> session at
-<a href="http://www.devtalks.ro/bucharest/devtalks-jr/">DevTalks Jr</a>, Bucharest. The
-event had two tracks in parallel, with a total attendees of about 200
-developers.</p></div>
-<div class="paragraph"><p>Some photos I took after the event are <a href="https://www.flickr.com/photos/vmiklos/sets/72157675071819211/">available</a>.</p></div>
-<div class="paragraph"><p>Thanks the organizers and sponsors for the great event! :-)</p></div>
 </div>
 </div>
 

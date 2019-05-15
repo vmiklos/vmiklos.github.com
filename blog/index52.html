@@ -57,6 +57,20 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/escaping-within-sphinx-and-mysql.html">Escaping within sphinx and mysql</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>We all know the usual problem with sql escaping, there is even a <a href="http://xkcd.com/327/">comic</a> about it.</p><p>There is an other SQL-related project, <a href="http://www.sphinxsearch.com/">sphinx</a>, which is a quite efficient search indexer (especially for whole word search), but it also needs escaping. Given that in sphinx "foo-bar" means "all records containing foo, but not bar", if you really want a single-word "foo-bar", then you need to use "foo\-bar".</p><p>And that's the fun part, as the escaping order matters a lot. Basically if you escape mysql first and then just insert the sphinx query, then you just created an injection yourself. ;)</p><p>So the <em>final</em> query will look like "foo\\-bar" if you did the escaping in the right order.</p><p>It's also notable that the official sphinx php API seems not escaping the ";" char, which is also a bug, as this way you can modify the search query in the way you want.</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/lelkes-testcsere.html">lelkes testcsere</a></h1>
   </div>
   <div class="article_text">
@@ -177,22 +191,6 @@ Work on porting KControl and Konversation to KDE 4.
     <div id="preamble">
 <div class="sectionbody">
 <p>igazabol az ugy volt, hogy az elso alkalommal mikor megprobaltunk leterni az utrol akkor rajottunk, hogy tiszta ho meg sar meg latyak minden, igy maradtunk az aszfalton. ott persze lehetett haladni. meg azert az ut is hegyen-volgyon at vezet. </p><p>pontos utvonalat nem merek irni, mert a memoriam a tajekozodasi kepessegemmel es a szemmertekemmel vetekszik (tekintsuk oket elhanyagolhatonak), de valami ilyesmi volt, hogy: huvosvolgy - budakeszi - zsambek - tok - tinnye - piliscsaba - pilisvorosvar - aztan vissza a 10es uton.</p><p>tav: 91km, max 50.9km/h.</p><p>az otletert pedig koszonet LGeenek. :)</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/installing-oracle-client-on-frugalware.html">Installing Oracle Client on Frugalware</a></h1>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>The full name is Oracle Enterprise Manager Console. You can download the 10g version from <a href="http://www.oracle.com/technology/software/products/database/oracle10g/htdocs/10201linuxsoft.html">here</a>. You can find a user/pass on bugmenot. After unzipping, just running '/path/toclient/runInstaller -ignoreSysPrereqs' (I only tried with an absolute path) should be enough. It can be installed a user, later it'll prepare some scripts to run as root.</p><p>I always replaced $HOME/orafoo with $HOME/.orafoo, when the installer asked. If you get 'no such file or directory' errors, you can just edit the relevant script and fix the path - I needed to fix /bin/rpm, /bin/awk and /bin/sed. (All of them are under /usr/bin.) A hack for the lazy ones: just symlink these to /bin, then no modification of the scripts is needed.</p><p>To your ~/.bash_login:</p><p><pre>
-export LIBXCB_ALLOW_SLOPPY_LOCK=true
-export ORACLE_HOME=~/.oracle/product/10.2.0/client_1/
 </div>
 </div>
 

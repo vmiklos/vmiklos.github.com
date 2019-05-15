@@ -57,6 +57,42 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/first-opensuse-contribution.html">First openSUSE contribution</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>More than 3 years ago I
+<a href="http://video.google.com/videoplay?docid=-8129703727993942585">gave</a> a
+talk on Frugalware, and part of that was a comparison to various other
+distributions, including SUSE. My argument against SUSE was its
+closed development process.</p></div>
+<div class="paragraph"><p>Times change, earlier this year they even
+<a href="http://news.opensuse.org/2011/05/26/opensuse-renames-obs/">renamed</a> their
+build system to signal its open nature.</p></div>
+<div class="paragraph"><p>I wanted to try it out how open they are so I made an experiment.</p></div>
+<div class="paragraph"><p>First, I created a
+<a href="https://build.opensuse.org/package/show?package=cpm&amp;project=home%3Avmiklos">cpm</a>
+package in OBS to get familiar with the packaging process a bit. (Note
+that anyone can just register and use the build system to share their
+binaries-- sadly we don&#8217;t have resources in Frugalware to provide
+something similar.) Then I happily noticed that their mutt package
+already contains my favorite sidebar patch, though the edge of the
+sidebar looked <a href="http://vmiklos.hu/pic/mutt-old.png">awful</a>. So on Monday I
+mailed the maintainer of the mutt pkg if he would take a patch,
+<a href="http://vmiklos.hu/pic/mutt-new.png">fixing</a> this issue.  I got a positive
+reply today, submitted a
+<a href="https://build.opensuse.org/request/show/90126">patch</a> and in minutes it
+got accepted.</p></div>
+<div class="paragraph"><p>So it looks like they are really open, which is just cool. :)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/parizs.html">Parizs</a></h1>
   </div>
   <div class="article_text">
@@ -361,38 +397,6 @@ illetve
 is fel lehetett lelni hasonlo&#8201;&#8212;&#8201;agyonvizjelezett&#8201;&#8212;&#8201;fotokat.</p></div>
 <div class="paragraph"><p>Informativ <a href="http://www.kerekparinfo.hu/matra-maraton/hirek?h=305">cikk</a> a temaban.</p></div>
 <div class="paragraph"><p>Tovabbi kepek: <a href="http://www.kerekparinfo.hu/upload/galeria/126/0e58bc5de73a63a1decd1aba4474d7a9f251d39a.jpg">1</a>, <a href="http://x-iont.hu/foto/2011/MTB/0828-MatraMar_1/slides/matra1-0387.html">2</a>.</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/rtf-font-table.html">Positions in RTF font tables</a></h1>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Tonight I worked on
-<a href="https://bugs.freedesktop.org/show_bug.cgi?id=39337">fdo#39337</a>, and while
-the writerfilter-based RTF import filter almost handled the document in
-question correctly, the fonts were not correct.</p></div>
-<div class="paragraph"><p>It turned out that this was caused by the fact that RTF&#8217;s font table (a
-table where each row has an ID and it contains the font name, charset
-and other properties) does not require continuous ID&#8217;s (for example
-positions 0, 2, 3 are allowed, even if 1 is not set), but dmapper (the
-glue layer between the RTF tokenizer and the Writer UNO API) does.</p></div>
-<div class="paragraph"><p>I already sent the position of the entry to dmapper, but the position
-turned out to be
-<a href="http://opengrok.libreoffice.org/xref/core/writerfilter/source/dmapper/FontTable.cxx#157">ignored</a>,
-so now I fixed the RTF tokenizer to send continuous ID&#8217;s.</p></div>
-<div class="paragraph"><p>A related improvement is that I just discovered the
-<code>writerfilter::TagLogger::unoPropertySet()</code> method, which can dump the
-properties of an UNO object, and now I&#8217;ve
-<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=120003152826b7450bbf384a9633c83dda4782c7">enabled</a>
-dumping of shape properties, which can help a lot when something goes
-wrong there.</p></div>
 </div>
 </div>
 

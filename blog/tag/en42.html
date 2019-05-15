@@ -58,6 +58,46 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/incremental-bzr-g-git-conversion.html">incremental bzr -> git conversion</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>i recently had problems with bzr -> git conversion using tailor and now Lele pulled my patches so here is a mini-howto about how i did the conversion.</p><p>i did all this in a ~/scm/tailor/bitlbee dir (to convert the bitlbee bzr repo), but of course you can do it somewhere else, too.</p><p>create the dir and place there the tailor config. mine is like:</p><p><code>
+$ cat bitlbee.conf
+[DEFAULT]
+verbose = True
+[bitlbee]
+target = git:target
+start-revision = INITIAL
+root-directory = /home/vmiklos/scm/tailor/bitlbee
+state-file = bitlbee.state
+source = bzr:source
+subdir = bitlbee.git
+[bzr:source]
+repository = /home/vmiklos/scm/tailor/bitlbee/bitlbee.bzr
+[git:target]
+repository = /home/vmiklos/scm/tailor/bitlbee/bitlbee.git
+</code></p><p>and here is the update script:
+<code>
+$ cat update.sh
+#!/bin/sh -e
+cd <code>dirname $0</code>
+cd bitlbee.bzr
+bzr pull
+cd ..
+tailor -c bitlbee.conf
+</code></p><p>to update the import daily i added the followings to my crontab:</p><p><code>
+40 4 * * * ~/scm/tailor/bitlbee/update.sh &>/dev/null
+</code></p><p>and we're ready, you'll have a daily updated git import.</p><p>one minor note: the bitlbee.git dir is a non-bare repo and it's also a bzr repo which is not a problem (you can clone it and gitweb handles it) but if you plan to switch to git later, you probably want to clone it once get rid of that junk :)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/ten-goals-we-reached-in-2007.html">ten goals we reached in 2007</a></h1>
   </div>
   <div class="article_text">
@@ -218,32 +258,6 @@ git fetch
 3 | 4</pre></p><p>compiz translates this to: a simple paper with two side and on each size there is another side on top of the other one. so it says it's not a cube. how crappy</li>
   <li>i can't select to hide windows from other virtual desktops from the taskbar. a basic feature @ kde</li>
 </ul></p><p>conclusion? it's really nice, well done - but for daily work of course i won't enable it :)</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/removing-uids-in-gpg.html">removing uids in gpg</a></h1>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>here is the problem:</p><p>you hava gpg key since 5 years. you had various mail addresses over the time and every mail address is attached to a key. so it'll look ugly, like <a href="http://frugalware.org/~vmiklos/pics/shots/gpg-bloated.png">this</a>.</p><p>the problem is that once you pushed a uid (read: email address, attached to a key) to the keyserver, you can no longer remove it. but here is the solution: you can revoke it! :)</p><p>how to do so?</p><p>it's easy:</p><p><code>$ gpg --edit-key <a href="mailto:john@foo">john@foo</a>.org</code></p><p>a list of your ids with numbers are displayed. select a uid:</p><p><code>Command> uid 2</code></p><p>then you can revoke it:</p><p><code>Command> revuid 3
-Really revoke this user ID? (y/N) y
-Please select the reason for the revocation:
-  0 = No reason specified
-  4 = User ID is no longer valid
-  Q = Cancel
-(Probably you want to select 4 here)
-Your decision? 4
-Enter an optional description; end it with an empty line:
->
-Reason for revocation: User ID is no longer valid
-(No description given)
-Is this okay? (y/N) y</code></p><p>you can notice that the uid is now listed as "revoked" instead of "ultimate"</p><p>now you can exit using:</p><p><code>Command> save</code></p><p>and send it to the key server:</p><p><code>$ gpg --send-key 03915096</code></p><p>of course the uids will be still there, but that bloated list should be now short and tiny :)</p>
 </div>
 </div>
 
