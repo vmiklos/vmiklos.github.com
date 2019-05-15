@@ -1,0 +1,23 @@
+= Importing charts from DOCX drawingML group shapes in Writer
+
+:slug: writer-wpg-chart-import
+:category: libreoffice
+:tags: en
+:date: 2019-05-15T09:29:57+02:00
+
+.Chart in drawingML group shape in DOCX, imported into Writer
+image::https://lh3.googleusercontent.com/Jw_BHWWDubfGASjfFszFu6q9VRXaELjjLun974YCt7pQv3P-WIKqkISu5GHwTNndCHi8jGqv_FvYTZFXdWfxASIzXbgw0Et-7rAQZ3LzxA5Ntxx0GTxRH3y4m3hOYVLMKAyXtCQECQ=w640[align="center"]
+
+Years ago I link:|filename|/2014/lo-writer-drawingml-shape-improvements.adoc[posted] about a large
+rework to where https://www.collaboraoffice.com/[Collabora] helped a customer to make Writer read
+the drawingML markup for DOCX shapes. You can read the various benefits of this switch in that
+article -- but similar to other large reworks, this also broke some previously working corner-cases,
+where test coverage lacked.
+
+One of these is charts in group shapes. This needs explicit handling, as Writer normally handles
+charts as TextEmbeddedObjects, while code that imports charts from OOXML is not specific to Writer.
+The
+https://cgit.freedesktop.org/libreoffice/core/commit/?id=fdf4aaa3dc5cc1d2e7a112e6c32d7845f13caef8[fix]
+just tells the generic drawingML import to use a Writer-specific service name for the charts.
+
+This is available in LibreOffice master (towards 6.3).
