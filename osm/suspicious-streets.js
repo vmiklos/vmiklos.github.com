@@ -19,7 +19,8 @@ var tracks = [
   {description : "Magasút", url : "magasut.kml", strokeColor : "green"},
   {description : "Farkasrét", url : "farkasret.kml", strokeColor : "green"},
   {description : "Hosszúrét", url : "hosszuret.kml", strokeColor : "green"},
-  {description : "Madárhegy", url : "madarhegy.kml", strokeColor : "orange"},
+  {description : "Madárhegy", url : "madarhegy.kml", strokeColor : "green"},
+  {description : "Krisztinaváros", url : "krisztinavaros.kml", strokeColor : "orange"},
 ];
 
 // Boilerplate below.
