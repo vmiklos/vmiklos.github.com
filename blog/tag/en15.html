@@ -58,6 +58,68 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/git-notes-merge.html">Merging git notes</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>The <code>git notes</code> command is really about local annotation of commits&#8201;&#8212;&#8201;nothing
+to share. If you decide to still do so, for example the
+<a href="http://git-scm.com/2010/08/25/notes.html">git-scm.com</a> HOWTO can show you how to
+pull and push them. But what about merging?  There is no UI for that, but&#8201;&#8212;&#8201;given that with git, everything is possible&#8201;&#8212;&#8201;you can still do so manually.</p></div>
+<div class="paragraph"><p>So the problem comes when Alice fetches notes, Bob does so, Alice pushes her
+notes back, Bob annotates a different commit and when Bob wants to push, he
+gets <code>rejected, non-fast-forward</code>. Normally you would merge or rebase in this
+situation, but given that <code>git notes</code> by default updates the
+<code>refs/notes/commits</code> ref and you typically have a different branch checked out,
+you can&#8217;t use <code>git merge</code> or <code>git rebase</code> directly.</p></div>
+<div class="paragraph"><p>What works is:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>git checkout refs/notes/commits
+git fetch origin refs/notes/commits
+git merge FETCH_HEAD
+git update-ref refs/notes/commits HEAD
+git checkout master</code></pre>
+</div></div>
+<div class="colist arabic"><ol>
+<li>
+<p>
+Check out the notes, so if you have conflicts, you can resolve them.
+</p>
+</li>
+<li>
+<p>
+Fetch remote notes to FETCH_HEAD.
+</p>
+</li>
+<li>
+<p>
+Do the merge.
+</p>
+</li>
+<li>
+<p>
+Necessary, as <code>git merge</code> won&#8217;t update the ref automatically, since we&#8217;re not on a branch.
+</p>
+</li>
+<li>
+<p>
+Or whereever you were before.
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p>And now you can push your notes, as detailed in the above referred blog post.
+Yes, rebasing would be possible as well, that&#8217;s left as an exercise for the
+reader. ;-)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/lo-smartart-sw.html">LibreOffice can now import SmartArt in Writer</a></h1>
   </div>
   <div class="article_text">
@@ -497,33 +559,6 @@ it was an interesting challenge, since I never touched Calc code before.</p></di
 keyboard, the Hungarian equivalent is Ctrl-Shift-".".</p></div>
 <div class="paragraph"><p>Actually, once <a href="http://www.youtube.com/watch?v=7nMCjBx7-T4">this feature</a> will be
 implemented, not sure how the Hungarian users will access it. :)</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/duplex-printing.html">Duplex printing</a></h1>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>This will be similar to my <a href="/blog/mysql">mysql</a> post.</p></div>
-<div class="paragraph"><p>In case you do duplex printing, select:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-long side: in general
-</p>
-</li>
-<li>
-<p>
-short side: if the PDF already contains a 2 pages per sheet
-</p>
-</li>
-</ul></div>
 </div>
 </div>
 

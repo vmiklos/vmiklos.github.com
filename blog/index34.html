@@ -57,6 +57,35 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/scripts-used-in-the-python-2-7-rebuild.html">Scripts used in the Python 2.7 rebuild</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>First, I could almost reuse the same set of scripts as described <a href="/blog/scripts-used-in-the-python-2-6-mass-rebu">here</a>. The only change I needed to do is that aborting the build loop after each fail is a waste of time, so now I did:</p><p><pre>
+for i in $(cat ~/test.list)
+do
+        echo $i
+        cd ~/git/python27/source/*/$i || continue
+        sudo makepkg -t python27,current -C
+        git clean -x -d -f
+        git checkout -f
+        sed -i 's|python>=2.6|python>=2.7|g' FrugalBuild
+        if bumppkg -t python27,current --rebuild "- rebuilt with python-2.7"; then
+                repoman -t python27 -k push
+        else
+                echo $i >> ~/failed.list
+        fi
+done
+</pre></p><p>Then investigated the failed builds manually.</p><p>Oh, and obviously I no longer had to build the x86_64/ppc fpms manually, I just enabled syncpkgd for the python27 WIP repo.</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/poznan.html">Poznan</a></h1>
   </div>
   <div class="article_text">
@@ -212,64 +241,6 @@ $ gpsbabel -i gpx -f $(date +%Y-%m-%d).gpx -o kml -F $(date +%Y-%m-%d).kml
                     UTP kabel boritasok, a virag ajandek, a vodor meg a
                     space kifestesekor kerult be
 </pre></p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/praga.html">Praga</a></h1>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/wwGxdc7zoEvqRSAR6B-cI4f-Y8dJrOJRhzvF73rcelV006CGFYtbvHVWJ9DjPG68dHRTrl3LRKdjjzHFZj-dEQCgDhSJwUufaAck_JRp2Y7fLVHRodpnZRRQwVrb6uiSsixPJL01dQ=w640" alt="https://lh3.googleusercontent.com/wwGxdc7zoEvqRSAR6B-cI4f-Y8dJrOJRhzvF73rcelV006CGFYtbvHVWJ9DjPG68dHRTrl3LRKdjjzHFZj-dEQCgDhSJwUufaAck_JRp2Y7fLVHRodpnZRRQwVrb6uiSsixPJL01dQ=w640" />
-</div>
-</div>
-<div class="paragraph"><p>A multheten par napot toltottunk Pragaban, az ut soran felgyulemlett online tartalmakat igyekszem most egy csokorba gyujteni:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-<a href="/file/praga/mgmapscache-praga.tar.xz">mgmaps tarball</a> mivel az utikonyvben levo terkepen tul
-  sok volt a "majus elseje hid" es hasonlo elnevezes
-</p>
-</li>
-<li>
-<p>
-<a href="/file/praga/mirror-maze.mp3">a mirror maze (ld kepek lenn) introja</a>, ezt minden telefonra
-  elkuldtek aki az objektum kozelebe ment es be volt kapcsolva a bluetooth+lathatosag a telefonjan
-</p>
-</li>
-<li>
-<p>
-<a href="/file/praga/praguetowers.jar">cseh/angol/nemet tajekoztato midlet</a>, ezt u.ugy broadcastoltak
-  mint az elozo introt
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>Mielott vegeztunk volna a valogatassal/feliratozassal, masok megtettek gyorsabban, de vegul ma vegre
-sikerult idot szakitani a <a href="https://www.flickr.com/photos/vmiklos/albums/72157670562819412">sajat
-kepeink</a> publikalasara is.</p></div>
-<div class="paragraph"><p>Elso korben ennyi, reszletesebb beszamolora most nem vallalkoznek, a kepekbol lathato, hogy az ido
-nagy reszet varosnezessel toltottuk. :)</p></div>
-<div class="paragraph"><p>Frissites: meg par info amit mar nem akarok a TODO-mban tartani, ugyhogy ide irok:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-A Budapestrol befuto vonat a "Hlavni Nadrazi" nevu palyaudvarra erkezik.
-</p>
-</li>
-<li>
-<p>
-A szallasunk (a bences "<a href="http://www.brevnov.cz/">rendhaz</a>) mellett levo hotelt Szent Adalbert
-  hotelnak hivjak, postacime Markétská 28/1 Praha.
-</p>
-</li>
-</ul></div>
 </div>
 </div>
 

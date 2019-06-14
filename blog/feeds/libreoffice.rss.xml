@@ -1,5 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>What is Miklos hacking - libreoffice</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Wed, 15 May 2019 09:29:57 +0200</lastBuildDate><item><title>Importing charts from DOCX drawingML group shapes in Writer</title><link>https://vmiklos.hu/blog/writer-wpg-chart-import.html</link><description>&lt;div id="preamble"&gt;
+<rss version="2.0"><channel><title>What is Miklos hacking - libreoffice</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Fri, 14 Jun 2019 09:36:09 +0200</lastBuildDate><item><title>btLr text direction in Writer, part 3</title><link>https://vmiklos.hu/blog/btlr-text-direction-in-writer-3.html</link><description>&lt;div id="preamble"&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;I already wrote about the btLr text direction in the context of Writer table cells as a result of a
+&lt;a href="https://www.collaboraoffice.com/"&gt;Collabora&lt;/a&gt; hack week (&lt;a href="https://vmiklos.hu/blog/hackweek-2019.html"&gt;part
+1&lt;/a&gt;, &lt;a href="https://vmiklos.hu/blog/btlr-text-direction-in-writer-2.html"&gt;part 2&lt;/a&gt;). The next step in this
+journey is btLr text direction of Writer Text Frames, and building on top of that: DOCX Text Boxes.
+Here is a series of screenshots showing the result:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://lh3.googleusercontent.com/mHrS3KHuLf4tnWOZTw83jJiF3bJ6Ti8fiHXSJlqBFwrdDEpCdS9m_mTfHQPhOXNbZ5atXkagrGO7fSAJPSUo9pEm73UMr_kT6oVwOLCjZwxR9NB_EsLxHUXmUtUiSq0Zr-C0_TNLMg=w640" alt="https://lh3.googleusercontent.com/mHrS3KHuLf4tnWOZTw83jJiF3bJ6Ti8fiHXSJlqBFwrdDEpCdS9m_mTfHQPhOXNbZ5atXkagrGO7fSAJPSUo9pEm73UMr_kT6oVwOLCjZwxR9NB_EsLxHUXmUtUiSq0Zr-C0_TNLMg=w640" /&gt;
+&lt;/div&gt;
+&lt;div class="title"&gt;Figure 1. tdf104353.docx, baseline&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://lh3.googleusercontent.com/haH8Tu0CiUQ9OHWn3Pc9PJ8pP6fEwpGZtrtYUrtkYLYH_BLnLknIA5hBruslE2XIJnuoFjGxYhuFj3GqH4Peu2slIH83ss9vIPMXSn_E5q2Lr80cz2_h7rPuI1DRgJYou6AaOQzAaw=w640" alt="https://lh3.googleusercontent.com/haH8Tu0CiUQ9OHWn3Pc9PJ8pP6fEwpGZtrtYUrtkYLYH_BLnLknIA5hBruslE2XIJnuoFjGxYhuFj3GqH4Peu2slIH83ss9vIPMXSn_E5q2Lr80cz2_h7rPuI1DRgJYou6AaOQzAaw=w640" /&gt;
+&lt;/div&gt;
+&lt;div class="title"&gt;Figure 2. tdf104353.docx, current&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://lh3.googleusercontent.com/ZZKDSlC3-VmuVbvvR7nlsNUi6A-mWAj6wJgg2TMzBMg0MQ01kN0iwnHvw_16GDopYT2hNuJwUKWZ5ugbg6TjkJWJ_V5rHwv2fpwumuGLLF29hYYtEPOb0v2en5UHY5p8kHyxTWtYZA=w640" alt="https://lh3.googleusercontent.com/ZZKDSlC3-VmuVbvvR7nlsNUi6A-mWAj6wJgg2TMzBMg0MQ01kN0iwnHvw_16GDopYT2hNuJwUKWZ5ugbg6TjkJWJ_V5rHwv2fpwumuGLLF29hYYtEPOb0v2en5UHY5p8kHyxTWtYZA=w640" /&gt;
+&lt;/div&gt;
+&lt;div class="title"&gt;Figure 3. tdf104353.docx, reference&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;You can see that the bug document is some kind of card you can print and fold in the middle: no
+matter if you are in front of the card or you are behind it, you always see the name and details of
+the person. Sure, you can do the same with a table with no borders, but using a Text Frame for this
+purpose is a sane use-case.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The text from the 3 paragraphs used to have the same horizontal position, and now it&amp;#8217;s laid out the
+same way as Word does it.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Technically, this result is just the last commit in a series. I fixed the following problems since
+the last blog post on this topic:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="olist arabic"&gt;&lt;ol class="arabic"&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=0013f21ecd918e0541f165c3526a58f42dd75481"&gt;tdf#124344 sw btlr writing mode, DOCX import: fix vertical alignment&lt;/a&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=8072a926da2a02dfaf3fa848a2976634641a594f"&gt;tdf#124521 sw btlr writing mode render: fix paint rectangle on scroll&lt;/a&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=ff17478e069cc82681df62514876c06365dd5cd6"&gt;sw btlr writing mode: implement DOCX shape import for tbrl&lt;/a&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=cd2a7acd789297e613424a59b2fe24cedd9a72b6"&gt;sw btlr writing mode: implement ODF filter for textframes&lt;/a&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=8a26e4b26f0153fb8ca5da880ee4aa44748ee4df"&gt;sw btlr writing mode: implement layout for fly frames&lt;/a&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=52e47276694575f119192f6ddafa69ec7a7eb6b4"&gt;sw btlr writing mode: implement UI for fly frames&lt;/a&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=ad96f6f378a9fce11c2f7d9ad39a8203189444e3"&gt;sw btlr writing mode: fix btlr &amp;lt;-&amp;gt; tbrl switch for fly frames&lt;/a&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=9c945cdbe170104cbacafa2c37babec5210b9ca2"&gt;sw btlr writing mode: DOCX drawingML import for fly frames&lt;/a&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;All this is available in LibreOffice master (towards 6.4), so you can try it out right now, if
+interested.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 14 Jun 2019 09:36:09 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2019-06-14:/blog/btlr-text-direction-in-writer-3.html</guid><category>en</category></item><item><title>Importing charts from DOCX drawingML group shapes in Writer</title><link>https://vmiklos.hu/blog/writer-wpg-chart-import.html</link><description>&lt;div id="preamble"&gt;
 &lt;div class="sectionbody"&gt;
 &lt;div class="imageblock" style="text-align:center;"&gt;
 &lt;div class="content"&gt;
@@ -637,22 +716,4 @@ layout performance&lt;/a&gt; lightning talk at LibreOffice Conference 2018. Clic
 the image to get the hybrid PDF slides!&lt;/p&gt;&lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Mon, 01 Oct 2018 10:26:56 +0000</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2018-10-01:/blog/libocon2018-lightning.html</guid><category>en</category></item><item><title>ReqIF import/export in LibreOffice Writer conference talk</title><link>https://vmiklos.hu/blog/libocon2018.html</link><description>&lt;div id="preamble"&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;a class="image" href="https://speakerd.s3.amazonaws.com/presentations/a33d7c215e7f493ab1711c614413f6db/reqif-locon-tirana-2k19.pdf"&gt;
-&lt;img src="https://farm2.staticflickr.com/1939/44246333744_a805435168_z.jpg" alt="https://farm2.staticflickr.com/1939/44246333744_a805435168_z.jpg" /&gt;
-&lt;/a&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Earlier today I gave an
-&lt;a href="https://conference.libreoffice.org/2018/the-program/sept-18th-friday/"&gt;Editing
-ReqIF-XHTML fragments with Writer&lt;/a&gt; talk at LibreOffice Conference 2018. The
-room was well-crowded&amp;#8201;&amp;#8212;&amp;#8201;perhaps because the previous talk was about OOXML
-interoperability. ;-)&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;I expect quite some other slides will be available on
-&lt;a href="http://planet.documentfoundation.org/"&gt;Planet&lt;/a&gt;, don&amp;#8217;t miss them.&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 28 Sep 2018 12:26:01 +0000</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2018-09-28:/blog/libocon2018.html</guid><category>en</category></item></channel></rss>
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Mon, 01 Oct 2018 10:26:56 +0000</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2018-10-01:/blog/libocon2018-lightning.html</guid><category>en</category></item></channel></rss>

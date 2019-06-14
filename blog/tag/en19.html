@@ -58,6 +58,100 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/amtterm.html">amtterm</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>So we have two machines next to each other: genesis and helicon. The
+original idea years ago was to put a serial cable between the two so
+that it&#8217;s possible to manage the machines even in case ssh dies for some
+reason. Of course we never did that, because we were lazy - but in the
+meantime both machines were replaced by a newer mainboard, supporting
+<a href="http://www.intel.com/technology/platform-technology/intel-amt/">Intel
+AMT</a>.</p></div>
+<div class="paragraph"><p>In short, this is a poor man&#8217;s IP console, it supports serial-over-lan,
+so with a bit of configuration and a special client tool you can control
+grub, watch the bootup process (will you miss the risky few minutes
+after a reboot till it turned out if a remote machine boots up after a
+kernel upgrade or not?) and finally can even log in when ssh is not
+running.</p></div>
+<div class="paragraph"><p>First you need to set up grub to listen on the serial port as well. To
+do this, you need to know the device name and I/O port of your
+serial-over-lan port. The boxes mentioned above have one physical and
+one virtual serial port, so we need the later - that will be
+<code>/dev/ttyS1</code>. Now let&#8217;s grep in dmesg to get the port:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>$ dmesg|grep 'ttyS1 at'
+0000:00:03.3: ttyS1 at I/O 0xf1c0 (irq = 17) is a 16550A</code></pre>
+</div></div>
+<div class="paragraph"><p>Now we know everything to set up grub. Just prepend the following lines
+to your <code>/boot/grub/menu.lst</code>:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>serial --port=0xf1c0 --speed=115200
+terminal --timeout=30 console serial</code></pre>
+</div></div>
+<div class="paragraph"><p>The speed is AFAIK the same for each SoL port, so you can just
+copy&amp;paste it.</p></div>
+<div class="paragraph"><p>It&#8217;s also recommended to change the timeout line to 30 as well, this way
+you will have half minute to press any key to tell grub you want to
+control is on the serial port and you&#8217;ll again have half minute to hit
+any key to edit the kernel parameters, etc. (The whole grub part is
+useful because this way in case you upgraded the machine and it fails to
+boot up, you can still boot using init=/bin/sh and fix the system.)</p></div>
+<div class="paragraph"><p>Second, you want to see the boot process, this way you can fix the
+system remotely, even if fsck fails and asks for root password, etc.</p></div>
+<div class="paragraph"><p>For this, you need to change your kernel parameters, so that messages
+sent to <code>/dev/console</code> will end up on the serial port.</p></div>
+<div class="paragraph"><p>I changed</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>root=/dev/md0 ro quiet vga=791</code></pre>
+</div></div>
+<div class="paragraph"><p>to</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>root=/dev/md0 ro vga=normal nomodeset console=ttyS1,115200</code></pre>
+</div></div>
+<div class="paragraph"><p>and that achieved this.</p></div>
+<div class="paragraph"><p>Third, you want to start a getty on ttyS1 once the machine booted up, in
+case ssh fails to start up. If you don&#8217;t use systemd yet, add the following
+line to <code>/etc/inittab</code>:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>s1:12345:respawn:/sbin/agetty ttyS1 115200 vt100-nav</code></pre>
+</div></div>
+<div class="paragraph"><p>(Don&#8217;t forget to run <code>init q</code> to reload the config!)</p></div>
+<div class="paragraph"><p>Finally, you need <a href="http://dl.bytesex.org/releases/amtterm/">amtterm</a> on
+the client side - I plan to package it for Frugalware once 1.4pre2 is
+out. Till then you can just download, unpack and build the source
+tarball using <code>make</code> - no installation is necessary, you can run
+<code>amtterm</code> in-place. In my case I can&#8217;t connect directly to the machine
+as (for obvious reasons) the AMT is reachable from the local subnet
+only. So I build an ssh tunnel to the other machine and use <code>socksify</code>
+to pretend I run amtterm on the local subnet. The commandline I use is:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>$ socksify ./amtterm -p &lt;pass&gt; &lt;ip&gt;</code></pre>
+</div></div>
+<div class="paragraph"><p>And that&#8217;s it - enjoy editing your kernel parameters, watching your boot
+process and login to the box even if ssh is not running and you don&#8217;t
+have IP console. :)</p></div>
+<div class="paragraph"><p>If you can&#8217;t try it out right now but you want to see it in action:
+<a href="http://frugalware.org/~vmiklos/pics/shots/helicon-amt-grub.png">grub
+in amtterm</a> and
+<a href="http://frugalware.org/~vmiklos/pics/shots/helicon-amt.png">boot
+in amtterm</a> - without any virtualization! ;)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/wikipedia-spam.html">How to get rid of Wikipedia spam header</a></h1>
   </div>
   <div class="article_text">
@@ -378,26 +472,6 @@ when using the result in digikam, the camera time zone has to be set to "manual:
 </p>
 </li>
 </ul></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/ooo-vmiklos01-merged.html">OpenOffice.org: vmiklos01 CWS integrated</a></h1>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Once I was ready with this year&#8217;s GSoC work I started to submit it back
-to OpenOffice.org. Before that was completed, LibreOffice was launched,
-though I thought if I started working on submitting it to OpenOffice.org
-as well, I&#8217;ll finish it. About 6 weeks later they now
-<a href="http://hg.services.openoffice.org/DEV300/rev/5a2d87e7a414">integrated</a>
-(merged) the <code>vmiklos01</code> CWS (the branch containing my GSoC work) to
-DEV300, what will became OpenOffice.org 3.4 later.</p></div>
 </div>
 </div>
 
