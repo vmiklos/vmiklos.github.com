@@ -903,7 +903,29 @@ Boot back to 1.6, run <code>pacman-g2 -Syu</code>, and <code>grub-install</code>
 Now given that serial console needs a custom GRUB config and kernel parameters, you need to modify GRUB2&#8217;s <code>/etc/default/grub</code>. Here is my diff:
 </p>
 <div class="listingblock">
-<div class="content"></div></div>
+<div class="content"><!-- Generator: GNU source-highlight
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>/etc/default# diff -u grub.orig grub
+<span style="color: #FF6600">--- grub.orig   2012-07-19 01:57:20.000000000 +0200</span>
+<span style="color: #009900">+++ grub        2012-07-29 14:45:50.000000000 +0200</span>
+<span style="color: #0000FF">@@ -1,11 +1,12 @@</span>
+ GRUB_DEFAULT=0
+ GRUB_TIMEOUT=5
+ GRUB_DISTRIBUTOR="Frugalware 1.6"
+<span style="color: #FF6600">-GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"</span>
+<span style="color: #009900">+GRUB_CMDLINE_LINUX_DEFAULT="vga=normal nomodeset plymouth.enable=0 console=ttyS0,115200"</span>
+ GRUB_CMDLINE_LINUX=""
+ GRUB_PRELOAD_MODULES=""
+<span style="color: #FF6600">-GRUB_TERMINAL_INPUT=console</span>
+<span style="color: #FF6600">-GRUB_TERMINAL_OUTPUT=gfxterm</span>
+<span style="color: #009900">+GRUB_TERMINAL_INPUT=serial</span>
+<span style="color: #009900">+GRUB_SERIAL_COMMAND="serial --speed=115200 --port=0x3f8"</span>
+<span style="color: #009900">+GRUB_TERMINAL_OUTPUT=serial</span>
+ #GRUB_GFXPAYLOAD_LINUX=keep
+ GRUB_GFXMODE=auto
+ #GRUB_DISABLE_LINUX_UUID=true</tt></pre></div></div>
 <div class="paragraph"><p>(Refer to <a href="/blog/amtterm">this post</a> if you don&#8217;t know the needed port number.)</p></div>
 </li>
 <li>
@@ -942,7 +964,32 @@ time correction based on the camera model, and touch the file with the correct
 date. Then any image viewer can show the photos, sorted by date.</p></div>
 <div class="paragraph"><p>Here is the script I came up with:</p></div>
 <div class="listingblock">
-<div class="content"></div></div>
+<div class="content"><!-- Generator: GNU source-highlight
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">for</span></span> i <span style="font-weight: bold"><span style="color: #0000FF">in</span></span> <span style="color: #990000">*.</span>jpg
+<span style="font-weight: bold"><span style="color: #0000FF">do</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># 2012:01:01 01:01:01 -&gt; 2012-01-01 01:01:01</span></span>
+    <span style="color: #009900">date</span><span style="color: #990000">=</span><span style="color: #009900">$(</span>exiv2 <span style="color: #009900">$i</span> <span style="color: #990000">|</span>grep timestamp<span style="color: #990000">|</span>sed <span style="color: #FF0000">'s/.* : //'</span><span style="color: #990000">|</span>sed <span style="color: #FF0000">'s/^</span><span style="color: #CC33CC">\(</span><span style="color: #FF0000">[0-9][0-9][0-9][0-9]</span><span style="color: #CC33CC">\)</span><span style="color: #FF0000">:</span><span style="color: #CC33CC">\(</span><span style="color: #FF0000">[0-9][0-9]</span><span style="color: #CC33CC">\)</span><span style="color: #FF0000">:</span><span style="color: #CC33CC">\(</span><span style="color: #FF0000">[0-9][0-9]</span><span style="color: #CC33CC">\)</span><span style="color: #FF0000">/</span><span style="color: #CC33CC">\1</span><span style="color: #FF0000">-</span><span style="color: #CC33CC">\2</span><span style="color: #FF0000">-</span><span style="color: #CC33CC">\3</span><span style="color: #FF0000">/'</span><span style="color: #990000">)</span>
+    <span style="font-style: italic"><span style="color: #9A1900"># date string -&gt; epoch</span></span>
+    <span style="color: #009900">unix</span><span style="color: #990000">=</span><span style="color: #009900">$(</span>date --date<span style="color: #990000">=</span><span style="color: #FF0000">"$date"</span> <span style="color: #990000">+%</span>s<span style="color: #990000">)</span>
+
+    <span style="color: #009900">model</span><span style="color: #990000">=</span><span style="color: #009900">$(</span>exiv2 <span style="color: #009900">$i</span> <span style="color: #990000">|</span>grep model<span style="color: #990000">|</span>sed <span style="color: #FF0000">'s/.*: //'</span><span style="color: #990000">)</span>
+
+    <span style="font-weight: bold"><span style="color: #0000FF">if</span></span> <span style="color: #990000">[</span> <span style="color: #FF0000">"$model"</span> <span style="color: #990000">==</span> <span style="color: #FF0000">"NIKON D40"</span> <span style="color: #990000">];</span> <span style="font-weight: bold"><span style="color: #0000FF">then</span></span>
+        <span style="color: #009900">unix</span><span style="color: #990000">=</span><span style="color: #009900">$(($unix-1320))</span> <span style="font-style: italic"><span style="color: #9A1900"># Alice</span></span>
+    <span style="font-weight: bold"><span style="color: #0000FF">else</span></span>
+        <span style="color: #009900">unix</span><span style="color: #990000">=</span><span style="color: #009900">$(($unix+3600))</span> <span style="font-style: italic"><span style="color: #9A1900"># Bob</span></span>
+    <span style="font-weight: bold"><span style="color: #0000FF">fi</span></span>
+
+    <span style="font-style: italic"><span style="color: #9A1900"># epoch -&gt; date string</span></span>
+    <span style="color: #009900">date</span><span style="color: #990000">=</span><span style="color: #009900">$(</span>python -c <span style="color: #FF0000">"import time; print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime($unix))"</span><span style="color: #990000">)</span>
+    <span style="font-style: italic"><span style="color: #9A1900"># profit!</span></span>
+    touch --date<span style="color: #990000">=</span><span style="color: #FF0000">"$date"</span> <span style="color: #009900">$i</span>
+<span style="font-weight: bold"><span style="color: #0000FF">done</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># write back the timestamps to the exif info (thx boobaa)</span></span>
+jhead -dsft <span style="color: #990000">*.</span>jpg</tt></pre></div></div>
 <div class="paragraph"><p>And additionally if you don&#8217;t want to mess up the settings of the image viewer, you can use:</p></div>
 <div class="listingblock">
 <div class="content">

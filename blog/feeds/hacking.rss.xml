@@ -40,7 +40,32 @@ time correction based on the camera model, and touch the file with the correct
 date. Then any image viewer can show the photos, sorted by date.&lt;/p&gt;&lt;/div&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;Here is the script I came up with:&lt;/p&gt;&lt;/div&gt;
 &lt;div class="listingblock"&gt;
-&lt;div class="content"&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class="content"&gt;&lt;!-- Generator: GNU source-highlight
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite --&gt;
+&lt;pre&gt;&lt;tt&gt;&lt;span style="font-weight: bold"&gt;&lt;span style="color: #0000FF"&gt;for&lt;/span&gt;&lt;/span&gt; i &lt;span style="font-weight: bold"&gt;&lt;span style="color: #0000FF"&gt;in&lt;/span&gt;&lt;/span&gt; &lt;span style="color: #990000"&gt;*.&lt;/span&gt;jpg
+&lt;span style="font-weight: bold"&gt;&lt;span style="color: #0000FF"&gt;do&lt;/span&gt;&lt;/span&gt;
+    &lt;span style="font-style: italic"&gt;&lt;span style="color: #9A1900"&gt;# 2012:01:01 01:01:01 -&amp;gt; 2012-01-01 01:01:01&lt;/span&gt;&lt;/span&gt;
+    &lt;span style="color: #009900"&gt;date&lt;/span&gt;&lt;span style="color: #990000"&gt;=&lt;/span&gt;&lt;span style="color: #009900"&gt;$(&lt;/span&gt;exiv2 &lt;span style="color: #009900"&gt;$i&lt;/span&gt; &lt;span style="color: #990000"&gt;|&lt;/span&gt;grep timestamp&lt;span style="color: #990000"&gt;|&lt;/span&gt;sed &lt;span style="color: #FF0000"&gt;'s/.* : //'&lt;/span&gt;&lt;span style="color: #990000"&gt;|&lt;/span&gt;sed &lt;span style="color: #FF0000"&gt;'s/^&lt;/span&gt;&lt;span style="color: #CC33CC"&gt;\(&lt;/span&gt;&lt;span style="color: #FF0000"&gt;[0-9][0-9][0-9][0-9]&lt;/span&gt;&lt;span style="color: #CC33CC"&gt;\)&lt;/span&gt;&lt;span style="color: #FF0000"&gt;:&lt;/span&gt;&lt;span style="color: #CC33CC"&gt;\(&lt;/span&gt;&lt;span style="color: #FF0000"&gt;[0-9][0-9]&lt;/span&gt;&lt;span style="color: #CC33CC"&gt;\)&lt;/span&gt;&lt;span style="color: #FF0000"&gt;:&lt;/span&gt;&lt;span style="color: #CC33CC"&gt;\(&lt;/span&gt;&lt;span style="color: #FF0000"&gt;[0-9][0-9]&lt;/span&gt;&lt;span style="color: #CC33CC"&gt;\)&lt;/span&gt;&lt;span style="color: #FF0000"&gt;/&lt;/span&gt;&lt;span style="color: #CC33CC"&gt;\1&lt;/span&gt;&lt;span style="color: #FF0000"&gt;-&lt;/span&gt;&lt;span style="color: #CC33CC"&gt;\2&lt;/span&gt;&lt;span style="color: #FF0000"&gt;-&lt;/span&gt;&lt;span style="color: #CC33CC"&gt;\3&lt;/span&gt;&lt;span style="color: #FF0000"&gt;/'&lt;/span&gt;&lt;span style="color: #990000"&gt;)&lt;/span&gt;
+    &lt;span style="font-style: italic"&gt;&lt;span style="color: #9A1900"&gt;# date string -&amp;gt; epoch&lt;/span&gt;&lt;/span&gt;
+    &lt;span style="color: #009900"&gt;unix&lt;/span&gt;&lt;span style="color: #990000"&gt;=&lt;/span&gt;&lt;span style="color: #009900"&gt;$(&lt;/span&gt;date --date&lt;span style="color: #990000"&gt;=&lt;/span&gt;&lt;span style="color: #FF0000"&gt;"$date"&lt;/span&gt; &lt;span style="color: #990000"&gt;+%&lt;/span&gt;s&lt;span style="color: #990000"&gt;)&lt;/span&gt;
+
+    &lt;span style="color: #009900"&gt;model&lt;/span&gt;&lt;span style="color: #990000"&gt;=&lt;/span&gt;&lt;span style="color: #009900"&gt;$(&lt;/span&gt;exiv2 &lt;span style="color: #009900"&gt;$i&lt;/span&gt; &lt;span style="color: #990000"&gt;|&lt;/span&gt;grep model&lt;span style="color: #990000"&gt;|&lt;/span&gt;sed &lt;span style="color: #FF0000"&gt;'s/.*: //'&lt;/span&gt;&lt;span style="color: #990000"&gt;)&lt;/span&gt;
+
+    &lt;span style="font-weight: bold"&gt;&lt;span style="color: #0000FF"&gt;if&lt;/span&gt;&lt;/span&gt; &lt;span style="color: #990000"&gt;[&lt;/span&gt; &lt;span style="color: #FF0000"&gt;"$model"&lt;/span&gt; &lt;span style="color: #990000"&gt;==&lt;/span&gt; &lt;span style="color: #FF0000"&gt;"NIKON D40"&lt;/span&gt; &lt;span style="color: #990000"&gt;];&lt;/span&gt; &lt;span style="font-weight: bold"&gt;&lt;span style="color: #0000FF"&gt;then&lt;/span&gt;&lt;/span&gt;
+        &lt;span style="color: #009900"&gt;unix&lt;/span&gt;&lt;span style="color: #990000"&gt;=&lt;/span&gt;&lt;span style="color: #009900"&gt;$(($unix-1320))&lt;/span&gt; &lt;span style="font-style: italic"&gt;&lt;span style="color: #9A1900"&gt;# Alice&lt;/span&gt;&lt;/span&gt;
+    &lt;span style="font-weight: bold"&gt;&lt;span style="color: #0000FF"&gt;else&lt;/span&gt;&lt;/span&gt;
+        &lt;span style="color: #009900"&gt;unix&lt;/span&gt;&lt;span style="color: #990000"&gt;=&lt;/span&gt;&lt;span style="color: #009900"&gt;$(($unix+3600))&lt;/span&gt; &lt;span style="font-style: italic"&gt;&lt;span style="color: #9A1900"&gt;# Bob&lt;/span&gt;&lt;/span&gt;
+    &lt;span style="font-weight: bold"&gt;&lt;span style="color: #0000FF"&gt;fi&lt;/span&gt;&lt;/span&gt;
+
+    &lt;span style="font-style: italic"&gt;&lt;span style="color: #9A1900"&gt;# epoch -&amp;gt; date string&lt;/span&gt;&lt;/span&gt;
+    &lt;span style="color: #009900"&gt;date&lt;/span&gt;&lt;span style="color: #990000"&gt;=&lt;/span&gt;&lt;span style="color: #009900"&gt;$(&lt;/span&gt;python -c &lt;span style="color: #FF0000"&gt;"import time; print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime($unix))"&lt;/span&gt;&lt;span style="color: #990000"&gt;)&lt;/span&gt;
+    &lt;span style="font-style: italic"&gt;&lt;span style="color: #9A1900"&gt;# profit!&lt;/span&gt;&lt;/span&gt;
+    touch --date&lt;span style="color: #990000"&gt;=&lt;/span&gt;&lt;span style="color: #FF0000"&gt;"$date"&lt;/span&gt; &lt;span style="color: #009900"&gt;$i&lt;/span&gt;
+&lt;span style="font-weight: bold"&gt;&lt;span style="color: #0000FF"&gt;done&lt;/span&gt;&lt;/span&gt;
+&lt;span style="font-style: italic"&gt;&lt;span style="color: #9A1900"&gt;# write back the timestamps to the exif info (thx boobaa)&lt;/span&gt;&lt;/span&gt;
+jhead -dsft &lt;span style="color: #990000"&gt;*.&lt;/span&gt;jpg&lt;/tt&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;And additionally if you don&amp;#8217;t want to mess up the settings of the image viewer, you can use:&lt;/p&gt;&lt;/div&gt;
 &lt;div class="listingblock"&gt;
 &lt;div class="content"&gt;
