@@ -262,29 +262,7 @@ Boot back to 1.6, run &lt;code&gt;pacman-g2 -Syu&lt;/code&gt;, and &lt;code&gt;g
 Now given that serial console needs a custom GRUB config and kernel parameters, you need to modify GRUB2&amp;#8217;s &lt;code&gt;/etc/default/grub&lt;/code&gt;. Here is my diff:
 &lt;/p&gt;
 &lt;div class="listingblock"&gt;
-&lt;div class="content"&gt;&lt;!-- Generator: GNU source-highlight
-by Lorenzo Bettini
-http://www.lorenzobettini.it
-http://www.gnu.org/software/src-highlite --&gt;
-&lt;pre&gt;&lt;tt&gt;/etc/default# diff -u grub.orig grub
-&lt;span style="color: #FF6600"&gt;--- grub.orig   2012-07-19 01:57:20.000000000 +0200&lt;/span&gt;
-&lt;span style="color: #009900"&gt;+++ grub        2012-07-29 14:45:50.000000000 +0200&lt;/span&gt;
-&lt;span style="color: #0000FF"&gt;@@ -1,11 +1,12 @@&lt;/span&gt;
- GRUB_DEFAULT=0
- GRUB_TIMEOUT=5
- GRUB_DISTRIBUTOR="Frugalware 1.6"
-&lt;span style="color: #FF6600"&gt;-GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"&lt;/span&gt;
-&lt;span style="color: #009900"&gt;+GRUB_CMDLINE_LINUX_DEFAULT="vga=normal nomodeset plymouth.enable=0 console=ttyS0,115200"&lt;/span&gt;
- GRUB_CMDLINE_LINUX=""
- GRUB_PRELOAD_MODULES=""
-&lt;span style="color: #FF6600"&gt;-GRUB_TERMINAL_INPUT=console&lt;/span&gt;
-&lt;span style="color: #FF6600"&gt;-GRUB_TERMINAL_OUTPUT=gfxterm&lt;/span&gt;
-&lt;span style="color: #009900"&gt;+GRUB_TERMINAL_INPUT=serial&lt;/span&gt;
-&lt;span style="color: #009900"&gt;+GRUB_SERIAL_COMMAND="serial --speed=115200 --port=0x3f8"&lt;/span&gt;
-&lt;span style="color: #009900"&gt;+GRUB_TERMINAL_OUTPUT=serial&lt;/span&gt;
- #GRUB_GFXPAYLOAD_LINUX=keep
- GRUB_GFXMODE=auto
- #GRUB_DISABLE_LINUX_UUID=true&lt;/tt&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class="content"&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;(Refer to &lt;a href="/blog/amtterm"&gt;this post&lt;/a&gt; if you don&amp;#8217;t know the needed port number.)&lt;/p&gt;&lt;/div&gt;
 &lt;/li&gt;
 &lt;li&gt;

@@ -335,29 +335,7 @@ Boot back to 1.6, run <code>pacman-g2 -Syu</code>, and <code>grub-install</code>
 Now given that serial console needs a custom GRUB config and kernel parameters, you need to modify GRUB2&#8217;s <code>/etc/default/grub</code>. Here is my diff:
 </p>
 <div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight
-by Lorenzo Bettini
-http://www.lorenzobettini.it
-http://www.gnu.org/software/src-highlite -->
-<pre><tt>/etc/default# diff -u grub.orig grub
-<span style="color: #FF6600">--- grub.orig   2012-07-19 01:57:20.000000000 +0200</span>
-<span style="color: #009900">+++ grub        2012-07-29 14:45:50.000000000 +0200</span>
-<span style="color: #0000FF">@@ -1,11 +1,12 @@</span>
- GRUB_DEFAULT=0
- GRUB_TIMEOUT=5
- GRUB_DISTRIBUTOR="Frugalware 1.6"
-<span style="color: #FF6600">-GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"</span>
-<span style="color: #009900">+GRUB_CMDLINE_LINUX_DEFAULT="vga=normal nomodeset plymouth.enable=0 console=ttyS0,115200"</span>
- GRUB_CMDLINE_LINUX=""
- GRUB_PRELOAD_MODULES=""
-<span style="color: #FF6600">-GRUB_TERMINAL_INPUT=console</span>
-<span style="color: #FF6600">-GRUB_TERMINAL_OUTPUT=gfxterm</span>
-<span style="color: #009900">+GRUB_TERMINAL_INPUT=serial</span>
-<span style="color: #009900">+GRUB_SERIAL_COMMAND="serial --speed=115200 --port=0x3f8"</span>
-<span style="color: #009900">+GRUB_TERMINAL_OUTPUT=serial</span>
- #GRUB_GFXPAYLOAD_LINUX=keep
- GRUB_GFXMODE=auto
- #GRUB_DISABLE_LINUX_UUID=true</tt></pre></div></div>
+<div class="content"></div></div>
 <div class="paragraph"><p>(Refer to <a href="/blog/amtterm">this post</a> if you don&#8217;t know the needed port number.)</p></div>
 </li>
 <li>
