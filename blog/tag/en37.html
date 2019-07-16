@@ -58,6 +58,22 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/darcs-fast-export-0-8.html">darcs-fast-export 0.8</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>Whoa, lots of stuff happened.</p><p>darcs-fast-export 0.8 is out and it passes the big-zoo test. (In short AFAIK darcs2git goes to an infinite loop for big repos, the others just produce corrupted results, and d-f-e is the first that can pass that test.)</p><p>I just noticed a bit expensive (since you'll be billed an international fee), but useful sms2irc method, by using <a href="http://www.sms4skype.net/skype/smstoskypeen.asp">sms4skype</a> + bitlbee-skype. :)</p><p>Oh and a trick. We at Frugalware use a hook to update the working dir after every push, so that the new (in git 1.6.1) warning when pushing to a non-bare repo is bogus. The way to disable it is in git-config, manpage, but here it is:</p><p><pre>
+git config receive.denycurrentbranch ignore
+</pre></p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/frugalware-xmas-logo.html">Frugalware Xmas logo</a></h1>
   </div>
   <div class="article_text">
@@ -191,33 +207,6 @@ for i in l:
         l.remove(i)
 print l
 </pre></p><p>So we remove each item from the list (an expensive version of "l = []").</p><p>However, the result will be "['b']". Now if you use "for i in l[:]:", everything will be fine, because you can iterate over the original list.</p><p>It's a shame that I do python for more than 2 years, and I did not know such a basic stuff. :(</p><p>(<a href="http://mail.python.org/pipermail/python-list/2004-September/280885.html">original post</a>)</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/a-few-note-about-rpm.html">a few note about rpm</a></h1>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>I spent some time today to prepare some rpm packages for an RHEL4 box, it was an interesting experience. To preface to this story is that first I had to do the followings on Frugalware:</p><p><ul>
-  <li>Patch mysql 5.0.37 to add support for the sphinx search engine</li>
-  <li>Make sure about sphinx itself works fine with this (though sadly I haven't had time yet to package sphinx as well).</li>
-</ul></p><p>We have a newer (but compatible, since we still ship 5.0.x) mysql, but a simple git checkout gave me the old buildscript and then the patch applied perfectly.</p><p>Then the plan changed, I needed to do this on an RHEL4 box as well.</p><p>Steps:</p><p><ul>
-  <li>Fix broken up2date config, it seems nobody installed any security update on the box for a long time.</li>
-  <li>Notice that RHEL4 has mysql 4.x, so I had to upgrade it to 5.0.x which was not trivial.</li>
-  <li>After adding the patch to the spec file, I saw that there are a bunch of manual autoconf/automake/autoheader/autowhatever calls, so I did not add a call to mysql's own autogen script. It turned out later that this was a fault, the default autofoo calls did not regenerate all the necessary files, basically they just took a lot of time, but did not really do anything useful. Sigh.</li>
-  <li>Once build was done, I had to rebuild perl's mysql driver and the whole php package because of the major mysql upgrade. Did I say I hate to touch php?</li>
-  <li>And finally the worst was to package sphinx. I used some opensuse spec file, but it turned out to be badly broken on RHEL4. Fixing it was not so problematic, but took a lot of time, because debugging a specfile under RH is a PITA.</li>
-  <li>Let me show a few examples. The equivalent of Fdestdir (the directory which will be tared up after the build is done) is not rm -rf'd before the build starts. So if you have some crap there, your final package will have it.</li>
-  <li>OTOH, Fsrcdir (the directory where the build takes place) <em>is</em> deleted, which means you can't do an incremental build.</li>
-  <li>If you break your pre-uninstall script, you can't easily uninstall a package, even with rpm -e --force --nodeps (you need some magic --no-preun switch, which is not implied by --force).</li>
-  <li>If you say rpm -Uvh foo-2.0.rpm, then sometimes it bails out with an error about it has a file conflict because /bar/baz.so is provided by foo-1.0. What? Doesn't -U stand for <em>upgrade</em>?</li>
-</ul></p><p>Okay, this was enough. I finally finished the task, but I again just can make a "this is so much more efficient with Frugalware" note. ;-)</p><p>And no, I don't like to write about why foo sucks, but both this packaging system (or at least the default settings) a docbook sometimes really sucks.</p>
 </div>
 </div>
 

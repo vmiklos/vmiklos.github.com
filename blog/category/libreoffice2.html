@@ -60,6 +60,30 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/libocon2018-lightning.html">Text layout performance in LibreOffice conference lightning talk</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://speakerd.s3.amazonaws.com/presentations/6d1f7938f02f40da9a04bd2ce24b0940/vcllayout-locon-tirana-2k19.pdf">
+<img src="https://farm2.staticflickr.com/1914/44115509595_ab58bf01f5_z.jpg" alt="https://farm2.staticflickr.com/1914/44115509595_ab58bf01f5_z.jpg" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>Last Friday I gave a
+<a href="https://conference.libreoffice.org/2018/the-program/sept-18th-friday/">Text
+layout performance</a> lightning talk at LibreOffice Conference 2018. Click on
+the image to get the hybrid PDF slides!</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/libocon2018.html">ReqIF import/export in LibreOffice Writer conference talk</a></h1>
   </div>
   <div class="article_text">
@@ -771,121 +795,6 @@ not available:</p></div>
 </div>
 <div class="paragraph"><p>(The screenshot is from the Calibre ebook reader.)</p></div>
 <div class="paragraph"><p>All this is available in master (towards LibreOffice 6.1), or you can grab a
-<a href="http://dev-builds.libreoffice.org/daily/master/">daily build</a> and try it out
-right now. :-)</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/basic-epub3-export.html">Basic EPUB3 export in Libreoffice</a></h1>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://farm5.staticflickr.com/4577/37588898064_117dc4a933_o_d.png" alt="https://farm5.staticflickr.com/4577/37588898064_117dc4a933_o_d.png" />
-</div>
-</div>
-<div class="paragraph"><p>I worked on a new EPUB3 export filter in LibreOffice recently. First, thanks
-to <a href="http://nouenoff.nl/">Nou&amp;Off</a> in cooperation with a customer who made this
-work possible.  The current state is that basic features work nicely to the
-extent that the filter is probably usable for most books (they typically
-mostly have just text with minimal formatting), so this post aims to explain
-the architecture, how the various pieces fit together.</p></div>
-<div class="paragraph"><p>The above picture shows the building blocks. The idea is that nominally EPUB
-is a complete export filter, but instead of doing all the work, we offload
-various sub-tasks to other modules:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-First we invoke the existing (flat) ODT export, so we can work with ODF
-  instead of with the UNO API directly. This will be useful in the next step.
-</p>
-</li>
-<li>
-<p>
-Then we feed the SAX events from the ODT export to a new librevenge text
-  export. Given that the librevenge API is really close to ODF (and xmloff/
-  has quite some code to map the UNO API to ODF), here it pays off to work with
-  ODF and not with the UNO API directly.
-</p>
-</li>
-<li>
-<p>
-The librevenge text export talks to a librevenge generator, which is
-  David Tardon&#8217;s excellent
-  <a href="https://sourceforge.net/projects/libepubgen/">libepubgen</a> in this case.
-</p>
-</li>
-<li>
-<p>
-Finally libepubgen calls back to LibreOffice, and our package code does the
-  ZIP compression.
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>The setup is a bit complicated, but it has a number of advantages:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-Instead of reinventing the wheel, LO and DLP now shares code, libepubgen is
-  now a dependency of LibreOffice.
-</p>
-</li>
-<li>
-<p>
-libepubgen doesn&#8217;t bring its own ZIP writer code, it can nicely reuse our
-  existing one.
-</p>
-</li>
-<li>
-<p>
-This is a great opportunity to finally write an ODT&#8594;librevenge bridge, so
-  other DLP-based export libs can be added in the future (e.g.
-  <a href="https://sourceforge.net/projects/librvngabw/">librvngabw</a>).
-</p>
-</li>
-<li>
-<p>
-If we ever want to export to EPUB from Draw/Impress, libepubgen will help us
-  there as well.
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>As a user, here is a list of features you can expect working:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-plain text should work fine (formatting may be lost, but content should be
-  fine)
-</p>
-</li>
-<li>
-<p>
-table of contents, as long as you properly use headings or you separate
-  chapters by page breaks
-</p>
-</li>
-<li>
-<p>
-export options: EPUB3 vs EPUB2, split on headings vs page breaks
-</p>
-</li>
-<li>
-<p>
-basic set of character and paragraph properties should work
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>During development I regularly used
-<a href="https://github.com/IDPF/epubcheck">epubcheck</a>, so hopefully the export result
-is usually valid.</p></div>
-<div class="paragraph"><p>All this is available in master (towards LibreOffice 6.0), or you can grab a
 <a href="http://dev-builds.libreoffice.org/daily/master/">daily build</a> and try it out
 right now. :-)</p></div>
 </div>

@@ -58,6 +58,76 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/git-review.html">git-review</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>LibreOffice started to use <a href="https://gerrit.libreoffice.org/">Gerrit</a> for code
+review, and while occasional contributors
+<a href="https://wiki.documentfoundation.org/Development/gerrit/SubmitPatch">can submit
+patches manually</a>, in case one does many reviews, it&#8217;s handy to use a dedicated
+tool. In core.git, we have
+<a href="http://cgit.freedesktop.org/libreoffice/core/tree/logerrit">logerrit</a>, but
+that&#8217;s not advised for regular reviewers, either,
+<a href="https://github.com/openstack-infra/git-review">git-review</a> is recommended
+instead.</p></div>
+<div class="paragraph"><p>So I looked into git-review. The good news is that it&#8217;s packaged already for most distributions, e.g. a simple</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>zypper in python-git-review</code></pre>
+</div></div>
+<div class="paragraph"><p>on openSUSE installs it.</p></div>
+<div class="paragraph"><p>I wanted to use this tool for two tasks:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Submitting changes to Gerrit: <code>git review -R</code> could do that. <code>-R</code> prevents
+  automatic rebase, so a test build won&#8217;t fail because your patch is based on
+  an already broken commit. The other good thing is that you don&#8217;t have to
+  remember where to submit: both the master and libreoffice-4-0 branches contain
+  a <code>.gitreview</code> file that contains the necessary server / branch information.
+</p>
+</li>
+<li>
+<p>
+Cherry-picking changes from Gerrit: I found no option for this. A cherry-pick
+  command is generated on the web interface, but it&#8217;s more complicated than a
+  simple <code>&lt;some command&gt; &lt;number of the change&gt;</code>. So I submitted
+  <a href="https://review.openstack.org/17290">this change</a> to git-review itself, the next
+  release will be able to do <code>git review -x &lt;number of the change&gt;</code>.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Probably the browser interface is still the best to comment (especially inline
+comment) and approve changes, though David even submitted a
+<a href="https://review.openstack.org/17423">proof of concept patch</a> for that as well.</p></div>
+<div class="paragraph"><p>Finally, let me just clear two myths:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+If you use Google for OpenID login, you can have multiple OpenID accounts
+  associated with your Gerrit login, so it&#8217;s not a problem (first I thought it
+  is) if you use one email for Gerrit and an other one for accessing other
+  Google services.
+</p>
+</li>
+<li>
+<p>
+Somewhere I read that the stock LibreOffice hooks conflict with git-review:
+  nope, git-review didn&#8217;t touch the hooks, you can use the tool without
+  corrupting them in any way.
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/mary-poppins.html">Mary Poppins</a></h1>
   </div>
   <div class="article_text">
@@ -357,29 +427,6 @@ developed, e.g. only the resulting tarball is public. I&#8217;m happy to see tha
 $dayjob even this last detail is quite public, think of
 <a href="http://cgit.freedesktop.org/libreoffice/core/log/?h=distro/suse/suse-3.6">LibreOffice</a>
 or the <a href="http://kernel.opensuse.org/cgit">Linux kernel</a>.</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/forrest-gump.html">Forrest Gump</a></h1>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://lh5.googleusercontent.com/-aUJCzg7GZsA/UOXtEZ9menI/AAAAAAAAB_4/68Yb0vnqOuE/s640/fg.jpg">
-<img src="https://lh5.googleusercontent.com/-aUJCzg7GZsA/UOXtEZ9menI/AAAAAAAAB_4/68Yb0vnqOuE/s400/fg.jpg" alt="https://lh5.googleusercontent.com/-aUJCzg7GZsA/UOXtEZ9menI/AAAAAAAAB_4/68Yb0vnqOuE/s400/fg.jpg" />
-</a>
-</div>
-</div>
-<div class="paragraph"><p>Úgy rémlik, eredetileg ezt valamikor nyelvvizsgára készülve láttam, meg most
-pár hete újra. Jó látni ezeket az igényesen felépített filmeket.</p></div>
-<div class="paragraph"><p>(<a href="http://www.imdb.com/title/tt0109830/">imdb</a>, <a href="http://www.youtube.com/watch?v=uPIEn0M8su0">trailer</a>)</p></div>
 </div>
 </div>
 

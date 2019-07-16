@@ -58,6 +58,30 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/libocon2018-lightning.html">Text layout performance in LibreOffice conference lightning talk</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://speakerd.s3.amazonaws.com/presentations/6d1f7938f02f40da9a04bd2ce24b0940/vcllayout-locon-tirana-2k19.pdf">
+<img src="https://farm2.staticflickr.com/1914/44115509595_ab58bf01f5_z.jpg" alt="https://farm2.staticflickr.com/1914/44115509595_ab58bf01f5_z.jpg" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>Last Friday I gave a
+<a href="https://conference.libreoffice.org/2018/the-program/sept-18th-friday/">Text
+layout performance</a> lightning talk at LibreOffice Conference 2018. Click on
+the image to get the hybrid PDF slides!</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/libocon2018.html">ReqIF import/export in LibreOffice Writer conference talk</a></h1>
   </div>
   <div class="article_text">
@@ -637,114 +661,6 @@ wiki</a>, if you were at the hackfest and you did not contribute to that section
 please write a line about what did you hack on. :-)</p></div>
 <div class="paragraph"><p>Finally, thanks for the organizers and the sponsors of the hackfest, it was a
 really great event!</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/odt-xhtml-performance.html">Optimizing ODT ↔ XHTML conversion performance for simple documents</a></h1>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>I worked on improving the ODT ↔ XHTML conversion performance for simple
-documents in LibreOffice recently.  First, thanks to
-<a href="https://vector.com/">Vector</a> for funding
-<a href="https://www.collaboraoffice.com/">Collabora</a> to make this possible.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_odt_8594_xhtml_conversion">ODT &#8594; XHTML conversion</h2>
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://farm5.staticflickr.com/4605/26697712598_2ace3f45a3_o.png" alt="https://farm5.staticflickr.com/4605/26697712598_2ace3f45a3_o.png" />
-</div>
-</div>
-<div class="paragraph"><p>The focus here was <strong>really</strong> simple documents, like just one sentence with
-minimal formatting. The use-case is to have thousands of these simple
-documents, only a minority containing complex formatting, the rest is just
-that simple.</p></div>
-<div class="paragraph"><p>Performance work usually focuses on one specific complex feature, e.g. lots of
-bookmarks, lots of document-level user-defined metadata, and so on&#8201;&#8212;&#8201;this way
-there were room for improvements when it comes to trivial documents.</p></div>
-<div class="paragraph"><p>I managed to reduce the cost of the conversion to the <em>fifth of the original</em>
-cost in both directions&#8201;&#8212;&#8201;the chart above shows the impact of my work for
-the ODT &#8594; XHTML direction. The steps that helped:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-Recognize <code>XHTML</code> as a value for the <code>FilterOptions</code> key in the <code>HTML
-  (StarWriter)</code> export filter, this way avoid the need to go via XSLT, which
-  would be expensive.
-</p>
-</li>
-<li>
-<p>
-Add a new <code>NoFileSync</code> flag to the <code>frame::XStorable::storeToURL()</code> API, so
-  that if you know you&#8217;ll read the result after the conversion finished, you
-  can avoid an expensive <code>fsync()</code> call for each and every file, which helps
-  HDDs a lot, while means no overhead for SSDs.
-</p>
-</li>
-<li>
-<p>
-If you know your input format already, then specifying an explicit
-  <code>FilterName</code> key for the <code>frame::XComponentLoader::loadComponentFromURL()</code>
-  API helps not spending time to detect the file format you already know.
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>Note that the XHTML mode for the Writer HTML export is still a work in
-progress, but it already produces valid output for such simple documents.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_xhtml_8594_odt_conversion">XHTML &#8594; ODT conversion</h2>
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://farm5.staticflickr.com/4608/39674632615_de78265c7f_o.png" alt="https://farm5.staticflickr.com/4608/39674632615_de78265c7f_o.png" />
-</div>
-</div>
-<div class="paragraph"><p>The chart above shows the results of my work for the XHTML &#8594; ODT direction.
-The steps to get to the final reduced cost were:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-The new <code>NoFileSync</code> flag, as mentioned previously.
-</p>
-</li>
-<li>
-<p>
-A new <code>NoThumbnail</code> flag, which is useful if the ODT will be part of a next
-  step in the pipeline and you know that the thumbnail image won&#8217;t be used anyway.
-</p>
-</li>
-<li>
-<p>
-The default table autoformat definitions in Writer are now
-  <a href="https://cgit.freedesktop.org/libreoffice/core/commit/?id=53ef918a6839c8d587dec1bb635e6b39397c53d0">lazy-loaded</a>.
-  (This is my favorite one, you don&#8217;t have to opt-in for this, so everyone
-  benefits.)
-</p>
-</li>
-<li>
-<p>
-A new <code>HiddenForConversion</code> flag for
-  <code>frame::XComponentLoader::loadComponentFromURL()</code>, which means we don&#8217;t lay
-  out the UI elements (toolbars, sidebar, status bar, etc.) when we know the
-  purpose of the document load is only to save the document model in an other
-  format.
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>All this is available in master (towards LibreOffice 6.1), or you can grab a
-<a href="http://dev-builds.libreoffice.org/daily/master/">daily build</a> and try it out
-right now. :-)</p></div>
 </div>
 </div>
 

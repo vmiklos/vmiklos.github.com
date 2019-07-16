@@ -58,6 +58,23 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/ungreedy-regex-in-javascript.html">ungreedy regex in javascript</a></h1>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>a few days ago i wanted to use ungreedy regexs in javascript. first, let's see what an ungreedy regex is. look at the following example:</p><p><pre>>>> "<p>foo</p><p>bar</p>".replace(/<p>f.*<\/p>/, '')
+""</pre></p><p>this is greedy. you want to get something like:</p><p><pre>"<p>bar</p>"</pre></p><p>right?</p><p>that would be ungreedy. in some other languages, there is a flag for this (php has 'U'), but in javascript, you need an other trick:</p><p><pre>>>> "<p>foo</p><p>bar</p>".replace(/<p>f.*?<\/p>/, '')
+"<p>bar</p>"</pre></p><p>and yes, that's what we wanted. also it works for .+?, and so on.</p><p>ah and as a side note, it seems '.' does not match newlines, so you'll have to work around it like:</p><p><pre>>>> "<p>foo\nbar</p><p>baz</p>".replace(/<p>f[\s\S]*?<\/p>/, '')
+"<p>baz</p>"</pre></p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/being-accepted-in-gsoc-2k8.html">being accepted in gsoc 2k8</a></h1>
   </div>
   <div class="article_text">
@@ -228,25 +245,6 @@ git fetch
     <div id="preamble">
 <div class="sectionbody">
 <p>git filter-branch is a new command in git-1.5.3 and today i met a situation where it was really useful. here is the scenario:</p><p>i have a 'vmexam' (like soxexam, "vmiklos' examples") repo, random small code chunks, every commit touches only a given subdir. after some time some projects need an own repo and i do versioned releases. this was the case with <a href="http://vmiklos.hu/project/pyrssi/">pyrssi</a>, too</p><p>so i wanted to have a new repo with only the pyrssi-related commits and without anything else. this is exactly the case git filter-branch's subdirectory filter is for:</p><p><code>git filter-branch --subdirectory-filter python/cgi/pyrssi HEAD</code></p><p>then in the old repo i just rm -rf'd the code and i had it in the root dir of the new repo. yay! :)</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/using-xosd-for-irc-notifications-and-other-goodness.html">using xosd for irc notifications and other goodness</a></h1>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>so, here is the situation:</p><p>you have a machine behind a firewall and you have an ssh session to a server. and you want to send notifications to you machine. here is what i did, maybe useful for others, too</p><p><ul>
-  <li>you'll need the program called osd_cat, provided by osd</li>
-  <li>you'll need to use ssh with the -X option</li>
-  <li>if you run programs inside screen, you still won't know the the right DISPLAY number, so do a trick: add</p><p><code>[ -n "$DISPLAY" ] && echo $DISPLAY > ~/.display</code></p><p>to you ~/.bash_login</li>
-  <li>now you're ready to use osd_cat:</p><p><code>$ echo -e 'foo'|DISPLAY=<code>cat ~/.display</code> osd_cat --color=blue --age=4 --font=-*-helvetica-medium-r-*-*-*-320-*-*-*-*-*-* --offset=100 --align=right --indent=100</code></li>
-</ul></p><p>as an example, irssi has <a href="http://irssi.org/scripts/scripts/osd.pl">osd.pl</a> to use osd_cat for highlight notifications :)</p>
 </div>
 </div>
 
