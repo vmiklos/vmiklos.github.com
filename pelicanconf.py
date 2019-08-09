@@ -35,7 +35,7 @@ DEFAULT_PAGINATION = 10
 # Asciidoc is not in core, clone this from <https://github.com/getpelican/pelican-plugins>, check
 # out commit 000fc5acbce7328fcd94a5d9395465fadc3d544d (master as of 2019-03-02).
 PLUGIN_PATHS = ['/home/vmiklos/git/pelican-plugins']
-PLUGINS = ['asciidoc_reader']
+PLUGINS = ['asciidoc_reader', 'readtime']
 
 # I don't like the default theme, clone this from <https://github.com/vmiklos/pelican-svbhack>.
 THEME = '/home/vmiklos/git/pelican-svbhack'
