@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/pygments.css">
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=PT+Sans|PT+Serif|PT+Mono">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Miklos Vajna">
+  <meta name="description" content="Posts and writings by Miklos Vajna">
+
+  <link href="https://vmiklos.hu/blog/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking RSS" />
+
+<meta name="keywords" content="en">
+
+  <title>
+    What is Miklos hacking
+&ndash; btLr text direction in Writer, part 4  </title>
+
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-24726997-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <h2><a href="https://vmiklos.hu/blog">What is Miklos hacking</a></h2>
+      <p></p>
+      <ul>
+        <li><a href="/" target="_blank">Root</a></li>
+        <li><a href="https://planet.documentfoundation.org/" target="_blank">LibreOffice Blogs</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://vmiklos.hu/blog">Index</a> &brvbar; <a href="https://vmiklos.hu/blog/archives.html">Archives</a>
+      &brvbar; <a href="https://vmiklos.hu/blog/feeds/all.rss.xml">RSS</a>
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/btlr-text-direction-in-writer-4.html">btLr text direction in Writer, part 4</a></h1>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <div class="sect1">
+<h2 id="_the_problem">The problem</h2>
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://lh3.googleusercontent.com/meDrX3a3jwfCHpHSpQfS7Tqvy7Cxaumoo5RlnjJ7Qj0fhDgPXeOv7FgRn4Xqesv8IWW3feCV-_lhWOyzZo9ZD5yaxkBrYxd9doRm9x8BJAAdu3QQ1Jj6MIiy5q5FO_d2v5YSbsBUvg=w320" alt="https://lh3.googleusercontent.com/meDrX3a3jwfCHpHSpQfS7Tqvy7Cxaumoo5RlnjJ7Qj0fhDgPXeOv7FgRn4Xqesv8IWW3feCV-_lhWOyzZo9ZD5yaxkBrYxd9doRm9x8BJAAdu3QQ1Jj6MIiy5q5FO_d2v5YSbsBUvg=w320" />
+</div>
+</div>
+<div class="paragraph"><p>I already wrote about the btLr text direction in the context of Writer table cells as a result of a
+Collabora hack week (<a href="https://vmiklos.hu/blog/hackweek-2019.html">part 1</a>,
+<a href="https://vmiklos.hu/blog/btlr-text-direction-in-writer-2.html">part 2</a>,
+<a href="https://vmiklos.hu/blog/btlr-text-direction-in-writer-3.html">part 3</a>). This post is meant to be the
+final one (for now), given that both table cells and shapes / text frames are now working nicely
+with all major formats.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_the_result">The result</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>The first topic is that whenever I looked at supporting the new bottom-to-top, left-to-right
+direction, I always first checked if the more common top-to-bottom, right-to-left direction is
+working or not (this is used for e.g. Japanese rotated text). Turns out that Writer text frames were
+not exported to drawingML (part of DOCX), so I fixed that.</p></div>
+<div class="paragraph"><p>Similarly, there is the older shape markup in DOCX: VML. The tbRl direction from that was broken,
+too, now working nicely.</p></div>
+<div class="paragraph"><p>Then I could actually look at the btLr import from VML, which is now correct.</p></div>
+<div class="paragraph"><p>One of the motivations for this work was to get rid of the old, miserable hack where we did
+character-level rotation during import (which falls apart for multi-paragraph text). If the import
+mapping in itself is not painful enough, we had to undo the effect of this import hack at export
+time. When I could remove the last usage of this dreaded <code>checkFrameBtlr()</code> function in the export
+code, I mentally did a little dance. ;-)</p></div>
+<div class="paragraph"><p>Back to btLR fixing, exporting Writer text frames to DOCX is not interesting when you do DOCX
+editing, but it&#8217;s very much relevant when you do ODT &#8594; DOCX conversion. And the btLr case was of
+course not handled, fixed now.</p></div>
+<div class="paragraph"><p>RTF was broken in 4 different ways: import and export was broken for the btLr and the tbRl cases for
+text frames.</p></div>
+<div class="paragraph"><p>The last thing was the binary DOC export, where btLr text frames were not handled.</p></div>
+<div class="paragraph"><p>With these sorted out, I think the topic of table cells and shapes / text frames are now supported
+reasonably well. ODF could do the btLr writing direction for sections and pages as well, but I don&#8217;t
+see that as a priority. And hey, Word doesn&#8217;t support them, either. :-)</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_want_to_start_using_this">Want to start using this?</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
+<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
+is a major contributor to LibreOffice and all of this work will be available in TDF&#8217;s next release,
+too (6.4).</p></div>
+</div>
+</div>
+
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Fri 16 August 2019</p>
+    <p>Category: <a href="https://vmiklos.hu/blog/category/libreoffice.html">libreoffice</a>
+ &ndash; Tags:
+      <a href="https://vmiklos.hu/blog/tag/en.html">en</a>    </p>
+  </div>
+
+
+</article>
+
+
+    <div id="ending_message">
+      <p>&copy; Miklos Vajna. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
+</body>
+</html>

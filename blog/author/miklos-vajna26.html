@@ -58,6 +58,41 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/libreoffice-3.4-packaging.html">LibreOffice 3.4 Packaging</a></h1>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>The next major LibreOffice version, 3.4, means some work for (Linux
+distribution, and other) packagers, as the <code>build</code> repo is now
+deprecated and packagers are suggested to use the <code>bootstrap</code> repo
+directly, which is a different build system.</p></div>
+<div class="paragraph"><p>On one hand, this is a nice cleanup - there is now a single configure
+script. OTOH this needs major rework of distro build scripts.</p></div>
+<div class="paragraph"><p>The interesting part here is that the official binary installers are not
+using the <code>make DESTDIR=/some/path install</code> method to install the
+compiled binaries, so it was discovered quite late that it wasn&#8217;t
+working properly. First Hanno and Petr
+<a href="http://cgit.freedesktop.org/libreoffice/bootstrap/commit/?id=c612724331a3d66d2ee488d91161a54f4d3576bd">worked
+on this</a>, then I
+<a href="http://cgit.freedesktop.org/libreoffice/bootstrap/commit/?id=b9dd2241c60635ba15929ffad9962928460bd3ec">fixed</a>
+a minor, but blocking glitch.</p></div>
+<div class="paragraph"><p>As a result 3.4 beta4 will be something packagers (even the ones not
+using the split build) can offer to distro users for testing without
+patching. Binaries for Frugalware users
+<a href="http://ftp.frugalware.org/pub/other/people/vmiklos/lotesting/frugalware-i686/">here</a>
+(i686-only at the moment).</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/mkk-ejszakai-bringazas-2.html">MKK ejszakai bringatura</a></h1>
   </div>
   <div class="article_readtime">
@@ -311,40 +346,6 @@ grafikonos. De ezek fognak bővülni a közeljöbőben.</p></div>
 <div class="paragraph"><p>Most volt par napja a premiere, tipikus Philip K. Dick sztori, kicsit
 misztikus, kicsit Istenes, kicsit szerelmes. A mozijegy arat megerte.</p></div>
 <div class="paragraph"><p>(<a href="http://www.imdb.com/title/tt1385826/">imdb</a>, <a href="http://www.youtube.com/watch?v=wZJ0TP4nTaE">trailer</a>)</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/kvm-windows-2003.html">KVM vs Windows 2003</a></h1>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>A few days ago I wanted to try out Windows 2003 (to be used for a task
-at the university) in KVM, to be exact using libvirt. First I didn&#8217;t do
-any non-intuitive trick, but later it turned out what virtio should be
-enabled for the block devices or the whole machine will be slow as hell.
-For the records, here is what worked for me:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>wget http://alt.fedoraproject.org/pub/alt/virtio-win/latest/images/bin/virtio-win-1.1.16.vfd
-virt-install --name=vmiklos-w2003 --arch=x86_64 --vcpus=1 --ram=2048 \
-        --os-type=windows --os-variant=win2k3 --connect=qemu:///system \
-        --network network=default \
-        --cdrom=/virt/vmiklos-w2003/en_windows_server_2003_with_sp1_enterprise.iso \
-        --disk path=/virt/vmiklos-w2003/vmiklos-w2003.img,size=24,bus=virtio \
-        --disk path=/virt/vmiklos-w2003/virtio-win-1.1.16.vfd,device=floppy \
-        --accelerate --vnc --noautoconsole --keymap=us</code></pre>
-</div></div>
-<div class="paragraph"><p>When the installer asks if you have a special SCSI driver floppy, ask for it,
-then you can select the virtio driver.</p></div>
 </div>
 </div>
 

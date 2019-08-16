@@ -60,6 +60,69 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/btlr-text-direction-in-writer-4.html">btLr text direction in Writer, part 4</a></h1>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <div class="sect1">
+<h2 id="_the_problem">The problem</h2>
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://lh3.googleusercontent.com/meDrX3a3jwfCHpHSpQfS7Tqvy7Cxaumoo5RlnjJ7Qj0fhDgPXeOv7FgRn4Xqesv8IWW3feCV-_lhWOyzZo9ZD5yaxkBrYxd9doRm9x8BJAAdu3QQ1Jj6MIiy5q5FO_d2v5YSbsBUvg=w320" alt="https://lh3.googleusercontent.com/meDrX3a3jwfCHpHSpQfS7Tqvy7Cxaumoo5RlnjJ7Qj0fhDgPXeOv7FgRn4Xqesv8IWW3feCV-_lhWOyzZo9ZD5yaxkBrYxd9doRm9x8BJAAdu3QQ1Jj6MIiy5q5FO_d2v5YSbsBUvg=w320" />
+</div>
+</div>
+<div class="paragraph"><p>I already wrote about the btLr text direction in the context of Writer table cells as a result of a
+Collabora hack week (<a href="https://vmiklos.hu/blog/hackweek-2019.html">part 1</a>,
+<a href="https://vmiklos.hu/blog/btlr-text-direction-in-writer-2.html">part 2</a>,
+<a href="https://vmiklos.hu/blog/btlr-text-direction-in-writer-3.html">part 3</a>). This post is meant to be the
+final one (for now), given that both table cells and shapes / text frames are now working nicely
+with all major formats.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_the_result">The result</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>The first topic is that whenever I looked at supporting the new bottom-to-top, left-to-right
+direction, I always first checked if the more common top-to-bottom, right-to-left direction is
+working or not (this is used for e.g. Japanese rotated text). Turns out that Writer text frames were
+not exported to drawingML (part of DOCX), so I fixed that.</p></div>
+<div class="paragraph"><p>Similarly, there is the older shape markup in DOCX: VML. The tbRl direction from that was broken,
+too, now working nicely.</p></div>
+<div class="paragraph"><p>Then I could actually look at the btLr import from VML, which is now correct.</p></div>
+<div class="paragraph"><p>One of the motivations for this work was to get rid of the old, miserable hack where we did
+character-level rotation during import (which falls apart for multi-paragraph text). If the import
+mapping in itself is not painful enough, we had to undo the effect of this import hack at export
+time. When I could remove the last usage of this dreaded <code>checkFrameBtlr()</code> function in the export
+code, I mentally did a little dance. ;-)</p></div>
+<div class="paragraph"><p>Back to btLR fixing, exporting Writer text frames to DOCX is not interesting when you do DOCX
+editing, but it&#8217;s very much relevant when you do ODT &#8594; DOCX conversion. And the btLr case was of
+course not handled, fixed now.</p></div>
+<div class="paragraph"><p>RTF was broken in 4 different ways: import and export was broken for the btLr and the tbRl cases for
+text frames.</p></div>
+<div class="paragraph"><p>The last thing was the binary DOC export, where btLr text frames were not handled.</p></div>
+<div class="paragraph"><p>With these sorted out, I think the topic of table cells and shapes / text frames are now supported
+reasonably well. ODF could do the btLr writing direction for sections and pages as well, but I don&#8217;t
+see that as a priority. And hey, Word doesn&#8217;t support them, either. :-)</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_want_to_start_using_this">Want to start using this?</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
+<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
+is a major contributor to LibreOffice and all of this work will be available in TDF&#8217;s next release,
+too (6.4).</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/writer-image-comments.html">Commenting on images and charts in Writer</a></h1>
   </div>
   <div class="article_readtime">
@@ -789,122 +852,6 @@ is what I used for testing of this work.</p></div>
 <div class="paragraph"><p>This is not not perfect yet, but it&#8217;s clearly a large improvement, all text is
 now readable from the diagram!</p></div>
 <div class="paragraph"><p>All this is available in master (towards LibreOffice 6.3), so you can grab a
-<a href="http://dev-builds.libreoffice.org/daily/master/">daily build</a> and try it out
-right now. :-)</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/smartart-improvements.html">SmartArt improvements in LibreOffice</a></h1>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>I recently dived into the SmartArt support of LibreOffice, which is the
-component responsible for displaying complex diagrams from PPTX, especially in
-case only document model and the layout constraints are given, not a
-pre-rendered result.</p></div>
-<div class="paragraph"><p>First, thanks to our partner <a href="https://www.suse.com/">SUSE</a> for working with
-<a href="https://www.collaboraoffice.com/">Collabora</a> to make this possible.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_the_problem">The problem</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>There are several ones. :-) If you are just interested in high quality viewing
-of PPTX files, then your problem started with PowerPoint 2007 not writing a
-pre-rendered drawingML markup of the diagram to the files, only PowerPoint
-2010 started behaving like this. Additionally, if a diagram is not edited,
-then re-saving with PowerPoint 2010 doesn&#8217;t seem to generate the drawingML
-markup, either. This means that data + constraints cases are quite frequent
-even today.</p></div>
-<div class="paragraph"><p>Also, one day Impress should be able to actually edit these SmartArts as well,
-so having the knowledge how to lay out SmartArt (even if it&#8217;s import-time-only
-at the moment) is a good thing.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_results_so_far">Results so far</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>I always write cppunit tests when I work on filter code (in this case OOXML), so
-far all fixes were visible in just two test files:
-<a href="https://cgit.freedesktop.org/libreoffice/core/tree/sd/qa/unit/data/pptx/smartart-vertial-box-list.pptx">smartart-vertial-box-list.pptx</a>
-and
-<a href="https://cgit.freedesktop.org/libreoffice/core/tree/sd/qa/unit/data/pptx/vertical-bracket-list.pptx">vertical-bracket-list.pptx</a>.</p></div>
-<div class="paragraph"><p>Here is how the baseline, the current and the reference rendering of these test documents look like:</p></div>
-<div style="text-align: center">
-<img src="https://farm2.staticflickr.com/1924/45683201352_52e22af9dc_z.jpg"/>
-<p>smartart-vertial-box-list.pptx, baseline</p>
-</div>
-<div style="text-align: center">
-<img src="https://farm5.staticflickr.com/4912/45683200942_8005cd433d_z.jpg"/>
-<p>smartart-vertial-box-list.pptx, current</p>
-</div>
-<div style="text-align: center">
-<img src="https://farm2.staticflickr.com/1976/45683201252_edd6eddea4_z.jpg"/>
-<p>smartart-vertial-box-list.pptx, reference</p>
-</div>
-<div style="text-align: center">
-<img src="https://farm2.staticflickr.com/1951/45683201002_4c93cc831c_z.jpg"/>
-<p>vertical-bracket-list.pptx, baseline</p>
-</div>
-<div style="text-align: center">
-<img src="https://farm5.staticflickr.com/4876/45008491984_61f25e21ca_z.jpg"/>
-<p>vertical-bracket-list.pptx, current</p>
-</div>
-<div style="text-align: center">
-<img src="https://farm2.staticflickr.com/1911/45683201082_3022aa8fe5_z.jpg"/>
-<p>vertical-bracket-list.pptx, reference</p>
-</div>
-<div class="paragraph"><p>In terms of code commits, the fixes are split into several ones:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=e49c42d17f50c8b0cac9db08dedc375dd5aa8a98">oox
-  smartart, vertical bracket list: fix node counter condition</a>
-</p>
-</li>
-<li>
-<p>
-<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=397b64afc62a5632a6648598558a4d2c3ca0d283">oox
-  smartart, linear layout: take horizontal position from constraints</a>
-</p>
-</li>
-<li>
-<p>
-<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=b083b0808121d19f398a9f6ead195ae7e14ed047">oox
-  smartart, linear layout: take width from constraints</a>
-</p>
-</li>
-<li>
-<p>
-<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=923061d17d4b5b8bf0d4a8111b270c99a7c649a9">oox
-  smartart: work towards accessing parent constraints</a>
-</p>
-</li>
-<li>
-<p>
-<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=b61d2784271bf8b042642c378f50e8b446682548">oox
-  smartart: fix width of shapes with agl=lin, linDir=fromT</a>
-</p>
-</li>
-<li>
-<p>
-<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=a7e86beb00e9635ea4556ef4f8f8e24ff9965391">oox:
-  ignore SmartArt "fallback" with empty shape list</a>
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>Clearly the results are not perfect yet, but in both cases nothing was
-visible, and now all text is readable, so we&#8217;re moving in the right direction!</p></div>
-<div class="paragraph"><p>All this is available in master (towards LibreOffice 6.2), so you can grab a
 <a href="http://dev-builds.libreoffice.org/daily/master/">daily build</a> and try it out
 right now. :-)</p></div>
 </div>

@@ -58,6 +58,34 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/open-source-budapest-5.html">Open Source Budapest 5. meetup</a></h1>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div style="text-align: center; font-size: 0.6em;">
+<img src="https://lh3.googleusercontent.com/-ZPI3opPIqYE/VTIW5Igo5SI/AAAAAAAAFZc/rTmjqi14fZY/s800/"/>
+<p>(via <a href="https://www.youtube.com/watch?v=cKTpJtRQaCM">Open Source Budapest Meetup</a>)</p>
+</div>
+<div class="paragraph"><p>On Tuesday the 5th Open Source Budapest meetup was held, I was one of the
+invited speakers, and gave a lightning talk about
+<a href="https://github.com/vmiklos/ged2dot">ged2dot</a>, both as a standalone Python
+script and as a
+<a href="http://extensions.libreoffice.org/extension-center/gedcom">LibreOffice
+extension</a>.</p></div>
+<div class="paragraph"><p>My uploaded slides are available
+<a href="https://speakerdeck.com/vmiklos/csaladfak-abrazolasa-szabad-szoftverekkel">here</a>.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/android-editing-part-5.html">Android editing: from graphic handling to formatting</a></h1>
   </div>
   <div class="article_readtime">
@@ -977,68 +1005,6 @@ above mentioned documents.</p></div>
 <div class="paragraph"><p>The new year is here, if you don&#8217;t have a new year&#8217;s resolution yet&#8201;&#8212;&#8201;or if
 you hate those, but you&#8217;re willing to adopt a new habit from time to time&#8201;&#8212;&#8201;then please consider <code>--with-export-validation</code>, so that such regressions can
 be detected before you publish your changes. Thanks! ;-)</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/cloud.html">Fixing the cloud problem</a></h1>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://lh3.googleusercontent.com/-0aWZ5rvDWI4/VJ3tCCh9wcI/AAAAAAAAFHA/A1P8Un5ksrw/s0/">
-<img src="https://lh3.googleusercontent.com/-0aWZ5rvDWI4/VJ3tCCh9wcI/AAAAAAAAFHA/A1P8Un5ksrw/s400/" alt="https://lh3.googleusercontent.com/-0aWZ5rvDWI4/VJ3tCCh9wcI/AAAAAAAAFHA/A1P8Un5ksrw/s400/" />
-</a>
-</div>
-</div>
-<div class="paragraph"><p>TL;DR: see above -- a number of preset shapes are now rendered correctly at
-any scale factors, where previously rendering problems occurred.</p></div>
-<div class="paragraph"><p><a href="https://bugs.freedesktop.org/show_bug.cgi?id=87448">fdo#87448</a> has a reproducer
-document that shows rendering errors with the scaled cloud preset shape
-definition. At first I thought that the OOXML spec has wrong definition for
-this shape type, but that turned out to be not the case. What was a problem is
-our implementation of the drawingML arcTo command. This implementation defines
-how we render such arcs as polygons when the shape is to be painted, and given
-that LibreOffice has native support for the drawingML arcTo / ODF G command,
-this implementation is invoked during rendering, it&#8217;s not an import/export
-problem.</p></div>
-<div class="paragraph"><p>The rendering result looked like this before:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://lh3.googleusercontent.com/-tYg4cifemAs/VJ3tCEHtf9I/AAAAAAAAFG8/WzioMo1AkMA/s0/">
-<img src="https://lh3.googleusercontent.com/-tYg4cifemAs/VJ3tCEHtf9I/AAAAAAAAFG8/WzioMo1AkMA/s400/" alt="https://lh3.googleusercontent.com/-tYg4cifemAs/VJ3tCEHtf9I/AAAAAAAAFG8/WzioMo1AkMA/s400/" />
-</a>
-</div>
-</div>
-<div class="paragraph"><p>The cloud is drawn using a set of moveTo and arcTo commands. MoveTo is easier,
-as it uses explicit coordinates, but arcTo is more complex. It has 4
-parameters: the height and width of a "circle", and the start / end angle of
-an arc on that circle. (Of course if height and width do not equal, than
-that&#8217;s no longer a circle&#8230; ;-) ) The problem is that due to this, the
-distance vector between the arc&#8217;s start and end points is implicit&#8201;&#8212;&#8201;so if
-something is miscalculated, errors are nicely added to each other as more and
-more arcs are drawn. This is especially a problem if you later return to the
-end of an earlier arc using moveTo: if arcTo has some problem, then it&#8217;ll be
-clearly visible.</p></div>
-<div class="paragraph"><p>After
-<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=20f8006e21943b08f1f152e4a0359c9ebe4786f2">fixing
-UNO ARCANGLETO</a> to only take care of scaling / translation only after counting
-the actual arc, we started to produce correct end points for the arcs and
-shapes started to appear correctly at any scale factor, yay! :-)</p></div>
-<div class="paragraph"><p>One remaining problem was how to test this from cppunit, in the above commit I
-exported the shape to a metafile, and then I could use Tomaž's excellent
-MetafileXmlDump to assert that the end of an arc (implicit location) and the
-parameters of a moveTo command (explicit location) equal&#8201;&#8212;&#8201;when they do not,
-that&#8217;s what your eyes call a "rendering problem".</p></div>
 </div>
 </div>
 

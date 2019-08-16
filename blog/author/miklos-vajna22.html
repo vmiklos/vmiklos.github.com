@@ -58,6 +58,197 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/frugalware-arm-install-howto.html">Frugalware arm port install HOWTO</a></h1>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 4 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>I recently got a <a href="http://en.wikipedia.org/wiki/GuruPlug">GuruPlug</a>. It has Debian
+by default, and it&#8217;s apt config is set to <code>stable</code>, while in fact at the moment
+what&#8217;s the factory default is considered as <code>oldstable</code> by upstream. So if you
+blindly do a few <code>apt-get install foo</code>, soon you&#8217;ll have newer userspace than
+kernel, and your device will no longer boot (based on true story - and yes,
+this is not Debian&#8217;s fault). Moreover, I was interested in how to install
+Frugalware on this device, so here is a quick howto.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_install_rootfs">Install rootfs</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>First you need to bootstrap Frugalware from Debian. It&#8217;s a good idea to install
+Frugalware on a USB stick, so you can switch back to Debian in case you messed
+up something and start from scratch again.</p></div>
+<div class="paragraph"><p>Partitioning is up to you, you&#8217;re recommended to have a small FAT (type: <code>0x0b</code>)
+partition (32MB for example) at the beginning, we&#8217;ll use that later. The second
+can be the rest, ext4 or so.</p></div>
+<div class="paragraph"><p>Format and mount it (your device name may differ!):</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>mkfs.ext4 /dev/sda2
+mkdir -p /mnt/sda2
+mount /dev/sda2 /mnt/sda2</code></pre>
+</div></div>
+<div class="paragraph"><p>Then install our pacman-g2 binary to the Debian system, so you can bootstrap:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>wget http://ftp.frugalware.org/pub/frugalware/frugalware-stable/frugalware-arm/pacman-g2-3.8.3-2mores2-arm.fpm
+unxz pacman-g2-3.8.3-2mores2-arm.tar.xz
+cd /
+tar xf /path/to/pacman-g2-3.8.3-2mores2-arm.tar
+rm .CHANGELOG .FILELIST .PKGINFO</code></pre>
+</div></div>
+<div class="paragraph"><p>Installing the required packages is a single command, as described
+<a href="http://frugalware.org/docs/install#_a_manual_bootstrap">here</a>:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>pacman-g2.static --noconfirm -Sy core base -r /mnt/sda2/</code></pre>
+</div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_upgrade_the_bootloader">Upgrade the bootloader</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Once the rootfs is ready, you need a new bootloader that will be able to boot
+our vanilla kernel.</p></div>
+<div class="paragraph"><p>You need a <a href="http://www.globalscaletechnologies.com/p-28-guruplug-jtag.aspx">JTAG
+Board</a>, so you can access the serial console. If you connect the USB cable to
+you PC, you can use for example</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>screen /dev/ttyUSB0 115200</code></pre>
+</div></div>
+<div class="paragraph"><p>to access the device.</p></div>
+<div class="paragraph"><p>Given that we want to boot a vanilla kernel, we need a vanilla bootloader as
+well. Before you mess with the bootloader, it&#8217;s a good idea to make a backup of
+its config (there is a 3 second timeout during boot - if you press any key
+there, you get the Marvell prompt). Here is my config:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>Marvell&gt;&gt; printenv
+bootcmd=${x_bootcmd_ethernet}; ${x_bootcmd_usb}; ${x_bootcmd_kernel}; setenv bootargs ${x_bootargs} ${x_bootargs_root}; bootm 0x6400000;
+bootdelay=3
+baudrate=115200
+x_bootcmd_ethernet=ping 192.168.2.1
+x_bootcmd_usb=usb start
+x_bootcmd_kernel=nand read.e 0x6400000 0x100000 0x400000
+x_bootargs=console=ttyS0,115200
+x_bootargs_root=ubi.mtd=2 root=ubi0:rootfs rootfstype=ubifs
+ethact=egiga0
+bootargs=console=ttyS0,115200 ubi.mtd=2 root=ubi0:rootfs rootfstype=ubifs
+ipaddr=10.10.10.10
+serverip=10.10.10.179
+ethaddr=F0:AD:4E:00:CE:C3
+stdin=serial
+stdout=serial
+stderr=serial</code></pre>
+</div></div>
+<div class="paragraph"><p>The only semi-unique part is the MAC address of the network interface(s).</p></div>
+<div class="paragraph"><p>If you want to update the bootloader, a possible way is to put the new binary
+to a pendrive. Given that the default bootloader does not support ext*, we need
+a fat filesystem. So format the first small partition we created already (the
+device name may be different in your case!):</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>mkdosfs /dev/sda1</code></pre>
+</div></div>
+<div class="paragraph"><p>Till Frugalware 1.6 is released, support for GuruPlug is available in
+Frugalware -current only, so download the
+<a href="http://ftp.frugalware.org/pub/frugalware/frugalware-current/frugalware-arm/u-boot-2011.12-2-arm.fpm">binary
+package</a> from there, extract the u-boot.kwb file from the guruplug directory,
+put it to the new partition. (A few other models are explained
+<a href="http://www.cyrius.com/debian/kirkwood/sheevaplug/uboot-upgrade.html">here</a>).</p></div>
+<div class="paragraph"><p>Before you reboot, copy also <code>/boot/uImage</code> to the fat partition, you may have
+problems problems with reading the kernel from the ext4 partition with u-boot.</p></div>
+<div class="paragraph"><p>Once copying the kernel is done, reboot and in the u-boot shell do:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>usb start
+fatload usb 0:1 0x0800000 u-boot.kwb
+nand erase 0x0 0x60000
+nand write 0x0800000 0x0 0x60000
+reset</code></pre>
+</div></div>
+<div class="paragraph"><p>You can verify the updated bootloader with the <code>version</code> command:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>Marvell&gt;&gt; version
+
+U-Boot 2011.12 (Jan 03 2012 - 16:55:38)
+Marvell-GuruPlug
+gcc (Frugalware Linux) 4.6.2
+GNU ld (GNU Binutils) 2.22</code></pre>
+</div></div>
+<div class="paragraph"><p>If Frugalware is mentioned, that&#8217;s a good sign. :)</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_boot_the_new_rootfs">Boot the new rootfs</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Now you can boot your new rootfs:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>usb start
+fatload usb 0:1 0x00800000 /uImage
+setenv bootargs console=ttyS0,115200 root=/dev/sda2 rootdelay=5
+bootm 0x00800000</code></pre>
+</div></div>
+<div class="paragraph"><p>If it booted fine, you may want to make this the default:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>setenv bootargs 'console=ttyS0,115200 root=/dev/sda2 rootdelay=5'
+setenv bootcmd_usb 'usb start; fatload usb 0:1 0x00800000 /uImage'
+setenv bootcmd 'run bootcmd_usb; bootm 0x00800000'
+saveenv</code></pre>
+</div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_finalize">Finalize</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>The rest is up to you:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+setting up a root password
+</p>
+</li>
+<li>
+<p>
+setting up network by default using netconfig
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>and so on&#8230; you know this already, nothing arm-specific.</p></div>
+<div class="paragraph"><p>For the reference, here is the tested CPU and Frugalware version:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>$ cat /proc/cpuinfo
+Processor       : Feroceon 88FR131 rev 1 (v5l)
+BogoMIPS        : 1191.11
+Features        : swp half thumb fastmult edsp
+CPU implementer : 0x56
+CPU architecture: 5TE
+CPU variant     : 0x2
+CPU part        : 0x131
+CPU revision    : 1
+
+Hardware        : Marvell GuruPlug Reference Board
+Revision        : 0000
+Serial          : 0000000000000000
+$ cat /etc/frugalware-release
+Frugalware 1.5 (Mores)</code></pre>
+</div></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/szokasos-evvegi-osszefoglalo-2011.html">Szokasos evvegi osszefoglalo 2011</a></h1>
   </div>
   <div class="article_readtime">
@@ -387,34 +578,6 @@ much less time, so no need to whine about it.</p></div>
 <a href="/blog/the-prestige">The Prestige</a>-bol ismeros Hugh Jackmannel, kar, hogy a
 veget elhollywoodiasitottak. ;)</p></div>
 <div class="paragraph"><p>(<a href="http://www.imdb.com/title/tt0433035/">imdb</a>, <a href="http://www.youtube.com/watch?v=ei5l3r1dV4I">trailer</a>)</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/lenovo-szerviz.html">Lenovo szerviz beszelni magyarul</a></h1>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="/pic/lenovo-thankyou.png" alt="/pic/lenovo-thankyou.png" />
-</div>
-</div>
-<div class="paragraph"><p>A pontos reszletekre mar nem emlekszem, lenyeg, hogy valamikor augusztus elejen
-leadtam a Lenovo netbookom szervizbe (kotyogo ventillator, megrepedt haz,
-elveszett (!) enter billentyu), es pofatlanul sok ideig ultek rajta, valamikor
-oktober vegen lett kesz a cucc. Persze garancialisan csak az elso problemat
-javitottak, de megis a legzavarobb a hihetetlen lassu kiszolgalas volt. Ma jott
-egy email, hogy ertekeljem a szerviz munkajat, a form elkuldese utan a fenn
-lathato kep fogadott. Ki hany hibat talal benne? ;)</p></div>
 </div>
 </div>
 

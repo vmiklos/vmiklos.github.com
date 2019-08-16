@@ -58,6 +58,24 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/git-svn-howto.html">git-svn howto</a></h1>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>i think using git-svn is really easy, once you figured out how to use it. so here is how i use it. no, i'm not a git-svn expert, just a user. and the way i use it - i think it's easy. so here is our situation:</p><p>1) foo project uses svn for managing their code
+2) you wish they would use git</p><p>how to do both:</p><p>1) get the full svn repo:</p><p><code>$ git svn clone --prefix=origin/ url</code></p><p>yes, in my situation this project does not use the trunk/tags/branches structure, see the git-svn manpage if the project you clone does (s/clone/clone -s/ should do the trick)</p><p>the --prefix parameter is needed so that you'll see the svn branches as if they were normal git remote branches</p><p>2) your local repo is a git repo, so you can do whatever you want, commit, revert, bisect, etc</p><p>3) instead of git pull, you need</p><p><code>$ git svn rebase</code></p><p>this does the same as git fetch + git rebase (since you can't merge because of svn)</p><p>4) instead of git push, you need</p><p><code>$ git svn dcommit</code></p><p>and we're ready. 3 and not more command, right? :)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/coloured-manpages.html">coloured manpages</a></h1>
   </div>
   <div class="article_readtime">
@@ -220,23 +238,6 @@ written in sh? :)</p><p>7) Xorg 7.0. so many hours of sucking when:
    7.6) goto 7.1 :)</p><p>8) pacman-g2. pacman without a lib? brr :)</p><p>9) getting rid of hotplug in favour of udev. maybe you remember how slow
 it was, it took at least 10-12 secs on my pc :)</p><p>10) fw-xgl-control: enabling and disabling it for a normal user without
 reading tons of docs, breaking your system, etc :)</p><p>(yes. the list is unsorted )</p><p>could you imagine living without these? :)</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/new-mirror-ftp12.html">new mirror: ftp12</a></h1>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>i've just noticed that finally ftp.heanet.ie <a href="http://ftp.heanet.ie/pub/heanet/log/frugalware/">has no more</a> "connection timed out" errors, so we have a new fast full mirror :)</p><p>it suppors ftp, http and rsync. it has been added to the homepage and to pacman-g2's darcs</p>
 </div>
 </div>
 

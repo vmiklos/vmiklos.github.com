@@ -58,6 +58,122 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/smartart-improvements.html">SmartArt improvements in LibreOffice</a></h1>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>I recently dived into the SmartArt support of LibreOffice, which is the
+component responsible for displaying complex diagrams from PPTX, especially in
+case only document model and the layout constraints are given, not a
+pre-rendered result.</p></div>
+<div class="paragraph"><p>First, thanks to our partner <a href="https://www.suse.com/">SUSE</a> for working with
+<a href="https://www.collaboraoffice.com/">Collabora</a> to make this possible.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_the_problem">The problem</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>There are several ones. :-) If you are just interested in high quality viewing
+of PPTX files, then your problem started with PowerPoint 2007 not writing a
+pre-rendered drawingML markup of the diagram to the files, only PowerPoint
+2010 started behaving like this. Additionally, if a diagram is not edited,
+then re-saving with PowerPoint 2010 doesn&#8217;t seem to generate the drawingML
+markup, either. This means that data + constraints cases are quite frequent
+even today.</p></div>
+<div class="paragraph"><p>Also, one day Impress should be able to actually edit these SmartArts as well,
+so having the knowledge how to lay out SmartArt (even if it&#8217;s import-time-only
+at the moment) is a good thing.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_results_so_far">Results so far</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>I always write cppunit tests when I work on filter code (in this case OOXML), so
+far all fixes were visible in just two test files:
+<a href="https://cgit.freedesktop.org/libreoffice/core/tree/sd/qa/unit/data/pptx/smartart-vertial-box-list.pptx">smartart-vertial-box-list.pptx</a>
+and
+<a href="https://cgit.freedesktop.org/libreoffice/core/tree/sd/qa/unit/data/pptx/vertical-bracket-list.pptx">vertical-bracket-list.pptx</a>.</p></div>
+<div class="paragraph"><p>Here is how the baseline, the current and the reference rendering of these test documents look like:</p></div>
+<div style="text-align: center">
+<img src="https://farm2.staticflickr.com/1924/45683201352_52e22af9dc_z.jpg"/>
+<p>smartart-vertial-box-list.pptx, baseline</p>
+</div>
+<div style="text-align: center">
+<img src="https://farm5.staticflickr.com/4912/45683200942_8005cd433d_z.jpg"/>
+<p>smartart-vertial-box-list.pptx, current</p>
+</div>
+<div style="text-align: center">
+<img src="https://farm2.staticflickr.com/1976/45683201252_edd6eddea4_z.jpg"/>
+<p>smartart-vertial-box-list.pptx, reference</p>
+</div>
+<div style="text-align: center">
+<img src="https://farm2.staticflickr.com/1951/45683201002_4c93cc831c_z.jpg"/>
+<p>vertical-bracket-list.pptx, baseline</p>
+</div>
+<div style="text-align: center">
+<img src="https://farm5.staticflickr.com/4876/45008491984_61f25e21ca_z.jpg"/>
+<p>vertical-bracket-list.pptx, current</p>
+</div>
+<div style="text-align: center">
+<img src="https://farm2.staticflickr.com/1911/45683201082_3022aa8fe5_z.jpg"/>
+<p>vertical-bracket-list.pptx, reference</p>
+</div>
+<div class="paragraph"><p>In terms of code commits, the fixes are split into several ones:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=e49c42d17f50c8b0cac9db08dedc375dd5aa8a98">oox
+  smartart, vertical bracket list: fix node counter condition</a>
+</p>
+</li>
+<li>
+<p>
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=397b64afc62a5632a6648598558a4d2c3ca0d283">oox
+  smartart, linear layout: take horizontal position from constraints</a>
+</p>
+</li>
+<li>
+<p>
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=b083b0808121d19f398a9f6ead195ae7e14ed047">oox
+  smartart, linear layout: take width from constraints</a>
+</p>
+</li>
+<li>
+<p>
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=923061d17d4b5b8bf0d4a8111b270c99a7c649a9">oox
+  smartart: work towards accessing parent constraints</a>
+</p>
+</li>
+<li>
+<p>
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=b61d2784271bf8b042642c378f50e8b446682548">oox
+  smartart: fix width of shapes with agl=lin, linDir=fromT</a>
+</p>
+</li>
+<li>
+<p>
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=a7e86beb00e9635ea4556ef4f8f8e24ff9965391">oox:
+  ignore SmartArt "fallback" with empty shape list</a>
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Clearly the results are not perfect yet, but in both cases nothing was
+visible, and now all text is readable, so we&#8217;re moving in the right direction!</p></div>
+<div class="paragraph"><p>All this is available in master (towards LibreOffice 6.2), so you can grab a
+<a href="http://dev-builds.libreoffice.org/daily/master/">daily build</a> and try it out
+right now. :-)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/libocon2018-lightning.html">Text layout performance in LibreOffice conference lightning talk</a></h1>
   </div>
   <div class="article_readtime">
@@ -620,77 +736,6 @@ past. This means the new cost for e.g. 4 images is 37% of the original.</p></div
 <div class="paragraph"><p>All this is available in master (towards LibreOffice 6.1), or you can grab a
 <a href="http://dev-builds.libreoffice.org/daily/master/">daily build</a> and try it out
 right now. :-)</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/hamburg2018.html">LibreOffice Hamburg Hackfest 2018</a></h1>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div style="text-align: center; font-size: 0.6em;">
-<img src="https://farm1.staticflickr.com/873/27489617988_4c2ce3fd59_z.jpg"/>
-<p>(via <a href="https://twitter.com/Sweet5hark/status/982560887927197696">Sweet5hark</a>)</p>
-</div>
-<div class="paragraph"><p>I arrived home from Hamburg yesterday where I participated in the
-<a href="https://wiki.documentfoundation.org/Hackfest/Hamburg2018">LibreOffice hackfest</a>
-over the weekend as a mentor.  First, thanks to The Document Foundation&#8201;&#8212;&#8201;and
-all the <a href="https://www.libreoffice.org/donate">donors</a> for funding Collabora to
-make this possible.</p></div>
-<div class="paragraph"><p>There were a few topics I mentored:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-Patrick was interested fixing
-  <a href="https://bugs.documentfoundation.org/show_bug.cgi?id=116486">tdf#116486</a>,
-  which required some background knowledge on the Writer document model and
-  layout, so we explored the relevant details together towards providing an
-  actual patch for the bug.
-</p>
-</li>
-<li>
-<p>
-Nithin wanted to fix
-  <a href="https://bugs.documentfoundation.org/show_bug.cgi?id=112384">tdf#112384</a>,
-  which turned out to be an ideal task for a hackfest. On one hand, the scope is
-  limited so that you can implement this mini-feature over a weekened. On the
-  other hand, it required touching various parts of Writer (UI, document model,
-  UNO API, ODF filter), so it allowed seeing the process of adding a new
-  feature. The <a href="https://gerrit.libreoffice.org/52561">patch</a> is merged to master.
-</p>
-</li>
-<li>
-<p>
-Linus looked for a task that is relatively easy, still useful, we looked at
-  <a href="https://bugs.documentfoundation.org/show_bug.cgi?id=42949">tdf#42949</a>, and he
-  identified and removed a number of unused includes himself. This should
-  especially help with slow incremental builds. Again, the
-  <a href="https://gerrit.libreoffice.org/52594">patch</a> is already in master.
-</p>
-</li>
-<li>
-<p>
-Zdeněk (raal) wanted to write a uitest for
-  <a href="https://bugs.documentfoundation.org/show_bug.cgi?id=106280">tdf#106280</a> so we
-  were figuring out together how to select images from pyuno and how to avoid
-  using graphic URLs in uitests in general.
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>The full list of achievements is
-<a href="https://wiki.documentfoundation.org/Hackfest/Hamburg2018#Achievements">on the
-wiki</a>, if you were at the hackfest and you did not contribute to that section,
-please write a line about what did you hack on. :-)</p></div>
-<div class="paragraph"><p>Finally, thanks for the organizers and the sponsors of the hackfest, it was a
-really great event!</p></div>
 </div>
 </div>
 
