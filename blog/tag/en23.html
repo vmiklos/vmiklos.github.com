@@ -58,6 +58,32 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/recent-hacks-upgrade.html">Recent hacks, upgrade</a></h1>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p><ul>
+  <li>ooo-build: <a href="http://cgit.freedesktop.org/ooo-build/ooo-build/commit/?id=5692b89ec72d22e43580c54a01131c7b4cc5c5c6">two</a> <a href="http://cgit.freedesktop.org/ooo-build/ooo-build/commit/?id=d29f754f0dd89399c1e885071c3712ea6fe500fa">fixes</a> for the configure script (perl, rsync)</li>
+  <li>the irssi script that renames facebook "u$bigint" nicks to real names based on whois info stripped chars with accents. a <a href="http://frugalware.org/~vmiklos/patches/bitlbee-facebook-accents.patch">oneliner patch</a> makes it possible not to drop chars with accents, just convert them to ascii.</li>
+<li>The dazuko m8r <a href="http://www.mail-archive.com/dazuko-devel@nongnu.org/msg00469.html">merged</a> my Linux-2.6.33 patch. \o/</li>
+</ul></p><p>The rest of this entry is not about programming in fact - I upgraded a machine at work from Frugalware-1.1 to 1.2 and I though it may worth noting a few interesting facts:</p><p><ul>
+  <li>The attitude of <a href="https://bugs.kde.org/show_bug.cgi?id=167558">this bug</a> is like the famous <a href="http://sourceware.org/bugzilla/show_bug.cgi?id=4980">glibc one</a>. In short: kde3 supported having the same wallpaper on two screens by automatically splitting it up - now looks like kde4 does not. I ended up splitting the wall up using GIMP as well. :P</li>
+  <li>kookaa is <a href="http://techbase.kde.org/Projects/Kooka#KDE4_Porting">not really ported</a>
+ yet to kde4 so I needed to switch to kolourpaint.</li>
+  <li>While upgrading cups, I hit <a href="https://answers.launchpad.net/hplip/+question/89196">this bug</a> as well. (Notice how Ubuntu calls bugs "answers". ;) )</li>
+</ul></p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/running-the-right-command-at-the-right-time.html">Running the right command at the right time</a></h1>
   </div>
   <div class="article_readtime">
@@ -304,26 +330,6 @@ ipparam $network
   <li>2D acceleration is stable (ie. if you start mplayer -vo xv the second time, it won't freeze)</li>
   <li>Suspend to disk works fine, <a href="http://openchrome.org/trac/ticket/321#comment:25">as it was expected</a>.</li>
 </ul></p><p>\o/</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/mails.html">mails</a></h1>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>Say you have two servers, the first is just a mail proxy, the second is a real mail server. So the MX record points to the first box and you usually just read your mail on the second one.</p><p>We use this system at frugalware.org as well to make the service a bit more robust: if genesis (the "second" box) goes down, the proxy machine(s) can just queue up the input and in case one of the proxy machines go down, then the sender will just try an other proxy.</p><p>The problem occurs when the "second" box goes down and you need to read your mail ASAP. Let's say you have access to the first box. You see in the output of 'mailq' that there are messages in the queue but how to read those mails?</p><p>'mailq' gives the ID of each message, and then the following script (I call it 'mails' - s for show) can generate mbox format from it, which means you can read it with for example 'mutt -f foo.mbox'.</p><p>The script itself is fairly easy:</p><p><pre>
-#!/bin/sh</p><p>echo 'From <a href="mailto:news@gmane.org">news@gmane.org</a> Tue Mar 04 03:33:20 2003'
-        |sed '1,/^\*\*\* MESSAGE CONTENTS/d;/^\*\*\* HEADER EXTRACTED/,$ d'
-</pre></p><p>(And of course it's possible there is a better tool to do the job, but I use this for months now.)</p>
 </div>
 </div>
 
