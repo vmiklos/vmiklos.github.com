@@ -60,7 +60,7 @@ class ContentHandler(xml.sax.handler.ContentHandler):
     def endElement(self, name):
         if name == "position":
             self.inPosition = False
-            if int(self.commits) < 25:
+            if not self.commits or int(self.commits) < 25:
                 # Let's see if this is a good limit to filter out noise.
                 self.outSock.write("// ")
             self.outSock.write(".")
