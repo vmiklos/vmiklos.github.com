@@ -1,0 +1,27 @@
+= Allow-overlap shape property in Writer
+
+:slug: sw-shape-allow-overlap
+:category: libreoffice
+:tags: en
+:date: 2019-10-03T17:51:02+02:00
+
+Writer now has a new "allow overlap" shape property for anchored objects, which can ensure that
+objects with overlapping positioning properties don't actually overlap.
+
+First, thanks https://tu-dresden.de/[TU Dresden] who made this work by Collabora possible.
+
+Here is a video showing how it works:
+
+.Allow-overlap shape property in Writer
+image::https://lh3.googleusercontent.com/fdBYhwk3jykbX7drs6Q3ehQsQyAOBk_GWukw3KzcJBlaMsmgVg0C7KHM1uyODgqIro7HSjOnHzV6zfy9RgdMjY1KJW5K_EmfhyB4d-HyadZszIDAhVGbxUe4DMQbemSiZJA2k0h7vw=w640[align="enter",link="https://youtu.be/DzanTIo941g"]
+
+Under the hood, this is a full new Writer feature, since previously shapes were always allowed to
+overlap with each other:
+
+- macros get a new `AllowOverlap` shape property (true by default)
+- layout takes this into account if you set the property on the UI
+- both DOCX and ODT filters serialize and load this property
+  (https://issues.oasis-open.org/browse/OFFICE-4047[ODT proposal])
+
+All this is available in LibreOffice master (towards 6.4), so you can try it out
+http://dev-builds.libreoffice.org/daily/master/[right now], if interested.
