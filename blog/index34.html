@@ -57,6 +57,38 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/playing-with-libvirt.html">Playing with libvirt</a></h1>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 4 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>I've been playing with <a href="http://frugalware.org/packages/14204">libvirt</a> in the last two days. My motivation was that I saw:<ol>
+  <li>plain kvm is not that fast</li>
+  <li>there is this virtio framework which aims to make it faster</li>
+  <li>using virtio directly is hard, better not reinventing the wheel and just try libvirt</li>
+</ol></p><p>So if you want to try it yourself, you need to pacman -S libvirt, service libvirtd start. Check /var/log/syslog for error messages, in case it can't find some commands (bridge-utils, dnsmasq, etc.), install them.</p><p>If you want to create a new virtual machine, you need pacman -S virtinst. Then you can use something like:</p><p><code>virt-install --name=syncpkgcd-helicon --arch=x86_64 --vcpus=1 --ram=1024 --os-type=linux --os-variant=virtio26 --connect=qemu:///system --network network=default --cdrom=/virt/iso/frugalware-1.3-i686-net.iso --disk path=/virt/syncpkgcd/syncpkgcd.img,size=40 --accelerate --vnc --noautoconsole --keymap=us</code></p><p>See man virt-isntall for more info about the meaning of the switches. One trick: kvm can't handle the gfxmenu in our grub on the install cd, so you need to disable that. One way to do it is to use <code>vim -b frugalware-1.3-i686-net.iso</code>, search for "menu /boot", and change "gfx" to "#fx". Then you can run virt-install. It'll start the install in the background. The easiest way (for me) to connect to the console is to create an ssh tunnel to the server running the kvm machine (for example ssh -L 5900:localhost:5900 server), then run <code>krdc localhost:0</code> on my own machine.</p><p>Next trick is that you need kernel support to boot from virtio disks (/dev/vda), that's enabled in frugalware-current.git but there were no rebuild yet, so you need to build it yourself for now.</p><p>Once the installation finished, the machine will be shut down. You can use <code>virsh</code> to start it. <a href="http://acidborg.wordpress.com/2010/02/19/how-to-manage-kvm-virtual-machines-using-virsh/">Here</a> is a great summary about virsh subcommands. Something not to forget: if you want to automatically start the machine after the host booted, use <code>virsh autostart $name</code>.</p><p>(You can also do a service libvirt-guests add, that way all guests will be automatically suspended/resumed on shutdown/boot. Just to be clear: if you want the "resume if it was a proper shutdown, start if there was a power cut" feature: you need both init scripts because libvirtd will always start/resume autostart guests, but it will never suspend them on shutdown.)</p><p>If grub hangs after reboot, try creating a small (I used 32MB) separate /boot partition first, that should fix the issue.</p><p><code>virsh shutdown $machine</code> won't work if you don't install acpid and enable it as well, so it's a good idea to do so.</p><p>The last trick: if you want to use the virt-manager gui from your local machine to manage a remote host, it isn't trivial to do so. First, it would try to login via ssh as root, and that's disabled by default. (And why would you enable it?). Also, even if you allow that, it would try to use <code>nc -U</code> which is supported by the openbsd nc only, the gnu nc does not have such a switch. Instead, we can use socat to connect to unix sockets. So I created a wrapper script under ~/bin with the following contents:</p><p><pre>
+#!/bin/sh
+if [ "$1" == "-U" ]; then
+        sudo socat - unix-client:$2
+else
+        /usr/bin/netcat $@
+fi
+</pre></p><p>Don't forget to add PATH=what_you_want line to ~/.ssh/environment, and include the full path of ~/bin there. This way you can keep using gnu nc and you can also login as a user to manage your machines, as long as you set up nopasswd sudo for your user for socat.</p><p>Finally a mini-benchmark:</p><p>The SBU of yugo (i686 buildserver, a bit old HW) is 645 seconds, SBU of an i686 guest on helicon (c2q machine with 8g ram) is 264, SBU of the host build on helicon is 76.</p><p>I would call this usable (not right now, but once we sort out the kernel part). Finally something that is free software and is comparable to VMware ESX. :)</p><p>Update: I recently did the same install with 1.4pre1 (which installs -current, so the kernel is 2.6.36), the list of tricks you still need:</p><p><ul>
+  <li>separate /boot (haven't tried without)</li>
+  <li>edit iso image to get rid of gfxboot (tried, still fails without)</li>
+  <li>some problem with grub, you need to manually add "(hd0) /dev/vda" to /boot/grub/device.map, then run grub-install /dev/vda</li>
+</ul></p><p>So no more custom kernel, boot from virtio works by default! :)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/anyremote.html">Anyremote</a></h1>
   </div>
   <div class="article_readtime">
@@ -287,26 +319,6 @@ $ gpsbabel -i gpx -f $(date +%Y-%m-%d).gpx -o kml -F $(date +%Y-%m-%d).kml
 </pre></p><p>Finally release the rfcomm interface in case you don't need it anymore:</p><p><pre>
 # rfcomm release 0
 </pre></p><p>Update: there is also a <a href="http://code.google.com/p/globdog-dg100/">gui</a> which can be used to enable logging of altitude info, etc - just <a href="http://frugalware.org/~vmiklos/patches/globdog-dg100-enable-rtcomm.patch">trivial patching</a> is needed and it works with BT-338X as well.</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/upgrading-to-haven.html">Upgrading to Haven</a></h1>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>I just upgraded my box at work to Haven, here is a short post to mention two links:</p><p><ul>
-  <li>ATM you need to <a href="http://www.nvnews.net/vbulletin/showthread.php?p=2288105">manually upgrade</a> nvidia-173xx if you have it installed (after -Syu) due to lack of xorg-server-1.8 support.</li>
-  <li>I needed <a href="http://bugs.gentoo.org/show_bug.cgi?id=153115#c8">this xorg config tweak</a> to get my up arrow working again.</li>
-</ul></p><p>Other than that, I removed my xorg.conf and instead I put <a href="http://frugalware.org/~vmiklos/docs/config/xorg.conf.d/30-nvidia173.conf">this</a> to the xorg.conf.d dir. I also added "nouveau.modeset=0" to /boot/grub/menu.lst.</p><p>What else.. ah yes, I needed to change the keyboard model to evdev in the KDE System Settings.</p><p>Other than that, it went fine. :)</p><p>Update: the nvidia-173xx part is now fixed in both <a href="http://frugalware.org/pipermail/frugalware-git/2010-August/047941.html">current</a> and <a href="http://frugalware.org/pipermail/frugalware-git/2010-August/047942.html">stable</a>.</p>
 </div>
 </div>
 

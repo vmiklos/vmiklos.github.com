@@ -58,6 +58,57 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sw-shape-allow-overlap.html">Allow-overlap shape property in Writer</a></h1>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>Writer now has a new "allow overlap" shape property for anchored objects, which can ensure that
+objects with overlapping positioning properties don&#8217;t actually overlap.</p></div>
+<div class="paragraph"><p>First, thanks <a href="https://tu-dresden.de/">TU Dresden</a> who made this work by
+<a href="https://www.collaboraoffice.com/">Collabora</a> possible.</p></div>
+<div class="paragraph"><p>Here is a video showing how it works:</p></div>
+<div class="imageblock" style="text-align:enter;">
+<div class="content">
+<a class="image" href="https://youtu.be/DzanTIo941g">
+<img src="https://lh3.googleusercontent.com/fdBYhwk3jykbX7drs6Q3ehQsQyAOBk_GWukw3KzcJBlaMsmgVg0C7KHM1uyODgqIro7HSjOnHzV6zfy9RgdMjY1KJW5K_EmfhyB4d-HyadZszIDAhVGbxUe4DMQbemSiZJA2k0h7vw=w640" alt="https://lh3.googleusercontent.com/fdBYhwk3jykbX7drs6Q3ehQsQyAOBk_GWukw3KzcJBlaMsmgVg0C7KHM1uyODgqIro7HSjOnHzV6zfy9RgdMjY1KJW5K_EmfhyB4d-HyadZszIDAhVGbxUe4DMQbemSiZJA2k0h7vw=w640" />
+</a>
+</div>
+<div class="title">Figure 1. Allow-overlap shape property in Writer</div>
+</div>
+<div class="paragraph"><p>Under the hood, this is a full new Writer feature, since previously shapes were always allowed to
+overlap with each other:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+macros get a new <code>AllowOverlap</code> shape property (true by default)
+</p>
+</li>
+<li>
+<p>
+layout takes this into account if you set the property on the UI
+</p>
+</li>
+<li>
+<p>
+both DOCX and ODT filters serialize and load this property
+  (<a href="https://issues.oasis-open.org/browse/OFFICE-4047">ODT proposal</a>)
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>All this is available in LibreOffice master (towards 6.4), so you can try it out
+<a href="http://dev-builds.libreoffice.org/daily/master/">right now</a>, if interested.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/libocon2019.html">Bottom to top, left to right writing direction in Writer conference talk</a></h1>
   </div>
   <div class="article_readtime">
@@ -699,99 +750,6 @@ livestream worked out nicely.</p></div>
 before the conference, I looked at
 <a href="https://bugs.documentfoundation.org/show_bug.cgi?id=116371#c20">RTF export of
 rotated Writer pictures</a>.</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/smartart-improvements-3.html">SmartArt improvements in LibreOffice, part 3</a></h1>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>I recently <a href="/blog/smartart-improvements-2.html">dived into</a> the SmartArt
-support of LibreOffice, which is the component responsible for displaying
-complex diagrams from PPTX. I focus on the case when only the document model
-and the layout constraints are given, not a pre-rendered result.</p></div>
-<div class="paragraph"><p>First, thanks to our partner <a href="https://www.suse.com/">SUSE</a> for working with
-<a href="https://www.collaboraoffice.com/">Collabora</a> to make this possible.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_continuous_block_process_accent_process_and_organization_chart">Continuous Block Process, Accent Process and Organization Chart</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>In this post I would like to present the progress done last month regarding
-the above mentioned diagram types&#8201;&#8212;&#8201;these are used in many documents.</p></div>
-<div class="paragraph"><p>The improvement (as always) come in small incremental steps:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-Continuous Block Process now reads space width from constraints.
-</p>
-</li>
-<li>
-<p>
-Accent Process now has the missing bullets and fixes an incorrect large
-  paragraph-level indent.
-</p>
-</li>
-<li>
-<p>
-Organization Chart now has an initial implementation of the <code>hierRoot</code> and
-  <code>hierChild</code> algorithms.
-</p>
-</li>
-<li>
-<p>
-Organization Chart now handles multiple employees for a manager.
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>With all these fixed, we reach a much better state for the mentioned diagram
-types.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_results_so_far">Results so far</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>The SmartArt test documents from <a href="https://cgit.freedesktop.org/libreoffice/core/tree/sd/qa/unit/data/pptx/">sd/qa/unit/data/pptx/</a> is what I used for testing this work.</p></div>
-<div class="paragraph"><p>Here is how the baseline, the current and the reference rendering of Accent Process looks like:</p></div>
-<div style="text-align: center">
-<img src="https://lh3.googleusercontent.com/8CH3lhBMrhnNPvcptRvw0R0RUGIW5Jaeh1LxqnuTxcvWFg95OyrZqgAYl2YWMwTJbdyUeGrAB52K-WXu8mSfjPw2k-4NVb0lbXKpnTjtoBuIenqhlX70r8gP3AFuP6RDbgKEl7vPvQ=w640" style="max-width: 100%;"/>
-<p>smartart-accent-process.pptx, baseline</p>
-</div>
-<div style="text-align: center">
-<img src="https://lh3.googleusercontent.com/i62jSfzKrCRQmv-EMEPx_ujXepB0qFzWtMOD8F_HIJzqxxHcsIH1fADQQr3eIsRjiJcyAdx95b4f3jckpzASk2Ifks7bAAWDqJQUJBGLWuDmXXrFHO5q769PEBw3UghmMoS_0ihHTA=w640" style="max-width: 100%;"/>
-<p>smartart-accent-process.pptx, current</p>
-</div>
-<div style="text-align: center">
-<img src="https://lh3.googleusercontent.com/g9cJmO8PPcqOwgYN18uE6RdfFgq5fWi-bpGSOLOLFGYjEq_B0pLFPz_royCoHhz8_58L5GT71Xu62OtEj8IwLeNI631b_DqXHuSAWSEMbaF-ZU8XM4RykbUTE-egq1FhYE9b8p_Ejg=w640" style="max-width: 100%;"/>
-<p>smartart-accent-process.pptx, reference</p>
-</div>
-<div class="paragraph"><p>And here is how the baseline, the current and the reference rendering of Organization Chart looks like:</p></div>
-<div style="text-align: center">
-<img src="https://lh3.googleusercontent.com/ze6x3LugJJBPjzEgJaWUVc_l3yiLtCQrcj_H_SN91YrYeR9f6E9Buzs6wrRp7T9mW4Mcho9jmVR3K0dItcGKiBK8ucs08YMkC9qW7kHQGCSE_m5fcEgK0z4srQnSUCJBD7NaYY-LWA=w640" style="max-width: 100%;"/>
-<p>smartart-org-chart.pptx, baseline</p>
-</div>
-<div style="text-align: center">
-<img src="https://lh3.googleusercontent.com/fT_as5kTDmnbZQpO0MtV_VYu0LqfrRLSewvEkjl3K4nQ4VmFkWSGWJ7RjUjFJyXcOFqpl5fqEQjU7shiqHotkFIDPEJE5s70Ysdnscxf7oVJcV0R4qjpdePU4CnUN9_HxUdEfYjPlw=w640" style="max-width: 100%;"/>
-<p>smartart-org-chart.pptx, current</p>
-</div>
-<div style="text-align: center">
-<img src="https://lh3.googleusercontent.com/Mdoqtf2-u4JISXJsKLp1tLQXnxDDvDg1vPOI5bNpOnAjhM02og80Lz6BnBzA-YkdlT__9lfU-pxFqUOzKpL9ySyJK9EmXnV6ipG5x6SmJTYY92KSzr_0e9qbp5pmZERiBSeBTPbVqg=w640" style="max-width: 100%;"/>
-<p>smartart-org-chart.pptx, reference</p>
-</div>
-<div class="paragraph"><p>This is not not perfect yet, but it&#8217;s clearly a large improvement, all text is
-now readable from the diagrams and bullets are no longer missing!</p></div>
-<div class="paragraph"><p>All this is available in master (towards LibreOffice 6.3), so you can grab a
-<a href="http://dev-builds.libreoffice.org/daily/master/">daily build</a> and try it out
-right now. :-)</p></div>
 </div>
 </div>
 

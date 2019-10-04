@@ -60,6 +60,120 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/tiled-editing-part-3.html">Tiled editing: from input handling to selections</a></h1>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 3 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>In <a href="/blog/tiled-editing-part-2.html">from a living document to
+input handling</a>, I wrote about how we handle touch and on-screen keyboard
+events in the LibreOffice Android app. A next step in this
+<a href="http://blog.documentfoundation.org/2015/01/27/the-document-foundation-announces-the-results-of-the-android-tender/">TDF-funded
+project</a> is to provide more UI elements which are specific to touch devices:
+selections is one of them.</p></div>
+<div class="paragraph"><p>Here are the problems we had to solve to get this working:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Long push is not an event core would recognize.
+</p>
+</li>
+<li>
+<p>
+If you use the mouse and have a selection in Writer, it&#8217;s only possible to
+  extend the end of it. If you use the keyboard, then it&#8217;s possible to shrink
+  the end of it, but still no adjustment of the start. On touch devices, it&#8217;s
+  natural to have selection handles at the start and end of the selection and be
+  able to adjust both, in both directions.
+</p>
+</li>
+<li>
+<p>
+Additionally, when the user drags the selection handles, the expected
+  behavior is that the position of the selection and the handle are never the
+  same: the handle is placed below the selection position and when you drag the
+  handle, the new selection position is above the handle&#8230; ;-)
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Long push is reasonable to map to double mouse click, as in both cases e.g. in
+Writer the user expects to have a <em>select word</em> action. But for the adjustment
+of selections, we really had to define a new API
+(<code>lok::Document::setTextSelection()</code>) to allow setting the start or end of the
+selection to a new logical (in document coordinates, not paragraph / character
+indexes) point.</p></div>
+<div class="paragraph"><p>If you are interested how this looks like, here is a demo:</p></div>
+<center>
+<iframe width="420" height="315" src="https://www.youtube.com/embed/dmZtxA2HD5o" frameborder="0" allowfullscreen></iframe>
+</center>
+<div class="paragraph"><p>An other direction we&#8217;re working towards is to have the same features in other
+applications as well: Impress and Calc. Perhaps not so surprisingly, we hit
+similar problems in these applications as well that we had to solve in Writer.
+The typical problems are:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+LibreOffice assumes a given portion of the document is visible (visual
+  area), but the Android view is independent from what LO thinks is visible.
+  Example: LO thinks a table is not visible, so it doesn&#8217;t send the selection
+  events for the text inside the table, even if it&#8217;s in fact visible on the
+  Android app.
+</p>
+</li>
+<li>
+<p>
+Instead of calling Invalidate() and waiting for a timer to call Paint(), at
+  some places direct Paint() is performed, so the tile invalidation
+  notification triggered by Invalidate() is missing &#8594; lack of content on
+  Android.
+</p>
+</li>
+<li>
+<p>
+We render each tile into a VirtualDevice&#8201;&#8212;&#8201;kind of an off-screen rendering
+ &#8201;&#8212;&#8201;and at some places LO assumed that certain content like the actively edited
+  shape&#8217;s text is not interesting, as it&#8217;s not interesting "during printing".
+</p>
+</li>
+<li>
+<p>
+LO&#8217;s mouse events are in pixels, and then this is translated to mm100
+  (hunderd of milimeters) or twips in core. So counting in pixels is the
+  common language, while the Android app counts everything in twips, and
+  doesn&#8217;t want to care about what would be visible at what pixel on the screen,
+  if LO would run in desktop mode. So we had to make sure that we can pass in
+  event coordinates in twips, and get invalidation coordinates in twips, even if
+  previously it was a mix of mm100, twips and pixels.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Here is how Impress looks like, with working tile invalidation, touch and
+keyboard handling:</p></div>
+<center>
+<iframe width="420" height="315" src="https://www.youtube.com/embed/P2cF8zsNnrg" frameborder="0" allowfullscreen></iframe>
+</center>
+<div class="paragraph"><p>Calc is lagging a bit behind, but it also has working tile invalidation and
+keyboard handling:</p></div>
+<center>
+<iframe width="420" height="315" src="https://www.youtube.com/embed/kQDRpoDkb0s" frameborder="0" allowfullscreen></iframe>
+</center>
+<div class="paragraph"><p>That&#8217;s it for now&#8201;&#8212;&#8201;as usual the commits of me and
+<a href="http://tomazvajngerl.blogspot.com/">Tomaž Vajngerl</a> are in master (a few of
+them is only in feature/tiled-editing for now), so you can try this right now,
+or wait till the next Tuesday and get the
+<a href="http://dev-builds.libreoffice.org/daily/master/Android-ARM@24-Bytemark-Hosting/current/">Android
+daily build</a>. :-)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/tiled-editing-part-2.html">Tiled editing: from a living document to input handling</a></h1>
   </div>
   <div class="article_readtime">
@@ -818,111 +932,6 @@ picture</a>&#8201;&#8212;&#8201;probably around 300 attendees, counting all days
 <div class="paragraph"><p>My pictures are available
 <a href="https://www.flickr.com/photos/vmiklos/albums/72157674219984366">here</a> (and I
 also made a <a href="/panoramas/bern.html">panorama</a>).</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/ooxmltok.html">Cleanup of ooxmltok in LibreOffice</a></h1>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 3 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div style="text-align: center; font-size: 0.6em;">
-<img src="https://lh4.googleusercontent.com/-GipHI6c2dSM/U_8TTB9IzUI/AAAAAAAAExA/LVMQpNezkus/s400/"/>
-<p>(via <a href="https://www.flickr.com/photos/aigle_dore/7356881428/">aigle_dore</a>)</p>
-</div>
-<div class="paragraph"><p>In June, we
-<a href="http://article.gmane.org/gmane.comp.documentfoundation.libreoffice.qa/7272">decided</a>
-to get rid of XSLT usage in writerfilter, the module responsible for RTF and
-DOCX import in LibreOffice. As usual with cleaning up mess, this took time
-(about two months), but I&#8217;m now happy to say that I&#8217;m mostly done with this.
-:-)</p></div>
-<div class="paragraph"><p>See <a href="/blog/doctok.html">the doctok blog post</a> for some
-background, the topic here was to clean up the OOXML tokenizer, that is that
-building block that turns a zipped XML document into a token stream.</p></div>
-<div class="paragraph"><p>The following problems are now solved:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-Part of the module was generated code, the generator was implemented mostly
-  in XSLT, but some bits were written in Perl and sed. About 4200 lines of
-  XSLT code is now rewritten in Python, in about 1300 lines.
-</p>
-</li>
-<li>
-<p>
-Given that we have much more developers who speak Python, compared to XSLT,
-  nontrivial changes are now much easier in the generator: Jan Holesovsky
-  <a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=c74de6c2e29a16fb4a458816cd17fa678edd16e7">cleaned
-  up</a> <code>boost::unordered_map</code> usage at places where we depended on the order of
-  elements. (Yes, you read it correctly, that was the situation up till now!)
-  This also helps reducing the size of the resulting writerfilter shared library.
-</p>
-</li>
-<li>
-<p>
-The input of the code generator was the large <code>model.xml</code> file, and
-  generator scripts only extracted interesting information from it, so if you
-  mistyped something, you got no error messages, just silent failures. I&#8217;ve
-  removed quite some XML elements and attributes from it which were parsed by
-  none of the generator scripts and written a
-  <a href="http://opengrok.libreoffice.org/xref/core/writerfilter/documentation/ooxml/model.rng">relax-ng
-  schema</a> for the remaining markup. Validating against this schema is part of
-  the default build, so no more typos without a build failure. ;-)
-  (The schema also contains quite some documentation, finally.)
-</p>
-</li>
-<li>
-<p>
-A gperf hash of all possible OOXML elements / attribute names were
-  duplicated in writerfilter, even if that information was already available
-  from the oox module. This is now fixed, reducing the size of the shared
-  library even further.
-</p>
-</li>
-<li>
-<p>
-Also, both oox and writerfilter had a list of namespace URL&#8217;s, mapping them
-  to an integer enumeration, and when the two lists didn&#8217;t match, Bad Things
-  happened (read: usually resulted in a crash.) This is the past, I&#8217;ve
-  refactored writerfilter to use the same namespace alias names as oox, and this
-  allowed to get rid of the writerfilter copy of the namespace alias list. So in
-  the future, if new namespaces have to added, only oox has to be extended.
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>Oh and the bonus feature: I&#8217;ve implemented a script called
-<a href="http://opengrok.libreoffice.org/xref/core/writerfilter/qa/ooxml/watch-generated-code.sh">watch-generated-code.sh</a>,
-which can record a good state of the generated code, and then compare later
-generated results against that, so that refactoring of the generator can now be
-performed in a safe way: you can change the generator in any way to make it
-better, and still avoid accidental output changes. :-) This is particularly
-useful, as it only diffs the end result of the whole generation process (cxx
-and hxx files), not temporarily files, which are OK to change, as long as the
-end result is the same.</p></div>
-<div class="paragraph"><p>As a conclusion, here are sizes of a stripped dbgutil version of the
-writerfilter shared library, from the libreoffice-4-3-branch-point and today&#8217;s
-master:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>$ git checkout oldest
-HEAD is now at b3130c8... 2014-05-21
-vmiklos@o9010:~/git/libreoffice/daily$ ls -lh opt/program/libwriterfilterlo.so
--rwxr-xr-x 1 vmiklos users 8,3M aug   28 14:00 opt/program/libwriterfilterlo.so
-$ git checkout master
-Switched to branch 'master'
-vmiklos@o9010:~/git/libreoffice/daily$ ls -lh opt/program/libwriterfilterlo.so
--rwxr-xr-x 1 vmiklos users 6,1M aug   28 14:01 opt/program/libwriterfilterlo.so</code></pre>
-</div></div>
-<div class="paragraph"><p>Again, the 8,3MB &#8594; 6,1MB size reduction is mostly thanks to Kendy&#8217;s map cleanups + the
-duplicated gperf hash going away. :-)</p></div>
 </div>
 </div>
 

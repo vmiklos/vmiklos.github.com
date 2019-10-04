@@ -57,6 +57,43 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/mtd-utils.html">mtd-utils</a></h1>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>Quick node about this useful project I packaged two days ago. It has a
+<a href="http://www.linux-mtd.infradead.org/faq/ubi.html">long FAQ</a> - I was interested in
+how can one access the builtin nand storage on an arm board using it.</p></div>
+<div class="paragraph"><p>First, check your dmesg, you should see something like:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>Creating 3 MTD partitions on "orion_nand":
+0x000000000000-0x000000100000 : "u-boot"
+0x000000100000-0x000000500000 : "uImage"
+0x000000500000-0x000020000000 : "root"</code></pre>
+</div></div>
+<div class="paragraph"><p>As the names say, the three items here are the bootloader, the kernel and the
+root filesystem. To access and mount the last one, you need:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>ubiattach /dev/ubi_ctrl -m 2
+mount /dev/ubi0_0 root
+... hack hack hack ...
+umount root
+ubidetach /dev/ubi_ctrl -m 2</code></pre>
+</div></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/terdmelegito.html">Bringas terdmelegito</a></h1>
   </div>
   <div class="article_readtime">
@@ -554,33 +591,6 @@ short side: if the PDF already contains a 2 pages per sheet
 erhetoek el (valosagos tinyurl!), illetve a
 <a href="http://www.inf.u-szeged.hu/mszny2011/images/stories/kepek/mszny2011_press_nc_b5.pdf">konferenciakotetbe</a>
 is irtunk egy cikket.</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/patience-please.html">Patience, please!</a></h1>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>So Lennart already had
-<a href="http://0pointer.de/blog/projects/hinter-den-kulissen.html">great slides</a> about
-what is the preferred attitude when you&#8217;re hacking Free Software (don&#8217;t expect
-gratefulness &amp;&amp; be grateful), but recently there was such a great example, I
-wanted to mention it. :)</p></div>
-<div class="paragraph"><p>So I saw there is a new etckeeper release and I checked its changelog,
-<a href="http://joey.kitenet.net/code/etckeeper/#code-etckeeper-news-version-0.58.default">mentioning
-me</a>. What the hell? I didn&#8217;t contribute anything to that project in the past 3
-years! It turned out it was a patch that was considered "too new" at that time,
-but now got merged. ;) Remember, if you contribute, usually integration takes
-much less time, so no need to whine about it.</p></div>
 </div>
 </div>
 

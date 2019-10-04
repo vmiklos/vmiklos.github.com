@@ -58,6 +58,28 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/fop-0-9x.html">fop 0.9x</a></h1>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>uhm, this will be a long post, but i'll try to keep it short :)</p><p>a few words about fop. we write our documentation in asciidoc. asciidoc is plain text with a very simple markup, asciidoc can convert this to docbook. then docbook-xsl can convert this to .fo, finally fop can convert .fo to .pdf.</p><p>my problem with fop is that it's written in java and we just used the upstream binary. this is primarily a security problem.</p><p>so, about one and a half months ago got the crazy idea to compile fop from source. of course the correct way to do this is to package first the depends. this is really a avalanche, becase we didn't have too much generic java libs packaged, so i had to package many. namely:</p><p>jflex, piccolo, gnu.regexp, jarjar, jmock, qdox, easymock, hamcrest, iso-relax, relaxngdatatype, xsdlib, msv, xpp3, xpp2, gnu-crypto, apache-log4j, xmldb-api, ws-jaxme, dom4j, jdom, icu4j, jaxp, jaxp, xom, jaxen, rhino, batik, servletapi, jaf, gnuinetlib, gnumail, avalon-logkit, avalon-framework, commons-logging, commons-io and xmlgraphics-commons.</p><p>hm. that's 36. horrible ;)</p><p>the nice thing is that all these (except xmlgraphics-commons because classpath still lacks jpeg support) are compiled with the ecj/gcj toolchain, without any sun blob.</p><p>the other benefits are:
+<ul>
+  <li>a native fop binary:<pre>$ file /usr/bin/fop
+/usr/bin/fop: ELF 32-bit LSB executable, Intel 80386, version 1 (SYSV), for GNU/Linux 2.6.0, dynamically linked (uses shared libs), stripped</pre></li>
+  <li>now we got rid of fop-devel, since this version can both convert ttf fonts to xml ones (needed if you want to embed custom fonts into pdf) and convert fo documents to pdf ones.</li>
+</ul></p><p>yay!</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/message-ids.html">message-ids</a></h1>
   </div>
   <div class="article_readtime">
@@ -258,23 +280,6 @@ git fetch
 <div class="sectionbody">
 <p>it was a while ago when we registered at <a href="http://www.ohloh.net/projects/6659?p=Frugalware+Linux">ohloh.net</a>, but i recently re-visited that page, and i found some nice PR texts there ;)</p><p><blockquote> Over the past twelve months, 18 developers contributed new code to Frugalware Linux.</p><p>This is a relatively large team, putting this project among the top 10% of all project teams on Ohloh.</p><p>For this measurement, Ohloh considered only recent changes to the code. Over the entire history of the project, 36 developers have contributed. </blockquote>
 (<a href="http://www.ohloh.net/projects/6659/factoids/273910">source</a>)</p><p>well, i always considered our team as a nice and good but small team, it turns out that if you count projects, we're not that small! :)</p><p>it also creates nice charts about what programming languages do we use, etc, etc. so it's a different approach, compared to cia, but it's interesting.</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/git-cvsimport-mini-howto.html">git-cvsimport mini howto</a></h1>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>recently i needed to convert a cvs repo to git, in fact i'm providing a git mirror, so i need incremental updates.</p><p>here is the command i needed:</p><p><code>$ git cvsimport -d :pserver:anonymous@tcpflow.cvs.sourceforge.net:/cvsroot/tcpflow -C tcpflow tcpflow</code></p><p>yes, this will do the initial conversion and the incremental one, too. :)</p>
 </div>
 </div>
 

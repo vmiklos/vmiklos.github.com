@@ -58,6 +58,23 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/kernel-org-gitweb-fork.html">kernel.org gitweb fork</a></h1>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+It has not been updated for a long time, but today a <a href="http://git.kernel.org/?p=git/warthog9/gitweb.git;a=commitdiff;h=2586ea1d3fdce3d27479903a79a6e916b000b640">fix</a> appeared. It seem to be kernel.org-specific though, so don't worry.
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/gitte-on-tailor.html">gitte on tailor</a></h1>
   </div>
   <div class="article_readtime">
@@ -240,24 +257,6 @@ nincs rola info, egyeb meg <a href="http://letmegooglethatforyou.com/?q=salomon+
 <p>So today I did what I have in my TODO for some time: make darcs-fast-export produce the fast-import stream on the fly, without a tmp working dir (that's how tailor and darcs2git works, and I think that's just ugly).</p><p>And the result? I thought this will be the trick that makes it a lot faster, compared to tailor and at the end it turns out that it slows it down about 3 times. :-(</p><p>Not counting speed issues, it's a huge cleanup:</p><p><pre> 12 files changed, 34 insertions(+), 106 deletions(-)</pre></p><p>Dunno what to do with it now. I'll try to poke the darcs devs, maybe they can optimize it a bit.</p><p>The sad fact is the comparision to git:</p><p><pre>
 $ time darcs show contents --match "hash 20040523231834-97f81-2bca6242bec169bd01079378524a33e0310e0b65.gz" tailor.py >/dev/null</p><p>real    0m2.780s
 $ time git show 451ae1176d56a579d3d7bd236fe7d7dd9df59326:tailor.py >/dev/null</p><p>real    0m0.004s</pre></p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/benchmarking-darcs-fast-export.html">Benchmarking darcs-fast-export</a></h1>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>OK, so I got this idea in the darcs-user mailing list that it would be nice to do some benchmarks on how fast and correct darcs-fast-export is. Actually I already have a TODO item about an idea that would make it faster, but doing a benchmark before doing the speedup is required in that case as well, so that I can show "hey, this is cool, it results in foo% speedup!11". ;-)</p><p>And if I'm already there, I plan to do it with tailor as well, I'm just curious about how fast it is. Ideally fast-import is much faster, but I guess the current darcs exporter does not make use of it, so I expect something like 1:1 for now.</p><p>The test repo is darcs' darcs, current status with darcs-fast-export is like:</p><p><pre>progress [2008-11-25 16:02:28] getting list of patches
-progress [2008-11-26 00:53:25] 4000/6548 patches</pre></p><p>Yeah, darcs apply is slow.</p>
 </div>
 </div>
 

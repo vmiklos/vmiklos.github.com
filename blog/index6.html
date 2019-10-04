@@ -57,6 +57,34 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/collaborative-locon-brno-2k16.html">Collaborative editing using LibreOfficeKit LOCon talk</a></h1>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://speakerd.s3.amazonaws.com/presentations/035a8c526e5b4748a062a266cd4ffd94/collaborative-locon-brno-2k16.pdf">
+<img src="https://farm9.staticflickr.com/8830/29558170685_8aa768ec84_z.jpg" alt="https://farm9.staticflickr.com/8830/29558170685_8aa768ec84_z.jpg" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>Yesterday I gave a
+<a href="http://conference.libreoffice.org/2016/the-program/sept-8th-thursday/">Collaborative
+editing using LibreOfficeKit</a> talk at LibreOffice conference 2016, in the
+development track. There were many interested parties&#8201;&#8212;&#8201;not a surprise, as
+this is the power horse behind LibreOffice Online. :-)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/locon2016.html">Improved digital signature handling in LibreOffice LOCon talk</a></h1>
   </div>
   <div class="article_readtime">
@@ -749,90 +777,6 @@ also factored out all this signature management code from
 <div class="paragraph"><p>Putting all of these together, LO can now do all signature add, append, remove
 and clean operations a user would expect from what is referred as simply
 <em>OOXML signature support</em>. As usual, you can try this right now with a 5.2
-<a href="http://dev-builds.libreoffice.org/daily/master/">daily build</a>. :-)</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/ooxml-signature-import.html">OOXML signature import in LibreOffice</a></h1>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 3 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div style="text-align: center; font-size: 0.6em;">
-<img src="https://lh3.googleusercontent.com/-8fwMz2Ie0ys/Vvpxvf94SrI/AAAAAAAAGlQ/vVaTBn_vEvY7Y3Fn2rcLYPERx3raDX_UwCCo/s400-Ic42/"/>
-<p>(via <a href="http://www.ascertia.com/">ascertia</a>)</p>
-</div>
-<div class="paragraph"><p>After adding <a href="/blog/libreoffice-sha256-signatures.html">support
-for SHA-256 hashes in LibreOffice</a>, I turned towards implementing OOXML
-signature import (as in: verification, not signing) in LibreOffice. First,
-thanks to the Dutch Ministry of Defense who made this work possible (as part
-of a project implementing trusted signing and communication in LibreOffice), I
-collected a list of building blocks needed for this to work:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-support for the Relationships Transform Algorithm (described in ISO/IEC
-  29500-2:2012) in xmlsec
-</p>
-</li>
-<li>
-<p>
-an actual XML parser for the OOXML signature in <code>xmlsecurity/</code>
-</p>
-</li>
-<li>
-<p>
-a new filter flag, so that our code no longer assumes "is ODF" means
-  "supports digital signing" and
-</p>
-</li>
-<li>
-<p>
-some refactoring in <code>xmlsecurity/</code>, so that our digital signature code doesn&#8217;t
-  assume that multiple signatures are always written to a single file
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>The xmlsec bits are now
-<a href="https://github.com/lsh123/xmlsec/commit/7069e2b0ab49679008abedd6d223fb95538b0684.patch">upstream</a>,
-it seems to me that new algorithm is needed, so that MSO can avoid signing a
-number of streams (files in ZIP containers), while still being able to verify
-that all normal streams are signed. Given that MSO by default doesn&#8217;t sign all
-streams (so that e.g. the metadata of the document can be modified without
-invalidating signatures), this is in use even for a hello-world document. This
-implies that a typical OOXML signature will never gain the best "signed"
-category in LO, as we&#8217;ll always warn that even though the signature is valid,
-not all streams are signed. This is a bit of a rant, but better not hide the
-reality: a default ODF signature covers more than a default OOXML signature.</p></div>
-<div class="paragraph"><p>The
-<a href="https://cgit.freedesktop.org/libreoffice/core/tree/xmlsecurity/source/helper/ooxmlsecparser.cxx">OOXML
-signature parser</a> had to extract all information from the signature markup
-that&#8217;s interesting for LibreOffice, like the certificate, the signature date
-or the signature description. I considered extending the ODF signature parser
-instead of implementing a new one for OOXML, since both markups are based on
-the same W3C signing spec, but they are different enough that the added
-complexity doesn&#8217;t outweigh the benefit of code sharing here.</p></div>
-<div class="paragraph"><p>The next step was to add a new <code>SUPPORTSSIGNING</code> filter flag in <code>filter/</code>, and
-mark the DOCX, XLSX and PPTX file filters as such, and then of course find
-places mostly in <code>sfx2/</code> and <code>xmlsecurity/</code> that assume only ODF files can be
-signed, and modifying those checks to also handle this new flag.</p></div>
-<div class="paragraph"><p>Finally, a difference between ODF and OOXML signatures is that ODF puts all of
-them in a single stream, and all the signing and verifying code works with
-that stream. However, in case of OOXML, all signatures are in separate
-streams, so if we want to work with a single object as kind of a signature
-context, we need a storage (a sub-directory inside the ZIP container), and
-work with that.</p></div>
-<div class="paragraph"><p>Putting all of these together, we now have unit tests that take test documents
-having "good" and "bad" signatures, and the verification result in LO will
-match with the one of MSO. As usual, you can try this right now with a 5.2
 <a href="http://dev-builds.libreoffice.org/daily/master/">daily build</a>. :-)</p></div>
 </div>
 </div>

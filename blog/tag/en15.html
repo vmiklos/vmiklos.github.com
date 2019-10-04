@@ -58,6 +58,60 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/lo-sw-comment-range.html">LibreOffice Writer can now attach comments to text ranges</a></h1>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>More than 10 years ago, a <a href="https://issues.apache.org/ooo/show_bug.cgi?id=5487">bug</a> was
+opened in the OpenOffice.org bugzilla to support this feature. Later this got
+<a href="https://bugs.freedesktop.org/show_bug.cgi?id=38244">imported</a> to LibreOffice&#8217;s
+bugtracker. Now that LibreOffice 3.6 is out, time to talk more about what
+features will show up in 3.7, and this will be one of them:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://wiki.documentfoundation.org/File:Comment-text-range.png">
+<img src="https://wiki.documentfoundation.org/images/thumb/5/5e/Comment-text-range.png/400px-Comment-text-range.png" alt="https://wiki.documentfoundation.org/images/thumb/5/5e/Comment-text-range.png/400px-Comment-text-range.png" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>Now that it&#8217;s there, let&#8217;s have a look at the details:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+ODF 1.2 already
+  <a href="http://docs.oasis-open.org/office/v1.2/cs01/OpenDocument-v1.2-cs01-part1.html#__RefHeading__1416196_253892949">supports</a>
+  commenting text ranges, but LibreOffice support was missing.
+</p>
+</li>
+<li>
+<p>
+Word already supported it as well, and now LibreOffice RTF/DOCX import/export filters are updated to take care of the new feature.
+</p>
+</li>
+<li>
+<p>
+If I was already messing with comments, I also implemented roundtrip of
+  <a href="http://msdn.microsoft.com/en-us/library/documentformat.openxml.wordprocessing.comment.initials">comment author initials</a> to ODF (see
+  <a href="https://tools.oasis-open.org/issues/browse/OFFICE-3776">proposal</a>), so now if
+  you open a DOCX/RTF file in LibreOffice, save it as ODF, and later save it back
+  to DOCX/RTF, this information won&#8217;t be lost.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Finally, one known limitation is that the text range currently can&#8217;t include
+multiple paragraphs&#8201;&#8212;&#8201;something to improve later if necessary.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/lo-rtf-math-native.html">LibreOffice can now import/export native RTF math expressions in Writer</a></h1>
   </div>
   <div class="article_readtime">
@@ -526,43 +580,6 @@ LPSP and CMIS with Cedric at FOSDEM2012. If you wonder what LPSP and CMIS are:</
 </li>
 </ul></div>
 <div class="paragraph"><p>See you in Brussels!</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/mtd-utils.html">mtd-utils</a></h1>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Quick node about this useful project I packaged two days ago. It has a
-<a href="http://www.linux-mtd.infradead.org/faq/ubi.html">long FAQ</a> - I was interested in
-how can one access the builtin nand storage on an arm board using it.</p></div>
-<div class="paragraph"><p>First, check your dmesg, you should see something like:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>Creating 3 MTD partitions on "orion_nand":
-0x000000000000-0x000000100000 : "u-boot"
-0x000000100000-0x000000500000 : "uImage"
-0x000000500000-0x000020000000 : "root"</code></pre>
-</div></div>
-<div class="paragraph"><p>As the names say, the three items here are the bootloader, the kernel and the
-root filesystem. To access and mount the last one, you need:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>ubiattach /dev/ubi_ctrl -m 2
-mount /dev/ubi0_0 root
-... hack hack hack ...
-umount root
-ubidetach /dev/ubi_ctrl -m 2</code></pre>
-</div></div>
 </div>
 </div>
 
