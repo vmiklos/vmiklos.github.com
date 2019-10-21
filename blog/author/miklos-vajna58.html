@@ -58,6 +58,23 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/ppc-entry.html">PPC entry</a></h1>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>I recently ported our Qemu package to PPC, and just tested that it really works. We have a Linux binary (compiled for i386) for some 'plan making' exercise (inside the AI course at the uni), and of course I wanted to run it on my iBook. And yes, just wrapping the command with qemu-i386 made it work! :)</p><p>The other problem I noticed is that building external modules on PPC does not work. It seem to be a <a href="http://bugzilla.kernel.org/show_bug.cgi?id=11143">known bug</a>. PLD has a patch that changes the error message - to a permission problem. Given that on x86 building a kernel module is possible as a user - the goal would be the same on PPC as well. Not yet resolved...</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/bitlbee-vs-plugins-vs-os-x.html">BitlBee vs plugins vs OS X</a></h1>
   </div>
   <div class="article_readtime">
@@ -242,35 +259,6 @@ CFLAGS = -g -O2 -Wall -Werror -fno-inline -Wold-style-definition -Wdeclaration-a
     <div id="preamble">
 <div class="sectionbody">
 <p>Of course I have no idea if this is the right name of this stuff, to make long story short, I finally found a <a href="http://article.gmane.org/gmane.comp.gnu.lilypond.general/44348">workaround</a> to display this beast in lilypond. Yay!</p><p>This project is really addictive, you can spend a whole day reading its documentation and you still just say "wow, this and even that is possible with this stufff". ;-)</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/oprofile.html">oprofile</a></h1>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>I did not have to work with a profiling tool for C so far, so here is my first experience.</p><p>The kernel has to have oprofile support (the kernel in Frugalware-current does not have it, I'll add it after 1.0pre2). You'll need a kernel vmlinux file if you want to benchmark the syscalls as well (I did not need this one).</p><p>Then there are 3 levels of starting: opcontrol --init/--deinit, --start-daemon/--shutdown and --start/--stop. The first one prepares /dev/profile, the second one starts the deamon, finally the third one start profiling. Obviously the second part does the opposite.</p><p>Once you did a --stop, you can get the results. Example output:</p><p><pre>
-$ opreport -l /home/vmiklos/git/git/git /usr/lib/libz.so.1|head
-CPU: CPU with timer interrupt, speed 0 MHz (estimated)
-Profiling through timer interrupt
-samples  %        app name                 symbol name
-22823    56.4898  libz.so.1.2.3            inflate_fast
-6019     14.8978  libz.so.1.2.3            adler32
-5975     14.7889  libz.so.1.2.3            inflate
-4233     10.4772  libz.so.1.2.3            inflate_table
-456       1.1287  libz.so.1.2.3            crc32
-252       0.6237  git                      patch_delta
-55        0.1361  git                      use_pack
-</pre></p><p>which is pretty much what I expected - I did a 'git verify-pack' between --start/--stop, so the time spent with reading the compressed git object database.</p><p>TBH I miss a strace/sudo-like simple wrapper as well...</p>
 </div>
 </div>
 

@@ -57,6 +57,64 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/lenovo-ideapad-s12.html">Lenovo Ideapad S12</a></h1>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 3 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>I bought <a href="http://shop.lenovo.com/us/notebooks/ideapad/s-series/s12">this netbook</a> about a week ago (the one with the Via card).</p><p>Actually it costed 106 kHUF (~$550) instead of the advertised $400, but that probably due shipment costs, etc.</p><p>Here are what requirements I had:</p><p><ul>
+  <li>I wanted a simple video card, it's much more important for me that I don't have to use external kernel modules than the actualy 3D performance. So NVidia is clearly an overkill for me. I wanted Intel or similar.</li>
+  <li>12"-sized LCD - my iBook had it and I loved it. I agree that it's too small when we're watching films with 5 other friends or playing games, but I don't do either regularly.</li>
+  <li>Touchpad. I don't like trackpoint.</li>
+</ul></p><p>Here is what I got:</p><p><ul>
+  <li>The Via card is so far OK, the openchrome driver has a nice community and at least 2D acceleration works fine, and they are working on the 3D one as well. (Other card types have 3D support, too - This type is just too new ATM.)</li>
+  <li>The LCD size is what I want - looks like you can't easily buy a 12" notebook, but a 12" netbook counts as a high-end one.</li>
+  <li>Of course it has touchpad.</li></ul></p><p>Let's see what extra does it have:</p><p><ul>
+  <li>VGA output (iBook had some custom output and I never got a VGA converter cable.)</li>
+  <li>Bluetooth</li>
+  <li>SD-Card reader</li>
+  <li>Webcam</li>
+  <li>KVM support</li>
+  <li>HW mpeg2/4 and dm-crypt support</li>
+</ul></p><p>What's wrong with it:</p><p><ul>
+  <li>The cover is shiny, the mark of the fingers are left there when you grab it.</li>
+  <li>No optical driver, but hey, it's a netbook!</li>
+</ul></p><p>Let's see Linux support: First, the machine is shipped with Windows XP. The bios updater is windows-only, so I updated the bios before I rm -rfed the whole preinstalled contents.</p><p>What works:</p><p><ul>
+  <li>Via Nano CPU: works fine.</li>
+  <li>Via card: after installing the opencrome driver a simple 'xconfig' from frugalwareutils did its job, no other tricks were necessary.</li>
+  <li>SATA controller works fine.</li>
+  <li>Wired ethernet works fine.</li>
+  <li>Wireless: the in-tree b43 works for WPA APs <a href="http://www.mail-archive.com/bcm43xx-dev@lists.berlios.de/msg09481.html">but not with unsecure ones</a>. The binary bcmwl driver works in the later case as well.</li>
+  <li>SD-Card reader works out of the box.</li>
+  <li>Sound is fine.</li>
+  <li>The webcam works with mplayer using the "mplayer -tv driver=v4l2:device=/dev/video0 tv://" command.</li>
+  <li>Bluetooth is fine.</li>
+  <li>KVM support (vmx flag) is there in the CPU.</li>
+  <li>dm-crypt has HW support, so copying to a truecrypt volue isn't slower (~40mb/s) than copying to an unencrypted one.</li>
+</ul></p><p>What does not work with Linux:</p><p><ul>
+  <li>There is no <a href="http://forums.lenovo.com/t5/IdeaPad-Y-and-U-series-Laptops/How-to-turn-on-bluetooth-on-ubuntu-08-10/m-p/179414">ideapad-acpi</a> module to turn on or off wifi/bluetooth in the Embedded Controller (EC) of the ideapad. In my case I enabled wifi only when I updated the settings of the EC back in Windows, so Bluetooth is disabled. Feel free to post in commends if you have ideas how to set the EC from Linux. ;)</li>
+  <li>The 3d and mpeg2/4 decoding HW support of the graphics card doesn't work.</li>
+  <li>Hibernation is broken due to the weakness of the openchrome driver.</li>
+</ul></p><p>I think that's all. As always, it's possible that these limitations can be avoided in the future, who knows. ;)</p><p>Ah and the battery works for 5 hours with wifi enabled, I think that's nice. (And probably it's due to the LED-powered LCD.)</p><p>In case of questions, please post them in the comments and I'll try to reply.</p><p>PS: It doesn't really belong here, but if I was at it, I also switched (compared to iBook):</p><p><ul>
+  <li>to x86_64 from ppc</li>
+  <li>to ext4 from ext3</li>
+  <li>to kde4 from kde3</li>
+</ul></p><p>Update: I did a backup about the config files, reinstalled Windows XP, enabled the bluetooth in EC, and installed i686 for now. So the changes are:</p><p><ul>
+  <li>Bluetooth is now working perfectly</li>
+  <li>2D acceleration is stable (ie. if you start mplayer -vo xv the second time, it won't freeze)</li>
+  <li>Suspend to disk works fine, <a href="http://openchrome.org/trac/ticket/321#comment:25">as it was expected</a>.</li>
+</ul></p><p>\o/</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/msc-fp-g-atkp-g-f-true.html">MSc: FP >= ATKP -> F = true</a></h1>
   </div>
   <div class="article_readtime">
@@ -244,23 +302,6 @@ Change browser.backspace_action to 0 to make backspace to a back (as on Windows)
     <div id="preamble">
 <div class="sectionbody">
 <p>I wanted Erlang support in the syntax highlighter used by asciidoc. Currently the filter uses source-highlight as its backend, so I checked and unfortunately it had no Erlang support. A quick google found that there is a good <a href="http://caolanmcmahon.com/erlang_syntax_highlighting">shjs support</a> which would ideally work out of the box with source-highlight. Of course it did not, but it wasn't hard to fix it up. Then I sent it to upstream. This was about a month ago.</p><p>Then I just noticed it was <a href="http://git.savannah.gnu.org/cgit/src-highlite.git/diff/?id=ed7a5b7bb495c8d460013454558fe687ba6a975c">accepted</a> a few days ago, and now source-highlight-3.1.2 is out, so it's back in Frugalware-current \o/</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/kredit-counter-frissitve.html">kredit-counter frissitve</a></h1>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-Nincs tanulas kategoria, ugyhogy lett ebbol is munka. Lenyeg a lenyeg, a mai <a href="http://dp.iit.bme.hu/">dp</a> vizsgaval megvolt az utolso BSc-s vizsgam, igy frissult a <a href="http://vmiklos.hu/bme/">kredit-counter</a> is, bar most igy nem tul intuitiv, az also sav idaig egy progressbar volt, ami most ert a 100%-hoz. A jovo ev indul az MSc felvetelivel aztan ha az sikerul akkor lesz alatta megegy progressbar, egyelore 0%-ra pozicionalva. ;)
 </div>
 </div>
 

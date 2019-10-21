@@ -60,6 +60,54 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/rtf-page-background-export.html">RTF page background export in LibreOffice Writer</a></h1>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>While I added support for page background colors in the RTF import
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=14e163b0caf97addf340aefc5760a9031ec98390">back
+in 2013</a>, the export part was missing up to now.</p></div>
+<div class="paragraph"><p>If you set a solid color fill for a page style, and you export it to RTF, here
+is how the reference rendering output looks like:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh3.googleusercontent.com/-JI384fzDsng/VpEkSeMEgfI/AAAAAAAAGYY/GXhT1tzi4WQ/s900-Ic42/reference.png">
+<img src="https://lh3.googleusercontent.com/-JI384fzDsng/VpEkSeMEgfI/AAAAAAAAGYY/GXhT1tzi4WQ/s900-Ic42/reference.png" alt="https://lh3.googleusercontent.com/-JI384fzDsng/VpEkSeMEgfI/AAAAAAAAGYY/GXhT1tzi4WQ/s900-Ic42/reference.png" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>However, in Libreoffice only the background of the paragraph reflected the
+color set by the user:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh3.googleusercontent.com/-YZDNx5H0qYQ/VpEkSWxf2II/AAAAAAAAGYU/o4Q06VeBK-I/s900-Ic42/bad.png">
+<img src="https://lh3.googleusercontent.com/-YZDNx5H0qYQ/VpEkSWxf2II/AAAAAAAAGYU/o4Q06VeBK-I/s900-Ic42/bad.png" alt="https://lh3.googleusercontent.com/-YZDNx5H0qYQ/VpEkSWxf2II/AAAAAAAAGYU/o4Q06VeBK-I/s900-Ic42/bad.png" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>After implementing this feature in the RTF export filter, it now looks much
+closer to the reference:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh3.googleusercontent.com/--6VbXTzbA_k/VpEkSWJB7tI/AAAAAAAAGYc/D7KEn0lLvXw/s900-Ic42/good.png">
+<img src="https://lh3.googleusercontent.com/--6VbXTzbA_k/VpEkSWJB7tI/AAAAAAAAGYc/D7KEn0lLvXw/s900-Ic42/good.png" alt="https://lh3.googleusercontent.com/--6VbXTzbA_k/VpEkSWJB7tI/AAAAAAAAGYc/D7KEn0lLvXw/s900-Ic42/good.png" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>At the moment only solid fill is implemented, so other advanced fill types
+like graphics or gradients are still missing.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/rtf-rich-comment-export.html">Rich RTF comment export in LibreOffice Writer</a></h1>
   </div>
   <div class="article_readtime">
@@ -474,49 +522,6 @@ problem, and then it was possible to identify the root cause, and finally see
 that the bug title mentioning RTF was just container of the WMF images in this
 case, the problem had nothing to with with RTF and the leak wasn&#8217;t
 Windows-specific, either.</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/mail-merge-embedding.html">Mail merge embedding</a></h1>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>If you ever used the
-<a href="https://help.libreoffice.org/Writer/Mail_Merge_Wizard">mail merge wizard</a> with
-a Calc data source, then you know how it worked in the past: you&#8217;ve got 3
-files: the .odt mail template, the .ods data source and a .odb data source
-definition that defines how to access the .ods.</p></div>
-<div class="paragraph"><p>The target of this <a href="http://www.muenchen.de/">LHM-funded project</a> was to get rid
-of the .odb file and just embed it into the .odt mail template. Why?</p></div>
-<div class="paragraph"><p>Here is the problem description from a user&#8217;s point of view: "When a mail
-merge document is being saved a separate database file is being automatically
-created. It links the Writer file to the spreadsheet (ODS, XLS, XLSX etc.) as
-data source. This additional 2kB ODB file confuses users, they might delete it
-without knowing to break the connection to the data source." An additional
-problem is that because the non-embedded data source definition is part of the
-user profile, you can&#8217;t just move the three files to an other machine, as .odb
-registration will be missing there.</p></div>
-<div class="paragraph"><p>If you are interested how this looks like, here is a demo (click on the image
-to see the video):</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://youtu.be/5iQFZBOz8rM">
-<img src="https://lh3.googleusercontent.com/-XDcWgOWKr2k/Vbc4blHURTI/AAAAAAAAF4E/VXFBglt-YmU/s800-Ic42/" alt="https://lh3.googleusercontent.com/-XDcWgOWKr2k/Vbc4blHURTI/AAAAAAAAF4E/VXFBglt-YmU/s800-Ic42/" />
-</a>
-</div>
-</div>
-<div class="paragraph"><p>That&#8217;s it for now&#8201;&#8212;&#8201;as usual the commits are in master, so you can try this
-right now with a 5.1 <a href="http://dev-builds.libreoffice.org/daily/master/">daily
-build</a>. :-)</p></div>
 </div>
 </div>
 

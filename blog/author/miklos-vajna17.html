@@ -58,6 +58,65 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/lcov.html">lcov</a></h1>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>There are multiple strategies how to add testcases for code that sort of works,
+but has no or too few tests. One approach (that works quite well in
+LibreOffice, for example) is to just add tests for new code, and there the test
+is "good", if it passes, but it fails if you revert the corresponding real
+change.</p></div>
+<div class="paragraph"><p>An other approach to avoid duplicated tests is to use a tool like <code>lcov</code>, that
+can perform line or function coverage analysis for you, so a test is "good" if
+it increases the coverage. I wanted to look into this later approach for
+LibreOffice, but I decided it&#8217;s more fun to try this out for a smaller project
+first. That&#8217;s when adding testcases for BitlBee&#8217;s Skype plugin came into my
+mind.</p></div>
+<div class="paragraph"><p>The problem there is that manual testing typically includes multiple online
+Skype clients and an IRC client as well, and such tests are extremely
+unreliable. So I thought: if I&#8217;m able to
+<a href="http://en.wikipedia.org/wiki/Mock_object">mock</a> both the interactive IRC and
+Skype clients, then it&#8217;ll be easy to test the C Skype plugin itself, even for
+very special scenarios (like changing a groupchat topic in the middle of
+inviting somebody to a groupchat or similar).</p></div>
+<div class="paragraph"><p>So here is the result looks like:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code> skyped mock file   +--------+         +---------+   pyexpect mock file
+------------------&gt; | skyped | &lt;-----&gt; | bitlbee | &lt;--------------------
+                    +--------+   TCP   +---------+</code></pre>
+</div></div>
+<div class="paragraph"><p>For skyped, the exact traffic is recorded and played back later; for BitlBee,
+only the outgoing traffic is exact, for the incoming traffic <code>pyexpect</code> allows
+just patterns (to allow tolerance for not interesting changes). Once the
+framework was available, it was quite easy to add testcases: I already have
+70%+ coverage, and I think approaching the 100% function coverage is realistic.
+:-)</p></div>
+<div class="paragraph"><p>What was also interesting is that it turned out the latest upstream lcov
+release is
+<a href="http://sourceforge.net/mailarchive/forum.php?thread_name=50F3ECB7.7070505%40linux.vnet.ibm.com&amp;forum_name=ltp-coverage">not
+compatible</a> with gcc-4.7, but the necessary patches are
+<a href="https://build.opensuse.org/request/show/148334">now</a>
+<a href="https://build.opensuse.org/request/show/148408">integrated</a>, and the next
+upstream release will work out of the box.</p></div>
+<div class="paragraph"><p>The BitlBee mock files can be found
+<a href="http://code.bitlbee.org/lh/bitlbee/files/head:/protocols/skype/t">here</a>. Given
+that there are now instructions to do similar analysis for
+<a href="http://wiki.documentfoundation.org/Development/Lcov">LibreOffice as well</a>, I
+hope to look into increasing test coverage for the classes I maintain as well.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/gepikod.html">Gépikód</a></h1>
   </div>
   <div class="article_readtime">
@@ -389,31 +448,6 @@ regressions</a>.</p></div>
 <div class="paragraph"><p>Now that the list is empty, feel free to tag more bugs as <code>rtf_filter</code> from the
 long Writer list when needed.</p></div>
 <div class="paragraph"><p>Update: the list is now empty again, as of 2014-11-24, for the 4.4 release. ;-)</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/eross-zsolt.html">Földes András: Erőss Zsolt - A Himalájánál magasabbra</a></h1>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://lh6.googleusercontent.com/-c-wZkmB1TGc/UNs9qtrsgXI/AAAAAAAAB8Y/CiuiPQMAhUM/s640/486886_10151284005730337_633743067_n.jpg">
-<img src="https://lh6.googleusercontent.com/-c-wZkmB1TGc/UNs9qtrsgXI/AAAAAAAAB8Y/CiuiPQMAhUM/s400/486886_10151284005730337_633743067_n.jpg" alt="https://lh6.googleusercontent.com/-c-wZkmB1TGc/UNs9qtrsgXI/AAAAAAAAB8Y/CiuiPQMAhUM/s400/486886_10151284005730337_633743067_n.jpg" />
-</a>
-</div>
-</div>
-<div class="paragraph"><p>Névnapomra kaptam ezt a könyvet&#8201;&#8212;&#8201;jó ilyen sportolásra motiváló könyvet olvasni, csak ajánlani tudom.</p></div>
-<div class="paragraph"><p>(<a href="http://bookline.hu/product/home!execute.action?id=116438&amp;type=22">bookline</a>)</p></div>
 </div>
 </div>
 

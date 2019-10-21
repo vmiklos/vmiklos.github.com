@@ -57,6 +57,43 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/plugfest2015.html">Protocols Plugfest Europe 2015</a></h1>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div style="text-align: center; font-size: 0.6em;">
+<img src="https://lh3.googleusercontent.com/-Z9Pml365x6s/VVdBsMKPYVI/AAAAAAAAFfk/9PXnepbXuak/s400/"/>
+<p>(via <a href="https://twitter.com/plugfestcon/status/598062244711309312">plugfestcon</a>)</p>
+</div>
+<div class="paragraph"><p>Last week I went to Zaragoza to give a talk on
+<a href="https://speakerdeck.com/vmiklos/libreoffice-how-we-handle-interoperability">how
+LibreOffice handles interoperability</a> at Protocols Plugfest Europe 2015 on
+<a href="http://www.protocolsplugfest.com/europe/program/">Tuesday</a>. Although I was told
+this conference is a successor of the previous Zentyal Summit (and I were not
+there) the conference seemed well-attended&#8201;&#8212;&#8201;proof above. :-)</p></div>
+<div class="paragraph"><p>Jacobo also
+<a href="http://blogs.igalia.com/jaragunde/2015/05/11/speaking-at-protocols-plugfest-2015/">gave
+a LibreOffice-related talk</a> on Wednesday.</p></div>
+<div class="paragraph"><p>On the same day, there were some explicit spare time, so I took the
+opportunity to walk in the historical parts of the city, see
+<a href="https://www.flickr.com/photos/vmiklos/albums/72157673233248251">my
+photos</a> and a <a href="/panoramas/zaragoza.html">panorama</a> if that kind
+of pictures are of your interest. FWIW, <a href="http://www.hotelsauce.com/en/">Hotel
+Sauce</a> has free wifi in the rooms, that&#8217;s kind of impressing for a two-star
+category. ;-)</p></div>
+<div class="paragraph"><p>As usual, thanks <a href="https://libreoffice-from-collabora.com/">Collabora</a> for sponsoring this travel!</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/mathtype-import.html">MathType import in the RTF and DOCX filter</a></h1>
   </div>
   <div class="article_readtime">
@@ -851,123 +888,6 @@ write a line about what did you hack on. :-)</p></div>
 <a href="http://planet.documentfoundation.org/">Planet</a>, don&#8217;t miss them. Mines are
 <a href="https://speakerdeck.com/vmiklos/textboxes-in-libreoffice-writer">also</a>
 <a href="https://speakerdeck.com/vmiklos/libreoffice-on-android">uploaded</a>.</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/tiled-editing-part-1.html">Tiled editing: from viewing only to a living document</a></h1>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 3 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>As it has been announced
-<a href="http://blog.documentfoundation.org/2015/01/21/libreoffice-viewer-for-android/">last
-week</a>, an Android port of LibreOffice in the form of a viewer app is now
-available for download.  What&#8217;s next?
-<a href="http://blog.documentfoundation.org/2015/01/27/the-document-foundation-announces-the-results-of-the-android-tender/">Editing</a>,
-naturally.  First, thanks again to The Document Foundation&#8201;&#8212;&#8201;and all the
-<a href="http://donate.libreoffice.org/">donors</a> who made this (ongoing) work possible.
-In this post I would like to explain what did we do with
-<a href="http://tomazvajngerl.blogspot.com/">Tomaž Vajngerl</a> at Collabora so far in that
-direction.</p></div>
-<div class="paragraph"><p>If you ever touched the Android port of LibreOffice, you probably noticed that
-sadly developing for Android is much harder compared to Linux (desktop). On
-Linux, if you just touch a single module, it&#8217;s possible to rebuild just that
-module in a few seconds, and then you can run soffice again with your
-modifications included. On Android, this is much harder:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-due to a limitation of the Android linker, we link all the native code into
-  a single shared object, that has to be re-linked after each native code
-  modification
-</p>
-</li>
-<li>
-<p>
-the native + the Java code has to be packed into a .apk archive
-</p>
-</li>
-<li>
-<p>
-the .apk archive has to be uploaded to the device (or emulator) and
-  installed there
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>and only then can you test your changes. To partly sidestep from this problem,
-we split the "Android editing" into two:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-tiled editing: this can be tested on Linux using the gtktiledviewer test
-  application (and ideally any core problem can be seen here already)
-</p>
-</li>
-<li>
-<p>
-Android LibreOfficeKit client: replacing gtktiledviewer with the real
-  Android client code, and this time testing it on the device
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>One problem with this approach was that while Android properly rendered small
-tiles of 256x256 pixels, gtktiledviewer rendered a single huge tile. This
-means that in case part of the document changes and we need to re-draw it, we
-always repainted the whole document in gtktiledviewer, while we only repainted
-the necessary parts on Android. Guess what, if the area to be repainted is
-wrong, it&#8217;ll be visible on Android but not on gtktiledviewer. So the first
-task we solved was to let gtktiledviewer also render small tiles. For
-debugging purposes, small red rectangles are painted at the top left corners
-of each rectangle, so the size and position of the tiles can be seen easily:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://lh5.googleusercontent.com/-VvQFF-Kg270/VMYqe9G76-I/AAAAAAAAFL4/Fnh9_ig03Ww/s0/">
-<img src="https://lh5.googleusercontent.com/-VvQFF-Kg270/VMYqe9G76-I/AAAAAAAAFL4/Fnh9_ig03Ww/s420/" alt="https://lh5.googleusercontent.com/-VvQFF-Kg270/VMYqe9G76-I/AAAAAAAAFL4/Fnh9_ig03Ww/s420/" />
-</a>
-</div>
-</div>
-<div class="paragraph"><p>The next step was to somehow start work on real editing&#8201;&#8212;&#8201;but where to start? We identified two critical building blocks:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-there should be some way for the user to provide input (e.g. press a key on
-  the software keyboard)
-</p>
-</li>
-<li>
-<p>
-once the document changed, the application has to redraw the changed part of
-  the view
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>To avoid solving two problems at the same time, we first went after the
-second. One use case that only requires the update of the view is blinking
-text. Even if no touch or key events are available, a blinking text wants to
-update the view using a timer, so it&#8217;s a good testcase. It&#8217;s now possible for
-LibreOfficeKit clients to register a notification callback, and using that,
-LibreOffice can notify clients if part of the view has to be redrawn. Here is
-how it looks using gtktiledviewer:</p></div>
-<center>
-<iframe width="420" height="315" src="http://www.youtube.com/embed/rgv76GPlMRU" frameborder="0" allowfullscreen></iframe>
-</center>
-<div class="paragraph"><p>This demonstrates that the LibreOfficeKit implementation in LibreOffice core
-and also the gtktiledviewer client code handle correctly tile invalidations.
-Once that was done, we could also implement a similar client code in the
-Android app&#8201;&#8212;&#8201;it looks like this:</p></div>
-<center>
-<iframe width="420" height="315" src="http://www.youtube.com/embed/EkGpCrGlhiY" frameborder="0" allowfullscreen></iframe>
-</center>
-<div class="paragraph"><p>That&#8217;s it for now&#8201;&#8212;&#8201;next on our list is adding support for input handling, so
-it&#8217;s possible to type in some text. :-)</p></div>
 </div>
 </div>
 
