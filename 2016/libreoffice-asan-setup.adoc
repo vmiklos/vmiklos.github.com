@@ -127,4 +127,28 @@ make build-nocheck
 cd sw; make -sr CppunitTest_sw_unowriter CPPUNIT_TEST_NAME="testPasteListener"
 ----
 
+== Update, 2019-11-14
+
+The 2019-01-25 setup can be fine-tuned further. Sadly LODE mixes two goals: setting up dependencies
+/ environment and cloning repos. I recently added support for bypassing any cloning, so you can use
+LODE even if you already built the code and want to keep using your own way. The tricks are:
+
+- Use https://github.com/vmiklos/vmexam/blob/master/libreoffice/autogen.env-san[autogen.env-san] in
+  two ways: first comment out the second half to run the above `./setup --jenkins && ./setup
+  --jenkins-san`, then to source the full environment. This means you get all the up to date
+  environment variables from LODE, but you don't need a chroot to avoid LODE messing up your
+  environment.
+
+- Use https://github.com/vmiklos/vmexam/blob/master/libreoffice/autogen.input-san[autogen.input-san]
+  to again inherit all up to date autogen switches from LODE, but avoid the submodule pain that
+  would be the default. Now you can do a `make check gb_SUPPRESS_TESTS=y` to build (but not run) all
+  the code & tests.
+
+- Use https://github.com/vmiklos/vmexam/blob/master/libreoffice/up-loolwsd.sh[up-loolwsd.sh] to
+  build and run all Online code & tests -- with new enough core.git master and online.git master the
+  online.git `make check` passes for me in this environment.
+
+I believe this setup mostly delegates (envrionment, config switches and toolchain) maintenance to
+LODE, still allows not running in a chroot and managing your git clones without LODE.
+
 // vim: ft=asciidoc
