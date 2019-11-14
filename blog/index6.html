@@ -226,7 +226,7 @@ improvements into LibreOffice in the future.</p></div>
     <h1><a href="https://vmiklos.hu/blog/libreoffice-asan-setup.html">A LibreOffice / AddressSanitizer setup</a></h1>
   </div>
   <div class="article_readtime">
-    <p>Estimated read time: 3 minutes</p>
+    <p>Estimated read time: 4 minutes</p>
   </div>
   <div class="article_text">
     <div id="preamble">
@@ -400,6 +400,42 @@ Finally to build the code and run a specific test based on tinderbox mail:
 <pre><code>make build-nocheck
 cd sw; make -sr CppunitTest_sw_unowriter CPPUNIT_TEST_NAME="testPasteListener"</code></pre>
 </div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_update_2019_11_14">Update, 2019-11-14</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>The 2019-01-25 setup can be fine-tuned further. Sadly LODE mixes two goals: setting up dependencies
+/ environment and cloning repos. I recently added support for bypassing any cloning, so you can use
+LODE even if you already built the code and want to keep using your own way. The tricks are:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Use <a href="https://github.com/vmiklos/vmexam/blob/master/libreoffice/autogen.env-san">autogen.env-san</a> in
+  two ways: first comment out the second half to run the above <code>./setup --jenkins &amp;&amp; ./setup
+  --jenkins-san</code>, then to source the full environment. This means you get all the up to date
+  environment variables from LODE, but you don&#8217;t need a chroot to avoid LODE messing up your
+  environment.
+</p>
+</li>
+<li>
+<p>
+Use <a href="https://github.com/vmiklos/vmexam/blob/master/libreoffice/autogen.input-san">autogen.input-san</a>
+  to again inherit all up to date autogen switches from LODE, but avoid the submodule pain that
+  would be the default. Now you can do a <code>make check gb_SUPPRESS_TESTS=y</code> to build (but not run) all
+  the code &amp; tests.
+</p>
+</li>
+<li>
+<p>
+Use <a href="https://github.com/vmiklos/vmexam/blob/master/libreoffice/up-loolwsd.sh">up-loolwsd.sh</a> to
+  build and run all Online code &amp; tests&#8201;&#8212;&#8201;with new enough core.git master and online.git master the
+  online.git <code>make check</code> passes for me in this environment.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>I believe this setup mostly delegates (envrionment, config switches and toolchain) maintenance to
+LODE, still allows not running in a chroot and managing your git clones without LODE.</p></div>
 </div>
 </div>
 
