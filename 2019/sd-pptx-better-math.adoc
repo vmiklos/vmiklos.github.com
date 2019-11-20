@@ -1,0 +1,35 @@
+= Better math import from PPTX into Impress
+
+:slug: sd-pptx-better-math
+:category: libreoffice
+:tags: en
+:date: 2019-11-20T17:01:35+01:00
+
+Impress now has a much
+https://gerrit.libreoffice.org/plugins/gitiles/core/+/4038d6c393c3cf6330671124ba69cdba98b24960%5E%21/[improved
+math handling] in its importer from PPTX, eliminating alloying duplicated objects you had to delete
+after import, manually.
+
+First, thanks https://tu-dresden.de/[TU Dresden] who made this work by
+https://www.collaboraoffice.com/[Collabora] possible.
+
+Here is how it looks:
+
+.Impress, new math import from PPTX
+image::https://lh3.googleusercontent.com/zI1fDb7tfl0a-6e1JljnBuCz67cGBSpx3s_tMViW_xWpTjy0FrsLGws-VAXWcdQhmSwXddr9wjADs5UvhNu_sNjETT7VfMJB8pdQ4PxPpHliCVbuMOx67Wwrd6brfE-eJtWIb2K36A=w640[align="center"]
+
+.Reference rendering
+image::https://lh3.googleusercontent.com/rpC9KOUaadEoYKekczLTZakB98SBwqbKGqmwf_VLY6D-8OpBLh9Lpxi_RDl6CMQHJKqsz0NnxgTN8kn63CB9fGmP6AWUKIqK0huvjoRCxvoh6dtd0BMRXclsWlaKr3jbdzb1TOJ1LQ=w640[align="center"]
+
+.Impress, old math import from PPTX
+image::https://lh3.googleusercontent.com/hUBhfLLFPZFDa50EMPEQxl2kih91oKIfQFBxNK7F9uWGexGbUKnV1FMQZgvmj4EctmCwlxlYK56hPSX0RZS_MpOAKZZagmfOALZ3LRrvBgoOGAx9dsM1N3dp9bGvPU7c0WVvROu8iQ=w640[align="center"]
+
+What you can see is that the in the old case we managed to read both the actual math object and its
+replacement image from PPTX, which caused visible duplication due to working transparency handling.
+The new way just imports the math objects, and ignores the replacement graphic.
+
+This new way (handling of the OOXML `a14` feature flag) is enabled by default, except for Calc
+documents, where more works is needed before it can be enabled.
+
+All this is available in LibreOffice master (towards 6.4), so you can try it out
+http://dev-builds.libreoffice.org/daily/master/[right now], if interested.
