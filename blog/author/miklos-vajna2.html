@@ -58,6 +58,169 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/hackweek-2019.html">My hack week at Collabora: btLr text direction in Writer</a></h1>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 4 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>As mentioned in my <a href="https://vmiklos.hu/blog/hackweek-2016.html">previous</a> such
+report, a hack week is when we are allowed to hack on anything we want in
+LibreOffice for a few days at <a href="https://www.collaboraoffice.com/">Collabora</a>. I
+used this time to implement core support for the btLr text direction in
+Writer.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_motivation">Motivation</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>If you work with tables in Word, it&#8217;s very easy to create this writing
+direction: the context menu in a table cell has a menu item to set the
+direction of the text, where you can rotate the text by 90 degrees
+counter-clockwise or clockwise. The counter-clockwise btLr direction is the
+problematic one. Support for tbRl was fine already, since that is needed
+typically for Chinese/Japanese scripts as well.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_results_so_far">Results so far</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Here is how the baseline, the current and the reference rendering of btLr text looks like:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://lh3.googleusercontent.com/o5t6-JQeeNaZpx0YURMvS6xUJv7L4KbkbKnn6VPQ0yzULxHFI15ufkwaw_m0FVY7B2tv8gOnTw1CEY2Uxq6BFTgXHlcorXS52J8X1-mNjsyHKYDmoNG-MQ9X1LtdUWmrLl_W3b2ifQ=w640" alt="https://lh3.googleusercontent.com/o5t6-JQeeNaZpx0YURMvS6xUJv7L4KbkbKnn6VPQ0yzULxHFI15ufkwaw_m0FVY7B2tv8gOnTw1CEY2Uxq6BFTgXHlcorXS52J8X1-mNjsyHKYDmoNG-MQ9X1LtdUWmrLl_W3b2ifQ=w640" />
+</div>
+<div class="title">Figure 1. btlr-cell.docx, baseline</div>
+</div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://lh3.googleusercontent.com/Y8jXvq7TFyNoKVjwWd_QvJNJaOySZdKZE_HqqBaTwGoi_rExCee3eDAHx4AS49E7d7bcjG8SEgxnXOmdKFXaJx0MzmadungQ7D0SVqdSqC2trMC9InsHdKUTq1iwu5p8bDwUfIizng=w640" alt="https://lh3.googleusercontent.com/Y8jXvq7TFyNoKVjwWd_QvJNJaOySZdKZE_HqqBaTwGoi_rExCee3eDAHx4AS49E7d7bcjG8SEgxnXOmdKFXaJx0MzmadungQ7D0SVqdSqC2trMC9InsHdKUTq1iwu5p8bDwUfIizng=w640" />
+</div>
+<div class="title">Figure 2. btlr-cell.docx, current</div>
+</div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://lh3.googleusercontent.com/KYSBaOiAMdy_U8shsb4zoS8J5uyZzwkFPZY4qIKTrHKlo-M-pCdiHHBUxZ9OmQ-uv_QkBiktXeprTQD6gANDvzDVi8JWs4-Ng2RL-uoMcQCrQNL6Hk7tjXSJBaaqxc2skfZzmepkqA=w640" alt="https://lh3.googleusercontent.com/KYSBaOiAMdy_U8shsb4zoS8J5uyZzwkFPZY4qIKTrHKlo-M-pCdiHHBUxZ9OmQ-uv_QkBiktXeprTQD6gANDvzDVi8JWs4-Ng2RL-uoMcQCrQNL6Hk7tjXSJBaaqxc2skfZzmepkqA=w640" />
+</div>
+<div class="title">Figure 3. btlr-cell.docx, reference</div>
+</div>
+<div class="paragraph"><p>You can see how the second paragraph in the cell was missing from the rendered
+result and now we basically pixel-by-pixel match the reference.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_how_is_this_implemented">How is this implemented?</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
+<div class="paragraph"><p>The
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=db346dde6179e7414289681d91b153a6ed259d05">document
+model</a> and
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=052b5d375307245223e694bb835d86966c370d3b">UNO
+API</a> were reasonably straightforward to implement, but the layout was much
+more challenging. Writer already supported 3 writing directions:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+typically used for Latin (left to right, top to bottom)
+</p>
+</li>
+<li>
+<p>
+Chinese/Japanese (top to bottom, right to left)
+</p>
+</li>
+<li>
+<p>
+Mongolian (top to bottom, left to right) text.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>This new one is also a vertical direction, also left to right, but bottom to
+top. The
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=e8b9572bf89f55463f2c879a401ed62efc165d95">initial
+layout</a> contained code to read the new enumerator from doc model, extend the
+SwFrame class to handle this new bottom to top mode, some handling of
+switching between horizontal/vertical mode and at the end mapping from Writer
+layout&#8217;s direction to VCL&#8217;s "900" font orientation. There are more things to
+handle in layout, but this was good enough to look at other areas as well.</p></div>
+<div class="paragraph"><p>The
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=8af98ac8bf0ac8795999ecbf061d3c094f7c3be4">ODF
+filter</a> required updating, which was a bit challenging as it was necessary to
+write different attribute names depending on which enumerator is used from an
+emumeration, and we don&#8217;t have good support for this. Once the filter code was
+in place, I could write some
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=bef3818dbedba467a257e2573e298d98062be37b">layout-level
+tests</a> as well.</p></div>
+<div class="paragraph"><p>Since we have .ui files for UI descriptions, adding
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=081b753d4cb4f4a25073ca7de12a7bdaa9fc2be4">UI
+support</a> was really easy.</p></div>
+<div class="paragraph"><p>Time came to step away from coding for a moment and write up paperwork to
+<a href="https://issues.oasis-open.org/browse/OFFICE-4030">propose</a> this feature to be
+part of the next ODF version (thanks to Andras for the help there!).</p></div>
+<div class="paragraph"><p>Finally I went back to layout, and improved things a bit more: after
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=a0bb480364c80192111ecab3501d63584e651ea3">fixing
+baseline offsets</a>, the positioning of the text was exactly matching what Word
+does. How do I know? I used this little script:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>gs -dNOPROMPT -dBATCH -sDEVICE=jpeg -r75 -dNOPAUSE -sOutputFile=btlr.jpg btlr.pdf
+gs -dNOPROMPT -dBATCH -sDEVICE=jpeg -r75 -dNOPAUSE -sOutputFile=btlr-word.jpg btlr-word.pdf
+composite -compose difference btlr-word.jpg btlr.jpg out.jpg</code></pre>
+</div></div>
+<div class="paragraph"><p>Which allows seeing the differences between our and Word&#8217;s PDF output.
+Additional work was needed to handle
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=835d054434d0000a5741a5bfa5f577e855594c40">multiple
+paragraphs</a> in a table cell. At this stage I was happy enough with the
+rendering result, so finally pulled the trigger and replaced the old DOCX
+filter hack (using character-level rotation) with
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=8fdbda18b593e7014e44a0fd590bbf98d83258b7">simple
+DOCX filter mapping</a> from OOXML&#8217;s btLr direction to Writer&#8217;s btLr direction&#8201;&#8212;&#8201;i.e. what was already done for the tbRl case.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_future_work">Future work</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>The feature works good enough already so that this new core feature can be
+used by the DOCX filter by default, but there are still a few rough edges:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+the shell code (cursor travelling, selection painting, etc) only has
+  <a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=61bb90aac5038b5ff051668f7ae86eb61658e4f3">partial
+  support</a> for this new direction
+</p>
+</li>
+<li>
+<p>
+RTF and DOC filters are not yet updated
+</p>
+</li>
+<li>
+<p>
+the ODF proposal has a list of contexts other than table cells where the new
+  writing direction could be used, which lack UI/filter support/etc at the moment.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>All this is available in master (towards LibreOffice 6.3), so you can grab a
+<a href="http://dev-builds.libreoffice.org/daily/master/">daily build</a> and try it out
+right now. :-)</p></div>
+</div>
+</div>
+
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Thu 21 February 2019</p>
+    <p>Category: <a href="https://vmiklos.hu/blog/category/libreoffice.html">libreoffice</a>
+ &ndash; Tags:
+      <a href="https://vmiklos.hu/blog/tag/en.html">en</a>    </p>
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/fosdem2019.html">Improving SmartArt import in Impress FOSDEM talk</a></h1>
   </div>
   <div class="article_readtime">
@@ -631,124 +794,6 @@ the sources from git and try it out right now. :-)</p></div>
     <p>Category: <a href="https://vmiklos.hu/blog/category/unoconv.html">unoconv</a>
  &ndash; Tags:
       <a href="https://vmiklos.hu/blog/tag/en.html">en</a>,      <a href="https://vmiklos.hu/blog/tag/libreoffice.html">libreoffice</a>    </p>
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/uno-api-improvements.html">API improvements in LibreOffice</a></h1>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 3 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://farm2.staticflickr.com/1793/43859007612_ca207fed0f_o.png" alt="https://farm2.staticflickr.com/1793/43859007612_ca207fed0f_o.png" />
-</div>
-</div>
-<div class="paragraph"><p>I worked on two small features to extend the public (UNO) API of LibreOffice.
-First, thanks to <a href="https://vector.com/">Vector</a> for funding
-<a href="https://www.collaboraoffice.com/">Collabora</a> to make this possible.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_aliased_paths_and_text_in_the_png_export_for_draw">Aliased paths and text in the PNG export for Draw</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>The UNO API of Draw allows you to build quite complex and custom shapes, but
-you may want to export the rendered result to a bitmap for testing purposes,
-so you can assert that the actual result matches a reference one.</p></div>
-<div class="paragraph"><p>One problem in this area is anti-aliasing, which can easily differ between
-machines. Given that normally aliased rendering is ugly, there is now a way to
-enable AA, but disable it just during a single invocation of the PNG exporter.</p></div>
-<div class="paragraph"><p>The above picture shows how the AA result looks like. You could write a Basic
-macro like this to trigger the PNG export from Draw:</p></div>
-<div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight
-by Lorenzo Bettini
-http://www.lorenzobettini.it
-http://www.gnu.org/software/src-highlite -->
-<pre><tt>xExporter <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">createUnoService</span></span><span style="color: #990000">(</span><span style="color: #FF0000">"com.sun.star.drawing.GraphicExportFilter"</span><span style="color: #990000">)</span>
-xExporter<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">SetSourceDocument</span></span><span style="color: #990000">(</span>ThisComponent<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">DrawPages</span></span><span style="color: #990000">(</span><span style="color: #993399">0</span><span style="color: #990000">))</span>
-<span style="font-weight: bold"><span style="color: #0000FF">Dim</span></span> <span style="font-weight: bold"><span style="color: #000000">aArgs</span></span><span style="color: #990000">(</span><span style="color: #993399">1</span><span style="color: #990000">)</span> As new com<span style="color: #990000">.</span>sun<span style="color: #990000">.</span>star<span style="color: #990000">.</span>beans<span style="color: #990000">.</span>PropertyValue
-<span style="font-weight: bold"><span style="color: #000000">aArgs</span></span><span style="color: #990000">(</span><span style="color: #993399">0</span><span style="color: #990000">).</span>Name  <span style="color: #990000">=</span> <span style="color: #FF0000">"URL"</span>
-<span style="font-weight: bold"><span style="color: #000000">aArgs</span></span><span style="color: #990000">(</span><span style="color: #993399">0</span><span style="color: #990000">).</span>Value <span style="color: #990000">=</span> <span style="color: #FF0000">"file:///tmp/debug/aa.png"</span>
-<span style="font-weight: bold"><span style="color: #000000">aArgs</span></span><span style="color: #990000">(</span><span style="color: #993399">1</span><span style="color: #990000">).</span>Name  <span style="color: #990000">=</span> <span style="color: #FF0000">"MediaType"</span>
-<span style="font-weight: bold"><span style="color: #000000">aArgs</span></span><span style="color: #990000">(</span><span style="color: #993399">1</span><span style="color: #990000">).</span>Value <span style="color: #990000">=</span> <span style="color: #FF0000">"image/png"</span>
-xExporter<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">filter</span></span><span style="color: #990000">(</span><span style="font-weight: bold"><span style="color: #000000">aArgs</span></span><span style="color: #990000">())</span></tt></pre></div></div>
-<div class="paragraph"><p>Let&#8217;s see how it looks like if you turn AA off:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://farm2.staticflickr.com/1832/43859007522_aeb4516f02_o.png" alt="https://farm2.staticflickr.com/1832/43859007522_aeb4516f02_o.png" />
-</div>
-</div>
-<div class="paragraph"><p>You just need to specify a new <code>Antialiasing</code> key under <code>FilterData</code>:</p></div>
-<div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight
-by Lorenzo Bettini
-http://www.lorenzobettini.it
-http://www.gnu.org/software/src-highlite -->
-<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">Dim</span></span> <span style="font-weight: bold"><span style="color: #000000">aFilterData</span></span><span style="color: #990000">(</span><span style="color: #993399">0</span><span style="color: #990000">)</span> As new com<span style="color: #990000">.</span>sun<span style="color: #990000">.</span>star<span style="color: #990000">.</span>beans<span style="color: #990000">.</span>PropertyValue
-<span style="font-weight: bold"><span style="color: #000000">aFilterData</span></span><span style="color: #990000">(</span><span style="color: #993399">0</span><span style="color: #990000">).</span>Name <span style="color: #990000">=</span> <span style="color: #FF0000">"AntiAliasing"</span>
-<span style="font-weight: bold"><span style="color: #000000">aFilterData</span></span><span style="color: #990000">(</span><span style="color: #993399">0</span><span style="color: #990000">).</span>Value <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #0000FF">False</span></span>
-xExporter <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">createUnoService</span></span><span style="color: #990000">(</span><span style="color: #FF0000">"com.sun.star.drawing.GraphicExportFilter"</span><span style="color: #990000">)</span>
-xExporter<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">SetSourceDocument</span></span><span style="color: #990000">(</span>ThisComponent<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">DrawPages</span></span><span style="color: #990000">(</span><span style="color: #993399">0</span><span style="color: #990000">))</span>
-<span style="font-weight: bold"><span style="color: #0000FF">Dim</span></span> <span style="font-weight: bold"><span style="color: #000000">aArgs</span></span><span style="color: #990000">(</span><span style="color: #993399">2</span><span style="color: #990000">)</span> As new com<span style="color: #990000">.</span>sun<span style="color: #990000">.</span>star<span style="color: #990000">.</span>beans<span style="color: #990000">.</span>PropertyValue
-<span style="font-weight: bold"><span style="color: #000000">aArgs</span></span><span style="color: #990000">(</span><span style="color: #993399">0</span><span style="color: #990000">).</span>Name  <span style="color: #990000">=</span> <span style="color: #FF0000">"URL"</span>
-<span style="font-weight: bold"><span style="color: #000000">aArgs</span></span><span style="color: #990000">(</span><span style="color: #993399">0</span><span style="color: #990000">).</span>Value <span style="color: #990000">=</span> <span style="color: #FF0000">"file:///tmp/debug/non-aa.png"</span>
-<span style="font-weight: bold"><span style="color: #000000">aArgs</span></span><span style="color: #990000">(</span><span style="color: #993399">1</span><span style="color: #990000">).</span>Name  <span style="color: #990000">=</span> <span style="color: #FF0000">"FilterData"</span>
-<span style="font-weight: bold"><span style="color: #000000">aArgs</span></span><span style="color: #990000">(</span><span style="color: #993399">1</span><span style="color: #990000">).</span>Value <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">aFilterData</span></span><span style="color: #990000">()</span>
-<span style="font-weight: bold"><span style="color: #000000">aArgs</span></span><span style="color: #990000">(</span><span style="color: #993399">2</span><span style="color: #990000">).</span>Name  <span style="color: #990000">=</span> <span style="color: #FF0000">"MediaType"</span>
-<span style="font-weight: bold"><span style="color: #000000">aArgs</span></span><span style="color: #990000">(</span><span style="color: #993399">2</span><span style="color: #990000">).</span>Value <span style="color: #990000">=</span> <span style="color: #FF0000">"image/png"</span>
-xExporter<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">filter</span></span><span style="color: #990000">(</span><span style="font-weight: bold"><span style="color: #000000">aArgs</span></span><span style="color: #990000">())</span></tt></pre></div></div>
-<div class="paragraph"><p>You can imagine which rendering result is easier to debug when the reference
-and the actual bitmap doesn&#8217;t match. ;-)</p></div>
-<div class="admonitionblock">
-<table><tr>
-<td class="icon">
-<div class="title">Note</div>
-</td>
-<td class="content">This feature is available for other bitmap formats as well, PNG is only
-an example.</td>
-</tr></table>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_default_character_style_in_writer">Default character style in Writer</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>In most cases you don&#8217;t really need a default character style: if you&#8217;re fine
-with a default, then the default paragraph style should be enough for your
-needs. In general, paragraph styles can contain character properties, so if
-the default is fine for you, you just don&#8217;t set a character style.</p></div>
-<div class="paragraph"><p>However, there is an exception to all rules. If you want to reset the current
-character style, it makes sense to just set the <code>CharStyleName</code> property to a
-default value, especially since this works with paragraph styles already.</p></div>
-<div class="paragraph"><p>Now you can write C++ code like this (see
-<a href="https://cgit.freedesktop.org/libreoffice/core/tree/sw/qa/extras/unowriter/unowriter.cxx">SwUnoWriter::testDefaultCharStyle()</a>
-for a full example):</p></div>
-<div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight
-by Lorenzo Bettini
-http://www.lorenzobettini.it
-http://www.gnu.org/software/src-highlite -->
-<pre><tt>xCursorProps<span style="color: #990000">-&gt;</span><span style="font-weight: bold"><span style="color: #000000">setPropertyValue</span></span><span style="color: #990000">(</span><span style="color: #FF0000">"CharStyleName"</span><span style="color: #990000">,</span> uno<span style="color: #990000">::</span><span style="font-weight: bold"><span style="color: #000000">makeAny</span></span><span style="color: #990000">(</span><span style="font-weight: bold"><span style="color: #000000">OUString</span></span><span style="color: #990000">(</span><span style="color: #FF0000">"Standard"</span><span style="color: #990000">)));</span></tt></pre></div></div>
-<div class="paragraph"><p>And it&#8217;ll be handled as <code>Default Style</code> in English builds, or their localized
-versions in a non-English UI.</p></div>
-<div class="paragraph"><p>All this is available in master (towards LibreOffice 6.2), or you can grab a
-<a href="http://dev-builds.libreoffice.org/daily/master/">daily build</a> and try it out
-right now. :-)</p></div>
-</div>
-</div>
-
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Wed 08 August 2018</p>
-    <p>Category: <a href="https://vmiklos.hu/blog/category/libreoffice.html">libreoffice</a>
- &ndash; Tags:
-      <a href="https://vmiklos.hu/blog/tag/en.html">en</a>    </p>
   </div>
 </article>
 

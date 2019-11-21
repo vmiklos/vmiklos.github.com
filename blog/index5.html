@@ -57,6 +57,93 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/xmlsec-nss-ecdsa.html">ECDSA support in xmlsec-nss, bundled by LibreOffice</a></h1>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>Last month a
+<a href="https://bugs.documentfoundation.org/show_bug.cgi?id=105983">LibreOffice
+bugreport</a> was filed, as the ODF signature created with Hungarian citizen eID
+cards is not something LibreOffice can verify. After a bit of research it
+seemed that LibreOffice and NSS (what we use for crypto work on Linux/macOS)
+is not a problem, but xmlsec&#8217;s NSS backend does not recognize ECDSA keys (RSA
+or DSA keys work fine).</p></div>
+<div class="paragraph"><p>The xmlsec improvements happened in these pull requests:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="https://github.com/lsh123/xmlsec/pull/81">prepare the xmlsec ECDSA tests</a>, so
+  that they can test not only openssl, but NSS as well
+</p>
+</li>
+<li>
+<p>
+<a href="https://github.com/lsh123/xmlsec/pull/83">add initial ECDSA support</a> (SHA256
+  hashing only)
+</p>
+</li>
+<li>
+<p>
+<a href="https://github.com/lsh123/xmlsec/pull/88">SHA1 support</a>
+</p>
+</li>
+<li>
+<p>
+<a href="https://github.com/lsh123/xmlsec/pull/89">SHA512 support</a>
+</p>
+</li>
+<li>
+<p>
+<a href="https://github.com/lsh123/xmlsec/pull/91">fix read of uninitialized memory</a>
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>After this the xmlsec code looked good enough. I had to request an update of
+the bugdoc in the TDF bug twice, as the signature itself looked also incorrect
+initially:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+an attribute type in the signature that had no official abbreviation was
+  described as "UNDEF" instead of the dotted decimal form
+</p>
+</li>
+<li>
+<p>
+<a href="https://tools.ietf.org/html/rfc3279#section-2.2.3">RFC3279</a> specifies that an
+  ECDSA signature value in general should be ASN1-encoded in general, but
+  <a href="https://tools.ietf.org/html/rfc4050#section-3.3">RFC4050</a> is specific to XML
+  digital signatures and that one says it should <strong>not</strong> be ASN1-encoded. The
+  bugdoc was initially ASN1-encoded.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Finally a warning still remains: while trying to parse the text of the
+<code>&lt;X509IssuerName&gt;</code> element, the dotted decimal form is still not parsed (see
+this <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1342137">NSS bugreport</a>). The
+bug is confirmed on the mailing list, but no other progress have been made so
+far.</p></div>
+<div class="paragraph"><p>Oh, and of course: Windows is still untouched, there a bigger problem remains:
+we use CryptoAPI (not CNG) there, and that does not support ECDSA at all.
+Hooray for open-source libs where you can add such support yourself. ;-)</p></div>
+</div>
+</div>
+
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Mon 13 March 2017</p>
+    <p>Category: <a href="https://vmiklos.hu/blog/category/xmlsec.html">xmlsec</a>
+ &ndash; Tags:
+      <a href="https://vmiklos.hu/blog/tag/en.html">en</a>,      <a href="https://vmiklos.hu/blog/tag/libreoffice.html">libreoffice</a>    </p>
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/okular-linked-video.html">okular now supports online videos in PDF files</a></h1>
   </div>
   <div class="article_readtime">
@@ -803,47 +890,6 @@ hopefully the design team can help there.</p></div>
   </div>
   <div class="article_meta">
     <p>Posted on: Mon 03 October 2016</p>
-    <p>Category: <a href="https://vmiklos.hu/blog/category/libreoffice.html">libreoffice</a>
- &ndash; Tags:
-      <a href="https://vmiklos.hu/blog/tag/en.html">en</a>    </p>
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/clang-locon-brno-2k16.html">Using clang-based tools beyond loplugin LOCon lightning talk</a></h1>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://speakerd.s3.amazonaws.com/presentations/731c4bb5277c48d8acbba1c867ece856/clang-locon-brno-2k16.pdf">
-<img src="https://farm9.staticflickr.com/8074/29618061316_308e7e9b30_z.jpg" alt="https://farm9.staticflickr.com/8074/29618061316_308e7e9b30_z.jpg" />
-</a>
-</div>
-</div>
-<div class="paragraph"><p>The last week I gave a
-<a href="http://conference.libreoffice.org/2016/the-program/sept-9th-friday/">Using
-clang-based tools beyond loplugin</a> lightning talk at LibreOffice conference
-2016, on the last day. Click on the image to see all the slides.</p></div>
-<div class="paragraph"><p>If you&#8217;re a vim or emacs user and you work with C++11 code, you probably
-want to have a look at
-<a href="http://clang.llvm.org/extra/clang-rename.html">clang-rename</a>,
-<a href="http://clang.llvm.org/extra/include-fixer.html">include-fixer</a> and some editor
-plugin exposing the power of libclang (like
-<a href="https://valloric.github.io/YouCompleteMe/">YouCompleteMe</a> or
-<a href="https://github.com/libclang-vim/libclang-vim">libclang-vim</a>), sometimes these
-are really helpful.</p></div>
-</div>
-</div>
-
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Tue 13 September 2016</p>
     <p>Category: <a href="https://vmiklos.hu/blog/category/libreoffice.html">libreoffice</a>
  &ndash; Tags:
       <a href="https://vmiklos.hu/blog/tag/en.html">en</a>    </p>
