@@ -58,6 +58,122 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/tiled-editing-part-2.html">Tiled editing: from a living document to input handling</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Mon 09 February 2015</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>In <a href="/blog/tiled-editing-part-1.html">from viewing only to a
+living document</a>, I wrote about how tile invalidation can handle updates in
+the Android app in case what should be displayed on the screen changes. A next
+step in this
+<a href="http://blog.documentfoundation.org/2015/01/27/the-document-foundation-announces-the-results-of-the-android-tender/">TDF-funded
+project</a> is to handle more than blinking text: keyboard and mouse/touch events
+from the user.</p></div>
+<div class="paragraph"><p>First let me enumerate over the issues we had to face:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Gtk, Android and LibreOffice&#8217;s VCL use different key codes for the same
+  physical keys. We solved this by mapping the special keys manually on the
+  Gtk/Android side (using the C++ and Java UNO binding), and for the rest,
+  we simply use the unicode representation of the keys.
+</p>
+</li>
+<li>
+<p>
+Special keys: while "return" was easy to map, getting "backspace" to work
+  was more challenging. It worked fine on the Gtk side, but on Android we had
+  to make sure that the whole sfx2 dispatching framework works properly, only
+  then could map the backspace key to the correct UNO command, which is
+  <code>.uno:SwBackspace</code> in case of Writer.
+</p>
+</li>
+<li>
+<p>
+Mouse handling: VCL sends pixel coordinates to the editing windows, they
+  then calculate the offset of the editing area (think about toolbars and
+  menus that have to be excluded), and then converts the pixel values to
+  document coordinates. In case of tiled editing, we always work with document
+  coordinates in logical units (twips), so we had to add the possibility to send
+  the coordinates in document ones. This allows core not knowing where the user
+  exactly is (in case the tiles are already ready, swiping can be handled
+  without any LOK calls), and also allows Android not knowing the implementation
+  details of the desktop app (where menus and toolbars would be).
+</p>
+</li>
+<li>
+<p>
+Cursor caret overlay: we wanted to be sure that it&#8217;s not necessary to
+  re-render the affected tiles each time the cursor blinks, so we added a LOK
+  API to send the rectangle (its width is nearly zero) of the cursor to Android,
+  and then it can handle the blinking cursor itself in a transparent overlay.
+  This overlay will be useful for presenting selections as well.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>As usual the commits of me and <a href="http://tomazvajngerl.blogspot.com/">Tomaž
+Vajngerl</a> are in master, so you can try this right now, or wait till tomorrow
+and get the
+<a href="http://dev-builds.libreoffice.org/daily/master/Android-ARM@24-Bytemark-Hosting/current/">Android
+daily build</a>. However, if you are just interested how this looks like, here are some demos:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Keyboard handling in gtktiledviewer:
+</p>
+</li>
+</ul></div>
+<center>
+<iframe width="420" height="315" src="https://www.youtube.com/embed/Hi9N9IumMZY" frameborder="0" allowfullscreen></iframe>
+</center>
+<div class="ulist"><ul>
+<li>
+<p>
+Same on Android, including newlines and backspace handling:
+</p>
+</li>
+</ul></div>
+<center>
+<iframe width="420" height="315" src="https://www.youtube.com/embed/4CJbu_QNUh0" frameborder="0" allowfullscreen></iframe>
+</center>
+<div class="ulist"><ul>
+<li>
+<p>
+Mouse handling in gtktiledviewer:
+</p>
+</li>
+</ul></div>
+<center>
+<iframe width="420" height="315" src="https://www.youtube.com/embed/4jH_Ek1p1OA" frameborder="0" allowfullscreen></iframe>
+</center>
+<div class="ulist"><ul>
+<li>
+<p>
+Same on Android, including the transparent selection overlay that can
+  efficiently blink the cursor:
+</p>
+</li>
+</ul></div>
+<center>
+<iframe width="420" height="315" src="https://www.youtube.com/embed/frQWyjjsl3I" frameborder="0" allowfullscreen></iframe>
+</center>
+<div class="paragraph"><p>That&#8217;s it for now&#8201;&#8212;&#8201;next on our list are selections, so you can delete and
+overwrite more easily. :-)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/fosdem2015.html">LibreOffice on Android FOSDEM talk</a></h1>
   </div>
   <div class="article_meta">
@@ -726,55 +842,6 @@ filter. Code sharing FTW! :-)</p></div>
 bántam meg a rászánt időt. Persze nem is véletlenül kapott 10-ből 8.2 pontot.
 ;-)</p></div>
 <div class="paragraph"><p>(<a href="http://www.imdb.com/title/tt2278388/">imdb</a>, <a href="http://www.youtube.com/watch?v=1Fg5iWmQjwk">trailer</a>)</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/upc-port-forward.html">UPC vs port forwarding</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Sat 20 September 2014</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p><a href="http://en.wikipedia.org/wiki/UPC_Broadband">UPC</a> traditionally had a setup
-consisting of a cable modem providing internet access to a single computer,
-and then it was up to the users if they use that access to really connect to a
-computer or to a router, providing wireless access and so on.  It seems, these
-days they are more after actually <em>encouraging</em> people to use their
-subscription on multiple devices&#8201;&#8212;&#8201;possibly that way it&#8217;s easier to sell
-larger packages (like 60 MBit/s download rate instead of 30 MBit/s, etc).  One
-fallout from this move is that they started to replace modems with a
-combination of modems and routers, in this case this is an
-<a href="http://www.ubeeinteractive.com/products/cable/evw3226">Ubee EVW3226</a>, with the
-brand removed. I wanted to try out if this new device could replace my
-previous router or not&#8201;&#8212;&#8201;so far it seems to be good enough, though there was
-one pitfall, hence this post.</p></div>
-<div class="paragraph"><p>It&#8217;s possible to define a range of IP addresses to be used for DHCP purposes,
-though you can&#8217;t serve fixed IP addresses based on the MAC address of the
-clients. Given that my home network isn&#8217;t that large, I can tolerate that: as
-long as there is a range that can be safely used for fixed addresses, I can
-configure that manually.  It&#8217;s also possible to do port forwarding, e.g.
-redirecting the incoming ssh traffic to a given address&#8201;&#8212;&#8201;except you can&#8217;t do
-both at the same time: you can&#8217;t redirect traffic to an address that&#8217;s not
-known (served via DHCP) to the router. Which is a shame, the #1 use case for
-port forwarding is to redirect traffic to a home-server that will then also
-have a fixed IP internally&#8230;</p></div>
-<div class="paragraph"><p>So here is a hack that allowed me to still do this: set the start of the range
-of the DHCP served IP&#8217;s exactly to the address of the (to be used in future
-as) fixed address, e.g. 192.168.0.5. Connect with one client, so that the
-address will be <em>known</em> to the router. Then add the port-forwarding rule,
-finally set the DHCP range back to its original value (in my case I use
-192.168.0.1..99 for fixed addresses and 100+ for dynamic purposes). It&#8217;s a
-stupid trick, but it works&#8230; ;-)</p></div>
 </div>
 </div>
 

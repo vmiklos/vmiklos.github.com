@@ -60,6 +60,120 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/pades.html">PAdES support for PDF files in LibreOffice</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Tue 20 December 2016</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 3 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://farm1.staticflickr.com/443/30919530974_5c5b3cb3a9_o.png">
+<img src="https://farm1.staticflickr.com/443/30919530974_7ab3d132d8_z.jpg" alt="https://farm1.staticflickr.com/443/30919530974_7ab3d132d8_z.jpg" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>Building on top of the previously mentioned
+<a href="/blog/pdf-sign.html">signing of existing PDF files</a> work, one
+more PDF feature coming in LibreOffice 5.3 is initial support for the PDF
+Advanced Electronic Signatures (<a href="https://en.wikipedia.org/wiki/PAdES">PAdES</a>)
+standard.  First, thanks to the Dutch Ministry of Defense in cooperation with
+<a href="http://nouenoff.nl/">Nou&amp;Off</a> who made this work possible.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_results">Results</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>PAdES is an extension of the ISO PDF signature with additional constraints, so
+that it conforms to the requirements of the European eIDAS regulation, which
+in turns makes it more likely that your signed PDF document will be actually
+legally binding in many EU member states.</p></div>
+<div class="paragraph"><p>The best way to check if LibreOffice produces such PDF signatures is to use a
+PAdES validator. So far I found two of them:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="http://signatures-conformance-checker.etsi.org/">the ETSI one</a>, which
+  requires registration and is a free web service
+</p>
+</li>
+<li>
+<p>
+<a href="https://github.com/esig/dss/">Digital Signature Service</a> (DSS), which is an
+  open source tool you can build, use and modify locally
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>As it can be seen above, the PDF signature produced by LibreOffice 5.3 by
+default conforms to the PAdES baseline spec.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_implementation">Implementation</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>I implemented the followings in LO to make this happen:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+PDF signature creation now defaults to the stronger SHA-256 (instead of the
+  previously used weaker SHA-1), and the PDF verifier understands SHA-256
+</p>
+</li>
+<li>
+<p>
+the PDF signature creation now embeds the signing certificate into the
+  PKCS#7 signature blob in the PDF, so the verifier can check not only the key
+  used for the signing, but the actual certificate as well
+</p>
+</li>
+<li>
+<p>
+the PDF signature import can now detect if such an embedded signing
+  certificate is present in the signature or not
+</p>
+</li>
+</ul></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">Don&#8217;t get confused, LO does signature verification (checks if the digest
+matches and validates the certificate) and now shows if the signing
+certificate is present in the signature or not, but it doesn&#8217;t do more than
+that, the above mentioned DSS tool is still superior when it comes to do a
+full validation of a PAdES signature.</td>
+</tr></table>
+</div>
+<div class="paragraph"><p>As usual, this works both with NSS and MS CryptoAPI. In the previous post I
+noted that one task was easier with CryptoAPI. Here I experienced the
+opposite: when writing the signing certificate hash, I could provide templates
+to NSS on how the ASN.1 encoding of it should happen, and NSS did the actual
+ASN.1 DER encoding for me. In the CryptoAPI case there is no such API, so I
+had to do this encoding manually (see
+<a href="https://github.com/LibreOffice/core/blob/master/vcl/source/gdi/pdfwriter_impl.cxx#L6202">CreateSigningCertificateAttribute()</a>),
+which is obviously much more complicated.</p></div>
+<div class="paragraph"><p>Another pain was that the DSS tool doesn&#8217;t really separate the validation of
+the signature itself and of the certificate. The above screenshot was created
+using a non-self-signed certificate, hence the unclear part in the signed-by
+row.</p></div>
+<div class="paragraph"><p>If you want to try these out yourself, get a
+<a href="http://dev-builds.libreoffice.org/daily/">daily build</a> and feel free to play
+with it. This work is part of both <code>master</code> or <code>libreoffice-5-3</code>, so those
+builds are of interest. Happy testing! :-)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/pdf-sign.html">Signing existing PDF files in LibreOffice</a></h1>
   </div>
   <div class="article_meta">
@@ -621,230 +735,6 @@ master bundles the latest xmlsec 1.2.22, released earlier this year :-)
 <div class="paragraph"><p>This is good, as this way it&#8217;s easier to integrate xmlsec upstream
 improvements into LibreOffice in the future.</p></div>
 <div class="paragraph"><p>Regarding the other goal, shrinking the patch list is still to be done. ;-)</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/libreoffice-asan-setup.html">A LibreOffice / AddressSanitizer setup</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Mon 25 July 2016</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 4 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p><a href="https://github.com/google/sanitizers">sanitizers</a> (ASAN, UBSAN, etc.) is a
-collection of tools to detect memory corruption bugs, undefined behavior and
-more by instrumenting the code generated by the compiler. (That&#8217;s the main
-difference from valgrind.) From LibreOffice&#8217;s perspective one more important
-difference is that there is a
-<a href="http://ci.libreoffice.org/job/lo_ubsan/">Jenkins_Linux_Ubsan</a> tinderbox that
-makes sure that the master branch is kept clean from errors detected by a
-given configuration.</p></div>
-<div class="paragraph"><p>So when the tinderbox failed after a commit of mine, I wanted to set up a
-similar environment locally, reproduce and fix the bug, and push the fix once
-I saw that the fix indeed solves the problem. You can set many options both at
-build and runtime, so while we have some
-<a href="https://wiki.documentfoundation.org/Development/-fsanitize">documentation</a> on
-the TDF wiki (and also Stephan was kind enough to share
-<a href="https://people.freedesktop.org/~vmiklos/2016/sanitizers-config-sberg">his
-config</a>) on how to use these sanitizers, it wasn&#8217;t clear to me what to do step
-by step. So here is one possible setup that worked for me&#8201;&#8212;&#8201;in my case I
-wanted to reproduce a stack-use-after-return problem. If you haven&#8217;t ever built
-LibreOffice before, then go to
-<a href="https://wiki.documentfoundation.org/Development">the Development wiki page</a>,
-first do a normal build, and if everything went fine, came back here.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_build_options">Build options</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>My <code>autogen.input</code> looks like this:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>CC=clang -fsanitize=address
-CXX=clang++ -fsanitize=address
---enable-dbgutil
---disable-firebird-sdbc</code></pre>
-</div></div>
-<div class="paragraph"><p>Which is a normal clang debug build, except:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-you need to add <code>-fsanitize=...</code> to <code>CXX</code> (not to <code>CXXFLAGS</code>), as explained
-  on the wiki
-</p>
-</li>
-<li>
-<p>
-you need to explicitly disable Firebird integration for now
-</p>
-</li>
-</ul></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_building">Building</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>My first attempt failed at build time, as even the tools used only during the
-build are instrumented, and some memory leak was detected there, which means
-the build aborted before reaching the problem I was interested in. To disable
-leak detection during build, and disable parallelism (I needed this, as I did
-the build in the background while using the machine for something else):</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>make build-nocheck ASAN_OPTIONS=detect_leaks=0 PARALLELISM=1</code></pre>
-</div></div>
-<div class="paragraph"><p>This also means that I explicitly disabled running any tests, as I knew which
-is the single unit test I want to run for the purposes of reproducing and
-fixing the problem.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_testing">Testing</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Once the build completed, it turns out that the stack-use-after-return detection is disabled at runtime by default, which means I could not see any problem locally. Here is the commandline to run one specific CppunitTest with this detection on:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>cd sw; make -sr CppunitTest_sw_tiledrendering ASAN_OPTIONS=detect_leaks=0:detect_stack_use_after_return=1</code></pre>
-</div></div>
-<div class="paragraph"><p>Again, this is just one possible setup, you can use other <code>-fsanitize=...</code>
-options, other environment variables during build and during testing&#8201;&#8212;&#8201;but
-hopefully it helps in the future to avoid pushing fixes for such problems
-detected by sanitizers just blindly.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_update_2019_01_25">Update, 2019-01-25</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>The above described "do it yourself" way doesn&#8217;t work with LibreOffice master
-(towards 6.3) and openSUSE Leap 15.0 anymore. I tried to debug what is the
-exact problem, but there are many moving parts here:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-gcc version (providing libstdc++)
-</p>
-</li>
-<li>
-<p>
-clang version (5.0.2 is too old; 7 failed to build the plugins, trunk
-  towards 9 also generated false positives for me)
-</p>
-</li>
-<li>
-<p>
-various sanitizer-related environment variables
-</p>
-</li>
-<li>
-<p>
-various sanitizer-related compiler options
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>So it&#8217;s much easier to just use the combination used by the
-<code>Jenkins_Linux_Ubsan</code> tinderbox than something custom. Doing that is
-reasonably straightforward, but still there are a couple of non-trivial steps.
-What worked for me is:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-Set up LODE according to its
-  <a href="https://wiki.documentfoundation.org/Development/lode">wiki page</a>.
-</p>
-</li>
-<li>
-<p>
-Instead of plain <code>./setup --dev</code>, do:
-</p>
-</li>
-</ul></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>./setup --jenkins
-./setup --jenkins-san
-./setup --dev
-cd $LODE_HOME/dev/core</code></pre>
-</div></div>
-<div class="paragraph"><p>This will build a working version of both gcc and clang for you.</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-Instead of manually setting up the environment variables, do:
-</p>
-</li>
-</ul></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>. $LODE_HOME/bin/lode_ubsan_env</code></pre>
-</div></div>
-<div class="ulist"><ul>
-<li>
-<p>
-Instead of manually setting autogen options, use this autogen.input:
-</p>
-</li>
-</ul></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>--with-distro=Jenkins/Linux_ubsan_master</code></pre>
-</div></div>
-<div class="ulist"><ul>
-<li>
-<p>
-Finally to build the code and run a specific test based on tinderbox mail:
-</p>
-</li>
-</ul></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>make build-nocheck
-cd sw; make -sr CppunitTest_sw_unowriter CPPUNIT_TEST_NAME="testPasteListener"</code></pre>
-</div></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_update_2019_11_14">Update, 2019-11-14</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>The 2019-01-25 setup can be fine-tuned further. Sadly LODE mixes two goals: setting up dependencies
-/ environment and cloning repos. I recently added support for bypassing any cloning, so you can use
-LODE even if you already built the code and want to keep using your own way. The tricks are:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-Use <a href="https://github.com/vmiklos/vmexam/blob/master/libreoffice/autogen.env-san">autogen.env-san</a> in
-  two ways: first comment out the second half to run the above <code>./setup --jenkins &amp;&amp; ./setup
-  --jenkins-san</code>, then to source the full environment. This means you get all the up to date
-  environment variables from LODE, but you don&#8217;t need a chroot to avoid LODE messing up your
-  environment.
-</p>
-</li>
-<li>
-<p>
-Use <a href="https://github.com/vmiklos/vmexam/blob/master/libreoffice/autogen.input-san">autogen.input-san</a>
-  to again inherit all up to date autogen switches from LODE, but avoid the submodule pain that
-  would be the default. Now you can do a <code>make check gb_SUPPRESS_TESTS=y</code> to build (but not run) all
-  the code &amp; tests.
-</p>
-</li>
-<li>
-<p>
-Use <a href="https://github.com/vmiklos/vmexam/blob/master/libreoffice/up-loolwsd.sh">up-loolwsd.sh</a> to
-  build and run all Online code &amp; tests&#8201;&#8212;&#8201;with new enough core.git master and online.git master the
-  online.git <code>make check</code> passes for me in this environment.
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>I believe this setup mostly delegates (envrionment, config switches and toolchain) maintenance to
-LODE, still allows not running in a chroot and managing your git clones without LODE.</p></div>
 </div>
 </div>
 

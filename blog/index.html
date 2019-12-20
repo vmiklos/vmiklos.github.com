@@ -57,6 +57,45 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sd-semi-transparent-text.html">Semi-transparent text in Draw/Impress</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Fri 20 December 2019</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>Draw/Impress now has
+<a href="https://git.libreoffice.org/core/commits/3e5bedbb6910053c0cee4112cd382fbd035c9832..6dbb317ebec681d236c6ce354f581108fd814f7b">support</a>
+for semi-transparent shape text, next to the existing transparency support in the context of shape
+fill colors and shape border colors.</p></div>
+<div class="paragraph"><p>First, thanks <a href="https://vector.com/">Vector</a> who made this work by
+<a href="https://www.collaboraoffice.com/">Collabora</a> possible.</p></div>
+<div class="paragraph"><p>Here is how it looks:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://lh3.googleusercontent.com/FJ55-BJ_Mc75TiyrPYuvtOscHOqFp81sEI4SfJvybPzaXG5Y2n4mIoLRzkXydEEmtEf--l9s_h-L4CyYjuGpTyOngOTi8YAzIFp8bQBEn0k2DWsRzJHLdfttf74wTbdPgZUzgSnOYQ=w640" alt="https://lh3.googleusercontent.com/FJ55-BJ_Mc75TiyrPYuvtOscHOqFp81sEI4SfJvybPzaXG5Y2n4mIoLRzkXydEEmtEf--l9s_h-L4CyYjuGpTyOngOTi8YAzIFp8bQBEn0k2DWsRzJHLdfttf74wTbdPgZUzgSnOYQ=w640" />
+</div>
+<div class="title">Figure 1. Semi-transparent text in Draw</div>
+</div>
+<div class="paragraph"><p>What you can see is that next to the existing character color, now you can also set a transparency
+percentage to decide if the text should be entirely transparent, entirely opaque or something
+between the two.</p></div>
+<div class="paragraph"><p>The primary focus was Draw in this case, but this also helps PPTX support, as the importer/exporter
+now handles this for Impress documents as well.</p></div>
+<div class="paragraph"><p>All this is available in LibreOffice master (towards 6.5), so you can try it out
+<a href="http://dev-builds.libreoffice.org/daily/master/">right now</a>, if interested.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/sd-pptx-better-math.html">Better math import from PPTX into Impress</a></h1>
   </div>
   <div class="article_meta">
@@ -569,120 +608,6 @@ showing the results:</p></div>
 </ol></div>
 <div class="paragraph"><p>All this is available in LibreOffice master (towards 6.3), so you can try it out right now, if
 interested.</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/smartart-improvements-4.html">SmartArt improvements in LibreOffice, part 4</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Fri 22 March 2019</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>I recently <a href="https://vmiklos.hu/blog/smartart-improvements-3.html">dived into</a> the SmartArt
-support of LibreOffice, which is the component responsible for displaying
-complex diagrams from PPTX. I focus on the case when only the document model
-and the layout constraints are given, not a pre-rendered result.</p></div>
-<div class="paragraph"><p>First, thanks to our partner <a href="https://www.suse.com/">SUSE</a> for working with
-<a href="https://www.collaboraoffice.com/">Collabora</a> to make this possible.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_organization_chart_cycle_matrix_and_picture_strip">Organization Chart, Cycle Matrix and Picture Strip</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>In this post I would like to present the progress done earlier this year
-regarding the above mentioned diagram types&#8201;&#8212;&#8201;these are used in many
-documents.</p></div>
-<div class="paragraph"><p>The improvement (as always) come in small incremental steps:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-Organization Chart is the most complex type I dealt with so far. I fixed
-  several issues (font color, vertical ordering, multiple paragraphs in a data
-  node, size of layout nodes, better support for <code>hierBranch</code> conditions, the
-  type of connector shapes). This allows giving readable result for diagrams
-  which are more complex than the simple 3-node one presented in the previous
-  post.
-</p>
-</li>
-<li>
-<p>
-Cycle Matrix: there were missing child nodes here, the composite algorithm
-  needed improved handling of position / size from constraints and the ordering
-  / fill / line properties of actual content also needed fixing.
-</p>
-</li>
-<li>
-<p>
-Picture Strip: the biggest problem here was the lack of pictures, but also
-  the existing snake algorithm needed improvements (size, positioning, spacing
-  and margins of the child shapes were not great).
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>With all these fixed, we reach a much better state for the mentioned diagram
-types.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_results_so_far">Results so far</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>The SmartArt test documents from
-<a href="https://cgit.freedesktop.org/libreoffice/core/tree/sd/qa/unit/data/pptx/">sd/qa/unit/data/pptx/</a>
-is what I used for testing this work.</p></div>
-<div class="paragraph"><p>Here is how the baseline, the current and the reference rendering of Organization Chart looks like:</p></div>
-<div style="text-align: center">
-<img src="https://lh3.googleusercontent.com/IFMh0QgOGTrqjFa9Hn0clhOg5tnLZDt-TZ4kTOT8lF3vPfqTiOu1GmnL0rKLS2MD0XKQ6dJAMm-T4h3BYY6Q4K7C6yVpQo5AQPZCAL4LI4q6Poo-J0bkZ3xM2Iq8WthdmTWxlinlRw=w640" style="max-width: 100%;"/>
-<p>smartart-org-chart.pptx, baseline</p>
-</div>
-<div style="text-align: center">
-<img src="https://lh3.googleusercontent.com/m_01y4wA6IclexE7OD92JJnKf_jzC5j2VDXHlVr5BJ7qxzCk4QMdJkhcgiJbzVYp4i1KBsXdHdYS-EAj8-TlUpsSq4m1TZv6SWkTyVl_A4mMRjwOcX_IYFF3QXG7es_fK2RYWbbMYA=w640" style="max-width: 100%;"/>
-<p>smartart-org-chart.pptx, current</p>
-</div>
-<div style="text-align: center">
-<img src="https://lh3.googleusercontent.com/PtXv5C_8nxo1uQb9CQe4tCgZbCga2CfFHMV-Xf6l_VQpRhf2psk_9mFFhC0sLjo-EjDS7-hUA7nu83OpaUQt8AOliX_1U0tuT83n0MdzbviySaLcBEiv7QvhHP4UC1P-ieGA7lTDcg=w640" style="max-width: 100%;"/>
-<p>smartart-org-chart.pptx, reference</p>
-</div>
-<div class="paragraph"><p>And here is how the baseline, the current and the reference rendering of Cycle Matrix looks like:</p></div>
-<div style="text-align: center">
-<img src="https://lh3.googleusercontent.com/OLqkm14usMrgSbfvujD_xjcclNR5doYpIrTFWipe6bh7Sqa5JiklMpM2pf2LRJq_FH_noojtO5O1jwOdCDEr3ds0PLy370j4oe2vAqyOgTjZUlhoZDqKq1n6_ebYw-wbVyV_MzhLAA=w640" style="max-width: 100%;"/>
-<p>smartart-cycle-matrix.pptx, baseline</p>
-</div>
-<div style="text-align: center">
-<img src="https://lh3.googleusercontent.com/dP3etlvuwYC7Gsz02eI2czJ7_2A7bwPjtCtvBnoVAGOZE1X-P8ePru1qntUFEGs8RicDx9vPgaS0M3n1-J1JsyxfdQhR1THqzLr4J6MEa2Dnvigb4jflVL9auckmgf1PobtjGnGInA=w640" style="max-width: 100%;"/>
-<p>smartart-cycle-matrix.pptx, current</p>
-</div>
-<div style="text-align: center">
-<img src="https://lh3.googleusercontent.com/vT-wucpcp2sjK6DgYdcYGPx0LlucGb58N06pKczbjBepyS1dokrbs9LUMy6uLrN-AfW4xeXRTONB8asX7u2N7NN3ePag3qrqNtMKW6DOfQeTnRtA3E2n1U1B_-GyGJNP49_HOxBInQ=w640" style="max-width: 100%;"/>
-<p>smartart-cycle-matrix.pptx, reference</p>
-</div>
-<div class="paragraph"><p>And finally here is how the baseline, the current and the reference rendering of Picture Strip looks like:</p></div>
-<div style="text-align: center">
-<img src="https://lh3.googleusercontent.com/pqGHTyFD78IDwCdHN6qOVH0MXYAouGmuUQ8GGBYEDeDN_bVV_74zJFcwXr1899NsOuqsEERiddYRdyTZurRh6JQXgvMyJSzlsyWI55cURmN6eod-sYxDbfZU9JxOBYH15kukUDB2cw=w640" style="max-width: 100%;"/>
-<p>smartart-picture-strip.pptx, baseline</p>
-</div>
-<div style="text-align: center">
-<img src="https://lh3.googleusercontent.com/DeDJLYZkV3_GwcIATCNkurGNUyIVufbM8Q2OWw3uTQzK1BmIB8y_lWa1Zk_SG5RTYtts8SVjvJOD201p7Hf0MbzhMRrdleHAvUewXzQ7mxmtLfp_AP7hCKfSYAsXDExn-pW81268ng=w640" style="max-width: 100%;"/>
-<p>smartart-picture-strip.pptx, current</p>
-</div>
-<div style="text-align: center">
-<img src="https://lh3.googleusercontent.com/BhTkpbMpIyFOwFTQUiKtA_g86yRjFKtMeP-lxMos5E4KHg7p7_YEAeJECD_6tuaBlSmU80M6I8HvOgIBMmNFkeXEyVxLp--RmEHTwtNw3ae3QK0Lju5fnD-TrUhVK39TVVwNL4BWZw=w640" style="max-width: 100%;"/>
-<p>smartart-picture-strip.pptx, reference</p>
-</div>
-<div class="paragraph"><p>This is not not perfect yet, but it&#8217;s clearly a large improvement, all text is
-now readable from the diagrams and pictures are no longer missing!</p></div>
-<div class="paragraph"><p>All this is available in master (towards LibreOffice 6.3), so you can grab a
-<a href="http://dev-builds.libreoffice.org/daily/master/">daily build</a> and try it out
-right now. :-)</p></div>
 </div>
 </div>
 

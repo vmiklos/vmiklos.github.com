@@ -57,6 +57,55 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/upc-port-forward.html">UPC vs port forwarding</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Sat 20 September 2014</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p><a href="http://en.wikipedia.org/wiki/UPC_Broadband">UPC</a> traditionally had a setup
+consisting of a cable modem providing internet access to a single computer,
+and then it was up to the users if they use that access to really connect to a
+computer or to a router, providing wireless access and so on.  It seems, these
+days they are more after actually <em>encouraging</em> people to use their
+subscription on multiple devices&#8201;&#8212;&#8201;possibly that way it&#8217;s easier to sell
+larger packages (like 60 MBit/s download rate instead of 30 MBit/s, etc).  One
+fallout from this move is that they started to replace modems with a
+combination of modems and routers, in this case this is an
+<a href="http://www.ubeeinteractive.com/products/cable/evw3226">Ubee EVW3226</a>, with the
+brand removed. I wanted to try out if this new device could replace my
+previous router or not&#8201;&#8212;&#8201;so far it seems to be good enough, though there was
+one pitfall, hence this post.</p></div>
+<div class="paragraph"><p>It&#8217;s possible to define a range of IP addresses to be used for DHCP purposes,
+though you can&#8217;t serve fixed IP addresses based on the MAC address of the
+clients. Given that my home network isn&#8217;t that large, I can tolerate that: as
+long as there is a range that can be safely used for fixed addresses, I can
+configure that manually.  It&#8217;s also possible to do port forwarding, e.g.
+redirecting the incoming ssh traffic to a given address&#8201;&#8212;&#8201;except you can&#8217;t do
+both at the same time: you can&#8217;t redirect traffic to an address that&#8217;s not
+known (served via DHCP) to the router. Which is a shame, the #1 use case for
+port forwarding is to redirect traffic to a home-server that will then also
+have a fixed IP internally&#8230;</p></div>
+<div class="paragraph"><p>So here is a hack that allowed me to still do this: set the start of the range
+of the DHCP served IP&#8217;s exactly to the address of the (to be used in future
+as) fixed address, e.g. 192.168.0.5. Connect with one client, so that the
+address will be <em>known</em> to the router. Then add the port-forwarding rule,
+finally set the DHCP range back to its original value (in my case I use
+192.168.0.1..99 for fixed addresses and 100+ for dynamic purposes). It&#8217;s a
+stupid trick, but it works&#8230; ;-)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/locon2014-bern.html">LibreOffice Conference 2014, Bern</a></h1>
   </div>
   <div class="article_meta">
@@ -910,65 +959,6 @@ bringás nadrág / mez
 </li>
 </ol></div>
 <div class="paragraph"><p>Hátha ez segít, hogy a jövő heti Pelsora menet most ne hagyjunk itthon semmit. :-)</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/supybot-otrs.html">OTRS plugin for Supybot</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Sun 18 May 2014</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>OTRS is quite different to Bugzilla (what we use for upstream LibreOffice
-development for quite some time). On the plus side, e.g. it has strong support
-for multiple customers. OTOH, it deals with tickets instead of bugs, and sadly
-it doesn&#8217;t have a single identifier for tickets. It has a ticket <em>number</em>
-(which by default even includes the date), which is searchable, and it has a
-ticket <em>ID</em>, which is used for URL&#8217;s.</p></div>
-<div class="paragraph"><p>In case of Bugzilla, you can easily lookup "bug#12345" in Firefox. Create a
-bookmark with the following properties:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-Location: <a href="https://localhost/bugzilla/show_bug.cgi?id=%s">https://localhost/bugzilla/show_bug.cgi?id=%s</a>
-</p>
-</li>
-<li>
-<p>
-Keyword: bug
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>and then you can just copy&amp;paste bug#12345 to Firefox, replace the # with a
-space, and Firefox will do the right thing.</p></div>
-<div class="paragraph"><p>Unfortunately (due to the above detailed reasons), this is not possible with
-OTRS. So I decided to write a Supybot plugin that can notice "bug#12345" on an
-IRC channel, and give you the clickable URL (after finding out the ticket ID
-from the ticket number).</p></div>
-<div class="paragraph"><p>The result is available
-<a href="https://github.com/vmiklos/vmexam/tree/master/python/supybot-otrs">on GitHub</a>,
-it looks like this:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>09:58 &lt; vmiklos&gt; bug#1000068
-09:58 &lt; supybot&gt; https://localhost/otrs/index.pl?Action=AgentTicketZoom;TicketID=73</code></pre>
-</div></div>
-<div class="paragraph"><p>Given that I found no relevant hits when
-<a href="https://www.google.com/search?q=supybot+%22otrs%22">searching</a> for <em>supybot
-otrs</em>, I hope this code may be useful for others as well.</p></div>
-<div class="paragraph"><p>Thanks to James Scott for his
-<a href="https://github.com/scottjab/supybot-youtube">YouTube</a> plugin that helped to
-quickly figure out the relevant Supybot API&#8217;s.</p></div>
 </div>
 </div>
 

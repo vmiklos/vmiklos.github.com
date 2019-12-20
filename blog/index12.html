@@ -57,6 +57,65 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/supybot-otrs.html">OTRS plugin for Supybot</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Sun 18 May 2014</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>OTRS is quite different to Bugzilla (what we use for upstream LibreOffice
+development for quite some time). On the plus side, e.g. it has strong support
+for multiple customers. OTOH, it deals with tickets instead of bugs, and sadly
+it doesn&#8217;t have a single identifier for tickets. It has a ticket <em>number</em>
+(which by default even includes the date), which is searchable, and it has a
+ticket <em>ID</em>, which is used for URL&#8217;s.</p></div>
+<div class="paragraph"><p>In case of Bugzilla, you can easily lookup "bug#12345" in Firefox. Create a
+bookmark with the following properties:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Location: <a href="https://localhost/bugzilla/show_bug.cgi?id=%s">https://localhost/bugzilla/show_bug.cgi?id=%s</a>
+</p>
+</li>
+<li>
+<p>
+Keyword: bug
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>and then you can just copy&amp;paste bug#12345 to Firefox, replace the # with a
+space, and Firefox will do the right thing.</p></div>
+<div class="paragraph"><p>Unfortunately (due to the above detailed reasons), this is not possible with
+OTRS. So I decided to write a Supybot plugin that can notice "bug#12345" on an
+IRC channel, and give you the clickable URL (after finding out the ticket ID
+from the ticket number).</p></div>
+<div class="paragraph"><p>The result is available
+<a href="https://github.com/vmiklos/vmexam/tree/master/python/supybot-otrs">on GitHub</a>,
+it looks like this:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>09:58 &lt; vmiklos&gt; bug#1000068
+09:58 &lt; supybot&gt; https://localhost/otrs/index.pl?Action=AgentTicketZoom;TicketID=73</code></pre>
+</div></div>
+<div class="paragraph"><p>Given that I found no relevant hits when
+<a href="https://www.google.com/search?q=supybot+%22otrs%22">searching</a> for <em>supybot
+otrs</em>, I hope this code may be useful for others as well.</p></div>
+<div class="paragraph"><p>Thanks to James Scott for his
+<a href="https://github.com/scottjab/supybot-youtube">YouTube</a> plugin that helped to
+quickly figure out the relevant Supybot API&#8217;s.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/chihiro-szellemorszagban.html">Chihiro szellemországban</a></h1>
   </div>
   <div class="article_meta">
@@ -462,69 +521,6 @@ tudnám jellemezni, de mivel musical, azért ez kicsit emészthetőbb és
 élvezetesebb volt. ;-)</p></div>
 <div class="paragraph"><p>(<a href="http://hu.wikipedia.org/wiki/Tavasz%C3%A9bred%C3%A9s">wikipédia</a>,
 <a href="http://www.musicalinfo.hu/ot-eves-a-tavaszebredes-musical-3232">musicalinfo</a>)</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/fosdem2014.html">InteropGrabBag in LibreOffice Writer</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Thu 06 February 2014</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://speakerdeck.com/vmiklos/interopgrabbag-in-libreoffice-writer">
-<img src="https://lh5.googleusercontent.com/-XoQPls8ulH4/UvOP_KUNG8I/AAAAAAAAEA0/BSJLDOfvLUA/s400/interopgrabbag-fosdem-brussels-2k14-0.jpg" alt="https://lh5.googleusercontent.com/-XoQPls8ulH4/UvOP_KUNG8I/AAAAAAAAEA0/BSJLDOfvLUA/s400/interopgrabbag-fosdem-brussels-2k14-0.jpg" />
-</a>
-</div>
-</div>
-<div class="paragraph"><p>I&#8217;ve arrived home yesterday from Brussels where I
-<a href="https://fosdem.org/2014/schedule/event/interopgrabbag_in_libreoffice_writer/">presented</a>
-at FOSDEM 2014, in the
-<a href="https://fosdem.org/2014/schedule/track/open_document_editors/">Open document
-editors devroom</a>.</p></div>
-<div class="paragraph"><p>We also had a
-<a href="https://wiki.documentfoundation.org/Hackfest/FOSDEM2014">Hackfest</a>, kindly
-hosted by <a href="http://www.betacowork.com/">Betacowork</a> on Monday and Tuesday.</p></div>
-<div class="paragraph"><p>Here are a few talks I enjoyed, not counting the LibreOffice ones:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-<a href="https://fosdem.org/2014/schedule/event/simplifying_reuse_with_metadata_support_in_odf_and_plugin_apis/">Simplifying
-  reuse with metadata support in ODF and plugin APIs</a>&#8201;&#8212;&#8201;finally a simple way
-  to copy&amp;paste images from Firefox to LibreOffice with source attribution.
-</p>
-</li>
-<li>
-<p>
-<a href="https://fosdem.org/2014/schedule/event/valgrind_gdb/">Combining the power of
-  Valgrind and GDB</a>&#8201;&#8212;&#8201;useful to know about this possibility
-</p>
-</li>
-<li>
-<p>
-<a href="https://fosdem.org/2014/schedule/event/usecasesclangcppparser/">Two uses
-  cases for the clang C++ parser: Online Code Browser and Qt moc Replacement.</a>
- &#8201;&#8212;&#8201;maybe the first could replace our crappy Java-based opengrok? We&#8217;ll see.
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>I was also happy to meet Jacobo, Matus, Tim and Tomaž finally personally. :-)</p></div>
-<div class="paragraph"><p>Quite some other slides are now available on
-<a href="http://planet.documentfoundation.org/">Planet</a>, don&#8217;t miss them. I also took
-some pictures, available
-<a href="https://www.flickr.com/photos/vmiklos/albums/72157672332838272">here</a>,
-including photos of all speakers in our devroom.</p></div>
 </div>
 </div>
 
