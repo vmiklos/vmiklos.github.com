@@ -1,5 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>What is Miklos hacking - libreoffice</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Fri, 20 Dec 2019 09:39:17 +0100</lastBuildDate><item><title>Semi-transparent text in Draw/Impress</title><link>https://vmiklos.hu/blog/sd-semi-transparent-text.html</link><description>&lt;div id="preamble"&gt;
+<rss version="2.0"><channel><title>What is Miklos hacking - libreoffice</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Fri, 24 Jan 2020 09:37:19 +0100</lastBuildDate><item><title>Improved rotated text handling in Writer's table rows with automatic height</title><link>https://vmiklos.hu/blog/sw-autorowheight-rotatedtext.html</link><description>&lt;div id="preamble"&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Writer now has better support for rotated text in tables containing rows with automatic height. This
+post also presents two related fixes.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;First, thanks &lt;a href="https://www.otevrenamesta.cz/"&gt;OpenTowns&lt;/a&gt; who made this work by
+&lt;a href="https://www.collaboraoffice.com/"&gt;Collabora&lt;/a&gt; possible.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Before diving into improved rotated text handling, first a continuous section break import problem
+(&lt;a href="https://bugs.documentfoundation.org/show_bug.cgi?id=128605"&gt;tdf#128605&lt;/a&gt;) was fixed: this was a case
+when we created a new page style, but only a new section was intended. Here is how the fix looks:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://lh3.googleusercontent.com/ycsIqjpdm5t2n9FQQhKBbWobpsX2cQ0s-ugLn970XwuGafzL79HzNVly6dYUpLMhTQmZq8Aa36kaGIfWfk-MzYmuSr92zhRUxFk1aNqwDOnTy1cyyrRzCguuvp-Wd3LD8XXzo_Aurg=w640" alt="https://lh3.googleusercontent.com/ycsIqjpdm5t2n9FQQhKBbWobpsX2cQ0s-ugLn970XwuGafzL79HzNVly6dYUpLMhTQmZq8Aa36kaGIfWfk-MzYmuSr92zhRUxFk1aNqwDOnTy1cyyrRzCguuvp-Wd3LD8XXzo_Aurg=w640" /&gt;
+&lt;/div&gt;
+&lt;div class="title"&gt;Figure 1. Importing continuous section break, fixed&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://lh3.googleusercontent.com/jLUVDTY3Z6-IWVCmSfia7ue_aSpXSG7YJK2WqhRCfJkdTgA3cVFRh8TiYZwKRut7vvC0yFkdGBzl9Wpv2auZpg6d84nmDI1gVHBZPmWsf_YA-5qD-SF8Uf2lBG7NOu9RcidR1bQ0ng=w640" alt="https://lh3.googleusercontent.com/jLUVDTY3Z6-IWVCmSfia7ue_aSpXSG7YJK2WqhRCfJkdTgA3cVFRh8TiYZwKRut7vvC0yFkdGBzl9Wpv2auZpg6d84nmDI1gVHBZPmWsf_YA-5qD-SF8Uf2lBG7NOu9RcidR1bQ0ng=w640" /&gt;
+&lt;/div&gt;
+&lt;div class="title"&gt;Figure 2. Importing continuous section break, original&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://lh3.googleusercontent.com/izfhxSHtYg_QmeJdIY_NnX5uiaRsmDHQoPlAsofQSaLJERNzVq_gkOMShR-fzckvAd6E5D-ZEMbr41Db2PEMeUZA8gL-oqJsvf_3PytuxJhL95wz4Fsh-2JakWefx4Tes2MoHlFWWw=w640" alt="https://lh3.googleusercontent.com/izfhxSHtYg_QmeJdIY_NnX5uiaRsmDHQoPlAsofQSaLJERNzVq_gkOMShR-fzckvAd6E5D-ZEMbr41Db2PEMeUZA8gL-oqJsvf_3PytuxJhL95wz4Fsh-2JakWefx4Tes2MoHlFWWw=w640" /&gt;
+&lt;/div&gt;
+&lt;div class="title"&gt;Figure 3. Importing continuous section break, reference&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;What you can see is that the continuous section break used to result in an unwanted page break, and
+this is gone now.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Regarding the actual rotated text handling
+(&lt;a href="https://bugs.documentfoundation.org/show_bug.cgi?id=128611"&gt;tdf#128611&lt;/a&gt;), there were two problems
+there:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+There was a missing flip handling for line shapes
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+Poor layout of rotated text in table cells with automatic height
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Here is how the fix looks like:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://lh3.googleusercontent.com/GFCNQDcvXsN2w1ADVo10H16FUOYB8i6jBTrPad0r6qa8nt8PmDBDD1oiDfG9Zs9_3eVqdyB-O-u6oWIBAujcyso2utvnDpdE4Bs2PykeJkbh0vSYMZDSIKsjv7vI06j9HUCru2Z19w=w640" alt="https://lh3.googleusercontent.com/GFCNQDcvXsN2w1ADVo10H16FUOYB8i6jBTrPad0r6qa8nt8PmDBDD1oiDfG9Zs9_3eVqdyB-O-u6oWIBAujcyso2utvnDpdE4Bs2PykeJkbh0vSYMZDSIKsjv7vI06j9HUCru2Z19w=w640" /&gt;
+&lt;/div&gt;
+&lt;div class="title"&gt;Figure 4. Rotated text in table cells with auto height, fixed (both flip of line and text layout)&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://lh3.googleusercontent.com/IqsWjKbTD03_wnvUMUe_QK1pqdTfZKizoNEHRQDQuvpw_O8mrEQ8AgNk_2qbP49QUpezknqHDxnhn0eYDpfZL833dXaClRPD1e4_wxuTj5mTRTeEgioBCX0djcWa5vNSRdPmnalphA=w640" alt="https://lh3.googleusercontent.com/IqsWjKbTD03_wnvUMUe_QK1pqdTfZKizoNEHRQDQuvpw_O8mrEQ8AgNk_2qbP49QUpezknqHDxnhn0eYDpfZL833dXaClRPD1e4_wxuTj5mTRTeEgioBCX0djcWa5vNSRdPmnalphA=w640" /&gt;
+&lt;/div&gt;
+&lt;div class="title"&gt;Figure 5. Rotated text in table cells with auto height, fixed (only flip of line so far)&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://lh3.googleusercontent.com/2Tkkj7oz9Bm9ckPs5lTGwAGBRokEJ0MWxfqrbqu6afp6Xm1I77zft8riW-kTxKo4kJsO6bwMtaZb0XNToFssEc1kkZuzm0qk0H4eLU-xk8DOd-e5eVMtNR6cYD_1FRDWbCIYok1oJg=w640" alt="https://lh3.googleusercontent.com/2Tkkj7oz9Bm9ckPs5lTGwAGBRokEJ0MWxfqrbqu6afp6Xm1I77zft8riW-kTxKo4kJsO6bwMtaZb0XNToFssEc1kkZuzm0qk0H4eLU-xk8DOd-e5eVMtNR6cYD_1FRDWbCIYok1oJg=w640" /&gt;
+&lt;/div&gt;
+&lt;div class="title"&gt;Figure 6. Rotated text in table cells with auto height, original&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://lh3.googleusercontent.com/m3X4dGiUTsFBnVwQhiEpcAQYGAJ_8vbKN93jivrcsKcCvjaornrk0upCvsTmck1e39XISyuYNc47BF1tuyrskoWLuMhpegtbyPh1KjBD7_wD-oLueaaLbjYnrgReSRkS5krvK1y4LQ=w640" alt="https://lh3.googleusercontent.com/m3X4dGiUTsFBnVwQhiEpcAQYGAJ_8vbKN93jivrcsKcCvjaornrk0upCvsTmck1e39XISyuYNc47BF1tuyrskoWLuMhpegtbyPh1KjBD7_wD-oLueaaLbjYnrgReSRkS5krvK1y4LQ=w640" /&gt;
+&lt;/div&gt;
+&lt;div class="title"&gt;Figure 7. Rotated text in table cells with auto height, reference&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;What you can see is that the line clearing the table cell had a vertical flip, which was lost on
+import. Also, the rotated text in the "row heading" cells was broken into multiple columns. Both are
+fixed now.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;All this is available in LibreOffice master (towards 6.4), so you can try it out
+&lt;a href="http://dev-builds.libreoffice.org/daily/master/"&gt;right now&lt;/a&gt;, if interested.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 24 Jan 2020 09:37:19 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2020-01-24:/blog/sw-autorowheight-rotatedtext.html</guid><category>en</category></item><item><title>Semi-transparent text in Draw/Impress</title><link>https://vmiklos.hu/blog/sd-semi-transparent-text.html</link><description>&lt;div id="preamble"&gt;
 &lt;div class="sectionbody"&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;Draw/Impress now has
 &lt;a href="https://git.libreoffice.org/core/commits/3e5bedbb6910053c0cee4112cd382fbd035c9832..6dbb317ebec681d236c6ce354f581108fd814f7b"&gt;support&lt;/a&gt;
@@ -339,73 +415,4 @@ just tells the generic drawingML import to use a Writer-specific service name fo
 &lt;div class="paragraph"&gt;&lt;p&gt;This is available in LibreOffice master (towards 6.3).&lt;/p&gt;&lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Wed, 15 May 2019 09:29:57 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2019-05-15:/blog/writer-wpg-chart-import.html</guid><category>en</category></item><item><title>btLr text direction in Writer, part 2</title><link>https://vmiklos.hu/blog/btlr-text-direction-in-writer-2.html</link><description>&lt;div id="preamble"&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;I already wrote about the &lt;a href="https://vmiklos.hu/blog/hackweek-2019.html"&gt;btLr text direction&lt;/a&gt; in the
-context of Writer table cells as a result of a &lt;a href="https://www.collaboraoffice.com/"&gt;Collabora&lt;/a&gt; hack
-week. This is meant to be an update to present what happened in the past 2 months. Here is a video
-showing the results:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;a class="image" href="https://youtu.be/79z9XDdH4x8"&gt;
-&lt;img src="https://lh3.googleusercontent.com/RnesyNWGxQM4R255yFIVx_6_ft0Qu38rE10k22dblhzB8J5IG-W5RfNdncu_xtwYfXe-D7GtX7CJVKtspcQVflW2YiWm1EWf9ed3IqH4_bw-ElSKqE2OR4mRsCUcaJrSf61xy4Me_g=w640" alt="https://lh3.googleusercontent.com/RnesyNWGxQM4R255yFIVx_6_ft0Qu38rE10k22dblhzB8J5IG-W5RfNdncu_xtwYfXe-D7GtX7CJVKtspcQVflW2YiWm1EWf9ed3IqH4_bw-ElSKqE2OR4mRsCUcaJrSf61xy4Me_g=w640" /&gt;
-&lt;/a&gt;
-&lt;/div&gt;
-&lt;div class="title"&gt;Figure 1. Before / after screen recording for the below mentioned changes&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;I fixed the following problems since the last blog post on this topic:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="olist arabic"&gt;&lt;ol class="arabic"&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=31f896bb6ef922cf4250c6b971fb9d24a60592b5"&gt;sw
-  btlr writing mode shell: fix up/down cursor travelling&lt;/a&gt;
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=8ae5a98852c2f3d87d6efff598f0c7d54df835d3"&gt;sw
-  btlr writing mode shell: left/right cursor travelling, fix dest para&lt;/a&gt;
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=404bfc6f78549d16de193794960a9c9ab7604511"&gt;sw
-  btlr writing mode shell: left/right cursor travelling, fix vert pos&lt;/a&gt;
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=2f83055cdbd915d5036a7b4374b4ad10e6efc65f"&gt;sw
-  btlr writing mode shell: fix cursor selection&lt;/a&gt;
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=4c5d0e4822dcd0c6c9397a45e3afb66d53ebaafc"&gt;tdf#123943
-  sw btlr writing mode render: fix text portion background&lt;/a&gt;
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=89e5b431d468745da3a1eff14d48296107b9101b"&gt;sw
-  btlr writing mode: implement DOC filter&lt;/a&gt;
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=e651a4f45b310f9890ffbf712b9970d4c452ecec"&gt;tdf#124261
-  sw btlr writing mode render: fix invalidation rectangle&lt;/a&gt;
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=b62bfda66c1499806bfa35c26fdc05f76f8a4db2"&gt;sw
-  btlr writing mode: implement RTF export&lt;/a&gt;
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ol&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;All this is available in LibreOffice master (towards 6.3), so you can try it out right now, if
-interested.&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Mon, 15 Apr 2019 09:13:19 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2019-04-15:/blog/btlr-text-direction-in-writer-2.html</guid><category>en</category></item></channel></rss>
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Wed, 15 May 2019 09:29:57 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2019-05-15:/blog/writer-wpg-chart-import.html</guid><category>en</category></item></channel></rss>

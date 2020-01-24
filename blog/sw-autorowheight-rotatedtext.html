@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/pygments.css">
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=PT+Sans|PT+Serif|PT+Mono">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Miklos Vajna">
+  <meta name="description" content="Posts and writings by Miklos Vajna">
+
+  <link href="https://vmiklos.hu/blog/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking RSS" />
+
+<meta name="keywords" content="en">
+
+  <title>
+    What is Miklos hacking
+&ndash; Improved rotated text handling in Writer's table rows with automatic height  </title>
+
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-24726997-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <h2><a href="https://vmiklos.hu/blog">What is Miklos hacking</a></h2>
+      <p></p>
+      <ul>
+        <li><a href="/" target="_blank">Root</a></li>
+        <li><a href="https://planet.documentfoundation.org/" target="_blank">LibreOffice Blogs</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://vmiklos.hu/blog">Index</a> &brvbar; <a href="https://vmiklos.hu/blog/archives.html">Archives</a>
+      &brvbar; <a href="https://vmiklos.hu/blog/feeds/all.rss.xml">RSS</a>
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sw-autorowheight-rotatedtext.html">Improved rotated text handling in Writer's table rows with automatic height</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Fri 24 January 2020</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>Writer now has better support for rotated text in tables containing rows with automatic height. This
+post also presents two related fixes.</p></div>
+<div class="paragraph"><p>First, thanks <a href="https://www.otevrenamesta.cz/">OpenTowns</a> who made this work by
+<a href="https://www.collaboraoffice.com/">Collabora</a> possible.</p></div>
+<div class="paragraph"><p>Before diving into improved rotated text handling, first a continuous section break import problem
+(<a href="https://bugs.documentfoundation.org/show_bug.cgi?id=128605">tdf#128605</a>) was fixed: this was a case
+when we created a new page style, but only a new section was intended. Here is how the fix looks:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://lh3.googleusercontent.com/ycsIqjpdm5t2n9FQQhKBbWobpsX2cQ0s-ugLn970XwuGafzL79HzNVly6dYUpLMhTQmZq8Aa36kaGIfWfk-MzYmuSr92zhRUxFk1aNqwDOnTy1cyyrRzCguuvp-Wd3LD8XXzo_Aurg=w640" alt="https://lh3.googleusercontent.com/ycsIqjpdm5t2n9FQQhKBbWobpsX2cQ0s-ugLn970XwuGafzL79HzNVly6dYUpLMhTQmZq8Aa36kaGIfWfk-MzYmuSr92zhRUxFk1aNqwDOnTy1cyyrRzCguuvp-Wd3LD8XXzo_Aurg=w640" />
+</div>
+<div class="title">Figure 1. Importing continuous section break, fixed</div>
+</div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://lh3.googleusercontent.com/jLUVDTY3Z6-IWVCmSfia7ue_aSpXSG7YJK2WqhRCfJkdTgA3cVFRh8TiYZwKRut7vvC0yFkdGBzl9Wpv2auZpg6d84nmDI1gVHBZPmWsf_YA-5qD-SF8Uf2lBG7NOu9RcidR1bQ0ng=w640" alt="https://lh3.googleusercontent.com/jLUVDTY3Z6-IWVCmSfia7ue_aSpXSG7YJK2WqhRCfJkdTgA3cVFRh8TiYZwKRut7vvC0yFkdGBzl9Wpv2auZpg6d84nmDI1gVHBZPmWsf_YA-5qD-SF8Uf2lBG7NOu9RcidR1bQ0ng=w640" />
+</div>
+<div class="title">Figure 2. Importing continuous section break, original</div>
+</div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://lh3.googleusercontent.com/izfhxSHtYg_QmeJdIY_NnX5uiaRsmDHQoPlAsofQSaLJERNzVq_gkOMShR-fzckvAd6E5D-ZEMbr41Db2PEMeUZA8gL-oqJsvf_3PytuxJhL95wz4Fsh-2JakWefx4Tes2MoHlFWWw=w640" alt="https://lh3.googleusercontent.com/izfhxSHtYg_QmeJdIY_NnX5uiaRsmDHQoPlAsofQSaLJERNzVq_gkOMShR-fzckvAd6E5D-ZEMbr41Db2PEMeUZA8gL-oqJsvf_3PytuxJhL95wz4Fsh-2JakWefx4Tes2MoHlFWWw=w640" />
+</div>
+<div class="title">Figure 3. Importing continuous section break, reference</div>
+</div>
+<div class="paragraph"><p>What you can see is that the continuous section break used to result in an unwanted page break, and
+this is gone now.</p></div>
+<div class="paragraph"><p>Regarding the actual rotated text handling
+(<a href="https://bugs.documentfoundation.org/show_bug.cgi?id=128611">tdf#128611</a>), there were two problems
+there:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+There was a missing flip handling for line shapes
+</p>
+</li>
+<li>
+<p>
+Poor layout of rotated text in table cells with automatic height
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Here is how the fix looks like:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://lh3.googleusercontent.com/GFCNQDcvXsN2w1ADVo10H16FUOYB8i6jBTrPad0r6qa8nt8PmDBDD1oiDfG9Zs9_3eVqdyB-O-u6oWIBAujcyso2utvnDpdE4Bs2PykeJkbh0vSYMZDSIKsjv7vI06j9HUCru2Z19w=w640" alt="https://lh3.googleusercontent.com/GFCNQDcvXsN2w1ADVo10H16FUOYB8i6jBTrPad0r6qa8nt8PmDBDD1oiDfG9Zs9_3eVqdyB-O-u6oWIBAujcyso2utvnDpdE4Bs2PykeJkbh0vSYMZDSIKsjv7vI06j9HUCru2Z19w=w640" />
+</div>
+<div class="title">Figure 4. Rotated text in table cells with auto height, fixed (both flip of line and text layout)</div>
+</div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://lh3.googleusercontent.com/IqsWjKbTD03_wnvUMUe_QK1pqdTfZKizoNEHRQDQuvpw_O8mrEQ8AgNk_2qbP49QUpezknqHDxnhn0eYDpfZL833dXaClRPD1e4_wxuTj5mTRTeEgioBCX0djcWa5vNSRdPmnalphA=w640" alt="https://lh3.googleusercontent.com/IqsWjKbTD03_wnvUMUe_QK1pqdTfZKizoNEHRQDQuvpw_O8mrEQ8AgNk_2qbP49QUpezknqHDxnhn0eYDpfZL833dXaClRPD1e4_wxuTj5mTRTeEgioBCX0djcWa5vNSRdPmnalphA=w640" />
+</div>
+<div class="title">Figure 5. Rotated text in table cells with auto height, fixed (only flip of line so far)</div>
+</div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://lh3.googleusercontent.com/2Tkkj7oz9Bm9ckPs5lTGwAGBRokEJ0MWxfqrbqu6afp6Xm1I77zft8riW-kTxKo4kJsO6bwMtaZb0XNToFssEc1kkZuzm0qk0H4eLU-xk8DOd-e5eVMtNR6cYD_1FRDWbCIYok1oJg=w640" alt="https://lh3.googleusercontent.com/2Tkkj7oz9Bm9ckPs5lTGwAGBRokEJ0MWxfqrbqu6afp6Xm1I77zft8riW-kTxKo4kJsO6bwMtaZb0XNToFssEc1kkZuzm0qk0H4eLU-xk8DOd-e5eVMtNR6cYD_1FRDWbCIYok1oJg=w640" />
+</div>
+<div class="title">Figure 6. Rotated text in table cells with auto height, original</div>
+</div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://lh3.googleusercontent.com/m3X4dGiUTsFBnVwQhiEpcAQYGAJ_8vbKN93jivrcsKcCvjaornrk0upCvsTmck1e39XISyuYNc47BF1tuyrskoWLuMhpegtbyPh1KjBD7_wD-oLueaaLbjYnrgReSRkS5krvK1y4LQ=w640" alt="https://lh3.googleusercontent.com/m3X4dGiUTsFBnVwQhiEpcAQYGAJ_8vbKN93jivrcsKcCvjaornrk0upCvsTmck1e39XISyuYNc47BF1tuyrskoWLuMhpegtbyPh1KjBD7_wD-oLueaaLbjYnrgReSRkS5krvK1y4LQ=w640" />
+</div>
+<div class="title">Figure 7. Rotated text in table cells with auto height, reference</div>
+</div>
+<div class="paragraph"><p>What you can see is that the line clearing the table cell had a vertical flip, which was lost on
+import. Also, the rotated text in the "row heading" cells was broken into multiple columns. Both are
+fixed now.</p></div>
+<div class="paragraph"><p>All this is available in LibreOffice master (towards 6.4), so you can try it out
+<a href="http://dev-builds.libreoffice.org/daily/master/">right now</a>, if interested.</p></div>
+</div>
+</div>
+
+  </div>
+  <div class="article_meta">
+    <p>Category: <a href="https://vmiklos.hu/blog/category/libreoffice.html">libreoffice</a>
+ &ndash; Tags:
+      <a href="https://vmiklos.hu/blog/tag/en.html">en</a>    </p>
+  </div>
+
+
+</article>
+
+
+    <div id="ending_message">
+      <p>&copy; Miklos Vajna. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
+</body>
+</html>

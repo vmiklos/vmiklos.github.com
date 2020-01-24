@@ -60,6 +60,71 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/cloud.html">Fixing the cloud problem</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Sat 27 December 2014</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh3.googleusercontent.com/-0aWZ5rvDWI4/VJ3tCCh9wcI/AAAAAAAAFHA/A1P8Un5ksrw/s0/">
+<img src="https://lh3.googleusercontent.com/-0aWZ5rvDWI4/VJ3tCCh9wcI/AAAAAAAAFHA/A1P8Un5ksrw/s400/" alt="https://lh3.googleusercontent.com/-0aWZ5rvDWI4/VJ3tCCh9wcI/AAAAAAAAFHA/A1P8Un5ksrw/s400/" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>TL;DR: see above -- a number of preset shapes are now rendered correctly at
+any scale factors, where previously rendering problems occurred.</p></div>
+<div class="paragraph"><p><a href="https://bugs.freedesktop.org/show_bug.cgi?id=87448">fdo#87448</a> has a reproducer
+document that shows rendering errors with the scaled cloud preset shape
+definition. At first I thought that the OOXML spec has wrong definition for
+this shape type, but that turned out to be not the case. What was a problem is
+our implementation of the drawingML arcTo command. This implementation defines
+how we render such arcs as polygons when the shape is to be painted, and given
+that LibreOffice has native support for the drawingML arcTo / ODF G command,
+this implementation is invoked during rendering, it&#8217;s not an import/export
+problem.</p></div>
+<div class="paragraph"><p>The rendering result looked like this before:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh3.googleusercontent.com/-tYg4cifemAs/VJ3tCEHtf9I/AAAAAAAAFG8/WzioMo1AkMA/s0/">
+<img src="https://lh3.googleusercontent.com/-tYg4cifemAs/VJ3tCEHtf9I/AAAAAAAAFG8/WzioMo1AkMA/s400/" alt="https://lh3.googleusercontent.com/-tYg4cifemAs/VJ3tCEHtf9I/AAAAAAAAFG8/WzioMo1AkMA/s400/" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>The cloud is drawn using a set of moveTo and arcTo commands. MoveTo is easier,
+as it uses explicit coordinates, but arcTo is more complex. It has 4
+parameters: the height and width of a "circle", and the start / end angle of
+an arc on that circle. (Of course if height and width do not equal, than
+that&#8217;s no longer a circle&#8230; ;-) ) The problem is that due to this, the
+distance vector between the arc&#8217;s start and end points is implicit&#8201;&#8212;&#8201;so if
+something is miscalculated, errors are nicely added to each other as more and
+more arcs are drawn. This is especially a problem if you later return to the
+end of an earlier arc using moveTo: if arcTo has some problem, then it&#8217;ll be
+clearly visible.</p></div>
+<div class="paragraph"><p>After
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=20f8006e21943b08f1f152e4a0359c9ebe4786f2">fixing
+UNO ARCANGLETO</a> to only take care of scaling / translation only after counting
+the actual arc, we started to produce correct end points for the arcs and
+shapes started to appear correctly at any scale factor, yay! :-)</p></div>
+<div class="paragraph"><p>One remaining problem was how to test this from cppunit, in the above commit I
+exported the shape to a metafile, and then I could use Tomaž's excellent
+MetafileXmlDump to assert that the end of an arc (implicit location) and the
+parameters of a moveTo command (explicit location) equal&#8201;&#8212;&#8201;when they do not,
+that&#8217;s what your eyes call a "rendering problem".</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/libvisio-setup.html">Document Liberation Project hacking experience</a></h1>
   </div>
   <div class="article_meta">
@@ -920,59 +985,6 @@ test document</a>):</p></div>
 </div>
 </div>
 <div class="paragraph"><p>I still hope to fix that as well one day, but the above fix is something we&#8217;ll already provide in 4.3. :-)</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/improved-relative-sized-textframes-in-libreoffice.html">Improved support for text frames with relative sizes in LibreOffice Writer</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Wed 02 April 2014</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://lh6.googleusercontent.com/-YDWSLjQcV1U/UzxP5AJhnyI/AAAAAAAAEIo/8uurEY7s90k/s0/">
-<img src="https://lh6.googleusercontent.com/-YDWSLjQcV1U/UzxP5AJhnyI/AAAAAAAAEIo/8uurEY7s90k/s400/" alt="https://lh6.googleusercontent.com/-YDWSLjQcV1U/UzxP5AJhnyI/AAAAAAAAEIo/8uurEY7s90k/s400/" />
-</a>
-</div>
-</div>
-<div class="paragraph"><p>When using text frames in Writer, you can always choose if you set an absolute
-size for it or you set a relative one. Oddly enough, in case of relative
-sizes, it wasn&#8217;t entirely clear what 100% percent means. With a bit of
-<a href="https://help.libreoffice.org/Writer/Type#Relative">searching</a>, the help says
-"it&#8217;s the page text area", which in practice means the page size, excluding
-the margins.</p></div>
-<div class="paragraph"><p>And that&#8217;s where the problem lies: in many cases (importing foreign formats,
-cover page of a document, etc.) you want to have a textframe which is 100%
-wide, compared to the full page size, including margins. It was already
-possible previously to work this around by manually specifying the same size
-what was used for page size, but that&#8217;s ugly, you duplicate the setting at two
-places.</p></div>
-<div class="paragraph"><p>As you can see on the above screenshot, in LibreOffice 4.3, I now implemented
-this as a new option, you can choose what 100% means for both width and
-height. File filters are also updated accordingly: in case of ODF an
-<a href="https://wiki.documentfoundation.org/Development/ODF_Implementer_Notes#LibreOffice_ODF_extensions">extension</a>
-is proposed, and also DOCX and RTF filters are updated, where the file format
-already supported this feature.</p></div>
-<div class="paragraph"><p>For the curious ones, the feature is in <code>master</code> for almost two months now,
-but I only implemented my favorite part&#8201;&#8212;&#8201;RTF filter&#8201;&#8212;&#8201;only last week,
-that&#8217;s the "news" here. ;-)</p></div>
-<div class="paragraph"><p>If you want to try these out yourself, get a
-<a href="http://dev-builds.libreoffice.org/daily/">daily build</a> and play with it! If
-something goes wrong, report it to us in the
-<a href="https://www.libreoffice.org/get-help/bug/">Bugzilla</a>, so we can try fix it
-before 4.3 gets branched off. Last, but not at least, thanks for
-<a href="http://www.cloudon.com/">CloudOn</a> for funding this improvement! :-)</p></div>
 </div>
 </div>
 
