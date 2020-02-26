@@ -58,6 +58,102 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/libvisio-testing.html">Document Liberation Project regression testing</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Sat 14 March 2015</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 3 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://lh5.googleusercontent.com/-0Qh5cUx4gGA/VQR_RkRe2jI/AAAAAAAAFU8/5KIPToOna4Q/s0/" alt="https://lh5.googleusercontent.com/-0Qh5cUx4gGA/VQR_RkRe2jI/AAAAAAAAFU8/5KIPToOna4Q/s0/" />
+</div>
+</div>
+<div class="paragraph"><p><a href="/blog/libvisio-setup.html">Earlier</a> I wrote about my setup to
+hack libvisio. One missing bit was testing the contributed code. Testing can
+be performed at various levels, so far DLP libraries were tested by recording
+the output of the various <code>foo2raw</code> tools and then comparing the current output
+to some previously known good state. This has a number of benefits:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+If you know that the current state is good, then there is no need write
+  testcases, you can just record your state automatically.
+</p>
+</li>
+<li>
+<p>
+Any change in the output fill signal instant failure, so it gives pretty
+  good test coverage.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>The same technique was used in LibreOffice for Impress testcases initially,
+however we saw a drawback there: Being automatically generated, you have no
+control over what part of the output is important and what part is not&#8201;&#8212;&#8201;both
+parts are recorded and when some part changes, you have to carefully evaluate
+on a case by case basis if the change is OK or not. The upshot is that from
+time to time you just end up regenerating your reference testsuite and till
+the maintainer doesn&#8217;t do that, everyone can only ignore the test results&#8201;&#8212;&#8201;so it doesn&#8217;t really scale.</p></div>
+<div class="paragraph"><p>In short, both techniques have some benefits, but given that the
+<a href="https://gerrit.libreoffice.org/gitweb?p=libvisio-test.git">libvisio test repo</a>
+is quite empty, I thought it&#8217;s a good time to give an other method (what we
+use quite successfully in LO code) a go, too. This method is easy: instead of
+recording the whole output of some test tool, output a structured format (in
+this case XML), and then just assert the interesting part of it using XPath.
+Additionally, these tests
+<a href="https://gerrit.libreoffice.org/gitweb?p=libvisio.git;a=tree;f=src/test;hb=HEAD">are
+in libvisio.git</a>, so you can nicely put the code change and the testcase
+<a href="https://gerrit.libreoffice.org/gitweb?p=libvisio.git;a=commitdiff;h=1bda66b9c0c1cc2b9dcf323a0a45e314b5d4410f">in
+the same commit</a>. So the hope is that this is a more scalable technique:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Provided that <code>make distcheck</code> is ran before committing, you can&#8217;t forget to
+  clone and run the tests.
+</p>
+</li>
+<li>
+<p>
+Writing explicit assertions means that it&#8217;s rarely needed to adjust existing
+  tests. Which is a good thing, as there are no tests for the tests, so
+  touching existing tests should be avoided, if possible. ;-)
+</p>
+</li>
+<li>
+<p>
+Having testcase + code change in the same commit is one step closer to the
+  dream e.g. the git.git guys do&#8201;&#8212;&#8201;they usually require documentation, code
+  and test parts in each patchset. :-)
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Technically this method is implemented using a
+<code>librevenge::RVNGDrawingInterface</code> implementation that generates XML. For now,
+this is part of libvisio, so in case you want to re-use it in some other DLP
+library, you need to copy it to your import library, though if indeed multiple
+importers start to use it, perhaps it&#8217;ll be moved to librevenge. The rest of
+the test framework is a simple
+<a href="https://gerrit.libreoffice.org/gitweb?p=libvisio.git;a=blob;f=src/test/test.cpp;hb=HEAD">testsuite
+runner</a> and a
+<a href="https://gerrit.libreoffice.org/gitweb?p=libvisio.git;a=blob;f=src/test/importtest.cpp;hb=HEAD">cppunit
+TestFixture</a> subclass that contains the actual test cases.</p></div>
+<div class="paragraph"><p>So in case you are planning how to test your import library, then now you have
+two options, evaluate them and choose what seems to be the better tool for
+your purpose.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/tiled-editing-part-3.html">Tiled editing: from input handling to selections</a></h1>
   </div>
   <div class="article_meta">
@@ -887,55 +983,6 @@ pictures. Given that this
 the past, it&#8217;s a bit amusing that now the very same commit implements a new
 feature for the DOCX case and at the same time fixes a regression in the RTF
 filter. Code sharing FTW! :-)</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/upc-port-forward.html">UPC vs port forwarding</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Sat 20 September 2014</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p><a href="http://en.wikipedia.org/wiki/UPC_Broadband">UPC</a> traditionally had a setup
-consisting of a cable modem providing internet access to a single computer,
-and then it was up to the users if they use that access to really connect to a
-computer or to a router, providing wireless access and so on.  It seems, these
-days they are more after actually <em>encouraging</em> people to use their
-subscription on multiple devices&#8201;&#8212;&#8201;possibly that way it&#8217;s easier to sell
-larger packages (like 60 MBit/s download rate instead of 30 MBit/s, etc).  One
-fallout from this move is that they started to replace modems with a
-combination of modems and routers, in this case this is an
-<a href="http://www.ubeeinteractive.com/products/cable/evw3226">Ubee EVW3226</a>, with the
-brand removed. I wanted to try out if this new device could replace my
-previous router or not&#8201;&#8212;&#8201;so far it seems to be good enough, though there was
-one pitfall, hence this post.</p></div>
-<div class="paragraph"><p>It&#8217;s possible to define a range of IP addresses to be used for DHCP purposes,
-though you can&#8217;t serve fixed IP addresses based on the MAC address of the
-clients. Given that my home network isn&#8217;t that large, I can tolerate that: as
-long as there is a range that can be safely used for fixed addresses, I can
-configure that manually.  It&#8217;s also possible to do port forwarding, e.g.
-redirecting the incoming ssh traffic to a given address&#8201;&#8212;&#8201;except you can&#8217;t do
-both at the same time: you can&#8217;t redirect traffic to an address that&#8217;s not
-known (served via DHCP) to the router. Which is a shame, the #1 use case for
-port forwarding is to redirect traffic to a home-server that will then also
-have a fixed IP internally&#8230;</p></div>
-<div class="paragraph"><p>So here is a hack that allowed me to still do this: set the start of the range
-of the DHCP served IP&#8217;s exactly to the address of the (to be used in future
-as) fixed address, e.g. 192.168.0.5. Connect with one client, so that the
-address will be <em>known</em> to the router. Then add the port-forwarding rule,
-finally set the DHCP range back to its original value (in my case I use
-192.168.0.1..99 for fixed addresses and 100+ for dynamic purposes). It&#8217;s a
-stupid trick, but it works&#8230; ;-)</p></div>
 </div>
 </div>
 

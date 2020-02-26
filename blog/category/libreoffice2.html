@@ -60,6 +60,42 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/writer-wpg-chart-import.html">Importing charts from DOCX drawingML group shapes in Writer</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Wed 15 May 2019</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://lh3.googleusercontent.com/Jw_BHWWDubfGASjfFszFu6q9VRXaELjjLun974YCt7pQv3P-WIKqkISu5GHwTNndCHi8jGqv_FvYTZFXdWfxASIzXbgw0Et-7rAQZ3LzxA5Ntxx0GTxRH3y4m3hOYVLMKAyXtCQECQ=w640" alt="https://lh3.googleusercontent.com/Jw_BHWWDubfGASjfFszFu6q9VRXaELjjLun974YCt7pQv3P-WIKqkISu5GHwTNndCHi8jGqv_FvYTZFXdWfxASIzXbgw0Et-7rAQZ3LzxA5Ntxx0GTxRH3y4m3hOYVLMKAyXtCQECQ=w640" />
+</div>
+<div class="title">Figure 1. Chart in drawingML group shape in DOCX, imported into Writer</div>
+</div>
+<div class="paragraph"><p>Years ago I <a href="https://vmiklos.hu/blog/lo-writer-drawingml-shape-improvements.html">posted</a> about a large
+rework to where <a href="https://www.collaboraoffice.com/">Collabora</a> helped a customer to make Writer read
+the drawingML markup for DOCX shapes. You can read the various benefits of this switch in that
+article&#8201;&#8212;&#8201;but similar to other large reworks, this also broke some previously working corner-cases,
+where test coverage lacked.</p></div>
+<div class="paragraph"><p>One of these is charts in group shapes. This needs explicit handling, as Writer normally handles
+charts as TextEmbeddedObjects, while code that imports charts from OOXML is not specific to Writer.
+The
+<a href="https://cgit.freedesktop.org/libreoffice/core/commit/?id=fdf4aaa3dc5cc1d2e7a112e6c32d7845f13caef8">fix</a>
+just tells the generic drawingML import to use a Writer-specific service name for the charts.</p></div>
+<div class="paragraph"><p>This is available in LibreOffice master (towards 6.3).</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/btlr-text-direction-in-writer-2.html">btLr text direction in Writer, part 2</a></h1>
   </div>
   <div class="article_meta">
@@ -822,121 +858,6 @@ room was well-crowded&#8201;&#8212;&#8201;perhaps because the previous talk was 
 interoperability. ;-)</p></div>
 <div class="paragraph"><p>I expect quite some other slides will be available on
 <a href="http://planet.documentfoundation.org/">Planet</a>, don&#8217;t miss them.</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/uno-api-improvements.html">API improvements in LibreOffice</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Wed 08 August 2018</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 3 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://farm2.staticflickr.com/1793/43859007612_ca207fed0f_o.png" alt="https://farm2.staticflickr.com/1793/43859007612_ca207fed0f_o.png" />
-</div>
-</div>
-<div class="paragraph"><p>I worked on two small features to extend the public (UNO) API of LibreOffice.
-First, thanks to <a href="https://vector.com/">Vector</a> for funding
-<a href="https://www.collaboraoffice.com/">Collabora</a> to make this possible.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_aliased_paths_and_text_in_the_png_export_for_draw">Aliased paths and text in the PNG export for Draw</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>The UNO API of Draw allows you to build quite complex and custom shapes, but
-you may want to export the rendered result to a bitmap for testing purposes,
-so you can assert that the actual result matches a reference one.</p></div>
-<div class="paragraph"><p>One problem in this area is anti-aliasing, which can easily differ between
-machines. Given that normally aliased rendering is ugly, there is now a way to
-enable AA, but disable it just during a single invocation of the PNG exporter.</p></div>
-<div class="paragraph"><p>The above picture shows how the AA result looks like. You could write a Basic
-macro like this to trigger the PNG export from Draw:</p></div>
-<div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight
-by Lorenzo Bettini
-http://www.lorenzobettini.it
-http://www.gnu.org/software/src-highlite -->
-<pre><tt>xExporter <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">createUnoService</span></span><span style="color: #990000">(</span><span style="color: #FF0000">"com.sun.star.drawing.GraphicExportFilter"</span><span style="color: #990000">)</span>
-xExporter<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">SetSourceDocument</span></span><span style="color: #990000">(</span>ThisComponent<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">DrawPages</span></span><span style="color: #990000">(</span><span style="color: #993399">0</span><span style="color: #990000">))</span>
-<span style="font-weight: bold"><span style="color: #0000FF">Dim</span></span> <span style="font-weight: bold"><span style="color: #000000">aArgs</span></span><span style="color: #990000">(</span><span style="color: #993399">1</span><span style="color: #990000">)</span> As new com<span style="color: #990000">.</span>sun<span style="color: #990000">.</span>star<span style="color: #990000">.</span>beans<span style="color: #990000">.</span>PropertyValue
-<span style="font-weight: bold"><span style="color: #000000">aArgs</span></span><span style="color: #990000">(</span><span style="color: #993399">0</span><span style="color: #990000">).</span>Name  <span style="color: #990000">=</span> <span style="color: #FF0000">"URL"</span>
-<span style="font-weight: bold"><span style="color: #000000">aArgs</span></span><span style="color: #990000">(</span><span style="color: #993399">0</span><span style="color: #990000">).</span>Value <span style="color: #990000">=</span> <span style="color: #FF0000">"file:///tmp/debug/aa.png"</span>
-<span style="font-weight: bold"><span style="color: #000000">aArgs</span></span><span style="color: #990000">(</span><span style="color: #993399">1</span><span style="color: #990000">).</span>Name  <span style="color: #990000">=</span> <span style="color: #FF0000">"MediaType"</span>
-<span style="font-weight: bold"><span style="color: #000000">aArgs</span></span><span style="color: #990000">(</span><span style="color: #993399">1</span><span style="color: #990000">).</span>Value <span style="color: #990000">=</span> <span style="color: #FF0000">"image/png"</span>
-xExporter<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">filter</span></span><span style="color: #990000">(</span><span style="font-weight: bold"><span style="color: #000000">aArgs</span></span><span style="color: #990000">())</span></tt></pre></div></div>
-<div class="paragraph"><p>Let&#8217;s see how it looks like if you turn AA off:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://farm2.staticflickr.com/1832/43859007522_aeb4516f02_o.png" alt="https://farm2.staticflickr.com/1832/43859007522_aeb4516f02_o.png" />
-</div>
-</div>
-<div class="paragraph"><p>You just need to specify a new <code>Antialiasing</code> key under <code>FilterData</code>:</p></div>
-<div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight
-by Lorenzo Bettini
-http://www.lorenzobettini.it
-http://www.gnu.org/software/src-highlite -->
-<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">Dim</span></span> <span style="font-weight: bold"><span style="color: #000000">aFilterData</span></span><span style="color: #990000">(</span><span style="color: #993399">0</span><span style="color: #990000">)</span> As new com<span style="color: #990000">.</span>sun<span style="color: #990000">.</span>star<span style="color: #990000">.</span>beans<span style="color: #990000">.</span>PropertyValue
-<span style="font-weight: bold"><span style="color: #000000">aFilterData</span></span><span style="color: #990000">(</span><span style="color: #993399">0</span><span style="color: #990000">).</span>Name <span style="color: #990000">=</span> <span style="color: #FF0000">"AntiAliasing"</span>
-<span style="font-weight: bold"><span style="color: #000000">aFilterData</span></span><span style="color: #990000">(</span><span style="color: #993399">0</span><span style="color: #990000">).</span>Value <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #0000FF">False</span></span>
-xExporter <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">createUnoService</span></span><span style="color: #990000">(</span><span style="color: #FF0000">"com.sun.star.drawing.GraphicExportFilter"</span><span style="color: #990000">)</span>
-xExporter<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">SetSourceDocument</span></span><span style="color: #990000">(</span>ThisComponent<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">DrawPages</span></span><span style="color: #990000">(</span><span style="color: #993399">0</span><span style="color: #990000">))</span>
-<span style="font-weight: bold"><span style="color: #0000FF">Dim</span></span> <span style="font-weight: bold"><span style="color: #000000">aArgs</span></span><span style="color: #990000">(</span><span style="color: #993399">2</span><span style="color: #990000">)</span> As new com<span style="color: #990000">.</span>sun<span style="color: #990000">.</span>star<span style="color: #990000">.</span>beans<span style="color: #990000">.</span>PropertyValue
-<span style="font-weight: bold"><span style="color: #000000">aArgs</span></span><span style="color: #990000">(</span><span style="color: #993399">0</span><span style="color: #990000">).</span>Name  <span style="color: #990000">=</span> <span style="color: #FF0000">"URL"</span>
-<span style="font-weight: bold"><span style="color: #000000">aArgs</span></span><span style="color: #990000">(</span><span style="color: #993399">0</span><span style="color: #990000">).</span>Value <span style="color: #990000">=</span> <span style="color: #FF0000">"file:///tmp/debug/non-aa.png"</span>
-<span style="font-weight: bold"><span style="color: #000000">aArgs</span></span><span style="color: #990000">(</span><span style="color: #993399">1</span><span style="color: #990000">).</span>Name  <span style="color: #990000">=</span> <span style="color: #FF0000">"FilterData"</span>
-<span style="font-weight: bold"><span style="color: #000000">aArgs</span></span><span style="color: #990000">(</span><span style="color: #993399">1</span><span style="color: #990000">).</span>Value <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">aFilterData</span></span><span style="color: #990000">()</span>
-<span style="font-weight: bold"><span style="color: #000000">aArgs</span></span><span style="color: #990000">(</span><span style="color: #993399">2</span><span style="color: #990000">).</span>Name  <span style="color: #990000">=</span> <span style="color: #FF0000">"MediaType"</span>
-<span style="font-weight: bold"><span style="color: #000000">aArgs</span></span><span style="color: #990000">(</span><span style="color: #993399">2</span><span style="color: #990000">).</span>Value <span style="color: #990000">=</span> <span style="color: #FF0000">"image/png"</span>
-xExporter<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">filter</span></span><span style="color: #990000">(</span><span style="font-weight: bold"><span style="color: #000000">aArgs</span></span><span style="color: #990000">())</span></tt></pre></div></div>
-<div class="paragraph"><p>You can imagine which rendering result is easier to debug when the reference
-and the actual bitmap doesn&#8217;t match. ;-)</p></div>
-<div class="admonitionblock">
-<table><tr>
-<td class="icon">
-<div class="title">Note</div>
-</td>
-<td class="content">This feature is available for other bitmap formats as well, PNG is only
-an example.</td>
-</tr></table>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_default_character_style_in_writer">Default character style in Writer</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>In most cases you don&#8217;t really need a default character style: if you&#8217;re fine
-with a default, then the default paragraph style should be enough for your
-needs. In general, paragraph styles can contain character properties, so if
-the default is fine for you, you just don&#8217;t set a character style.</p></div>
-<div class="paragraph"><p>However, there is an exception to all rules. If you want to reset the current
-character style, it makes sense to just set the <code>CharStyleName</code> property to a
-default value, especially since this works with paragraph styles already.</p></div>
-<div class="paragraph"><p>Now you can write C++ code like this (see
-<a href="https://cgit.freedesktop.org/libreoffice/core/tree/sw/qa/extras/unowriter/unowriter.cxx">SwUnoWriter::testDefaultCharStyle()</a>
-for a full example):</p></div>
-<div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight
-by Lorenzo Bettini
-http://www.lorenzobettini.it
-http://www.gnu.org/software/src-highlite -->
-<pre><tt>xCursorProps<span style="color: #990000">-&gt;</span><span style="font-weight: bold"><span style="color: #000000">setPropertyValue</span></span><span style="color: #990000">(</span><span style="color: #FF0000">"CharStyleName"</span><span style="color: #990000">,</span> uno<span style="color: #990000">::</span><span style="font-weight: bold"><span style="color: #000000">makeAny</span></span><span style="color: #990000">(</span><span style="font-weight: bold"><span style="color: #000000">OUString</span></span><span style="color: #990000">(</span><span style="color: #FF0000">"Standard"</span><span style="color: #990000">)));</span></tt></pre></div></div>
-<div class="paragraph"><p>And it&#8217;ll be handled as <code>Default Style</code> in English builds, or their localized
-versions in a non-English UI.</p></div>
-<div class="paragraph"><p>All this is available in master (towards LibreOffice 6.2), or you can grab a
-<a href="http://dev-builds.libreoffice.org/daily/master/">daily build</a> and try it out
-right now. :-)</p></div>
 </div>
 </div>
 

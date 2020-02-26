@@ -58,6 +58,30 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/googlecl-and-geeqie.html">googlecl and geeqie</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Mon 02 August 2010</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>I recently tested two new Frugalware packages.</p><p>googlecl is a commandline utility, I wanted to try it out as it has browser-based authentication, which is supposed to be compatible with Google Apps, while the API-based method used by picu is not. To make it short, in case you are in a directory containing photos for an album and you just want to upload all of them to an album named after the directory name, you need:</p><p><pre>
+google picasa create --title $(basename $(pwd)) *.jpg
+</pre></p><p>The other package I recently tested is geeqie, it's a replacement (see history <a href="http://geeqie.sourceforge.net/">here</a>) for gqview I usually use to watch a lot of photos in a directory. And yes, they seem not to break any of the nice feature of the old gqview project, good work! ;)</p><p>Update: there is a <a href="http://code.google.com/p/googlecl/issues/detail?id=170">patch</a> to add sync support, it's usage:</p><p><pre>
+google picasa post --title $(basename $(pwd)) --sync *.jpg
+</pre></p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/chkdep-improvements.html">chkdep improvements</a></h1>
   </div>
   <div class="article_meta">
@@ -270,32 +294,6 @@ A user reported on #bitlbee that in case someone edits an already sent message u
   <li>somehow smbd was listening on ipv6 only, just listing all network interfaces in the config was enough to make it listen on ipv4 as well</li>
   <li>for another strange reason it no longer accepted hostnames on its whitelist, using ip addresses directly did the trick</li>
 </ul></p><p>The other story from yesterday was fix up the firewall configuration at a small office. The problem was that till now they had a PPPoE connection and the firewall used NAT to share the internet access to the desktop machines, but now they switched to a radio-based access, they got a new modem which did not support PPPoE. Of course in short I just got the usual "the internet does not work!" bugreport. ;)</p><p>I must note that I'm not a sysadmin at this office, I just stepped in as the local sysadmin was a SPoF in the system and he (temporally?) disappeared and they asked me beause of "the hours is burning" effect. :)</p><p>So all I had to do is to alter the server configuration, which was running Gentoo. I never touched such a machine before, and it's configuration is (of course, since I'm used to our netconfig) weird, but at least the off-line documentation was enough. So after RTFM, I just had to turn off pppoe, set the dns and the default gateway to the address of the new router and all was fine. One notable interesting fact was that there was no damn vi on the server. Given that emerge takes a lot of time, I had to suck with mcedit. :P</p><p>Conclusion: yet another example why offline documentation is important, even in case nowadays "there is internet everywhere". ;)</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/gcalsync-3-vmware-xrandr.html">gcalsync #3, vmware, xrandr</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Thu 04 March 2010</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>First, I wasted a few more hours with my never-ending "sync events form my Nokia S40 phone to Google Calendar" project. The result: it's not a daemon, it checks if the last sync was more than a day ago, if it can ping google.com, and if both, but it can't reach the phone via bluetooth, then it raises a kde4 notification, and it also notifies me when (and how) the sync was done, so that I switch bluetooth off on the phone after the sync. As usual, available <a href="http://git.frugalware.org/repos/vmexam/bash/gcalsync">here</a>.</p><p>Second, I managed to fix two annoying bugs when installing Frugalware under VMware: dhcpcd did not update /etc/resolv.conf in the installer properly, now that I changed from dhcpcd to busybox's udhcpc, it seems to be fine. (And udhcpc still works fine in qemu as well.). The other vmware-related improvement is that the newport xorg driver somehow locked up the whole virtual machine, now it's moved to extra, so xconfig does not freeze the VM on a default install.</p><p>Third, today finally I managed to figure out how to enable the external output on my netbook, using the openchrome driver. It's just about a single line in xorg.conf:</p><p><pre>
-Option     "ActiveDevice"               "LCD,CRT"
-</pre></p><p>This won't do more than just cloning the output, but it's far enough for me, who just uses the external output for presentation only.</p><p>(There is a binary driver which locks up the whole machine about 5-8 times a day, which has a bit better external video support, but stability is far more important for me, and the openchrome driver _is_ stable.)</p><p>Partly related, when I connected the external output to a projector, I had to set the screen resolution to 1024x768, and later back to 1280x800. 5 years earlier you had to edit xorg.conf and restart X to do this, now you can do this with xrandr:</p><p><pre>
-$ xrandr --output default --mode 1024x768
-</pre></p><p>and then to switch back:</p><p><pre>
-$ xrandr --output default --mode 1280x800
-</pre></p><p>OK, enough entries for today. :)</p>
 </div>
 </div>
 

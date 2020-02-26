@@ -58,6 +58,57 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/pptp-client-howto-on-linux-on-console.html">pptp client howto on linux on console</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Tue 09 February 2010</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>So I saw a few howtos on how to set up ms pptp client on linux, but they're mostly about how to click on networkmanager or other guis, so basically they hide the real detail, IOW what config files are actually used.</p><p>First install the necessary packages:</p><p><code>
+# pacman-g2 -S ppp pptp
+</code></p><p>Here is what I have under /etc/ppp:</p><p><code>
+# cat chap-secrets
+# Secrets for authentication using CHAP
+# client        server  secret                  IP addresses
+$user           PPTP    $secret                 *
+</code></p><p><code>
+# cat options
+lock
+</code></p><p><code>
+# cat options.pptp
+lock
+noauth
+nobsdcomp
+nodeflate
+</code></p><p><code>
+# cat peers/$network
+pty "/usr/sbin/pptp $server --nolaunchpppd"
+name "$user"
+file /etc/ppp/options.pptp
+remotename PPTP
+require-mppe-128
+refuse-eap
+ipparam $network
+</code></p><p>And to bring up ppp0:</p><p><code>
+# pon $network debug dump logfd 2 nodetach
+</code></p><p>If it works fine, you can just use:</p><p><code>
+# pon $network
+</code></p><p>(Obviously replace $user, $secret, $server and $network with real values.)</p><p>One thing I did not figure out is how to configure it to set the default gateway as well. Right now I use the debug mode, then in the output I see the remote address, finally:</p><p><code>
+# route add default gw $remoteaddr
+</code></p><p>Other than that, it works fine - without any damn gui! :)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/google-adwords-kupon.html">google adwords kupon</a></h1>
   </div>
   <div class="article_meta">
@@ -316,36 +367,6 @@ Gyengebbek kedveert: "Felvételi döntés: Felvételi pontszáma elérte az áll
   <li>Nemsokkal utana volt a Margita kupa utolso bringas teljesitmenyturaja, aminek az eves teljesitmenyet kupaval jutalmaztak. ;)</li>
   <li>Iden nyaron (a GSoC tamogatasaval) a swig-en dolgoztam, igazi kihivas volt, es kifejezetten erdekes 2heti idotoltes.</li>
 </ol></p><p>Nem olyan nagy dolog mint a tobbi, de amugy novemberben volt az ominozus eset, hogy meguntam az ujabb b2evo verziokhoz portolgatni a custom patcheimet, rajottem, hogy annyira nem is fontosak, ugyhogy most "vanilla" b2evo fut.</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/district-9.html">district 9</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Thu 07 January 2010</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/ec6TYN75G8JANjP5nL8acUlswkSG19CwsY4aM8NbNwv0d7T1nC5fLZOZ_kISxoCnacDC1wdW85ctpSrKWlzW8eQjX7mygrzjxs7CAsFiDiAhfPCbSC3GvM--dkQtMTyTI_uAGay9jg=w640" alt="https://lh3.googleusercontent.com/ec6TYN75G8JANjP5nL8acUlswkSG19CwsY4aM8NbNwv0d7T1nC5fLZOZ_kISxoCnacDC1wdW85ctpSrKWlzW8eQjX7mygrzjxs7CAsFiDiAhfPCbSC3GvM--dkQtMTyTI_uAGay9jg=w640" />
-</div>
-</div>
-<div class="paragraph"><p>Huh, ijeszto visszanezni, hogy tavaly augusztusban irtam utoljara filmrol. :)</p></div>
-<div class="paragraph"><p>Szoval ezt vmikor az osz folyaman lattam, scifi, de eleg otvar, az urlenyek kulonlegessege, hogy
-folyik beloluk a takony, feketet hugyoznak es ehhez hasonlok. :P</p></div>
-<div class="paragraph"><p>Egyszernezos, de egyszer azert erdemes, a "tipikus hulye amerikai" sztereotipia tetszett, meg amugy
-maga a tema erdekes (egy embert megfertoznek a gepek es elkezd maga is atalakulni geppe).</p></div>
-<div class="paragraph"><p>(<a href="http://www.imdb.com/title/tt1136608/">imdb</a>, <a href="http://www.youtube.com/watch?v=pHihFA8q8xI">trailer</a>)</p></div>
 </div>
 </div>
 
