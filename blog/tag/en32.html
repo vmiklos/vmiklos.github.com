@@ -58,6 +58,26 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/fighting-with-forums.html">Fighting with forums</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Sun 08 March 2009</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>We recently had to move forums.fw.o to a new machine and first boobaa offered a hosting. I had only ftp access, but that isn't a big problem - the bigger one is that we have this mailing list - forums two-way gateway and we failed to configure it. They have virtual domains / mailboxes on the machine (using SQL) and the machine kept rejecting mails sent to the forums by the mailing list. After debugging for about a day, we decied to just move it an other box where there are no virtual announts, and I just had to add some trivial aliases to /etc/postfix/aliases.</p><p>Sigh.</p><p>OTOH, Frugalware 1.0rc2 is out, and now we can continue bugfixing. :-)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/escaping-within-sphinx-and-mysql.html">Escaping within sphinx and mysql</a></h1>
   </div>
   <div class="article_meta">
@@ -234,34 +254,6 @@ export ORACLE_HOME=~/.oracle/product/10.2.0/client_1/
     <div id="preamble">
 <div class="sectionbody">
 <p>I already <a href="/blog/preparing-frugalware-1-0pre2">wrote once</a> about Pootle forcing us to use UTF-8 and not respecting the po headers (where charset can be set), but there is a new chapter in this story. So in case the charset is wrong, the generated mo file is still fine, as long as you have utf8 support in your system. Of course in the setup, where we have an "as much as possible" stripped down system, this is not true.</p><p>A contributor reported this recently, and the symptom was that "sometimes" netconfig is localized, sometimes not. It turned out a bit later that it's localized when it's running in the target system's chroot (when the install of the packages is finished and the config tools are invoked), but not before the installation. Of course the previous solution worked here pretty fine as well: I just had to convert the remaining translations to utf8 manually, and then add code to convert from utf8 to the native encoding in the pre-package stage (currently named 'make prepare') of frugalwareutils.</p><p>Hand converting is boring. And sometimes it's completely messed up, for example you need an 'iconv -f utf8 -t latin1' twice to get the correct accents. ;-)</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/ping-on-windows-and-relative-host-names.html">Ping on windows and relative host names in DNS</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Wed 25 February 2009</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>So I got the followings today at the uni on a Windows box:</p><p><pre>
-    ping alaplab.</p><p>    Pinging alaplab.mit.bme.hu [152.66.252.18] with 32 bytes of data:</p><p>    Reply from 152.66.252.18: bytes=32 time&lt;1ms TTL=127
-    Reply from 152.66.252.18: bytes=32 time&lt;1ms TTL=127
-    Reply from 152.66.252.18: bytes=32 time&lt;1ms TTL=127
-    Reply from 152.66.252.18: bytes=32 time&lt;1ms TTL=127</p><p>    Ping statistics for 152.66.252.18:
-        Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
-    Approximate round trip times in milli-seconds:
-        Minimum = 0ms, Maximum = 0ms, Average = 0ms
-</pre></p><p>Now I wonder if they just ignore the dot at the end of the hostname or WTF.</p>
 </div>
 </div>
 

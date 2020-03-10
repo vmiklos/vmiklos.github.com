@@ -60,6 +60,85 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/pdf-video-export.html">LibreOffice PDF export now supports videos</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Thu 16 February 2017</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://farm4.staticflickr.com/3924/32549564340_4d0990cfa4_o.png" alt="https://farm4.staticflickr.com/3924/32549564340_4d0990cfa4_o.png" />
+</div>
+</div>
+<div class="paragraph"><p>PDF supports screen annotations, which means it&#8217;s possible to play embedded
+and linked videos on top of a static image. Given that LibreOffice also
+supports videos, it made sense to add support for this in our PDF export
+filter. First, thanks to <a href="http://www.pmg.be/">PMG</a> who made this work possible. This
+is currently added for Writer and Impress.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_linked_videos">Linked videos</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Linked videos are the situation when the video is not part of the document
+itself, but it&#8217;s located somewhere else, e.g. a http:// location. This is
+helpful if you want to email around a PDF file, and want to avoid sending
+large files when it has video content.</p></div>
+<div class="paragraph"><p><a href="https://bugs.documentfoundation.org/show_bug.cgi?id=104841">tdf#104841</a> is
+about this situation, first I added support for
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=9d6a749bc664f1876c938afb9eba4adc9f6ee09a">linked
+videos in Impress</a>, then
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=81aef113056270ce65f9dee5fe31b6f60617973c">also</a>
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=0e71075bb7379af318482bb3abbb630c58db9ec9">in
+Writer</a>.</p></div>
+<div class="paragraph"><p>The result can be played using Adobe Acrobat Reader&#8201;&#8212;&#8201;for some reason okular
+on Linux is a bit confused about http:// URLs, wants to convert them to
+relative ones, and then fails as of today.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_embedded_videos">Embedded videos</h2>
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://farm3.staticflickr.com/2666/32115175413_ec6f64243a_z.jpg" alt="https://farm3.staticflickr.com/2666/32115175413_ec6f64243a_z.jpg" />
+</div>
+</div>
+<div class="paragraph"><p><a href="https://bugs.documentfoundation.org/show_bug.cgi?id=105093">tdf#105093</a> is the
+embedded video case, this is handy in case you want to create an entirely
+self-contained PDF, where even the video content is inside the PDF file as an
+embedded file.</p></div>
+<div class="paragraph"><p>After
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=4ad249af88d15f2c8a09f0721a59d82718fcc201">Impress
+support</a> (and a trick around
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=64d80d22851a38eb3f320f4e2b2bdf875da4d8b4">Draw
+vs Impress shapes</a>) the
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=46153bdcf2f89e88607dfb0dd0003108796424e9">Writer
+part</a> wasn&#8217;t too complicated.</p></div>
+<div class="paragraph"><p>Regarding the situation around various video containers and codecs, the above
+code is quite agnostic. :-) On the LibreOffice side all we require is to be
+able to extract a key frame from the video to provide a preview image, so e.g.
+on Linux the support depends on what gstreamer plugins you have installed. The
+video content is written to the PDF file as-is, so again if it will work in
+the PDF reader is up to the reader&#8217;s codec support. On Linux e.g. okular uses
+vlc for video playback, so the range of supported formats is quite wide.  The
+same is true on Windows, what I personally tested is LibreOffice&#8217;s VLC backend
+and the embedded QuickTime player in Acrobat Reader.</p></div>
+<div class="paragraph"><p>All of this is available on LibreOffice master towards 5.4.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/fosdem-2017.html">Impress bugfixes, in time for FOSDEM 2017</a></h1>
   </div>
   <div class="article_meta">
@@ -744,37 +823,6 @@ development track. Click on the image to see all the slides.</p></div>
 <div class="paragraph"><p>I&#8217;ve also published a number of (mostly)
 <a href="https://www.flickr.com/photos/vmiklos/albums/72157673517450165">sightseeing
 pictures</a> based on wondering around in Brno before and after the conference.</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/collaborative-locon-brno-2k16.html">Collaborative editing using LibreOfficeKit LOCon talk</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Fri 09 September 2016</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://speakerd.s3.amazonaws.com/presentations/035a8c526e5b4748a062a266cd4ffd94/collaborative-locon-brno-2k16.pdf">
-<img src="https://farm9.staticflickr.com/8830/29558170685_8aa768ec84_z.jpg" alt="https://farm9.staticflickr.com/8830/29558170685_8aa768ec84_z.jpg" />
-</a>
-</div>
-</div>
-<div class="paragraph"><p>Yesterday I gave a
-<a href="http://conference.libreoffice.org/2016/the-program/sept-8th-thursday/">Collaborative
-editing using LibreOfficeKit</a> talk at LibreOffice conference 2016, in the
-development track. There were many interested parties&#8201;&#8212;&#8201;not a surprise, as
-this is the power horse behind LibreOffice Online. :-)</p></div>
 </div>
 </div>
 

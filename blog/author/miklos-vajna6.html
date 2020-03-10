@@ -58,6 +58,205 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/pdf-sign.html">Signing existing PDF files in LibreOffice</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Mon 12 December 2016</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 6 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://farm1.staticflickr.com/542/31208923460_e3d674d15f_o.png">
+<img src="https://farm1.staticflickr.com/542/31208923460_2eb9bca147_z.jpg" alt="https://farm1.staticflickr.com/542/31208923460_2eb9bca147_z.jpg" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>TL;DR: see above&#8201;&#8212;&#8201;it&#8217;s now possible signing existing PDF files and also
+verify those signatures in LibreOffice 5.3.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_the_problem">The problem</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>LibreOffice already made it possible to digitally sign PDF files as part of
+the PDF export, so in case you had e.g. ODF documents and exported them to
+PDF, optionally a single digital signature could be added as part of the
+export process. This is now much improved. First, thanks to the Dutch Ministry
+of Defense in cooperation with <a href="http://nouenoff.nl/">Nou&amp;Off</a> who made this work
+possible.</p></div>
+<div class="paragraph"><p>A user can already use an other application to verify that signature or sign
+an already existing PDF file. The idea is to allow doing these from inside
+LibreOffice, directly.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_results">Results</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>As it can be seen above, now the Digital Signatures dialog not only works for
+ODF and OOXML files, but also for PDF files. If the file has been signed, then
+the dialog performs verifications of that signature. Signatures are also
+verified on opening any signed PDF file.</p></div>
+<div class="paragraph"><p>I&#8217;ve also extended the user interface a bit, so that signing an existing PDF
+file is easy, similarly how exporting to PDF is easier than exporting to a
+random other file format. There is now a new File &#8594; Digital signatures &#8594;
+Sign exiting PDF menu item to open a PDF file for signing:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://farm1.staticflickr.com/30/31543378146_b33c2f0a83_o.png">
+<img src="https://farm1.staticflickr.com/30/31543378146_b981a22ee0_z.jpg" alt="https://farm1.staticflickr.com/30/31543378146_b981a22ee0_z.jpg" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>When that happens the infobar has a dedicated button to open the Digital
+Signatures dialog, and also going into editing mode triggers a warning dialog,
+as going read-write is not needed to be able to sign a document:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://farm1.staticflickr.com/752/31543377356_d359124361_o.png">
+<img src="https://farm1.staticflickr.com/752/31543377356_eaed7c2301_z.jpg" alt="https://farm1.staticflickr.com/752/31543377356_eaed7c2301_z.jpg" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>And that&#8217;s basically it, after you open a PDF file in Draw, you can do the
+usual digital signature operations on the file, just like it already works for
+previously supported file formats.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_details">Details</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>What follows is something you can probably skip if you&#8217;re a user&#8201;&#8212;&#8201;however if
+you&#8217;re a developer and you want to understand how the above is implemented,
+then read on. ;-)</p></div>
+<div class="sect2">
+<h3 id="_pdf_tokenizer">PDF tokenizer</h3>
+<div class="paragraph"><p>The signing feature in ODF/OOXML is implemented by working directly on the ZIP
+storage in <code>xmlsecurity/</code>. This means that in the PDF case it&#8217;s necessary to
+work on the PDF file directly, except that we had no such PDF tokenizer
+ready to be used.</p></div>
+<div class="paragraph"><p>Code under <code>xmlsecurity/source/pdfio/</code> now is such a tokenizer that can
+extract info from PDF files and can also add incremental updates at the end of
+the file, this way we can make sure adding a signature to a file won&#8217;t loose
+existing content in the file. This is fundamentally different form the usual
+load-edit-save workflow, when we convert the file into a document model, and
+work on that.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_verification_of_signatures">Verification of signatures</h3>
+<div class="paragraph"><p>Previously LO was only able to generate signatures, not verify them. I&#8217;ve
+implemented PDF signature verification using both NSS and CryptoAPI, so all
+Windows, Linux and macOS are covered. I have to admit that the initial verification
+was much easier with CryptoAPI. Until I hit corner-cases, I could use an API
+that&#8217;s well-documented and is higher level than NSS. (I don&#8217;t have to support
+different hash types explicitly, for example.)</p></div>
+<div class="paragraph"><p>When I added support for non-detached signatures, that changed the situation a bit:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code> 1 file changed, 15 insertions(+), 11 deletions(-)</code></pre>
+</div></div>
+<div class="paragraph"><p>was the NSS patch, and</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code> 1 file changed, 104 insertions(+), 8 deletions(-)</code></pre>
+</div></div>
+<div class="paragraph"><p>was the CryptoAPI patch.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_signing_existing_files">Signing existing files</h3>
+<div class="paragraph"><p>Signing an existing file means tokenizing a document, figuring out how an
+incremental update should look like for that file, writing an incremental
+update that has a placeholder for the actual signature (a PKCS#7 blob, where
+the input is just the non-placeholder parts of the document as binary data), and
+finally filling in the placeholder with the actual signature.</p></div>
+<div class="paragraph"><p>For the last step, I could reuse code from the PDF export (modulo fixing bugs
+like <a href="https://bugs.documentfoundation.org/show_bug.cgi?id=99327">tdf#99327</a>).
+For the other steps, the tokenizer remembers the input offset / length for the
+given token, this way it&#8217;s relatively easy to create incremental updates. You
+can add new objects or update new objects in such an incremental update, and
+this source tracking feature allows copying even the unchanged parts of
+updated objects verbatim.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_pdf_1_5">PDF 1.5+</h3>
+<div class="paragraph"><p>Everything becomes a bit more complicated once I started to handle not only
+LO-generated PDF-1.4, but also newer PDF versions. I think this is important,
+as Adobe Acrobat creates PDF 1.6 by default today, which has a number of new
+features (I think all of them were actually introduced in PDF-1.5) that
+affects the tokenizer:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+xref stream: instead of an ASCII xref table ("table of contents") at the end
+  of the file, it&#8217;s now possible to write the binary equivalent of this as an
+  xref stream. Because the binary version can describe more features we must
+  also write an updated xref stream (and not an xref table) when the import
+  already had an xref stream.
+</p>
+</li>
+<li>
+<p>
+object streams: it&#8217;s now possible to write multiple objects inside the
+  stream section of a single object in binary form. The tokenizer is necessary
+  to be able to read these objects and also roundtripping (source tracking)
+  should work not only with physical file offsets, but also inside such
+  compressed streams where the offset is no longer just a number inside the
+  input file. (It&#8217;s OK to write the updated objects outside object streams,
+  still.)
+</p>
+</li>
+<li>
+<p>
+stream predictors: this is a concept from the PNG format, but also used in
+  PDF when compressing the xref stream. See the spec for the gory details, but
+  in short it&#8217;s not enough that instead of plaintext you have to deal with
+  binary compressed data, you also have to filter the data before actually
+  parsing the file offsets, and the filter is defined not in terms of object IDs
+  and file offsets, but in terms of adjacent pixels, since it&#8217;s documented in
+  the PNG spec. :-) (To be close to the Adobe output, we also apply such
+  predictors when writing compressed xref streams.)
+</p>
+</li>
+</ul></div>
+</div>
+<div class="sect2">
+<h3 id="_user_interface">User Interface</h3>
+<div class="paragraph"><p>In addition to be UI changes already mentioned above, one more improvement I
+did is that now the Digital Signatures dialog has a new column to show the
+signature type.  This is either XML-DSig (for ODF/OOXML) or PDF.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_testing">Testing</h3>
+<div class="paragraph"><p>I&#8217;ve added an integration test in the existing
+<code>CppunitTest_xmlsecurity_signing</code> to have coverage for the small new code that
+calls into <code>xmlsecurity/</code> from <code>sfx2/</code> in case of PDF files. But fortunately
+because all other code in <code>xmlsecurity/</code> was new, I could do unit testing in
+<code>CppunitTest_xmlsecurity_pdfsigning</code> for the rest of the features.</p></div>
+<div class="paragraph"><p>Needless to say that invoking the PDF tokenizer + signature creator/verifier
+directly is <strong>much</strong> quicker than loading a full PDF file into Draw, just to see
+the signature status. ;-)</p></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_summary">Summary</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>If you want to try these out yourself, get a
+<a href="http://dev-builds.libreoffice.org/daily/">daily build</a> and play with it! This
+work is part of both <code>master</code> or <code>libreoffice-5-3</code>, so those builds are of
+interest. Happy testing! :-)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/devtalks.html">LibreOffice session at DevTalks Jr.</a></h1>
   </div>
   <div class="article_meta">
@@ -644,66 +843,6 @@ Use <a href="https://github.com/vmiklos/vmexam/blob/master/libreoffice/up-loolws
 </ul></div>
 <div class="paragraph"><p>I believe this setup mostly delegates (envrionment, config switches and toolchain) maintenance to
 LODE, still allows not running in a chroot and managing your git clones without LODE.</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/vc-voc-oc.html">On LibreOffice's ViewContact/ViewObjectContact/ObjectContact</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Mon 18 July 2016</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://farm9.staticflickr.com/8833/28305552801_1d518e31ae_o.png">
-<img src="https://farm9.staticflickr.com/8833/28305552801_21343667ff_z.jpg" alt="https://farm9.staticflickr.com/8833/28305552801_21343667ff_z.jpg" />
-</a>
-</div>
-</div>
-<div class="paragraph"><p>I&#8217;ve recently
-<a href="https://gerrit.libreoffice.org/gitweb?p=core.git;a=commit;h=ac0b3b05ab52d0ac06137cf93d71187c7957ec99">fixed</a>
-a missing-repaint problem in LibreOffice&#8217;s headless backend, but the root
-cause wasn&#8217;t close to the symptom I saw first. Part of the debugging process
-was to understand what&#8217;s the relation between <code>sdr::contact::ViewContact</code>,
-<code>sdr::contact::ViewObjectContact</code> and <code>sdr::contact::ObjectContact</code>.</p></div>
-<div class="paragraph"><p>See
-<a href="http://www.openoffice.org/marketing/ooocon2006/presentations/wednesday_g11.odp">this
-old presentation</a> and the <a href="https://gerrit.libreoffice.org/27190">review of my
-documentation update</a> for the details, but the short version is that:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-somewhat confusingly, <code>sdr::contact::ViewContact</code> is part of the <strong>model</strong>, and
-  there is one <code>sdr::contact::ViewContact</code> object per shape
-</p>
-</li>
-<li>
-<p>
-<code>sdr::contact::ViewObjectContact</code> is part of a view, and there is one
-  <code>sdr::contact::ViewObjectContact</code> per shape, per view
-</p>
-</li>
-<li>
-<p>
-finally <code>sdr::contact::ObjectContact</code> is part of a <strong>view</strong>, and there is one
-  <code>sdr::contact::ObjectContact</code> per view
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>So the answer to my original <em>Is it normal that I have two object contacts and
-a single view contact for a shape and two views?</em> question is: yes, that&#8217;s
-expected. ;-) Hopefully the updated documentation is now more clear, the
-incorrect 1:N relation in the original class diagram first confused me.</p></div>
 </div>
 </div>
 

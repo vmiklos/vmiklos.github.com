@@ -58,6 +58,26 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/libreoffice-rtf-exporter-sajtokozlemenyben.html">LibreOffice RTF exporter sajtokozlemenyben</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Sat 30 October 2010</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+Ki gondolta volna, hogy <a href="http://kemenczy.hu/">kkemenczy</a> addig lobbizik, amig sajtokozlemenyben is <a href="http://hirek.prim.hu/cikk/79665/">megemlitik</a>. ;)
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/slides-of-my-gsoc-2010-presentation.html">Slides of my GSoC 2010 Presentation</a></h1>
   </div>
   <div class="article_meta">
@@ -271,41 +291,6 @@ igy derult ki, hogy valojaban az "a" szinhaz. ;)</p></div>
 </div>
 </div>
 <div class="paragraph"><p>Hewlett Packard, 2010&#8230;</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/scripts-used-in-the-python-2-7-rebuild.html">Scripts used in the Python 2.7 rebuild</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Fri 24 September 2010</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>First, I could almost reuse the same set of scripts as described <a href="/blog/scripts-used-in-the-python-2-6-mass-rebu">here</a>. The only change I needed to do is that aborting the build loop after each fail is a waste of time, so now I did:</p><p><pre>
-for i in $(cat ~/test.list)
-do
-        echo $i
-        cd ~/git/python27/source/*/$i || continue
-        sudo makepkg -t python27,current -C
-        git clean -x -d -f
-        git checkout -f
-        sed -i 's|python>=2.6|python>=2.7|g' FrugalBuild
-        if bumppkg -t python27,current --rebuild "- rebuilt with python-2.7"; then
-                repoman -t python27 -k push
-        else
-                echo $i >> ~/failed.list
-        fi
-done
-</pre></p><p>Then investigated the failed builds manually.</p><p>Oh, and obviously I no longer had to build the x86_64/ppc fpms manually, I just enabled syncpkgd for the python27 WIP repo.</p>
 </div>
 </div>
 
