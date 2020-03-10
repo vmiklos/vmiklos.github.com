@@ -1,0 +1,90 @@
+= My hack week at Collabora: (start of) padded numbering in Writer
+
+:slug: hackweek-2020
+:category: libreoffice
+:tags: en
+:date: 2020-03-10T09:43:24+01:00
+
+As mentioned in a link:|filename|/2017/hackweek-2016.adoc[previous] such report, a hack week is when
+we are allowed to hack on anything we want in LibreOffice for a few days at
+https://www.collaboraoffice.com/[Collabora]. I used this time to implement core support for padded
+numbering in Writer.
+
+== Motivation
+
+Padded numbering is a style where you insert 0 characters in front of an otherwise normal (Arabic)
+numbering, making sure that the result always has at least N characters. Up to know, you had to
+number your content manually to have this effect, while Word supports this feature.
+
+OOXML supports padding up to 2, 3, 4 and 5 characters. Padding up to 2 characters is the older
+feature, supported in DOC and RTF as well, so I focused on that piece.
+
+== Results so far
+
+Here is how the current, the baseline and the reference rendering of padded numbering looks like:
+
+.numbering-padded2.docx, current
+image::https://lh3.googleusercontent.com/n-XvNw0xPkBK_u9eqVraa7meGxYPX8dpKtfmHkN54y60x5HvUhQBouGEnfLX3XjzQFDjG7oWhCGVvFLnINneGZwDIjB8FW1hgwYSEpWrt3kniLGeKNFAfpa_Y9NGHNadj50ecy3FVw=s300-p-k[align="center"]
+
+.numbering-padded2.docx, baseline
+image::https://lh3.googleusercontent.com/BgSZhU4WNkwTvOejqbfaKSiEQUudnDCUeVaQ62xPETwzhP0-FUPsBZMrUrgwhfi3fSou3YIQ_Yb0tuDzJmeIxHk2LhOpS9ENvxwLCr3-aCn4rIS0e9vYOh2__cHAvP82-MUJzQS-Zg=s300-p-k[align="center"]
+
+.numbering-padded2.docx, reference
+image::https://lh3.googleusercontent.com/TXI-klcS5xzPUX0SaV_iqhweMcUX0aN1rc7rwwAbKdulmPYZ6wcYqcQTO94aHGZl_p4FuVSt_drCI1blKRHLupNjC6j08GjdppbkJ8o72xNmjpV_X2_LcPUgZmOfGBeUJRhDKptxqg=s300-p-k[align="center"]
+
+You can see how 0 is inserted before 1..9, but not before 10.
+
+== How is this implemented?
+
+If you would like to know a bit more about how this works, continue reading... :-)
+
+- https://git.libreoffice.org/core/commit/6b80bd446de4bf19df3a9b124881e1fe12402ca8[sw padded
+  numbering: add doc model and UNO API] introduced `ARABIC_ZERO` externally and
+  `SVX_NUM_ARABIC_ZERO` internally
+
+- https://git.libreoffice.org/core/commit/642b7706101a991efc7e312f59dece640d8bfb60[sw padded
+  numbering: add layout] implements the actual padding in a new `lcl_formatArabicZero()` function
+
+- https://git.libreoffice.org/core/commit/7a8450c3ecf1a8000cb37981c981fdd55d196df4[sw padded
+  numbering: add ODF filter] decides how this handled for ODF import/export; the spec needs no
+  extension in this case
+
+- https://git.libreoffice.org/core/commit/5435ea2afc5da5633a440f2f06d79265bcbb040c[sw padded
+  numbering: add DOCX filter] implements OOXML paragraph numbering
+
+- https://git.libreoffice.org/core/commit/a8a5fc175a8af2bf3750497d7ebe2c8ea9176981[sw padded
+  numbering: add DOC filter] implements [MS-DOC] paragraph numbering
+
+- https://git.libreoffice.org/core/commit/dc05428405fb96f28b2d7c7bcfa9033f3f5248a3[sw padded
+  numbering: add RTF export] doesn't touch RTF import, which worked out of the box, due to code
+  sharing with DOCX import
+
+Then I found that footnote numbering needs explicit handling, so added support for padding in that
+case as well:
+
+- https://git.libreoffice.org/core/commit/3ea32f2b6cbe515353218bc1f3d5746ca66f6a5a[sw padded
+  numbering: add DOCX footnote export] reuses the same markup, just in a different context
+
+- https://git.libreoffice.org/core/commit/5c7d0c5bafd244f1bfb3930e0229f1f3f2371c82[sw padded
+  numbering: add DOC footnote filter] fixed custom number formatting for DOC footnote export in general
+
+Finally I had a little bit of remaining time, so I extended support for the recently added Chicago numbering:
+
+- https://git.libreoffice.org/core/commit/ddbad5612e4322665bc70f4a026e5b052bcaf344[sw chicago
+  numbering: add DOCX footnote export] builds on top of the existing paragraph numbering support
+
+- https://git.libreoffice.org/core/commit/9a1dd2e242794b4f26d207efc80a2f5bc088ab7c[sw chicago
+  numbering: add DOC footnote export] only touches footnotes, as this type is not supported for paragraphs
+
+- https://git.libreoffice.org/core/commit/4ba09be7e260ce2a79a23465db7b2837422cde30[sw chicago
+  numbering: add RTF footnote export] fixed custom number formatting for RTF footnote export in general
+
+== Future work
+
+Padding up to 3, 4 and 5 characters would be possible to do, but it's DOCX-only, and uses a
+different markup, planned to be done later.
+
+All this is available in master (towards LibreOffice 7.0), so you can grab a
+http://dev-builds.libreoffice.org/daily/master/[daily build] and try it out right now. :-)
+
+// vim: ft=asciidoc
