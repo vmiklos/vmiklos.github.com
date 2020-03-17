@@ -8,7 +8,17 @@ var center = {x : 19.0045, y : 47.4744};
 var zoom = 14;
 
 // Generate KML with overpass, see <http://overpass-turbo.eu/s/gLa> for an
-// example.
+// example, or if that gets broken:
+// [out:json][timeout:25];
+// (
+//   relation(2806937);
+// );
+// out body;
+// >;
+// out skel qt;
+
+// List of areas which were not 100% and at least once I pulled it up to 100%.
+// Not claiming I did all the work there. :-)
 var tracks = [
   {description : "Sasad", url : "sasad.kml", strokeColor : "green"},
   {description : "Gazdagrét", url : "gazdagret.kml", strokeColor : "green"},
@@ -21,7 +31,8 @@ var tracks = [
   {description : "Hosszúrét", url : "hosszuret.kml", strokeColor : "green"},
   {description : "Madárhegy", url : "madarhegy.kml", strokeColor : "green"},
   {description : "Krisztinaváros", url : "krisztinavaros.kml", strokeColor : "green"},
-  {description : "Kissvábhegy", url : "kissvabhegy.kml", strokeColor : "orange"},
+  {description : "Kissvábhegy", url : "kissvabhegy.kml", strokeColor : "green"},
+  {description : "Orbánjegy", url : "orbanhegy.kml", strokeColor : "orange"},
 ];
 
 // Boilerplate below.
