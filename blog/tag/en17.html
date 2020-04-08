@@ -58,6 +58,45 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/insert-current-datetime.html">Inserting current date and time vs. Hungarian keyboard layout</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Tue 13 December 2011</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>There was an old Calc
+<a href="https://bugs.freedesktop.org/show_bug.cgi?id=30714">bugreport</a> about this, and
+it was an interesting challenge, since I never touched Calc code before.</p></div>
+<div class="paragraph"><p>First, the references:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="http://office.microsoft.com/en-us/excel-help/insert-the-current-date-and-time-in-a-cell-HP003056107.aspx">English Excel help</a>
+</p>
+</li>
+<li>
+<p>
+<a href="http://office.microsoft.com/hu-hu/excel-help/az-aktualis-datum-es-ido-beszurasa-cellaba-HP003056107.aspx">Hungarian Excel help</a>
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Given that there is no easy way to enter Ctrl-Shift-";" using a Hungarian
+keyboard, the Hungarian equivalent is Ctrl-Shift-".".</p></div>
+<div class="paragraph"><p>Actually, once <a href="http://www.youtube.com/watch?v=7nMCjBx7-T4">this feature</a> will be
+implemented, not sure how the Hungarian users will access it. :)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/duplex-printing.html">Duplex printing</a></h1>
   </div>
   <div class="article_meta">
@@ -400,44 +439,6 @@ fun, kudos go to the organizers! If you are curious, there is a growing
 features implemented during the event.</p></div>
 <div class="paragraph"><p>Update: Oh, and I forgot to mention that we (Andras and me) especially
 thank the <a href="http://fsf.hu/">FSF.hu</a> foundation for funding our travel!</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/rtf-font-table.html">Positions in RTF font tables</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Fri 26 August 2011</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Tonight I worked on
-<a href="https://bugs.freedesktop.org/show_bug.cgi?id=39337">fdo#39337</a>, and while
-the writerfilter-based RTF import filter almost handled the document in
-question correctly, the fonts were not correct.</p></div>
-<div class="paragraph"><p>It turned out that this was caused by the fact that RTF&#8217;s font table (a
-table where each row has an ID and it contains the font name, charset
-and other properties) does not require continuous ID&#8217;s (for example
-positions 0, 2, 3 are allowed, even if 1 is not set), but dmapper (the
-glue layer between the RTF tokenizer and the Writer UNO API) does.</p></div>
-<div class="paragraph"><p>I already sent the position of the entry to dmapper, but the position
-turned out to be
-<a href="http://opengrok.libreoffice.org/xref/core/writerfilter/source/dmapper/FontTable.cxx#157">ignored</a>,
-so now I fixed the RTF tokenizer to send continuous ID&#8217;s.</p></div>
-<div class="paragraph"><p>A related improvement is that I just discovered the
-<code>writerfilter::TagLogger::unoPropertySet()</code> method, which can dump the
-properties of an UNO object, and now I&#8217;ve
-<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=120003152826b7450bbf384a9633c83dda4782c7">enabled</a>
-dumping of shape properties, which can help a lot when something goes
-wrong there.</p></div>
 </div>
 </div>
 

@@ -57,6 +57,118 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/system-xmlsec.html">Using LibreOffice with xmlsec from the system</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Tue 04 July 2017</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>LibreOffice uses a number of external libraries, and most of them can be
+configured to use a bundled version or a system version. libxmlsec was an
+exception previously (only the bundled version was usable), but LibreOffice
+master (towards 6.0) doesn&#8217;t have this limitation anymore.</p></div>
+<div class="paragraph"><p>Using a bundled version is a good choice in case:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+you want to create self-contained binaries
+</p>
+</li>
+<li>
+<p>
+you want to bisect a regression, where possibly the regression was
+  introduced by upgrading one of the external libraries
+</p>
+</li>
+<li>
+<p>
+the system (e.g. macOS, Windows) doesn&#8217;t provide the relevant library
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Using a system version is a good thing in case:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+you want to work with the system, not against it (if a Linux distro already
+  provides libxmlsec, why ship a duplicated copy inside LibreOffice?)
+</p>
+</li>
+<li>
+<p>
+being able to use a system version means our bundled version does not have
+  custom patches which affect the functionality of the library
+</p>
+</li>
+<li>
+<p>
+not having custom patches also means upstream benefit from our submitted
+  patches, these patches are reviewed by competent maintainers and upgrading
+  the external is easier, as there is no patchset to rebase.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>With that in mind, let&#8217;s have a look what blocked using system-xmlsec in the past:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+LibreOffice inherited a large patchset from OpenOffice.org, commit
+  694a2c53810dec6d8e069d74baf51e6cdda91faa (2012-11-30) had 16 patches, with
+  this scary diffstat:
+</p>
+</li>
+</ul></div>
+<div class="listingblock">
+<div class="content">
+<pre><code> 43 files changed, 5888 insertions(+), 1885 deletions(-)</code></pre>
+</div></div>
+<div class="ulist"><ul>
+<li>
+<p>
+I even increased this when I added the
+  <a href="/blog/libreoffice-sha256-signatures.html">SHA256 patches</a>, as back then
+  I wasn&#8217;t sure if it&#8217;ll be ever possible to upgrade to a newer libxmlsec
+  version.
+</p>
+</li>
+<li>
+<p>
+Step by step I got rid of most of these patches, either by upstreaming them
+  or realizing they are no longer necessary. Upstreaming wasn&#8217;t always
+  trivial, as for our purposes it was always easy to patch something, but for
+  upstream non-compatible changes always have to be conditional. Today we have
+  3 build-specific patches, 1 backport and 1 feature patch that is (at least)
+  not necessary when signing / verifying documents with software-based
+  certificates.
+</p>
+</li>
+<li>
+<p>
+At the end
+  <a href="https://cgit.freedesktop.org/libreoffice/core/commit/?id=9752eccdd06f6695ec4f173ea93cada65063d1f0">two</a>
+  <a href="https://cgit.freedesktop.org/libreoffice/core/commit/?id=ab50f0b08b22af1e60a0b6ce5e7e8e7d1f665216">more</a>
+  commits were necessary to support building against system-xmlsec, only adding
+  minimal differences when using the system or the bundled xmlsec variants.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>If you are a Linux distro packager then <code>--with-system-libs</code> already implies
+<code>--with-system-xmlsec</code>, so you probably don&#8217;t have to do anything. If you
+build LO for static analysis (e.g. Coverity) then this should be also useful,
+so not relevant issues in 3rd-party code don&#8217;t have to be ignored manually.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/perugia2017.html">LibreOffice Perugia HackFest 2017</a></h1>
   </div>
   <div class="article_meta">
@@ -646,120 +758,6 @@ in the NSS case xmlsec didn&#8217;t do the verification, so as a first step I fi
 that instead in this <a href="https://github.com/lsh123/xmlsec/pull/72">xmlsec GitHub
 pull request</a>. Now that it&#8217;s merged, the next step will be to add such a flag,
 and then LibreOffice can get rid of the patch after the next xmlsec release.</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/pades.html">PAdES support for PDF files in LibreOffice</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Tue 20 December 2016</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 3 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://farm1.staticflickr.com/443/30919530974_5c5b3cb3a9_o.png">
-<img src="https://farm1.staticflickr.com/443/30919530974_7ab3d132d8_z.jpg" alt="https://farm1.staticflickr.com/443/30919530974_7ab3d132d8_z.jpg" />
-</a>
-</div>
-</div>
-<div class="paragraph"><p>Building on top of the previously mentioned
-<a href="/blog/pdf-sign.html">signing of existing PDF files</a> work, one
-more PDF feature coming in LibreOffice 5.3 is initial support for the PDF
-Advanced Electronic Signatures (<a href="https://en.wikipedia.org/wiki/PAdES">PAdES</a>)
-standard.  First, thanks to the Dutch Ministry of Defense in cooperation with
-<a href="http://nouenoff.nl/">Nou&amp;Off</a> who made this work possible.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_results">Results</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>PAdES is an extension of the ISO PDF signature with additional constraints, so
-that it conforms to the requirements of the European eIDAS regulation, which
-in turns makes it more likely that your signed PDF document will be actually
-legally binding in many EU member states.</p></div>
-<div class="paragraph"><p>The best way to check if LibreOffice produces such PDF signatures is to use a
-PAdES validator. So far I found two of them:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-<a href="http://signatures-conformance-checker.etsi.org/">the ETSI one</a>, which
-  requires registration and is a free web service
-</p>
-</li>
-<li>
-<p>
-<a href="https://github.com/esig/dss/">Digital Signature Service</a> (DSS), which is an
-  open source tool you can build, use and modify locally
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>As it can be seen above, the PDF signature produced by LibreOffice 5.3 by
-default conforms to the PAdES baseline spec.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_implementation">Implementation</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>I implemented the followings in LO to make this happen:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-PDF signature creation now defaults to the stronger SHA-256 (instead of the
-  previously used weaker SHA-1), and the PDF verifier understands SHA-256
-</p>
-</li>
-<li>
-<p>
-the PDF signature creation now embeds the signing certificate into the
-  PKCS#7 signature blob in the PDF, so the verifier can check not only the key
-  used for the signing, but the actual certificate as well
-</p>
-</li>
-<li>
-<p>
-the PDF signature import can now detect if such an embedded signing
-  certificate is present in the signature or not
-</p>
-</li>
-</ul></div>
-<div class="admonitionblock">
-<table><tr>
-<td class="icon">
-<div class="title">Note</div>
-</td>
-<td class="content">Don&#8217;t get confused, LO does signature verification (checks if the digest
-matches and validates the certificate) and now shows if the signing
-certificate is present in the signature or not, but it doesn&#8217;t do more than
-that, the above mentioned DSS tool is still superior when it comes to do a
-full validation of a PAdES signature.</td>
-</tr></table>
-</div>
-<div class="paragraph"><p>As usual, this works both with NSS and MS CryptoAPI. In the previous post I
-noted that one task was easier with CryptoAPI. Here I experienced the
-opposite: when writing the signing certificate hash, I could provide templates
-to NSS on how the ASN.1 encoding of it should happen, and NSS did the actual
-ASN.1 DER encoding for me. In the CryptoAPI case there is no such API, so I
-had to do this encoding manually (see
-<a href="https://github.com/LibreOffice/core/blob/master/vcl/source/gdi/pdfwriter_impl.cxx#L6202">CreateSigningCertificateAttribute()</a>),
-which is obviously much more complicated.</p></div>
-<div class="paragraph"><p>Another pain was that the DSS tool doesn&#8217;t really separate the validation of
-the signature itself and of the certificate. The above screenshot was created
-using a non-self-signed certificate, hence the unclear part in the signed-by
-row.</p></div>
-<div class="paragraph"><p>If you want to try these out yourself, get a
-<a href="http://dev-builds.libreoffice.org/daily/">daily build</a> and feel free to play
-with it. This work is part of both <code>master</code> or <code>libreoffice-5-3</code>, so those
-builds are of interest. Happy testing! :-)</p></div>
 </div>
 </div>
 

@@ -58,6 +58,48 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/wrapped-images-in-word.html">Wrapped images in Word (LibreOffice RTF export)</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Thu 13 January 2011</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>I&#8217;ve got a <a href="https://bugs.freedesktop.org/show_bug.cgi?id=32613">report</a>
+which turned out to be two separate issues. One is a regression from
+Go-OO 3.2.x, this post is about this part. The other part is about the
+improvement of both the import/export RTF filter, the bug has some
+detail on that part as well.</p></div>
+<div class="paragraph"><p>So the problem was that wrapped images (when the image is a frame and
+not a character) had some extremely small height. I did not notice this
+bug in LO as an LO-specific extension hides that value, but in Word you
+can see it:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="http://vmiklos.hu/pic/fdo32613-before.png" alt="http://vmiklos.hu/pic/fdo32613-before.png" />
+</div>
+</div>
+<div class="paragraph"><p>The
+<a href="http://cgit.freedesktop.org/libreoffice/writer/commit/?id=c27e4668b18248322be699fc9fc6bf01e4d6a7ea">fix</a>
+is to use the height of the containing frame instead of the height of
+the picture itself, then it&#8217;ll look fine:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="http://vmiklos.hu/pic/fdo32613-after.png" alt="http://vmiklos.hu/pic/fdo32613-after.png" />
+</div>
+</div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/hp-hungary.html">HP vs. Hungary</a></h1>
   </div>
   <div class="article_meta">
@@ -449,128 +491,6 @@ systemd provides this on-demand feature, which is pretty much like
 <a href="http://frugalware.org/packages/103609">appeared</a> in -current, so you can
 even <a href="http://wiki.frugalware.org/index.php/Systemd#Installation">try it
 out</a> without installing any unofficial package.</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/splashy-vs-systemd.html">Splashy vs. systemd</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Wed 15 December 2010</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>So we have this <a href="http://wiki.frugalware.org/index.php/Systemd">systemd wip
-repo</a> and one of the remaining todo items was to fix up splashy to work
-with systemd.</p></div>
-<div class="paragraph"><p>First, why doesn&#8217;t it out of the box of systemd is a drop-in
-replacement? Because splashy is not a simple init script, it hooks
-itself to <code>rc.sysvinit</code>, so it was specific to sysvinit.</p></div>
-<div class="paragraph"><p>Now given that plymouth was already ported to systemd, it served as a
-good example. You may also ask: why don&#8217;t we just switch to plymouth?
-Because:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-we don&#8217;t want to introduce multiple changes at the same time
-</p>
-</li>
-<li>
-<p>
-it
-  <a href="http://fedoraproject.org/wiki/Releases/FeatureBetterStartup#User_Documentation">requires
-  kms</a>, while Splashy did not require it - so as long as it&#8217;s not true
-  that most video cards support kms (think of via or anything else which
-  supports vesafb, but not kms), such a switch would be a regression
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>Okay, enough anti-Plymouth rant. As you can see, right now the task is to fix Splashy.</p></div>
-<div class="paragraph"><p>The steps I did were:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-updated the Splashy theme to remove the progressbar: given that now we
-  start services parallel and on-demand, it does not really make too
-  much sense
-</p>
-</li>
-<li>
-<p>
-introduced unit files: to start on boot, to stop before getty/xorg, to
-  start before kexec/reboot/halt/poweroff
-</p>
-</li>
-<li>
-<p>
-added the usual compatibility symlinks to avoid starting the old
-  rc.splash (which would happen anyway)
-</p>
-</li>
-<li>
-<p>
-added a simple wrapper that fires up splashy and once it&#8217;s ready it
-  sends the Booting&#8230;/Rebooting&#8230;/etc text to it
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>The last problem is a bit more complex: now that xorg startup wants to
-stop splashy, a dependency has to be declared. xorg startup is handled
-by <code>prefdm.service</code>, but in case it depends on <code>splashy-quit.service</code>,
-what will happen if you don&#8217;t have or don&#8217;t want a splash?</p></div>
-<div class="paragraph"><p>The solution for now is to declare an <code>After=</code> relation: that means xorg
-startup will happen after the quit of splashy, if it happens at all.</p></div>
-<div class="paragraph"><p>This way:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-you can disable the splash, it won&#8217;t cause any dependency errors
-</p>
-</li>
-<li>
-<p>
-if you don&#8217;t have <code>prefdm.service</code> enabled, you can even have splashy
-  uninstalled
-</p>
-</li>
-<li>
-<p>
-(this one is a bit ugly) you can disable the splash, but if you
-  uninstall it and have <code>prefdm.service</code> enabled, you&#8217;ll get a
-  dependency error, as systemd will have no idea what
-  <code>splashy-quit.service</code> is.
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>To test the above:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-you need to enable the systemd wip repo (see the link above)
-</p>
-</li>
-<li>
-<p>
-run <code>pacman-g2 -Sy systemd</code>
-</p>
-</li>
-<li>
-<p>
-boot with <code>init=/bin/systemd</code>
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>Stay tuned, we still have a few blocker issues before merging the
-(disabled by default, as you need that kernel parameter) systemd support
-to current.</p></div>
 </div>
 </div>
 

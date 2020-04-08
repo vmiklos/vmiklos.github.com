@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/pygments.css">
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=PT+Sans|PT+Serif|PT+Mono">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Miklos Vajna">
+  <meta name="description" content="Posts and writings by Miklos Vajna">
+
+  <link href="https://vmiklos.hu/blog/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking RSS" />
+
+<meta name="keywords" content="en">
+
+  <title>
+    What is Miklos hacking
+&ndash; Padded numbering in Writer, part 2  </title>
+
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-24726997-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <h2><a href="https://vmiklos.hu/blog">What is Miklos hacking</a></h2>
+      <p></p>
+      <ul>
+        <li><a href="/" target="_blank">Root</a></li>
+        <li><a href="https://planet.documentfoundation.org/" target="_blank">LibreOffice Blogs</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://vmiklos.hu/blog">Index</a> &brvbar; <a href="https://vmiklos.hu/blog/archives.html">Archives</a>
+      &brvbar; <a href="https://vmiklos.hu/blog/feeds/all.rss.xml">RSS</a>
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sw-padded-numbering-2.html">Padded numbering in Writer, part 2</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Wed 08 April 2020</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>I already <a href="https://vmiklos.hu/blog/hackweek-2020.html">posted</a> about the start of padded numbering
+support in Writer, there the focus was to insert <em>0</em> characters to pad up the result to 2
+characters. Let&#8217;s see how that got extended in the recent past&#8230;</p></div>
+<div class="paragraph"><p>First, thanks Nicolas Christener who made this work by <a href="https://www.collaboraoffice.com/">Collabora</a>
+possible.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_motivation">Motivation</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Padded numbering is a style where you insert 0 characters in front of an otherwise normal (Arabic)
+numbering, making sure that the result always has at least N characters. Up to now, you had to
+number your content manually to have this effect, while Word supports this feature.</p></div>
+<div class="paragraph"><p>OOXML supports padding up to 2, 3, 4 and 5 characters. The news is now now it&#8217;s possible to not only
+pad up to 2 characters, but also to any number between 2 and 5.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_results_so_far">Results so far</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Here is how the current rendering of padded numbering looks like, with a custom prefix and suffix:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://lh3.googleusercontent.com/JHqkVdHkLLkFV1Mrh5jR1FFqq8PvU3lmjuOrl6SwBnM-ygsbugL-FccMHIod9Uyj2-hAyADRX7VwozUHgzBTZTdo72FB_nuHzEH-iQngSl5ND0o6h1sZDTs1uv8H5cLNv0cHDgRv2A=w640" alt="https://lh3.googleusercontent.com/JHqkVdHkLLkFV1Mrh5jR1FFqq8PvU3lmjuOrl6SwBnM-ygsbugL-FccMHIod9Uyj2-hAyADRX7VwozUHgzBTZTdo72FB_nuHzEH-iQngSl5ND0o6h1sZDTs1uv8H5cLNv0cHDgRv2A=w640" />
+</div>
+<div class="title">Figure 1. numbering-padded4.docx, current rendering</div>
+</div>
+<div class="paragraph"><p>You can see how 0 is inserted before 999, but not before 1000 as this is the pad-to-4 case.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_how_is_this_implemented">How is this implemented?</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Padding to a custom number is not something that works in general, because both ODF and OOXML has
+  a separate number format for each padding. So Writer supports the 4 cases Word supports, but (for
+  now) not more.
+</p>
+</li>
+<li>
+<p>
+Padding to 3 or more is more complicated than pad to 2, because OOXML has different markups for
+  them.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Here is how the pad-to-2 markup looks like:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>      <span style="font-weight: bold"><span style="color: #0000FF">&lt;w:numFmt</span></span> <span style="color: #009900">w:val</span><span style="color: #990000">=</span><span style="color: #FF0000">"decimalZero"</span><span style="font-weight: bold"><span style="color: #0000FF">/&gt;</span></span></tt></pre></div></div>
+<div class="paragraph"><p>And here is how you define pad-to-3:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>      <span style="font-weight: bold"><span style="color: #0000FF">&lt;mc:AlternateContent&gt;</span></span>
+        <span style="font-weight: bold"><span style="color: #0000FF">&lt;mc:Choice</span></span> <span style="color: #009900">Requires</span><span style="color: #990000">=</span><span style="color: #FF0000">"w14"</span><span style="font-weight: bold"><span style="color: #0000FF">&gt;</span></span>
+          <span style="font-weight: bold"><span style="color: #0000FF">&lt;w:numFmt</span></span> <span style="color: #009900">w:val</span><span style="color: #990000">=</span><span style="color: #FF0000">"custom"</span> <span style="color: #009900">w:format</span><span style="color: #990000">=</span><span style="color: #FF0000">"001, 002, 003, ..."</span><span style="font-weight: bold"><span style="color: #0000FF">/&gt;</span></span>
+        <span style="font-weight: bold"><span style="color: #0000FF">&lt;/mc:Choice&gt;</span></span>
+        <span style="font-weight: bold"><span style="color: #0000FF">&lt;mc:Fallback&gt;</span></span>
+          <span style="font-weight: bold"><span style="color: #0000FF">&lt;w:numFmt</span></span> <span style="color: #009900">w:val</span><span style="color: #990000">=</span><span style="color: #FF0000">"decimal"</span><span style="font-weight: bold"><span style="color: #0000FF">/&gt;</span></span>
+        <span style="font-weight: bold"><span style="color: #0000FF">&lt;/mc:Fallback&gt;</span></span>
+      <span style="font-weight: bold"><span style="color: #0000FF">&lt;/mc:AlternateContent&gt;</span></span></tt></pre></div></div>
+<div class="ulist"><ul>
+<li>
+<p>
+This required taking the <code>w14</code> branch when we hit such a conditional, we used to read the fallback
+  branch previously.
+</p>
+</li>
+<li>
+<p>
+This required mapping the data of the <code>&lt;w:numFmt&gt;</code> XML element not to an enumeration value, but to
+  a pair of objects: the numbering format&#8217;s value and format.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>The rest was reasonably straightforward, since the actual padding implementation just had to be generalized.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_want_to_start_using_this">Want to start using this?</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
+<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
+is a major contributor to LibreOffice and all of this work will be available in TDF&#8217;s next release
+too (7.0).</p></div>
+</div>
+</div>
+
+  </div>
+  <div class="article_meta">
+    <p>Category: <a href="https://vmiklos.hu/blog/category/libreoffice.html">libreoffice</a>
+ &ndash; Tags:
+      <a href="https://vmiklos.hu/blog/tag/en.html">en</a>    </p>
+  </div>
+
+
+</article>
+
+
+    <div id="ending_message">
+      <p>&copy; Miklos Vajna. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
+</body>
+</html>
