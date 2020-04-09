@@ -8,4 +8,5 @@ sys.path.append(os.curdir)
 from pelicanconf import *
 
 SITEURL = 'https://vmiklos.hu/blog'
-GOOGLE_ANALYTICS = "UA-24726997-1"
+MATOMO_URL = "analytics.vmiklos.hu"
+MATOMO_SIDE_ID = "1"
