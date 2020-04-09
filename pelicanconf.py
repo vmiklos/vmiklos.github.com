@@ -41,6 +41,7 @@ PLUGINS = ['asciidoc_reader', 'readtime']
 THEME = '/home/vmiklos/git/pelican-svbhack'
 HIDE_USER_LOGO = True
 DISPLAY_CATEGORIES_ON_MENU = False
+AVOID_GOOGLE_FONTS = True
 
 # Setting to None will cause the summary to be a copy of the original content.
 SUMMARY_MAX_LENGTH = None
