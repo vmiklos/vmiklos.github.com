@@ -9,4 +9,4 @@ from pelicanconf import *
 
 SITEURL = 'https://vmiklos.hu/blog'
 MATOMO_URL = "analytics.vmiklos.hu"
-MATOMO_SIDE_ID = "1"
+MATOMO_SITE_ID = "1"
