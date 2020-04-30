@@ -5,7 +5,7 @@
 <head>
 <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
 <meta name="generator" content="AsciiDoc" />
-<title>odfsig</title>
+<title>ged2dot, a GEDCOM to Graphviz converter</title>
 <style type="text/css">
 /* Shared CSS for AsciiDoc xhtml11 and html5 backends */
 
@@ -734,112 +734,187 @@ asciidoc.install();
 </head>
 <body class="article">
 <div id="header">
-<h1>odfsig</h1>
+<h1>ged2dot, a GEDCOM to Graphviz converter</h1>
 </div>
 <div id="content">
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph"><p><span class="image">
-<a class="image" href="https://travis-ci.com/vmiklos/odfsig">
-<img src="https://travis-ci.com/vmiklos/odfsig.svg?branch=master" alt="Build Status" />
-</a>
-</span>
-<span class="image">
-<a class="image" href="https://ci.appveyor.com/project/MiklosVajna/odfsig/branch/master">
-<img src="https://ci.appveyor.com/api/projects/status/l0wvhclvvo0hi46o/branch/master?svg=true" alt="Build Status" />
+<a class="image" href="https://travis-ci.org/vmiklos/ged2dot">
+<img src="https://travis-ci.org/vmiklos/ged2dot.svg?branch=master" alt="Build Status" />
 </a>
 </span></p></div>
-<div class="paragraph"><p>Open Document Format (ODF) digital signatures tool</p></div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_description">Description</h2>
+<h2 id="_what_8217_s_the_problem_the_tool_solves">What&#8217;s the problem the tool solves?</h2>
 <div class="sectionbody">
-<div class="paragraph"><p>odfsig verifies the digital signatures in an ODF document.</p></div>
+<div class="paragraph"><p><code>ged2dot</code> is a script that takes a <a href="http://en.wikipedia.org/wiki/GEDCOM">GEDCOM</a>
+file and tries to visualize it using <a href="http://www.graphviz.org/">Graphviz</a>'s <code>dot</code>
+tool. The basic idea is that you can map individuals to graph nodes and
+families to graph edges, then <code>dot</code> takes care of the rest. What&#8217;s unique about
+<code>ged2dot</code> is that it allows more than showing ancestors and descendants of a
+single individual (what you can easily do with random family editor software).</p></div>
+<div class="paragraph"><p>You need to have a working ged2dotrc for the tool to process your .ged file.
+See the example in test/screenshotrc for a very complete list of options</p></div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_dependencies">Dependencies</h2>
+<h2 id="_layouts">Layouts</h2>
 <div class="sectionbody">
-<div class="sect2">
-<h3 id="_build_time">Build-time</h3>
 <div class="ulist"><ul>
 <li>
 <p>
-<a href="https://cmake.org/">cmake</a>
-</p>
-</li>
-<li>
-<p>
-<a href="https://github.com/google/googletest">googletest</a>
+The default layout allows to show ancestors of a family (both husband and
+wife), and you can set how many generations do you want to see:
 </p>
 </li>
 </ul></div>
+<div class="imageblock">
+<div class="content">
+<img src="test/screenshot.png" alt="test/screenshot.png" width="1440" />
 </div>
-<div class="sect2">
-<h3 id="_runtime">Runtime</h3>
+</div>
 <div class="ulist"><ul>
 <li>
 <p>
-<a href="https://www.aleksey.com/xmlsec/">xmlsec1-nss or xmlsec1-mscng</a>
-</p>
-</li>
-<li>
-<p>
-<a href="https://libzip.org/">libzip</a>
-</p>
-</li>
-</ul></div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_platforms">Platforms</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>odfsig has been used on a variety of platforms:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-Linux
-</p>
-</li>
-<li>
-<p>
-Windows
-</p>
-</li>
-<li>
-<p>
-macOS
+There is also a <code>Descendants</code> layout, that shows all descendants of a root
+  family.
 </p>
 </li>
 </ul></div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_resources">Resources</h2>
+<h2 id="_libreoffice_draw_gedcom_import_filter">LibreOffice Draw GEDCOM import filter</h2>
 <div class="sectionbody">
+<div class="paragraph"><p>The <code>libreoffice/</code> subdirectory contains a LibreOffice extension, that
+implements a GEDCOM import filter for Draw. Needless to say, it uses <code>ged2dot</code>
+internally&#8201;&#8212;&#8201;think of it as a GUI for <code>ged2dot</code>, with the additional benefit
+that you can hand-edit the resulting layout in Draw, if you want.</p></div>
+<div class="paragraph"><p>Its dependencies:</p></div>
 <div class="ulist"><ul>
 <li>
 <p>
-<a href="http://docs.oasis-open.org/office/v1.2/os/OpenDocument-v1.2-os-part3.html#__RefHeading__752871_826425813">ODF
-  v1.2 digital signatures file spec</a>
+It uses Graphviz to process the <code>dot</code> format. In case you don&#8217;t have Graphviz
+  installed:
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+For Windows,
+    <a href="https://graphviz.gitlab.io/_pages/Download/Download_windows.html">get it here</a> (2.38 is tested).
+</p>
+</li>
+<li>
+<p>
+For Linux, use your package manager to install the <code>graphviz</code> package (2.28 is tested).
+</p>
+</li>
+<li>
+<p>
+For macOS, <a href="http://www.graphviz.org/Download_macos.php">get it here</a> (2.36 is tested).
 </p>
 </li>
 </ul></div>
+</li>
+<li>
+<p>
+LibreOffice &gt;= 6.1
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Features:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Filter detection: you can use File &#8594; Open and select a GEDCOM file, and
+  it&#8217;ll be opened in Draw automatically.
+</p>
+</li>
+<li>
+<p>
+Import options: On import, a graphical dialog can be used to set a subset of
+  the options available in a <code>ged2dotrc</code>.
+</p>
+</li>
+<li>
+<p>
+Internally reuses the excellent SVG import filter of LibreOffice, contributed
+  by Fridrich Strba and Thorsten Behrens, so the result can be manually
+  fine-tuned if necessary.
+</p>
+</li>
+<li>
+<p>
+Runs on Windows and Linux and macOS.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>You can grap a release binary at the
+<a href="http://extensions.libreoffice.org/extension-center/gedcom">LibreOffice
+Extensions</a> site&#8201;&#8212;&#8201;more on how to to install a LibreOffice extension
+<a href="https://wiki.documentfoundation.org/Documentation/HowTo/install_extension">here</a>.</p></div>
+<div class="paragraph"><p>Once that&#8217;s done, you&#8217;ll see something like this if you open a GEDCOM file:</p></div>
+<div class="imageblock">
+<div class="content">
+<img src="libreoffice/screenshot.png" alt="libreoffice/screenshot.png" />
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_license">License</h2>
+<h2 id="_bugs">Bugs</h2>
 <div class="sectionbody">
-<div class="paragraph"><p>Use of this source code is governed by a BSD-style license that can be found in
-the LICENSE file.</p></div>
+<div class="paragraph"><p>For <code>ged2dot</code>, in case a given input results in a runtime crash, it&#8217;s
+considered a bug. If you have a fix for it,
+<a href="https://github.com/vmiklos/ged2dot/pull/new/master">pull requests</a> on GitHub are
+welcome, especially if the fix comes with a test as well.</p></div>
+<div class="paragraph"><p>For the LibreOffice extension, in case you get an error during opening:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+For Windows, the log file location is something like:
+</p>
+</li>
+</ul></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>C:/Users/John/Application Data/LibreOffice/4/user/Scripts/python/log.txt</code></pre>
+</div></div>
+<div class="ulist"><ul>
+<li>
+<p>
+For Linux, start LibreOffice from a terminal, the log is printed to the
+  standard error.
+</p>
+</li>
+<li>
+<p>
+For Mac, start LibreOffice from Terminal:
+</p>
+</li>
+</ul></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>cd /Applications/LibreOffice.app/Contents/program
+./soffice --nologo /path/to/test.ged</code></pre>
+</div></div>
+<div class="paragraph"><p>then the log is printed to the standard error as well.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_icons">Icons</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Icons are from
+<a href="http://www.wpzoom.com/wpzoom/new-freebie-wpzoom-developer-icon-set-154-free-icons/">WPZOOM</a>,
+in case placeholders have to be used for missing images.</p></div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_download">Download</h2>
 <div class="sectionbody">
-<div class="paragraph"><p>From <a href="https://github.com/vmiklos/odfsig">GitHub</a>.</p></div>
+<div class="paragraph"><p>From <a href="https://github.com/vmiklos/ged2dot">GitHub</a>.</p></div>
 <!-- Matomo -->
 <script type="text/javascript">
   var _paq = window._paq || [];
@@ -862,7 +937,7 @@ the LICENSE file.</p></div>
 <div id="footer">
 <div id="footer-text">
 Last updated
- 2020-05-01 00:42:54 CEST
+ 2020-05-01 00:50:10 CEST
 </div>
 </div>
 </body>
