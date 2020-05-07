@@ -1,0 +1,70 @@
+= Export larger pages from Draw using PDF 1.6
+
+:slug: sd-pdf-1-6-larger-page-size
+:category: libreoffice
+:tags: en
+:date: 2020-05-07T14:56:24+02:00
+
+Draw/Impress now has
+https://git.libreoffice.org/core/commit/4830592b780833cf5eee2aef30bc9c5d444dfb24[support] for
+exporting larger page sizes into PDF. The previous limit was 200 " (508 cm), and now practically
+there is no such limit.
+
+First, thanks https://vector.com/[Vector] who made this work by
+https://www.collaboraoffice.com/[Collabora] possible.
+
+== Motivation
+
+You can use Draw with a document which has a single page, which more or less acts as a canvas with
+unlimited size to handle vector graphics. The current limit of such a canvas in size is 600 x 600
+cm. (And that can be uncreased further if there is demand without too large problems.)
+
+Exporting such a document to PDF is a different matter, though. The specification (up to, and
+including version 1.5) says that the unit to specify sizes is points, and the maximum allowed value
+is 14 400. This means that there is no markup to describe that your page is 600 cm wide. PDF 1.6
+(and newer versions) introduce a `UserUnit` markup to allow unlimited page size, and now Draw (and
+other apps) can use this to describe the increased size.
+
+Another use-case can be a large sheet in Calc, exporting it to a single PDF page, so you can pan
+around easily on a touch device. If you have enough rows, then getting rid of this limit is helpful
+to deal with the large page height.
+
+== Results so far
+
+Here is how a large page looks like now in Draw and then in Adobe Reader:
+
+.Export of 6m-wide.odg to PDF
+image::https://lh3.googleusercontent.com/wfVdQklYbX9mpfNG0hk_A0-I495Nsu4r8Twokq_ZZR3Z0IondP33BDE_XjGFsNfucDJ9kVpDps_J_tcQATKhwJxAFeZn6hS1NN7i5BVlS9UBroUIGrJU1TiwqDB88k6HpMbnK9x9gQ=w640[align="center",link="https://youtu.be/HtHq23MbYDs"]
+
+You can see how both Draw and Adobe Reader show that the page width is larger than 200 ".
+
+== How is this implemented?
+
+If you would like to know a bit more about how this works, continue reading... :-)
+
+- The PDF export already converts from an internal unit (e.g. Draw uses 100th millimeters, Writer
+  uses twips) to PDF's unit
+
+- The trick is that now PDF's unit is no longer points all the time, but we can dynamically switch
+  to a larger unit as needed.
+
+Here is how the PDF markup looks like for a 600 cm wide page:
+
+----
+1 0 obj
+<</Type/Page ... /MediaBox[0 0 8503.93700787402 396]
+/UserUnit 2 ...>>
+endobj
+----
+
+Notice how we still avoid values larger than 14 400, but now the UserUnit says that 1 unit means 2
+points.
+
+== Want to start using this?
+
+You can get a snapshot / demo of Collabora Office and try it out yourself right now:
+https://www.collaboraoffice.com/collabora-office-latest-snapshot/[try unstable snapshot].  Collabora
+is a major contributor to LibreOffice and all of this work will be available in TDF's next release
+too (7.0).
+
+// vim: ft=asciidoc
