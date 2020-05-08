@@ -59,6 +59,30 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/freenx-server-fontpath.html">freenx server fontpath</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Sun 31 May 2009</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>I wasted some hours debugging till I found out how to set the fontpath of a freenx-server if not using XFS.</p><p>Basically just need to fine-tune /etc/nxserver/node.conf:</p><p><pre>
+DEFAULT_FONT_PATH=$(echo $(grep -v '^ *#' /etc/X11/xorg.conf | grep FontPath | awk \
+'{print $2}' | sed -r "s/^[\"']|[\"']$//g") | sed 's/ /,/g')
+AGENT_EXTRA_OPTIONS_X="-fp $DEFAULT_FONT_PATH"
+</pre></p><p>Based on <a href="http://lists.kde.org/?l=freenx-knx&amp;m=113735435205146&amp;w=2">this post</a>.</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/scooter-rss.html">scooter rss</a></h1>
   </div>
   <div class="article_meta">
@@ -254,32 +278,6 @@ pdftk in.pdf cat 1-endE output out.pdf
     <div id="preamble">
 <div class="sectionbody">
 <p><a href="http://article.gmane.org/gmane.comp.gnu.lilypond.general/46204">Here</a> and <a href="http://article.gmane.org/gmane.comp.gnu.lilypond.general/46206">there</a>.</p><p>Other than that I got a pretty usable answer for my question <a href="http://article.gmane.org/gmane.comp.gnu.lilypond.general/47298">here</a>.</p><p>Wow, I really like the lilypond community. :)</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/asciidoc-source-hilight-for-html-and-pdf.html">Asciidoc source hilight for html and pdf output</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Wed 15 April 2009</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>Long time no blog, mainly because I'm pretty busy with real life.</p><p>So yesterday I got an answer on the asciidoc list about how to do C++ source hilighting that works with html and pdf output as well. The problem is that source-highlight (used for html) and docbook have a different name for this crappy language.</p><p>The solution was to do</p><p><pre>
-:cpp: cpp
-</pre></p><p>Which says "if docbook, then c++ otherwise cpp", and then I can just use</p><p><pre>
-----
-code
-----
-</pre></p><p>Yay!</p>
 </div>
 </div>
 

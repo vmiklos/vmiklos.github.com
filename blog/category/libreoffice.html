@@ -61,6 +61,102 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sd-pdf-1-6-larger-page-size.html">Export larger pages from Draw using PDF 1.6</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Fri 08 May 2020</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>Draw/Impress now has
+<a href="https://git.libreoffice.org/core/commit/4830592b780833cf5eee2aef30bc9c5d444dfb24">support</a> for
+exporting larger page sizes into PDF. The previous limit was 200 " (508 cm), and now practically
+there is no such limit.</p></div>
+<div class="paragraph"><p>First, thanks <a href="https://vector.com/">Vector</a> who made this work by
+<a href="https://www.collaboraoffice.com/">Collabora</a> possible.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_motivation">Motivation</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>You can use Draw with a document which has a single page, which more or less acts as a canvas with
+unlimited size to handle vector graphics. The current limit of such a canvas in size is 600 x 600
+cm. (And that can be uncreased further if there is demand without too large problems.)</p></div>
+<div class="paragraph"><p>Exporting such a document to PDF is a different matter, though. The specification (up to, and
+including version 1.5) says that the unit to specify sizes is points, and the maximum allowed value
+is 14 400. This means that there is no markup to describe that your page is 600 cm wide. PDF 1.6
+(and newer versions) introduce a <code>UserUnit</code> markup to allow unlimited page size, and now Draw (and
+other apps) can use this to describe the increased size.</p></div>
+<div class="paragraph"><p>Another use-case can be a large sheet in Calc, exporting it to a single PDF page, so you can pan
+around easily on a touch device. If you have enough rows, then getting rid of this limit is helpful
+to deal with the large page height.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_results_so_far">Results so far</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Here is how a large page looks like now in Draw and then in Adobe Reader:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://youtu.be/HtHq23MbYDs">
+<img src="https://lh3.googleusercontent.com/wfVdQklYbX9mpfNG0hk_A0-I495Nsu4r8Twokq_ZZR3Z0IondP33BDE_XjGFsNfucDJ9kVpDps_J_tcQATKhwJxAFeZn6hS1NN7i5BVlS9UBroUIGrJU1TiwqDB88k6HpMbnK9x9gQ=w640" alt="https://lh3.googleusercontent.com/wfVdQklYbX9mpfNG0hk_A0-I495Nsu4r8Twokq_ZZR3Z0IondP33BDE_XjGFsNfucDJ9kVpDps_J_tcQATKhwJxAFeZn6hS1NN7i5BVlS9UBroUIGrJU1TiwqDB88k6HpMbnK9x9gQ=w640" />
+</a>
+</div>
+<div class="title">Figure 1. Export of 6m-wide.odg to PDF</div>
+</div>
+<div class="paragraph"><p>You can see how both Draw and Adobe Reader show that the page width is larger than 200 ".</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_how_is_this_implemented">How is this implemented?</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+The PDF export already converts from an internal unit (e.g. Draw uses 100th millimeters, Writer
+  uses twips) to PDF&#8217;s unit
+</p>
+</li>
+<li>
+<p>
+The trick is that now PDF&#8217;s unit is no longer points all the time, but we can dynamically switch
+  to a larger unit as needed.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Here is how the PDF markup looks like for a 600 cm wide page:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code><font face="monospace"><font color="#ff00ff">1</font>&nbsp;<font color="#ff00ff">0</font>&nbsp;<font color="#2e8b57"><b>obj</b></font>
+<font color="#a52a2a"><b>&lt;&lt;</b></font><font color="#008b8b">/Type/Page/Parent</font>&nbsp;<font color="#6a5acd">4 0 R</font><font color="#008b8b">/Resources</font>&nbsp;<font color="#6a5acd">11 0 R</font><font color="#008b8b">/MediaBox</font><font color="#a52a2a"><b>[</b></font><font color="#ff00ff">0</font>&nbsp;<font color="#ff00ff">0</font>&nbsp;<font color="#ff00ff">8503.93700787402</font>&nbsp;<font color="#ff00ff">396</font><font color="#a52a2a"><b>]</b></font>
+<font color="#008b8b">/UserUnit</font>&nbsp;<font color="#ff00ff">2</font><font color="#008b8b">/Group</font><font color="#a52a2a"><b>&lt;&lt;</b></font><font color="#008b8b">/S/Transparency/CS/DeviceRGB/I</font>&nbsp;<font color="#ff00ff">true</font><font color="#a52a2a"><b>&gt;&gt;</b></font><font color="#008b8b">/Contents</font>&nbsp;<font color="#6a5acd">2 0 R</font><font color="#a52a2a"><b>&gt;&gt;</b></font>
+<font color="#2e8b57"><b>endobj</b></font>
+</font></code></pre>
+</div></div>
+<div class="paragraph"><p>Notice how we still avoid values larger than 14 400, but now the UserUnit says that 1 unit means 2
+points.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_want_to_start_using_this">Want to start using this?</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
+<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
+is a major contributor to LibreOffice and all of this work will be available in TDF&#8217;s next release
+too (7.0).</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/sw-padded-numbering-2.html">Padded numbering in Writer, part 2</a></h1>
   </div>
   <div class="article_meta">
@@ -697,72 +793,6 @@ more!</p></div>
 right now: <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.
 Collabora is a major contributor to LibreOffice and all of this work will be available in TDF&#8217;s next
 release, too (6.4).</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/btlr-text-direction-in-writer-4.html">btLr text direction in Writer, part 4</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Fri 16 August 2019</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
-  </div>
-  <div class="article_text">
-    <div class="sect1">
-<h2 id="_the_problem">The problem</h2>
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/meDrX3a3jwfCHpHSpQfS7Tqvy7Cxaumoo5RlnjJ7Qj0fhDgPXeOv7FgRn4Xqesv8IWW3feCV-_lhWOyzZo9ZD5yaxkBrYxd9doRm9x8BJAAdu3QQ1Jj6MIiy5q5FO_d2v5YSbsBUvg=w320" alt="https://lh3.googleusercontent.com/meDrX3a3jwfCHpHSpQfS7Tqvy7Cxaumoo5RlnjJ7Qj0fhDgPXeOv7FgRn4Xqesv8IWW3feCV-_lhWOyzZo9ZD5yaxkBrYxd9doRm9x8BJAAdu3QQ1Jj6MIiy5q5FO_d2v5YSbsBUvg=w320" />
-</div>
-</div>
-<div class="paragraph"><p>I already wrote about the btLr text direction in the context of Writer table cells as a result of a
-Collabora hack week (<a href="https://vmiklos.hu/blog/hackweek-2019.html">part 1</a>,
-<a href="https://vmiklos.hu/blog/btlr-text-direction-in-writer-2.html">part 2</a>,
-<a href="https://vmiklos.hu/blog/btlr-text-direction-in-writer-3.html">part 3</a>). This post is meant to be the
-final one (for now), given that both table cells and shapes / text frames are now working nicely
-with all major formats.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_the_result">The result</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>The first topic is that whenever I looked at supporting the new bottom-to-top, left-to-right
-direction, I always first checked if the more common top-to-bottom, right-to-left direction is
-working or not (this is used for e.g. Japanese rotated text). Turns out that Writer text frames were
-not exported to drawingML (part of DOCX), so I fixed that.</p></div>
-<div class="paragraph"><p>Similarly, there is the older shape markup in DOCX: VML. The tbRl direction from that was broken,
-too, now working nicely.</p></div>
-<div class="paragraph"><p>Then I could actually look at the btLr import from VML, which is now correct.</p></div>
-<div class="paragraph"><p>One of the motivations for this work was to get rid of the old, miserable hack where we did
-character-level rotation during import (which falls apart for multi-paragraph text). If the import
-mapping in itself is not painful enough, we had to undo the effect of this import hack at export
-time. When I could remove the last usage of this dreaded <code>checkFrameBtlr()</code> function in the export
-code, I mentally did a little dance. ;-)</p></div>
-<div class="paragraph"><p>Back to btLR fixing, exporting Writer text frames to DOCX is not interesting when you do DOCX
-editing, but it&#8217;s very much relevant when you do ODT &#8594; DOCX conversion. And the btLr case was of
-course not handled, fixed now.</p></div>
-<div class="paragraph"><p>RTF was broken in 4 different ways: import and export was broken for the btLr and the tbRl cases for
-text frames.</p></div>
-<div class="paragraph"><p>The last thing was the binary DOC export, where btLr text frames were not handled.</p></div>
-<div class="paragraph"><p>With these sorted out, I think the topic of table cells and shapes / text frames are now supported
-reasonably well. ODF could do the btLr writing direction for sections and pages as well, but I don&#8217;t
-see that as a priority. And hey, Word doesn&#8217;t support them, either. :-)</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_want_to_start_using_this">Want to start using this?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
-<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
-is a major contributor to LibreOffice and all of this work will be available in TDF&#8217;s next release,
-too (6.4).</p></div>
 </div>
 </div>
 

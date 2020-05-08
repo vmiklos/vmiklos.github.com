@@ -1,5 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>What is Miklos hacking</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Wed, 08 Apr 2020 14:01:44 +0200</lastBuildDate><item><title>Padded numbering in Writer, part 2</title><link>https://vmiklos.hu/blog/sw-padded-numbering-2.html</link><description>&lt;div id="preamble"&gt;
+<rss version="2.0"><channel><title>What is Miklos hacking</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Fri, 08 May 2020 09:02:33 +0200</lastBuildDate><item><title>Export larger pages from Draw using PDF 1.6</title><link>https://vmiklos.hu/blog/sd-pdf-1-6-larger-page-size.html</link><description>&lt;div id="preamble"&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Draw/Impress now has
+&lt;a href="https://git.libreoffice.org/core/commit/4830592b780833cf5eee2aef30bc9c5d444dfb24"&gt;support&lt;/a&gt; for
+exporting larger page sizes into PDF. The previous limit was 200 " (508 cm), and now practically
+there is no such limit.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;First, thanks &lt;a href="https://vector.com/"&gt;Vector&lt;/a&gt; who made this work by
+&lt;a href="https://www.collaboraoffice.com/"&gt;Collabora&lt;/a&gt; possible.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_motivation"&gt;Motivation&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;You can use Draw with a document which has a single page, which more or less acts as a canvas with
+unlimited size to handle vector graphics. The current limit of such a canvas in size is 600 x 600
+cm. (And that can be uncreased further if there is demand without too large problems.)&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Exporting such a document to PDF is a different matter, though. The specification (up to, and
+including version 1.5) says that the unit to specify sizes is points, and the maximum allowed value
+is 14 400. This means that there is no markup to describe that your page is 600 cm wide. PDF 1.6
+(and newer versions) introduce a &lt;code&gt;UserUnit&lt;/code&gt; markup to allow unlimited page size, and now Draw (and
+other apps) can use this to describe the increased size.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Another use-case can be a large sheet in Calc, exporting it to a single PDF page, so you can pan
+around easily on a touch device. If you have enough rows, then getting rid of this limit is helpful
+to deal with the large page height.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_results_so_far"&gt;Results so far&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Here is how a large page looks like now in Draw and then in Adobe Reader:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;a class="image" href="https://youtu.be/HtHq23MbYDs"&gt;
+&lt;img src="https://lh3.googleusercontent.com/wfVdQklYbX9mpfNG0hk_A0-I495Nsu4r8Twokq_ZZR3Z0IondP33BDE_XjGFsNfucDJ9kVpDps_J_tcQATKhwJxAFeZn6hS1NN7i5BVlS9UBroUIGrJU1TiwqDB88k6HpMbnK9x9gQ=w640" alt="https://lh3.googleusercontent.com/wfVdQklYbX9mpfNG0hk_A0-I495Nsu4r8Twokq_ZZR3Z0IondP33BDE_XjGFsNfucDJ9kVpDps_J_tcQATKhwJxAFeZn6hS1NN7i5BVlS9UBroUIGrJU1TiwqDB88k6HpMbnK9x9gQ=w640" /&gt;
+&lt;/a&gt;
+&lt;/div&gt;
+&lt;div class="title"&gt;Figure 1. Export of 6m-wide.odg to PDF&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;You can see how both Draw and Adobe Reader show that the page width is larger than 200 ".&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_how_is_this_implemented"&gt;How is this implemented?&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;If you would like to know a bit more about how this works, continue reading&amp;#8230; :-)&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+The PDF export already converts from an internal unit (e.g. Draw uses 100th millimeters, Writer
+  uses twips) to PDF&amp;#8217;s unit
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+The trick is that now PDF&amp;#8217;s unit is no longer points all the time, but we can dynamically switch
+  to a larger unit as needed.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Here is how the PDF markup looks like for a 600 cm wide page:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="listingblock"&gt;
+&lt;div class="content"&gt;
+&lt;pre&gt;&lt;code&gt;&lt;font face="monospace"&gt;&lt;font color="#ff00ff"&gt;1&lt;/font&gt;&amp;nbsp;&lt;font color="#ff00ff"&gt;0&lt;/font&gt;&amp;nbsp;&lt;font color="#2e8b57"&gt;&lt;b&gt;obj&lt;/b&gt;&lt;/font&gt;
+&lt;font color="#a52a2a"&gt;&lt;b&gt;&amp;lt;&amp;lt;&lt;/b&gt;&lt;/font&gt;&lt;font color="#008b8b"&gt;/Type/Page/Parent&lt;/font&gt;&amp;nbsp;&lt;font color="#6a5acd"&gt;4 0 R&lt;/font&gt;&lt;font color="#008b8b"&gt;/Resources&lt;/font&gt;&amp;nbsp;&lt;font color="#6a5acd"&gt;11 0 R&lt;/font&gt;&lt;font color="#008b8b"&gt;/MediaBox&lt;/font&gt;&lt;font color="#a52a2a"&gt;&lt;b&gt;[&lt;/b&gt;&lt;/font&gt;&lt;font color="#ff00ff"&gt;0&lt;/font&gt;&amp;nbsp;&lt;font color="#ff00ff"&gt;0&lt;/font&gt;&amp;nbsp;&lt;font color="#ff00ff"&gt;8503.93700787402&lt;/font&gt;&amp;nbsp;&lt;font color="#ff00ff"&gt;396&lt;/font&gt;&lt;font color="#a52a2a"&gt;&lt;b&gt;]&lt;/b&gt;&lt;/font&gt;
+&lt;font color="#008b8b"&gt;/UserUnit&lt;/font&gt;&amp;nbsp;&lt;font color="#ff00ff"&gt;2&lt;/font&gt;&lt;font color="#008b8b"&gt;/Group&lt;/font&gt;&lt;font color="#a52a2a"&gt;&lt;b&gt;&amp;lt;&amp;lt;&lt;/b&gt;&lt;/font&gt;&lt;font color="#008b8b"&gt;/S/Transparency/CS/DeviceRGB/I&lt;/font&gt;&amp;nbsp;&lt;font color="#ff00ff"&gt;true&lt;/font&gt;&lt;font color="#a52a2a"&gt;&lt;b&gt;&amp;gt;&amp;gt;&lt;/b&gt;&lt;/font&gt;&lt;font color="#008b8b"&gt;/Contents&lt;/font&gt;&amp;nbsp;&lt;font color="#6a5acd"&gt;2 0 R&lt;/font&gt;&lt;font color="#a52a2a"&gt;&lt;b&gt;&amp;gt;&amp;gt;&lt;/b&gt;&lt;/font&gt;
+&lt;font color="#2e8b57"&gt;&lt;b&gt;endobj&lt;/b&gt;&lt;/font&gt;
+&lt;/font&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Notice how we still avoid values larger than 14 400, but now the UserUnit says that 1 unit means 2
+points.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_want_to_start_using_this"&gt;Want to start using this?&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;You can get a snapshot / demo of Collabora Office and try it out yourself right now:
+&lt;a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/"&gt;try unstable snapshot&lt;/a&gt;.  Collabora
+is a major contributor to LibreOffice and all of this work will be available in TDF&amp;#8217;s next release
+too (7.0).&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 08 May 2020 09:02:33 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2020-05-08:/blog/sd-pdf-1-6-larger-page-size.html</guid><category>en</category></item><item><title>Padded numbering in Writer, part 2</title><link>https://vmiklos.hu/blog/sw-padded-numbering-2.html</link><description>&lt;div id="preamble"&gt;
 &lt;div class="sectionbody"&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;I already &lt;a href="https://vmiklos.hu/blog/hackweek-2020.html"&gt;posted&lt;/a&gt; about the start of padded numbering
 support in Writer, there the focus was to insert &lt;em&gt;0&lt;/em&gt; characters to pad up the result to 2
@@ -508,55 +589,4 @@ Collabora is a major contributor to LibreOffice and all of this work will be ava
 release, too (6.4).&lt;/p&gt;&lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Thu, 12 Sep 2019 11:27:58 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2019-09-12:/blog/libocon2019.html</guid><category>en</category></item><item><title>btLr text direction in Writer, part 4</title><link>https://vmiklos.hu/blog/btlr-text-direction-in-writer-4.html</link><description>&lt;div class="sect1"&gt;
-&lt;h2 id="_the_problem"&gt;The problem&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;img src="https://lh3.googleusercontent.com/meDrX3a3jwfCHpHSpQfS7Tqvy7Cxaumoo5RlnjJ7Qj0fhDgPXeOv7FgRn4Xqesv8IWW3feCV-_lhWOyzZo9ZD5yaxkBrYxd9doRm9x8BJAAdu3QQ1Jj6MIiy5q5FO_d2v5YSbsBUvg=w320" alt="https://lh3.googleusercontent.com/meDrX3a3jwfCHpHSpQfS7Tqvy7Cxaumoo5RlnjJ7Qj0fhDgPXeOv7FgRn4Xqesv8IWW3feCV-_lhWOyzZo9ZD5yaxkBrYxd9doRm9x8BJAAdu3QQ1Jj6MIiy5q5FO_d2v5YSbsBUvg=w320" /&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;I already wrote about the btLr text direction in the context of Writer table cells as a result of a
-Collabora hack week (&lt;a href="https://vmiklos.hu/blog/hackweek-2019.html"&gt;part 1&lt;/a&gt;,
-&lt;a href="https://vmiklos.hu/blog/btlr-text-direction-in-writer-2.html"&gt;part 2&lt;/a&gt;,
-&lt;a href="https://vmiklos.hu/blog/btlr-text-direction-in-writer-3.html"&gt;part 3&lt;/a&gt;). This post is meant to be the
-final one (for now), given that both table cells and shapes / text frames are now working nicely
-with all major formats.&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_the_result"&gt;The result&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;The first topic is that whenever I looked at supporting the new bottom-to-top, left-to-right
-direction, I always first checked if the more common top-to-bottom, right-to-left direction is
-working or not (this is used for e.g. Japanese rotated text). Turns out that Writer text frames were
-not exported to drawingML (part of DOCX), so I fixed that.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Similarly, there is the older shape markup in DOCX: VML. The tbRl direction from that was broken,
-too, now working nicely.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Then I could actually look at the btLr import from VML, which is now correct.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;One of the motivations for this work was to get rid of the old, miserable hack where we did
-character-level rotation during import (which falls apart for multi-paragraph text). If the import
-mapping in itself is not painful enough, we had to undo the effect of this import hack at export
-time. When I could remove the last usage of this dreaded &lt;code&gt;checkFrameBtlr()&lt;/code&gt; function in the export
-code, I mentally did a little dance. ;-)&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Back to btLR fixing, exporting Writer text frames to DOCX is not interesting when you do DOCX
-editing, but it&amp;#8217;s very much relevant when you do ODT &amp;#8594; DOCX conversion. And the btLr case was of
-course not handled, fixed now.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;RTF was broken in 4 different ways: import and export was broken for the btLr and the tbRl cases for
-text frames.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;The last thing was the binary DOC export, where btLr text frames were not handled.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;With these sorted out, I think the topic of table cells and shapes / text frames are now supported
-reasonably well. ODF could do the btLr writing direction for sections and pages as well, but I don&amp;#8217;t
-see that as a priority. And hey, Word doesn&amp;#8217;t support them, either. :-)&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_want_to_start_using_this"&gt;Want to start using this?&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;You can get a snapshot / demo of Collabora Office and try it out yourself right now:
-&lt;a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/"&gt;try unstable snapshot&lt;/a&gt;.  Collabora
-is a major contributor to LibreOffice and all of this work will be available in TDF&amp;#8217;s next release,
-too (6.4).&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 16 Aug 2019 09:24:45 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2019-08-16:/blog/btlr-text-direction-in-writer-4.html</guid><category>en</category></item></channel></rss>
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Thu, 12 Sep 2019 11:27:58 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2019-09-12:/blog/libocon2019.html</guid><category>en</category></item></channel></rss>
