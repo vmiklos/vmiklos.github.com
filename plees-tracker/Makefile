@@ -1,2 +1,2 @@
 index.html: index.adoc
-	asciidoc index.adoc
+	asciidoctor index.adoc
