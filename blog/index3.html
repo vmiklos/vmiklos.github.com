@@ -58,6 +58,105 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/smartart-improvements-2.html">SmartArt improvements in LibreOffice, part 2</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Tue 04 December 2018</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>I recently <a href="/blog/smartart-improvements.html">dived into</a> the SmartArt
+support of LibreOffice, which is the component responsible for displaying
+complex diagrams from PPTX. I focused especially on the case when only
+document model and the layout constraints are given, not a pre-rendered
+result.</p></div>
+<div class="paragraph"><p>First, thanks to our partner <a href="https://www.suse.com/">SUSE</a> for working with
+<a href="https://www.collaboraoffice.com/">Collabora</a> to make this possible.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_accent_process">Accent Process</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>In this post I would like to present the progress regarding the Accent Process
+preset, available in PowerPoint&#8201;&#8212;&#8201;which is used in many documents.</p></div>
+<div class="paragraph"><p>This exposed several shortcomings of the current diagram layout we have in LibreOffice:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Values are not read from constraints (there was a reason for this, they can
+  be complex, given that depending on the context, the unit is points or
+  millimeters and the unit is always implicit).
+</p>
+</li>
+<li>
+<p>
+ZOrder offsets were ignored.
+</p>
+</li>
+<li>
+<p>
+Linear algorithm did not take size from constraints when it came to
+  recursing into child algorithms.
+</p>
+</li>
+<li>
+<p>
+Data point assumed that all text for it is a single "run" (i.e. either all
+  text is bold or nothing, not half of it).
+</p>
+</li>
+<li>
+<p>
+<code>followSib</code> axis was not implemented for <code>forEach</code>, so when you have arrow
+  shapes between objects, we created <code>N</code> arrows, not <code>N - 1</code> ones.
+</p>
+</li>
+<li>
+<p>
+Connectors were created as invisible shapes and had the wrong width/height
+  aspect.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>With all these fixed, we reach a much better state for handling accent
+process.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_results_so_far">Results so far</h2>
+<div class="sectionbody">
+<div class="paragraph"><p><a href="https://cgit.freedesktop.org/libreoffice/core/tree/sd/qa/unit/data/pptx/smartart-accent-process.pptx">smartart-accent-process.pptx</a>
+is what I used for testing of this work.</p></div>
+<div class="paragraph"><p>Here is how the baseline, the current and the reference rendering of the test documents look like:</p></div>
+<div style="text-align: center">
+<img src="https://lh3.googleusercontent.com/e4uMwQRLHPsvVTwvnnwkyEIMmE0L-Piv55XreEW9wmA3y29348TWxgUbaCkYGBz-yXf8D55rhEC6Y3-kAp6BbLxNadWQfcxuUB57Z8dXFYPmlw8kjTPcOXNpqeZFKyBvtPiI7eSBhQ=w2400" style="max-width: 100%;"/>
+<p>smartart-accent-process.pptx, baseline</p>
+</div>
+<div style="text-align: center">
+<img src="https://lh3.googleusercontent.com/12c8vCrucm23guXlwYvj51MwAYOsePn7znwKBPq9qFzlgPx9XUTyX0wDcUgb0PR9tFVyTKoZPNXkhEur5Nqp7aosUCDuTVXE6yNj-58x3yLudJdqOnionMab6L-5wZ0rLvn1-bg5zA=w2400" style="max-width: 100%;"/>
+<p>smartart-accent-process.pptx, current</p>
+</div>
+<div style="text-align: center">
+<img src="https://lh3.googleusercontent.com/FBDUqsXyyBI6-abopLSrzHEYbm4YHHZwxFWxnfUsTO0dwl17HdP6sBcKzW_BvTjMWiRuPX6HC1I7aEOcHzeiZBzE-EnJZ_3fkfaOzxDHtiIc0QoFe9T4V9K3jq9_yRkNELx2tEQYpA=w2400" style="max-width: 100%;"/>
+<p>smartart-accent-process.pptx, reference</p>
+</div>
+<div class="paragraph"><p>This is not not perfect yet, but it&#8217;s clearly a large improvement, all text is
+now readable from the diagram!</p></div>
+<div class="paragraph"><p>All this is available in master (towards LibreOffice 6.3), so you can grab a
+<a href="http://dev-builds.libreoffice.org/daily/master/">daily build</a> and try it out
+right now. :-)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/smartart-improvements.html">SmartArt improvements in LibreOffice</a></h1>
   </div>
   <div class="article_meta">
@@ -718,52 +817,6 @@ the relevant code from LibreOffice&#8217;s binary MSO filters and now the Writer
 HTML filter uses that as well. This avoids code duplication and also could
 avoid inventing some new markup this way.</p></div>
 <div class="paragraph"><p>All this is available in master (towards LibreOffice 6.2), or you can grab a
-<a href="http://dev-builds.libreoffice.org/daily/master/">daily build</a> and try it out
-right now. :-)</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/image-lazy-read.html">Lazy reading images from Microsoft formats in LibreOffice</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Fri 04 May 2018</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>I worked on improving document load performance of Microsoft formats in
-general, and DOC/DOCX in particular in LibreOffice recently. First, thanks to
-<a href="https://www.documentfoundation.org/">TDF</a> and users that support the foundation
-by providing donations for funding <a href="https://www.collaboraoffice.com/">Collabora</a>
-to make this possible.</p></div>
-<div class="paragraph"><p>I built on top of the
-<a href="https://tomazvajngerl.blogspot.com/2018/04/improving-image-handling-in-libreoffice.html">great
-work of Tomaz</a>, focusing on these secondary, but important formats.</p></div>
-<div class="paragraph"><p>The idea is that if you load an Microsoft binary or OOXML file, it should not
-be necessary to parse all images at load time, it&#8217;s enough to lazy read it
-when we first render e.g. a Writer page containing that image.</p></div>
-<div class="paragraph"><p>The focus here was documents containing large images. I tested with an
-<a href="https://www.theverge.com/2012/1/25/2732264/nasas-64-megapixel-photo-of-earth">Earth
-photo</a> of size 8000x8000 pixels from NASA, making little modifications to it,
-so each picture has a different checksum, embedding them into a binary DOC file.</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://farm1.staticflickr.com/980/41838412652_c1cbefcfc1_o.png" alt="https://farm1.staticflickr.com/980/41838412652_c1cbefcfc1_o.png" />
-</div>
-</div>
-<div class="paragraph"><p>I measured the time from the <code>soffice</code> process startup to rendering the first
-page. We defer the work of loading most images now, as you can see on the
-chart. In contrast, we used to decompress all images on file import in the
-past. This means the new cost for e.g. 4 images is 37% of the original.</p></div>
-<div class="paragraph"><p>All this is available in master (towards LibreOffice 6.1), or you can grab a
 <a href="http://dev-builds.libreoffice.org/daily/master/">daily build</a> and try it out
 right now. :-)</p></div>
 </div>
