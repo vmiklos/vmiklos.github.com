@@ -1,0 +1,74 @@
+= Adding visible signatures to existing PDF files in Draw
+
+:slug: sd-visible-pdf-sign
+:category: libreoffice
+:tags: en
+:date: 2020-07-17T12:43:15+02:00
+
+Draw now has support for adding visible signatures to an existing PDF file. This is in contrast with
+the link:|filename|/2016/pdf-sign.adoc[old functionality] which was limited to invisible signatures.
+
+First, thanks to the Dutch Ministry of Defense in cooperation with http://nouenoff.nl/[Nou&Off] who
+made this work by https://www.collaboraoffice.com/[Collabora] possible.
+
+== Motivation
+
+The PDF format allows assigning a shape (a form xobject) to a digital signature in the PDF file, and
+if you use e.g. Adobe Acrobat, then it fills this shape with some visible information about the
+digital signature. Draw used to write a placeholder widget there (a 0x0-sized rectangle on the first
+page, at position 0x0). This is valid, but it's not close to real-world signatures, where signing
+has a visual effect as well.
+
+== Results so far
+
+Here is how this works in practice:
+
+.Demo of adding a visible signature to an existing PDF file in Draw
+image::https://lh3.googleusercontent.com/IDjXX1VwAvlFi1ug9pUSYLwakUyPn2YiMachx7DdiG5Jershph28sFOCWgSuQ6WbfgGdpMcnngjipnetuCBXiOMUR-OqTPO4rlikLXFJtc1WEtQoczPmQDLIXTpPcQD__0WI0T87Cw=w640[align="center",link="https://youtu.be/tPAOXr2UH0M"]
+
+You can see how the 2 added signatures are visible and Adobe Acrobat confirms they are valid, too.
+
+== How is this implemented?
+
+If you would like to know a bit more about how this works, continue reading... :-)
+
+- Signature lines were already working in Writer and Calc, this effort brings them to Draw,
+  improving consistency.
+
+- Signing existing PDFs were already possible, this allows adding a visible signature with the
+  correct markup. This is important for automated processing of PDFs, maybe even helps
+  accessibility. (I think DocuSign doesn't get this right currently.)
+
+- This uses the existing "export selected shape to PDF" code to produce that object, so it's not a
+  bitmap, but a scalable format. (As I know, DocuSign doesn't do this, either.)
+
+- If you didn't get the signature rectangle right for the first time, you can still move and resize
+  it before the actual signing happens (Acrobat doesn't support this currently, I believe.)
+
+- The generated object is locale-aware when it comes to the actual signature string and date format.
+
+- The feature works for multiple signatures and multiple pages as well.
+
+// commit prefix: 'sd signature line:'
+
+- The final step was
+  https://git.libreoffice.org/core/commit/9b7a890fd59744459692d7f66402c6bdd25acec4[this commit],
+  with much more grounding before that one.
+
+- Note that the signing is a two step process: first you draw the signature rectangle and optionally
+  finalize its position / size, and only then you use the 'Finish Signing' button on the infobar to
+trigger the actual signing:
+
+.After drawing a signature rectangle, before finishing the signing.
+image::https://lh3.googleusercontent.com/TMPrD20O0PvPLB7Uru_mmxfeQTaWhJwNQ80jgLj23TWLNqkm44Ww8F9Azce0sEN1TzmjmmVW7MvHZTwtR6Us2H7qpzOSC07CQ0p_myEsM1WRQOToAEus0vsgpTh1yeD65YemFQvv_A=w640[align="center"]
+
+If you use a HW-based certificate, this second step will ask for your certificate PIN.
+
+== Want to start using this?
+
+You can get a snapshot / demo of Collabora Office and try it out yourself right now:
+https://www.collaboraoffice.com/collabora-office-latest-snapshot/[try unstable snapshot].  Collabora
+is a major contributor to LibreOffice and all of this work will be available in TDF's next release
+too (7.1).
+
+// vim: ft=asciidoc
