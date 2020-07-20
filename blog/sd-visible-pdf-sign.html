@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/pygments.css">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Miklos Vajna">
+  <meta name="description" content="Posts and writings by Miklos Vajna">
+
+  <link href="https://vmiklos.hu/blog/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking RSS" />
+
+<meta name="keywords" content="en">
+
+  <title>
+    What is Miklos hacking
+&ndash; Adding visible signatures to existing PDF files in Draw  </title>
+
+<script type="text/javascript">
+  var _paq = window._paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//analytics.vmiklos.hu/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '1']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <h2><a href="https://vmiklos.hu/blog">What is Miklos hacking</a></h2>
+      <p></p>
+      <ul>
+        <li><a href="/" target="_blank">Root</a></li>
+        <li><a href="https://planet.documentfoundation.org/" target="_blank">LibreOffice Blogs</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://vmiklos.hu/blog">Index</a> &brvbar; <a href="https://vmiklos.hu/blog/archives.html">Archives</a>
+      &brvbar; <a href="https://vmiklos.hu/blog/feeds/all.rss.xml">RSS</a>
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sd-visible-pdf-sign.html">Adding visible signatures to existing PDF files in Draw</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Mon 20 July 2020</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 3 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>Draw now has support for adding visible signatures to an existing PDF file. This is in contrast with
+the <a href="https://vmiklos.hu/blog/pdf-sign.html">old functionality</a> which was limited to invisible signatures.</p></div>
+<div class="paragraph"><p>First, thanks to the Dutch Ministry of Defense in cooperation with <a href="http://nouenoff.nl/">Nou&amp;Off</a> who
+made this work by <a href="https://www.collaboraoffice.com/">Collabora</a> possible.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_motivation">Motivation</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>The PDF format allows assigning a shape (a form xobject) to a digital signature in the PDF file, and
+if you use e.g. Adobe Acrobat, then it fills this shape with some visible information about the
+digital signature. Draw used to write a placeholder widget there (a 0x0-sized rectangle on the first
+page, at position 0x0). This is valid, but it&#8217;s not close to real-world signatures, where signing
+has a visual effect as well.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_results_so_far">Results so far</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Here is how this works in practice:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://youtu.be/tPAOXr2UH0M">
+<img src="https://lh3.googleusercontent.com/IDjXX1VwAvlFi1ug9pUSYLwakUyPn2YiMachx7DdiG5Jershph28sFOCWgSuQ6WbfgGdpMcnngjipnetuCBXiOMUR-OqTPO4rlikLXFJtc1WEtQoczPmQDLIXTpPcQD__0WI0T87Cw=w640" alt="https://lh3.googleusercontent.com/IDjXX1VwAvlFi1ug9pUSYLwakUyPn2YiMachx7DdiG5Jershph28sFOCWgSuQ6WbfgGdpMcnngjipnetuCBXiOMUR-OqTPO4rlikLXFJtc1WEtQoczPmQDLIXTpPcQD__0WI0T87Cw=w640" />
+</a>
+</div>
+<div class="title">Figure 1. Demo of adding a visible signature to an existing PDF file in Draw</div>
+</div>
+<div class="paragraph"><p>You can see how the 2 added signatures are visible and Adobe Acrobat confirms they are valid, too.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_how_is_this_implemented">How is this implemented?</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Signature lines were already working in Writer and Calc, this effort brings them to Draw,
+  improving consistency.
+</p>
+</li>
+<li>
+<p>
+Signing existing PDFs were already possible, this allows adding a visible signature with the
+  correct markup. This is important for automated processing of PDFs, maybe even helps
+  accessibility. (I think DocuSign doesn&#8217;t get this right currently.)
+</p>
+</li>
+<li>
+<p>
+This uses the existing "export selected shape to PDF" code to produce that object, so it&#8217;s not a
+  bitmap, but a scalable format. (As I know, DocuSign doesn&#8217;t do this, either.)
+</p>
+</li>
+<li>
+<p>
+If you didn&#8217;t get the signature rectangle right for the first time, you can still move and resize
+  it before the actual signing happens (Acrobat doesn&#8217;t support this currently, I believe.)
+</p>
+</li>
+<li>
+<p>
+The generated object is locale-aware when it comes to the actual signature string and date format.
+</p>
+</li>
+<li>
+<p>
+The feature works for multiple signatures and multiple pages as well.
+</p>
+</li>
+</ul></div>
+<div class="ulist"><ul>
+<li>
+<p>
+The final step was
+  <a href="https://git.libreoffice.org/core/commit/9b7a890fd59744459692d7f66402c6bdd25acec4">this commit</a>,
+  with much more grounding before that one.
+</p>
+</li>
+<li>
+<p>
+Note that the signing is a two step process: first you draw the signature rectangle and optionally
+  finalize its position / size, and only then you use the <em>Finish Signing</em> button on the infobar to
+trigger the actual signing:
+</p>
+</li>
+</ul></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://lh3.googleusercontent.com/TMPrD20O0PvPLB7Uru_mmxfeQTaWhJwNQ80jgLj23TWLNqkm44Ww8F9Azce0sEN1TzmjmmVW7MvHZTwtR6Us2H7qpzOSC07CQ0p_myEsM1WRQOToAEus0vsgpTh1yeD65YemFQvv_A=w640" alt="https://lh3.googleusercontent.com/TMPrD20O0PvPLB7Uru_mmxfeQTaWhJwNQ80jgLj23TWLNqkm44Ww8F9Azce0sEN1TzmjmmVW7MvHZTwtR6Us2H7qpzOSC07CQ0p_myEsM1WRQOToAEus0vsgpTh1yeD65YemFQvv_A=w640" />
+</div>
+<div class="title">Figure 2. After drawing a signature rectangle, before finishing the signing.</div>
+</div>
+<div class="paragraph"><p>If you use a HW-based certificate, this second step will ask for your certificate PIN.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_want_to_start_using_this">Want to start using this?</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
+<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
+is a major contributor to LibreOffice and all of this work will be available in TDF&#8217;s next release
+too (7.1).</p></div>
+</div>
+</div>
+
+  </div>
+  <div class="article_meta">
+    <p>Category: <a href="https://vmiklos.hu/blog/category/libreoffice.html">libreoffice</a>
+ &ndash; Tags:
+      <a href="https://vmiklos.hu/blog/tag/en.html">en</a>    </p>
+  </div>
+
+
+</article>
+
+
+    <div id="ending_message">
+      <p>&copy; Miklos Vajna. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
+</body>
+</html>

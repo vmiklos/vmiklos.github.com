@@ -59,6 +59,47 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/presenter-console.html">Restarting timer of the presenter console</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Fri 09 October 2015</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh3.googleusercontent.com/-gedKN4759cE/VhZqBSpZL7I/AAAAAAAAGJs/Hlez6jX85ww/s0-Ic42/">
+<img src="https://lh3.googleusercontent.com/-gedKN4759cE/VhZqBSpZL7I/AAAAAAAAGJs/Hlez6jX85ww/s400-Ic42/" alt="https://lh3.googleusercontent.com/-gedKN4759cE/VhZqBSpZL7I/AAAAAAAAGJs/Hlez6jX85ww/s400-Ic42/" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>This use-case came up during this year&#8217;s LibreOffice conference. I started the
+Impress slideshow a few minutes in advance, so the audience could check if they
+are at the correct room, seeing the title side. Right after starting the
+slideshow, the presentation timer also started to count. I had to stop and
+start the presentation, so I had an idea how much time my talk took so far. The
+side effect of this workaround was that the audience saw an ugly short flash
+while the presentation was not running at the moment I started talking.</p></div>
+<div class="paragraph"><p>Because hacking the presenter console requires you to have two monitors, it&#8217;s
+not something I looked into during the conference&#8217;s hackfest, but now here it
+is: I
+<a href="https://gerrit.libreoffice.org/gitweb?p=core.git;a=commit;h=b1a6a99b9a78689c6d3649ce066fad66912188e2">added</a>
+a button to just restart the timer, then it&#8217;s not needed to stop/start the
+presentation manually.</p></div>
+<div class="paragraph"><p>The icon is just a placeholder for now, the real design is
+<a href="http://listarchives.libreoffice.org/global/design/msg07351.html">in progress</a>.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/libreoffices-android-port.html">LibreOffice's Android port</a></h1>
   </div>
   <div class="article_meta">
@@ -501,103 +542,6 @@ of pictures are of your interest. FWIW, <a href="http://www.hotelsauce.com/en/">
 Sauce</a> has free wifi in the rooms, that&#8217;s kind of impressing for a two-star
 category. ;-)</p></div>
 <div class="paragraph"><p>As usual, thanks <a href="https://libreoffice-from-collabora.com/">Collabora</a> for sponsoring this travel!</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/mathtype-import.html">MathType import in the RTF and DOCX filter</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Sun 03 May 2015</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>TL;DR: Import of old-style (pre-2010 for RTF, pre-2007 for DOCX) math
-equations embedded into text documents should be now imported as editable
-embedded math objects.</p></div>
-<div class="paragraph"><p>Longer version: if you want to embed math equations into RTF or DOCX files,
-you have two choices. The older approach is to embed a MathType OLE object
-into the file, the newer one is a native OOXML markup, which has an RTF markup
-equivalent as well. Handling of the later has been implemented by
-<a href="http://llunak.blogspot.com/">Luboš Luňák</a> for DOCX a long time ago, and I
-contributed the RTF equivalent almost
-<a href="/blog/lo-rtf-math-native.html">3 years ago</a>.</p></div>
-<div class="paragraph"><p>What remains is the handling of the older version, the embedded OLE object.
-Previously only the replacement graphic was imported, so regardless of the
-Tools &#8594; Options &#8594; Load / Save &#8594; Microsoft Office &#8594; MathType to Math
-checkbox, the result was never editable.</p></div>
-<div class="paragraph"><p>Here is how it looks like now:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/-V3SqO3Rz88s/VUZvFcBNMPI/AAAAAAAAFb4/QARDYqQVQGY/s0/" alt="https://lh3.googleusercontent.com/-V3SqO3Rz88s/VUZvFcBNMPI/AAAAAAAAFb4/QARDYqQVQGY/s0/" />
-</div>
-</div>
-<div class="paragraph"><p>Given that the RTF and the DOCX importers share lots of code in the
-<code>writerfilter/</code> module, I implemented the same for the DOCX import at the same
-time, too. The interesting challenge was that writerfilter wants an
-<a href="http://api.libreoffice.org/docs/idl/ref/interfacecom_1_1sun_1_1star_1_1document_1_1XFilter.html">XFilter</a>
-implementation for the embedded object if it is to be handled internally by
-LibreOffice, but the MathType filter (originally created to handle math
-objects inside binary DOC files) didn&#8217;t have one. Once I implemented such a
-<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=add60d233f70ff56472448bd50b3771f38974c52">filter
-wrapper</a>, the
-<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=2a3e8b470edf2fe76188f9ccf6b0f32dfc817ea4">rest</a>
-wasn&#8217;t too hard.</p></div>
-<div class="paragraph"><p>Here are
-<a href="http://cgit.freedesktop.org/libreoffice/core/tree/sw/qa/extras/rtfimport/data/mathtype.rtf">test</a>
-<a href="http://cgit.freedesktop.org/libreoffice/core/tree/sw/qa/extras/ooxmlimport/data/mathtype.docx">documents</a>
-if you want to try it yourself. You&#8217;ll need a 5.0
-<a href="http://dev-builds.libreoffice.org/daily/master/">daily build</a> for that, though.
-;-)</p></div>
-<div class="paragraph"><p>If I&#8217;m at describing features new in LibreOffice Writer 5.0 file filters, here are a few more:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=830abf307aab9f9611db60b5c734fbafd3b3d8a3">Automatic hyphenation at a document
-  level</a> and <a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=a3ec386c2283a196f8d9f1edd0ff97c38ddb281a">exceptions to it</a> is now
-  imported in RTF. I also adjusted the
-  <a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=a2fea109e6454b10e8e85148b93bdca89066fe8d">exporter</a>, so now Word sort of
-  understands our hyphenation rules, replacing the OOo-specific custom
-  hyphenation RTF extension that Word just ignored.
-</p>
-</li>
-<li>
-<p>
-<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=7546a904265cc0d0a0e3795cdb411cbb945a39fe">picture wrap distance properties</a>
-  are now handled in the RTF importer&#8201;&#8212;&#8201;previously that was only handled for
-  shapes.
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>And a number of bugfixes for the RTF filter:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-<a href="https://bugs.documentfoundation.org/show_bug.cgi?id=86182">tdf#86182</a> better RTL paragraph handling
-</p>
-</li>
-<li>
-<p>
-<a href="https://bugs.documentfoundation.org/show_bug.cgi?id=80708">tdf#80708</a> related to the improved old-style Writer table export handling work
-</p>
-</li>
-<li>
-<p>
-<a href="https://bugs.documentfoundation.org/show_bug.cgi?id=90421">tdf#90421</a> hyperlink export tweak
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>Do these sound interesting? Look at what others did for LibreOffice 5.0 on
-<a href="https://wiki.documentfoundation.org/ReleaseNotes/5.0">the TDF wiki</a>, even if
-it&#8217;s far from complete, as the 5.0 branch is not yet created. :-)</p></div>
 </div>
 </div>
 

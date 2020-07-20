@@ -1,5 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>What is Miklos hacking - libreoffice</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Wed, 10 Jun 2020 09:12:45 +0200</lastBuildDate><item><title>Page-content-bottom vertical relation in Writer</title><link>https://vmiklos.hu/blog/sw-page-content-bottom-anchor.html</link><description>&lt;div id="preamble"&gt;
+<rss version="2.0"><channel><title>What is Miklos hacking - libreoffice</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Mon, 20 Jul 2020 09:07:46 +0200</lastBuildDate><item><title>Adding visible signatures to existing PDF files in Draw</title><link>https://vmiklos.hu/blog/sd-visible-pdf-sign.html</link><description>&lt;div id="preamble"&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Draw now has support for adding visible signatures to an existing PDF file. This is in contrast with
+the &lt;a href="https://vmiklos.hu/blog/pdf-sign.html"&gt;old functionality&lt;/a&gt; which was limited to invisible signatures.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;First, thanks to the Dutch Ministry of Defense in cooperation with &lt;a href="http://nouenoff.nl/"&gt;Nou&amp;amp;Off&lt;/a&gt; who
+made this work by &lt;a href="https://www.collaboraoffice.com/"&gt;Collabora&lt;/a&gt; possible.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_motivation"&gt;Motivation&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The PDF format allows assigning a shape (a form xobject) to a digital signature in the PDF file, and
+if you use e.g. Adobe Acrobat, then it fills this shape with some visible information about the
+digital signature. Draw used to write a placeholder widget there (a 0x0-sized rectangle on the first
+page, at position 0x0). This is valid, but it&amp;#8217;s not close to real-world signatures, where signing
+has a visual effect as well.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_results_so_far"&gt;Results so far&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Here is how this works in practice:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;a class="image" href="https://youtu.be/tPAOXr2UH0M"&gt;
+&lt;img src="https://lh3.googleusercontent.com/IDjXX1VwAvlFi1ug9pUSYLwakUyPn2YiMachx7DdiG5Jershph28sFOCWgSuQ6WbfgGdpMcnngjipnetuCBXiOMUR-OqTPO4rlikLXFJtc1WEtQoczPmQDLIXTpPcQD__0WI0T87Cw=w640" alt="https://lh3.googleusercontent.com/IDjXX1VwAvlFi1ug9pUSYLwakUyPn2YiMachx7DdiG5Jershph28sFOCWgSuQ6WbfgGdpMcnngjipnetuCBXiOMUR-OqTPO4rlikLXFJtc1WEtQoczPmQDLIXTpPcQD__0WI0T87Cw=w640" /&gt;
+&lt;/a&gt;
+&lt;/div&gt;
+&lt;div class="title"&gt;Figure 1. Demo of adding a visible signature to an existing PDF file in Draw&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;You can see how the 2 added signatures are visible and Adobe Acrobat confirms they are valid, too.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_how_is_this_implemented"&gt;How is this implemented?&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;If you would like to know a bit more about how this works, continue reading&amp;#8230; :-)&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+Signature lines were already working in Writer and Calc, this effort brings them to Draw,
+  improving consistency.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+Signing existing PDFs were already possible, this allows adding a visible signature with the
+  correct markup. This is important for automated processing of PDFs, maybe even helps
+  accessibility. (I think DocuSign doesn&amp;#8217;t get this right currently.)
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+This uses the existing "export selected shape to PDF" code to produce that object, so it&amp;#8217;s not a
+  bitmap, but a scalable format. (As I know, DocuSign doesn&amp;#8217;t do this, either.)
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+If you didn&amp;#8217;t get the signature rectangle right for the first time, you can still move and resize
+  it before the actual signing happens (Acrobat doesn&amp;#8217;t support this currently, I believe.)
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+The generated object is locale-aware when it comes to the actual signature string and date format.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+The feature works for multiple signatures and multiple pages as well.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+The final step was
+  &lt;a href="https://git.libreoffice.org/core/commit/9b7a890fd59744459692d7f66402c6bdd25acec4"&gt;this commit&lt;/a&gt;,
+  with much more grounding before that one.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+Note that the signing is a two step process: first you draw the signature rectangle and optionally
+  finalize its position / size, and only then you use the &lt;em&gt;Finish Signing&lt;/em&gt; button on the infobar to
+trigger the actual signing:
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://lh3.googleusercontent.com/TMPrD20O0PvPLB7Uru_mmxfeQTaWhJwNQ80jgLj23TWLNqkm44Ww8F9Azce0sEN1TzmjmmVW7MvHZTwtR6Us2H7qpzOSC07CQ0p_myEsM1WRQOToAEus0vsgpTh1yeD65YemFQvv_A=w640" alt="https://lh3.googleusercontent.com/TMPrD20O0PvPLB7Uru_mmxfeQTaWhJwNQ80jgLj23TWLNqkm44Ww8F9Azce0sEN1TzmjmmVW7MvHZTwtR6Us2H7qpzOSC07CQ0p_myEsM1WRQOToAEus0vsgpTh1yeD65YemFQvv_A=w640" /&gt;
+&lt;/div&gt;
+&lt;div class="title"&gt;Figure 2. After drawing a signature rectangle, before finishing the signing.&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;If you use a HW-based certificate, this second step will ask for your certificate PIN.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_want_to_start_using_this"&gt;Want to start using this?&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;You can get a snapshot / demo of Collabora Office and try it out yourself right now:
+&lt;a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/"&gt;try unstable snapshot&lt;/a&gt;.  Collabora
+is a major contributor to LibreOffice and all of this work will be available in TDF&amp;#8217;s next release
+too (7.1).&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Mon, 20 Jul 2020 09:07:46 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2020-07-20:/blog/sd-visible-pdf-sign.html</guid><category>libreoffice</category><category>en</category></item><item><title>Page-content-bottom vertical relation in Writer</title><link>https://vmiklos.hu/blog/sw-page-content-bottom-anchor.html</link><description>&lt;div id="preamble"&gt;
 &lt;div class="sectionbody"&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;Writer now has support for anchoring shapes relative to the bottom of the page content frame.&lt;/p&gt;&lt;/div&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;First, thanks to our partner &lt;a href="https://www.suse.com/"&gt;SUSE&lt;/a&gt; for working with
@@ -102,7 +210,7 @@ is a major contributor to LibreOffice and all of this work will be available in 
 too (7.1).&lt;/p&gt;&lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Wed, 10 Jun 2020 09:12:45 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2020-06-10:/blog/sw-page-content-bottom-anchor.html</guid><category>en</category></item><item><title>Export larger pages from Draw using PDF 1.6</title><link>https://vmiklos.hu/blog/sd-pdf-1-6-larger-page-size.html</link><description>&lt;div id="preamble"&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Wed, 10 Jun 2020 09:12:45 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2020-06-10:/blog/sw-page-content-bottom-anchor.html</guid><category>libreoffice</category><category>en</category></item><item><title>Export larger pages from Draw using PDF 1.6</title><link>https://vmiklos.hu/blog/sd-pdf-1-6-larger-page-size.html</link><description>&lt;div id="preamble"&gt;
 &lt;div class="sectionbody"&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;Draw/Impress now has
 &lt;a href="https://git.libreoffice.org/core/commit/4830592b780833cf5eee2aef30bc9c5d444dfb24"&gt;support&lt;/a&gt; for
@@ -183,7 +291,7 @@ is a major contributor to LibreOffice and all of this work will be available in 
 too (7.0).&lt;/p&gt;&lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 08 May 2020 09:02:33 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2020-05-08:/blog/sd-pdf-1-6-larger-page-size.html</guid><category>en</category></item><item><title>Padded numbering in Writer, part 2</title><link>https://vmiklos.hu/blog/sw-padded-numbering-2.html</link><description>&lt;div id="preamble"&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 08 May 2020 09:02:33 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2020-05-08:/blog/sd-pdf-1-6-larger-page-size.html</guid><category>libreoffice</category><category>en</category></item><item><title>Padded numbering in Writer, part 2</title><link>https://vmiklos.hu/blog/sw-padded-numbering-2.html</link><description>&lt;div id="preamble"&gt;
 &lt;div class="sectionbody"&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;I already &lt;a href="https://vmiklos.hu/blog/hackweek-2020.html"&gt;posted&lt;/a&gt; about the start of padded numbering
 support in Writer, there the focus was to insert &lt;em&gt;0&lt;/em&gt; characters to pad up the result to 2
@@ -281,7 +389,7 @@ is a major contributor to LibreOffice and all of this work will be available in 
 too (7.0).&lt;/p&gt;&lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Wed, 08 Apr 2020 14:01:44 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2020-04-08:/blog/sw-padded-numbering-2.html</guid><category>en</category></item><item><title>My hack week at Collabora: (start of) padded numbering in Writer</title><link>https://vmiklos.hu/blog/hackweek-2020.html</link><description>&lt;div id="preamble"&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Wed, 08 Apr 2020 14:01:44 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2020-04-08:/blog/sw-padded-numbering-2.html</guid><category>libreoffice</category><category>en</category></item><item><title>My hack week at Collabora: (start of) padded numbering in Writer</title><link>https://vmiklos.hu/blog/hackweek-2020.html</link><description>&lt;div id="preamble"&gt;
 &lt;div class="sectionbody"&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;As mentioned in a &lt;a href="https://vmiklos.hu/blog/hackweek-2016.html"&gt;previous&lt;/a&gt; such report, a hack week is when
 we are allowed to hack on anything we want in LibreOffice for a few days at
@@ -417,7 +525,7 @@ different markup, planned to be done later.&lt;/p&gt;&lt;/div&gt;
 &lt;a href="http://dev-builds.libreoffice.org/daily/master/"&gt;daily build&lt;/a&gt; and try it out right now. :-)&lt;/p&gt;&lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Tue, 10 Mar 2020 09:43:24 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2020-03-10:/blog/hackweek-2020.html</guid><category>en</category></item><item><title>Semi-transparent text in Writer</title><link>https://vmiklos.hu/blog/sw-semi-transparent-text.html</link><description>&lt;div class="sect1"&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Tue, 10 Mar 2020 09:43:24 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2020-03-10:/blog/hackweek-2020.html</guid><category>libreoffice</category><category>en</category></item><item><title>Semi-transparent text in Writer</title><link>https://vmiklos.hu/blog/sw-semi-transparent-text.html</link><description>&lt;div class="sect1"&gt;
 &lt;h2 id="_the_problem"&gt;The problem&lt;/h2&gt;
 &lt;div class="sectionbody"&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;Last year I &lt;a href="https://vmiklos.hu/blog/sd-semi-transparent-text.html"&gt;posted&lt;/a&gt; about work to have
@@ -460,7 +568,7 @@ is a major contributor to LibreOffice and all of this work will be available in 
 too (7.0).&lt;/p&gt;&lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Wed, 26 Feb 2020 11:25:31 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2020-02-26:/blog/sw-semi-transparent-text.html</guid><category>en</category></item><item><title>Improved rotated text handling in Writer's table rows with automatic height</title><link>https://vmiklos.hu/blog/sw-autorowheight-rotatedtext.html</link><description>&lt;div id="preamble"&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Wed, 26 Feb 2020 11:25:31 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2020-02-26:/blog/sw-semi-transparent-text.html</guid><category>libreoffice</category><category>en</category></item><item><title>Improved rotated text handling in Writer's table rows with automatic height</title><link>https://vmiklos.hu/blog/sw-autorowheight-rotatedtext.html</link><description>&lt;div id="preamble"&gt;
 &lt;div class="sectionbody"&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;Writer now has better support for rotated text in tables containing rows with automatic height. This
 post also presents two related fixes.&lt;/p&gt;&lt;/div&gt;
@@ -536,7 +644,7 @@ fixed now.&lt;/p&gt;&lt;/div&gt;
 &lt;a href="http://dev-builds.libreoffice.org/daily/master/"&gt;right now&lt;/a&gt;, if interested.&lt;/p&gt;&lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 24 Jan 2020 09:37:19 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2020-01-24:/blog/sw-autorowheight-rotatedtext.html</guid><category>en</category></item><item><title>Semi-transparent text in Draw/Impress</title><link>https://vmiklos.hu/blog/sd-semi-transparent-text.html</link><description>&lt;div id="preamble"&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 24 Jan 2020 09:37:19 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2020-01-24:/blog/sw-autorowheight-rotatedtext.html</guid><category>libreoffice</category><category>en</category></item><item><title>Semi-transparent text in Draw/Impress</title><link>https://vmiklos.hu/blog/sd-semi-transparent-text.html</link><description>&lt;div id="preamble"&gt;
 &lt;div class="sectionbody"&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;Draw/Impress now has
 &lt;a href="https://git.libreoffice.org/core/commits/3e5bedbb6910053c0cee4112cd382fbd035c9832..6dbb317ebec681d236c6ce354f581108fd814f7b"&gt;support&lt;/a&gt;
@@ -560,7 +668,7 @@ now handles this for Impress documents as well.&lt;/p&gt;&lt;/div&gt;
 &lt;a href="http://dev-builds.libreoffice.org/daily/master/"&gt;right now&lt;/a&gt;, if interested.&lt;/p&gt;&lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 20 Dec 2019 09:39:17 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2019-12-20:/blog/sd-semi-transparent-text.html</guid><category>en</category></item><item><title>Better math import from PPTX into Impress</title><link>https://vmiklos.hu/blog/sd-pptx-better-math.html</link><description>&lt;div id="preamble"&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 20 Dec 2019 09:39:17 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2019-12-20:/blog/sd-semi-transparent-text.html</guid><category>libreoffice</category><category>en</category></item><item><title>Better math import from PPTX into Impress</title><link>https://vmiklos.hu/blog/sd-pptx-better-math.html</link><description>&lt;div id="preamble"&gt;
 &lt;div class="sectionbody"&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;Impress now has a much
 &lt;a href="https://gerrit.libreoffice.org/plugins/gitiles/core/+/4038d6c393c3cf6330671124ba69cdba98b24960%5E%21/"&gt;improved
@@ -596,7 +704,7 @@ documents, where more works is needed before it can be enabled.&lt;/p&gt;&lt;/di
 &lt;a href="http://dev-builds.libreoffice.org/daily/master/"&gt;right now&lt;/a&gt;, if interested.&lt;/p&gt;&lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Thu, 21 Nov 2019 10:05:12 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2019-11-21:/blog/sd-pptx-better-math.html</guid><category>en</category></item><item><title>Continuous endnotes in Writer</title><link>https://vmiklos.hu/blog/sw-continuous-endnotes.html</link><description>&lt;div id="preamble"&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Thu, 21 Nov 2019 10:05:12 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2019-11-21:/blog/sd-pptx-better-math.html</guid><category>libreoffice</category><category>en</category></item><item><title>Continuous endnotes in Writer</title><link>https://vmiklos.hu/blog/sw-continuous-endnotes.html</link><description>&lt;div id="preamble"&gt;
 &lt;div class="sectionbody"&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;Writer now has a new "continuous endnotes" compatibility setting in its layout, allowing rendering
 endnotes in a way which is closer to what Word users expect.&lt;/p&gt;&lt;/div&gt;
@@ -629,43 +737,4 @@ Word, while endnotes are unconditionally on separate endnote pages in Writer. Th
 &lt;a href="http://dev-builds.libreoffice.org/daily/master/"&gt;right now&lt;/a&gt;, if interested.&lt;/p&gt;&lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Mon, 21 Oct 2019 10:24:32 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2019-10-21:/blog/sw-continuous-endnotes.html</guid><category>en</category></item><item><title>Allow-overlap shape property in Writer</title><link>https://vmiklos.hu/blog/sw-shape-allow-overlap.html</link><description>&lt;div id="preamble"&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Writer now has a new "allow overlap" shape property for anchored objects, which can ensure that
-objects with overlapping positioning properties don&amp;#8217;t actually overlap.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;First, thanks &lt;a href="https://tu-dresden.de/"&gt;TU Dresden&lt;/a&gt; who made this work by
-&lt;a href="https://www.collaboraoffice.com/"&gt;Collabora&lt;/a&gt; possible.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Here is a video showing how it works:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="imageblock" style="text-align:enter;"&gt;
-&lt;div class="content"&gt;
-&lt;a class="image" href="https://youtu.be/DzanTIo941g"&gt;
-&lt;img src="https://lh3.googleusercontent.com/fdBYhwk3jykbX7drs6Q3ehQsQyAOBk_GWukw3KzcJBlaMsmgVg0C7KHM1uyODgqIro7HSjOnHzV6zfy9RgdMjY1KJW5K_EmfhyB4d-HyadZszIDAhVGbxUe4DMQbemSiZJA2k0h7vw=w640" alt="https://lh3.googleusercontent.com/fdBYhwk3jykbX7drs6Q3ehQsQyAOBk_GWukw3KzcJBlaMsmgVg0C7KHM1uyODgqIro7HSjOnHzV6zfy9RgdMjY1KJW5K_EmfhyB4d-HyadZszIDAhVGbxUe4DMQbemSiZJA2k0h7vw=w640" /&gt;
-&lt;/a&gt;
-&lt;/div&gt;
-&lt;div class="title"&gt;Figure 1. Allow-overlap shape property in Writer&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Under the hood, this is a full new Writer feature, since previously shapes were always allowed to
-overlap with each other:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-macros get a new &lt;code&gt;AllowOverlap&lt;/code&gt; shape property (true by default)
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-layout takes this into account if you set the property on the UI
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-both DOCX and ODT filters serialize and load this property
-  (&lt;a href="https://issues.oasis-open.org/browse/OFFICE-4047"&gt;ODT proposal&lt;/a&gt;)
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;All this is available in LibreOffice master (towards 6.4), so you can try it out
-&lt;a href="http://dev-builds.libreoffice.org/daily/master/"&gt;right now&lt;/a&gt;, if interested.&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 04 Oct 2019 09:28:26 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2019-10-04:/blog/sw-shape-allow-overlap.html</guid><category>en</category></item></channel></rss>
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Mon, 21 Oct 2019 10:24:32 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2019-10-21:/blog/sw-continuous-endnotes.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
