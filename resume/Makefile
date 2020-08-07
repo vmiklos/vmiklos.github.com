@@ -1,10 +1,10 @@
 all: index.html index.hu.html resume.pdf resume.hu.pdf
 
 index.html: index.txt Makefile
-	asciidoc index.txt
+	asciidoctor index.txt
 
 index.hu.html: index.hu.txt Makefile
-	asciidoc index.hu.txt
+	asciidoctor index.hu.txt
 
 # asciidoc's ODF backend is from <https://github.com/dagwieers/asciidoc-odf>.
 resume.pdf: index.txt Makefile
