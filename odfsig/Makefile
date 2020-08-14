@@ -1,2 +1,2 @@
-index.html: index.adoc
-	asciidoc index.adoc
+index.html: index.adoc Makefile
+	asciidoctor index.adoc
