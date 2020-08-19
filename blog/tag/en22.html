@@ -59,6 +59,61 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/latex-sources.html">Handy Latex bookmarks</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Wed 03 November 2010</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>Today I had some Hungarian mathematical logic notes to type in Latex,
+and again I had to dig up the various references to get the proper
+symbols I needed.</p></div>
+<div class="paragraph"><p>I used the following pages:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="ftp://ftp.ams.org/pub/tex/doc/amsmath/amsldoc.pdf">amsmath</a> is unique
+  in that for example it explains how to use <code>\begin{cases}</code>
+</p>
+</li>
+<li>
+<p>
+<a href="http://amath.colorado.edu/documentation/LaTeX/Symbols.pdf">this one</a> is
+  a collection of lot of symbols, I found <code>\mathcal</code> here
+</p>
+</li>
+<li>
+<p>
+An <a href="http://en.wikipedia.org/wiki/List_of_logic_symbols">article from
+  Wikipedia</a> about logic symbols
+</p>
+</li>
+<li>
+<p>
+<a href="http://en.wikibooks.org/wiki/LaTeX/Mathematics">The Math chapter</a> of
+  the well-known LaTeX wikibook
+</p>
+</li>
+<li>
+<p>
+<a href="http://www.maths.tcd.ie/~dwilkins/LaTeXPrimer/Theorems.html">A set of
+  macros</a> making easy to declare lemmas, definitions, proofs.
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/qtsql-sqlite.html">QtSql vs. SQLite</a></h1>
   </div>
   <div class="article_meta">
@@ -346,41 +401,6 @@ fi
     <div id="preamble">
 <div class="sectionbody">
 <p>I've been testing <a href="http://frugalware.org/packages/103074">anyremote</a> during the last week. I'm aware that there is kanyremote and ganyremote available, but I wasn't really interested in those, since they would hide the glory details. :)</p><p>So I decided to give the server mode mode a try and I choosed okular as a test application. My commandline is:</p><p><code>anyremote -s bluetooth:19 -f /usr/share/anyremote/cfg-data/Server-mode/okular.cfg</code></p><p>Once I started the server on my notebook I could choose it in the midlet on my phone in the j2me client and it worked as expected.</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/scripts-used-in-the-python-2-7-rebuild.html">Scripts used in the Python 2.7 rebuild</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Fri 24 September 2010</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>First, I could almost reuse the same set of scripts as described <a href="/blog/scripts-used-in-the-python-2-6-mass-rebu">here</a>. The only change I needed to do is that aborting the build loop after each fail is a waste of time, so now I did:</p><p><pre>
-for i in $(cat ~/test.list)
-do
-        echo $i
-        cd ~/git/python27/source/*/$i || continue
-        sudo makepkg -t python27,current -C
-        git clean -x -d -f
-        git checkout -f
-        sed -i 's|python>=2.6|python>=2.7|g' FrugalBuild
-        if bumppkg -t python27,current --rebuild "- rebuilt with python-2.7"; then
-                repoman -t python27 -k push
-        else
-                echo $i >> ~/failed.list
-        fi
-done
-</pre></p><p>Then investigated the failed builds manually.</p><p>Oh, and obviously I no longer had to build the x86_64/ppc fpms manually, I just enabled syncpkgd for the python27 WIP repo.</p>
 </div>
 </div>
 

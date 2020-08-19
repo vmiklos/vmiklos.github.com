@@ -59,6 +59,117 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/ooxml-signature-export.html">OOXML signature export in LibreOffice</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Thu 14 April 2016</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 4 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh3.googleusercontent.com/-E5cCfFV5kkk/VwzwIcJ0JqI/AAAAAAAAGqk/4JpTSRlvUok6txiXgp1MgoNoNgPb0ov8gCCo/s0-Ic42/">
+<img src="https://lh3.googleusercontent.com/-E5cCfFV5kkk/VwzwIcJ0JqI/AAAAAAAAGqk/4JpTSRlvUok6txiXgp1MgoNoNgPb0ov8gCCo/s600-Ic42/" alt="https://lh3.googleusercontent.com/-E5cCfFV5kkk/VwzwIcJ0JqI/AAAAAAAAGqk/4JpTSRlvUok6txiXgp1MgoNoNgPb0ov8gCCo/s600-Ic42/" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>After adding <a href="/blog/ooxml-signature-import.html">support
+for reading OOXML signatures in LibreOffice</a>, I continued with implementing OOXML
+signature export (as in: not only verification, but signing).</p></div>
+<div class="paragraph"><p>By verification, I mean that I count the signature of the input document, then
+compare it with an existing signature, and if they match, it is verified. This
+can be also called "import", as I only read an existing signature, I don&#8217;t
+create one.  By signing, I mean the creation of a new signature, which is
+always good&#8201;&#8212;&#8201;if it isn&#8217;t, that&#8217;s a programming error. This can be also
+called "export", as I write the new signature into the document.</p></div>
+<div class="paragraph"><p>First, thanks to the Dutch Ministry of Defense who made this work possible (as
+part of a project implementing trusted signing and communication in
+LibreOffice), this included:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+signing a previously unsigned document
+</p>
+</li>
+<li>
+<p>
+appending a signature to an already signed document
+</p>
+</li>
+<li>
+<p>
+removing a signature from a document with multiple signatures
+</p>
+</li>
+<li>
+<p>
+removing the last signature of a signed document, turning it into an
+  unsigned one
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Obviously the hardest part was the initial success: signing a previously
+unsigned document, in a way that is accepted by both LibreOffice and MSO. One
+trick here is that while in ODF the signature stream is simply added to an
+existing document storage, in OOXML the storage has to refer to the signature
+sub-storage (it&#8217;s not a stream, as it has a stream for each individual
+signature), then it has to be signed, and finally the signature can be added
+to the document storage. So instead of reading the document, then appending
+the signature, here we need to modify the document, and then we can append the
+signature.  By referring the signature sub-storage, I mean it is necessary to
+modify <code>[Content_Types].xml</code> (so it contains a mime type for both the <code>.sigs</code>
+extension, and also for the individual <code>/_xmlsignatures/sigN.xml</code> streams) and
+also the <code>_rels/.rels</code> stream has to refer <code>_xmlsignatures/origin.sigs</code>, which
+will contain the list of actual signatures.  A surprising detail is that the
+signature is required to contain quite some software and hardware details
+about your environment, like monitor resolution, Windows version and so on.
+For a cross-platform project like LibreOffice this isn&#8217;t meaningful, not to
+mention we have no interest in leaking such information. So what I did instead
+is writing hardcoded values based on what my test environment would produce,
+just to please MSO. ;-)</p></div>
+<div class="paragraph"><p>After the initial
+<a href="https://cgit.freedesktop.org/libreoffice/core/tree/xmlsecurity/source/helper/ooxmlsecexporter.cxx">OOXML
+signature exporter</a> was ready, the next challenge was adding multiple
+signatures. The problem here is that you have to roundtrip the existing
+signatures perfectly. And when I write perfectly, I really mean it: if a
+single character is written differently, then the hash of the signature will
+be different, so the roundtrip (when we write back an existing and a new
+signature to the document) will invalidate the signature. And there is no way
+around that: the very point of the signature is that only the original signer
+can re-calculate the signature hash. :-) So what we do is simply threating the
+existing signatures as a byte array, and when writing back, then we don&#8217;t try
+to re-construct the signature stream based on the xmlsecurity data model, but
+simply write back the byte array. This way it&#8217;s enough to extract parts of the
+signature which are presented to the user (date, certificate, comment), and we
+don&#8217;t need to parse the rest.</p></div>
+<div class="paragraph"><p>Removing one of multiple existing signatures isn&#8217;t particularly hard, you just
+need to update <code>_xmlsignatures/_rels/origin.sigs.rels</code> and
+<code>[Content_Types].xml</code> which refer each and every signature stream. It&#8217;s a good
+idea to truncate them before writing, otherwise you may get a not even
+well-formed XML as a result.</p></div>
+<div class="paragraph"><p>Finally removing the last signature is a matter of undoing all changes we did
+while adding the first signature (the content type list and the toplevel
+relation list), finally removing the signature sub-storage all-together. I
+also factored out all this signature management code from
+<code>DigitalSignaturesDialog</code> (which is a graphical dialog) to
+<code>DocumentSignatureManager</code>, so that all the above mentioned features can be
+<a href="https://cgit.freedesktop.org/libreoffice/core/tree/xmlsecurity/qa/unit/signing/signing.cxx">unit-tested</a>.</p></div>
+<div class="paragraph"><p>Putting all of these together, LO can now do all signature add, append, remove
+and clean operations a user would expect from what is referred as simply
+<em>OOXML signature support</em>. As usual, you can try this right now with a 5.2
+<a href="http://dev-builds.libreoffice.org/daily/master/">daily build</a>. :-)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/ooxml-signature-import.html">OOXML signature import in LibreOffice</a></h1>
   </div>
   <div class="article_meta">
@@ -613,56 +724,6 @@ testcase
 <div class="paragraph"><p>If you can&#8217;t wait till LibreOffice 5.1 is released to try out this new
 feature, you can get a <a href="http://dev-builds.libreoffice.org/daily/master/">daily
 build</a>. :-)</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/flat-odf-android.html">Flat ODF support in LibreOffice's Android port</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Tue 20 October 2015</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://lh3.googleusercontent.com/-M9NDl_ptc9U/ViPqlxkmJwI/AAAAAAAAGLk/t92PSwTHAk0/s0-Ic42/">
-<img src="https://lh3.googleusercontent.com/-M9NDl_ptc9U/ViPqlxkmJwI/AAAAAAAAGLk/t92PSwTHAk0/s400-Ic42/" alt="https://lh3.googleusercontent.com/-M9NDl_ptc9U/ViPqlxkmJwI/AAAAAAAAGLk/t92PSwTHAk0/s400-Ic42/" />
-</a>
-</div>
-</div>
-<div class="paragraph"><p>While LibreOffice&#8217;s Android port has as good support for ODF as the desktop
-version, flat ODF was lagging behind. There were two reasons for this:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/gitweb?p=core.git;a=commit;h=9aa6ec9bfaa3c76c291ab8ec9a1b87fb89b817e6">flat-ODF-related
-  services were simply missing</a> from the .apk, for historical reasons: when
-  the .apk limit was 50MB, it sounded like a good idea to leave these out if it
-  allowed packaging e.g. editing-related services.
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/gitweb?p=core.git;a=commit;h=1956b50e3b4c63a913151fd21d21c42cd288173d">flat
-  ODS was blacklisted explicitly</a>, from the times when Calc tiled rendering
-  was missing, and when .ods was included again the document browser, .fods was
-  forgotten.
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>With these two fixes my favorite test documents (of which the ODF version
-worked already previously) in flat ODF version also load properly in all
-Writer, Calc and Impress&#8201;&#8212;&#8201;as can be seen on the above montage of
-screenshots.</p></div>
 </div>
 </div>
 

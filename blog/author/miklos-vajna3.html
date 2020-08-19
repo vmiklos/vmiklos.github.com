@@ -59,6 +59,41 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/fosdem2019.html">Improving SmartArt import in Impress FOSDEM talk</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Mon 04 February 2019</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div style="text-align: center; font-size: 0.6em">
+<img src="https://lh3.googleusercontent.com/bA1u6JMB7OZnPeRmSv2AqMFbAlrJ2vUtiRnZcS9RFT3ftsYuRbyIStd3c0-WvWwUlwuPz-oJRRpGaA09POJJk1S3rNZmsLEwslo06ZtY97R8W4Gp6sK1r0NcvYip2FBF7jsv-k_W8w=w640" style="max-width: 100%;"/>
+<p>(via <a href="https://twitter.com/cor4office/status/1091720290424537088">cor4office</a>)</p>
+</div>
+<div class="paragraph"><p>The next step in the recent <a href="/blog/smartart-improvements-3.html">SmartArt
+story</a> is my
+<a href="https://fosdem.org/2019/schedule/event/improving_smartart_import_in_libreoffice_impress/">Improving
+SmartArt import in Impress</a> talk at FOSDEM 2019, in the
+<a href="https://fosdem.org/2019/schedule/track/open_document_editors/">Open Document
+Editors devroom</a>. The room was a bit far away from the popular places, but the
+livestream worked out nicely.</p></div>
+<div class="paragraph"><p>There was also a
+<a href="https://wiki.documentfoundation.org/Events/2019/FOSDEM#Hackfest">hackfest</a>
+before the conference, I looked at
+<a href="https://bugs.documentfoundation.org/show_bug.cgi?id=116371#c20">RTF export of
+rotated Writer pictures</a>.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/smartart-improvements-3.html">SmartArt improvements in LibreOffice, part 3</a></h1>
   </div>
   <div class="article_meta">
@@ -679,128 +714,6 @@ http://www.gnu.org/software/src-highlite -->
 <pre><tt>xCursorProps<span style="color: #990000">-&gt;</span><span style="font-weight: bold"><span style="color: #000000">setPropertyValue</span></span><span style="color: #990000">(</span><span style="color: #FF0000">"CharStyleName"</span><span style="color: #990000">,</span> uno<span style="color: #990000">::</span><span style="font-weight: bold"><span style="color: #000000">makeAny</span></span><span style="color: #990000">(</span><span style="font-weight: bold"><span style="color: #000000">OUString</span></span><span style="color: #990000">(</span><span style="color: #FF0000">"Standard"</span><span style="color: #990000">)));</span></tt></pre></div></div>
 <div class="paragraph"><p>And it&#8217;ll be handled as <code>Default Style</code> in English builds, or their localized
 versions in a non-English UI.</p></div>
-<div class="paragraph"><p>All this is available in master (towards LibreOffice 6.2), or you can grab a
-<a href="http://dev-builds.libreoffice.org/daily/master/">daily build</a> and try it out
-right now. :-)</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/xmlsec-cng-ecsa.html">Improved ECDSA handling in LibreOffice</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Thu 05 July 2018</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>I wrote about ECDSA handling in LibreOffice
-<a href="https://vmiklos.hu/blog/xmlsec-nss-ecdsa.html">last year</a>, back then the target
-was to be able to verify signatures using the ECDSA algorithm on Linux.</p></div>
-<div class="paragraph"><p>Lots of things happened since then, this post is meant to summarize those
-improvements. My personal motivation is that Hungarian eID cards come with a
-gov-trusted ECDSA (x509) cert, so handling those in LibreOffice would be nice.
-My goals were:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-platforms: handling Windows as well, not only Linux/macOS
-</p>
-</li>
-<li>
-<p>
-operations: handling signing as well, not only verification
-</p>
-</li>
-<li>
-<p>
-formats: cover all of ODF, OOXML and PDF
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>Let&#8217;s see what has happened:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-Linux, ODF, sign: we had hardcoded RSA algorithm when generating a signature, now
-  we infer the sign algorithm from the signing cert algorithm
-  (<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=fd1bc178b02e05cd12ec784ff87f5c97069bc5f5">commit</a>)
-</p>
-</li>
-<li>
-<p>
-Linux, OOXML, sign: same problem with hardcoded RSA
-  (<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=6b1b8ef51b752f9711d6581283d6c515d3c50d9b">commit</a>)
-</p>
-</li>
-<li>
-<p>
-Windows, PDF, sign: the certificate chooser had to be ported to from
-  CryptoAPI to
-  <a href="https://docs.microsoft.com/en-us/windows/desktop/SecCNG/cng-portal">CNG</a>
-  (<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=93e33ba279e837356e157745177d7f6061d442b7">commit</a>)
-</p>
-</li>
-<li>
-<p>
-Windows, ODF, verify / sign: this was the largest problem, this required a
-  whole new libxmlsec backend
-  (<a href="https://github.com/lsh123/xmlsec/tree/master/include/xmlsec/mscng">interface</a>,
-  <a href="https://github.com/lsh123/xmlsec/tree/master/src/mscng">implementation</a>, all in
-  C90) and also required conditionally using that new backend in LibreOffice
-  (<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=71d02f5b6ca78935df3d09ec0a5817f5870b056e">commit</a>)
-</p>
-</li>
-<li>
-<p>
-Windows, OOXML, sign: this was almost functional, except that the UI
-  recently regressed, now fixed
-  (<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=02119ce226ef7c1fcf419aa0933aa95381ee309b">commit</a>)
-</p>
-</li>
-<li>
-<p>
-Finally now that everything is ported on Windows to use CNG, I could enable
-  it by default yesterday.
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>I could test hardware-based signing after this, which was fine out of the box
-on both platforms. Some screenshots:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-Linux:
-</p>
-</li>
-</ul></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://farm2.staticflickr.com/1784/29321634078_8818b2d7ba_o.png" alt="https://farm2.staticflickr.com/1784/29321634078_8818b2d7ba_o.png" />
-</div>
-</div>
-<div class="ulist"><ul>
-<li>
-<p>
-Windows:
-</p>
-</li>
-</ul></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://farm1.staticflickr.com/927/42288765505_db72ee48f2_o.png" alt="https://farm1.staticflickr.com/927/42288765505_db72ee48f2_o.png" />
-</div>
-</div>
-<div class="paragraph"><p>(There is no reason why this would not work on macOS, but I did not test that.)</p></div>
-<div class="paragraph"><p>Thanks Gabor Kelemen who helped me to get a sane card reader that has
-reasonable driver support on Linux.</p></div>
 <div class="paragraph"><p>All this is available in master (towards LibreOffice 6.2), or you can grab a
 <a href="http://dev-builds.libreoffice.org/daily/master/">daily build</a> and try it out
 right now. :-)</p></div>
