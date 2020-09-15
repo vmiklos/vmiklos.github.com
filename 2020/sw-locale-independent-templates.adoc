@@ -1,0 +1,47 @@
+= Locale-independent Writer templates
+
+:slug: sw-locale-independent-templates
+:category: libreoffice
+:tags: en
+:date: 2020-09-15T11:06:45+02:00
+
+== The problem
+
+Users create new documents in various ways. When they do so in Online or via Windows Explorer's
+context menu (New -> ...) then actual templates are not involved in the process, technically. What
+happens instead is that there is a plain empty Writer (or Calc, Impress) document that gets copied.
+The reason for this is that by the time the document gets created, the WOPI-like protocol or Windows
+Explorer doesn't have a running soffice process to create a document instance from a template: it'll
+just copy a file.
+
+With that aside, users expect that when they create new documents, the language of their new
+document matches the locale of Writer itself. This conflicts with the idea that languages in the
+documents are explicit, so if a German users writes a piece of German text, the spellcheck passes
+and the next user is English, then the text should remain German, not introducing new spellcheck
+errors.
+
+== Result
+
+.Locale-indepentent Writer template
+image::https://lh3.googleusercontent.com/OnDdNBGLsYhicnEbt_G6XW3Tmrn17XUT4XyBczgm0eETha9ZQ0y62t74QxeUFi3BfzfZrbBzZaMikglblqQBqTnWdYQzEQ72iBh3gZMHb9akFpQRVztOW7_0pK1Uyn9fvaNhLfugHfQ=w640[align="center"]
+
+The solution to this problem is what Mike
+https://gerrit.libreoffice.org/c/core/+/100899[implemented]: make these "templates" minimal, so they
+don't refer to any language. Then Calc or Impress will fill the language from the locale of the
+soffice process and it'll be part of the document on the first save. This solves the problem of
+multi-language templates while it does not break the spellcheck use-case.
+
+Andras https://gerrit.libreoffice.org/c/online/+/102239[copied] the same templates to various Online
+integrations to have the same problem solved in that use-case as well.
+
+Writer was still problematic, though. https://gerrit.libreoffice.org/c/core/+/102051[sw: default to
+UI locale when language is missing] now fixes this. You can see on the above screenshot that the
+stock soffice.odt was opened with a Hungarian locale and the status bar shows that the document
+language is Hungarian, not the confusing "multiple languages", as before.
+
+== Want to start using this?
+
+You can get a snapshot / demo of Collabora Office and try it out yourself right now:
+https://www.collaboraoffice.com/collabora-office-latest-snapshot/[try unstable snapshot].  Collabora
+is a major contributor to LibreOffice and all of this work will be available in TDF's next release
+too (7.1).
