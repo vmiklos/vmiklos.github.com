@@ -59,6 +59,110 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/classification-toolbar.html">Classification toolbar in LibreOffice</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Mon 02 May 2016</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 3 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>In the past few posts in this blog I wrote about various digital
+signing-related improvements that will land in LibreOffice 5.2. In this post I
+would like to cover an other aspect of helping secure document handling:
+classification.  First, thanks to the Dutch Ministry of Defense who made this
+work possible (as part of a project implementing trusted signing and
+communication in LibreOffice) in cooperation with
+<a href="http://nouenoff.nl/">Nou&amp;Off</a>. The basic idea is that in case the user is
+required to follow a policy when editing a document, then LO can help the user
+respect these rules in case LO is informed about the rules.</p></div>
+<div class="paragraph"><p>Luckily <a href="https://www.tscp.org/">TSCP</a> produced a number of open standards around
+this, which LO can implement without going after a specific vendor. For the
+scope of this post, two of them are interesting:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="https://www.tscp.org/wp-content/uploads/2013/08/TSCP_BAFv1.pdf">Business
+  Authentication Framework</a> (BAF) specifies how you can describe your existing
+  policy (which is probably some legal text) in a machine-readable format.
+</p>
+</li>
+<li>
+<p>
+<a href="http://www.tscp.org/wp-content/uploads/2013/08/TSCP_BAILSv1.pdf">Business
+  Authorization Identification and Labeling Scheme</a> (BAILS) specifies how to
+  refer to such a BAF policy in a document. The concepts in BAILS are so
+  generic that they can be applied to any format that supports document-level
+  user-defined properties.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>So how does this look like? View &#8594; Toolbars &#8594; Classification can enable a
+toolbar that&#8217;s disabled by default:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh3.googleusercontent.com/-Xax-DgF5OXU/VyMiHHa2MhI/AAAAAAAAGsk/4FhSfBAnSMAt_qUSrTq_C_1Mh68T5GhAACCo/s0/">
+<img src="https://lh3.googleusercontent.com/-Xax-DgF5OXU/VyMiHHa2MhI/AAAAAAAAGsk/4FhSfBAnSMAt_qUSrTq_C_1Mh68T5GhAACCo/s400/" alt="https://lh3.googleusercontent.com/-Xax-DgF5OXU/VyMiHHa2MhI/AAAAAAAAGsk/4FhSfBAnSMAt_qUSrTq_C_1Mh68T5GhAACCo/s400/" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>It has a list box that contains the categories described by the BAF policy. LO
+comes with such an example policy by default, that&#8217;s why you can see
+categories there already. If you want to use your own policy, you can do so:
+Tools &#8594; Options &#8594; LibreOffice &#8594; Paths has a Classification row to configure
+a custom policy:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh3.googleusercontent.com/-F-zzCoVt-Gc/VyMiN6C_BKI/AAAAAAAAGsY/K3XkZDDSX1c5_X266H3hC4KqkA5twGmrgCCo/s0/">
+<img src="https://lh3.googleusercontent.com/-F-zzCoVt-Gc/VyMiN6C_BKI/AAAAAAAAGsY/K3XkZDDSX1c5_X266H3hC4KqkA5twGmrgCCo/s400/" alt="https://lh3.googleusercontent.com/-F-zzCoVt-Gc/VyMiN6C_BKI/AAAAAAAAGsY/K3XkZDDSX1c5_X266H3hC4KqkA5twGmrgCCo/s400/" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>And if you select the <em>Internal Only</em> category, you&#8217;ll see most of the
+features described by a category: it can add an info-bar (UI only),
+header/footer fields and a watermark (stored in the document) as well:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh3.googleusercontent.com/-4iEF3y78npI/VyMiTCCMALI/AAAAAAAAGso/IrzORuYa-7IjGwjs9HXYQr3_rLcope0PwCCo/s0/">
+<img src="https://lh3.googleusercontent.com/-4iEF3y78npI/VyMiTCCMALI/AAAAAAAAGso/IrzORuYa-7IjGwjs9HXYQr3_rLcope0PwCCo/s400/" alt="https://lh3.googleusercontent.com/-4iEF3y78npI/VyMiTCCMALI/AAAAAAAAGso/IrzORuYa-7IjGwjs9HXYQr3_rLcope0PwCCo/s400/" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>I would like to point out that the watermark is a proper scalable customshape,
+not a poor bitmap. :-) Perhaps this part could be extracted to a separate <em>Add
+Watermark</em> feature later, as I think it&#8217;s quite useful on its own as well.</p></div>
+<div class="paragraph"><p>Finally, one feature is that LO knows how secure the document is once it has a
+classification category, which means a classification scale and level. For two
+documents that have the same scale, LO can detect if the user would accidentally
+try to leak sensitive content from a document with higher classification level
+to a document that has a lower one. This is implemented when copy&amp;pasting:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh3.googleusercontent.com/-ZRYwwOW0dQ4/VyMiXiqx2cI/AAAAAAAAGso/J6dH-q2nZPESOY3SiMQoCSLDUYfHi9WbACCo/s0/">
+<img src="https://lh3.googleusercontent.com/-ZRYwwOW0dQ4/VyMiXiqx2cI/AAAAAAAAGso/J6dH-q2nZPESOY3SiMQoCSLDUYfHi9WbACCo/s400/" alt="https://lh3.googleusercontent.com/-ZRYwwOW0dQ4/VyMiXiqx2cI/AAAAAAAAGso/J6dH-q2nZPESOY3SiMQoCSLDUYfHi9WbACCo/s400/" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>Most of these features work in all Writer, Calc and Impress. The header/footer
+fields and the watermark are Writer-only, and also Calc/Impress does
+classification checks only in its internal copy&amp;paste code (e.g. not when
+doing paste special and choosing RTF).</p></div>
+<div class="paragraph"><p>Putting all of these together, LO can now help users required to follow
+classification rules in a number of different ways, as long as the rules they
+have to follow are available as a BAF XML policy. As usual, you can try this
+right now with a 5.2 <a href="http://dev-builds.libreoffice.org/daily/master/">daily
+build</a>. :-)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/ooxml-signature-export.html">OOXML signature export in LibreOffice</a></h1>
   </div>
   <div class="article_meta">
@@ -644,7 +748,7 @@ function, and the other being a member variable.</p></div>
 <div class="paragraph"><p>Probably the worst scenario is when one was an abbreviation of the other, like
 pTable and pTbl or pCursor and pCrsr. I took this as an opportunity to play
 with Clang&#8217;s <a href="http://clang.llvm.org/docs/LibTooling.html">LibTooling</a>, and I
-wrote two tools <a href="/blog/cambridge.html">back during the
+wrote two tools <a href="https://vmiklos.hu/blog/cambridge.html">back during the
 Cambridge hackfest</a> to automate the process of finding and fixing missing
 prefixes.</p></div>
 <div class="paragraph"><p>To scope the renaming, I changed all classes in the <code>sw</code> module having more
@@ -653,77 +757,6 @@ nicely improves code readability, together with the
 <a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=49c2b9808df8a6b197dec666dfc0cda6321a4306">mass-rename
 of pointless abbreviations</a>, also done before the branch-off, so affecting
 both libreoffice-5-1 and master. :-)</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/calc-png-export.html">PNG export in LibreOffice Calc</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Wed 04 November 2015</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://lh3.googleusercontent.com/-8n61EJB3Xco/VjkUn1JvuqI/AAAAAAAAGOE/0-DCtcNV2RY/s0-Ic42/">
-<img src="https://lh3.googleusercontent.com/-8n61EJB3Xco/VjkUn1JvuqI/AAAAAAAAGOE/0-DCtcNV2RY/s400-Ic42/" alt="https://lh3.googleusercontent.com/-8n61EJB3Xco/VjkUn1JvuqI/AAAAAAAAGOE/0-DCtcNV2RY/s400-Ic42/" />
-</a>
-</div>
-</div>
-<div class="paragraph"><p>Both LibreOffice Writer and Impress has the ability to export the document as
-PNG, which is one way to create thumbnails for documents&#8201;&#8212;&#8201;i.e. being able to
-preview them before the real loading of the document happens. It turns out
-Calc did not have this feature, and given that <code>ScModelObj</code> also supports the
-<code>css::view::XRenderable</code> interface (just like Writer), I hoped that it won&#8217;t
-be too complex to add one.</p></div>
-<div class="paragraph"><p>You can refer to
-<a href="http://fridrich.blogspot.com/2013/08/extending-swiss-army-knife-overview.html">Fridrich&#8217;s
-overview blog post</a> for the complete list of steps on how to add a new filter
-to LibreOffice, here the following steps
-<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=03bb5d52fecd6c613c6cc36508eb44e5e1c3456a">were
-needed</a>:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-improve <code>DocumentToGraphicRenderer</code>, so that it can handle that Calc does
-  not implement the <code>text::XTextViewCursorSupplier</code> interface (Writer uses
-  this one to expose the cursor is on what page)
-</p>
-</li>
-<li>
-<p>
-register <code>png_Portable_Network_Graphic</code> as filter type for Calc
-</p>
-</li>
-<li>
-<p>
-create a new <code>calc_png_Export</code> filter fragment
-</p>
-</li>
-<li>
-<p>
-register a Calc graphic filters configuration type and filter group in
-  <code>Configuration_filter</code> and <code>CustomTarget_registry</code>
-</p>
-</li>
-<li>
-<p>
-testcase
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>If you can&#8217;t wait till LibreOffice 5.1 is released to try out this new
-feature, you can get a <a href="http://dev-builds.libreoffice.org/daily/master/">daily
-build</a>. :-)</p></div>
 </div>
 </div>
 

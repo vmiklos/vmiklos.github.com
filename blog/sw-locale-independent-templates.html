@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/pygments.css">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Miklos Vajna">
+  <meta name="description" content="Posts and writings by Miklos Vajna">
+
+  <link href="https://vmiklos.hu/blog/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking RSS" />
+
+<meta name="keywords" content="en">
+
+  <title>
+    What is Miklos hacking
+&ndash; Locale-independent Writer templates  </title>
+
+<script type="text/javascript">
+  var _paq = window._paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//analytics.vmiklos.hu/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '1']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <h2><a href="https://vmiklos.hu/blog">What is Miklos hacking</a></h2>
+      <p></p>
+      <ul>
+        <li><a href="/" target="_blank">Root</a></li>
+        <li><a href="https://planet.documentfoundation.org/" target="_blank">LibreOffice Blogs</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://vmiklos.hu/blog">Index</a> &brvbar; <a href="https://vmiklos.hu/blog/archives.html">Archives</a>
+      &brvbar; <a href="https://vmiklos.hu/blog/feeds/all.rss.xml">RSS</a>
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sw-locale-independent-templates.html">Locale-independent Writer templates</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Wed 16 September 2020</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <div class="sect1">
+<h2 id="_the_problem">The problem</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Users create new documents in various ways. When they do so in Online or via Windows Explorer&#8217;s
+context menu (New &#8594; &#8230;) then actual templates are not involved in the process, technically. What
+happens instead is that there is a plain empty Writer (or Calc, Impress) document that gets copied.
+The reason for this is that by the time the document gets created, the WOPI-like protocol or Windows
+Explorer doesn&#8217;t have a running soffice process to create a document instance from a template: it&#8217;ll
+just copy a file.</p></div>
+<div class="paragraph"><p>With that aside, users expect that when they create new documents, the language of their new
+document matches the locale of Writer itself. This conflicts with the idea that languages in the
+documents are explicit, so if a German users writes a piece of German text, the spellcheck passes
+and the next user is English, then the text should remain German, not introducing new spellcheck
+errors.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_result">Result</h2>
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://lh3.googleusercontent.com/OnDdNBGLsYhicnEbt_G6XW3Tmrn17XUT4XyBczgm0eETha9ZQ0y62t74QxeUFi3BfzfZrbBzZaMikglblqQBqTnWdYQzEQ72iBh3gZMHb9akFpQRVztOW7_0pK1Uyn9fvaNhLfugHfQ=w640" alt="https://lh3.googleusercontent.com/OnDdNBGLsYhicnEbt_G6XW3Tmrn17XUT4XyBczgm0eETha9ZQ0y62t74QxeUFi3BfzfZrbBzZaMikglblqQBqTnWdYQzEQ72iBh3gZMHb9akFpQRVztOW7_0pK1Uyn9fvaNhLfugHfQ=w640" />
+</div>
+<div class="title">Figure 1. Locale-indepentent Writer template</div>
+</div>
+<div class="paragraph"><p>The solution to this problem is what Mike
+<a href="https://gerrit.libreoffice.org/c/core/+/100899">implemented</a>: make these "templates" minimal, so they
+don&#8217;t refer to any language. Then Calc or Impress will fill the language from the locale of the
+soffice process and it&#8217;ll be part of the document on the first save. This solves the problem of
+multi-language templates while it does not break the spellcheck use-case.</p></div>
+<div class="paragraph"><p>Andras <a href="https://gerrit.libreoffice.org/c/online/+/102239">copied</a> the same templates to various Online
+integrations to have the same problem solved in that use-case as well.</p></div>
+<div class="paragraph"><p>Writer was still problematic, though. <a href="https://gerrit.libreoffice.org/c/core/+/102051">sw: default to
+UI locale when language is missing</a> now fixes this. You can see on the above screenshot that the
+stock soffice.odt was opened with a Hungarian locale and the status bar shows that the document
+language is Hungarian, not the confusing "multiple languages", as before.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_want_to_start_using_this">Want to start using this?</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
+<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
+is a major contributor to LibreOffice and all of this work will be available in TDF&#8217;s next release
+too (7.1).</p></div>
+</div>
+</div>
+
+  </div>
+  <div class="article_meta">
+    <p>Category: <a href="https://vmiklos.hu/blog/category/libreoffice.html">libreoffice</a>
+ &ndash; Tags:
+      <a href="https://vmiklos.hu/blog/tag/en.html">en</a>    </p>
+  </div>
+
+
+</article>
+
+
+    <div id="ending_message">
+      <p>&copy; Miklos Vajna. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
+</body>
+</html>
