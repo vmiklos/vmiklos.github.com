@@ -1,5 +1,151 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>What is Miklos hacking - libreoffice</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Wed, 16 Sep 2020 10:46:16 +0200</lastBuildDate><item><title>Locale-independent Writer templates</title><link>https://vmiklos.hu/blog/sw-locale-independent-templates.html</link><description>&lt;div class="sect1"&gt;
+<rss version="2.0"><channel><title>What is Miklos hacking - libreoffice</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Fri, 02 Oct 2020 14:21:37 +0200</lastBuildDate><item><title>SmartArt improvements in Impress, part 6</title><link>https://vmiklos.hu/blog/smartart-improvements-6.html</link><description>&lt;div id="preamble"&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Impress now has support for an improved auto-fit-of-text layout across multiple shapes, also the
+snake algorithm now handles width requests from constraints much better for SmartArt graphics from
+PPTX files. This builds on top of the &lt;a href="https://vmiklos.hu/blog/smartart-improvements-5.html"&gt;previous
+improvements&lt;/a&gt; around SmartArt support.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;First, thanks to our partner &lt;a href="https://www.suse.com/"&gt;SUSE&lt;/a&gt; for working with
+&lt;a href="https://www.collaboraoffice.com/"&gt;Collabora&lt;/a&gt; to make this possible.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_motivation"&gt;Motivation&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;SmartArt allows declaring your content and requirements for a graphic, then the layout will take
+care of arranging that in a suitable way. It is allowed to ask for an automatic font size, which is
+small enough so that all the content fits into the shape. At the same time, you can ask that the
+font size is the same in multiple shapes. Impress lacked the ability to do the latter, leading to
+different font sizes in different shapes, all automatic inside a single shape.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_results_so_far"&gt;Results so far&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Here is how the automatic text scaling across multiple shapes works in practice:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://lh3.googleusercontent.com/5f-rH0nKGed-6GhBn3bAOMH6sVUeZUeqt2TsFydVSFlL_185Hj6BjNkchKn7DVKpAQmRsg6bGNwKyBIN9bR1sRYacqcKnLYOeqasGZB2IWRohN8mtgFG9aNN_k5ofC_ZqunSeHqIYTc=w640" alt="https://lh3.googleusercontent.com/5f-rH0nKGed-6GhBn3bAOMH6sVUeZUeqt2TsFydVSFlL_185Hj6BjNkchKn7DVKpAQmRsg6bGNwKyBIN9bR1sRYacqcKnLYOeqasGZB2IWRohN8mtgFG9aNN_k5ofC_ZqunSeHqIYTc=w640" /&gt;
+&lt;/div&gt;
+&lt;div class="title"&gt;Figure 1. Autofit synchronization, new output&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://lh3.googleusercontent.com/lncpRp13-vUBJH5Kt4ccYHMULGQ8U1Qw8v5z7LmRSE9bv6yjukFMfuiJolCKbVOpjT-85zw_BQMj72dKJLVnMI242CQlIxR7tDUbhBuVaYDuGPRVnAqhCsGbDmGLmyu-7ueA39kNXIg=w640" alt="https://lh3.googleusercontent.com/lncpRp13-vUBJH5Kt4ccYHMULGQ8U1Qw8v5z7LmRSE9bv6yjukFMfuiJolCKbVOpjT-85zw_BQMj72dKJLVnMI242CQlIxR7tDUbhBuVaYDuGPRVnAqhCsGbDmGLmyu-7ueA39kNXIg=w640" /&gt;
+&lt;/div&gt;
+&lt;div class="title"&gt;Figure 2. Autofit synchronization, old output&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://lh3.googleusercontent.com/Go9LGPftmbtFnQXgzxITJVLhEVJF1B13Ge3PGbyKPNEzCJ2zi2DfYBMak92v127PJGYyzjL8V9fTh8Fb_vZXpAdBrBRQizd2onXM8dBka38BkBEi2FE8UP3JCPecKN1m9u8fR591GMM=w640" alt="https://lh3.googleusercontent.com/Go9LGPftmbtFnQXgzxITJVLhEVJF1B13Ge3PGbyKPNEzCJ2zi2DfYBMak92v127PJGYyzjL8V9fTh8Fb_vZXpAdBrBRQizd2onXM8dBka38BkBEi2FE8UP3JCPecKN1m9u8fR591GMM=w640" /&gt;
+&lt;/div&gt;
+&lt;div class="title"&gt;Figure 3. Autofit synchronization, reference output&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;You can see how the old output used to have unexpected large text in shape A, but now has the same
+text size as shape B. This is not applied unconditionally, shape C can request to have an
+independent, fixed font size.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://lh3.googleusercontent.com/7IBC-z9NfhP0mjutFPQLPN312AH5Jch6Gss-75kROjLksQ3MnSZnhTodrPDJBm3MmkcQ-rHKvzozgB1O8j8rDBJEkzCf9vgmgrSYa3kH7GqnDS0BgBnlSOWC0GQxVBCIMYX0-Blf_F8=w640" alt="https://lh3.googleusercontent.com/7IBC-z9NfhP0mjutFPQLPN312AH5Jch6Gss-75kROjLksQ3MnSZnhTodrPDJBm3MmkcQ-rHKvzozgB1O8j8rDBJEkzCf9vgmgrSYa3kH7GqnDS0BgBnlSOWC0GQxVBCIMYX0-Blf_F8=w640" /&gt;
+&lt;/div&gt;
+&lt;div class="title"&gt;Figure 4. Snake rows, new output&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://lh3.googleusercontent.com/4y0pEF3utBcpXMcCsrvrkvnNCdKKyhVlwejiwsI6cMUrA1nV4u1VuE4l1Xhuw60jQYrkeQD54Y0JuB4NR571kwtluUGceclQPZPcYITEyqf0GF1Y7fr_GXNnSRCtnXO1jjtcO_nSLS0=w640" alt="https://lh3.googleusercontent.com/4y0pEF3utBcpXMcCsrvrkvnNCdKKyhVlwejiwsI6cMUrA1nV4u1VuE4l1Xhuw60jQYrkeQD54Y0JuB4NR571kwtluUGceclQPZPcYITEyqf0GF1Y7fr_GXNnSRCtnXO1jjtcO_nSLS0=w640" /&gt;
+&lt;/div&gt;
+&lt;div class="title"&gt;Figure 5. Snake rows, old output&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://lh3.googleusercontent.com/JqIugvyKapfY6Hw0bs7OtWMJ2sj5mdFOv8ebJwZac_BgmuJXKyHxDUdzCj0xZl9zcksXDjdqthce1xrHJzZdGG_024CLbVBSoCmR-X_qFxdWupFwXBa281LId18qezAU80vuT69kGl0=w640" alt="https://lh3.googleusercontent.com/JqIugvyKapfY6Hw0bs7OtWMJ2sj5mdFOv8ebJwZac_BgmuJXKyHxDUdzCj0xZl9zcksXDjdqthce1xrHJzZdGG_024CLbVBSoCmR-X_qFxdWupFwXBa281LId18qezAU80vuT69kGl0=w640" /&gt;
+&lt;/div&gt;
+&lt;div class="title"&gt;Figure 6. Snake rows, reference output&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;You can see that the old output laid shapes all over the place, while the new output puts them to a
+3 by 2 matrix. The reason this works is because now we parse width requests from constraints
+correctly. This means we give spacings a smaller width, real shapes a larger width, so the content
+fits in less rows and the layout looks like a grid, matching the reference rendering.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_how_is_this_implemented"&gt;How is this implemented?&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;If you would like to know a bit more about how this works, continue reading&amp;#8230; :-)&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;As for the autofit synchronization:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/102266"&gt;svx UNO API for shapes: expose what scaling factor
+  is used for autofit scaling&lt;/a&gt; made it possible to know what is a good scaling factor for one shape
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/102324"&gt;svx UNO API for shapes: allow setting a max factor
+  for autofit text scale&lt;/a&gt; made it possible to set the scaling factor, overriding what it would
+  calculate by itself. This is a trade-off: setting the scaling factor on the shape inside the
+  document model has the benefit that the importer doesn&amp;#8217;t duplicate any text measuring code. The cost
+  is that now there is an UNO property that you can set, but the value of that won&amp;#8217;t be retained if
+  you save to ODF and load the document back. At least not currently
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/102490"&gt;oox smartart: add support for syncing font heights
+  of multiple shapes&lt;/a&gt; is the SmartArt code to use the above mentioned building blocks
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/102689"&gt;oox smartart: handle &amp;lt;dgm:prSet &amp;#8230; custT="1"/&amp;gt;&lt;/a&gt;
+  made it possible to not perform auto-scaling for certain shapes, if they request so
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Beyond that, for the snake rows:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/103411"&gt;oox smartart: snake algo: consider child&amp;#8217;s aspect
+  ratio request for cols/rows&lt;/a&gt; started to improve the grid calculation, so less vertical space is
+  needed
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/103594"&gt;oox smartart: snake algo: start parsing relative
+  width constraints&lt;/a&gt; allows differentiating between space items on a snake path (small width) and
+  shape items, which typically have a larger width
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/103629"&gt;oox smartart: snake algo: apply constraints on
+  child shape widths&lt;/a&gt; uses the information collected in the previous step, so the sample document is
+  requesting the expected 3 by 2 grid
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/103680"&gt;oox smartart: snake algo: make sure child shape
+  height stays within parent&lt;/a&gt; finally makes sure that the content is not falling off the slide,
+  which would make it impossible to read when projecting
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_want_to_start_using_this"&gt;Want to start using this?&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;You can get a snapshot / demo of Collabora Office and try it out yourself right now:
+&lt;a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/"&gt;try unstable snapshot&lt;/a&gt;.  Collabora
+intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
+of this work will be available in TDF&amp;#8217;s next release too (7.1).&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 02 Oct 2020 14:21:37 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2020-10-02:/blog/smartart-improvements-6.html</guid><category>libreoffice</category><category>en</category></item><item><title>Locale-independent Writer templates</title><link>https://vmiklos.hu/blog/sw-locale-independent-templates.html</link><description>&lt;div class="sect1"&gt;
 &lt;h2 id="_the_problem"&gt;The problem&lt;/h2&gt;
 &lt;div class="sectionbody"&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;Users create new documents in various ways. When they do so in Online or via Windows Explorer&amp;#8217;s
@@ -797,28 +943,4 @@ fixed now.&lt;/p&gt;&lt;/div&gt;
 &lt;a href="http://dev-builds.libreoffice.org/daily/master/"&gt;right now&lt;/a&gt;, if interested.&lt;/p&gt;&lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 24 Jan 2020 09:37:19 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2020-01-24:/blog/sw-autorowheight-rotatedtext.html</guid><category>libreoffice</category><category>en</category></item><item><title>Semi-transparent text in Draw/Impress</title><link>https://vmiklos.hu/blog/sd-semi-transparent-text.html</link><description>&lt;div id="preamble"&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Draw/Impress now has
-&lt;a href="https://git.libreoffice.org/core/commits/3e5bedbb6910053c0cee4112cd382fbd035c9832..6dbb317ebec681d236c6ce354f581108fd814f7b"&gt;support&lt;/a&gt;
-for semi-transparent shape text, next to the existing transparency support in the context of shape
-fill colors and shape border colors.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;First, thanks &lt;a href="https://vector.com/"&gt;Vector&lt;/a&gt; who made this work by
-&lt;a href="https://www.collaboraoffice.com/"&gt;Collabora&lt;/a&gt; possible.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Here is how it looks:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;img src="https://lh3.googleusercontent.com/FJ55-BJ_Mc75TiyrPYuvtOscHOqFp81sEI4SfJvybPzaXG5Y2n4mIoLRzkXydEEmtEf--l9s_h-L4CyYjuGpTyOngOTi8YAzIFp8bQBEn0k2DWsRzJHLdfttf74wTbdPgZUzgSnOYQ=w640" alt="https://lh3.googleusercontent.com/FJ55-BJ_Mc75TiyrPYuvtOscHOqFp81sEI4SfJvybPzaXG5Y2n4mIoLRzkXydEEmtEf--l9s_h-L4CyYjuGpTyOngOTi8YAzIFp8bQBEn0k2DWsRzJHLdfttf74wTbdPgZUzgSnOYQ=w640" /&gt;
-&lt;/div&gt;
-&lt;div class="title"&gt;Figure 1. Semi-transparent text in Draw&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;What you can see is that next to the existing character color, now you can also set a transparency
-percentage to decide if the text should be entirely transparent, entirely opaque or something
-between the two.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;The primary focus was Draw in this case, but this also helps PPTX support, as the importer/exporter
-now handles this for Impress documents as well.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;All this is available in LibreOffice master (towards 6.5), so you can try it out
-&lt;a href="http://dev-builds.libreoffice.org/daily/master/"&gt;right now&lt;/a&gt;, if interested.&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 20 Dec 2019 09:39:17 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2019-12-20:/blog/sd-semi-transparent-text.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 24 Jan 2020 09:37:19 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2020-01-24:/blog/sw-autorowheight-rotatedtext.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
