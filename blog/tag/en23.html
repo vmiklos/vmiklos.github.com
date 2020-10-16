@@ -59,6 +59,26 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/gammu-1-28-issue.html">gammu-1.28 issue</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Tue 05 October 2010</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>I recently upgraded gammu from 1.27 to 1.28 in -current and I noticed that the backup of my phone is now way slower than before. The <a href="http://gitorious.org/gammu/mainline/commit/9e7b902b8b80dd953bf491e494e42865b0f232d5.patch">fix</a> was trivial (already backported to the Frugalware package as well) for the maintainer so it's now fine again.</p><p>Well done, mcihar! :)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/playing-with-libvirt.html">Playing with libvirt</a></h1>
   </div>
   <div class="article_meta">
@@ -287,26 +307,6 @@ google picasa create --title $(basename $(pwd)) *.jpg
 </pre></p><p>The other package I recently tested is geeqie, it's a replacement (see history <a href="http://geeqie.sourceforge.net/">here</a>) for gqview I usually use to watch a lot of photos in a directory. And yes, they seem not to break any of the nice feature of the old gqview project, good work! ;)</p><p>Update: there is a <a href="http://code.google.com/p/googlecl/issues/detail?id=170">patch</a> to add sync support, it's usage:</p><p><pre>
 google picasa post --title $(basename $(pwd)) --sync *.jpg
 </pre></p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/chkdep-improvements.html">chkdep improvements</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Tue 27 July 2010</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>Yesterday I finally had a look at how chkdep removes duplicated dependencies. The whole idea behind the removal is that in case ldd says a package depends on libfoo and libbar + we know from pacman that libfoo already depends on libbar, then there is no point adding libbar to depends in most cases.</p><p>The old code did the followings: it searched the depends of the packages found by ldd and in case a depend was found in the depend list of an other depend then it removed the depend from the list. The problem with this is that in case foo depends on bar depends baz and ldd finds foo and baz only, then baz won't be removed.</p><p>The <a href="http://git.frugalware.org/gitweb/gitweb.cgi?p=pacman-tools.git;a=commitdiff;h=d8b015f7870332e9c236e488b9692b20f5fb783a">new code</a> does the same but depends are detected recursively to avoid the problem mentioned above.</p><p>As a result, makepkg -a output should be less noisy. ;)</p>
 </div>
 </div>
 
