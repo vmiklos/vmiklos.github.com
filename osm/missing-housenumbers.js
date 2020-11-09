@@ -34,7 +34,8 @@ var tracks = [
   {description : "Kissvábhegy", url : "kissvabhegy.kml", strokeColor : "green"},
   {description : "Orbánjegy", url : "orbanhegy.kml", strokeColor : "green"},
   {description : "Svábhegy", url : "svabhegy.kml", strokeColor : "green"},
-  {description : "Mártonhegy", url : "martonhegy.kml", strokeColor : "orange"},
+  {description : "Mártonhegy", url : "martonhegy.kml", strokeColor : "green"},
+  {description : "Széchenyihegy", url : "szechenyihegy.kml", strokeColor : "orange"},
 ];
 
 // Boilerplate below.
