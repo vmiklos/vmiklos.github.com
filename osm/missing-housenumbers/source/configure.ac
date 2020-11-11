@@ -1,4 +1,4 @@
-AC_INIT(missing-housenumbers)
+AC_INIT(source)
 
 AC_ARG_ENABLE(debug,
     AS_HELP_STRING([--enable-debug],

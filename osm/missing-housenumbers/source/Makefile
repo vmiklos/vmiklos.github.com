@@ -12,3 +12,8 @@ bundle.js: main.js package-lock.json Makefile config.mak
 package-lock.json: package.json
 	npm install
 	touch package-lock.json
+
+install: bundle.js
+	cp index.html ..
+	cp node_modules/ol/ol.css ..
+	cp bundle.js ..
