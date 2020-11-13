@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/pygments.css">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Miklos Vajna">
+  <meta name="description" content="Posts and writings by Miklos Vajna">
+
+  <link href="https://vmiklos.hu/blog/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking RSS" />
+
+<meta name="keywords" content="en">
+
+  <title>
+    What is Miklos hacking
+&ndash; Detecting 0-byte files based on extension in Impress and elsewhere  </title>
+
+<script type="text/javascript">
+  var _paq = window._paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//analytics.vmiklos.hu/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '1']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <h2><a href="https://vmiklos.hu/blog">What is Miklos hacking</a></h2>
+      <p></p>
+      <ul>
+        <li><a href="/" target="_blank">Root</a></li>
+        <li><a href="https://planet.documentfoundation.org/" target="_blank">LibreOffice Blogs</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://vmiklos.hu/blog">Index</a> &brvbar; <a href="https://vmiklos.hu/blog/archives.html">Archives</a>
+      &brvbar; <a href="https://vmiklos.hu/blog/feeds/all.rss.xml">RSS</a>
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sd-zero-byte-files.html">Detecting 0-byte files based on extension in Impress and elsewhere</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Fri 13 November 2020</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 3 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>Impress (and Writer and Calc) now has support for detecting 0-byte files on open/import based on
+their extension. This builds on top of the
+<a href="https://vmiklos.hu/blog/sw-locale-independent-templates.html">previous language-independent template
+improvements</a>. This means that e.g. a 0-byte PPTX file will open as an empty Impress presentation,
+not in Writer.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_motivation">Motivation</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>We regularly see customers wanting minimal templates, which are language independent and have no
+content. Such files are handy if your workflow is to first name an empty document (create it) and
+only then edit it (and not the other way around: first create the document, then save it by giving
+it a name). This is easy for <code>.txt</code> files: if it&#8217;s zero bytes, it&#8217;s empty. But then this approach is
+also expected to work for other file formats as well, where our original approach was more
+technical: if it&#8217;s an empty file, that that can be only plain text, so we (almost) always opened it
+in Writer, not matching the user expectations.</p></div>
+<div class="paragraph"><p>Instead of explaining the problem to people again and again (that a literally empty PPTX file is not
+a PPTX template), there is value in just adapting the code instead to "do what I mean".</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_results_so_far">Results so far</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>An empty PPTX file is now handled like this:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://lh3.googleusercontent.com/zk3b0f2Rx3t5vFVuKiimujSJWYwPNH05PCf5Indih3OwMDeBrOUH1X7N22PO46kIbxTVzI0V3IV-bE0sMycTHGj2eRqKT6K7eQkZ0Py9QVCPIhV0pdKdGPLGH08xpw72wFQ-3eGyX4k=w1920" alt="https://lh3.googleusercontent.com/zk3b0f2Rx3t5vFVuKiimujSJWYwPNH05PCf5Indih3OwMDeBrOUH1X7N22PO46kIbxTVzI0V3IV-bE0sMycTHGj2eRqKT6K7eQkZ0Py9QVCPIhV0pdKdGPLGH08xpw72wFQ-3eGyX4k=w1920" />
+</div>
+<div class="title">Figure 1. Empty PPTX file opening in Impress</div>
+</div>
+<div class="paragraph"><p>You can see this is no longer opening in Writer as plain text but in Impress, which is clearly a
+less surprising behavior.</p></div>
+<div class="paragraph"><p>Here is what happens if you open an empty DOTX (template):</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://lh3.googleusercontent.com/cVB_kK2wDyNIJjLt9v9UcNS4AagRCifwBofp70mHfNVzopvrN1cxcsVLhWfEArhab_PwSFkAvLlMUS1witevRcKeEn9UXYtw5o4VeGSztvnNUi6YMtR3t2DUIu1k2LLOUhnpckAnrwQ=w1920" alt="https://lh3.googleusercontent.com/cVB_kK2wDyNIJjLt9v9UcNS4AagRCifwBofp70mHfNVzopvrN1cxcsVLhWfEArhab_PwSFkAvLlMUS1witevRcKeEn9UXYtw5o4VeGSztvnNUi6YMtR3t2DUIu1k2LLOUhnpckAnrwQ=w1920" />
+</div>
+<div class="title">Figure 2. Empty DOTX file creates a new Writer document</div>
+</div>
+<div class="paragraph"><p>You can see that it is even recognized that this is a template format, so a new document is created,
+not the template itself is opened for editing.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_how_is_this_implemented">How is this implemented?</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
+<div class="paragraph"><p>You can see the code change in
+<a href="https://git.libreoffice.org/core/commit/ada07f303e7cd1e39c73abe0741aefe7d9d73a57">this commit</a>.
+First, we restrict this trick to file URLs, and also to empty files.</p></div>
+<div class="paragraph"><p>Second, we look at the extension of the file and try to match an import filter that usually handles
+that extension. This helps, because then nominally the correct filter will be used for the import,
+so save will not ask for a filename (as it happens for new documents), but it will know what target
+filename and export filter to use.</p></div>
+<div class="paragraph"><p>Finally we need to avoid actually invoking the import filter, because no file content is not
+something an import filter has to handle if its filter detection would reject the file. (E.g. PPTX
+is expected to be a valid ZIP file.) This is important, because we want to avoid touching each &amp;
+every file filter to not fail for empty file content&#8201;&#8212;&#8201;instead we want to handle this centrally, at
+a single place.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_want_to_start_using_this">Want to start using this?</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
+<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
+intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
+of this work will be available in TDF&#8217;s next release too (7.1).</p></div>
+</div>
+</div>
+
+  </div>
+  <div class="article_meta">
+    <p>Category: <a href="https://vmiklos.hu/blog/category/libreoffice.html">libreoffice</a>
+ &ndash; Tags:
+      <a href="https://vmiklos.hu/blog/tag/en.html">en</a>    </p>
+  </div>
+
+
+</article>
+
+
+    <div id="ending_message">
+      <p>&copy; Miklos Vajna. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
+</body>
+</html>
