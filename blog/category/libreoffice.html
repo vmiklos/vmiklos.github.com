@@ -61,6 +61,112 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sw-cached-fields.html">Better handling of cached field results in Writer</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Fri 27 November 2020</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>Writer now has much better support for preserving the cached result of fields in documents. This is
+especially beneficial for Word formats where the input document may have a field result which is not
+only a cache, but re-calculating the formula would yield a different result, even in Word.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_motivation">Motivation</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>A Collabora Office customer gave us a DOCX document, which is essentially a calendar for planned IT
+maintenance windows at some organization. These calendars are tables with fields in it. The document
+is halfway through towards changing it to a newer year: the formulas are already changed to
+calculate a newer year, but all the cached field results are still for the old year.</p></div>
+<div class="paragraph"><p>The request was to keep showing these results and not throw them away during save, either. Their
+primary workflow is to fill the calendar with manual entries, not to tweak the calendar layout
+itself.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_results_so_far">Results so far</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>The calendar now looks like this:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://lh3.googleusercontent.com/6o7pvix-dJ9QhCX65FUkWeQZ60B89sHqDpBvd7WVRLtAzBW1323odrQ13aV_CgEFvgh7Iee-ePq95oPOf1Q-jMxvX1MBsz9FhgKd9vymyrdMBIZbF459hNKE1dM4XLcwXkGYh8ksmok=w1920" alt="https://lh3.googleusercontent.com/6o7pvix-dJ9QhCX65FUkWeQZ60B89sHqDpBvd7WVRLtAzBW1323odrQ13aV_CgEFvgh7Iee-ePq95oPOf1Q-jMxvX1MBsz9FhgKd9vymyrdMBIZbF459hNKE1dM4XLcwXkGYh8ksmok=w1920" />
+</div>
+<div class="title">Figure 1. New render result in Writer</div>
+</div>
+<div class="paragraph"><p>Matching the reference rendering:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://lh3.googleusercontent.com/GJd2zcnspXDb7Wa2p32TInf9C8MAgt92h3G6PYuUwUvpQi5f3AdRbl5yGq8FN7kUPMcZwuFpohTKmX33s8u-AxFSO9rZFgH4X-fwrg8jShtJoA1KyGws_-ymUvINmK-5xo2_hd7YmLI=w1920" alt="https://lh3.googleusercontent.com/GJd2zcnspXDb7Wa2p32TInf9C8MAgt92h3G6PYuUwUvpQi5f3AdRbl5yGq8FN7kUPMcZwuFpohTKmX33s8u-AxFSO9rZFgH4X-fwrg8jShtJoA1KyGws_-ymUvINmK-5xo2_hd7YmLI=w1920" />
+</div>
+<div class="title">Figure 2. Reference render result</div>
+</div>
+<div class="paragraph"><p>While it looked like a broken calendar previously:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://lh3.googleusercontent.com/bpOVqcZX2CcKouuADNyPx1PMyI3I6CyjIDIAnUbylsT-ZimxSkPcUaRbMDd8MzHlG3Uqw2d-TunD4m7U4DUlm_O_esJt6CAY-H7Z5tdQxZ6q_MYxgJphutr_-JRVYh8uLmspiiI532U=w1920" alt="https://lh3.googleusercontent.com/bpOVqcZX2CcKouuADNyPx1PMyI3I6CyjIDIAnUbylsT-ZimxSkPcUaRbMDd8MzHlG3Uqw2d-TunD4m7U4DUlm_O_esJt6CAY-H7Z5tdQxZ6q_MYxgJphutr_-JRVYh8uLmspiiI532U=w1920" />
+</div>
+<div class="title">Figure 3. Old render result in Writer</div>
+</div>
+<div class="paragraph"><p>You can see that the day numbers were broken previously and now they line up properly.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_how_is_this_implemented">How is this implemented?</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
+<div class="paragraph"><p>As usual, the high-level problem was addressed by a series of small fixes:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/105596">DOCX import: don&#8217;t throw away cached value of
+  SwHiddenTextField</a> fixes a caching problem which was working for DOC already
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/105639">DOCX import: fix lost cached result inside an IF
+  field</a> fixes caching in the context of nested IF fields (Writer in general has limited support for nested fields)
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/105783">DOCX import: lost cached result of fields: fix
+  leading whitespace</a> fixes whitespace handling while caching
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/105798">DOCX export: handle conditional fields</a> adds an
+  initial implementation of conditional fields in the DOCX export, which was completely missing
+  previously.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>With these, it&#8217;s now possible to edit these calendars, without breaking the fields which provide the
+day numbers.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_want_to_start_using_this">Want to start using this?</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
+<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
+intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
+of this work will be available in TDF&#8217;s next release too (7.1).</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/sd-zero-byte-files.html">Detecting 0-byte files based on extension in Impress and elsewhere</a></h1>
   </div>
   <div class="article_meta">
@@ -972,157 +1078,6 @@ This required mapping the data of the <code>&lt;w:numFmt&gt;</code> XML element 
 <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
 is a major contributor to LibreOffice and all of this work will be available in TDF&#8217;s next release
 too (7.0).</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/hackweek-2020.html">My hack week at Collabora: (start of) padded numbering in Writer</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Tue 10 March 2020</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 3 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>As mentioned in a <a href="https://vmiklos.hu/blog/hackweek-2016.html">previous</a> such report, a hack week is when
-we are allowed to hack on anything we want in LibreOffice for a few days at
-<a href="https://www.collaboraoffice.com/">Collabora</a>. I used this time to implement core support for padded
-numbering in Writer.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_motivation">Motivation</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Padded numbering is a style where you insert 0 characters in front of an otherwise normal (Arabic)
-numbering, making sure that the result always has at least N characters. Up to now, you had to
-number your content manually to have this effect, while Word supports this feature.</p></div>
-<div class="paragraph"><p>OOXML supports padding up to 2, 3, 4 and 5 characters. Padding up to 2 characters is the older
-feature, supported in DOC and RTF as well, so I focused on that piece.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_results_so_far">Results so far</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Here is how the current, the baseline and the reference rendering of padded numbering looks like:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/n-XvNw0xPkBK_u9eqVraa7meGxYPX8dpKtfmHkN54y60x5HvUhQBouGEnfLX3XjzQFDjG7oWhCGVvFLnINneGZwDIjB8FW1hgwYSEpWrt3kniLGeKNFAfpa_Y9NGHNadj50ecy3FVw=s300-p-k" alt="https://lh3.googleusercontent.com/n-XvNw0xPkBK_u9eqVraa7meGxYPX8dpKtfmHkN54y60x5HvUhQBouGEnfLX3XjzQFDjG7oWhCGVvFLnINneGZwDIjB8FW1hgwYSEpWrt3kniLGeKNFAfpa_Y9NGHNadj50ecy3FVw=s300-p-k" />
-</div>
-<div class="title">Figure 1. numbering-padded2.docx, current</div>
-</div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/BgSZhU4WNkwTvOejqbfaKSiEQUudnDCUeVaQ62xPETwzhP0-FUPsBZMrUrgwhfi3fSou3YIQ_Yb0tuDzJmeIxHk2LhOpS9ENvxwLCr3-aCn4rIS0e9vYOh2__cHAvP82-MUJzQS-Zg=s300-p-k" alt="https://lh3.googleusercontent.com/BgSZhU4WNkwTvOejqbfaKSiEQUudnDCUeVaQ62xPETwzhP0-FUPsBZMrUrgwhfi3fSou3YIQ_Yb0tuDzJmeIxHk2LhOpS9ENvxwLCr3-aCn4rIS0e9vYOh2__cHAvP82-MUJzQS-Zg=s300-p-k" />
-</div>
-<div class="title">Figure 2. numbering-padded2.docx, baseline</div>
-</div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/TXI-klcS5xzPUX0SaV_iqhweMcUX0aN1rc7rwwAbKdulmPYZ6wcYqcQTO94aHGZl_p4FuVSt_drCI1blKRHLupNjC6j08GjdppbkJ8o72xNmjpV_X2_LcPUgZmOfGBeUJRhDKptxqg=s300-p-k" alt="https://lh3.googleusercontent.com/TXI-klcS5xzPUX0SaV_iqhweMcUX0aN1rc7rwwAbKdulmPYZ6wcYqcQTO94aHGZl_p4FuVSt_drCI1blKRHLupNjC6j08GjdppbkJ8o72xNmjpV_X2_LcPUgZmOfGBeUJRhDKptxqg=s300-p-k" />
-</div>
-<div class="title">Figure 3. numbering-padded2.docx, reference</div>
-</div>
-<div class="paragraph"><p>You can see how 0 is inserted before 1..9, but not before 10.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_how_is_this_implemented">How is this implemented?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-<a href="https://git.libreoffice.org/core/commit/6b80bd446de4bf19df3a9b124881e1fe12402ca8">sw padded
-  numbering: add doc model and UNO API</a> introduced <code>ARABIC_ZERO</code> externally and
-  <code>SVX_NUM_ARABIC_ZERO</code> internally
-</p>
-</li>
-<li>
-<p>
-<a href="https://git.libreoffice.org/core/commit/642b7706101a991efc7e312f59dece640d8bfb60">sw padded
-  numbering: add layout</a> implements the actual padding in a new <code>lcl_formatArabicZero()</code> function
-</p>
-</li>
-<li>
-<p>
-<a href="https://git.libreoffice.org/core/commit/7a8450c3ecf1a8000cb37981c981fdd55d196df4">sw padded
-  numbering: add ODF filter</a> decides how this handled for ODF import/export; the spec needs no
-  extension in this case
-</p>
-</li>
-<li>
-<p>
-<a href="https://git.libreoffice.org/core/commit/5435ea2afc5da5633a440f2f06d79265bcbb040c">sw padded
-  numbering: add DOCX filter</a> implements OOXML paragraph numbering
-</p>
-</li>
-<li>
-<p>
-<a href="https://git.libreoffice.org/core/commit/a8a5fc175a8af2bf3750497d7ebe2c8ea9176981">sw padded
-  numbering: add DOC filter</a> implements [MS-DOC] paragraph numbering
-</p>
-</li>
-<li>
-<p>
-<a href="https://git.libreoffice.org/core/commit/dc05428405fb96f28b2d7c7bcfa9033f3f5248a3">sw padded
-  numbering: add RTF export</a> doesn&#8217;t touch RTF import, which worked out of the box, due to code
-  sharing with DOCX import
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>Then I found that footnote numbering needs explicit handling, so added support for padding in that
-case as well:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-<a href="https://git.libreoffice.org/core/commit/3ea32f2b6cbe515353218bc1f3d5746ca66f6a5a">sw padded
-  numbering: add DOCX footnote export</a> reuses the same markup, just in a different context
-</p>
-</li>
-<li>
-<p>
-<a href="https://git.libreoffice.org/core/commit/5c7d0c5bafd244f1bfb3930e0229f1f3f2371c82">sw padded
-  numbering: add DOC footnote filter</a> fixed custom number formatting for DOC footnote export in general
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>Finally I had a little bit of remaining time, so I extended support for the recently added Chicago numbering:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-<a href="https://git.libreoffice.org/core/commit/ddbad5612e4322665bc70f4a026e5b052bcaf344">sw chicago
-  numbering: add DOCX footnote export</a> builds on top of the existing paragraph numbering support
-</p>
-</li>
-<li>
-<p>
-<a href="https://git.libreoffice.org/core/commit/9a1dd2e242794b4f26d207efc80a2f5bc088ab7c">sw chicago
-  numbering: add DOC footnote export</a> only touches footnotes, as this type is not supported for paragraphs
-</p>
-</li>
-<li>
-<p>
-<a href="https://git.libreoffice.org/core/commit/4ba09be7e260ce2a79a23465db7b2837422cde30">sw chicago
-  numbering: add RTF footnote export</a> fixed custom number formatting for RTF footnote export in general
-</p>
-</li>
-</ul></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_future_work">Future work</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Padding up to 3, 4 and 5 characters would be possible to do, but it&#8217;s DOCX-only, and uses a
-different markup, planned to be done later.</p></div>
-<div class="paragraph"><p>All this is available in master (towards LibreOffice 7.0), so you can grab a
-<a href="http://dev-builds.libreoffice.org/daily/master/">daily build</a> and try it out right now. :-)</p></div>
 </div>
 </div>
 
