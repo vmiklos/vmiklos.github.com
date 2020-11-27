@@ -1,0 +1,71 @@
+= Better handling of cached field results in Writer
+
+:slug: sw-cached-fields
+:category: libreoffice
+:tags: en
+:date: 2020-11-27T09:08:54+01:00
+
+Writer now has much better support for preserving the cached result of fields in documents. This is
+especially beneficial for Word formats where the input document may have a field result which is not
+only a cache, but re-calculating the formula would yield a different result, even in Word.
+
+== Motivation
+
+A Collabora Office customer gave us a DOCX document, which is essentially a calendar for planned IT
+maintenance windows at some organization. These calendars are tables with fields in it. The document
+is halfway through towards changing it to a newer year: the formulas are already changed to
+calculate a newer year, but all the cached field results are still for the old year.
+
+The request was to keep showing these results and not throw them away during save, either. Their
+primary workflow is to fill the calendar with manual entries, not to tweak the calendar layout
+itself.
+
+== Results so far
+
+The calendar now looks like this:
+
+.New render result in Writer
+image::https://lh3.googleusercontent.com/6o7pvix-dJ9QhCX65FUkWeQZ60B89sHqDpBvd7WVRLtAzBW1323odrQ13aV_CgEFvgh7Iee-ePq95oPOf1Q-jMxvX1MBsz9FhgKd9vymyrdMBIZbF459hNKE1dM4XLcwXkGYh8ksmok=w1920[align="center"]
+
+Matching the reference rendering:
+
+.Reference render result
+image::https://lh3.googleusercontent.com/GJd2zcnspXDb7Wa2p32TInf9C8MAgt92h3G6PYuUwUvpQi5f3AdRbl5yGq8FN7kUPMcZwuFpohTKmX33s8u-AxFSO9rZFgH4X-fwrg8jShtJoA1KyGws_-ymUvINmK-5xo2_hd7YmLI=w1920[align="center"]
+
+While it looked like a broken calendar previously:
+
+.Old render result in Writer
+image::https://lh3.googleusercontent.com/bpOVqcZX2CcKouuADNyPx1PMyI3I6CyjIDIAnUbylsT-ZimxSkPcUaRbMDd8MzHlG3Uqw2d-TunD4m7U4DUlm_O_esJt6CAY-H7Z5tdQxZ6q_MYxgJphutr_-JRVYh8uLmspiiI532U=w1920[align="center"]
+
+You can see that the day numbers were broken previously and now they line up properly.
+
+== How is this implemented?
+
+If you would like to know a bit more about how this works, continue reading... :-)
+
+As usual, the high-level problem was addressed by a series of small fixes:
+
+- https://gerrit.libreoffice.org/c/core/+/105596[DOCX import: don't throw away cached value of
+  SwHiddenTextField] fixes a caching problem which was working for DOC already
+
+- https://gerrit.libreoffice.org/c/core/+/105639[DOCX import: fix lost cached result inside an IF
+  field] fixes caching in the context of nested IF fields (Writer in general has limited support for nested fields)
+
+- https://gerrit.libreoffice.org/c/core/+/105783[DOCX import: lost cached result of fields: fix
+  leading whitespace] fixes whitespace handling while caching
+
+- https://gerrit.libreoffice.org/c/core/+/105798[DOCX export: handle conditional fields] adds an
+  initial implementation of conditional fields in the DOCX export, which was completely missing
+  previously.
+
+With these, it's now possible to edit these calendars, without breaking the fields which provide the
+day numbers.
+
+== Want to start using this?
+
+You can get a snapshot / demo of Collabora Office and try it out yourself right now:
+https://www.collaboraoffice.com/collabora-office-latest-snapshot/[try unstable snapshot].  Collabora
+intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
+of this work will be available in TDF's next release too (7.1).
+
+// vim: ft=asciidoc
