@@ -3,7 +3,7 @@
 :slug: cool-g-review-backport
 :category: collabora-online
 :tags: en
-:date: 2020-12-01T17:37:05+01:00
+:date: 2020-12-02T10:23:39+01:00
 
 Collabora Online now has a `./g`
 https://github.com/CollaboraOnline/online/blob/a4becf39abc3228fa899f71ff284d41c3c199627/g[script]
@@ -26,7 +26,8 @@ backport the contents of a PR to that stable branch.
 It's important that Gerrit used to have a `git review` command to just submit your changes for
 review, without asking anything. That explains why the stock GitHub workflow where you need to name
 the source branch of your PR feels unnecessary complexity. Creating the PR by visiting a webpage is
-again something we want to avoid.
+again something we want to avoid. Not to mention open questions like should you delete your source
+branch after a PR is merged? Should you delete your source repo?
 
 On the other hand, we're interested in GitHub's ability to have multiple commits in a PR: Gerrit
 forces to have one commit per change. The GitHub way encourages developers to split changes into
@@ -59,16 +60,16 @@ The easiest case is when you can assume that the master branch and the distro br
 each other that there won't be conflicts to be resolved. In that case, you can do:
 
 ----
-./g backport distro/collabora/co-6-4 42
+./g backport distro/collabora/co-6-4 790
 ----
 
-to pick all commits from https://github.com/collaboraonline/online/pull/42[PR 42] (which is already
+to pick all commits from https://github.com/collaboraonline/online/pull/790[PR 790] (which is already
 merged to master) to a distro branch.
 
 Again, you can have multiple backports in progress, e.g. you can do:
 
 ----
-./g backport distro/collabora/co-6-4 42 myhack
+./g backport distro/collabora/co-6-4 790 myhack
 ----
 
 If the default name is already used. The backport syntax is a bit longer, so you can always just
@@ -79,6 +80,10 @@ commit range of a PR. But there is `gh api graphql` which can do arbitrary
 https://docs.github.com/en/free-pro-team@latest/graphql[GraphQL] queries, which provide this
 information. At this stage it may make sense to just rewrite the whole `./g` script in e.g. Python,
 but till that happens, we parse the output of the query using https://stedolan.github.io/jq/[jq].
+
+Finally, if you do have conflicts or you want a local build test / manual test before submitting,
+you can always check out the distro branch manually, cherry-pick there and use plain `./g review` to
+submit your backport for review.
 
 == Want to start using this?
 
