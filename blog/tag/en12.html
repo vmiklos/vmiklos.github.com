@@ -59,6 +59,142 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/libvisio-setup.html">Document Liberation Project hacking experience</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Sat 29 November 2014</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 4 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>As someone who usually hacks on LibreOffice, external import filters produced
+by the Document Liberation Project cut both ways: they are great, as they deal
+with obscure formats and we get them for free, OTOH hacking such code is more
+complex than the usual LO code. I recently contributed a few patches to
+<a href="http://cgit.freedesktop.org/libreoffice/libvisio/commit/?id=2060d364bc0f7df97b864bf01fc5a27da12061c3">libvisio</a>
+and
+<a href="http://sourceforge.net/p/libwpd/libodfgen/ci/fb43d79e12ce132fc127cc0481ff5a6bdbcd1afe/">libodfgen</a>,
+but before I was able to do actual code changes, I had to set up a number of
+repositories and configure them to talk to each other&#8201;&#8212;&#8201;this post describes one
+possible setup that suited my needs.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_building_blocks">Building blocks</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>DLP&#8217;s central project is librevenge and everything builds on top of that,
+either by calling it or called by it. In case the task is to turn VSDX files
+into ODG ones, it looks like this:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh3.googleusercontent.com/-cxQ9QnWmyAo/VHoyKdHXSAI/AAAAAAAAFAY/Rqqr8xPorNM/s0/">
+<img src="https://lh3.googleusercontent.com/-cxQ9QnWmyAo/VHoyKdHXSAI/AAAAAAAAFAY/Rqqr8xPorNM/s400/" alt="https://lh3.googleusercontent.com/-cxQ9QnWmyAo/VHoyKdHXSAI/AAAAAAAAFAY/Rqqr8xPorNM/s400/" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>libvisio can build a librevenge document model from Visio files (more on the
+various librevenge-based libraries
+<a href="http://davetardon.wordpress.com/2014/05/06/writing-import-libraries-with-librevenge-part-i-getting-started/">here</a>),
+libodfgen can generate ODF output from such document models (one other
+possibility would be e.g.
+<a href="http://sourceforge.net/projects/libepubgen/">libepubgen</a>), and the
+writerperfect module provides kind of a controller for the remaining modules,
+e.g. for our purpose, a vsd2odg binary.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_alternatives_considered">Alternatives considered</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>One possibility is to build LibreOffice, use <code>--with-system-libvisio</code> and
+similar switches, then clone the repos, install them system-wide (possibly
+with your modifications), and then you can test your changes just with
+building the various libs, without changing your LO build (more
+<a href="http://fridrich.blogspot.hu/2012/01/fosdem-2012-how-to-make-best-of-it-and.html">here</a>).
+The drawback is that this way you pollute your system with unstable versions
+of those libs.</p></div>
+<div class="paragraph"><p>An other possibility is to build LibreOffice as usual, and then use the
+<a href="https://wiki.documentfoundation.org/Development/Patching_External_Libraries">external
+libraries patching mechanism</a> to hack on the code. The drawback is that you
+have to work without git on the code, and also you can only work with a
+released version.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_the_pkg_config_approach">The pkg-config approach</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>So here is what I did to avoid the above mentioned drawbacks: all DLP projects
+use pkg-config to find the required libraries, so you can configure them in a
+way that allows building as a user, avoid installing them at all, and still
+execute vsd2odg using the libs with your changes. Here is how to do it:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+librevenge:
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p><code>git clone git://git.code.sf.net/p/libwpd/librevenge</code><br />
+<code>cd librevenge</code><br />
+<code>./autogen.sh</code><br />
+<code>./configure --enable-debug</code><br />
+<code>make</code></p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+libvisio:
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p><code>git clone git://gerrit.libreoffice.org/libvisio</code><br />
+<code>cd libvisio</code><br />
+<code>./autogen.sh</code><br />
+<code>./configure REVENGE_CFLAGS="-I/home/vmiklos/git/libreoffice/librevenge/inc" REVENGE_LIBS="-L/home/vmiklos/git/libreoffice/librevenge/src/lib/.libs/ -lrevenge-0.0" REVENGE_GENERATORS_CFLAGS="-I/home/vmiklos/git/libreoffice/librevenge/inc" REVENGE_GENERATORS_LIBS="-L/home/vmiklos/git/libreoffice/librevenge/src/lib/.libs/ -lrevenge-generators-0.0" REVENGE_STREAM_CFLAGS="-I/home/vmiklos/git/libreoffice/librevenge/inc" REVENGE_STREAM_LIBS="-L/home/vmiklos/git/libreoffice/librevenge/src/lib/.libs/ -lrevenge-stream-0.0" --enable-debug --enable-werror</code><br />
+<code>make</code></p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+libodfgen:
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p><code>git clone git://git.code.sf.net/p/libwpd/libodfgen</code><br />
+<code>cd libodfgen</code><br />
+<code>./autogen.sh</code><br />
+<code>./configure REVENGE_CFLAGS="-I/home/vmiklos/git/libreoffice/librevenge/inc" REVENGE_LIBS="-L/home/vmiklos/git/libreoffice/librevenge/src/lib/.libs/ -lrevenge-0.0" REVENGE_STREAM_CFLAGS="-I/home/vmiklos/git/libreoffice/librevenge/inc" REVENGE_STREAM_LIBS="-L/home/vmiklos/git/libreoffice/librevenge/src/lib/.libs/ -lrevenge-stream-0.0" --enable-debug</code><br />
+<code>make</code></p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+writerperfect:
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p><code>git clone git://git.code.sf.net/p/libwpd/writerperfect</code><br />
+<code>cd writerperfect</code><br />
+<code>./autogen.sh</code><br />
+<code>./configure REVENGE_CFLAGS="-I/home/vmiklos/git/libreoffice/librevenge/inc" REVENGE_LIBS="-L/home/vmiklos/git/libreoffice/librevenge/src/lib/.libs/ -lrevenge-0.0" REVENGE_STREAM_CFLAGS="-I/home/vmiklos/git/libreoffice/librevenge/inc" REVENGE_STREAM_LIBS="-L/home/vmiklos/git/libreoffice/librevenge/src/lib/.libs/ -lrevenge-stream-0.0" ODFGEN_CFLAGS="-I/home/vmiklos/git/libreoffice/libodfgen/inc" ODFGEN_LIBS="-L/home/vmiklos/git/libreoffice/libodfgen/src/.libs -lodfgen-0.1 -lrevenge-0.0 -lrevenge-stream-0.0" VISIO_CFLAGS="-I/home/vmiklos/git/libreoffice/libvisio/inc" VISIO_LIBS="-L/home/vmiklos/git/libreoffice/libvisio/src/lib/.libs -lvisio-0.1 -lrevenge-0.0" --enable-debug --with-libvisio</code><br /></p></div>
+<div class="paragraph"><p>Of course, replace <code>/home/vmiklos/git/libreoffice/</code> with any other directory
+you like, just be consistent. ;-)</p></div>
+<div class="paragraph"><p>Now you can hack on any of these libraries, you just need to build your
+changes, and then vsd2odg will produce a flat ODG that you can quickly test
+with any ODF processor, like LibreOffice. One remaining trick (in case you&#8217;re
+not an autotools expert) is that vsd2odg is a libtool shell script, not a
+binary. If you still want to run the underlying binary in gdb, here is how you
+can do that:</p></div>
+<div class="paragraph"><p><code>libtool --mode=execute gdb --args vsd2odg /home/vmiklos/git/libreoffice/test.vsdx</code></p></div>
+<div class="paragraph"><p>In case the above considered two alternatives are not sufficient for your
+purposes, then I hope you find this setup useful. ;-)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/yellow-pig.html">The yellow border around the pig</a></h1>
   </div>
   <div class="article_meta">
@@ -832,65 +968,6 @@ test document</a>):</p></div>
 </div>
 </div>
 <div class="paragraph"><p>I still hope to fix that as well one day, but the above fix is something we&#8217;ll already provide in 4.3. :-)</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/supybot-otrs.html">OTRS plugin for Supybot</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Sun 18 May 2014</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>OTRS is quite different to Bugzilla (what we use for upstream LibreOffice
-development for quite some time). On the plus side, e.g. it has strong support
-for multiple customers. OTOH, it deals with tickets instead of bugs, and sadly
-it doesn&#8217;t have a single identifier for tickets. It has a ticket <em>number</em>
-(which by default even includes the date), which is searchable, and it has a
-ticket <em>ID</em>, which is used for URL&#8217;s.</p></div>
-<div class="paragraph"><p>In case of Bugzilla, you can easily lookup "bug#12345" in Firefox. Create a
-bookmark with the following properties:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-Location: <a href="https://localhost/bugzilla/show_bug.cgi?id=%s">https://localhost/bugzilla/show_bug.cgi?id=%s</a>
-</p>
-</li>
-<li>
-<p>
-Keyword: bug
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>and then you can just copy&amp;paste bug#12345 to Firefox, replace the # with a
-space, and Firefox will do the right thing.</p></div>
-<div class="paragraph"><p>Unfortunately (due to the above detailed reasons), this is not possible with
-OTRS. So I decided to write a Supybot plugin that can notice "bug#12345" on an
-IRC channel, and give you the clickable URL (after finding out the ticket ID
-from the ticket number).</p></div>
-<div class="paragraph"><p>The result is available
-<a href="https://github.com/vmiklos/vmexam/tree/master/python/supybot-otrs">on GitHub</a>,
-it looks like this:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>09:58 &lt; vmiklos&gt; bug#1000068
-09:58 &lt; supybot&gt; https://localhost/otrs/index.pl?Action=AgentTicketZoom;TicketID=73</code></pre>
-</div></div>
-<div class="paragraph"><p>Given that I found no relevant hits when
-<a href="https://www.google.com/search?q=supybot+%22otrs%22">searching</a> for <em>supybot
-otrs</em>, I hope this code may be useful for others as well.</p></div>
-<div class="paragraph"><p>Thanks to James Scott for his
-<a href="https://github.com/scottjab/supybot-youtube">YouTube</a> plugin that helped to
-quickly figure out the relevant Supybot API&#8217;s.</p></div>
 </div>
 </div>
 

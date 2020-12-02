@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"><channel><title>What is Miklos hacking - collabora-online</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Wed, 02 Dec 2020 10:23:39 +0100</lastBuildDate><item><title>Effecting code review and backporting for Collabora Online</title><link>https://vmiklos.hu/blog/cool-g-review-backport.html</link><description>&lt;div id="preamble"&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Collabora Online now has a &lt;code&gt;./g&lt;/code&gt;
+&lt;a href="https://github.com/CollaboraOnline/online/blob/a4becf39abc3228fa899f71ff284d41c3c199627/g"&gt;script&lt;/a&gt;
+that tries to bring some of the Gerrit-based review benefits to a workflow based on GitHub.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_motivation"&gt;Motivation&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Collabora Online is on GitHub, but &lt;a href="https://git.libreoffice.org/core"&gt;core.git&lt;/a&gt; is still on Gerrit, so it made sense to spend some time on a small shell script that gives you review and backport experience that is closer to Gerrit than the stock GitHub workflow.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_how_we_use_github"&gt;How we use GitHub&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Most Online committers push their code for review directly to &lt;code&gt;online.git&lt;/code&gt;, to private namespaced
+branches, like &lt;code&gt;private/kendy/master&lt;/code&gt;, then a pull request can be created to get commits from that
+branch into master after CI, review, etc. This workflow has the benefit that you don&amp;#8217;t have to deal
+with the complexity of multiple repos.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Next to master, there are distro branches like &lt;code&gt;distro/collabora/co-6-4&lt;/code&gt;, we may or may not want to
+backport the contents of a PR to that stable branch.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;It&amp;#8217;s important that Gerrit used to have a &lt;code&gt;git review&lt;/code&gt; command to just submit your changes for
+review, without asking anything. That explains why the stock GitHub workflow where you need to name
+the source branch of your PR feels unnecessary complexity. Creating the PR by visiting a webpage is
+again something we want to avoid. Not to mention open questions like should you delete your source
+branch after a PR is merged? Should you delete your source repo?&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;On the other hand, we&amp;#8217;re interested in GitHub&amp;#8217;s ability to have multiple commits in a PR: Gerrit
+forces to have one commit per change. The GitHub way encourages developers to split changes into
+more commits, now that the review and CI cost won&amp;#8217;t increase just due to such splits.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_submit_for_review"&gt;Submit for review&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The happy path is when you have one or more local commits and you want to submit it for review. In
+this case now you can do:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="listingblock"&gt;
+&lt;div class="content"&gt;
+&lt;pre&gt;&lt;code&gt;./g review&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;And the script will figure out that you want to push your local branch to a remote branch like
+&lt;code&gt;private/kendy/master&lt;/code&gt; and also create a pull request for you, printing its URL.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;In case that branch already exists then you need to specify a name:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="listingblock"&gt;
+&lt;div class="content"&gt;
+&lt;pre&gt;&lt;code&gt;./g review myhack&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;So parallel reviews are possible, but only the first gets an inferred name. Both cases need no
+clicking in a browser, thanks to &lt;a href="https://github.com/cli/cli"&gt;gh&lt;/a&gt;.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_submit_a_backport"&gt;Submit a backport&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The easiest case is when you can assume that the master branch and the distro branch is so close to
+each other that there won&amp;#8217;t be conflicts to be resolved. In that case, you can do:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="listingblock"&gt;
+&lt;div class="content"&gt;
+&lt;pre&gt;&lt;code&gt;./g backport distro/collabora/co-6-4 790&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;to pick all commits from &lt;a href="https://github.com/collaboraonline/online/pull/790"&gt;PR 790&lt;/a&gt; (which is already
+merged to master) to a distro branch.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Again, you can have multiple backports in progress, e.g. you can do:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="listingblock"&gt;
+&lt;div class="content"&gt;
+&lt;pre&gt;&lt;code&gt;./g backport distro/collabora/co-6-4 790 myhack&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;If the default name is already used. The backport syntax is a bit longer, so you can always just
+type &lt;code&gt;./g backport&lt;/code&gt; and you&amp;#8217;ll get the usage.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;This second command is a bit more complicated, as &lt;code&gt;gh&lt;/code&gt; has no trivial way to expose what is the
+commit range of a PR. But there is &lt;code&gt;gh api graphql&lt;/code&gt; which can do arbitrary
+&lt;a href="https://docs.github.com/en/free-pro-team@latest/graphql"&gt;GraphQL&lt;/a&gt; queries, which provide this
+information. At this stage it may make sense to just rewrite the whole &lt;code&gt;./g&lt;/code&gt; script in e.g. Python,
+but till that happens, we parse the output of the query using &lt;a href="https://stedolan.github.io/jq/"&gt;jq&lt;/a&gt;.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Finally, if you do have conflicts or you want a local build test / manual test before submitting,
+you can always check out the distro branch manually, cherry-pick there and use plain &lt;code&gt;./g review&lt;/code&gt; to
+submit your backport for review.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_want_to_start_using_this"&gt;Want to start using this?&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;You can go to the &lt;a href="https://collaboraonline.github.io/"&gt;Collabora Online&lt;/a&gt; community website and see how
+to build the code. Then you may want to solve an
+&lt;a href="https://github.com/CollaboraOnline/online/issues?q=is%3Aissue+is%3Aopen+label%3A%22Easy+Hack%22"&gt;easy
+hack&lt;/a&gt;, finally submit your commit for review either by using the above method or whichever way you
+prefer contributing to GitHub projects.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Wed, 02 Dec 2020 10:23:39 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2020-12-02:/blog/cool-g-review-backport.html</guid><category>collabora-online</category><category>en</category></item></channel></rss>
