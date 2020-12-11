@@ -1,5 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>What is Miklos hacking</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Wed, 02 Dec 2020 10:23:39 +0100</lastBuildDate><item><title>Effecting code review and backporting for Collabora Online</title><link>https://vmiklos.hu/blog/cool-g-review-backport.html</link><description>&lt;div id="preamble"&gt;
+<rss version="2.0"><channel><title>What is Miklos hacking</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Fri, 11 Dec 2020 09:31:26 +0100</lastBuildDate><item><title>Better PDF signature verification in Draw</title><link>https://vmiklos.hu/blog/pdfium-sign-verify.html</link><description>&lt;div id="preamble"&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Draw now has much better support for detecting unsigned incremental updates between signatures at
+the end of PDF documents. We now also make sure that incremental updates introduced for adding
+signatures really just add annotations and don&amp;#8217;t change the actual content.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_motivation"&gt;Motivation&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;There has been a recent &lt;a href="https://pdf-insecurity.org/signature-shadow/evaluation_2020.html"&gt;evaluation&lt;/a&gt;
+of PDF signature verification, which included Draw. While we got a checkmark on their Shadow Hide
+test, their Shadow Replace test found conditional problems and their Shadow Hide-and-Replace test
+was not happy, either.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;So time to look at what are those corner-cases and how the situation can be improved, so people keep
+trusting that if Draw says a signature is valid, it&amp;#8217;s indeed valid.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_results_so_far"&gt;Results so far&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;There were 4 incremental improvements in this area:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/99361"&gt;detect unsigned incremental update between
+  signatures&lt;/a&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/101712"&gt;fix infobar vs signature dialog inconsistency&lt;/a&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/101926"&gt;avoid saying OK when the signature is partial&lt;/a&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/102057"&gt;pdf incremental updates that are non-commenting are
+  invalid&lt;/a&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;These were enough so that talking to the authors of that evaluation now confirmed that these
+problems are all gone.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_how_is_this_implemented"&gt;How is this implemented?&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;If you would like to know a bit more about how this works, continue reading&amp;#8230; :-)&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;PDF signature verification works by using a custom PDF tokenizer. You can read about that code in
+the PDF tokenizer section of &lt;a href="https://vmiklos.hu/blog/pdf-sign.html"&gt;this post&lt;/a&gt;. The bottom line is that
+we now have both PDFium and this custom tokenizer, somewhat duplicating the functionality.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;After talking to the PDFium developers (see the relevant
+&lt;a href="https://groups.google.com/g/pdfium/c/Z0fC8Fg3yek/m/IE6yD066AAAJ"&gt;mailing list thread&lt;/a&gt;), there were
+open regarding adding all the high level API to allow PDF signature verification based on PDFium,
+and not via our own tokenizer. See
+&lt;a href="https://pdfium.googlesource.com/pdfium/+/refs/heads/master/public/fpdf_signature.h"&gt;this
+header file&lt;/a&gt; for the set of relevant APIs added. A combinations of those allowed to
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/105766"&gt;adapt&lt;/a&gt; the code on our side and use PDFium for
+signature verification, not the own tokanizer.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_want_to_start_using_this"&gt;Want to start using this?&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;You can get a snapshot / demo of Collabora Office and try it out yourself right now:
+&lt;a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/"&gt;try unstable snapshot&lt;/a&gt;.  Collabora
+intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
+of this work will be available in TDF&amp;#8217;s next release too (7.1).&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 11 Dec 2020 09:31:26 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2020-12-11:/blog/pdfium-sign-verify.html</guid><category>libreoffice</category><category>en</category></item><item><title>Effecting code review and backporting for Collabora Online</title><link>https://vmiklos.hu/blog/cool-g-review-backport.html</link><description>&lt;div id="preamble"&gt;
 &lt;div class="sectionbody"&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;Collabora Online now has a &lt;code&gt;./g&lt;/code&gt;
 &lt;a href="https://github.com/CollaboraOnline/online/blob/a4becf39abc3228fa899f71ff284d41c3c199627/g"&gt;script&lt;/a&gt;
@@ -785,85 +861,4 @@ is a major contributor to LibreOffice and all of this work will be available in 
 too (7.1).&lt;/p&gt;&lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Wed, 10 Jun 2020 09:12:45 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2020-06-10:/blog/sw-page-content-bottom-anchor.html</guid><category>libreoffice</category><category>en</category></item><item><title>Export larger pages from Draw using PDF 1.6</title><link>https://vmiklos.hu/blog/sd-pdf-1-6-larger-page-size.html</link><description>&lt;div id="preamble"&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Draw/Impress now has
-&lt;a href="https://git.libreoffice.org/core/commit/4830592b780833cf5eee2aef30bc9c5d444dfb24"&gt;support&lt;/a&gt; for
-exporting larger page sizes into PDF. The previous limit was 200 " (508 cm), and now practically
-there is no such limit.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;First, thanks &lt;a href="https://vector.com/"&gt;Vector&lt;/a&gt; who made this work by
-&lt;a href="https://www.collaboraoffice.com/"&gt;Collabora&lt;/a&gt; possible.&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_motivation"&gt;Motivation&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;You can use Draw with a document which has a single page, which more or less acts as a canvas with
-unlimited size to handle vector graphics. The current limit of such a canvas in size is 600 x 600
-cm. (And that can be increased further if there is demand without too large problems.)&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Exporting such a document to PDF is a different matter, though. The specification (up to, and
-including version 1.5) says that the unit to specify sizes is points, and the maximum allowed value
-is 14 400. This means that there is no markup to describe that your page is 600 cm wide. PDF 1.6
-(and newer versions) introduce a &lt;code&gt;UserUnit&lt;/code&gt; markup to allow unlimited page size, and now Draw (and
-other apps) can use this to describe the increased size.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Another use-case can be a large sheet in Calc, exporting it to a single PDF page, so you can pan
-around easily on a touch device. If you have enough rows, then getting rid of this limit is helpful
-to deal with the large page height.&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_results_so_far"&gt;Results so far&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Here is how a large page looks like now in Draw and then in Adobe Reader:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;a class="image" href="https://youtu.be/HtHq23MbYDs"&gt;
-&lt;img src="https://lh3.googleusercontent.com/wfVdQklYbX9mpfNG0hk_A0-I495Nsu4r8Twokq_ZZR3Z0IondP33BDE_XjGFsNfucDJ9kVpDps_J_tcQATKhwJxAFeZn6hS1NN7i5BVlS9UBroUIGrJU1TiwqDB88k6HpMbnK9x9gQ=w640" alt="https://lh3.googleusercontent.com/wfVdQklYbX9mpfNG0hk_A0-I495Nsu4r8Twokq_ZZR3Z0IondP33BDE_XjGFsNfucDJ9kVpDps_J_tcQATKhwJxAFeZn6hS1NN7i5BVlS9UBroUIGrJU1TiwqDB88k6HpMbnK9x9gQ=w640" /&gt;
-&lt;/a&gt;
-&lt;/div&gt;
-&lt;div class="title"&gt;Figure 1. Export of 6m-wide.odg to PDF&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;You can see how both Draw and Adobe Reader show that the page width is larger than 200 ".&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_how_is_this_implemented"&gt;How is this implemented?&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;If you would like to know a bit more about how this works, continue reading&amp;#8230; :-)&lt;/p&gt;&lt;/div&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-The PDF export already converts from an internal unit (e.g. Draw uses 100th millimeters, Writer
-  uses twips) to PDF&amp;#8217;s unit
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-The trick is that now PDF&amp;#8217;s unit is no longer points all the time, but we can dynamically switch
-  to a larger unit as needed.
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Here is how the PDF markup looks like for a 600 cm wide page:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="listingblock"&gt;
-&lt;div class="content"&gt;
-&lt;pre&gt;&lt;code&gt;&lt;font face="monospace"&gt;&lt;font color="#ff00ff"&gt;1&lt;/font&gt;&amp;nbsp;&lt;font color="#ff00ff"&gt;0&lt;/font&gt;&amp;nbsp;&lt;font color="#2e8b57"&gt;&lt;b&gt;obj&lt;/b&gt;&lt;/font&gt;
-&lt;font color="#a52a2a"&gt;&lt;b&gt;&amp;lt;&amp;lt;&lt;/b&gt;&lt;/font&gt;&lt;font color="#008b8b"&gt;/Type/Page/Parent&lt;/font&gt;&amp;nbsp;&lt;font color="#6a5acd"&gt;4 0 R&lt;/font&gt;&lt;font color="#008b8b"&gt;/Resources&lt;/font&gt;&amp;nbsp;&lt;font color="#6a5acd"&gt;11 0 R&lt;/font&gt;&lt;font color="#008b8b"&gt;/MediaBox&lt;/font&gt;&lt;font color="#a52a2a"&gt;&lt;b&gt;[&lt;/b&gt;&lt;/font&gt;&lt;font color="#ff00ff"&gt;0&lt;/font&gt;&amp;nbsp;&lt;font color="#ff00ff"&gt;0&lt;/font&gt;&amp;nbsp;&lt;font color="#ff00ff"&gt;8503.93700787402&lt;/font&gt;&amp;nbsp;&lt;font color="#ff00ff"&gt;396&lt;/font&gt;&lt;font color="#a52a2a"&gt;&lt;b&gt;]&lt;/b&gt;&lt;/font&gt;
-&lt;font color="#008b8b"&gt;/UserUnit&lt;/font&gt;&amp;nbsp;&lt;font color="#ff00ff"&gt;2&lt;/font&gt;&lt;font color="#008b8b"&gt;/Group&lt;/font&gt;&lt;font color="#a52a2a"&gt;&lt;b&gt;&amp;lt;&amp;lt;&lt;/b&gt;&lt;/font&gt;&lt;font color="#008b8b"&gt;/S/Transparency/CS/DeviceRGB/I&lt;/font&gt;&amp;nbsp;&lt;font color="#ff00ff"&gt;true&lt;/font&gt;&lt;font color="#a52a2a"&gt;&lt;b&gt;&amp;gt;&amp;gt;&lt;/b&gt;&lt;/font&gt;&lt;font color="#008b8b"&gt;/Contents&lt;/font&gt;&amp;nbsp;&lt;font color="#6a5acd"&gt;2 0 R&lt;/font&gt;&lt;font color="#a52a2a"&gt;&lt;b&gt;&amp;gt;&amp;gt;&lt;/b&gt;&lt;/font&gt;
-&lt;font color="#2e8b57"&gt;&lt;b&gt;endobj&lt;/b&gt;&lt;/font&gt;
-&lt;/font&gt;&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Notice how we still avoid values larger than 14 400, but now the UserUnit says that 1 unit means 2
-points.&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_want_to_start_using_this"&gt;Want to start using this?&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;You can get a snapshot / demo of Collabora Office and try it out yourself right now:
-&lt;a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/"&gt;try unstable snapshot&lt;/a&gt;.  Collabora
-is a major contributor to LibreOffice and all of this work will be available in TDF&amp;#8217;s next release
-too (7.0).&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 08 May 2020 09:02:33 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2020-05-08:/blog/sd-pdf-1-6-larger-page-size.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Wed, 10 Jun 2020 09:12:45 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2020-06-10:/blog/sw-page-content-bottom-anchor.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
