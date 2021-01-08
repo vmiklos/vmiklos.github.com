@@ -1,0 +1,76 @@
+= Shadow for tables from PPTX in Impress
+
+:slug: sd-table-shadow
+:category: libreoffice
+:tags: en
+:date: 2021-01-08T09:41:33+01:00
+
+Impress now has much better support for the shadow of table shapes: not only shape styles can result
+in table shadows, but it's also possible to add this as direct formatting. Also the shadow result is
+PowerPoint-compatible in the direct formatting case.
+
+First, thanks to our partner https://www.suse.com/[SUSE] for working with
+https://www.collaboraoffice.com/[Collabora] to make this possible.
+
+== Motivation
+
+We got a PPTX document, which has a table shape with blurry shadow. The shadow was completely
+missing in Impress. It was discovered that in case you configure the default shape style to have
+shadow, then there is some initial table shadow support in Impress, but that was not used in the
+PPTX case.
+
+The request was to improve the shadow rendering to be PowerPoint-compatible and in general support
+table shadows as direct formatting as a new feature.
+
+== Results so far
+
+The table shadow now looks like this:
+
+.New render result in Impress
+image::https://share.vmiklos.hu/blog/sd-table-shadow/new.png[align="center"]
+
+Matching the reference rendering:
+
+.Reference render result
+image::https://share.vmiklos.hu/blog/sd-table-shadow/ref.png[align="center"]
+
+While shadow was just missing previously:
+
+.Old render result in Impress
+image::https://share.vmiklos.hu/blog/sd-table-shadow/old.png[align="center"]
+
+You can see that not only the shadow is there, but also the cell backgrounds and the blurry shadow
+is rendered properly.
+
+== How is this implemented?
+
+If you would like to know a bit more about how this works, continue reading... :-)
+
+As usual, the high-level problem was addressed by a series of small fixes:
+
+- https://gerrit.libreoffice.org/c/core/+/106902[tdf#129961 svx: add doc model xml dump for
+  shadow-related pool items]
+- https://gerrit.libreoffice.org/c/core/+/106987[tdf#129961 svx: add UNO API for table shadow as
+  direct format]
+- https://gerrit.libreoffice.org/c/core/+/107073[tdf#129961 svx: add rendering for table shadow as
+  direct format]
+- https://gerrit.libreoffice.org/c/core/+/107529[tdf#129961 oox: add PPTX import for table shadow as
+  direct format]
+- https://gerrit.libreoffice.org/c/core/+/107682[tdf#129961 cui: start UI for table shadow as direct
+  format]
+- https://gerrit.libreoffice.org/c/core/+/107781[tdf#129961 svx: finish UI for table shadow as
+  direct format]
+- https://gerrit.libreoffice.org/c/core/+/107836[tdf#129961 oox: add PPTX export for table shadow as
+  direct format]
+
+With these, it's now possible to add, edit, render and delete these table shadows, while preserving
+them during ODP and PPTX import/export.
+
+== Want to start using this?
+
+You can get a snapshot / demo of Collabora Office and try it out yourself right now:
+https://www.collaboraoffice.com/collabora-office-latest-snapshot/[try unstable snapshot].  Collabora
+intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
+of this work will be available in TDF's next release too (7.2).
+
+// vim: ft=asciidoc
