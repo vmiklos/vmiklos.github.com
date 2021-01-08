@@ -59,6 +59,48 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/wrapped-images-in-word.html">Wrapped images in Word (LibreOffice RTF export)</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Thu 13 January 2011</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>I&#8217;ve got a <a href="https://bugs.freedesktop.org/show_bug.cgi?id=32613">report</a>
+which turned out to be two separate issues. One is a regression from
+Go-OO 3.2.x, this post is about this part. The other part is about the
+improvement of both the import/export RTF filter, the bug has some
+detail on that part as well.</p></div>
+<div class="paragraph"><p>So the problem was that wrapped images (when the image is a frame and
+not a character) had some extremely small height. I did not notice this
+bug in LO as an LO-specific extension hides that value, but in Word you
+can see it:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="http://vmiklos.hu/pic/fdo32613-before.png" alt="http://vmiklos.hu/pic/fdo32613-before.png" />
+</div>
+</div>
+<div class="paragraph"><p>The
+<a href="http://cgit.freedesktop.org/libreoffice/writer/commit/?id=c27e4668b18248322be699fc9fc6bf01e4d6a7ea">fix</a>
+is to use the height of the containing frame instead of the height of
+the picture itself, then it&#8217;ll look fine:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="http://vmiklos.hu/pic/fdo32613-after.png" alt="http://vmiklos.hu/pic/fdo32613-after.png" />
+</div>
+</div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/hp-hungary.html">HP vs. Hungary</a></h1>
   </div>
   <div class="article_meta">
@@ -429,59 +471,6 @@ It came up on <code>#bitlbee</code> that there is a
 </p>
 </li>
 </ul></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/pcal.html">pcal</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Sun 26 December 2010</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>I wanted to create some calendar present for Christmas in the family
-with pictures and Hungarian year / month order, national holidays, etc.</p></div>
-<div class="paragraph"><p>After looking at a few solutions,
-<a href="http://pcal.sourceforge.net/pcal-help.html">pcal</a> seemed to be the best
-choice.</p></div>
-<div class="paragraph"><p>There are 3 key points here:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-The order of the year / month can be changed only in build-time. If
-  your locale has "year month" and not "month year" order, then you need
-  <a href="https://github.com/vmiklos/vmexam/blob/master/pcal/pcal-4.11.0-order.patch">this patch</a>.
-</p>
-</li>
-<li>
-<p>
-You need some config for each locale,
-  <a href="https://github.com/vmiklos/vmexam/blob/master/pcal/calendar_hu.txt">here is mine</a>, containing
-  the Hungarian national holidays.
-</p>
-</li>
-<li>
-<p>
-Finally you need a script
-  <a href="https://github.com/vmiklos/vmexam/blob/master/pcal/build-from-scratch.sh">like this</a> to put in
-  the pictures.
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>The result fully localized, free software, contains my custom images and
-support custom marks for days using a quite flexible syntax.</p></div>
-<div class="paragraph"><p>(Let me know if you know some other project where you can set the
-year/month order runtime and the result can be still generated from a
-script, ie. it&#8217;s not some LibreOffice or similar template. ;) )</p></div>
 </div>
 </div>
 

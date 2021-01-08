@@ -1,5 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>What is Miklos hacking - libreoffice</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Fri, 11 Dec 2020 09:31:26 +0100</lastBuildDate><item><title>Better PDF signature verification in Draw</title><link>https://vmiklos.hu/blog/pdfium-sign-verify.html</link><description>&lt;div id="preamble"&gt;
+<rss version="2.0"><channel><title>What is Miklos hacking - libreoffice</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Fri, 08 Jan 2021 09:41:33 +0100</lastBuildDate><item><title>Shadow for tables from PPTX in Impress</title><link>https://vmiklos.hu/blog/sd-table-shadow.html</link><description>&lt;div id="preamble"&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Impress now has much better support for the shadow of table shapes: not only shape styles can result
+in table shadows, but it&amp;#8217;s also possible to add this as direct formatting. Also the shadow result is
+PowerPoint-compatible in the direct formatting case.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;First, thanks to our partner &lt;a href="https://www.suse.com/"&gt;SUSE&lt;/a&gt; for working with
+&lt;a href="https://www.collaboraoffice.com/"&gt;Collabora&lt;/a&gt; to make this possible.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_motivation"&gt;Motivation&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;We got a PPTX document, which has a table shape with blurry shadow. The shadow was completely
+missing in Impress. It was discovered that in case you configure the default shape style to have
+shadow, then there is some initial table shadow support in Impress, but that was not used in the
+PPTX case.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The request was to improve the shadow rendering to be PowerPoint-compatible and in general support
+table shadows as direct formatting as a new feature.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_results_so_far"&gt;Results so far&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The table shadow now looks like this:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://share.vmiklos.hu/blog/sd-table-shadow/new.png" alt="https://share.vmiklos.hu/blog/sd-table-shadow/new.png" /&gt;
+&lt;/div&gt;
+&lt;div class="title"&gt;Figure 1. New render result in Impress&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Matching the reference rendering:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://share.vmiklos.hu/blog/sd-table-shadow/ref.png" alt="https://share.vmiklos.hu/blog/sd-table-shadow/ref.png" /&gt;
+&lt;/div&gt;
+&lt;div class="title"&gt;Figure 2. Reference render result&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;While shadow was just missing previously:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://share.vmiklos.hu/blog/sd-table-shadow/old.png" alt="https://share.vmiklos.hu/blog/sd-table-shadow/old.png" /&gt;
+&lt;/div&gt;
+&lt;div class="title"&gt;Figure 3. Old render result in Impress&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;You can see that not only the shadow is there, but also the cell backgrounds and the blurry shadow
+is rendered properly.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_how_is_this_implemented"&gt;How is this implemented?&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;If you would like to know a bit more about how this works, continue reading&amp;#8230; :-)&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;As usual, the high-level problem was addressed by a series of small fixes:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/106902"&gt;tdf#129961 svx: add doc model xml dump for
+  shadow-related pool items&lt;/a&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/106987"&gt;tdf#129961 svx: add UNO API for table shadow as
+  direct format&lt;/a&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/107073"&gt;tdf#129961 svx: add rendering for table shadow as
+  direct format&lt;/a&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/107529"&gt;tdf#129961 oox: add PPTX import for table shadow as
+  direct format&lt;/a&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/107682"&gt;tdf#129961 cui: start UI for table shadow as direct
+  format&lt;/a&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/107781"&gt;tdf#129961 svx: finish UI for table shadow as
+  direct format&lt;/a&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/107836"&gt;tdf#129961 oox: add PPTX export for table shadow as
+  direct format&lt;/a&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;With these, it&amp;#8217;s now possible to add, edit, render and delete these table shadows, while preserving
+them during ODP and PPTX import/export.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_want_to_start_using_this"&gt;Want to start using this?&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;You can get a snapshot / demo of Collabora Office and try it out yourself right now:
+&lt;a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/"&gt;try unstable snapshot&lt;/a&gt;.  Collabora
+intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
+of this work will be available in TDF&amp;#8217;s next release too (7.2).&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 08 Jan 2021 09:41:33 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2021-01-08:/blog/sd-table-shadow.html</guid><category>libreoffice</category><category>en</category></item><item><title>Better PDF signature verification in Draw</title><link>https://vmiklos.hu/blog/pdfium-sign-verify.html</link><description>&lt;div id="preamble"&gt;
 &lt;div class="sectionbody"&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;Draw now has much better support for detecting unsigned incremental updates between signatures at
 the end of PDF documents. We now also make sure that incremental updates introduced for adding
@@ -771,85 +881,4 @@ is a major contributor to LibreOffice and all of this work will be available in 
 too (7.1).&lt;/p&gt;&lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Wed, 10 Jun 2020 09:12:45 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2020-06-10:/blog/sw-page-content-bottom-anchor.html</guid><category>libreoffice</category><category>en</category></item><item><title>Export larger pages from Draw using PDF 1.6</title><link>https://vmiklos.hu/blog/sd-pdf-1-6-larger-page-size.html</link><description>&lt;div id="preamble"&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Draw/Impress now has
-&lt;a href="https://git.libreoffice.org/core/commit/4830592b780833cf5eee2aef30bc9c5d444dfb24"&gt;support&lt;/a&gt; for
-exporting larger page sizes into PDF. The previous limit was 200 " (508 cm), and now practically
-there is no such limit.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;First, thanks &lt;a href="https://vector.com/"&gt;Vector&lt;/a&gt; who made this work by
-&lt;a href="https://www.collaboraoffice.com/"&gt;Collabora&lt;/a&gt; possible.&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_motivation"&gt;Motivation&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;You can use Draw with a document which has a single page, which more or less acts as a canvas with
-unlimited size to handle vector graphics. The current limit of such a canvas in size is 600 x 600
-cm. (And that can be increased further if there is demand without too large problems.)&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Exporting such a document to PDF is a different matter, though. The specification (up to, and
-including version 1.5) says that the unit to specify sizes is points, and the maximum allowed value
-is 14 400. This means that there is no markup to describe that your page is 600 cm wide. PDF 1.6
-(and newer versions) introduce a &lt;code&gt;UserUnit&lt;/code&gt; markup to allow unlimited page size, and now Draw (and
-other apps) can use this to describe the increased size.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Another use-case can be a large sheet in Calc, exporting it to a single PDF page, so you can pan
-around easily on a touch device. If you have enough rows, then getting rid of this limit is helpful
-to deal with the large page height.&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_results_so_far"&gt;Results so far&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Here is how a large page looks like now in Draw and then in Adobe Reader:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;a class="image" href="https://youtu.be/HtHq23MbYDs"&gt;
-&lt;img src="https://lh3.googleusercontent.com/wfVdQklYbX9mpfNG0hk_A0-I495Nsu4r8Twokq_ZZR3Z0IondP33BDE_XjGFsNfucDJ9kVpDps_J_tcQATKhwJxAFeZn6hS1NN7i5BVlS9UBroUIGrJU1TiwqDB88k6HpMbnK9x9gQ=w640" alt="https://lh3.googleusercontent.com/wfVdQklYbX9mpfNG0hk_A0-I495Nsu4r8Twokq_ZZR3Z0IondP33BDE_XjGFsNfucDJ9kVpDps_J_tcQATKhwJxAFeZn6hS1NN7i5BVlS9UBroUIGrJU1TiwqDB88k6HpMbnK9x9gQ=w640" /&gt;
-&lt;/a&gt;
-&lt;/div&gt;
-&lt;div class="title"&gt;Figure 1. Export of 6m-wide.odg to PDF&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;You can see how both Draw and Adobe Reader show that the page width is larger than 200 ".&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_how_is_this_implemented"&gt;How is this implemented?&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;If you would like to know a bit more about how this works, continue reading&amp;#8230; :-)&lt;/p&gt;&lt;/div&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-The PDF export already converts from an internal unit (e.g. Draw uses 100th millimeters, Writer
-  uses twips) to PDF&amp;#8217;s unit
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-The trick is that now PDF&amp;#8217;s unit is no longer points all the time, but we can dynamically switch
-  to a larger unit as needed.
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Here is how the PDF markup looks like for a 600 cm wide page:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="listingblock"&gt;
-&lt;div class="content"&gt;
-&lt;pre&gt;&lt;code&gt;&lt;font face="monospace"&gt;&lt;font color="#ff00ff"&gt;1&lt;/font&gt;&amp;nbsp;&lt;font color="#ff00ff"&gt;0&lt;/font&gt;&amp;nbsp;&lt;font color="#2e8b57"&gt;&lt;b&gt;obj&lt;/b&gt;&lt;/font&gt;
-&lt;font color="#a52a2a"&gt;&lt;b&gt;&amp;lt;&amp;lt;&lt;/b&gt;&lt;/font&gt;&lt;font color="#008b8b"&gt;/Type/Page/Parent&lt;/font&gt;&amp;nbsp;&lt;font color="#6a5acd"&gt;4 0 R&lt;/font&gt;&lt;font color="#008b8b"&gt;/Resources&lt;/font&gt;&amp;nbsp;&lt;font color="#6a5acd"&gt;11 0 R&lt;/font&gt;&lt;font color="#008b8b"&gt;/MediaBox&lt;/font&gt;&lt;font color="#a52a2a"&gt;&lt;b&gt;[&lt;/b&gt;&lt;/font&gt;&lt;font color="#ff00ff"&gt;0&lt;/font&gt;&amp;nbsp;&lt;font color="#ff00ff"&gt;0&lt;/font&gt;&amp;nbsp;&lt;font color="#ff00ff"&gt;8503.93700787402&lt;/font&gt;&amp;nbsp;&lt;font color="#ff00ff"&gt;396&lt;/font&gt;&lt;font color="#a52a2a"&gt;&lt;b&gt;]&lt;/b&gt;&lt;/font&gt;
-&lt;font color="#008b8b"&gt;/UserUnit&lt;/font&gt;&amp;nbsp;&lt;font color="#ff00ff"&gt;2&lt;/font&gt;&lt;font color="#008b8b"&gt;/Group&lt;/font&gt;&lt;font color="#a52a2a"&gt;&lt;b&gt;&amp;lt;&amp;lt;&lt;/b&gt;&lt;/font&gt;&lt;font color="#008b8b"&gt;/S/Transparency/CS/DeviceRGB/I&lt;/font&gt;&amp;nbsp;&lt;font color="#ff00ff"&gt;true&lt;/font&gt;&lt;font color="#a52a2a"&gt;&lt;b&gt;&amp;gt;&amp;gt;&lt;/b&gt;&lt;/font&gt;&lt;font color="#008b8b"&gt;/Contents&lt;/font&gt;&amp;nbsp;&lt;font color="#6a5acd"&gt;2 0 R&lt;/font&gt;&lt;font color="#a52a2a"&gt;&lt;b&gt;&amp;gt;&amp;gt;&lt;/b&gt;&lt;/font&gt;
-&lt;font color="#2e8b57"&gt;&lt;b&gt;endobj&lt;/b&gt;&lt;/font&gt;
-&lt;/font&gt;&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Notice how we still avoid values larger than 14 400, but now the UserUnit says that 1 unit means 2
-points.&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_want_to_start_using_this"&gt;Want to start using this?&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;You can get a snapshot / demo of Collabora Office and try it out yourself right now:
-&lt;a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/"&gt;try unstable snapshot&lt;/a&gt;.  Collabora
-is a major contributor to LibreOffice and all of this work will be available in TDF&amp;#8217;s next release
-too (7.0).&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 08 May 2020 09:02:33 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2020-05-08:/blog/sd-pdf-1-6-larger-page-size.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Wed, 10 Jun 2020 09:12:45 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2020-06-10:/blog/sw-page-content-bottom-anchor.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
