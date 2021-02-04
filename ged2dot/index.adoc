@@ -1,31 +1,54 @@
 = ged2dot, a GEDCOM to Graphviz converter
 
-image:https://travis-ci.org/vmiklos/ged2dot.svg?branch=master["Build Status", link="https://travis-ci.org/vmiklos/ged2dot"]
+image:https://github.com/vmiklos/ged2dot/workflows/tests/badge.svg["Build Status", link="https://github.com/vmiklos/ged2dot/actions"]
+image:https://tokei.rs/b1/github/vmiklos/ged2dot?category=code["LoC"]
 
-The latest version is v7.0, released on 2020-08-18.  See the
-https://github.com/vmiklos/ged2dot/blob/master/NEWS[release notes].
+The latest version is v7.1, released on 2021-02-03.  See the
+https://github.com/vmiklos/ged2dot/blob/master/NEWS.adoc[release notes].
 
 == What's the problem the tool solves?
 
-`ged2dot` is a script that takes a http://en.wikipedia.org/wiki/GEDCOM[GEDCOM]
-file and tries to visualize it using http://www.graphviz.org/[Graphviz]'s `dot`
-tool. The basic idea is that you can map individuals to graph nodes and
-families to graph edges, then `dot` takes care of the rest. What's unique about
-`ged2dot` is that it allows more than showing ancestors and descendants of a
-single individual (what you can easily do with random family editor software).
+`ged2dot` is a script that takes a http://en.wikipedia.org/wiki/GEDCOM[GEDCOM] file and tries to
+visualize it using http://www.graphviz.org/[Graphviz]'s `dot` tool. The basic idea is that you can
+map individuals and families to graph nodes and connections between them to graph edges, then `dot`
+takes care of the rest. What's unique about `ged2dot` is that it allows more than showing ancestors
+and descendants of a single individual (what you can easily do with random family editor software).
 
-You need to have a working ged2dotrc for the tool to process your .ged file. 
-See the example in test/screenshotrc for a very complete list of options
+You usually want to customize your input filename, output filenames, the root family and the depth
+of the graph visitor. You can provide these either by using command-line arguments (see `ged2dot.py
+--help`) or by using a configuration file (see `ged2dotrc.sample`). When using both, the
+command-line arguments overwrite configuration values.
 
-== Layouts
+== Layout
 
-- The default layout allows to show ancestors of a family (both husband and
-wife), and you can set how many generations do you want to see:
+The layout does a Breadth First Search (BFS) traversal on the graph, from the starting family:
 
-image::test/screenshot.png[]
+image::tests/screenshot.png[]
 
-- There is also a `Descendants` layout, that shows all descendants of a root
-  family.
+This has several benefits over explicitly trying to guess which family belongs to which generation.
+Some example more tricky cases, which are handled by `ged2dot`:
+
+- root family -> husband -> sister -> showing her kids
+
+- root family -> wife -> cousin -> showing her kid
+
+- root family -> husband -> grand father -> showing both wives with the matching kids
+
+- marrying cousins
+
+(ged2dot <= 7.0 allowed multiple layouts, none of them supported the above more tricky cases.)
+
+== Qt-based GUI
+
+The `qged2dot.py` script is a Qt-based GUI for `ged2dot`, which can turn the `dot` output into PNG
+files.
+
+For macOS, the DMG is not signed digitally, so you need to allow its usage
+https://support.apple.com/guide/mac-help/open-a-mac-app-from-an-unidentified-developer-mh40616/mac[explicitly].
+
+The installer bundles Graphviz for macOS and Windows.
+
+The app icon is by https://icon-icons.com/icon/family-tree/120659[Appzgear].
 
 == LibreOffice Draw GEDCOM import filter
 
@@ -44,7 +67,7 @@ Its dependencies:
 
   * For Linux, use your package manager to install the `graphviz` package (2.28 is tested).
 
-  * For macOS, http://www.graphviz.org/Download_macos.php[get it here] (2.36 is tested).
+  * For macOS, install it from https://brew.sh/[brew] (2.36 is tested).
 
 - LibreOffice >= 6.1
 
@@ -73,7 +96,7 @@ image::libreoffice/screenshot.png[]
 For `ged2dot`, in case a given input results in a runtime crash, it's
 considered a bug. If you have a fix for it,
 https://github.com/vmiklos/ged2dot/pull/new/master[pull requests] on GitHub are
-welcome, especially if the fix comes with a test as well.
+welcome. Make sure to run `make check` before submitting your changes.
 
 For the LibreOffice extension, in case you get an error during opening:
 
@@ -100,6 +123,10 @@ then the log is printed to the standard error as well.
 Icons are from
 http://www.wpzoom.com/wpzoom/new-freebie-wpzoom-developer-icon-set-154-free-icons/[WPZOOM],
 in case placeholders have to be used for missing images.
+
+== Resources
+
+- https://www.familysearch.org/developers/docs/guides/gedcom[GEDCOM specification]
 
 == Download
 

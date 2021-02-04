@@ -444,11 +444,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p><span class="image"><a class="image" href="https://travis-ci.org/vmiklos/ged2dot"><img src="https://travis-ci.org/vmiklos/ged2dot.svg?branch=master" alt="Build Status"></a></span></p>
+<p><span class="image"><a class="image" href="https://github.com/vmiklos/ged2dot/actions"><img src="https://github.com/vmiklos/ged2dot/workflows/tests/badge.svg" alt="Build Status"></a></span>
+<span class="image"><img src="https://tokei.rs/b1/github/vmiklos/ged2dot?category=code" alt="LoC"></span></p>
 </div>
 <div class="paragraph">
-<p>The latest version is v7.0, released on 2020-08-18.  See the
-<a href="https://github.com/vmiklos/ged2dot/blob/master/NEWS">release notes</a>.</p>
+<p>The latest version is v7.1, released on 2021-02-03.  See the
+<a href="https://github.com/vmiklos/ged2dot/blob/master/NEWS.adoc">release notes</a>.</p>
 </div>
 </div>
 </div>
@@ -456,42 +457,72 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h2 id="_whats_the_problem_the_tool_solves">What&#8217;s the problem the tool solves?</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><code>ged2dot</code> is a script that takes a <a href="http://en.wikipedia.org/wiki/GEDCOM">GEDCOM</a>
-file and tries to visualize it using <a href="http://www.graphviz.org/">Graphviz</a>'s <code>dot</code>
-tool. The basic idea is that you can map individuals to graph nodes and
-families to graph edges, then <code>dot</code> takes care of the rest. What&#8217;s unique about
-<code>ged2dot</code> is that it allows more than showing ancestors and descendants of a
-single individual (what you can easily do with random family editor software).</p>
+<p><code>ged2dot</code> is a script that takes a <a href="http://en.wikipedia.org/wiki/GEDCOM">GEDCOM</a> file and tries to
+visualize it using <a href="http://www.graphviz.org/">Graphviz</a>'s <code>dot</code> tool. The basic idea is that you can
+map individuals and families to graph nodes and connections between them to graph edges, then <code>dot</code>
+takes care of the rest. What&#8217;s unique about <code>ged2dot</code> is that it allows more than showing ancestors
+and descendants of a single individual (what you can easily do with random family editor software).</p>
 </div>
 <div class="paragraph">
-<p>You need to have a working ged2dotrc for the tool to process your .ged file.
-See the example in test/screenshotrc for a very complete list of options</p>
+<p>You usually want to customize your input filename, output filenames, the root family and the depth
+of the graph visitor. You can provide these either by using command-line arguments (see <code>ged2dot.py
+--help</code>) or by using a configuration file (see <code>ged2dotrc.sample</code>). When using both, the
+command-line arguments overwrite configuration values.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_layouts">Layouts</h2>
+<h2 id="_layout">Layout</h2>
 <div class="sectionbody">
-<div class="ulist">
-<ul>
-<li>
-<p>The default layout allows to show ancestors of a family (both husband and
-wife), and you can set how many generations do you want to see:</p>
-</li>
-</ul>
+<div class="paragraph">
+<p>The layout does a Breadth First Search (BFS) traversal on the graph, from the starting family:</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="test/screenshot.png" alt="screenshot">
+<img src="tests/screenshot.png" alt="screenshot">
 </div>
+</div>
+<div class="paragraph">
+<p>This has several benefits over explicitly trying to guess which family belongs to which generation.
+Some example more tricky cases, which are handled by <code>ged2dot</code>:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>There is also a <code>Descendants</code> layout, that shows all descendants of a root
-family.</p>
+<p>root family &#8594; husband &#8594; sister &#8594; showing her kids</p>
+</li>
+<li>
+<p>root family &#8594; wife &#8594; cousin &#8594; showing her kid</p>
+</li>
+<li>
+<p>root family &#8594; husband &#8594; grand father &#8594; showing both wives with the matching kids</p>
+</li>
+<li>
+<p>marrying cousins</p>
 </li>
 </ul>
+</div>
+<div class="paragraph">
+<p>(ged2dot &#8656; 7.0 allowed multiple layouts, none of them supported the above more tricky cases.)</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_qt_based_gui">Qt-based GUI</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>qged2dot.py</code> script is a Qt-based GUI for <code>ged2dot</code>, which can turn the <code>dot</code> output into PNG
+files.</p>
+</div>
+<div class="paragraph">
+<p>For macOS, the DMG is not signed digitally, so you need to allow its usage
+<a href="https://support.apple.com/guide/mac-help/open-a-mac-app-from-an-unidentified-developer-mh40616/mac">explicitly</a>.</p>
+</div>
+<div class="paragraph">
+<p>The installer bundles Graphviz for macOS and Windows.</p>
+</div>
+<div class="paragraph">
+<p>The app icon is by <a href="https://icon-icons.com/icon/family-tree/120659">Appzgear</a>.</p>
 </div>
 </div>
 </div>
@@ -522,7 +553,7 @@ installed:</p>
 <p>For Linux, use your package manager to install the <code>graphviz</code> package (2.28 is tested).</p>
 </li>
 <li>
-<p>For macOS, <a href="http://www.graphviz.org/Download_macos.php">get it here</a> (2.36 is tested).</p>
+<p>For macOS, install it from <a href="https://brew.sh/">brew</a> (2.36 is tested).</p>
 </li>
 </ul>
 </div>
@@ -578,7 +609,7 @@ Extensions</a> site&#8201;&#8212;&#8201;more on how to to install a LibreOffice 
 <p>For <code>ged2dot</code>, in case a given input results in a runtime crash, it&#8217;s
 considered a bug. If you have a fix for it,
 <a href="https://github.com/vmiklos/ged2dot/pull/new/master">pull requests</a> on GitHub are
-welcome, especially if the fix comes with a test as well.</p>
+welcome. Make sure to run <code>make check</code> before submitting your changes.</p>
 </div>
 <div class="paragraph">
 <p>For the LibreOffice extension, in case you get an error during opening:</p>
@@ -628,6 +659,18 @@ in case placeholders have to be used for missing images.</p>
 </div>
 </div>
 <div class="sect1">
+<h2 id="_resources">Resources</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.familysearch.org/developers/docs/guides/gedcom">GEDCOM specification</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="_download">Download</h2>
 <div class="sectionbody">
 <div class="paragraph">
@@ -653,7 +696,7 @@ in case placeholders have to be used for missing images.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-08-18 22:29:24 +0200
+Last updated 2021-02-04 09:38:39 +0100
 </div>
 </div>
 </body>
