@@ -61,6 +61,122 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/tiled-editing-part-2.html">Tiled editing: from a living document to input handling</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Mon 09 February 2015</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>In <a href="https://vmiklos.hu/blog/tiled-editing-part-1.html">from viewing only to a
+living document</a>, I wrote about how tile invalidation can handle updates in
+the Android app in case what should be displayed on the screen changes. A next
+step in this
+<a href="http://blog.documentfoundation.org/2015/01/27/the-document-foundation-announces-the-results-of-the-android-tender/">TDF-funded
+project</a> is to handle more than blinking text: keyboard and mouse/touch events
+from the user.</p></div>
+<div class="paragraph"><p>First let me enumerate over the issues we had to face:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Gtk, Android and LibreOffice&#8217;s VCL use different key codes for the same
+  physical keys. We solved this by mapping the special keys manually on the
+  Gtk/Android side (using the C++ and Java UNO binding), and for the rest,
+  we simply use the unicode representation of the keys.
+</p>
+</li>
+<li>
+<p>
+Special keys: while "return" was easy to map, getting "backspace" to work
+  was more challenging. It worked fine on the Gtk side, but on Android we had
+  to make sure that the whole sfx2 dispatching framework works properly, only
+  then could map the backspace key to the correct UNO command, which is
+  <code>.uno:SwBackspace</code> in case of Writer.
+</p>
+</li>
+<li>
+<p>
+Mouse handling: VCL sends pixel coordinates to the editing windows, they
+  then calculate the offset of the editing area (think about toolbars and
+  menus that have to be excluded), and then converts the pixel values to
+  document coordinates. In case of tiled editing, we always work with document
+  coordinates in logical units (twips), so we had to add the possibility to send
+  the coordinates in document ones. This allows core not knowing where the user
+  exactly is (in case the tiles are already ready, swiping can be handled
+  without any LOK calls), and also allows Android not knowing the implementation
+  details of the desktop app (where menus and toolbars would be).
+</p>
+</li>
+<li>
+<p>
+Cursor caret overlay: we wanted to be sure that it&#8217;s not necessary to
+  re-render the affected tiles each time the cursor blinks, so we added a LOK
+  API to send the rectangle (its width is nearly zero) of the cursor to Android,
+  and then it can handle the blinking cursor itself in a transparent overlay.
+  This overlay will be useful for presenting selections as well.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>As usual the commits of me and <a href="http://tomazvajngerl.blogspot.com/">Tomaž
+Vajngerl</a> are in master, so you can try this right now, or wait till tomorrow
+and get the
+<a href="http://dev-builds.libreoffice.org/daily/master/Android-ARM@24-Bytemark-Hosting/current/">Android
+daily build</a>. However, if you are just interested how this looks like, here are some demos:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Keyboard handling in gtktiledviewer:
+</p>
+</li>
+</ul></div>
+<center>
+<iframe width="420" height="315" src="https://www.youtube.com/embed/Hi9N9IumMZY" frameborder="0" allowfullscreen></iframe>
+</center>
+<div class="ulist"><ul>
+<li>
+<p>
+Same on Android, including newlines and backspace handling:
+</p>
+</li>
+</ul></div>
+<center>
+<iframe width="420" height="315" src="https://www.youtube.com/embed/4CJbu_QNUh0" frameborder="0" allowfullscreen></iframe>
+</center>
+<div class="ulist"><ul>
+<li>
+<p>
+Mouse handling in gtktiledviewer:
+</p>
+</li>
+</ul></div>
+<center>
+<iframe width="420" height="315" src="https://www.youtube.com/embed/4jH_Ek1p1OA" frameborder="0" allowfullscreen></iframe>
+</center>
+<div class="ulist"><ul>
+<li>
+<p>
+Same on Android, including the transparent selection overlay that can
+  efficiently blink the cursor:
+</p>
+</li>
+</ul></div>
+<center>
+<iframe width="420" height="315" src="https://www.youtube.com/embed/frQWyjjsl3I" frameborder="0" allowfullscreen></iframe>
+</center>
+<div class="paragraph"><p>That&#8217;s it for now&#8201;&#8212;&#8201;next on our list are selections, so you can delete and
+overwrite more easily. :-)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/fosdem2015.html">LibreOffice on Android FOSDEM talk</a></h1>
   </div>
   <div class="article_meta">
@@ -838,46 +954,6 @@ vmiklos@o9010:~/git/libreoffice/daily$ ls -lh opt/program/libwriterfilterlo.so
 </div></div>
 <div class="paragraph"><p>Again, the 8,3MB &#8594; 6,1MB size reduction is mostly thanks to Kendy&#8217;s map cleanups + the
 duplicated gperf hash going away. :-)</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/so-many-bugs.html">So many bugs</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Mon 11 August 2014</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div align="center">
-<div class="paragraph"><p><span class="image">
-<a class="image" href="https://lh6.googleusercontent.com/-cHxbUbiEMWM/U-izNauMEBI/AAAAAAAAEtI/mQUvxyaPABA/s0/">
-<img src="https://lh6.googleusercontent.com/-cHxbUbiEMWM/U-izNauMEBI/AAAAAAAAEtI/mQUvxyaPABA/s400/" alt="https://lh6.googleusercontent.com/-cHxbUbiEMWM/U-izNauMEBI/AAAAAAAAEtI/mQUvxyaPABA/s400/" />
-</a>
-</span>
-<span class="image">
-<a class="image" href="https://lh4.googleusercontent.com/-kzGk3zwiI4o/U-izLdW6PfI/AAAAAAAAEtA/H7ENAJipMNc/s0/">
-<img src="https://lh4.googleusercontent.com/-kzGk3zwiI4o/U-izLdW6PfI/AAAAAAAAEtA/H7ENAJipMNc/s400/" alt="https://lh4.googleusercontent.com/-kzGk3zwiI4o/U-izLdW6PfI/AAAAAAAAEtA/H7ENAJipMNc/s400/" />
-</a>
-</span></p></div>
-</div>
-<div class="paragraph"><p>From time to time developers feel that they have little time, but they would
-want to take care of many bugs. Last week I was frustrated enough to actually
-design a T-shirt for just that. ;-)</p></div>
-<div class="paragraph"><p>Above is how it looks like. In case you don&#8217;t get the joke, see
-<a href="http://nabble.documentfoundation.org/Building-LibreOffice-from-an-IDE-td4083960.html">here</a>
-for a hint. Oh, and if you would like to build your own binary&#8230; err T-shirt,
-you can do it:
-<a href="http://people.freedesktop.org/~vmiklos/2014/bugs-tshirt.odg">here</a> is the ODG
-file that can serve as a source. Happy bugfixing! :-)</p></div>
 </div>
 </div>
 
