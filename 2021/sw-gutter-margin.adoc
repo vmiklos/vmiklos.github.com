@@ -1,0 +1,92 @@
+= Gutter margin in Writer
+
+:slug: sw-gutter-margin
+:category: libreoffice
+:tags: en
+:date: 2021-02-11T14:34:20+01:00
+
+Writer now has much better support for gutter margins: not only this margin type can be specified
+explicitly, it's also possible to select if the gutter should be on the left or on the top, and it
+works with mirrored margins as well.
+
+This work is primarily for https://www.collaboraoffice.com/[Collabora Online], but the feature is
+fully available in desktop Writer as well.
+
+== Motivation
+
+Word has a gutter margin feature, and we saw that some UI-level
+https://github.com/OSSII/oxool-community/commit/a7e0dec2fad7e6c63e8951875bb28ac015f736a0[workaround]
+appeared to have something similar based on the LibreOffice technology. We thought it's much better
+to impelement this properly, so that the result is interoperable with Word, and also available both
+in Online and on the desktop.
+
+== Results so far
+
+This is how the UI looks like in Online:
+
+.New UI in Online
+image::https://share.vmiklos.hu/blog/sw-gutter-margin/online.png[align="center"]
+
+This is how the new render result looks like:
+
+.New render result in Writer
+image::https://share.vmiklos.hu/blog/sw-gutter-margin/new.png[align="center"]
+
+Matching the reference rendering:
+
+.Reference render result
+image::https://share.vmiklos.hu/blog/sw-gutter-margin/ref.png[align="center"]
+
+While the gutter was just missing previously:
+
+.Old render result in Writer
+image::https://share.vmiklos.hu/blog/sw-gutter-margin/old.png[align="center"]
+
+You can see that the gutter margin is now handled properly.
+
+== How is this implemented?
+
+If you would like to know a bit more about how this works, continue reading... :-)
+
+As usual, the high-level problem was addressed by a series of incremental development steps:
+
+// git log --author=vmiklos --since=2021-01-01 --grep 'sw page gutter margin' --pretty=oneline --reverse
+
+- First, we added a new "gutter" margin type (length) and a gutter position (left or top) to the
+  document model & UNO API.
+
+- This was followed by adding the layout, which is always the most challenging part of a new Writer
+  feature. In this case the basic functionality was implemented by reducing the "print area" of page
+  frames, so that the positioning of header, body and footer frames all respect the gutter margin.
+  Then additional care was taken to ignore the gutter margin for page borders to be compatible with
+  Word. Finally the margin position and mirrored margin support was implemented.
+
+- Then we looked at import/export: this feature is now supported with the ODP, DOCX, DOC and RTF
+  formats. Note that some best-effort handling was there in the DOC filter already, but the gutter
+  margin was (semantically) lost on export.
+
+- You already saw the new UI above: this allows changing the amount of the gutter margin, specifying
+  its position, finally the preview widget also takes the gutter margin into account.  Note that
+  this dialog is shared code between Writer, Calc and Impress: we made sure to not break those other
+  apps with the extended UI, which is specific to Writer.
+
+- Brief help has been added for these new UI controls and submitting an ODF extension proposal to
+  OASIS is in progress to standardize the so far LO-specific markup:
+
+[source,xml]
+----
+<style:page-layout-properties loext:margin-gutter="1.27cm">
+----
+
+With these, it's now possible to add, modify, render and delete gutter margins for your documents,
+while preserving them during ODT and DOCX import/export, without introducing any weird fake line
+shapes.
+
+== Want to start using this?
+
+You can get a snapshot / demo of Collabora Office and try it out yourself right now:
+https://www.collaboraoffice.com/collabora-office-latest-snapshot/[try unstable snapshot].  Collabora
+intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
+of this work will be available in TDF's next release too (7.2).
+
+// vim: ft=asciidoc
