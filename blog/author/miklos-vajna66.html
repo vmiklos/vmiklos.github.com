@@ -59,6 +59,26 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/having-fun-with-boost-1-37.html">Having fun with boost 1.37.0</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Sat 06 December 2008</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>So we decided to upgrade from 1.35.0 to 1.37.0 in Frugalware-current. As usual, there is a <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/boost137/">WIP repo</a> since this won't be finished in one day. Most of the trivial rebuilds are done, but still need to fix up miro, pdfedit and bmpx. Ah and I needed to upgrade libtorrent as well which resulted some problem in btg and qtorrent, though both have some support for the new 0.14.x libtorrent in SVN so most of the work was just to backport those patches.</p><p>A user on #frugalware asks when will we have python-2.6. Not before boost-1.37, I'm sure.</p><p>Side note: It seems I managed not to waste the whole day just because I met and old friend (and drinking beer). It turns out that if I drink 2 beers and sleep 2 hours then I can code without the usual "go to bed early, sleep a lot, then you can work" procedure.</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/kernel-org-gitweb-fork.html">kernel.org gitweb fork</a></h1>
   </div>
   <div class="article_meta">
@@ -266,28 +286,6 @@ nincs rola info, egyeb meg <a href="http://letmegooglethatforyou.com/?q=salomon+
     <div id="preamble">
 <div class="sectionbody">
 <p>I got to implement the direct patch technique for darcs2 repos in darcs-fast-export, and it seems to be a dramatic speedup.</p><p>The benchmark was done using darcs' darcs.</p><p><a href="http://vmiklos.hu/project/darcs-fast-export/t/bench-results/darcs-repo_play.tar.gz.d-f-e-0.6.log">Before</a>:</p><p><pre>real    786m16.035s</pre></p><p><a href="http://vmiklos.hu/project/darcs-fast-export/t/bench-results/darcs-repo_play.tar.gz.d-f-e-0.6-21-gb2abee1.log">After</a>:</p><p><pre>real       29m39.458s</pre></p><p>I plan to do a similar benchmark with ghc's darcs repo as well (it contains about 19k patches).</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/sad-story-about-darcs-show.html">Sad story about darcs show</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Thu 27 November 2008</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>So today I did what I have in my TODO for some time: make darcs-fast-export produce the fast-import stream on the fly, without a tmp working dir (that's how tailor and darcs2git works, and I think that's just ugly).</p><p>And the result? I thought this will be the trick that makes it a lot faster, compared to tailor and at the end it turns out that it slows it down about 3 times. :-(</p><p>Not counting speed issues, it's a huge cleanup:</p><p><pre> 12 files changed, 34 insertions(+), 106 deletions(-)</pre></p><p>Dunno what to do with it now. I'll try to poke the darcs devs, maybe they can optimize it a bit.</p><p>The sad fact is the comparision to git:</p><p><pre>
-$ time darcs show contents --match "hash 20040523231834-97f81-2bca6242bec169bd01079378524a33e0310e0b65.gz" tailor.py >/dev/null</p><p>real    0m2.780s
-$ time git show 451ae1176d56a579d3d7bd236fe7d7dd9df59326:tailor.py >/dev/null</p><p>real    0m0.004s</pre></p>
 </div>
 </div>
 

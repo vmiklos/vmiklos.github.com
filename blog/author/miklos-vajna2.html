@@ -59,6 +59,127 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/smartart-improvements-5.html">SmartArt improvements in Impress, part 5</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Wed 19 August 2020</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 3 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>Impress now has support for considering rules next to constraints when it comes to lay out
+SmartArt graphics from PPTX files. This builds on top of the
+<a href="https://vmiklos.hu/blog/smartart-improvements-4.html">previous improvements</a> around SmartArt support.</p></div>
+<div class="paragraph"><p>First, thanks to our partner <a href="https://www.suse.com/">SUSE</a> for working with
+<a href="https://www.collaboraoffice.com/">Collabora</a> to make this possible.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_motivation">Motivation</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>SmartArt allows declaring your content and requirements for a graphic, then the layout will take
+care of arranging that in a suitable way. It is allowed to declare conflicting requirements, and
+rules can specify how to resolve those conflicts. The below example document has shape widths
+defined in a way that multiple child shapes wants to have a width of 100%, but simply scaling down
+all child shapes does not give a correct result. Rules define what to scale down and what to leave
+unchanged.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_results_so_far">Results so far</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Here is how this works in practice:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://lh3.googleusercontent.com/_AL6ARVsbgdaovqKPxr0n0I1kSn2zX_5xGg5y_4M8whkT6K0-mXIsGXeYI2Uo6u2YQAVwfLtbfy8XeYHggaPWpIHV4yaA4CaaIFUK4LQLRbV-JIbhy9A-Xz5JEEbcXp3TRWK4CzVcl0=w640" alt="https://lh3.googleusercontent.com/_AL6ARVsbgdaovqKPxr0n0I1kSn2zX_5xGg5y_4M8whkT6K0-mXIsGXeYI2Uo6u2YQAVwfLtbfy8XeYHggaPWpIHV4yaA4CaaIFUK4LQLRbV-JIbhy9A-Xz5JEEbcXp3TRWK4CzVcl0=w640" />
+</div>
+<div class="title">Figure 1. Linear layout with multiple 100% width shapes, new output</div>
+</div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://lh3.googleusercontent.com/UmK7-j0WxUHamDA-g3FepAOYYgbD5LJJhssleqv2jLnfXX-62fP82uA_5t__9HOQWIZfJUl6hoZVVQX5-LuIdOxz2M0HS90zcaoov_SbxQHuv4DN48be8dZkvySb_QtAbmNOTcMpJ5c=w640" alt="https://lh3.googleusercontent.com/UmK7-j0WxUHamDA-g3FepAOYYgbD5LJJhssleqv2jLnfXX-62fP82uA_5t__9HOQWIZfJUl6hoZVVQX5-LuIdOxz2M0HS90zcaoov_SbxQHuv4DN48be8dZkvySb_QtAbmNOTcMpJ5c=w640" />
+</div>
+<div class="title">Figure 2. Linear layout with multiple 100% width shapes, old output</div>
+</div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://lh3.googleusercontent.com/i2ScJOwjQfQeeFrw-yu6EQt67nt5Xx7o325WnaOeprXH4jc_CPLuXt0Mwb2iiT9rBamjooEA271HY48P6v8ieuWMUcoSq5HTjMsJkJnUOcrCrF_7uutebYGfO2WOZzAJRh6k-ibbglc=w640" alt="https://lh3.googleusercontent.com/i2ScJOwjQfQeeFrw-yu6EQt67nt5Xx7o325WnaOeprXH4jc_CPLuXt0Mwb2iiT9rBamjooEA271HY48P6v8ieuWMUcoSq5HTjMsJkJnUOcrCrF_7uutebYGfO2WOZzAJRh6k-ibbglc=w640" />
+</div>
+<div class="title">Figure 3. Linear layout with multiple 100% width shapes, reference output</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_how_is_this_implemented">How is this implemented?</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+The initial heavy-lifting is done in
+  <a href="https://git.libreoffice.org/core/commit/6ca5412bac9e3da5cd20f315fc853c7733f10858">this commit</a>,
+  which parses the rules from the XML input.
+</p>
+</li>
+<li>
+<p>
+Then once we had rule info around, the linear algorithm was improved to scale down child shapes
+  based on rules (and not just all of them, equally).
+</p>
+</li>
+<li>
+<p>
+Then it was necessary to scale spacings (between child shapes) based on rules as well.
+</p>
+</li>
+<li>
+<p>
+It was also needed to limit the height request of a shape, since they should not leave the canvas
+  of the SmartArt.
+</p>
+</li>
+<li>
+<p>
+Finally it was necessary to support the "top" child order. This can be declared using the
+  following markup:
+</p>
+</li>
+</ul></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">&lt;dgm:layoutNode</span></span> ... <span style="color: #009900">chOrder</span><span style="color: #990000">=</span><span style="color: #FF0000">"t"</span><span style="font-weight: bold"><span style="color: #0000FF">&gt;</span></span></tt></pre></div></div>
+<div class="paragraph"><p>This declares that an earlier shape in a linear layout is on top of a later shapes, not the
+opposite. The default is that newer shapes are on top of older shapes. This is not a visible
+problem usually, but once you start using negative widths in a linear layout, you can have
+overlapping shapes. The above example has 3 text shapes, which are overlapping with the "background"
+arrow shape. This is expressed by having 100% width for child shapes (OK to scale down), then a
+-100% width for a dummy shape (not scaling) and finally a 100% width for the background arrow (not
+scaling).</p></div>
+<div class="paragraph"><p>All in all, now the background arrow shape has a good position and size, and the text on the arrow
+is readable.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_want_to_start_using_this">Want to start using this?</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
+<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
+is a major contributor to LibreOffice and all of this work will be available in TDF&#8217;s next release
+too (7.1).</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/sd-visible-pdf-sign.html">Adding visible signatures to existing PDF files in Draw</a></h1>
   </div>
   <div class="article_meta">
@@ -889,54 +1010,6 @@ replacement image from PPTX, which caused visible duplication due to working tra
 The new way just imports the math objects, and ignores the replacement graphic.</p></div>
 <div class="paragraph"><p>This new way (handling of the OOXML <code>a14</code> feature flag) is enabled by default, except for Calc
 documents, where more works is needed before it can be enabled.</p></div>
-<div class="paragraph"><p>All this is available in LibreOffice master (towards 6.4), so you can try it out
-<a href="http://dev-builds.libreoffice.org/daily/master/">right now</a>, if interested.</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/sw-continuous-endnotes.html">Continuous endnotes in Writer</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Mon 21 October 2019</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Writer now has a new "continuous endnotes" compatibility setting in its layout, allowing rendering
-endnotes in a way which is closer to what Word users expect.</p></div>
-<div class="paragraph"><p>First, thanks <a href="https://tu-dresden.de/">TU Dresden</a> who made this work by
-<a href="https://www.collaboraoffice.com/">Collabora</a> possible.</p></div>
-<div class="paragraph"><p>Here is how it looks:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/g4kmuKduOm-Xc5sHH5oBx9y-U8S6hK5pgamrLxG-5fM9XCRJwMJFEPKxWXrG6IzEQLVpHdxCHI0c45EjDax02SpDbIzyQjZvUd-gsvpTWlkgZ0p3Y5-FDXARIPggF0KyIwG1AFwoiQ=w640" alt="https://lh3.googleusercontent.com/g4kmuKduOm-Xc5sHH5oBx9y-U8S6hK5pgamrLxG-5fM9XCRJwMJFEPKxWXrG6IzEQLVpHdxCHI0c45EjDax02SpDbIzyQjZvUd-gsvpTWlkgZ0p3Y5-FDXARIPggF0KyIwG1AFwoiQ=w640" />
-</div>
-<div class="title">Figure 1. Writer, new ContinuousEndnodes layout flag enabled</div>
-</div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/dlUGc11qUKVvvkKXh5mhj9BlEw4bLxgKxW_t3pNAAu2rnuWuIrFtWdlKk-8nadbSur8CaDe-CIUNJiSJlQSTvA22Q89TkY-uRsdJH3EKX6RcyUJsr-W5YqJrVqaM4KgXAIDPxPXPvg=w640" alt="https://lh3.googleusercontent.com/dlUGc11qUKVvvkKXh5mhj9BlEw4bLxgKxW_t3pNAAu2rnuWuIrFtWdlKk-8nadbSur8CaDe-CIUNJiSJlQSTvA22Q89TkY-uRsdJH3EKX6RcyUJsr-W5YqJrVqaM4KgXAIDPxPXPvg=w640" />
-</div>
-<div class="title">Figure 2. Reference rendering</div>
-</div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/odkN2eqFxYthY7qhxHwStIlodTZJmcUa5wzh6p74PWPT6jKtsAmAvZyNzTjwff_CrDm5AtTcdAq_Rw2QyMNQN1Xr_ypIYL_cEZ3g1DRJof9em6acQ1fxrNQWsx_LxUmBhmu4TkTmPw=w640" alt="https://lh3.googleusercontent.com/odkN2eqFxYthY7qhxHwStIlodTZJmcUa5wzh6p74PWPT6jKtsAmAvZyNzTjwff_CrDm5AtTcdAq_Rw2QyMNQN1Xr_ypIYL_cEZ3g1DRJof9em6acQ1fxrNQWsx_LxUmBhmu4TkTmPw=w640" />
-</div>
-<div class="title">Figure 3. Writer, old separate endnote page layout</div>
-</div>
-<div class="paragraph"><p>What you can see is that endnotes unconditionally start after the end of the document content in
-Word, while endnotes are unconditionally on separate endnote pages in Writer. The new
-<code>ContinuousEndnotes</code> layout compatibility flag in Writer allows rendering endnotes the Word way.</p></div>
-<div class="paragraph"><p>This new flag is enabled by default for DOC files, disabled otherwise.</p></div>
 <div class="paragraph"><p>All this is available in LibreOffice master (towards 6.4), so you can try it out
 <a href="http://dev-builds.libreoffice.org/daily/master/">right now</a>, if interested.</p></div>
 </div>

@@ -61,6 +61,129 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sd-visible-pdf-sign.html">Adding visible signatures to existing PDF files in Draw</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Mon 20 July 2020</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 3 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>Draw now has support for adding visible signatures to an existing PDF file. This is in contrast with
+the <a href="https://vmiklos.hu/blog/pdf-sign.html">old functionality</a> which was limited to invisible signatures.</p></div>
+<div class="paragraph"><p>First, thanks to the Dutch Ministry of Defense in cooperation with <a href="http://nouenoff.nl/">Nou&amp;Off</a> who
+made this work by <a href="https://www.collaboraoffice.com/">Collabora</a> possible.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_motivation">Motivation</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>The PDF format allows assigning a shape (a form xobject) to a digital signature in the PDF file, and
+if you use e.g. Adobe Acrobat, then it fills this shape with some visible information about the
+digital signature. Draw used to write a placeholder widget there (a 0x0-sized rectangle on the first
+page, at position 0x0). This is valid, but it&#8217;s not close to real-world signatures, where signing
+has a visual effect as well.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_results_so_far">Results so far</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Here is how this works in practice:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://youtu.be/tPAOXr2UH0M">
+<img src="https://lh3.googleusercontent.com/IDjXX1VwAvlFi1ug9pUSYLwakUyPn2YiMachx7DdiG5Jershph28sFOCWgSuQ6WbfgGdpMcnngjipnetuCBXiOMUR-OqTPO4rlikLXFJtc1WEtQoczPmQDLIXTpPcQD__0WI0T87Cw=w640" alt="https://lh3.googleusercontent.com/IDjXX1VwAvlFi1ug9pUSYLwakUyPn2YiMachx7DdiG5Jershph28sFOCWgSuQ6WbfgGdpMcnngjipnetuCBXiOMUR-OqTPO4rlikLXFJtc1WEtQoczPmQDLIXTpPcQD__0WI0T87Cw=w640" />
+</a>
+</div>
+<div class="title">Figure 1. Demo of adding a visible signature to an existing PDF file in Draw</div>
+</div>
+<div class="paragraph"><p>You can see how the 2 added signatures are visible and Adobe Acrobat confirms they are valid, too.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_how_is_this_implemented">How is this implemented?</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Signature lines were already working in Writer and Calc, this effort brings them to Draw,
+  improving consistency.
+</p>
+</li>
+<li>
+<p>
+Signing existing PDFs were already possible, this allows adding a visible signature with the
+  correct markup. This is important for automated processing of PDFs, maybe even helps
+  accessibility. (I think DocuSign doesn&#8217;t get this right currently.)
+</p>
+</li>
+<li>
+<p>
+This uses the existing "export selected shape to PDF" code to produce that object, so it&#8217;s not a
+  bitmap, but a scalable format. (As I know, DocuSign doesn&#8217;t do this, either.)
+</p>
+</li>
+<li>
+<p>
+If you didn&#8217;t get the signature rectangle right for the first time, you can still move and resize
+  it before the actual signing happens (Acrobat doesn&#8217;t support this currently, I believe.)
+</p>
+</li>
+<li>
+<p>
+The generated object is locale-aware when it comes to the actual signature string and date format.
+</p>
+</li>
+<li>
+<p>
+The feature works for multiple signatures and multiple pages as well.
+</p>
+</li>
+</ul></div>
+<div class="ulist"><ul>
+<li>
+<p>
+The final step was
+  <a href="https://git.libreoffice.org/core/commit/9b7a890fd59744459692d7f66402c6bdd25acec4">this commit</a>,
+  with much more grounding before that one.
+</p>
+</li>
+<li>
+<p>
+Note that the signing is a two step process: first you draw the signature rectangle and optionally
+  finalize its position / size, and only then you use the <em>Finish Signing</em> button on the infobar to
+trigger the actual signing:
+</p>
+</li>
+</ul></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://lh3.googleusercontent.com/TMPrD20O0PvPLB7Uru_mmxfeQTaWhJwNQ80jgLj23TWLNqkm44Ww8F9Azce0sEN1TzmjmmVW7MvHZTwtR6Us2H7qpzOSC07CQ0p_myEsM1WRQOToAEus0vsgpTh1yeD65YemFQvv_A=w640" alt="https://lh3.googleusercontent.com/TMPrD20O0PvPLB7Uru_mmxfeQTaWhJwNQ80jgLj23TWLNqkm44Ww8F9Azce0sEN1TzmjmmVW7MvHZTwtR6Us2H7qpzOSC07CQ0p_myEsM1WRQOToAEus0vsgpTh1yeD65YemFQvv_A=w640" />
+</div>
+<div class="title">Figure 2. After drawing a signature rectangle, before finishing the signing.</div>
+</div>
+<div class="paragraph"><p>If you use a HW-based certificate, this second step will ask for your certificate PIN.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_want_to_start_using_this">Want to start using this?</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
+<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
+is a major contributor to LibreOffice and all of this work will be available in TDF&#8217;s next release
+too (7.1).</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/sw-page-content-bottom-anchor.html">Page-content-bottom vertical relation in Writer</a></h1>
   </div>
   <div class="article_meta">
@@ -816,60 +939,6 @@ endnotes in a way which is closer to what Word users expect.</p></div>
 Word, while endnotes are unconditionally on separate endnote pages in Writer. The new
 <code>ContinuousEndnotes</code> layout compatibility flag in Writer allows rendering endnotes the Word way.</p></div>
 <div class="paragraph"><p>This new flag is enabled by default for DOC files, disabled otherwise.</p></div>
-<div class="paragraph"><p>All this is available in LibreOffice master (towards 6.4), so you can try it out
-<a href="http://dev-builds.libreoffice.org/daily/master/">right now</a>, if interested.</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/sw-shape-allow-overlap.html">Allow-overlap shape property in Writer</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Fri 04 October 2019</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Writer now has a new "allow overlap" shape property for anchored objects, which can ensure that
-objects with overlapping positioning properties don&#8217;t actually overlap.</p></div>
-<div class="paragraph"><p>First, thanks <a href="https://tu-dresden.de/">TU Dresden</a> who made this work by
-<a href="https://www.collaboraoffice.com/">Collabora</a> possible.</p></div>
-<div class="paragraph"><p>Here is a video showing how it works:</p></div>
-<div class="imageblock" style="text-align:enter;">
-<div class="content">
-<a class="image" href="https://youtu.be/DzanTIo941g">
-<img src="https://lh3.googleusercontent.com/fdBYhwk3jykbX7drs6Q3ehQsQyAOBk_GWukw3KzcJBlaMsmgVg0C7KHM1uyODgqIro7HSjOnHzV6zfy9RgdMjY1KJW5K_EmfhyB4d-HyadZszIDAhVGbxUe4DMQbemSiZJA2k0h7vw=w640" alt="https://lh3.googleusercontent.com/fdBYhwk3jykbX7drs6Q3ehQsQyAOBk_GWukw3KzcJBlaMsmgVg0C7KHM1uyODgqIro7HSjOnHzV6zfy9RgdMjY1KJW5K_EmfhyB4d-HyadZszIDAhVGbxUe4DMQbemSiZJA2k0h7vw=w640" />
-</a>
-</div>
-<div class="title">Figure 1. Allow-overlap shape property in Writer</div>
-</div>
-<div class="paragraph"><p>Under the hood, this is a full new Writer feature, since previously shapes were always allowed to
-overlap with each other:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-macros get a new <code>AllowOverlap</code> shape property (true by default)
-</p>
-</li>
-<li>
-<p>
-layout takes this into account if you set the property on the UI
-</p>
-</li>
-<li>
-<p>
-both DOCX and ODT filters serialize and load this property
-  (<a href="https://issues.oasis-open.org/browse/OFFICE-4047">ODT proposal</a>)
-</p>
-</li>
-</ul></div>
 <div class="paragraph"><p>All this is available in LibreOffice master (towards 6.4), so you can try it out
 <a href="http://dev-builds.libreoffice.org/daily/master/">right now</a>, if interested.</p></div>
 </div>
