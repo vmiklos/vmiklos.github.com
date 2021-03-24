@@ -1,5 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>What is Miklos hacking</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Fri, 12 Feb 2021 09:25:04 +0100</lastBuildDate><item><title>Gutter margin in Writer</title><link>https://vmiklos.hu/blog/sw-gutter-margin.html</link><description>&lt;div id="preamble"&gt;
+<rss version="2.0"><channel><title>What is Miklos hacking</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Wed, 24 Mar 2021 12:18:17 +0100</lastBuildDate><item><title>Bibliography improvements in LibreOffice Writer</title><link>https://vmiklos.hu/blog/sw-bibliography.html</link><description>&lt;div id="preamble"&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The bibliography feature in Writer allows authors of e.g. scientific papers to track sources: first
+you can insert bibliography entry fields, then at the end you can generate a bibliography table
+automatically.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Writer now has two improvements in this area: more information about these entries in the form of a
+mouse tooltip and clickable URLs in the table.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;First, thanks &lt;a href="https://ulakbim.tubitak.gov.tr/en"&gt;TUBITAK ULAKBIM&lt;/a&gt; who made this work by
+&lt;a href="https://www.collaboraoffice.com/"&gt;Collabora&lt;/a&gt; possible.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_motivation"&gt;Motivation&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Generating a bibliography (table) for a document is a two-step process: first the user inserts
+bibliography entry fields to refer to sources, then later the bibliography can be auto-generated. It
+was not great that details of a source was only visible in the Writer edit window after generating
+the bibliography table. A somewhat related shortcoming was that URLs of sources were handled as
+plain text, while users expect that references are also clickable, similar to e.g. table of
+contents.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_results_so_far"&gt;Results so far&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;This is how a tooltip looks like, available even if there is no bibliography table yet:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://share.vmiklos.hu/blog/sw-bibliography/tooltip.png" alt="https://share.vmiklos.hu/blog/sw-bibliography/tooltip.png" /&gt;
+&lt;/div&gt;
+&lt;div class="title"&gt;Figure 1. Tooltip for bibliography entry fields&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;And URLs in the bibliography table are now clickable:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://share.vmiklos.hu/blog/sw-bibliography/url.png" alt="https://share.vmiklos.hu/blog/sw-bibliography/url.png" /&gt;
+&lt;/div&gt;
+&lt;div class="title"&gt;Figure 2. Clickable URLs in the bibliography table&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_how_is_this_implemented"&gt;How is this implemented?&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;If you would like to know a bit more about how this works, continue reading&amp;#8230; :-)&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;As usual, the high-level problem was addressed by a series of incremental development steps:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/110705"&gt;sw tooltip on bibliography fields: add an
+  SwTOXInternational factory&lt;/a&gt; and &lt;a href="https://gerrit.libreoffice.org/c/core/+/110712"&gt;sw tooltip on
+  bibliography fields: add a text factory that gives us a string&lt;/a&gt; were necessary refactors to get a
+  string that looks like a row in the bibliography table, without having an empty bibliography table
+  at hand
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/110765"&gt;sw tooltip on bibliography fields: add the actual
+  tooltip functionality&lt;/a&gt; improved the UI to have a tooltip
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/111117"&gt;sw bibliography: make URLs in the bibliography
+  table clickable&lt;/a&gt; implemented the clickable URLs feature
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_want_to_start_using_this"&gt;Want to start using this?&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
+expect all of this work will be available in TDF&amp;#8217;s
+&lt;a href="http://dev-builds.libreoffice.org/daily/master/"&gt;next release&lt;/a&gt; (7.2).&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Wed, 24 Mar 2021 12:18:17 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2021-03-24:/blog/sw-bibliography.html</guid><category>libreoffice</category><category>en</category></item><item><title>Gutter margin in Writer</title><link>https://vmiklos.hu/blog/sw-gutter-margin.html</link><description>&lt;div id="preamble"&gt;
 &lt;div class="sectionbody"&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;The page gutter defines the amount of extra space added to the specified margin (typically left),
 above any existing margin values.&lt;/p&gt;&lt;/div&gt;
@@ -762,51 +841,4 @@ intends to continue supporting and contributing to LibreOffice, the code is merg
 of this work will be available in TDF&amp;#8217;s next release too (7.1).&lt;/p&gt;&lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 02 Oct 2020 14:21:37 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2020-10-02:/blog/smartart-improvements-6.html</guid><category>libreoffice</category><category>en</category></item><item><title>Locale-independent Writer templates</title><link>https://vmiklos.hu/blog/sw-locale-independent-templates.html</link><description>&lt;div class="sect1"&gt;
-&lt;h2 id="_the_problem"&gt;The problem&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Users create new documents in various ways. When they do so in Online or via Windows Explorer&amp;#8217;s
-context menu (New &amp;#8594; &amp;#8230;) then actual templates are not involved in the process, technically. What
-happens instead is that there is a plain empty Writer (or Calc, Impress) document that gets copied.
-The reason for this is that by the time the document gets created, the WOPI-like protocol or Windows
-Explorer doesn&amp;#8217;t have a running soffice process to create a document instance from a template: it&amp;#8217;ll
-just copy a file.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;With that aside, users expect that when they create new documents, the language of their new
-document matches the locale of Writer itself. This conflicts with the idea that languages in the
-documents are explicit, so if a German users writes a piece of German text, the spellcheck passes
-and the next user is English, then the text should remain German, not introducing new spellcheck
-errors.&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_result"&gt;Result&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;img src="https://lh3.googleusercontent.com/OnDdNBGLsYhicnEbt_G6XW3Tmrn17XUT4XyBczgm0eETha9ZQ0y62t74QxeUFi3BfzfZrbBzZaMikglblqQBqTnWdYQzEQ72iBh3gZMHb9akFpQRVztOW7_0pK1Uyn9fvaNhLfugHfQ=w640" alt="https://lh3.googleusercontent.com/OnDdNBGLsYhicnEbt_G6XW3Tmrn17XUT4XyBczgm0eETha9ZQ0y62t74QxeUFi3BfzfZrbBzZaMikglblqQBqTnWdYQzEQ72iBh3gZMHb9akFpQRVztOW7_0pK1Uyn9fvaNhLfugHfQ=w640" /&gt;
-&lt;/div&gt;
-&lt;div class="title"&gt;Figure 1. Locale-indepentent Writer template&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;The solution to this problem is what &lt;a href="https://gerrit.libreoffice.org/c/core/+/100899"&gt;Mike&lt;/a&gt;
-and &lt;a href="https://gerrit.libreoffice.org/c/core/+/101195"&gt;Ezinne&lt;/a&gt; implemented: make these
-"templates" minimal, so they don&amp;#8217;t refer to any language. Then Calc or Impress will fill the
-language from the locale of the soffice process and it&amp;#8217;ll be part of the document on the first save.
-This solves the problem of multi-language templates while it does not break the spellcheck use-case.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Andras &lt;a href="https://gerrit.libreoffice.org/c/online/+/102239"&gt;copied&lt;/a&gt; the same templates to various Online
-integrations to have the same problem solved in that use-case as well.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Writer was still problematic, though. &lt;a href="https://gerrit.libreoffice.org/c/core/+/102051"&gt;sw: default to
-UI locale when language is missing&lt;/a&gt; now fixes this. You can see on the above screenshot that the
-stock soffice.odt was opened with a Hungarian locale and the status bar shows that the document
-language is Hungarian, not the confusing "multiple languages", as before.&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_want_to_start_using_this"&gt;Want to start using this?&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;You can get a snapshot / demo of Collabora Office and try it out yourself right now:
-&lt;a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/"&gt;try unstable snapshot&lt;/a&gt;.  Collabora
-is a major contributor to LibreOffice and all of this work will be available in TDF&amp;#8217;s next release
-too (7.1).&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Wed, 16 Sep 2020 10:46:16 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2020-09-16:/blog/sw-locale-independent-templates.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 02 Oct 2020 14:21:37 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2020-10-02:/blog/smartart-improvements-6.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>

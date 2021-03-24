@@ -61,6 +61,100 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sw-bibliography.html">Bibliography improvements in LibreOffice Writer</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Wed 24 March 2021</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>The bibliography feature in Writer allows authors of e.g. scientific papers to track sources: first
+you can insert bibliography entry fields, then at the end you can generate a bibliography table
+automatically.</p></div>
+<div class="paragraph"><p>Writer now has two improvements in this area: more information about these entries in the form of a
+mouse tooltip and clickable URLs in the table.</p></div>
+<div class="paragraph"><p>First, thanks <a href="https://ulakbim.tubitak.gov.tr/en">TUBITAK ULAKBIM</a> who made this work by
+<a href="https://www.collaboraoffice.com/">Collabora</a> possible.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_motivation">Motivation</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Generating a bibliography (table) for a document is a two-step process: first the user inserts
+bibliography entry fields to refer to sources, then later the bibliography can be auto-generated. It
+was not great that details of a source was only visible in the Writer edit window after generating
+the bibliography table. A somewhat related shortcoming was that URLs of sources were handled as
+plain text, while users expect that references are also clickable, similar to e.g. table of
+contents.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_results_so_far">Results so far</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>This is how a tooltip looks like, available even if there is no bibliography table yet:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://share.vmiklos.hu/blog/sw-bibliography/tooltip.png" alt="https://share.vmiklos.hu/blog/sw-bibliography/tooltip.png" />
+</div>
+<div class="title">Figure 1. Tooltip for bibliography entry fields</div>
+</div>
+<div class="paragraph"><p>And URLs in the bibliography table are now clickable:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://share.vmiklos.hu/blog/sw-bibliography/url.png" alt="https://share.vmiklos.hu/blog/sw-bibliography/url.png" />
+</div>
+<div class="title">Figure 2. Clickable URLs in the bibliography table</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_how_is_this_implemented">How is this implemented?</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
+<div class="paragraph"><p>As usual, the high-level problem was addressed by a series of incremental development steps:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/110705">sw tooltip on bibliography fields: add an
+  SwTOXInternational factory</a> and <a href="https://gerrit.libreoffice.org/c/core/+/110712">sw tooltip on
+  bibliography fields: add a text factory that gives us a string</a> were necessary refactors to get a
+  string that looks like a row in the bibliography table, without having an empty bibliography table
+  at hand
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/110765">sw tooltip on bibliography fields: add the actual
+  tooltip functionality</a> improved the UI to have a tooltip
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/111117">sw bibliography: make URLs in the bibliography
+  table clickable</a> implemented the clickable URLs feature
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_want_to_start_using_this">Want to start using this?</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
+expect all of this work will be available in TDF&#8217;s
+<a href="http://dev-builds.libreoffice.org/daily/master/">next release</a> (7.2).</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/sw-gutter-margin.html">Gutter margin in Writer</a></h1>
   </div>
   <div class="article_meta">
@@ -899,127 +993,6 @@ integrations to have the same problem solved in that use-case as well.</p></div>
 UI locale when language is missing</a> now fixes this. You can see on the above screenshot that the
 stock soffice.odt was opened with a Hungarian locale and the status bar shows that the document
 language is Hungarian, not the confusing "multiple languages", as before.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_want_to_start_using_this">Want to start using this?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
-<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
-is a major contributor to LibreOffice and all of this work will be available in TDF&#8217;s next release
-too (7.1).</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/smartart-improvements-5.html">SmartArt improvements in Impress, part 5</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Wed 19 August 2020</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 3 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Impress now has support for considering rules next to constraints when it comes to lay out
-SmartArt graphics from PPTX files. This builds on top of the
-<a href="https://vmiklos.hu/blog/smartart-improvements-4.html">previous improvements</a> around SmartArt support.</p></div>
-<div class="paragraph"><p>First, thanks to our partner <a href="https://www.suse.com/">SUSE</a> for working with
-<a href="https://www.collaboraoffice.com/">Collabora</a> to make this possible.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_motivation">Motivation</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>SmartArt allows declaring your content and requirements for a graphic, then the layout will take
-care of arranging that in a suitable way. It is allowed to declare conflicting requirements, and
-rules can specify how to resolve those conflicts. The below example document has shape widths
-defined in a way that multiple child shapes wants to have a width of 100%, but simply scaling down
-all child shapes does not give a correct result. Rules define what to scale down and what to leave
-unchanged.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_results_so_far">Results so far</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Here is how this works in practice:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/_AL6ARVsbgdaovqKPxr0n0I1kSn2zX_5xGg5y_4M8whkT6K0-mXIsGXeYI2Uo6u2YQAVwfLtbfy8XeYHggaPWpIHV4yaA4CaaIFUK4LQLRbV-JIbhy9A-Xz5JEEbcXp3TRWK4CzVcl0=w640" alt="https://lh3.googleusercontent.com/_AL6ARVsbgdaovqKPxr0n0I1kSn2zX_5xGg5y_4M8whkT6K0-mXIsGXeYI2Uo6u2YQAVwfLtbfy8XeYHggaPWpIHV4yaA4CaaIFUK4LQLRbV-JIbhy9A-Xz5JEEbcXp3TRWK4CzVcl0=w640" />
-</div>
-<div class="title">Figure 1. Linear layout with multiple 100% width shapes, new output</div>
-</div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/UmK7-j0WxUHamDA-g3FepAOYYgbD5LJJhssleqv2jLnfXX-62fP82uA_5t__9HOQWIZfJUl6hoZVVQX5-LuIdOxz2M0HS90zcaoov_SbxQHuv4DN48be8dZkvySb_QtAbmNOTcMpJ5c=w640" alt="https://lh3.googleusercontent.com/UmK7-j0WxUHamDA-g3FepAOYYgbD5LJJhssleqv2jLnfXX-62fP82uA_5t__9HOQWIZfJUl6hoZVVQX5-LuIdOxz2M0HS90zcaoov_SbxQHuv4DN48be8dZkvySb_QtAbmNOTcMpJ5c=w640" />
-</div>
-<div class="title">Figure 2. Linear layout with multiple 100% width shapes, old output</div>
-</div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/i2ScJOwjQfQeeFrw-yu6EQt67nt5Xx7o325WnaOeprXH4jc_CPLuXt0Mwb2iiT9rBamjooEA271HY48P6v8ieuWMUcoSq5HTjMsJkJnUOcrCrF_7uutebYGfO2WOZzAJRh6k-ibbglc=w640" alt="https://lh3.googleusercontent.com/i2ScJOwjQfQeeFrw-yu6EQt67nt5Xx7o325WnaOeprXH4jc_CPLuXt0Mwb2iiT9rBamjooEA271HY48P6v8ieuWMUcoSq5HTjMsJkJnUOcrCrF_7uutebYGfO2WOZzAJRh6k-ibbglc=w640" />
-</div>
-<div class="title">Figure 3. Linear layout with multiple 100% width shapes, reference output</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_how_is_this_implemented">How is this implemented?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-The initial heavy-lifting is done in
-  <a href="https://git.libreoffice.org/core/commit/6ca5412bac9e3da5cd20f315fc853c7733f10858">this commit</a>,
-  which parses the rules from the XML input.
-</p>
-</li>
-<li>
-<p>
-Then once we had rule info around, the linear algorithm was improved to scale down child shapes
-  based on rules (and not just all of them, equally).
-</p>
-</li>
-<li>
-<p>
-Then it was necessary to scale spacings (between child shapes) based on rules as well.
-</p>
-</li>
-<li>
-<p>
-It was also needed to limit the height request of a shape, since they should not leave the canvas
-  of the SmartArt.
-</p>
-</li>
-<li>
-<p>
-Finally it was necessary to support the "top" child order. This can be declared using the
-  following markup:
-</p>
-</li>
-</ul></div>
-<div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight
-by Lorenzo Bettini
-http://www.lorenzobettini.it
-http://www.gnu.org/software/src-highlite -->
-<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">&lt;dgm:layoutNode</span></span> ... <span style="color: #009900">chOrder</span><span style="color: #990000">=</span><span style="color: #FF0000">"t"</span><span style="font-weight: bold"><span style="color: #0000FF">&gt;</span></span></tt></pre></div></div>
-<div class="paragraph"><p>This declares that an earlier shape in a linear layout is on top of a later shapes, not the
-opposite. The default is that newer shapes are on top of older shapes. This is not a visible
-problem usually, but once you start using negative widths in a linear layout, you can have
-overlapping shapes. The above example has 3 text shapes, which are overlapping with the "background"
-arrow shape. This is expressed by having 100% width for child shapes (OK to scale down), then a
--100% width for a dummy shape (not scaling) and finally a 100% width for the background arrow (not
-scaling).</p></div>
-<div class="paragraph"><p>All in all, now the background arrow shape has a good position and size, and the text on the arrow
-is readable.</p></div>
 </div>
 </div>
 <div class="sect1">
