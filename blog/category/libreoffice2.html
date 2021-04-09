@@ -61,6 +61,68 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sw-locale-independent-templates.html">Locale-independent Writer templates</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Wed 16 September 2020</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <div class="sect1">
+<h2 id="_the_problem">The problem</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Users create new documents in various ways. When they do so in Online or via Windows Explorer&#8217;s
+context menu (New &#8594; &#8230;) then actual templates are not involved in the process, technically. What
+happens instead is that there is a plain empty Writer (or Calc, Impress) document that gets copied.
+The reason for this is that by the time the document gets created, the WOPI-like protocol or Windows
+Explorer doesn&#8217;t have a running soffice process to create a document instance from a template: it&#8217;ll
+just copy a file.</p></div>
+<div class="paragraph"><p>With that aside, users expect that when they create new documents, the language of their new
+document matches the locale of Writer itself. This conflicts with the idea that languages in the
+documents are explicit, so if a German users writes a piece of German text, the spellcheck passes
+and the next user is English, then the text should remain German, not introducing new spellcheck
+errors.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_result">Result</h2>
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://lh3.googleusercontent.com/OnDdNBGLsYhicnEbt_G6XW3Tmrn17XUT4XyBczgm0eETha9ZQ0y62t74QxeUFi3BfzfZrbBzZaMikglblqQBqTnWdYQzEQ72iBh3gZMHb9akFpQRVztOW7_0pK1Uyn9fvaNhLfugHfQ=w640" alt="https://lh3.googleusercontent.com/OnDdNBGLsYhicnEbt_G6XW3Tmrn17XUT4XyBczgm0eETha9ZQ0y62t74QxeUFi3BfzfZrbBzZaMikglblqQBqTnWdYQzEQ72iBh3gZMHb9akFpQRVztOW7_0pK1Uyn9fvaNhLfugHfQ=w640" />
+</div>
+<div class="title">Figure 1. Locale-indepentent Writer template</div>
+</div>
+<div class="paragraph"><p>The solution to this problem is what <a href="https://gerrit.libreoffice.org/c/core/+/100899">Mike</a>
+and <a href="https://gerrit.libreoffice.org/c/core/+/101195">Ezinne</a> implemented: make these
+"templates" minimal, so they don&#8217;t refer to any language. Then Calc or Impress will fill the
+language from the locale of the soffice process and it&#8217;ll be part of the document on the first save.
+This solves the problem of multi-language templates while it does not break the spellcheck use-case.</p></div>
+<div class="paragraph"><p>Andras <a href="https://gerrit.libreoffice.org/c/online/+/102239">copied</a> the same templates to various Online
+integrations to have the same problem solved in that use-case as well.</p></div>
+<div class="paragraph"><p>Writer was still problematic, though. <a href="https://gerrit.libreoffice.org/c/core/+/102051">sw: default to
+UI locale when language is missing</a> now fixes this. You can see on the above screenshot that the
+stock soffice.odt was opened with a Hungarian locale and the status bar shows that the document
+language is Hungarian, not the confusing "multiple languages", as before.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_want_to_start_using_this">Want to start using this?</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
+<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
+is a major contributor to LibreOffice and all of this work will be available in TDF&#8217;s next release
+too (7.1).</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/smartart-improvements-5.html">SmartArt improvements in Impress, part 5</a></h1>
   </div>
   <div class="article_meta">
@@ -962,57 +1024,6 @@ between the two.</p></div>
 <div class="paragraph"><p>The primary focus was Draw in this case, but this also helps PPTX support, as the importer/exporter
 now handles this for Impress documents as well.</p></div>
 <div class="paragraph"><p>All this is available in LibreOffice master (towards 6.5), so you can try it out
-<a href="http://dev-builds.libreoffice.org/daily/master/">right now</a>, if interested.</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/sd-pptx-better-math.html">Better math import from PPTX into Impress</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Thu 21 November 2019</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Impress now has a much
-<a href="https://gerrit.libreoffice.org/plugins/gitiles/core/+/4038d6c393c3cf6330671124ba69cdba98b24960%5E%21/">improved
-math handling</a> in its importer from PPTX, eliminating annoying duplicated objects you had to delete
-after import, manually.</p></div>
-<div class="paragraph"><p>First, thanks <a href="https://tu-dresden.de/">TU Dresden</a> who made this work by
-<a href="https://www.collaboraoffice.com/">Collabora</a> possible.</p></div>
-<div class="paragraph"><p>Here is how it looks:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/zI1fDb7tfl0a-6e1JljnBuCz67cGBSpx3s_tMViW_xWpTjy0FrsLGws-VAXWcdQhmSwXddr9wjADs5UvhNu_sNjETT7VfMJB8pdQ4PxPpHliCVbuMOx67Wwrd6brfE-eJtWIb2K36A=w640" alt="https://lh3.googleusercontent.com/zI1fDb7tfl0a-6e1JljnBuCz67cGBSpx3s_tMViW_xWpTjy0FrsLGws-VAXWcdQhmSwXddr9wjADs5UvhNu_sNjETT7VfMJB8pdQ4PxPpHliCVbuMOx67Wwrd6brfE-eJtWIb2K36A=w640" />
-</div>
-<div class="title">Figure 1. Impress, new math import from PPTX</div>
-</div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/rpC9KOUaadEoYKekczLTZakB98SBwqbKGqmwf_VLY6D-8OpBLh9Lpxi_RDl6CMQHJKqsz0NnxgTN8kn63CB9fGmP6AWUKIqK0huvjoRCxvoh6dtd0BMRXclsWlaKr3jbdzb1TOJ1LQ=w640" alt="https://lh3.googleusercontent.com/rpC9KOUaadEoYKekczLTZakB98SBwqbKGqmwf_VLY6D-8OpBLh9Lpxi_RDl6CMQHJKqsz0NnxgTN8kn63CB9fGmP6AWUKIqK0huvjoRCxvoh6dtd0BMRXclsWlaKr3jbdzb1TOJ1LQ=w640" />
-</div>
-<div class="title">Figure 2. Reference rendering</div>
-</div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/hUBhfLLFPZFDa50EMPEQxl2kih91oKIfQFBxNK7F9uWGexGbUKnV1FMQZgvmj4EctmCwlxlYK56hPSX0RZS_MpOAKZZagmfOALZ3LRrvBgoOGAx9dsM1N3dp9bGvPU7c0WVvROu8iQ=w640" alt="https://lh3.googleusercontent.com/hUBhfLLFPZFDa50EMPEQxl2kih91oKIfQFBxNK7F9uWGexGbUKnV1FMQZgvmj4EctmCwlxlYK56hPSX0RZS_MpOAKZZagmfOALZ3LRrvBgoOGAx9dsM1N3dp9bGvPU7c0WVvROu8iQ=w640" />
-</div>
-<div class="title">Figure 3. Impress, old math import from PPTX</div>
-</div>
-<div class="paragraph"><p>What you can see is that the in the old case we managed to read both the actual math object and its
-replacement image from PPTX, which caused visible duplication due to working transparency handling.
-The new way just imports the math objects, and ignores the replacement graphic.</p></div>
-<div class="paragraph"><p>This new way (handling of the OOXML <code>a14</code> feature flag) is enabled by default, except for Calc
-documents, where more works is needed before it can be enabled.</p></div>
-<div class="paragraph"><p>All this is available in LibreOffice master (towards 6.4), so you can try it out
 <a href="http://dev-builds.libreoffice.org/daily/master/">right now</a>, if interested.</p></div>
 </div>
 </div>
