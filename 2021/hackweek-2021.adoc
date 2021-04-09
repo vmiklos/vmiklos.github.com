@@ -1,0 +1,83 @@
+= My hack week at Collabora: improvements to gutter margin in Writer
+
+:slug: hackweek-2021
+:category: libreoffice
+:tags: en
+:date: 2021-04-09T14:48:14+02:00
+
+As mentioned in a link:|filename|/2020/hackweek-2020.adoc[previous] such report, a hack week is when
+we are allowed to hack on anything we want in LibreOffice / Collabora Office / Collabora Online for
+a few days at https://www.collaboraoffice.com/[Collabora]. I used this time to implement core
+support for RTL gutter margin in Writer.
+
+== Motivation
+
+I posted about Writer gutter margin in general link:|filename|/2021/sw-gutter-margin.adoc[back in
+February], and two follow-up requests accumulated around this new feature since then.
+
+First, the gutter margin could be on the left or at the top for non-mirrored documents, which
+initially sounded like a complete solution, but later it turned out that right-to-left (RTL)
+documents https://bugs.documentfoundation.org/show_bug.cgi?id=140343[want it on the right].
+
+Second, there was a https://issues.oasis-open.org/browse/OFFICE-4105[request from the OASIS TC to]
+to implement the ODF filter differently for gutter margin.
+
+Neither of these is simple to do, so this hackweek was a good opportunity to address these problems.
+
+== Results so far
+
+Here is the layout and user interface for RTL gutter looks like:
+
+.RTL gutter margin in Writer, layout and UI
+image::https://share.vmiklos.hu/blog/hackweek-2021/layout-ui.png[align="center"]
+
+You can see how the gutter is on the right (not the left) and you can alter this behavior with a
+dedicated checkbox on the UI.
+
+== How is this implemented?
+
+If you would like to know a bit more about how this works, continue reading... :-)
+
+// git log --author=vmiklos --since=2021-03-28 --pretty=oneline --reverse --grep gutter
+
+- https://git.libreoffice.org/core/commit/67e53dfeadbbc4f4ab207af0d2cd4e8f556b73d4[sw page rtl
+  gutter margin: add doc model] introduced a new RES_RTL_GUTTER page style property
+
+- https://git.libreoffice.org/core/commit/bcbf1c245fa13cfbae2059a996006179c7f4b747[sw page rtl
+  gutter margin: add UNO API] added a new public RtlGutter UNO API property
+
+- https://git.libreoffice.org/core/commit/c088d26578d1be352efa49bd164a8217627648de[sw page rtl
+  gutter margin: add layout] was the tricky layout piece, extending `SwBorderAttrs`
+
+- https://git.libreoffice.org/core/commit/3db477fd0e6cfc4ff77b3c911ca4ab14fd980932[sw page rtl
+  gutter margin: add DOCX filter] mapped this to DOCX's `<w:rtlGutter>`
+
+- https://git.libreoffice.org/core/commit/fac65bb9d831a854298d6cba09ad6159d15b8323[sw page rtl
+  gutter margin: add ODF import] mapped this to `<style:page-layout-properties
+  style:writing-mode="...">` in case the attribute value is RTL
+
+- https://git.libreoffice.org/core/commit/8b7ff52ac87795881a4d86395885778f1da3d18b[sw page rtl
+  gutter margin: add DOC filter] mapped this to DOC's SFRTLGutter, amusingly that handling of that
+  was somewhat there, but more or less broken since 2002-02-04
+
+- https://git.libreoffice.org/core/commit/f15c6c5d2947a61e6521471b6b7541812953efc3[sw page rtl
+  gutter margin: add RTF filter] mapped this to RTF's `\rtlgutter` section flag
+
+- https://git.libreoffice.org/core/commit/d48a4174708ce0850577dba76dccaf85c4f6ffa1[sw page rtl
+  gutter margin: add UI] introduced a new checkbox on the UI to set/get this, and fixed up
+  notifications, so that the incremental layout repaints the necessary page frames when this setting
+  changes
+
+Finally I had a little bit of remaining time, so I addressed a request from the OASIS ODF TC:
+
+- https://git.libreoffice.org/core/commit/f3cf833f7079ce8d2f53681cae1b430a875cc320[sw page gutter
+  margin: reimplement ODF filter] changed the ODF markup to be more compatible with readers ignoring
+  `<style:page-layout-properties loext:margin-gutter="...">`
+
+== Want to start using this?
+
+Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
+expect all of this work will be available in TDF's
+http://dev-builds.libreoffice.org/daily/master/[next release] (7.2).
+
+// vim: ft=asciidoc
