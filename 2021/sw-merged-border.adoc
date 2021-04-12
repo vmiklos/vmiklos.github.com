@@ -1,0 +1,76 @@
+= Improving borders of merged table cells in Writer
+
+:slug: sw-merged-border
+:category: libreoffice
+:tags: en
+:date: 2021-04-12T12:49:44+02:00
+:status: draft
+
+Writer now has better
+https://git.libreoffice.org/core/commit/66ac8e60896f6306bed8fbb34606fd14474f19ce[support] for
+Word-compatible border rending when it comes to vertically merged cells in tables.
+
+First, thanks https://www.docmosis.com/[Docmosis] who made this work by
+https://www.collaboraoffice.com/[Collabora] possible.
+
+== Motivation
+
+Both Word and Writer allow specifying borders for any kind of table cells. When the user creates a
+vertically merged cell, there is a covering cell and there is one or more covered table cells.
+
+The Writer approach is to render the cell borders according to the properties of the covering cell.
+This has the benefit that each edge of the table cell has a single border style (e.g. dashed or
+hairline).
+
+The Word approach is to render the cell borders as if there would be no vertical merge, according to
+the properties of the covered cell. This has the benefit that merging the content of cells
+vertically doesn't change the border rendering, but it also requires more complex code for painting.
+
+== Results so far
+
+Writer can now detect that your tables originate from Word formats and render table borders the Word way in that case.
+
+Here is how the new rendering result look like:
+
+.Writer rendering in compatibility mode, new output
+image::https://share.vmiklos.hu/blog/sw-merged-border/new.png[align="center"]
+
+And here is how it used to look like:
+
+.Writer rendering in compatibility mode, old output
+image::https://share.vmiklos.hu/blog/sw-merged-border/old.png[align="center"]
+
+And finally the reference rendering is:
+
+.Writer rendering in compatibility mode, reference output
+image::https://share.vmiklos.hu/blog/sw-merged-border/ref.png[align="center"]
+
+You can see that the B4 and B5 cells are covered, they had some unwanted border on their left side
+and this is now gone.
+
+== How is this implemented?
+
+If you would like to know a bit more about how this works, continue reading... :-)
+
+- First, some building blocks were introduced: `SwCellFrame::GetCoveredCellInRow()` can look up a
+  covered cell in a certain row, provided that this cell covers it
+
+- Building on top of this, `SwCellFrame::GetCoveredCells()` can provide a list of cell frames which
+  are covered by the current cell, due to vertical merge. This is needed, because previously the
+  layout didn't have to consider properties of covered cells, so while the document model had this
+  information, it was not visible to the layout in a convenient way
+
+- Using the above functionality, `SwTabFramePainter::Insert()` can suppress painting of certain
+  border lines in Word compatibility mode
+
+- Finally, the code change can be covered with a test by recording the rendering and asserting the
+  vertical positions of border points: we can check that all the positions belong to the 1st, 2nd or
+  3rd rows, and not to a row below them
+
+== Want to start using this?
+
+Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
+expect all of this work will be available in TDF's
+http://dev-builds.libreoffice.org/daily/master/[next release] (7.2).
+
+// vim: ft=asciidoc
