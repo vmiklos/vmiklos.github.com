@@ -1,5 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>What is Miklos hacking</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Fri, 09 Apr 2021 14:48:14 +0200</lastBuildDate><item><title>My hack week at Collabora: improvements to gutter margin in Writer</title><link>https://vmiklos.hu/blog/hackweek-2021.html</link><description>&lt;div id="preamble"&gt;
+<rss version="2.0"><channel><title>What is Miklos hacking</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Wed, 14 Apr 2021 09:00:17 +0200</lastBuildDate><item><title>Improving borders of merged table cells in Writer</title><link>https://vmiklos.hu/blog/sw-merged-border.html</link><description>&lt;div id="preamble"&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Writer now has better
+&lt;a href="https://git.libreoffice.org/core/commit/66ac8e60896f6306bed8fbb34606fd14474f19ce"&gt;support&lt;/a&gt; for
+Word-compatible border rending when it comes to vertically merged cells in tables.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;First, thanks &lt;a href="https://www.docmosis.com/"&gt;Docmosis&lt;/a&gt; who made this work by
+&lt;a href="https://www.collaboraoffice.com/"&gt;Collabora&lt;/a&gt; possible.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_motivation"&gt;Motivation&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Both Word and Writer allow specifying borders for any kind of table cells. When the user creates a
+vertically merged cell, there is a covering cell and there is one or more covered table cells.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The Writer approach is to render the cell borders according to the properties of the covering cell.
+This has the benefit that each edge of the table cell has a single border style (e.g. dashed or
+hairline).&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The Word approach is to render the cell borders as if there would be no vertical merge, according to
+the properties of the covered cell. This has the benefit that merging the content of cells
+vertically doesn&amp;#8217;t change the border rendering, but it also requires more complex code for painting.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_results_so_far"&gt;Results so far&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Writer can now detect that your tables originate from Word formats and render table borders the Word way in that case.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Here is how the new rendering result look like:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://share.vmiklos.hu/blog/sw-merged-border/new.png" alt="https://share.vmiklos.hu/blog/sw-merged-border/new.png" /&gt;
+&lt;/div&gt;
+&lt;div class="title"&gt;Figure 1. Writer rendering in compatibility mode, new output&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;And here is how it used to look like:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://share.vmiklos.hu/blog/sw-merged-border/old.png" alt="https://share.vmiklos.hu/blog/sw-merged-border/old.png" /&gt;
+&lt;/div&gt;
+&lt;div class="title"&gt;Figure 2. Writer rendering in compatibility mode, old output&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;And finally the reference rendering is:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://share.vmiklos.hu/blog/sw-merged-border/ref.png" alt="https://share.vmiklos.hu/blog/sw-merged-border/ref.png" /&gt;
+&lt;/div&gt;
+&lt;div class="title"&gt;Figure 3. Writer rendering in compatibility mode, reference output&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;You can see that the B4 and B5 cells are covered, they had some unwanted border on their left side
+and this is now gone.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_how_is_this_implemented"&gt;How is this implemented?&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;If you would like to know a bit more about how this works, continue reading&amp;#8230; :-)&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+First, some building blocks were introduced: &lt;code&gt;SwCellFrame::GetCoveredCellInRow()&lt;/code&gt; can look up a
+  covered cell in a certain row, provided that this cell covers it
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+Building on top of this, &lt;code&gt;SwCellFrame::GetCoveredCells()&lt;/code&gt; can provide a list of cell frames which
+  are covered by the current cell, due to vertical merge. This is needed, because previously the
+  layout didn&amp;#8217;t have to consider properties of covered cells, so while the document model had this
+  information, it was not visible to the layout in a convenient way
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+Using the above functionality, &lt;code&gt;SwTabFramePainter::Insert()&lt;/code&gt; can suppress painting of certain
+  border lines in Word compatibility mode
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+Finally, the code change can be covered with a test by recording the rendering and asserting the
+  vertical positions of border points: we can check that all the positions belong to the 1st, 2nd or
+  3rd rows, and not to a row below them
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_want_to_start_using_this"&gt;Want to start using this?&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
+expect all of this work will be available in TDF&amp;#8217;s
+&lt;a href="http://dev-builds.libreoffice.org/daily/master/"&gt;next release&lt;/a&gt; (7.2).&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Wed, 14 Apr 2021 09:00:17 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2021-04-14:/blog/sw-merged-border.html</guid><category>libreoffice</category><category>en</category></item><item><title>My hack week at Collabora: improvements to gutter margin in Writer</title><link>https://vmiklos.hu/blog/hackweek-2021.html</link><description>&lt;div id="preamble"&gt;
 &lt;div class="sectionbody"&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;As mentioned in a &lt;a href="https://vmiklos.hu/blog/hackweek-2020.html"&gt;previous&lt;/a&gt; such report, a hack week is when
 we are allowed to hack on anything we want in LibreOffice / Collabora Office / Collabora Online for
@@ -786,26 +880,4 @@ intends to continue supporting and contributing to LibreOffice, the code is merg
 of this work will be available in TDF&amp;#8217;s next release too (7.1).&lt;/p&gt;&lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 13 Nov 2020 08:50:19 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2020-11-13:/blog/sd-zero-byte-files.html</guid><category>libreoffice</category><category>en</category></item><item><title>OOXML / PDF Digital Signing in Draw and elsewhere conference talk</title><link>https://vmiklos.hu/blog/libocon2020.html</link><description>&lt;div id="preamble"&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;a class="image" href="https://files.speakerdeck.com/presentations/eae85c2ac9d443708bda7ca26b3f5a6f/pdf-visible-sign-loconf-online-2k20.pdf"&gt;
-&lt;img src="https://lh3.googleusercontent.com/4cDltVS1u4m8FWC9Bb54TWILfzrFEXKNUcKKE6cxTIzsDWbX4SXPNw6JM01eLVzyqSqsyWhukcXXWmlJthx9q8tdbqO1LfO8FQECzBcEK3ZQl1lCXdpoAFGKZn_H9sNy0QLgNpPox_w=w1920" alt="https://lh3.googleusercontent.com/4cDltVS1u4m8FWC9Bb54TWILfzrFEXKNUcKKE6cxTIzsDWbX4SXPNw6JM01eLVzyqSqsyWhukcXXWmlJthx9q8tdbqO1LfO8FQECzBcEK3ZQl1lCXdpoAFGKZn_H9sNy0QLgNpPox_w=w1920" /&gt;
-&lt;/a&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Today I gave a &lt;a href="https://events.opensuse.org/conferences/oSLO/program/proposals/3187/"&gt;OOXML / PDF
-Digital Signing in Draw and elsewhere&lt;/a&gt; talk at the LibreOffice Conference 2020. The (virtual) room
-was well-crowded&amp;#8201;&amp;#8212;&amp;#8201;somehow people find digital signatures interesting. ;-)&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;It contains an overview of the ODF/OOXML/PDF signing feature set and also details the latest
-improvements, like visible PDF signing.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;I expect quite some other slides from other Collaborans and the wider community will be available on
-&lt;a href="http://planet.documentfoundation.org/"&gt;Planet&lt;/a&gt;, don&amp;#8217;t miss them.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;You can get a snapshot / demo of Collabora Office and try the presented features out yourself right
-now: &lt;a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/"&gt;try unstable snapshot&lt;/a&gt;.
-Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
-expect all of this work will be available in TDF&amp;#8217;s next release too (7.1).&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 16 Oct 2020 17:53:30 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2020-10-16:/blog/libocon2020.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 13 Nov 2020 08:50:19 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2020-11-13:/blog/sd-zero-byte-files.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
