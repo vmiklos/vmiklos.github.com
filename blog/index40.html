@@ -58,6 +58,29 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/mkk-ejszakai-bringazas.html">MKK ejszakai bringazas</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Fri 09 April 2010</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>Szoval <a href="http://rht.bme.hu/~mkkweb/index.php?do=sh&amp;pg=programs%3Eesemenyinfo&amp;azonosito=376">ez</a> volt tegnap. Kis statisztika:</p><p>Netto ido: 3h20m13s
+Atlag: 16.9 kmph
+Tav: 56.49km
+Max: 72.4kmph</p><p>Elvileg kicsit kesobb lesznek kepek is. Ami meg nem fog latszani a kepeken az a jokis Csillaghegy elotti lejto, ahol (mint fenn is olvashato) egesz jol be lehetett gyorsulni. :)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/recent-hacks-upgrade.html">Recent hacks, upgrade</a></h1>
   </div>
   <div class="article_meta">
@@ -274,57 +297,6 @@ $ git read-tree -m -u HEAD
 $ ls
 perl/  ppc/
 </pre></p><p>Enjoy! :)</p><p>Update: see the comments, as it has been pointed out the "And of course git now does it better, since this way it's possible to checkout multiple sub-directories, not just a single one, what svn allows." sentence is incorrect; but of course having a similar feature in a distributed VCS is still an improvement. ;)</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/pptp-client-howto-on-linux-on-console.html">pptp client howto on linux on console</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Tue 09 February 2010</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>So I saw a few howtos on how to set up ms pptp client on linux, but they're mostly about how to click on networkmanager or other guis, so basically they hide the real detail, IOW what config files are actually used.</p><p>First install the necessary packages:</p><p><code>
-# pacman-g2 -S ppp pptp
-</code></p><p>Here is what I have under /etc/ppp:</p><p><code>
-# cat chap-secrets
-# Secrets for authentication using CHAP
-# client        server  secret                  IP addresses
-$user           PPTP    $secret                 *
-</code></p><p><code>
-# cat options
-lock
-</code></p><p><code>
-# cat options.pptp
-lock
-noauth
-nobsdcomp
-nodeflate
-</code></p><p><code>
-# cat peers/$network
-pty "/usr/sbin/pptp $server --nolaunchpppd"
-name "$user"
-file /etc/ppp/options.pptp
-remotename PPTP
-require-mppe-128
-refuse-eap
-ipparam $network
-</code></p><p>And to bring up ppp0:</p><p><code>
-# pon $network debug dump logfd 2 nodetach
-</code></p><p>If it works fine, you can just use:</p><p><code>
-# pon $network
-</code></p><p>(Obviously replace $user, $secret, $server and $network with real values.)</p><p>One thing I did not figure out is how to configure it to set the default gateway as well. Right now I use the debug mode, then in the output I see the remote address, finally:</p><p><code>
-# route add default gw $remoteaddr
-</code></p><p>Other than that, it works fine - without any damn gui! :)</p>
 </div>
 </div>
 

@@ -1,5 +1,125 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>What is Miklos hacking</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Wed, 14 Apr 2021 09:00:17 +0200</lastBuildDate><item><title>Improving borders of merged table cells in Writer</title><link>https://vmiklos.hu/blog/sw-merged-border.html</link><description>&lt;div id="preamble"&gt;
+<rss version="2.0"><channel><title>What is Miklos hacking</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Wed, 05 May 2021 11:25:20 +0200</lastBuildDate><item><title>Bibliography improvements in LibreOffice Writer: refer to a specific page</title><link>https://vmiklos.hu/blog/sw-bibliography-page.html</link><description>&lt;div id="preamble"&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The bibliography feature in Writer allows authors of e.g. scientific papers to track sources: first
+you can insert bibliography entry fields, then at the end you can generate a bibliography table
+automatically.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Writer recently gained &lt;a href="https://vmiklos.hu/blog/sw-bibliography.html"&gt;two improvements in this area&lt;/a&gt;, and
+now there is one more: the ability to refer to a specific page of a (potentially long) source.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;First, thanks &lt;a href="https://ulakbim.tubitak.gov.tr/en"&gt;TUBITAK ULAKBIM&lt;/a&gt; who made this work by
+&lt;a href="https://www.collaboraoffice.com/"&gt;Collabora&lt;/a&gt; possible.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_motivation"&gt;Motivation&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The same feature in normal HTML linking / citation is well-known: you can place anchors in your
+document and then links can refer to not only to your page, but also can set the fragment part of
+the URL to jump to a specific section directly. E.g.
+&lt;a href="https://vmiklos.hu/blog/sw-bibliography.html#_motivation"&gt;this link&lt;/a&gt; will jump to the "Motivation"
+section of the above referred previous post.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Wouldn&amp;#8217;t it be nice if you could also jump to a specific page of a scientific PDF?&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_results_so_far"&gt;Results so far&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;You can add such references by choosing the Insert &amp;#8594; Table of Contents and Index &amp;#8594; Bibliography
+Entry menu item.  Set Bibliography Source to Document Content and press the New button. The
+appearing dialog now has widgets to set a specific page number:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://share.vmiklos.hu/blog/sw-bibliography-page/page.png" alt="https://share.vmiklos.hu/blog/sw-bibliography-page/page.png" /&gt;
+&lt;/div&gt;
+&lt;div class="title"&gt;Figure 1. Refer to a specic page of a bibliography source, user interface&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;This is then stored in the URL by setting its fragment to &lt;code&gt;page=...&lt;/code&gt;, and typically PDF readers
+understand this syntax, so when you click on the URL, the PDF will open exactly on the cited page.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;This also works the other way around: URLs with such syntax are presented to the user with the
+dedicated widget to see, edit or delete the page number of the URL.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Finally, if you refer to different pages of the same source, the bibliography text generator detects
+this and lists the source in the bibliography only once.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_how_is_this_implemented"&gt;How is this implemented?&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;If you would like to know a bit more about how this works, continue reading&amp;#8230; :-)&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;As usual, the high-level problem was addressed by a series of incremental development steps:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/111653"&gt;sw bibliography, refer to a page: strip
+  URLs in the bibliography table&lt;/a&gt; improved the bibliography table generator to not show page fragments
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/111761"&gt;sw bibliography, refer to a page:
+  de-duplicate bibliography table URLs&lt;/a&gt; merged the idendical sources to a single entry in the bibliography
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/112400"&gt;sw bibliography, refer to a page: make the
+  biblio field clickable&lt;/a&gt; allows opening the URL-with-page by clicking on the bibliography entry field
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/112981"&gt;sw bibliography, refer to a page: add open
+  hyperlink context menu&lt;/a&gt; implemented the context menu, in case you prefer to avoid ctrl-click for hyperlink opening
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/113035"&gt;sw bibliography, refer to a page: add PDF
+  export links&lt;/a&gt; improved the PDF export to have clickable bibliography entry fields
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/114059"&gt;sw bibliography, refer to a page: fix
+  biblio field relative URLs&lt;/a&gt; added support for relative URLs, in case the edited document and
+  referred PDFs are in the same directory, next to each other
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/114104"&gt;sw bibliography, refer to a page: also
+  de-duplicate relative URLs&lt;/a&gt; made the relative URL and bibliography table row merging work together
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/114380"&gt;sw bibliography, refer to a page: edit the
+  page number of individual entries&lt;/a&gt; allows editing just a single bibliography entry field for page
+  number purposes, since in other cases it makes sense to update all fields of the same source (e.g.
+  correcting a spelling mistake in an author name)
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/114443"&gt;sw bibliography, refer to a page: add
+  dedicate widget to show the page number&lt;/a&gt;,
+  &lt;a href="https://gerrit.libreoffice.org/c/core/+/114664"&gt;sw bibliography, refer to a page: save
+  edited page number&lt;/a&gt; and &lt;a href="https://gerrit.libreoffice.org/c/core/+/114750"&gt;sw bibliography,
+  refer to a page: add insert/delete UI&lt;/a&gt; add support for creating, showing, editing and deleting page
+  numbers of such URLs on the user interface
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_want_to_start_using_this"&gt;Want to start using this?&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
+expect all of this work will be available in TDF&amp;#8217;s
+&lt;a href="http://dev-builds.libreoffice.org/daily/master/"&gt;next release&lt;/a&gt; (7.2).&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Wed, 05 May 2021 11:25:20 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2021-05-05:/blog/sw-bibliography-page.html</guid><category>libreoffice</category><category>en</category></item><item><title>Improving borders of merged table cells in Writer</title><link>https://vmiklos.hu/blog/sw-merged-border.html</link><description>&lt;div id="preamble"&gt;
 &lt;div class="sectionbody"&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;Writer now has better
 &lt;a href="https://git.libreoffice.org/core/commit/66ac8e60896f6306bed8fbb34606fd14474f19ce"&gt;support&lt;/a&gt; for
@@ -807,77 +927,4 @@ intends to continue supporting and contributing to LibreOffice, the code is merg
 of this work will be available in TDF&amp;#8217;s next release too (7.1).&lt;/p&gt;&lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 27 Nov 2020 09:08:54 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2020-11-27:/blog/sw-cached-fields.html</guid><category>libreoffice</category><category>en</category></item><item><title>Detecting 0-byte files based on extension in Impress and elsewhere</title><link>https://vmiklos.hu/blog/sd-zero-byte-files.html</link><description>&lt;div id="preamble"&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Impress (and Writer and Calc) now has support for detecting 0-byte files on open/import based on
-their extension. This builds on top of the
-&lt;a href="https://vmiklos.hu/blog/sw-locale-independent-templates.html"&gt;previous language-independent template
-improvements&lt;/a&gt;. This means that e.g. a 0-byte PPTX file will open as an empty Impress presentation,
-not in Writer.&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_motivation"&gt;Motivation&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;We regularly see customers wanting minimal templates, which are language independent and have no
-content. Such files are handy if your workflow is to first name an empty document (create it) and
-only then edit it (and not the other way around: first create the document, then save it by giving
-it a name). This is easy for &lt;code&gt;.txt&lt;/code&gt; files: if it&amp;#8217;s zero bytes, it&amp;#8217;s empty. But then this approach is
-also expected to work for other file formats as well, where our original approach was more
-technical: if it&amp;#8217;s an empty file, that that can be only plain text, so we (almost) always opened it
-in Writer, not matching the user expectations.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Instead of explaining the problem to people again and again (that a literally empty PPTX file is not
-a PPTX template), there is value in just adapting the code instead to "do what I mean".&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_results_so_far"&gt;Results so far&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;An empty PPTX file is now handled like this:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;img src="https://lh3.googleusercontent.com/zk3b0f2Rx3t5vFVuKiimujSJWYwPNH05PCf5Indih3OwMDeBrOUH1X7N22PO46kIbxTVzI0V3IV-bE0sMycTHGj2eRqKT6K7eQkZ0Py9QVCPIhV0pdKdGPLGH08xpw72wFQ-3eGyX4k=w1920" alt="https://lh3.googleusercontent.com/zk3b0f2Rx3t5vFVuKiimujSJWYwPNH05PCf5Indih3OwMDeBrOUH1X7N22PO46kIbxTVzI0V3IV-bE0sMycTHGj2eRqKT6K7eQkZ0Py9QVCPIhV0pdKdGPLGH08xpw72wFQ-3eGyX4k=w1920" /&gt;
-&lt;/div&gt;
-&lt;div class="title"&gt;Figure 1. Empty PPTX file opening in Impress&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;You can see this is no longer opening in Writer as plain text but in Impress, which is clearly a
-less surprising behavior.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Here is what happens if you open an empty DOTX (template):&lt;/p&gt;&lt;/div&gt;
-&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;img src="https://lh3.googleusercontent.com/cVB_kK2wDyNIJjLt9v9UcNS4AagRCifwBofp70mHfNVzopvrN1cxcsVLhWfEArhab_PwSFkAvLlMUS1witevRcKeEn9UXYtw5o4VeGSztvnNUi6YMtR3t2DUIu1k2LLOUhnpckAnrwQ=w1920" alt="https://lh3.googleusercontent.com/cVB_kK2wDyNIJjLt9v9UcNS4AagRCifwBofp70mHfNVzopvrN1cxcsVLhWfEArhab_PwSFkAvLlMUS1witevRcKeEn9UXYtw5o4VeGSztvnNUi6YMtR3t2DUIu1k2LLOUhnpckAnrwQ=w1920" /&gt;
-&lt;/div&gt;
-&lt;div class="title"&gt;Figure 2. Empty DOTX file creates a new Writer document&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;You can see that it is even recognized that this is a template format, so a new document is created,
-not the template itself is opened for editing.&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_how_is_this_implemented"&gt;How is this implemented?&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;If you would like to know a bit more about how this works, continue reading&amp;#8230; :-)&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;You can see the code change in
-&lt;a href="https://git.libreoffice.org/core/commit/ada07f303e7cd1e39c73abe0741aefe7d9d73a57"&gt;this commit&lt;/a&gt;.
-First, we restrict this trick to file URLs, and also to empty files.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Second, we look at the extension of the file and try to match an import filter that usually handles
-that extension. This helps, because then nominally the correct filter will be used for the import,
-so save will not ask for a filename (as it happens for new documents), but it will know what target
-filename and export filter to use.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Finally we need to avoid actually invoking the import filter, because no file content is not
-something an import filter has to handle if its filter detection would reject the file. (E.g. PPTX
-is expected to be a valid ZIP file.) This is important, because we want to avoid touching each &amp;amp;
-every file filter to not fail for empty file content&amp;#8201;&amp;#8212;&amp;#8201;instead we want to handle this centrally, at
-a single place.&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_want_to_start_using_this"&gt;Want to start using this?&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;You can get a snapshot / demo of Collabora Office and try it out yourself right now:
-&lt;a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/"&gt;try unstable snapshot&lt;/a&gt;.  Collabora
-intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF&amp;#8217;s next release too (7.1).&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 13 Nov 2020 08:50:19 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2020-11-13:/blog/sd-zero-byte-files.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 27 Nov 2020 09:08:54 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2020-11-27:/blog/sw-cached-fields.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
