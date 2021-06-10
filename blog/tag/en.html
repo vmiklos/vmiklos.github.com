@@ -59,6 +59,94 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sw-line-height.html">Writer line heights: removing a 16bit limit</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Thu 10 June 2021</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>Line heights in Writer are typically defined in points on the UI (e.g. 12pt), though they are
+measured in twips internally (1 point is 20 twips). This height was stored in a 16bit unsigned
+integer, so the maximum allowed height was 65536 twips, around 116 cm.</p></div>
+<div class="paragraph"><p>Now we track line heights with 32 bits ints, so this limitation is practically removed.</p></div>
+<div class="paragraph"><p>First, thanks <a href="https://vector.com/">Vector</a> who made this work by
+<a href="https://www.collaboraoffice.com/">Collabora</a> possible.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_motivation">Motivation</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Once you insert an image to a Writer document, you can customize its anchor type. The as-char
+anchor type is handy if you don&#8217;t want text to flow around the image. This has the side effect that
+a large image significantly increases the nominal height of a line. The problematic document had an
+image height of 118.9 cm (46.81 inch), so the unsigned integer used to represent its height wrapped
+around, leading to an incorrect layout.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_results_so_far">Results so far</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Now it looks like the way you would expect it:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://share.vmiklos.hu/blog/sw-line-height/sw-line-height.png" alt="https://share.vmiklos.hu/blog/sw-line-height/sw-line-height.png" />
+</div>
+<div class="title">Figure 1. Writer as-char image with height that is larger than 16k twips</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_how_is_this_implemented">How is this implemented?</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
+<div class="paragraph"><p>As usual, the end goal was reached via a set of incremental commits:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+The very first integer truncation was found using gdb, manually. At that point it was clear that
+  some tool to catch the problematic places would accelerate development. First
+  <a href="https://gerrit.libreoffice.org/c/core/+/115948">sw: replace most static_cast&lt;sal_uInt16&gt;()
+  calls with o3tl::narrowing()</a> prepared Writer code so that sanitizers can flag the interesting code
+  locations when using <code>-fsanitize=implicit-unsigned-integer-truncation
+  -fsanitize=implicit-signed-integer-truncation</code>. This is important, as conversion with
+  <code>static_cast&lt;&gt;</code> counts as an explicit integer conversion, and sanitizers can&#8217;t flag such
+  conversions.
+</p>
+</li>
+<li>
+<p>
+Then <a href="https://gerrit.libreoffice.org/c/core/+/115873">sw: allow the height of a line to be
+  larger than 65536 twips</a> took care of the height part.
+</p>
+</li>
+<li>
+<p>
+Finally <a href="https://gerrit.libreoffice.org/c/core/+/116835">sw: allow the width of a line
+  portion to be larger than 65536 twips</a> fixed the width part.
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_want_to_start_using_this">Want to start using this?</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
+expect all of this work will be available in TDF&#8217;s
+<a href="http://dev-builds.libreoffice.org/daily/master/">next release</a> (7.2).</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/sw-bibliography-page.html">Bibliography improvements in LibreOffice Writer: refer to a specific page</a></h1>
   </div>
   <div class="article_meta">
@@ -1023,112 +1111,6 @@ to build the code. Then you may want to solve an
 <a href="https://github.com/CollaboraOnline/online/issues?q=is%3Aissue+is%3Aopen+label%3A%22Easy+Hack%22">easy
 hack</a>, finally submit your commit for review either by using the above method or whichever way you
 prefer contributing to GitHub projects.</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/sw-cached-fields.html">Better handling of cached field results in Writer</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Fri 27 November 2020</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Writer now has much better support for preserving the cached result of fields in documents. This is
-especially beneficial for Word formats where the input document may have a field result which is not
-only a cache, but re-calculating the formula would yield a different result, even in Word.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_motivation">Motivation</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>A Collabora Office customer gave us a DOCX document, which is essentially a calendar for planned IT
-maintenance windows at some organization. These calendars are tables with fields in it. The document
-is halfway through towards changing it to a newer year: the formulas are already changed to
-calculate a newer year, but all the cached field results are still for the old year.</p></div>
-<div class="paragraph"><p>The request was to keep showing these results and not throw them away during save, either. Their
-primary workflow is to fill the calendar with manual entries, not to tweak the calendar layout
-itself.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_results_so_far">Results so far</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>The calendar now looks like this:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/6o7pvix-dJ9QhCX65FUkWeQZ60B89sHqDpBvd7WVRLtAzBW1323odrQ13aV_CgEFvgh7Iee-ePq95oPOf1Q-jMxvX1MBsz9FhgKd9vymyrdMBIZbF459hNKE1dM4XLcwXkGYh8ksmok=w1920" alt="https://lh3.googleusercontent.com/6o7pvix-dJ9QhCX65FUkWeQZ60B89sHqDpBvd7WVRLtAzBW1323odrQ13aV_CgEFvgh7Iee-ePq95oPOf1Q-jMxvX1MBsz9FhgKd9vymyrdMBIZbF459hNKE1dM4XLcwXkGYh8ksmok=w1920" />
-</div>
-<div class="title">Figure 1. New render result in Writer</div>
-</div>
-<div class="paragraph"><p>Matching the reference rendering:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/GJd2zcnspXDb7Wa2p32TInf9C8MAgt92h3G6PYuUwUvpQi5f3AdRbl5yGq8FN7kUPMcZwuFpohTKmX33s8u-AxFSO9rZFgH4X-fwrg8jShtJoA1KyGws_-ymUvINmK-5xo2_hd7YmLI=w1920" alt="https://lh3.googleusercontent.com/GJd2zcnspXDb7Wa2p32TInf9C8MAgt92h3G6PYuUwUvpQi5f3AdRbl5yGq8FN7kUPMcZwuFpohTKmX33s8u-AxFSO9rZFgH4X-fwrg8jShtJoA1KyGws_-ymUvINmK-5xo2_hd7YmLI=w1920" />
-</div>
-<div class="title">Figure 2. Reference render result</div>
-</div>
-<div class="paragraph"><p>While it looked like a broken calendar previously:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/bpOVqcZX2CcKouuADNyPx1PMyI3I6CyjIDIAnUbylsT-ZimxSkPcUaRbMDd8MzHlG3Uqw2d-TunD4m7U4DUlm_O_esJt6CAY-H7Z5tdQxZ6q_MYxgJphutr_-JRVYh8uLmspiiI532U=w1920" alt="https://lh3.googleusercontent.com/bpOVqcZX2CcKouuADNyPx1PMyI3I6CyjIDIAnUbylsT-ZimxSkPcUaRbMDd8MzHlG3Uqw2d-TunD4m7U4DUlm_O_esJt6CAY-H7Z5tdQxZ6q_MYxgJphutr_-JRVYh8uLmspiiI532U=w1920" />
-</div>
-<div class="title">Figure 3. Old render result in Writer</div>
-</div>
-<div class="paragraph"><p>You can see that the day numbers were broken previously and now they line up properly.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_how_is_this_implemented">How is this implemented?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
-<div class="paragraph"><p>As usual, the high-level problem was addressed by a series of small fixes:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/105596">DOCX import: don&#8217;t throw away cached value of
-  SwHiddenTextField</a> fixes a caching problem which was working for DOC already
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/105639">DOCX import: fix lost cached result inside an IF
-  field</a> fixes caching in the context of nested IF fields (Writer in general has limited support for nested fields)
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/105783">DOCX import: lost cached result of fields: fix
-  leading whitespace</a> fixes whitespace handling while caching
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/105798">DOCX export: handle conditional fields</a> adds an
-  initial implementation of conditional fields in the DOCX export, which was completely missing
-  previously.
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>With these, it&#8217;s now possible to edit these calendars, without breaking the fields which provide the
-day numbers.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_want_to_start_using_this">Want to start using this?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
-<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
-intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF&#8217;s next release too (7.1).</p></div>
 </div>
 </div>
 

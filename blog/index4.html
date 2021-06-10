@@ -58,6 +58,100 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/btlr-text-direction-in-writer-3.html">btLr text direction in Writer, part 3</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Fri 14 June 2019</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>I already wrote about the btLr text direction in the context of Writer table cells as a result of a
+<a href="https://www.collaboraoffice.com/">Collabora</a> hack week (<a href="https://vmiklos.hu/blog/hackweek-2019.html">part
+1</a>, <a href="https://vmiklos.hu/blog/btlr-text-direction-in-writer-2.html">part 2</a>). The next step in this
+journey is btLr text direction of Writer Text Frames, and building on top of that: DOCX Text Boxes.
+Here is a series of screenshots showing the result:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://lh3.googleusercontent.com/mHrS3KHuLf4tnWOZTw83jJiF3bJ6Ti8fiHXSJlqBFwrdDEpCdS9m_mTfHQPhOXNbZ5atXkagrGO7fSAJPSUo9pEm73UMr_kT6oVwOLCjZwxR9NB_EsLxHUXmUtUiSq0Zr-C0_TNLMg=w640" alt="https://lh3.googleusercontent.com/mHrS3KHuLf4tnWOZTw83jJiF3bJ6Ti8fiHXSJlqBFwrdDEpCdS9m_mTfHQPhOXNbZ5atXkagrGO7fSAJPSUo9pEm73UMr_kT6oVwOLCjZwxR9NB_EsLxHUXmUtUiSq0Zr-C0_TNLMg=w640" />
+</div>
+<div class="title">Figure 1. tdf104353.docx, baseline</div>
+</div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://lh3.googleusercontent.com/haH8Tu0CiUQ9OHWn3Pc9PJ8pP6fEwpGZtrtYUrtkYLYH_BLnLknIA5hBruslE2XIJnuoFjGxYhuFj3GqH4Peu2slIH83ss9vIPMXSn_E5q2Lr80cz2_h7rPuI1DRgJYou6AaOQzAaw=w640" alt="https://lh3.googleusercontent.com/haH8Tu0CiUQ9OHWn3Pc9PJ8pP6fEwpGZtrtYUrtkYLYH_BLnLknIA5hBruslE2XIJnuoFjGxYhuFj3GqH4Peu2slIH83ss9vIPMXSn_E5q2Lr80cz2_h7rPuI1DRgJYou6AaOQzAaw=w640" />
+</div>
+<div class="title">Figure 2. tdf104353.docx, current</div>
+</div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://lh3.googleusercontent.com/ZZKDSlC3-VmuVbvvR7nlsNUi6A-mWAj6wJgg2TMzBMg0MQ01kN0iwnHvw_16GDopYT2hNuJwUKWZ5ugbg6TjkJWJ_V5rHwv2fpwumuGLLF29hYYtEPOb0v2en5UHY5p8kHyxTWtYZA=w640" alt="https://lh3.googleusercontent.com/ZZKDSlC3-VmuVbvvR7nlsNUi6A-mWAj6wJgg2TMzBMg0MQ01kN0iwnHvw_16GDopYT2hNuJwUKWZ5ugbg6TjkJWJ_V5rHwv2fpwumuGLLF29hYYtEPOb0v2en5UHY5p8kHyxTWtYZA=w640" />
+</div>
+<div class="title">Figure 3. tdf104353.docx, reference</div>
+</div>
+<div class="paragraph"><p>You can see that the bug document is some kind of card you can print and fold in the middle: no
+matter if you are in front of the card or you are behind it, you always see the name and details of
+the person. Sure, you can do the same with a table with no borders, but using a Text Frame for this
+purpose is a sane use-case.</p></div>
+<div class="paragraph"><p>The text from the 3 paragraphs used to have the same horizontal position, and now it&#8217;s laid out the
+same way as Word does it.</p></div>
+<div class="paragraph"><p>Technically, this result is just the last commit in a series. I fixed the following problems since
+the last blog post on this topic:</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=0013f21ecd918e0541f165c3526a58f42dd75481">tdf#124344 sw btlr writing mode, DOCX import: fix vertical alignment</a>
+</p>
+</li>
+<li>
+<p>
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=8072a926da2a02dfaf3fa848a2976634641a594f">tdf#124521 sw btlr writing mode render: fix paint rectangle on scroll</a>
+</p>
+</li>
+<li>
+<p>
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=ff17478e069cc82681df62514876c06365dd5cd6">sw btlr writing mode: implement DOCX shape import for tbrl</a>
+</p>
+</li>
+<li>
+<p>
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=cd2a7acd789297e613424a59b2fe24cedd9a72b6">sw btlr writing mode: implement ODF filter for textframes</a>
+</p>
+</li>
+<li>
+<p>
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=8a26e4b26f0153fb8ca5da880ee4aa44748ee4df">sw btlr writing mode: implement layout for fly frames</a>
+</p>
+</li>
+<li>
+<p>
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=52e47276694575f119192f6ddafa69ec7a7eb6b4">sw btlr writing mode: implement UI for fly frames</a>
+</p>
+</li>
+<li>
+<p>
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=ad96f6f378a9fce11c2f7d9ad39a8203189444e3">sw btlr writing mode: fix btlr &lt;-&gt; tbrl switch for fly frames</a>
+</p>
+</li>
+<li>
+<p>
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=9c945cdbe170104cbacafa2c37babec5210b9ca2">sw btlr writing mode: DOCX drawingML import for fly frames</a>
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p>All this is available in LibreOffice master (towards 6.4), so you can try it out right now, if
+interested.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/writer-wpg-chart-import.html">Importing charts from DOCX drawingML group shapes in Writer</a></h1>
   </div>
   <div class="article_meta">
@@ -823,39 +917,6 @@ right now. :-)</p></div>
 <a href="https://conference.libreoffice.org/2018/the-program/sept-18th-friday/">Text
 layout performance</a> lightning talk at LibreOffice Conference 2018. Click on
 the image to get the hybrid PDF slides!</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/libocon2018.html">ReqIF import/export in LibreOffice Writer conference talk</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Fri 28 September 2018</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://speakerd.s3.amazonaws.com/presentations/a33d7c215e7f493ab1711c614413f6db/reqif-locon-tirana-2k19.pdf">
-<img src="https://farm2.staticflickr.com/1939/44246333744_a805435168_z.jpg" alt="https://farm2.staticflickr.com/1939/44246333744_a805435168_z.jpg" />
-</a>
-</div>
-</div>
-<div class="paragraph"><p>Earlier today I gave an
-<a href="https://conference.libreoffice.org/2018/the-program/sept-18th-friday/">Editing
-ReqIF-XHTML fragments with Writer</a> talk at LibreOffice Conference 2018. The
-room was well-crowded&#8201;&#8212;&#8201;perhaps because the previous talk was about OOXML
-interoperability. ;-)</p></div>
-<div class="paragraph"><p>I expect quite some other slides will be available on
-<a href="http://planet.documentfoundation.org/">Planet</a>, don&#8217;t miss them.</p></div>
 </div>
 </div>
 

@@ -61,6 +61,94 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sd-zero-byte-files.html">Detecting 0-byte files based on extension in Impress and elsewhere</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Fri 13 November 2020</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 3 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>Impress (and Writer and Calc) now has support for detecting 0-byte files on open/import based on
+their extension. This builds on top of the
+<a href="https://vmiklos.hu/blog/sw-locale-independent-templates.html">previous language-independent template
+improvements</a>. This means that e.g. a 0-byte PPTX file will open as an empty Impress presentation,
+not in Writer.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_motivation">Motivation</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>We regularly see customers wanting minimal templates, which are language independent and have no
+content. Such files are handy if your workflow is to first name an empty document (create it) and
+only then edit it (and not the other way around: first create the document, then save it by giving
+it a name). This is easy for <code>.txt</code> files: if it&#8217;s zero bytes, it&#8217;s empty. But then this approach is
+also expected to work for other file formats as well, where our original approach was more
+technical: if it&#8217;s an empty file, that that can be only plain text, so we (almost) always opened it
+in Writer, not matching the user expectations.</p></div>
+<div class="paragraph"><p>Instead of explaining the problem to people again and again (that a literally empty PPTX file is not
+a PPTX template), there is value in just adapting the code instead to "do what I mean".</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_results_so_far">Results so far</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>An empty PPTX file is now handled like this:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://lh3.googleusercontent.com/zk3b0f2Rx3t5vFVuKiimujSJWYwPNH05PCf5Indih3OwMDeBrOUH1X7N22PO46kIbxTVzI0V3IV-bE0sMycTHGj2eRqKT6K7eQkZ0Py9QVCPIhV0pdKdGPLGH08xpw72wFQ-3eGyX4k=w1920" alt="https://lh3.googleusercontent.com/zk3b0f2Rx3t5vFVuKiimujSJWYwPNH05PCf5Indih3OwMDeBrOUH1X7N22PO46kIbxTVzI0V3IV-bE0sMycTHGj2eRqKT6K7eQkZ0Py9QVCPIhV0pdKdGPLGH08xpw72wFQ-3eGyX4k=w1920" />
+</div>
+<div class="title">Figure 1. Empty PPTX file opening in Impress</div>
+</div>
+<div class="paragraph"><p>You can see this is no longer opening in Writer as plain text but in Impress, which is clearly a
+less surprising behavior.</p></div>
+<div class="paragraph"><p>Here is what happens if you open an empty DOTX (template):</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://lh3.googleusercontent.com/cVB_kK2wDyNIJjLt9v9UcNS4AagRCifwBofp70mHfNVzopvrN1cxcsVLhWfEArhab_PwSFkAvLlMUS1witevRcKeEn9UXYtw5o4VeGSztvnNUi6YMtR3t2DUIu1k2LLOUhnpckAnrwQ=w1920" alt="https://lh3.googleusercontent.com/cVB_kK2wDyNIJjLt9v9UcNS4AagRCifwBofp70mHfNVzopvrN1cxcsVLhWfEArhab_PwSFkAvLlMUS1witevRcKeEn9UXYtw5o4VeGSztvnNUi6YMtR3t2DUIu1k2LLOUhnpckAnrwQ=w1920" />
+</div>
+<div class="title">Figure 2. Empty DOTX file creates a new Writer document</div>
+</div>
+<div class="paragraph"><p>You can see that it is even recognized that this is a template format, so a new document is created,
+not the template itself is opened for editing.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_how_is_this_implemented">How is this implemented?</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
+<div class="paragraph"><p>You can see the code change in
+<a href="https://git.libreoffice.org/core/commit/ada07f303e7cd1e39c73abe0741aefe7d9d73a57">this commit</a>.
+First, we restrict this trick to file URLs, and also to empty files.</p></div>
+<div class="paragraph"><p>Second, we look at the extension of the file and try to match an import filter that usually handles
+that extension. This helps, because then nominally the correct filter will be used for the import,
+so save will not ask for a filename (as it happens for new documents), but it will know what target
+filename and export filter to use.</p></div>
+<div class="paragraph"><p>Finally we need to avoid actually invoking the import filter, because no file content is not
+something an import filter has to handle if its filter detection would reject the file. (E.g. PPTX
+is expected to be a valid ZIP file.) This is important, because we want to avoid touching each &amp;
+every file filter to not fail for empty file content&#8201;&#8212;&#8201;instead we want to handle this centrally, at
+a single place.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_want_to_start_using_this">Want to start using this?</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
+<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
+intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
+of this work will be available in TDF&#8217;s next release too (7.1).</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/libocon2020.html">OOXML / PDF Digital Signing in Draw and elsewhere conference talk</a></h1>
   </div>
   <div class="article_meta">
@@ -1035,64 +1123,6 @@ case as well:</p></div>
 different markup, planned to be done later.</p></div>
 <div class="paragraph"><p>All this is available in master (towards LibreOffice 7.0), so you can grab a
 <a href="http://dev-builds.libreoffice.org/daily/master/">daily build</a> and try it out right now. :-)</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/sw-semi-transparent-text.html">Semi-transparent text in Writer</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Wed 26 February 2020</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div class="sect1">
-<h2 id="_the_problem">The problem</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Last year I <a href="https://vmiklos.hu/blog/sd-semi-transparent-text.html">posted</a> about work to have
-semi-transparent rendering of not only shape fill and shape borders, but also shape text in Draw.
-Now the same semi-transparent text feature is available in Writer as well. This improves
-compatibility with Word, which supports the same feature in its DOCX format. You can access the new
-option in the Format &#8594; Character dialog.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_result">Result</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Here is how the new, old and reference rendering looks like:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/oifzSVcdmKhomkQQKy4CNnPmamHtoo9CwRsbg9_ekbeK9Ov_4dFrzrJrYmDLHZNm-IvsoYNy8YfSs5kp4yEA42jybRO-8P-YKI8fYRu5ColRbzFHQBotP4MvkjanZG7JX9vP8Mcnnw=w640" alt="https://lh3.googleusercontent.com/oifzSVcdmKhomkQQKy4CNnPmamHtoo9CwRsbg9_ekbeK9Ov_4dFrzrJrYmDLHZNm-IvsoYNy8YfSs5kp4yEA42jybRO-8P-YKI8fYRu5ColRbzFHQBotP4MvkjanZG7JX9vP8Mcnnw=w640" />
-</div>
-<div class="title">Figure 1. Semi-transparent text in Writer, new rendering</div>
-</div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/RxtyxxIdrW14TtN30cf37e7RNHwnQpxlX-zhjhpWrggjStEERXvUnH7eDv8acM_8DcySNpnvpz5yWdwO12_cmQ6ZyCo4-fpIOdd3x9Q8SAXxAwuyMhfmjzhvS9VDBps8tQX-xB70RA=w640" alt="https://lh3.googleusercontent.com/RxtyxxIdrW14TtN30cf37e7RNHwnQpxlX-zhjhpWrggjStEERXvUnH7eDv8acM_8DcySNpnvpz5yWdwO12_cmQ6ZyCo4-fpIOdd3x9Q8SAXxAwuyMhfmjzhvS9VDBps8tQX-xB70RA=w640" />
-</div>
-<div class="title">Figure 2. Semi-transparent text in Writer, old rendering</div>
-</div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/6rkCyXnzfiVN96D1h8PiKSIva1ydRFQXzUbXbbLC-9plXOUJnMRHZT2ba4eKt7W1wqfL3vscVgE1-QB5ztbp2uqSmguOALV8wyZDnCF4LPlyHSbVEm5atwZvf29w3PzRmjy11aQahA=w640" alt="https://lh3.googleusercontent.com/6rkCyXnzfiVN96D1h8PiKSIva1ydRFQXzUbXbbLC-9plXOUJnMRHZT2ba4eKt7W1wqfL3vscVgE1-QB5ztbp2uqSmguOALV8wyZDnCF4LPlyHSbVEm5atwZvf29w3PzRmjy11aQahA=w640" />
-</div>
-<div class="title">Figure 3. Semi-transparent text in Writer, reference rendering</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_want_to_start_using_this">Want to start using this?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
-<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
-is a major contributor to LibreOffice and all of this work will be available in TDF&#8217;s next release
-too (7.0).</p></div>
 </div>
 </div>
 
