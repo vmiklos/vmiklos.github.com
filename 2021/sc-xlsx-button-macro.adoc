@@ -1,0 +1,65 @@
+= Calc buttons with macros: better XLSX support
+
+:slug: sc-xlsx-button-macro
+:category: libreoffice
+:tags: en
+:date: 2021-07-21T16:54:04+02:00
+
+Embedding macros to Calc documents and invoking then by clicking on buttons is a common use-case. There was also decent support for importing these from XLSX (XLSM to be precise), but the export side was not on par with the binary XLS export.
+
+Calc now got a series of incremental improvements to map our form controls (buttons in particular) to OOXML's form controls, especially when macros are assigned to such buttons.
+
+This work is primarily for https://www.collaboraoffice.com/[Collabora Online], but the feature is
+fully available in desktop Calc as well.
+
+== Motivation
+
+Excel has both https://support.microsoft.com/en-us/office/assign-a-macro-to-a-form-or-a-control-button-d58edd7d-cb04-4964-bead-9c72c843a283[form controls and ActiveX controls], and link:$$https://gerrit.libreoffice.org/c/core/+/94161$$[tdf#106181 XLSX export: output form controls] last year started adding support for form control export to XLSX.
+
+Hoping that this will be mostly shared drawingML export code fixing (benefiting DOCX and PPTX as
+well), it seemed reasonable to assume that we can improve button handling from the "it's lost" state
+to "it's good enough" with some effort.
+
+== Results so far
+
+Now Excel shows the button and you can click on it:
+
+.Excel consuming our XLSM output with a button and a macro
+image::https://share.vmiklos.hu/blog/sc-xlsx-button-macro/new.png[align="center"]
+
+While it used to just refuse our export result:
+
+.Excel refusing bad XLSM output
+image::https://share.vmiklos.hu/blog/sc-xlsx-button-macro/old.png[align="center"]
+
+== How is this implemented?
+
+If you would like to know a bit more about how this works, continue reading... :-)
+
+As usual, the end goal was reached via a set of incremental commits:
+
+- link:$$https://gerrit.libreoffice.org/c/core/+/118085$$[sc: don't require ctrl-click when clicking
+  on internal links of shapes] was a UX problem, users don't finding Ctrl-click
+
+- link:$$https://gerrit.libreoffice.org/c/core/+/118168$$[XLSX export: improve handling of checkbox
+  (form controls)] was an improvement to the existing checkbox export code, probably today's Excel is just more strict in what it accepts
+
+- link:$$https://gerrit.libreoffice.org/c/core/+/118219$$[XLSX export: handle button form controls]
+  adds the initial button support
+
+- link:$$https://gerrit.libreoffice.org/c/core/+/118401$$[XLSX import: fix handling of named ranges
+  referring to PathMissing sheets] fixes an import problem around named ranges and external references
+
+- link:$$https://gerrit.libreoffice.org/c/core/+/118485$$[XLSX export: handle macros on button form
+  controls] adds the macro bits of buttons
+
+- link:$$https://gerrit.libreoffice.org/c/core/+/118600$$[XSLX export, button form control: fix
+  handling of no macros] is a fixup for non-macro buttons
+
+== Want to start using this?
+
+Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
+expect all of this work will be available in TDF's
+http://dev-builds.libreoffice.org/daily/master/[next release] (7.3).
+
+// vim: ft=asciidoc
