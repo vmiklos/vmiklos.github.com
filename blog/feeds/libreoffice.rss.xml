@@ -1,5 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>What is Miklos hacking - libreoffice</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Thu, 10 Jun 2021 10:25:51 +0200</lastBuildDate><item><title>Writer line heights: removing a 16bit limit</title><link>https://vmiklos.hu/blog/sw-line-height.html</link><description>&lt;div id="preamble"&gt;
+<rss version="2.0"><channel><title>What is Miklos hacking - libreoffice</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Thu, 22 Jul 2021 10:55:43 +0200</lastBuildDate><item><title>Calc buttons with macros: better XLSX support</title><link>https://vmiklos.hu/blog/sc-xlsx-button-macro.html</link><description>&lt;div id="preamble"&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Embedding macros to Calc documents and invoking them by clicking on buttons is a common use-case.
+There was also decent support for importing these from XLSX (XLSM to be precise), but the export
+side was not on par with the binary XLS export.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Calc now got a series of incremental improvements to map our form controls (buttons in particular)
+to OOXML&amp;#8217;s form controls, especially when macros are assigned to such buttons.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraoffice.com/"&gt;Collabora Online&lt;/a&gt;, but the feature is
+fully available in desktop Calc as well.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_motivation"&gt;Motivation&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Excel has both
+&lt;a href="https://support.microsoft.com/en-us/office/assign-a-macro-to-a-form-or-a-control-button-d58edd7d-cb04-4964-bead-9c72c843a283"&gt;form
+controls and ActiveX controls&lt;/a&gt;, and
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/94161"&gt;tdf#106181 XLSX export: output form controls&lt;/a&gt;
+last year started adding support for form control export to XLSX.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Hoping that this will be mostly shared drawingML export code fixing (benefiting DOCX and PPTX as
+well), it seemed reasonable to assume that we can improve button handling from the "it&amp;#8217;s lost" state
+to "it&amp;#8217;s good enough" with some effort.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_results_so_far"&gt;Results so far&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Now Excel shows the button and you can click on it:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://share.vmiklos.hu/blog/sc-xlsx-button-macro/new.png" alt="https://share.vmiklos.hu/blog/sc-xlsx-button-macro/new.png" /&gt;
+&lt;/div&gt;
+&lt;div class="title"&gt;Figure 1. Excel consuming our XLSM output with a button and a macro&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;While it used to just refuse our export result:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://share.vmiklos.hu/blog/sc-xlsx-button-macro/old.png" alt="https://share.vmiklos.hu/blog/sc-xlsx-button-macro/old.png" /&gt;
+&lt;/div&gt;
+&lt;div class="title"&gt;Figure 2. Excel refusing bad XLSM output&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_how_is_this_implemented"&gt;How is this implemented?&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;If you would like to know a bit more about how this works, continue reading&amp;#8230; :-)&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;As usual, the end goal was reached via a set of incremental commits:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/118085"&gt;sc: don&amp;#8217;t require ctrl-click when clicking
+  on internal links of shapes&lt;/a&gt; was a UX problem, users don&amp;#8217;t finding Ctrl-click
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/118168"&gt;XLSX export: improve handling of checkbox
+  (form controls)&lt;/a&gt; was an improvement to the existing checkbox export code, probably today&amp;#8217;s Excel is just more strict in what it accepts
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/118219"&gt;XLSX export: handle button form controls&lt;/a&gt;
+  adds the initial button support
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/118401"&gt;XLSX import: fix handling of named ranges
+  referring to PathMissing sheets&lt;/a&gt; fixes an import problem around named ranges and external references
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/118485"&gt;XLSX export: handle macros on button form
+  controls&lt;/a&gt; adds the macro bits of buttons
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/118600"&gt;XSLX export, button form control: fix
+  handling of no macros&lt;/a&gt; is a fixup for non-macro buttons
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_want_to_start_using_this"&gt;Want to start using this?&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
+expect all of this work will be available in TDF&amp;#8217;s
+&lt;a href="http://dev-builds.libreoffice.org/daily/master/"&gt;next release&lt;/a&gt; (7.3).&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Thu, 22 Jul 2021 10:55:43 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2021-07-22:/blog/sc-xlsx-button-macro.html</guid><category>libreoffice</category><category>en</category></item><item><title>Writer line heights: removing a 16bit limit</title><link>https://vmiklos.hu/blog/sw-line-height.html</link><description>&lt;div id="preamble"&gt;
 &lt;div class="sectionbody"&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;Line heights in Writer are typically defined in points on the UI (e.g. 12pt), though they are
 measured in twips internally (1 point is 20 twips). This height was stored in a 16bit unsigned
@@ -819,95 +915,4 @@ intends to continue supporting and contributing to LibreOffice, the code is merg
 of this work will be available in TDF&amp;#8217;s next release too (7.1).&lt;/p&gt;&lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 11 Dec 2020 09:31:26 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2020-12-11:/blog/pdfium-sign-verify.html</guid><category>libreoffice</category><category>en</category></item><item><title>Better handling of cached field results in Writer</title><link>https://vmiklos.hu/blog/sw-cached-fields.html</link><description>&lt;div id="preamble"&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Writer now has much better support for preserving the cached result of fields in documents. This is
-especially beneficial for Word formats where the input document may have a field result which is not
-only a cache, but re-calculating the formula would yield a different result, even in Word.&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_motivation"&gt;Motivation&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;A Collabora Office customer gave us a DOCX document, which is essentially a calendar for planned IT
-maintenance windows at some organization. These calendars are tables with fields in it. The document
-is halfway through towards changing it to a newer year: the formulas are already changed to
-calculate a newer year, but all the cached field results are still for the old year.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;The request was to keep showing these results and not throw them away during save, either. Their
-primary workflow is to fill the calendar with manual entries, not to tweak the calendar layout
-itself.&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_results_so_far"&gt;Results so far&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;The calendar now looks like this:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;img src="https://lh3.googleusercontent.com/6o7pvix-dJ9QhCX65FUkWeQZ60B89sHqDpBvd7WVRLtAzBW1323odrQ13aV_CgEFvgh7Iee-ePq95oPOf1Q-jMxvX1MBsz9FhgKd9vymyrdMBIZbF459hNKE1dM4XLcwXkGYh8ksmok=w1920" alt="https://lh3.googleusercontent.com/6o7pvix-dJ9QhCX65FUkWeQZ60B89sHqDpBvd7WVRLtAzBW1323odrQ13aV_CgEFvgh7Iee-ePq95oPOf1Q-jMxvX1MBsz9FhgKd9vymyrdMBIZbF459hNKE1dM4XLcwXkGYh8ksmok=w1920" /&gt;
-&lt;/div&gt;
-&lt;div class="title"&gt;Figure 1. New render result in Writer&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Matching the reference rendering:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;img src="https://lh3.googleusercontent.com/GJd2zcnspXDb7Wa2p32TInf9C8MAgt92h3G6PYuUwUvpQi5f3AdRbl5yGq8FN7kUPMcZwuFpohTKmX33s8u-AxFSO9rZFgH4X-fwrg8jShtJoA1KyGws_-ymUvINmK-5xo2_hd7YmLI=w1920" alt="https://lh3.googleusercontent.com/GJd2zcnspXDb7Wa2p32TInf9C8MAgt92h3G6PYuUwUvpQi5f3AdRbl5yGq8FN7kUPMcZwuFpohTKmX33s8u-AxFSO9rZFgH4X-fwrg8jShtJoA1KyGws_-ymUvINmK-5xo2_hd7YmLI=w1920" /&gt;
-&lt;/div&gt;
-&lt;div class="title"&gt;Figure 2. Reference render result&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;While it looked like a broken calendar previously:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;img src="https://lh3.googleusercontent.com/bpOVqcZX2CcKouuADNyPx1PMyI3I6CyjIDIAnUbylsT-ZimxSkPcUaRbMDd8MzHlG3Uqw2d-TunD4m7U4DUlm_O_esJt6CAY-H7Z5tdQxZ6q_MYxgJphutr_-JRVYh8uLmspiiI532U=w1920" alt="https://lh3.googleusercontent.com/bpOVqcZX2CcKouuADNyPx1PMyI3I6CyjIDIAnUbylsT-ZimxSkPcUaRbMDd8MzHlG3Uqw2d-TunD4m7U4DUlm_O_esJt6CAY-H7Z5tdQxZ6q_MYxgJphutr_-JRVYh8uLmspiiI532U=w1920" /&gt;
-&lt;/div&gt;
-&lt;div class="title"&gt;Figure 3. Old render result in Writer&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;You can see that the day numbers were broken previously and now they line up properly.&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_how_is_this_implemented"&gt;How is this implemented?&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;If you would like to know a bit more about how this works, continue reading&amp;#8230; :-)&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;As usual, the high-level problem was addressed by a series of small fixes:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/105596"&gt;DOCX import: don&amp;#8217;t throw away cached value of
-  SwHiddenTextField&lt;/a&gt; fixes a caching problem which was working for DOC already
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/105639"&gt;DOCX import: fix lost cached result inside an IF
-  field&lt;/a&gt; fixes caching in the context of nested IF fields (Writer in general has limited support for nested fields)
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/105783"&gt;DOCX import: lost cached result of fields: fix
-  leading whitespace&lt;/a&gt; fixes whitespace handling while caching
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/105798"&gt;DOCX export: handle conditional fields&lt;/a&gt; adds an
-  initial implementation of conditional fields in the DOCX export, which was completely missing
-  previously.
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;With these, it&amp;#8217;s now possible to edit these calendars, without breaking the fields which provide the
-day numbers.&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_want_to_start_using_this"&gt;Want to start using this?&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;You can get a snapshot / demo of Collabora Office and try it out yourself right now:
-&lt;a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/"&gt;try unstable snapshot&lt;/a&gt;.  Collabora
-intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF&amp;#8217;s next release too (7.1).&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 27 Nov 2020 09:08:54 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2020-11-27:/blog/sw-cached-fields.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 11 Dec 2020 09:31:26 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2020-12-11:/blog/pdfium-sign-verify.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
