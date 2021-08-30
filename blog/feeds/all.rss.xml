@@ -1,5 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>What is Miklos hacking</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Thu, 22 Jul 2021 10:55:43 +0200</lastBuildDate><item><title>Calc buttons with macros: better XLSX support</title><link>https://vmiklos.hu/blog/sc-xlsx-button-macro.html</link><description>&lt;div id="preamble"&gt;
+<rss version="2.0"><channel><title>What is Miklos hacking</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Mon, 30 Aug 2021 08:51:10 +0200</lastBuildDate><item><title>Unshare shape properties for the same type before insertion in Impress</title><link>https://vmiklos.hu/blog/sd-groupshape-unshare.html</link><description>&lt;div id="preamble"&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Shape properties were shared by shape type (e.g. shared between group shapes) before insertion into
+a document model in Impress. This is now fixed: the property names and types are still shared to
+help performance, but their values are no longer shared. This helps matching the user expectation
+that separate opened documents don&amp;#8217;t share information with each other.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;First, thanks to our partner &lt;a href="https://www.suse.com/"&gt;SUSE&lt;/a&gt; for working with
+&lt;a href="https://www.collaboraoffice.com/"&gt;Collabora&lt;/a&gt; to make this possible.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_motivation"&gt;Motivation&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;I was working on a testcase for
+&lt;a href="https://bugs.documentfoundation.org/show_bug.cgi?id=132696"&gt;tdf#132696&lt;/a&gt; when I noticed that the
+existing CppunitTest_oox_drawingml testsuite runs fine before my changes, also a newly added
+testGroupShapeSmartArt testcase runs fine in isolation, but if I run the whole testsuite, then it
+breaks.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Further investigation revealed that in case testGroupShapeSmartArt is executed first, then testTdf131082 fails. This means:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+the first document is opened
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+the first document is closed
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+the second document is opened
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+the second document is saved
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;And at this point information from the first document is leaked to the second document, even if the
+first document was already closed by the time we performed the save. It turns out the root cause was
+&lt;a href="https://bz.apache.org/ooo/show_bug.cgi?id=114206"&gt;i#114206&lt;/a&gt; (reported in 2010), i.e. group shapes
+shared their property values till they got inserted to the document model. The first document import
+did not consume pending SmartArt properties on a to-be-inserted group shape, the second import was
+looking for pending properties, found them. And then the second document&amp;#8217;s save wrote those pending
+properties to the file, leading to this unexpected leak.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Here is how the first document looks like, containing the blue rectangles (a SmartArt):&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://share.vmiklos.hu/blog/sd-groupshape-unshare/first.png" alt="https://share.vmiklos.hu/blog/sd-groupshape-unshare/first.png" /&gt;
+&lt;/div&gt;
+&lt;div class="title"&gt;Figure 1. First document with a SmartArt&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Here is how the second document looks like, without a SmartArt:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://share.vmiklos.hu/blog/sd-groupshape-unshare/second.png" alt="https://share.vmiklos.hu/blog/sd-groupshape-unshare/second.png" /&gt;
+&lt;/div&gt;
+&lt;div class="title"&gt;Figure 2. Second document after loading, no SmartArt&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;And here is how the second document looks, after saving to PPTX and reloading:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://share.vmiklos.hu/blog/sd-groupshape-unshare/second-saved.png" alt="https://share.vmiklos.hu/blog/sd-groupshape-unshare/second-saved.png" /&gt;
+&lt;/div&gt;
+&lt;div class="title"&gt;Figure 3. Second document after reloading, with a SmartArt&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_results_so_far"&gt;Results so far&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The &lt;a href="https://git.libreoffice.org/core/commit/c6f25506b02fbd2a087b7e790283921bf8550206"&gt;fix&lt;/a&gt; is to
+split out part of &lt;code&gt;SvxItemPropertySet&lt;/code&gt; to a separate class, so that we can keep sharing
+&lt;code&gt;SvxItemPropertySet&lt;/code&gt; between multiple instances of the same shape type (describing the name and type
+of the various properties), while introducing a new &lt;code&gt;SvxItemPropertySetUsrAnys&lt;/code&gt; that is specific to
+each not-yet-inserted shape. This way each pending shape is independent, and in case they are not
+inserted to the document model later, that results in no side-effects.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_want_to_start_using_this"&gt;Want to start using this?&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
+expect all of this work will be available in TDF&amp;#8217;s
+&lt;a href="http://dev-builds.libreoffice.org/daily/master/"&gt;next release&lt;/a&gt; (7.3).&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Mon, 30 Aug 2021 08:51:10 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2021-08-30:/blog/sd-groupshape-unshare.html</guid><category>libreoffice</category><category>en</category></item><item><title>Calc buttons with macros: better XLSX support</title><link>https://vmiklos.hu/blog/sc-xlsx-button-macro.html</link><description>&lt;div id="preamble"&gt;
 &lt;div class="sectionbody"&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;Embedding macros to Calc documents and invoking them by clicking on buttons is a common use-case.
 There was also decent support for importing these from XLSX (XLSM to be precise), but the export
@@ -839,80 +929,4 @@ intends to continue supporting and contributing to LibreOffice, the code is merg
 of this work will be available in TDF&amp;#8217;s next release too (7.2).&lt;/p&gt;&lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 08 Jan 2021 09:41:33 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2021-01-08:/blog/sd-table-shadow.html</guid><category>libreoffice</category><category>en</category></item><item><title>Better PDF signature verification in Draw</title><link>https://vmiklos.hu/blog/pdfium-sign-verify.html</link><description>&lt;div id="preamble"&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Draw now has much better support for detecting unsigned incremental updates between signatures at
-the end of PDF documents. We now also make sure that incremental updates introduced for adding
-signatures really just add annotations and don&amp;#8217;t change the actual content.&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_motivation"&gt;Motivation&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;There has been a recent &lt;a href="https://pdf-insecurity.org/signature-shadow/evaluation_2020.html"&gt;evaluation&lt;/a&gt;
-of PDF signature verification, which included Draw. While we got a checkmark on their Shadow Hide
-test, their Shadow Replace test found conditional problems and their Shadow Hide-and-Replace test
-was not happy, either.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;So time to look at what are those corner-cases and how the situation can be improved, so people keep
-trusting that if Draw says a signature is valid, it&amp;#8217;s indeed valid.&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_results_so_far"&gt;Results so far&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;There were 4 incremental improvements in this area:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/99361"&gt;detect unsigned incremental update between
-  signatures&lt;/a&gt;
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/101712"&gt;fix infobar vs signature dialog inconsistency&lt;/a&gt;
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/101926"&gt;avoid saying OK when the signature is partial&lt;/a&gt;
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/102057"&gt;pdf incremental updates that are non-commenting are
-  invalid&lt;/a&gt;
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;These were enough so that talking to the authors of that evaluation now confirmed that these
-problems are all gone.&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_how_is_this_implemented"&gt;How is this implemented?&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;If you would like to know a bit more about how this works, continue reading&amp;#8230; :-)&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;PDF signature verification works by using a custom PDF tokenizer. You can read about that code in
-the PDF tokenizer section of &lt;a href="https://vmiklos.hu/blog/pdf-sign.html"&gt;this post&lt;/a&gt;. The bottom line is that
-we now have both PDFium and this custom tokenizer, somewhat duplicating the functionality.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;After talking to the PDFium developers (see the relevant
-&lt;a href="https://groups.google.com/g/pdfium/c/Z0fC8Fg3yek/m/IE6yD066AAAJ"&gt;mailing list thread&lt;/a&gt;), there were
-open regarding adding all the high level API to allow PDF signature verification based on PDFium,
-and not via our own tokenizer. See
-&lt;a href="https://pdfium.googlesource.com/pdfium/+/refs/heads/master/public/fpdf_signature.h"&gt;this
-header file&lt;/a&gt; for the set of relevant APIs added. A combinations of those allowed to
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/105766"&gt;adapt&lt;/a&gt; the code on our side and use PDFium for
-signature verification, not the own tokanizer.&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_want_to_start_using_this"&gt;Want to start using this?&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;You can get a snapshot / demo of Collabora Office and try it out yourself right now:
-&lt;a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/"&gt;try unstable snapshot&lt;/a&gt;.  Collabora
-intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF&amp;#8217;s next release too (7.1).&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 11 Dec 2020 09:31:26 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2020-12-11:/blog/pdfium-sign-verify.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 08 Jan 2021 09:41:33 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2021-01-08:/blog/sd-table-shadow.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
