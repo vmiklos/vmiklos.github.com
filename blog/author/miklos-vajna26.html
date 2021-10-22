@@ -59,6 +59,36 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/patience-please.html">Patience, please!</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Mon 28 November 2011</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>So Lennart already had
+<a href="http://0pointer.de/blog/projects/hinter-den-kulissen.html">great slides</a> about
+what is the preferred attitude when you&#8217;re hacking Free Software (don&#8217;t expect
+gratefulness &amp;&amp; be grateful), but recently there was such a great example, I
+wanted to mention it. :)</p></div>
+<div class="paragraph"><p>So I saw there is a new etckeeper release and I checked its changelog,
+<a href="http://joey.kitenet.net/code/etckeeper/#code-etckeeper-news-version-0.58.default">mentioning
+me</a>. What the hell? I didn&#8217;t contribute anything to that project in the past 3
+years! It turned out it was a patch that was considered "too new" at that time,
+but now got merged. ;) Remember, if you contribute, usually integration takes
+much less time, so no need to whine about it.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/vasokol.html">Vasokol</a></h1>
   </div>
   <div class="article_meta">
@@ -407,57 +437,6 @@ LGee-t. ;)</p></div>
 <div class="paragraph"><p>A kmora a kovetkezoket merte: ido 6h55m31s, tav 104.93km, max 59.8kmph (suprise: Nagy Hideg-hegyrol lefele).</p></div>
 <div class="paragraph"><p>A GPS nyilvan kicsit kevesebb tavot mert, hiszen a palyaudvarrol ki meg
 vissza tav nincs benne a trackben.</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/userspace-boot-speed.html">Userspace boot speed: less than a second</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Sat 24 September 2011</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>I did not care about boot speed for a long time, since servers usually
-restarted only for kernel upgrades, laptops suspend to ram all the time,
-and I have no desktop machine at home for years now.  Though one use
-case started to motivate me recently: I use virtual machines a lot, and
-waiting for them to boot up is boring.</p></div>
-<div class="paragraph"><p>So I looked at the <code>systemd-analyze blame</code> output, and it turned out
-that for a base-only install the only service that takes a lot of time
-is <code>netconfig</code>. It&#8217;s because it was a <code>oneshot</code> service, so the whole
-boot process waited for <code>dhcpcd</code> to get an IP. A much better solution is
-to just start netconfig in the background and move on&#8201;&#8212;&#8201;and that&#8217;s
-exactly frugalwareutils in git does now.</p></div>
-<div class="paragraph"><p>Before:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>$ systemd-analyze
-Startup finished in 2030ms (kernel) + 1166ms (initrd) + 6755ms (userspace) = 9953ms</code></pre>
-</div></div>
-<div class="paragraph"><p>After:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>$ systemd-analyze
-Startup finished in 2039ms (kernel) + 1146ms (initrd) + 892ms (userspace) = 4079ms</code></pre>
-</div></div>
-<div class="admonitionblock">
-<table><tr>
-<td class="icon">
-<div class="title">Note</div>
-</td>
-<td class="content">Again, this is for a virtual machine (where the host has some IO
-cache) and for a base-only install.</td>
-</tr></table>
-</div>
 </div>
 </div>
 

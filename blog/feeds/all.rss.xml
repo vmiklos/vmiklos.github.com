@@ -1,5 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>What is Miklos hacking</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Wed, 29 Sep 2021 16:29:56 +0200</lastBuildDate><item><title>Start of list level support in Writer paragraph styles</title><link>https://vmiklos.hu/blog/sw-parastyle-listlevel.html</link><description>&lt;div id="preamble"&gt;
+<rss version="2.0"><channel><title>What is Miklos hacking</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Fri, 22 Oct 2021 08:48:48 +0200</lastBuildDate><item><title>Transparent shadow for tables from PPTX in Impress</title><link>https://vmiklos.hu/blog/sd-table-transparent-shadow.html</link><description>&lt;div id="preamble"&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Impress is now able to correctly render shadows for table shapes, even if the shadow itself or the
+fill of the table cells have transparency. The result is now compatible with PowerPoint.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;First, thanks to our partner &lt;a href="https://www.suse.com/"&gt;SUSE&lt;/a&gt; for working with
+&lt;a href="https://www.collaboraoffice.com/"&gt;Collabora&lt;/a&gt; to make this possible.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_motivation"&gt;Motivation&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;We got a PPTX document, which has a table shape with pink background and a blurry shadow. Impress
+rendered a red background, making the text hard to read.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The request was to improve the shadow rendering to be PowerPoint-compatible and in general correctly
+support transparency when it comes to table cell fills and table shadows.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_results_so_far"&gt;Results so far&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The table shadow now looks like this:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://share.vmiklos.hu/blog/sd-table-transparent-shadow/new.png" alt="https://share.vmiklos.hu/blog/sd-table-transparent-shadow/new.png" /&gt;
+&lt;/div&gt;
+&lt;div class="title"&gt;Figure 1. New render result in Impress&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Matching the reference rendering:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://share.vmiklos.hu/blog/sd-table-transparent-shadow/ref.png" alt="https://share.vmiklos.hu/blog/sd-table-transparent-shadow/ref.png" /&gt;
+&lt;/div&gt;
+&lt;div class="title"&gt;Figure 2. Reference render result&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;While background was red previously:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://share.vmiklos.hu/blog/sd-table-transparent-shadow/old.png" alt="https://share.vmiklos.hu/blog/sd-table-transparent-shadow/old.png" /&gt;
+&lt;/div&gt;
+&lt;div class="title"&gt;Figure 3. Old render result in Impress&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;You can see that not only the background in the top center cell is pink now, but the blurry table
+shadow is still correct.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_how_is_this_implemented"&gt;How is this implemented?&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;If you would like to know a bit more about how this works, continue reading&amp;#8230; :-)&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;As usual, the high-level problem was addressed by a series of fixes:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/122349"&gt;tdf#144091 svx: fix unwanted blur of shadow from
+  table cell fill&lt;/a&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/122532"&gt;Related: tdf#144091 svx: fix interaction of transp
+  cell fill and transp shadow&lt;/a&gt;
+  (&lt;a href="https://git.libreoffice.org/core/+/00fa364a2403dc23a786d3f91fde06e10b3a4a9a/svx/source/sdr/primitive2d/sdrdecompositiontools.cxx#629"&gt;key
+  part&lt;/a&gt;)
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;With these, it&amp;#8217;s now possible to add transparency to both table cell fills and to table shadows, and
+the rendering will take both into account, correctly.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_want_to_start_using_this"&gt;Want to start using this?&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;You can get a snapshot / demo of Collabora Office and try it out yourself right now:
+&lt;a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/"&gt;try unstable snapshot&lt;/a&gt;.  Collabora
+intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
+of this work will be available in TDF&amp;#8217;s next release too (7.3).&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 22 Oct 2021 08:48:48 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2021-10-22:/blog/sd-table-transparent-shadow.html</guid><category>libreoffice</category><category>en</category></item><item><title>Start of list level support in Writer paragraph styles</title><link>https://vmiklos.hu/blog/sw-parastyle-listlevel.html</link><description>&lt;div id="preamble"&gt;
 &lt;div class="sectionbody"&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;Writer now has the start of list level support in Writer paragraph styles. This improves ODT and
 DOCX compatibility, and it&amp;#8217;ll improve the style previews and the UI in the future.&lt;/p&gt;&lt;/div&gt;
@@ -847,41 +926,4 @@ intends to continue supporting and contributing to LibreOffice, the code is merg
 of this work will be available in TDF&amp;#8217;s next release too (7.2).&lt;/p&gt;&lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 12 Feb 2021 09:25:04 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2021-02-12:/blog/sw-gutter-margin.html</guid><category>libreoffice</category><category>en</category></item><item><title>Handling PDF digital signatures with PDFium FOSDEM talk</title><link>https://vmiklos.hu/blog/fosdem2021.html</link><description>&lt;div id="preamble"&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;a class="image" href="https://mautic.productivity.collabora.co.uk/asset/151:fosdem21-pdfiumsig-fosdem-online-2k21pdf"&gt;
-&lt;img src="https://share.vmiklos.hu/blog/fosdem2021/slides.png" alt="https://share.vmiklos.hu/blog/fosdem2021/slides.png" /&gt;
-&lt;/a&gt;
-&lt;/div&gt;
-&lt;div class="title"&gt;Figure 1. Slides of the talk&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;The next step in the recent &lt;a href="https://vmiklos.hu/blog/pdfium-sign-verify.html"&gt;PDFium-based signature
-verification story&lt;/a&gt; is my &lt;a href="https://fosdem.org/2021/schedule/event/lo_pdfsignatures/"&gt;Handling PDF
-digital signatures in LibreOffice with PDFium&lt;/a&gt; talk at FOSDEM 2021, in the
-&lt;a href="https://fosdem.org/2021/schedule/track/libreoffice/"&gt;LibreOffice devroom&lt;/a&gt;
-(&lt;a href="https://www.youtube.com/watch?v=njoHDY47mnA"&gt;pre-recorded video&lt;/a&gt;). The talk gives you an overview of
-digital signing in general, all the ODF/OOXML/PDF handling, signing/verification, various other
-related past Collabora projects, and then goes into details regarding how PDFium was improved and is
-used to do a better PDF signature verification in LibreOffice when opening PDF files in Draw.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;The virtual room had
-around 150 participants and the Matrix based online conference was well-organized. Speakers even got
-a free t-shirt before the event, I appreciated the "bring your own beer" joke :-)&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;An other benefit of this unusual setup was to avoid the dreaded
-&lt;a href="https://daniel.haxx.se/blog/2020/01/24/coming-to-fosdem-2020/"&gt;room is full&lt;/a&gt; problems, where you
-carefully selected a talk to attend and then failed to hear it.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;I expect quite some other slides from other Collaborans and the wider community will be available on
-&lt;a href="http://planet.documentfoundation.org/"&gt;Planet&lt;/a&gt;, don&amp;#8217;t miss them.&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_want_to_start_using_this"&gt;Want to start using this?&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;You can get a snapshot / demo of Collabora Office and try it out yourself right now:
-&lt;a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/"&gt;try unstable snapshot&lt;/a&gt;.  Collabora
-intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF&amp;#8217;s next release too (7.2).&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Mon, 08 Feb 2021 17:17:13 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2021-02-08:/blog/fosdem2021.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 12 Feb 2021 09:25:04 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2021-02-12:/blog/sw-gutter-margin.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
