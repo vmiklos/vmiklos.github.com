@@ -1,0 +1,65 @@
+= Transparent shadow for tables from PPTX in Impress
+
+:slug: sd-table-transparent-shadow
+:category: libreoffice
+:tags: en
+:date: 2021-10-22T08:48:48+02:00
+
+Impress is now able to correctly render shadows for table shapes, even if the shadow itself or the
+fill of the table cells have transparency. The result is now compatible with PowerPoint.
+
+First, thanks to our partner https://www.suse.com/[SUSE] for working with
+https://www.collaboraoffice.com/[Collabora] to make this possible.
+
+== Motivation
+
+We got a PPTX document, which has a table shape with pink background and a blurry shadow. Impress
+rendered a red background, making the text hard to read.
+
+The request was to improve the shadow rendering to be PowerPoint-compatible and in general correctly
+support transparency when it comes to table cell fills and table shadows.
+
+== Results so far
+
+The table shadow now looks like this:
+
+.New render result in Impress
+image::https://share.vmiklos.hu/blog/sd-table-transparent-shadow/new.png[align="center"]
+
+Matching the reference rendering:
+
+.Reference render result
+image::https://share.vmiklos.hu/blog/sd-table-transparent-shadow/ref.png[align="center"]
+
+While background was red previously:
+
+.Old render result in Impress
+image::https://share.vmiklos.hu/blog/sd-table-transparent-shadow/old.png[align="center"]
+
+You can see that not only the background in the top center cell is pink now, but the blurry table
+shadow is still correct.
+
+== How is this implemented?
+
+If you would like to know a bit more about how this works, continue reading... :-)
+
+As usual, the high-level problem was addressed by a series of fixes:
+
+- https://gerrit.libreoffice.org/c/core/+/122349[tdf#144091 svx: fix unwanted blur of shadow from
+  table cell fill]
+- https://gerrit.libreoffice.org/c/core/+/122532[Related: tdf#144091 svx: fix interaction of transp
+  cell fill and transp shadow]
+  (link:$$https://git.libreoffice.org/core/+/00fa364a2403dc23a786d3f91fde06e10b3a4a9a/svx/source/sdr/primitive2d/sdrdecompositiontools.cxx#629$$[key
+  part])
+
+With these, it's now possible to add transparency to both table cell fills and to table shadows, and
+the rendering will take both into account, correctly.
+
+== Want to start using this?
+
+You can get a snapshot / demo of Collabora Office and try it out yourself right now:
+https://www.collaboraoffice.com/collabora-office-latest-snapshot/[try unstable snapshot].  Collabora
+intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
+of this work will be available in TDF's next release too (7.3).
+
+// vim: ft=asciidoc
