@@ -1,0 +1,72 @@
+= Start of linked paragraph and character styles in Writer
+
+:slug: sw-linked-styles
+:category: libreoffice
+:tags: en
+:date: 2021-11-12T16:19:12+01:00
+
+Writer now has the start of linked character and paragraph styles. This improves DOCX compatibility,
+extends ODT and it'll improve the style previews and the UI in the future, hopefully.
+
+First, thanks https://www.docmosis.com/[Docmosis] who made this work by
+https://www.collaboraoffice.com/[Collabora] possible.
+
+== Motivation
+
+Word allows linking paragraph and character styles together, which means only the paragraph one will
+be present on the UI. Such a split has benefits if you customize the character properties on the UI
+and later you want to update the paragraph properties from a template, for example.
+
+This is frequent markup in DOCX files, because Word defaults to splitting out the character
+properties of a `Test` paragraph style into a `Test Char` character style on editing.
+
+Saving the document in Writer and then viewing it in Word lead to loosing these links, so their
+style pickers started to show unwanted `Test Char` rows.
+
+== Results so far
+
+We used to preserve such linking information when doing DOCX -> DOCX conversion for a while, since
+about 2013. But such preservation was in-memory, so if you saved the document to ODT, then such
+information was lost. This approach also lacked a real document model, which is necessary to
+incrementally build this feature into a complete solution.
+
+Here is how the style picker in Word looks like now, after a DOCX -> ODT -> DOCX pipeline:
+
+.Word's style picker, new output: no unwanted additional character styles
+image::https://share.vmiklos.hu/blog/sw-linked-styles/new.png[align="center"]
+
+Here is how this used to look like before the new changes (note the `Heading 1 Char` line between
+`Heading` and `Index`):
+
+.Word's style picker, old output: unwanted additional character styles
+image::https://share.vmiklos.hu/blog/sw-linked-styles/old.png[align="center"]
+
+And here is how the input document looks like:
+
+.Word's style picker, reference output: no unwanted additional character styles
+image::https://share.vmiklos.hu/blog/sw-linked-styles/ref.png[align="center"]
+
+== How is this implemented?
+
+If you would like to know a bit more about how this works, continue reading... :-)
+
+- link:$$https://gerrit.libreoffice.org/c/core/+/122595$$[sw: paragraph styles: add doc model & UNO
+  API for a linked character style] added the document model and API support
+
+- link:$$https://gerrit.libreoffice.org/c/core/+/122681$$[sw: paragraph styles: add DOCX filter for
+  a linked character style] added the DOCX filter
+
+- link:$$https://gerrit.libreoffice.org/c/core/+/122753$$[sw: paragraph styles: add ODT filter for a
+  linked character style] added the ODT filter
+
+Just to set expectations, this is currently an invisible feature, but unlike the old approach from 8
+years ago, this one can be extended into a full feature, incrementally. It also survives ODT
+roundtrips.
+
+== Want to start using this?
+
+Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
+expect all of this work will be available in TDF's
+http://dev-builds.libreoffice.org/daily/master/[next release] (7.3).
+
+// vim: ft=asciidoc
