@@ -1,5 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>What is Miklos hacking - libreoffice</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Fri, 12 Nov 2021 16:19:12 +0100</lastBuildDate><item><title>Start of linked paragraph and character styles in Writer</title><link>https://vmiklos.hu/blog/sw-linked-styles.html</link><description>&lt;div id="preamble"&gt;
+<rss version="2.0"><channel><title>What is Miklos hacking - libreoffice</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Wed, 15 Dec 2021 09:23:28 +0100</lastBuildDate><item><title>Writer embedded objects: reliably update object previews</title><link>https://vmiklos.hu/blog/sw-ole-update.html</link><description>&lt;div id="preamble"&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Embedded objects in Writer consist of a native data part and a preview part. Until now, there was no
+way to force the update of the preview part in case it was empty.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Now the Tools &amp;#8594; Update &amp;#8594; Update all menu item updates such previews as well. This is especially
+useful if you manipulate the ZIP/XML document directly to insert native data, then load it into
+Writer to generate a preview.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;First, thanks &lt;a href="https://vector.com/"&gt;Vector&lt;/a&gt; who made this work by
+&lt;a href="https://www.collaboraoffice.com/"&gt;Collabora&lt;/a&gt; possible.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_motivation"&gt;Motivation&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The Update all menu item already updates all sorts of generated content: fields, table of contents,
+charts, the document layout, but not the preview of embedded objects. You could work this around by
+double-clicking on the embedded object to re-generate the preview, but doing this manually for a
+larger document is not efficient. This is especially useful for hand-crafted documents which have
+proper native data, but no preview image yet.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_results_so_far"&gt;Results so far&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Here is how an embedded object without a preview looks like:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://share.vmiklos.hu/blog/sw-ole-update/old.png" alt="https://share.vmiklos.hu/blog/sw-ole-update/old.png" /&gt;
+&lt;/div&gt;
+&lt;div class="title"&gt;Figure 1. Writer embedded object with no preview&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Now using the Update all menu item turns a sample document into this preview:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://share.vmiklos.hu/blog/sw-ole-update/new.png" alt="https://share.vmiklos.hu/blog/sw-ole-update/new.png" /&gt;
+&lt;/div&gt;
+&lt;div class="title"&gt;Figure 2. Writer embedded object with a preview&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_how_is_this_implemented"&gt;How is this implemented?&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;If you would like to know a bit more about how this works, continue reading&amp;#8230; :-)&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;&lt;a href="https://gerrit.libreoffice.org/c/core/+/126253"&gt;sw: update previews of OLE objects on
+"update all"&lt;/a&gt; is the change implementing this small feature. It works by:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+Iterating over the frame formats ("special" formats) of the document
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+Filter out shapes
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+Filter out objects which are only reachable from the undo stack
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+Filter out objects which are not embedded ("OLE") objects
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+Once we have access to the OLE node, jump to its &lt;code&gt;SwOLEObj&lt;/code&gt;, then to its &lt;code&gt;svt::EmbeddedObjectRef&lt;/code&gt;,
+  which knows how to re-calculate the preview bitmap
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+Finally notify the OLE node that the preview was updated, so the necessary repaint can happen
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_want_to_start_using_this"&gt;Want to start using this?&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
+expect all of this work will be available in TDF&amp;#8217;s
+&lt;a href="http://dev-builds.libreoffice.org/daily/master/"&gt;next release&lt;/a&gt; (7.4).&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Wed, 15 Dec 2021 09:23:28 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2021-12-15:/blog/sw-ole-update.html</guid><category>libreoffice</category><category>en</category></item><item><title>Start of linked paragraph and character styles in Writer</title><link>https://vmiklos.hu/blog/sw-linked-styles.html</link><description>&lt;div id="preamble"&gt;
 &lt;div class="sectionbody"&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;Writer now has the start of linked character and paragraph styles. This improves DOCX compatibility,
 extends ODT and it&amp;#8217;ll improve the style previews and the UI in the future, hopefully.&lt;/p&gt;&lt;/div&gt;
@@ -817,83 +906,4 @@ expect all of this work will be available in TDF&amp;#8217;s
 &lt;a href="http://dev-builds.libreoffice.org/daily/master/"&gt;next release&lt;/a&gt; (7.2).&lt;/p&gt;&lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 09 Apr 2021 14:48:14 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2021-04-09:/blog/hackweek-2021.html</guid><category>libreoffice</category><category>en</category></item><item><title>Bibliography improvements in LibreOffice Writer</title><link>https://vmiklos.hu/blog/sw-bibliography.html</link><description>&lt;div id="preamble"&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;The bibliography feature in Writer allows authors of e.g. scientific papers to track sources: first
-you can insert bibliography entry fields, then at the end you can generate a bibliography table
-automatically.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Writer now has two improvements in this area: more information about these entries in the form of a
-mouse tooltip and clickable URLs in the table.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;First, thanks &lt;a href="https://ulakbim.tubitak.gov.tr/en"&gt;TUBITAK ULAKBIM&lt;/a&gt; who made this work by
-&lt;a href="https://www.collaboraoffice.com/"&gt;Collabora&lt;/a&gt; possible.&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_motivation"&gt;Motivation&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Generating a bibliography (table) for a document is a two-step process: first the user inserts
-bibliography entry fields to refer to sources, then later the bibliography can be auto-generated. It
-was not great that details of a source was only visible in the Writer edit window after generating
-the bibliography table. A somewhat related shortcoming was that URLs of sources were handled as
-plain text, while users expect that references are also clickable, similar to e.g. table of
-contents.&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_results_so_far"&gt;Results so far&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;This is how a tooltip looks like, available even if there is no bibliography table yet:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;img src="https://share.vmiklos.hu/blog/sw-bibliography/tooltip.png" alt="https://share.vmiklos.hu/blog/sw-bibliography/tooltip.png" /&gt;
-&lt;/div&gt;
-&lt;div class="title"&gt;Figure 1. Tooltip for bibliography entry fields&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;And URLs in the bibliography table are now clickable:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;img src="https://share.vmiklos.hu/blog/sw-bibliography/url.png" alt="https://share.vmiklos.hu/blog/sw-bibliography/url.png" /&gt;
-&lt;/div&gt;
-&lt;div class="title"&gt;Figure 2. Clickable URLs in the bibliography table&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_how_is_this_implemented"&gt;How is this implemented?&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;If you would like to know a bit more about how this works, continue reading&amp;#8230; :-)&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;As usual, the high-level problem was addressed by a series of incremental development steps:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/110705"&gt;sw tooltip on bibliography fields: add an
-  SwTOXInternational factory&lt;/a&gt; and &lt;a href="https://gerrit.libreoffice.org/c/core/+/110712"&gt;sw tooltip on
-  bibliography fields: add a text factory that gives us a string&lt;/a&gt; were necessary refactors to get a
-  string that looks like a row in the bibliography table, without having an empty bibliography table
-  at hand
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/110765"&gt;sw tooltip on bibliography fields: add the actual
-  tooltip functionality&lt;/a&gt; improved the UI to have a tooltip
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/111117"&gt;sw bibliography: make URLs in the bibliography
-  table clickable&lt;/a&gt; implemented the clickable URLs feature
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_want_to_start_using_this"&gt;Want to start using this?&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
-expect all of this work will be available in TDF&amp;#8217;s
-&lt;a href="http://dev-builds.libreoffice.org/daily/master/"&gt;next release&lt;/a&gt; (7.2).&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Wed, 24 Mar 2021 12:18:17 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2021-03-24:/blog/sw-bibliography.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 09 Apr 2021 14:48:14 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2021-04-09:/blog/hackweek-2021.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
