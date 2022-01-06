@@ -1,5 +1,232 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>What is Miklos hacking - libreoffice</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Wed, 15 Dec 2021 09:23:28 +0100</lastBuildDate><item><title>Writer embedded objects: reliably update object previews</title><link>https://vmiklos.hu/blog/sw-ole-update.html</link><description>&lt;div id="preamble"&gt;
+<rss version="2.0"><channel><title>What is Miklos hacking - libreoffice</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Thu, 06 Jan 2022 09:07:43 +0100</lastBuildDate><item><title>Start of document themes in Impress: shape text</title><link>https://vmiklos.hu/blog/sd-theme-shape-text.html</link><description>&lt;div id="preamble"&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Impress now has the start of document theme support: it is possible to define a document theme on
+master pages and you can refer to the theme colors from shape text (including effects).&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;First, thanks to our partner &lt;a href="https://www.suse.com/"&gt;SUSE&lt;/a&gt; for working with
+&lt;a href="https://www.collaboraoffice.com/"&gt;Collabora&lt;/a&gt; to make this possible.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_motivation"&gt;Motivation&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;PowerPoint users can attach a set of colors (and fonts, formattings) to master pages, and then refer
+to these in shape text, shape fill, shape geometry. You can even make the original color lighter and
+darker. These effects are preserved when you change the theme colors.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;This is a larger feature, this blog post shows how theme colors can be defined and how to refer to
+those colors from Impress shape text. The rest of the feature is to be done in follow-up steps.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_results_so_far"&gt;Results so far&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Here is a demo that shows how it works:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;a class="image" href="https://youtu.be/4QeN58AkuxE"&gt;
+&lt;img src="https://share.vmiklos.hu/blog/sd-theme-shape-text/sd-theme-shape-text.png" alt="https://share.vmiklos.hu/blog/sd-theme-shape-text/sd-theme-shape-text.png" /&gt;
+&lt;/a&gt;
+&lt;/div&gt;
+&lt;div class="title"&gt;Figure 1. Demo of theme support in Impress shape text&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;In other words, it consists of 2 parts on the UI:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+You can define theme colors once you click on "Master View" in Impress, and then select the Slide
+  &amp;#8594; Slide properties menu item, and there choosing the new Theme tab. You can e.g. make "accent1"
+  blue, "accent2" orange, and so on.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+Then you can refer to these theme colors. Select some shape text, and then either use Format &amp;#8594;
+  Character &amp;#8594; Font effects &amp;#8594; Font color &amp;#8594; Theme colors or use the sidebar to set the font color.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;This later shows a grid of colors: each column is one theme color and then the column offers various
+lighter and darker variants of the color.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;And the important bit: if you later change theme colors, then the color of shape text (using theme
+colors) is updated, even the effects (lighter or darker variants) are preserved.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;To set expectations, this only works for shape text for now, and only in Impress, as a start.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_how_is_this_implemented"&gt;How is this implemented?&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;If you would like to know a bit more about how this works, continue reading&amp;#8230; :-)&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;As usual, the high-level problem was addressed by a series of small changes. The first step was to
+upstream work by &lt;a href="https://tomazvajngerl.blogspot.com/"&gt;Tomaž Vajngerl&lt;/a&gt; and &lt;a href="https://quwex.com/"&gt;Sarper
+Akdemir&lt;/a&gt; from the &lt;code&gt;feature/themesupport2&lt;/code&gt; feature branch:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/125296"&gt;https://gerrit.libreoffice.org/c/core/+/125296&lt;/a&gt; Theme color and tint/shade attribute for SvxColorItem
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/125304"&gt;https://gerrit.libreoffice.org/c/core/+/125304&lt;/a&gt; Support reading back theme color from an ooxml document
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/125313"&gt;https://gerrit.libreoffice.org/c/core/+/125313&lt;/a&gt; make colorsets work outside of styles and with direct formatting
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/125394"&gt;https://gerrit.libreoffice.org/c/core/+/125394&lt;/a&gt; expose the SvxColorItem theme related uno for draw/impress
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/125404"&gt;https://gerrit.libreoffice.org/c/core/+/125404&lt;/a&gt; implement initial pptx theme color import
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/125414"&gt;https://gerrit.libreoffice.org/c/core/+/125414&lt;/a&gt; rename getSchemeName getSchemeIndex to remove ambiguity
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/125426"&gt;https://gerrit.libreoffice.org/c/core/+/125426&lt;/a&gt; implement color tint or shade import for pptx
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/125436"&gt;https://gerrit.libreoffice.org/c/core/+/125436&lt;/a&gt; introduce XColorSetsManager interface
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/125477"&gt;https://gerrit.libreoffice.org/c/core/+/125477&lt;/a&gt; import pptx color schemes as color sets
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The rest of the work was to go through the usual stages of document model, UNO API, rendering,
+ODP/PPTX filter and UI work to complete the work started on the branch:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/125532"&gt;https://gerrit.libreoffice.org/c/core/+/125532&lt;/a&gt; PPTX import: handle &amp;lt;a:clrScheme name="&amp;#8230;"&amp;gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/125651"&gt;https://gerrit.libreoffice.org/c/core/+/125651&lt;/a&gt; PPTX: implement native handling of &amp;lt;a:clrScheme&amp;gt; children
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/125684"&gt;https://gerrit.libreoffice.org/c/core/+/125684&lt;/a&gt; PPTX import: implement native handling of a color&amp;#8217;s luminance modulation
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/125749"&gt;https://gerrit.libreoffice.org/c/core/+/125749&lt;/a&gt; PPTX import: implement native handling of a color&amp;#8217;s luminance offset
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/126011"&gt;https://gerrit.libreoffice.org/c/core/+/126011&lt;/a&gt; tools Color: implement MSO-style luminance modulation/offset filter
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/126082"&gt;https://gerrit.libreoffice.org/c/core/+/126082&lt;/a&gt; svx: update objects of pages of a master page when the theme changes
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/126164"&gt;https://gerrit.libreoffice.org/c/core/+/126164&lt;/a&gt; PPTX export: write the theme for the master pages from the doc model
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/126215"&gt;https://gerrit.libreoffice.org/c/core/+/126215&lt;/a&gt; PPTX export: handle theme colors from the doc model for shape text
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/126270"&gt;https://gerrit.libreoffice.org/c/core/+/126270&lt;/a&gt; svx: consider color effects when updating objects for theme changes
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/126400"&gt;https://gerrit.libreoffice.org/c/core/+/126400&lt;/a&gt; PPTX export: handle theme color of shape text with effects
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/126466"&gt;https://gerrit.libreoffice.org/c/core/+/126466&lt;/a&gt; ODP export: write the theme of a master page
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/126502"&gt;https://gerrit.libreoffice.org/c/core/+/126502&lt;/a&gt; ODP import: handle theme of master pages
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/126566"&gt;https://gerrit.libreoffice.org/c/core/+/126566&lt;/a&gt; ODP import/export: refer to theme from shape text color
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/126722"&gt;https://gerrit.libreoffice.org/c/core/+/126722&lt;/a&gt; ODP import/export: refer to theme from shape text color with effects
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/126798"&gt;https://gerrit.libreoffice.org/c/core/+/126798&lt;/a&gt; sd: add initial theme UI for master slides
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/126850"&gt;https://gerrit.libreoffice.org/c/core/+/126850&lt;/a&gt; sd theme: add UI to set/get the name of a color set
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/126905"&gt;https://gerrit.libreoffice.org/c/core/+/126905&lt;/a&gt; sd theme: add UI to set individual colors of a color set
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/126994"&gt;https://gerrit.libreoffice.org/c/core/+/126994&lt;/a&gt; sd theme: add a "theme" palette to the color picker
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/127135"&gt;https://gerrit.libreoffice.org/c/core/+/127135&lt;/a&gt; sd theme: allow setting the color&amp;#8217;s theme index in the chardlg
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/127211"&gt;https://gerrit.libreoffice.org/c/core/+/127211&lt;/a&gt; sd theme: allow setting color effects in the chardlg
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/127304"&gt;https://gerrit.libreoffice.org/c/core/+/127304&lt;/a&gt; sd theme: allow setting color effects in the sidebar
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_want_to_start_using_this"&gt;Want to start using this?&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;You can get a snapshot / demo of Collabora Office and try it out yourself right now:
+&lt;a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/"&gt;try unstable snapshot&lt;/a&gt;.  Collabora
+intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
+of this work will be available in TDF&amp;#8217;s next release too (7.4).&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Thu, 06 Jan 2022 09:07:43 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2022-01-06:/blog/sd-theme-shape-text.html</guid><category>libreoffice</category><category>en</category></item><item><title>Writer embedded objects: reliably update object previews</title><link>https://vmiklos.hu/blog/sw-ole-update.html</link><description>&lt;div id="preamble"&gt;
 &lt;div class="sectionbody"&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;Embedded objects in Writer consist of a native data part and a preview part. Until now, there was no
 way to force the update of the preview part in case it was empty.&lt;/p&gt;&lt;/div&gt;
@@ -793,117 +1020,4 @@ expect all of this work will be available in TDF&amp;#8217;s
 &lt;a href="http://dev-builds.libreoffice.org/daily/master/"&gt;next release&lt;/a&gt; (7.2).&lt;/p&gt;&lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Wed, 14 Apr 2021 09:00:17 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2021-04-14:/blog/sw-merged-border.html</guid><category>libreoffice</category><category>en</category></item><item><title>My hack week at Collabora: improvements to gutter margin in Writer</title><link>https://vmiklos.hu/blog/hackweek-2021.html</link><description>&lt;div id="preamble"&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;As mentioned in a &lt;a href="https://vmiklos.hu/blog/hackweek-2020.html"&gt;previous&lt;/a&gt; such report, a hack week is when
-we are allowed to hack on anything we want in LibreOffice / Collabora Office / Collabora Online for
-a few days at &lt;a href="https://www.collaboraoffice.com/"&gt;Collabora&lt;/a&gt;. I used this time to implement core
-support for RTL gutter margin in Writer.&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_motivation"&gt;Motivation&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;I posted about Writer gutter margin in general &lt;a href="https://vmiklos.hu/blog/sw-gutter-margin.html"&gt;back in
-February&lt;/a&gt;, and two follow-up requests accumulated around this new feature since then.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;First, the gutter margin could be on the left or at the top for non-mirrored documents, which
-initially sounded like a complete solution, but later it turned out that right-to-left (RTL)
-documents &lt;a href="https://bugs.documentfoundation.org/show_bug.cgi?id=140343"&gt;want it on the right&lt;/a&gt;.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Second, there was a &lt;a href="https://issues.oasis-open.org/browse/OFFICE-4105"&gt;request from the OASIS TC to&lt;/a&gt;
-to implement the ODF filter differently for gutter margin.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Neither of these is simple to do, so this hackweek was a good opportunity to address these problems.&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_results_so_far"&gt;Results so far&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Here is the layout and user interface for RTL gutter looks like:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;img src="https://share.vmiklos.hu/blog/hackweek-2021/layout-ui.png" alt="https://share.vmiklos.hu/blog/hackweek-2021/layout-ui.png" /&gt;
-&lt;/div&gt;
-&lt;div class="title"&gt;Figure 1. RTL gutter margin in Writer, layout and UI&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;You can see how the gutter is on the right (not the left) and you can alter this behavior with a
-dedicated checkbox on the UI.&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_how_is_this_implemented"&gt;How is this implemented?&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;If you would like to know a bit more about how this works, continue reading&amp;#8230; :-)&lt;/p&gt;&lt;/div&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://git.libreoffice.org/core/commit/67e53dfeadbbc4f4ab207af0d2cd4e8f556b73d4"&gt;sw page rtl
-  gutter margin: add doc model&lt;/a&gt; introduced a new RES_RTL_GUTTER page style property
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://git.libreoffice.org/core/commit/bcbf1c245fa13cfbae2059a996006179c7f4b747"&gt;sw page rtl
-  gutter margin: add UNO API&lt;/a&gt; added a new public RtlGutter UNO API property
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://git.libreoffice.org/core/commit/c088d26578d1be352efa49bd164a8217627648de"&gt;sw page rtl
-  gutter margin: add layout&lt;/a&gt; was the tricky layout piece, extending &lt;code&gt;SwBorderAttrs&lt;/code&gt;
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://git.libreoffice.org/core/commit/3db477fd0e6cfc4ff77b3c911ca4ab14fd980932"&gt;sw page rtl
-  gutter margin: add DOCX filter&lt;/a&gt; mapped this to DOCX&amp;#8217;s &lt;code&gt;&amp;lt;w:rtlGutter&amp;gt;&lt;/code&gt;
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://git.libreoffice.org/core/commit/fac65bb9d831a854298d6cba09ad6159d15b8323"&gt;sw page rtl
-  gutter margin: add ODF import&lt;/a&gt; mapped this to &lt;code&gt;&amp;lt;style:page-layout-properties
-  style:writing-mode="..."&amp;gt;&lt;/code&gt; in case the attribute value is RTL
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://git.libreoffice.org/core/commit/8b7ff52ac87795881a4d86395885778f1da3d18b"&gt;sw page rtl
-  gutter margin: add DOC filter&lt;/a&gt; mapped this to DOC&amp;#8217;s SFRTLGutter, amusingly that handling of that
-  was somewhat there, but more or less broken since 2002-02-04
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://git.libreoffice.org/core/commit/f15c6c5d2947a61e6521471b6b7541812953efc3"&gt;sw page rtl
-  gutter margin: add RTF filter&lt;/a&gt; mapped this to RTF&amp;#8217;s &lt;code&gt;\rtlgutter&lt;/code&gt; section flag
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://git.libreoffice.org/core/commit/d48a4174708ce0850577dba76dccaf85c4f6ffa1"&gt;sw page rtl
-  gutter margin: add UI&lt;/a&gt; introduced a new checkbox on the UI to set/get this, and fixed up
-  notifications, so that the incremental layout repaints the necessary page frames when this setting
-  changes
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Finally I had a little bit of remaining time, so I addressed a request from the OASIS ODF TC:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://git.libreoffice.org/core/commit/f3cf833f7079ce8d2f53681cae1b430a875cc320"&gt;sw page gutter
-  margin: reimplement ODF filter&lt;/a&gt; changed the ODF markup to be more compatible with readers ignoring
-  &lt;code&gt;&amp;lt;style:page-layout-properties loext:margin-gutter="..."&amp;gt;&lt;/code&gt;
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_want_to_start_using_this"&gt;Want to start using this?&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
-expect all of this work will be available in TDF&amp;#8217;s
-&lt;a href="http://dev-builds.libreoffice.org/daily/master/"&gt;next release&lt;/a&gt; (7.2).&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 09 Apr 2021 14:48:14 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2021-04-09:/blog/hackweek-2021.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Wed, 14 Apr 2021 09:00:17 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2021-04-14:/blog/sw-merged-border.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>

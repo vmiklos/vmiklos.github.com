@@ -59,6 +59,26 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/virtualbox.html">Virtualbox</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Fri 06 March 2009</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>I earlier wrote about I was experimenting with PowerShell, so I had to install Windows in a virtual machine. It's not a big problem, we at the uni get a license to use it for free till the end of our studies (or something like that), so I started to search for what emulator should I use.</p><p>Of course my favorite is qemu, but till I don't have kvm-enabled hw and kvm support isn't fully merged from kvm, it's slow.</p><p>Given that I had to use some other emulator, I thought I gave vmware a try, they offer a 30-day trial and I wanted to see what's new in their recent versions - I think I last tried it about 2 years ago. It seems the automagic gui screwed up something and there is no more vmware-config.pl, so I gave it up.</p><p>Last, I tried Virtualbox. Man, it's fast! Of course it's bloated as well (external kernel module, guest addons, etc) - but if I forget about these issues, it really gaves me the same experience vmware gave me when I last tried it. Impressive.</p><p>As a side note, git-1.6.2 is out, sadly I haven't got much time for it - only 5 patches of mine are in the changelog. But at least now the pdf version of the user manual is supported out of the box.</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/ejabber-virtual-hosts.html">Ejabber virtual hosts</a></h1>
   </div>
   <div class="article_meta">
@@ -251,26 +271,6 @@ export ORACLE_HOME=~/.oracle/product/10.2.0/client_1/
     <div id="preamble">
 <div class="sectionbody">
 <p>There was a recent interview with the developers of UHU-Linux, which was the de-facto "Hungarian Linux" a few years ago here at Hungary.</p><p>The guys had a pretty closed approach and finally it seems they make money from products based on their distro - releasing something useful for the users for free is definitely not the number one task on their todo.</p><p>There were a couple of comments to the article, a few of them was about Frugalware, given that we are still the only distro where the origin is Hunagary and it's actively used outside Hungary as well.</p><p>In fact I just did a quick search, listing the last commit dates of each devel. Two of the Hungarian ones are pretty inactive. Both of them do other administrative tasks. (Buildserver / bugtracker hosting, etc.) But the rest is quite active, which was a surprise. I had the impression that lately we got some new French devels and once they got their git accounts, they got a bit less-motivated but this is simply not true. All of them (and this is true for the other non-Hungarian devels as well) was more or less active in the last month.</p><p>I think this is pretty straight-forward, even if the ohloh stat says the commit number (compared to last year) is sightly decreasing. This is a typical example: the commit number is not everything. I think this time last year we might be a bit more active overally, but that was because several devels (including me) spent a horrible amount of their free times on Frugalware, which is not something you can do for several years. Today we have a much stable devel base, increasing package maintainer community and yes, I'm happy with our current status. :)</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/pootle-vs-frugalwareutils.html">Pootle vs frugalwareutils</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Thu 26 February 2009</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>I already <a href="/blog/preparing-frugalware-1-0pre2">wrote once</a> about Pootle forcing us to use UTF-8 and not respecting the po headers (where charset can be set), but there is a new chapter in this story. So in case the charset is wrong, the generated mo file is still fine, as long as you have utf8 support in your system. Of course in the setup, where we have an "as much as possible" stripped down system, this is not true.</p><p>A contributor reported this recently, and the symptom was that "sometimes" netconfig is localized, sometimes not. It turned out a bit later that it's localized when it's running in the target system's chroot (when the install of the packages is finished and the config tools are invoked), but not before the installation. Of course the previous solution worked here pretty fine as well: I just had to convert the remaining translations to utf8 manually, and then add code to convert from utf8 to the native encoding in the pre-package stage (currently named 'make prepare') of frugalwareutils.</p><p>Hand converting is boring. And sometimes it's completely messed up, for example you need an 'iconv -f utf8 -t latin1' twice to get the correct accents. ;-)</p>
 </div>
 </div>
 
