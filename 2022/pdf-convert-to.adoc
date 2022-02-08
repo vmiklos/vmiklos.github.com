@@ -1,0 +1,101 @@
+= Improved PDF export options in the command-line and in Online
+
+:slug: pdf-convert-to
+:category: libreoffice
+:tags: en
+:date: 2022-02-08T08:13:28+01:00
+
+The LibreOffice Technology now has much better support for creating custom PDF exports of documents:
+options available in the interactive PDF export options dialog are now also possible to set from the
+command-line, and also when using the document conversion feature of
+https://www.collaboraoffice.com/document-conversion/[Collabora Online].
+
+== Motivation
+
+I was working on a regression that only happens if you export the second and third pages of a
+document to PDF. While investigating, I needed a quick way to trigger the problematic code-path, and
+clicking through a dialog is not convenient.
+
+.UI to specify a partial export to PDF
+image::https://share.vmiklos.hu/blog/pdf-convert-to/pdf-export-partial.png[align="center"]
+
+The PDF export in LibreOffice has a lot of options, but those are only available from extension code
+(using the UNO API) or from the UI dialog. The idea was to expose much of this to the `soffice
+--convert-to` command as well, and if we're at it, also to the `/cool/convert-to` endpoint of
+Online.
+
+== Results so far
+
+Here are a few examples to show the possibilities:
+
+- Skip the first page of a Draw document:
+
+----
+soffice --convert-to 'pdf:draw_pdf_Export:{"PageRange":{"type":"string","value":"2-"}}' test.odg
+----
+
+- Add watermark:
+
+----
+soffice --convert-to 'pdf:draw_pdf_Export:{"TiledWatermark":{"type":"string","value":"draft"}}' test.odg
+----
+
+- Encrypt the output:
+
+----
+soffice --convert-to 'pdf:draw_pdf_Export:{"EncryptFile":{"type":"boolean","value":"true"},"DocumentOpenPassword":{"type":"string","value":"secret"}}' test.odg
+----
+
+- We default to PDF 1.6, perhaps you want to write PDF 1.5:
+
+----
+soffice --convert-to 'pdf:draw_pdf_Export:{"SelectPdfVersion":{"type":"long","value":"15"}}' test.odg
+----
+
+- Sign the PDF:
+
+----
+soffice --convert-to 'pdf:draw_pdf_Export:{"SignPDF":{"type":"boolean","value":"true"},"SignCertificateSubjectName":{"type":"string","value":"CN=..."}}' test.odg
+----
+
+And the best is that the same also works in Online, e.g.:
+
+----
+curl -k -F "data=@3page.odg" -F "format=pdf" -F "options={\"PageRange\":{\"type\":\"string\",\"value\":\"2-\"}}" https://localhost:9980/cool/convert-to > out.pdf
+----
+
+== How is this implemented?
+
+If you would like to know a bit more about how this works, continue reading... :-)
+
+- https://gerrit.libreoffice.org/c/core/+/128643 'tdf#141340 PDF export: fix hyperlinks on the wrong
+  page with page num range' was the use-case that initially motivated to add the feature.
+
+- https://gerrit.libreoffice.org/c/core/+/128709 'comphelper: move JsonToPropertyValues() from
+  desktop/' was grounding work to use the "convert JSON to a string-any map" functionality we
+  already had in core.git, as part of the LOK API.
+
+- https://gerrit.libreoffice.org/c/core/+/128849 'PDF export: allow setting filter data keys from
+  the cmdline' is the actual improvement to the PDF exporter
+
+- https://gerrit.libreoffice.org/c/core/+/128970 'desktop lok, export options: allow passing through
+  a JSON string as-is' is a tweak to let the LOK API also use this
+
+- https://gerrit.libreoffice.org/c/core/+/129387 'filter: allow PDF export to sign from the cmdline'
+  added the PDF signing as a string option, since referring to a certificate object from the command-line
+  was not possible
+
+- https://github.com/CollaboraOnline/online/pull/4069 'wsd, convert-to: allow specifying filter
+  options as JSON' implemented the Online side
+
+== Want to start using this?
+
+You can get a snapshot / demo of Collabora Office and try it out yourself right now:
+https://www.collaboraoffice.com/collabora-office-latest-snapshot/[try unstable snapshot].  Collabora
+intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
+of this work will be available in TDF's next release too (7.4).
+
+For the Online side, see the https://www.collaboraoffice.com/code/[CODE] page, the feature is
+present in the current release (2021).
+
+// vim: ft=asciidoc
