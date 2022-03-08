@@ -1,5 +1,170 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>What is Miklos hacking</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Tue, 08 Feb 2022 08:13:28 +0100</lastBuildDate><item><title>Improved PDF export options in the command-line and in Online</title><link>https://vmiklos.hu/blog/pdf-convert-to.html</link><description>&lt;div id="preamble"&gt;
+<rss version="2.0"><channel><title>What is Miklos hacking</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Tue, 08 Mar 2022 12:11:27 +0100</lastBuildDate><item><title>Word-style border fixes in Writer: pages, tables and paragraphs</title><link>https://vmiklos.hu/blog/sw-page-table-para-border.html</link><description>&lt;div id="preamble"&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Writer now has a set of improvements to better render Word-style borders around pages, tables and
+paragaphs. This required adjusting how we perform automatic mirroring and also to make sure that
+clipping is done the Word way.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;First, thanks &lt;a href="https://www.docmosis.com/"&gt;Docmosis&lt;/a&gt; and &lt;a href="https://www.tubitak.gov.tr/en"&gt;TUBITAK&lt;/a&gt; who
+made this work by &lt;a href="https://www.collaboraoffice.com/"&gt;Collabora&lt;/a&gt; possible.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_motivation"&gt;Motivation&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Word users expect to able to import their documents to Writer and experience high fidelity
+rendering: this means Writer has to support the way page / table / paragraph borders are painted
+according to the OOXML model as well. This is all done conditionally, so existing ODF documents are
+left unchanged.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;This is a set of 5 bugfixes, requested by multiple of our customers.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_results"&gt;Results&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;First let&amp;#8217;s look at the new render result for page borders:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://share.vmiklos.hu/blog/sw-page-table-para-border/page-border-new.png" alt="https://share.vmiklos.hu/blog/sw-page-table-para-border/page-border-new.png" /&gt;
+&lt;/div&gt;
+&lt;div class="title"&gt;Figure 1. Word-style page borders, new result&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;And this is how it used to look like:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://share.vmiklos.hu/blog/sw-page-table-para-border/page-border-old.png" alt="https://share.vmiklos.hu/blog/sw-page-table-para-border/page-border-old.png" /&gt;
+&lt;/div&gt;
+&lt;div class="title"&gt;Figure 2. Word-style page borders, old result&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Finally you can compare that with the reference:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://share.vmiklos.hu/blog/sw-page-table-para-border/page-border-ref.png" alt="https://share.vmiklos.hu/blog/sw-page-table-para-border/page-border-ref.png" /&gt;
+&lt;/div&gt;
+&lt;div class="title"&gt;Figure 3. Word-style page borders, reference&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;What you can see here is that the page has a double border: the outer line is thick and the inner
+line is thin. The right and bottom border was incorrect as our result was the opposite of the
+reference.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Second, let&amp;#8217;s look at the new render result for table borders:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://share.vmiklos.hu/blog/sw-page-table-para-border/table-border-new.png" alt="https://share.vmiklos.hu/blog/sw-page-table-para-border/table-border-new.png" /&gt;
+&lt;/div&gt;
+&lt;div class="title"&gt;Figure 4. Word-style table borders, new result&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;And this is how it used to look like:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://share.vmiklos.hu/blog/sw-page-table-para-border/table-border-old.png" alt="https://share.vmiklos.hu/blog/sw-page-table-para-border/table-border-old.png" /&gt;
+&lt;/div&gt;
+&lt;div class="title"&gt;Figure 5. Word-style table borders, old result&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Finally you can compare that with the reference:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://share.vmiklos.hu/blog/sw-page-table-para-border/table-border-ref.png" alt="https://share.vmiklos.hu/blog/sw-page-table-para-border/table-border-ref.png" /&gt;
+&lt;/div&gt;
+&lt;div class="title"&gt;Figure 6. Word-style table borders, reference&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;You can notice a number of problems here:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+the inner horizontal line at the top table was overrunning, it was even painted between the two
+  lines of the outer double border
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+the middle table shows how the vertical thick and thin lines of the outer double border was
+  reversed
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+the bottom table shows how the horizontal tick inner border was not consistent
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The new render result properly clips the inner border lines, so they don&amp;#8217;t intersect outer borders,
+and the border mirroring (similar to the page borders) is now correct for table borders as well.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Third, let&amp;#8217;s look at the new render result for paragraph borders:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://share.vmiklos.hu/blog/sw-page-table-para-border/para-border-new.png" alt="https://share.vmiklos.hu/blog/sw-page-table-para-border/para-border-new.png" /&gt;
+&lt;/div&gt;
+&lt;div class="title"&gt;Figure 7. Word-style paragraph borders, new result&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;And this is how it used to look like:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://share.vmiklos.hu/blog/sw-page-table-para-border/para-border-old.png" alt="https://share.vmiklos.hu/blog/sw-page-table-para-border/para-border-old.png" /&gt;
+&lt;/div&gt;
+&lt;div class="title"&gt;Figure 8. Word-style paragraph borders, old result&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Finally you can compare that with the reference:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="imageblock" style="text-align:center;"&gt;
+&lt;div class="content"&gt;
+&lt;img src="https://share.vmiklos.hu/blog/sw-page-table-para-border/para-border-ref.png" alt="https://share.vmiklos.hu/blog/sw-page-table-para-border/para-border-ref.png" /&gt;
+&lt;/div&gt;
+&lt;div class="title"&gt;Figure 9. Word-style paragraph borders, reference&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;What&amp;#8217;s visible here is that some paragraph inside the table cell had borders defined, but due to how
+the reference clips these borders, this border was not visible. That unexpected border is now also
+omitted in Writer.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_how_is_this_implemented"&gt;How is this implemented?&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;If you would like to know a bit more about how this works, continue reading&amp;#8230; :-)&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;As usual, the high-level problem was addressed by a series of bugfix changes.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;For the page border:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/129281"&gt;https://gerrit.libreoffice.org/c/core/+/129281&lt;/a&gt; sw: fix swapped inner vs outer border for Word-style right/bottom page borders
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;For the table border:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/128053"&gt;https://gerrit.libreoffice.org/c/core/+/128053&lt;/a&gt; sw: fix too long inner borders intersecting with outer borders for Word cells
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/128289"&gt;https://gerrit.libreoffice.org/c/core/+/128289&lt;/a&gt; sw: fix swapped inner vs outer border for Word-style left table borders
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/128383"&gt;https://gerrit.libreoffice.org/c/core/+/128383&lt;/a&gt; sw: fix swapped inner vs outer border for Word-style bottom table borders
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;For the paragraph border:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="https://gerrit.libreoffice.org/c/core/+/128569"&gt;https://gerrit.libreoffice.org/c/core/+/128569&lt;/a&gt; sw: fix unexpected paragraph border inside table cells
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="_want_to_start_using_this"&gt;Want to start using this?&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;You can get a snapshot / demo of Collabora Office and try it out yourself right now:
+&lt;a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/"&gt;try unstable snapshot&lt;/a&gt;.  Collabora
+intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
+of this work will be available in TDF&amp;#8217;s next release too (7.4).&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Tue, 08 Mar 2022 12:11:27 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2022-03-08:/blog/sw-page-table-para-border.html</guid><category>libreoffice</category><category>en</category></item><item><title>Improved PDF export options in the command-line and in Online</title><link>https://vmiklos.hu/blog/pdf-convert-to.html</link><description>&lt;div id="preamble"&gt;
 &lt;div class="sectionbody"&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;The LibreOffice Technology now has much better support for creating custom PDF exports of documents:
 options available in the interactive PDF export options dialog are now also possible to set from the
@@ -955,124 +1120,4 @@ expect all of this work will be available in TDF&amp;#8217;s
 &lt;a href="http://dev-builds.libreoffice.org/daily/master/"&gt;next release&lt;/a&gt; (7.2).&lt;/p&gt;&lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Thu, 10 Jun 2021 10:25:51 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2021-06-10:/blog/sw-line-height.html</guid><category>libreoffice</category><category>en</category></item><item><title>Bibliography improvements in LibreOffice Writer: refer to a specific page</title><link>https://vmiklos.hu/blog/sw-bibliography-page.html</link><description>&lt;div id="preamble"&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;The bibliography feature in Writer allows authors of e.g. scientific papers to track sources: first
-you can insert bibliography entry fields, then at the end you can generate a bibliography table
-automatically.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Writer recently gained &lt;a href="https://vmiklos.hu/blog/sw-bibliography.html"&gt;two improvements in this area&lt;/a&gt;, and
-now there is one more: the ability to refer to a specific page of a (potentially long) source.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;First, thanks &lt;a href="https://ulakbim.tubitak.gov.tr/en"&gt;TUBITAK ULAKBIM&lt;/a&gt; who made this work by
-&lt;a href="https://www.collaboraoffice.com/"&gt;Collabora&lt;/a&gt; possible.&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_motivation"&gt;Motivation&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;The same feature in normal HTML linking / citation is well-known: you can place anchors in your
-document and then links can refer to not only to your page, but also can set the fragment part of
-the URL to jump to a specific section directly. E.g.
-&lt;a href="https://vmiklos.hu/blog/sw-bibliography.html#_motivation"&gt;this link&lt;/a&gt; will jump to the "Motivation"
-section of the above referred previous post.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Wouldn&amp;#8217;t it be nice if you could also jump to a specific page of a scientific PDF?&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_results_so_far"&gt;Results so far&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;You can add such references by choosing the Insert &amp;#8594; Table of Contents and Index &amp;#8594; Bibliography
-Entry menu item.  Set Bibliography Source to Document Content and press the New button. The
-appearing dialog now has widgets to set a specific page number:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;img src="https://share.vmiklos.hu/blog/sw-bibliography-page/page.png" alt="https://share.vmiklos.hu/blog/sw-bibliography-page/page.png" /&gt;
-&lt;/div&gt;
-&lt;div class="title"&gt;Figure 1. Refer to a specic page of a bibliography source, user interface&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;This is then stored in the URL by setting its fragment to &lt;code&gt;page=...&lt;/code&gt;, and typically PDF readers
-understand this syntax, so when you click on the URL, the PDF will open exactly on the cited page.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;This also works the other way around: URLs with such syntax are presented to the user with the
-dedicated widget to see, edit or delete the page number of the URL.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Finally, if you refer to different pages of the same source, the bibliography text generator detects
-this and lists the source in the bibliography only once.&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_how_is_this_implemented"&gt;How is this implemented?&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;If you would like to know a bit more about how this works, continue reading&amp;#8230; :-)&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;As usual, the high-level problem was addressed by a series of incremental development steps:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/111653"&gt;sw bibliography, refer to a page: strip
-  URLs in the bibliography table&lt;/a&gt; improved the bibliography table generator to not show page fragments
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/111761"&gt;sw bibliography, refer to a page:
-  de-duplicate bibliography table URLs&lt;/a&gt; merged the idendical sources to a single entry in the bibliography
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/112400"&gt;sw bibliography, refer to a page: make the
-  biblio field clickable&lt;/a&gt; allows opening the URL-with-page by clicking on the bibliography entry field
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/112981"&gt;sw bibliography, refer to a page: add open
-  hyperlink context menu&lt;/a&gt; implemented the context menu, in case you prefer to avoid ctrl-click for hyperlink opening
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/113035"&gt;sw bibliography, refer to a page: add PDF
-  export links&lt;/a&gt; improved the PDF export to have clickable bibliography entry fields
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/114059"&gt;sw bibliography, refer to a page: fix
-  biblio field relative URLs&lt;/a&gt; added support for relative URLs, in case the edited document and
-  referred PDFs are in the same directory, next to each other
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/114104"&gt;sw bibliography, refer to a page: also
-  de-duplicate relative URLs&lt;/a&gt; made the relative URL and bibliography table row merging work together
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/114380"&gt;sw bibliography, refer to a page: edit the
-  page number of individual entries&lt;/a&gt; allows editing just a single bibliography entry field for page
-  number purposes, since in other cases it makes sense to update all fields of the same source (e.g.
-  correcting a spelling mistake in an author name)
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/114443"&gt;sw bibliography, refer to a page: add
-  dedicate widget to show the page number&lt;/a&gt;,
-  &lt;a href="https://gerrit.libreoffice.org/c/core/+/114664"&gt;sw bibliography, refer to a page: save
-  edited page number&lt;/a&gt; and &lt;a href="https://gerrit.libreoffice.org/c/core/+/114750"&gt;sw bibliography,
-  refer to a page: add insert/delete UI&lt;/a&gt; add support for creating, showing, editing and deleting page
-  numbers of such URLs on the user interface
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_want_to_start_using_this"&gt;Want to start using this?&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
-expect all of this work will be available in TDF&amp;#8217;s
-&lt;a href="http://dev-builds.libreoffice.org/daily/master/"&gt;next release&lt;/a&gt; (7.2).&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Wed, 05 May 2021 11:25:20 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2021-05-05:/blog/sw-bibliography-page.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Thu, 10 Jun 2021 10:25:51 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2021-06-10:/blog/sw-line-height.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
