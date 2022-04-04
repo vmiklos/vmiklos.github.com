@@ -1,0 +1,131 @@
+= Clearing breaks in Writer
+
+:slug: sw-clearing-breaks
+:category: libreoffice
+:tags: en
+:date: 2022-04-04T08:40:01+02:00
+
+Writer now supports what we call clearing breaks: a new property on line breaks which controls where
+to put the next line in case the line break is at the end of a line which intersects with an
+anchored object. This feature improves compatibility with the DOCX and HTML formats.
+
+.Word-style "all" clearing in Writer, new result.
+image::https://share.vmiklos.hu/blog/sw-clearing-break/all-new.png[align="center"]
+
+First, thanks to https://dapsi.ngi.eu/[NGI DAPSI] who made this work by
+https://www.collaboraoffice.com/[Collabora] possible.
+
+.This project has received funding from the European Union’s Horizon 2020 research and innovation programme under grant agreement No 871498
+image::https://share.vmiklos.hu/blog/sw-clearing-break/eu.png[align="center"]
+
+== Motivation
+
+Word users expect to be able to import their documents to Writer and experience high fidelity
+rendering: this means Writer has to support clearing breaks, which instruct the layout to put the
+next line after a line break not necessarily at the next available vertical position, but perhaps
+the next line should "just down" to the next full line, or perhaps just do this partially. (Jump
+down to the next line, so no anchored object causes an additional indentation on the left or right
+side.)
+
+== Results
+
+The easiest case is the "none" clearing break, i.e. when it's not actually clearing. This looks like this:
+
+.Word-style not clearing break, new result.
+image::https://share.vmiklos.hu/blog/sw-clearing-break/none-new.png[align="center"]
+
+This is just a plain line break, and there are no changes here. It used to look like this in the past as well:
+
+.Word-style not clearing break, old result.
+image::https://share.vmiklos.hu/blog/sw-clearing-break/none-old.png[align="center"]
+
+And both match the reference rendering:
+
+.Word-style not clearing break, reference.
+image::https://share.vmiklos.hu/blog/sw-clearing-break/none-ref.png[align="center"]
+
+Now, what's more interesting is the "all" clearing break, when the next line is placed in a way that
+it's a full line. Figure 1 already shows how it now looks like in Writer. Here is how it used to
+look like:
+
+.Word-style "all" clearing break, old result.
+image::https://share.vmiklos.hu/blog/sw-clearing-break/all-old.png[align="center"]
+
+Finally you can compare that with the reference:
+
+.Word-style "all" clearing break, reference.
+image::https://share.vmiklos.hu/blog/sw-clearing-break/all-ref.png[align="center"]
+
+This is the most interesting case, and Word still provides UI to insert such breaks, so it
+frequently appears in documents out there. But there are two other cases, still. The "left" clearing
+break "jumps down", below anchored objects on the left. Here is how it looks now in Writer:
+
+.Word-style "left" clearing break, new result
+image::https://share.vmiklos.hu/blog/sw-clearing-break/left-new.png[align="center"]
+
+And this is how it used to look like:
+
+.Word-style "left" clearing break, old result
+image::https://share.vmiklos.hu/blog/sw-clearing-break/left-old.png[align="center"]
+
+Finally you can compare that with the reference:
+
+.Word-style "left" clearing break, reference
+image::https://share.vmiklos.hu/blog/sw-clearing-break/left-ref.png[align="center"]
+
+The last case is the mirror of this, when the "right" clearing break "jumps down", below anchored
+objects on the right. Here is how it looks now in Writer:
+
+.Word-style "right" clearing break, new result
+image::https://share.vmiklos.hu/blog/sw-clearing-break/right-new.png[align="center"]
+
+And this is how it used to look like:
+
+.Word-style "right" clearing break, old result
+image::https://share.vmiklos.hu/blog/sw-clearing-break/right-old.png[align="center"]
+
+Finally you can compare that with the reference:
+
+.Word-style "right" clearing break, reference
+image::https://share.vmiklos.hu/blog/sw-clearing-break/right-ref.png[align="center"]
+
+Other than the layout, there is also user interface for this in both LibreOffice and Collabora Online:
+
+.Insert break dialog in Collabora Online, with a new option for clearing breaks
+image::https://share.vmiklos.hu/blog/sw-clearing-break/ui.png[align="center"]
+
+== How is this implemented?
+
+If you would like to know a bit more about how this works, continue reading... :-)
+
+As usual, the high-level problem was addressed by a series of incremental commits:
+
+- https://gerrit.libreoffice.org/c/core/+/130687 sw clearing breaks: add document model
+- https://gerrit.libreoffice.org/c/core/+/130741 sw clearing breaks: add UNO API to insert this
+- https://gerrit.libreoffice.org/c/core/+/130818 sw clearing breaks: add UNO API to insert this with custom clear / char props
+- https://gerrit.libreoffice.org/c/core/+/130903 sw clearing breaks: include this in the UNO API text portion enum
+- https://gerrit.libreoffice.org/c/core/+/130961 sw clearing breaks: initial layout support
+- https://gerrit.libreoffice.org/c/core/+/131093 sw clearing breaks: fix rendering of the line break char itself
+- https://gerrit.libreoffice.org/c/core/+/131167 sw clearing breaks: add DOCX import
+- https://gerrit.libreoffice.org/c/core/+/131231 sw clearing breaks: add DOCX export
+- https://gerrit.libreoffice.org/c/core/+/131297 sw clearing breaks: fix layout when the line is empty
+- https://gerrit.libreoffice.org/c/core/+/131346 sw clearing breaks: add ODF export
+- https://gerrit.libreoffice.org/c/core/+/131645 sw clearing breaks: add ODF import
+- https://gerrit.libreoffice.org/c/core/+/131697 sw clearing breaks: add DOC import
+- https://gerrit.libreoffice.org/c/core/+/131732 sw clearing breaks: add DOC export
+- https://gerrit.libreoffice.org/c/core/+/131886 sw clearing breaks: add RTF filter
+- https://gerrit.libreoffice.org/c/core/+/131924 sw clearing breaks: add HTML filter
+- https://gerrit.libreoffice.org/c/core/+/131958 sw clearing breaks: add plain text export
+- https://gerrit.libreoffice.org/c/core/+/132024 sw clearing breaks: add insert UI
+- https://gerrit.libreoffice.org/c/core/+/132093 sw clearing breaks: add clearing indicator during rendering
+- https://gerrit.libreoffice.org/c/core/+/132162 sw clearing breaks: add layout support for the left and right cases
+- https://gerrit.libreoffice.org/c/core/+/132317 sw clearing breaks: link ODF proposal
+
+== Want to start using this?
+
+You can get a snapshot / demo of Collabora Office 2022 and try it out yourself right now:
+https://www.collaboraoffice.com/collabora-office-latest-snapshot/[try unstable snapshot].  Collabora
+intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
+of this work will be available in TDF's next release too (7.4).
+
+// vim: ft=asciidoc
