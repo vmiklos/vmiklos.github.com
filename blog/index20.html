@@ -58,6 +58,38 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/mary-poppins.html">Mary Poppins</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Sat 23 February 2013</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh5.googleusercontent.com/-Smw0lwaHHuQ/USjCtM8YV1I/AAAAAAAACJc/FbzO5lqZ4LQ/s570/mad_114_20120312155531.jpg">
+<img src="https://lh5.googleusercontent.com/-Smw0lwaHHuQ/USjCtM8YV1I/AAAAAAAACJc/FbzO5lqZ4LQ/s400/mad_114_20120312155531.jpg" alt="https://lh5.googleusercontent.com/-Smw0lwaHHuQ/USjCtM8YV1I/AAAAAAAACJc/FbzO5lqZ4LQ/s400/mad_114_20120312155531.jpg" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>Pár hete láttuk ezt a musicalt: kifejezetten látványos, nem kifejezetten
+gyerek-közönséget megcélzó előadás, tetszett. A végén konkrétan Mary "átrepült"
+esernyőjével a nézőtér felett&#8230; ;-)</p></div>
+<div class="paragraph"><p>Úgy tűnik elég népszerű előadás, a Madách
+<a href="http://www.madachszinhaz.hu/showtickets.php?id=114">honlapján</a> nincs meghirdetve
+olyan előadás, amire lenne még jegy is.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/swtextframe-gradientbackground.html">LibreOffice Writer now supports gradients in text frame backgrounds</a></h1>
   </div>
   <div class="article_meta">
@@ -408,59 +440,6 @@ or the <a href="http://kernel.opensuse.org/cgit">Linux kernel</a>.</p></div>
 <div class="paragraph"><p>Úgy rémlik, eredetileg ezt valamikor nyelvvizsgára készülve láttam, meg most
 pár hete újra. Jó látni ezeket az igényesen felépített filmeket.</p></div>
 <div class="paragraph"><p>(<a href="http://www.imdb.com/title/tt0109830/">imdb</a>, <a href="http://www.youtube.com/watch?v=uPIEn0M8su0">trailer</a>)</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/mdadm-upgrade.html">mdadm upgrade</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Wed 02 January 2013</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Even though I spend little of my free time with sysadmin stuff these days, this
-came up recently. A few years ago I hit an issue about <code>mdadm</code> creating too new
-metadata that wasn&#8217;t handled by the installed kernel, so I remembered to use
-<code>--metadata 0.90</code> when creating a new array. Additionally, I preferred using
-<code>cfdisk</code> for partitioning.</p></div>
-<div class="paragraph"><p>It turns out this caused quite some grief when it came to <code>grub2</code>, I wrote about
-this <a href="https://vmiklos.hu/blog/grub2.html">earlier</a>&#8201;&#8212;&#8201;that was about the theory, in a VM. This is
-about the practice. In practice, <code>gparted</code> turned out to be too risky, and I
-choose the following approach to repartition the hard drives (so there is
-enough space for <code>grub2</code>) and upgrade the <code>mdadm</code> metadata.</p></div>
-<div class="paragraph"><p>First, I broke the mirror by removing one leg of the RAID1 array:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>mdadm --manage /dev/md126 --fail /dev/sdd1
-mdadm --manage /dev/md126 --remove /dev/sdd1</code></pre>
-</div></div>
-<div class="paragraph"><p>Then I created a new array (with a single leg) with the new metadata and formatted it:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>fdisk /dev/sdd
-mdadm --create /dev/md125 --metadata=1.0 --level=1 --assume-clean --raid-devices=2 missing /dev/sdd1
-mkfs.ext4 /dev/md125</code></pre>
-</div></div>
-<div class="paragraph"><p>Finally I copied over the live system:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>mkdir /mnt/md125
-mount /dev/md125 /mnt/md125
-rsync --delete -avxP / /mnt/md125
-umount /mnt/md125</code></pre>
-</div></div>
-<div class="paragraph"><p>The rest was easy: I booted a livecd to do the <code>rsync</code> once again (taking a few
-minutes only), and once the system was running from the new array, added the
-leg of the old array to the new one as well&#8201;&#8212;&#8201;and that&#8217;s it.</p></div>
 </div>
 </div>
 

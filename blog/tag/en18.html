@@ -59,6 +59,104 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/lo-hackfest-munich-2012.html">LibreOffice Hackfest in Munich, 2012</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Mon 26 November 2012</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh3.googleusercontent.com/-oCxvARAY6aQ/ULNRD3q8ZTI/AAAAAAAAB3s/wIFkr3bjDZA/s600/MucHackfest2012.png">
+<img src="https://lh3.googleusercontent.com/-oCxvARAY6aQ/ULNRD3q8ZTI/AAAAAAAAB3s/wIFkr3bjDZA/s400/MucHackfest2012.png" alt="https://lh3.googleusercontent.com/-oCxvARAY6aQ/ULNRD3q8ZTI/AAAAAAAAB3s/wIFkr3bjDZA/s400/MucHackfest2012.png" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>During the weekend I was in Munich to visit our second LibreOffice hackfest
+this year. The archivements are detailed
+<a href="http://wiki.documentfoundation.org/Hackfest/Munich2012#Achievements">here</a>. Here
+are a few interestings details I learned during this event:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Laszlo explained on the train to Munich that single line spacing is 15% of
+  the font size, by definition. That finally explains why it is that the height
+  of a 12pt single-line paragraph in Writer is not 240 but 276 twips.
+</p>
+</li>
+<li>
+<p>
+Finally Michael motivated (and also helped!) me to improve the copy&amp;paste in
+  the new RTF filter, so it seems that removing the old filter completely is
+  near.
+</p>
+</li>
+<li>
+<p>
+The ability to sign each other&#8217;s gpg key was a great idea. I didn&#8217;t know too
+  much about this topic, so I read up on this
+  <a href="http://www.phillylinux.org/keys/terminal.html">here</a>. (Additionally, the
+  <code>gpg-key2ps</code> command from <code>signing-party</code>&#8201;&#8212;&#8201;yes, there is such a package!&#8201;&#8212;&#8201;  is useful.)
+</p>
+</li>
+<li>
+<p>
+We set up a nice icecream farm from the laptops, one more aspect that boosted
+  our productivity.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Speaking about icecream&#8201;&#8212;&#8201;there were two reasons why I didn&#8217;t really use it:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+it required re-configuring your build tree (<code>--enable-icecream</code>)
+</p>
+</li>
+<li>
+<p>
+it required shutting down your firewall
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>It turns out none of this is really needed, so let me share the way to avoid
+these problems:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+look into the
+  <a href="https://en.opensuse.org/index.php?title=Icecream&amp;oldid=53112#Firewall">wiki</a>, you only need to open a few ports, even broadcasting/auto-discovery works with a started firewall
+</p>
+</li>
+<li>
+<p>
+use <code>CCACHE_PREFIX="icecc" make build-nocheck PARALLELISM=30</code> to enable icecream for a single make run
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Additionally, if you run openSUSE 12.2, by default the daemon reports that the
+box can&#8217;t compile x86_64 binaries (probably it hasn&#8217;t been updated to deal with
+the 3.0 kernel or something), a quick workaround is to install Lubos' updated
+package:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>zypper -p http://download.opensuse.org/repositories/home:/llunak:/clang/openSUSE_12.2/ in icecream-0.9.7-64.1s.x86_64</code></pre>
+</div></div>
+<div class="paragraph"><p>Thanks for the organizers, once again this hackfest turned out to be really useful! :)</p></div>
+<div class="paragraph"><p>As usual, some pictures are <a href="https://www.flickr.com/photos/vmiklos/albums/72157670949585810">available</a>.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/lo-ooxml-improvements.html">LibreOffice OOXML improvements in Writer</a></h1>
   </div>
   <div class="article_meta">
@@ -959,74 +1057,6 @@ jhead -dsft <span style="color: #990000">*.</span>jpg</tt></pre></div></div>
 <pre><code>c=0; for i in $(ls -lhtr *.jpg|sed 's/.* //'); do c=$((c+1)); cp -a $i new/$(printf "%03d" $c).jpg; done</code></pre>
 </div></div>
 <div class="paragraph"><p>to order filenames based on the file timestamp.</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/git-notes-merge.html">Merging git notes</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Thu 07 June 2012</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>The <code>git notes</code> command is really about local annotation of commits&#8201;&#8212;&#8201;nothing
-to share. If you decide to still do so, for example the
-<a href="http://git-scm.com/2010/08/25/notes.html">git-scm.com</a> HOWTO can show you how to
-pull and push them. But what about merging?  There is no UI for that, but&#8201;&#8212;&#8201;given that with git, everything is possible&#8201;&#8212;&#8201;you can still do so manually.</p></div>
-<div class="paragraph"><p>So the problem comes when Alice fetches notes, Bob does so, Alice pushes her
-notes back, Bob annotates a different commit and when Bob wants to push, he
-gets <code>rejected, non-fast-forward</code>. Normally you would merge or rebase in this
-situation, but given that <code>git notes</code> by default updates the
-<code>refs/notes/commits</code> ref and you typically have a different branch checked out,
-you can&#8217;t use <code>git merge</code> or <code>git rebase</code> directly.</p></div>
-<div class="paragraph"><p>What works is:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>git checkout refs/notes/commits
-git fetch origin refs/notes/commits
-git merge FETCH_HEAD
-git update-ref refs/notes/commits HEAD
-git checkout master</code></pre>
-</div></div>
-<div class="colist arabic"><ol>
-<li>
-<p>
-Check out the notes, so if you have conflicts, you can resolve them.
-</p>
-</li>
-<li>
-<p>
-Fetch remote notes to FETCH_HEAD.
-</p>
-</li>
-<li>
-<p>
-Do the merge.
-</p>
-</li>
-<li>
-<p>
-Necessary, as <code>git merge</code> won&#8217;t update the ref automatically, since we&#8217;re not on a branch.
-</p>
-</li>
-<li>
-<p>
-Or whereever you were before.
-</p>
-</li>
-</ol></div>
-<div class="paragraph"><p>And now you can push your notes, as detailed in the above referred blog post.
-Yes, rebasing would be possible as well, that&#8217;s left as an exercise for the
-reader. ;-)</p></div>
 </div>
 </div>
 

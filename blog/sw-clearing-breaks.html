@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/pygments.css">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Miklos Vajna">
+  <meta name="description" content="Posts and writings by Miklos Vajna">
+
+  <link href="https://vmiklos.hu/blog/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking RSS" />
+
+<meta name="keywords" content="en">
+
+  <title>
+    What is Miklos hacking
+&ndash; Clearing breaks in Writer  </title>
+
+<script type="text/javascript">
+  var _paq = window._paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//analytics.vmiklos.hu/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '1']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <h2><a href="https://vmiklos.hu/blog">What is Miklos hacking</a></h2>
+      <p></p>
+      <ul>
+        <li><a href="/" target="_blank">Root</a></li>
+        <li><a href="https://planet.documentfoundation.org/" target="_blank">LibreOffice Blogs</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://vmiklos.hu/blog">Index</a> &brvbar; <a href="https://vmiklos.hu/blog/archives.html">Archives</a>
+      &brvbar; <a href="https://vmiklos.hu/blog/feeds/all.rss.xml">RSS</a>
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sw-clearing-breaks.html">Clearing breaks in Writer</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Mon 04 April 2022</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 4 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>Writer now supports what we call clearing breaks: a new property on line breaks which controls where
+to put the next line in case the line break is at the end of a line which intersects with an
+anchored object. This feature improves compatibility with the DOCX and HTML formats.</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://share.vmiklos.hu/blog/sw-clearing-break/all-new.png" alt="https://share.vmiklos.hu/blog/sw-clearing-break/all-new.png" />
+</div>
+<div class="title">Figure 1. Word-style "all" clearing in Writer, new result.</div>
+</div>
+<div class="paragraph"><p>First, thanks to <a href="https://dapsi.ngi.eu/">NGI DAPSI</a> who made this work by
+<a href="https://www.collaboraoffice.com/">Collabora</a> possible.</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://share.vmiklos.hu/blog/sw-clearing-break/eu.png" alt="https://share.vmiklos.hu/blog/sw-clearing-break/eu.png" />
+</div>
+<div class="title">Figure 2. This project has received funding from the European Union’s Horizon 2020 research and innovation programme under grant agreement No 871498</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_motivation">Motivation</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Word users expect to be able to import their documents to Writer and experience high fidelity
+rendering: this means Writer has to support clearing breaks, which instruct the layout to put the
+next line after a line break not necessarily at the next available vertical position, but perhaps
+the next line should "just down" to the next full line, or perhaps just do this partially. (Jump
+down to the next line, so no anchored object causes an additional indentation on the left or right
+side.)</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_results">Results</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>The easiest case is the "none" clearing break, i.e. when it&#8217;s not actually clearing. This looks like this:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://share.vmiklos.hu/blog/sw-clearing-break/none-new.png" alt="https://share.vmiklos.hu/blog/sw-clearing-break/none-new.png" />
+</div>
+<div class="title">Figure 3. Word-style not clearing break, new result.</div>
+</div>
+<div class="paragraph"><p>This is just a plain line break, and there are no changes here. It used to look like this in the past as well:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://share.vmiklos.hu/blog/sw-clearing-break/none-old.png" alt="https://share.vmiklos.hu/blog/sw-clearing-break/none-old.png" />
+</div>
+<div class="title">Figure 4. Word-style not clearing break, old result.</div>
+</div>
+<div class="paragraph"><p>And both match the reference rendering:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://share.vmiklos.hu/blog/sw-clearing-break/none-ref.png" alt="https://share.vmiklos.hu/blog/sw-clearing-break/none-ref.png" />
+</div>
+<div class="title">Figure 5. Word-style not clearing break, reference.</div>
+</div>
+<div class="paragraph"><p>Now, what&#8217;s more interesting is the "all" clearing break, when the next line is placed in a way that
+it&#8217;s a full line. Figure 1 already shows how it now looks like in Writer. Here is how it used to
+look like:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://share.vmiklos.hu/blog/sw-clearing-break/all-old.png" alt="https://share.vmiklos.hu/blog/sw-clearing-break/all-old.png" />
+</div>
+<div class="title">Figure 6. Word-style "all" clearing break, old result.</div>
+</div>
+<div class="paragraph"><p>Finally you can compare that with the reference:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://share.vmiklos.hu/blog/sw-clearing-break/all-ref.png" alt="https://share.vmiklos.hu/blog/sw-clearing-break/all-ref.png" />
+</div>
+<div class="title">Figure 7. Word-style "all" clearing break, reference.</div>
+</div>
+<div class="paragraph"><p>This is the most interesting case, and Word still provides UI to insert such breaks, so it
+frequently appears in documents out there. But there are two other cases, still. The "left" clearing
+break "jumps down", below anchored objects on the left. Here is how it looks now in Writer:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://share.vmiklos.hu/blog/sw-clearing-break/left-new.png" alt="https://share.vmiklos.hu/blog/sw-clearing-break/left-new.png" />
+</div>
+<div class="title">Figure 8. Word-style "left" clearing break, new result</div>
+</div>
+<div class="paragraph"><p>And this is how it used to look like:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://share.vmiklos.hu/blog/sw-clearing-break/left-old.png" alt="https://share.vmiklos.hu/blog/sw-clearing-break/left-old.png" />
+</div>
+<div class="title">Figure 9. Word-style "left" clearing break, old result</div>
+</div>
+<div class="paragraph"><p>Finally you can compare that with the reference:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://share.vmiklos.hu/blog/sw-clearing-break/left-ref.png" alt="https://share.vmiklos.hu/blog/sw-clearing-break/left-ref.png" />
+</div>
+<div class="title">Figure 10. Word-style "left" clearing break, reference</div>
+</div>
+<div class="paragraph"><p>The last case is the mirror of this, when the "right" clearing break "jumps down", below anchored
+objects on the right. Here is how it looks now in Writer:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://share.vmiklos.hu/blog/sw-clearing-break/right-new.png" alt="https://share.vmiklos.hu/blog/sw-clearing-break/right-new.png" />
+</div>
+<div class="title">Figure 11. Word-style "right" clearing break, new result</div>
+</div>
+<div class="paragraph"><p>And this is how it used to look like:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://share.vmiklos.hu/blog/sw-clearing-break/right-old.png" alt="https://share.vmiklos.hu/blog/sw-clearing-break/right-old.png" />
+</div>
+<div class="title">Figure 12. Word-style "right" clearing break, old result</div>
+</div>
+<div class="paragraph"><p>Finally you can compare that with the reference:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://share.vmiklos.hu/blog/sw-clearing-break/right-ref.png" alt="https://share.vmiklos.hu/blog/sw-clearing-break/right-ref.png" />
+</div>
+<div class="title">Figure 13. Word-style "right" clearing break, reference</div>
+</div>
+<div class="paragraph"><p>Other than the layout, there is also user interface for this in both LibreOffice and Collabora Online:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://share.vmiklos.hu/blog/sw-clearing-break/ui.png" alt="https://share.vmiklos.hu/blog/sw-clearing-break/ui.png" />
+</div>
+<div class="title">Figure 14. Insert break dialog in Collabora Online, with a new option for clearing breaks</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_how_is_this_implemented">How is this implemented?</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
+<div class="paragraph"><p>As usual, the high-level problem was addressed by a series of incremental commits:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/130687">https://gerrit.libreoffice.org/c/core/+/130687</a> sw clearing breaks: add document model
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/130741">https://gerrit.libreoffice.org/c/core/+/130741</a> sw clearing breaks: add UNO API to insert this
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/130818">https://gerrit.libreoffice.org/c/core/+/130818</a> sw clearing breaks: add UNO API to insert this with custom clear / char props
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/130903">https://gerrit.libreoffice.org/c/core/+/130903</a> sw clearing breaks: include this in the UNO API text portion enum
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/130961">https://gerrit.libreoffice.org/c/core/+/130961</a> sw clearing breaks: initial layout support
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/131093">https://gerrit.libreoffice.org/c/core/+/131093</a> sw clearing breaks: fix rendering of the line break char itself
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/131167">https://gerrit.libreoffice.org/c/core/+/131167</a> sw clearing breaks: add DOCX import
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/131231">https://gerrit.libreoffice.org/c/core/+/131231</a> sw clearing breaks: add DOCX export
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/131297">https://gerrit.libreoffice.org/c/core/+/131297</a> sw clearing breaks: fix layout when the line is empty
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/131346">https://gerrit.libreoffice.org/c/core/+/131346</a> sw clearing breaks: add ODF export
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/131645">https://gerrit.libreoffice.org/c/core/+/131645</a> sw clearing breaks: add ODF import
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/131697">https://gerrit.libreoffice.org/c/core/+/131697</a> sw clearing breaks: add DOC import
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/131732">https://gerrit.libreoffice.org/c/core/+/131732</a> sw clearing breaks: add DOC export
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/131886">https://gerrit.libreoffice.org/c/core/+/131886</a> sw clearing breaks: add RTF filter
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/131924">https://gerrit.libreoffice.org/c/core/+/131924</a> sw clearing breaks: add HTML filter
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/131958">https://gerrit.libreoffice.org/c/core/+/131958</a> sw clearing breaks: add plain text export
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/132024">https://gerrit.libreoffice.org/c/core/+/132024</a> sw clearing breaks: add insert UI
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/132093">https://gerrit.libreoffice.org/c/core/+/132093</a> sw clearing breaks: add clearing indicator during rendering
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/132162">https://gerrit.libreoffice.org/c/core/+/132162</a> sw clearing breaks: add layout support for the left and right cases
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/132317">https://gerrit.libreoffice.org/c/core/+/132317</a> sw clearing breaks: link ODF proposal
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_want_to_start_using_this">Want to start using this?</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office 2022 and try it out yourself right now:
+<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
+intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
+of this work will be available in TDF&#8217;s next release too (7.4).</p></div>
+</div>
+</div>
+
+  </div>
+  <div class="article_meta">
+    <p>Category: <a href="https://vmiklos.hu/blog/category/libreoffice.html">libreoffice</a>
+ &ndash; Tags:
+      <a href="https://vmiklos.hu/blog/tag/en.html">en</a>    </p>
+  </div>
+
+
+</article>
+
+
+    <div id="ending_message">
+      <p>&copy; Miklos Vajna. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
+</body>
+</html>
