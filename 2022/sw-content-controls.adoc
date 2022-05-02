@@ -1,0 +1,108 @@
+= Content controls in Writer
+
+:slug: sw-content-controls
+:category: libreoffice
+:tags: en
+:date: 2022-05-02T15:08:21+02:00
+
+Writer now has the start of content controls: a new way to set properties on a piece of text,
+primarily for form filling purposes. This feature improves compatibility with the DOCX format:
+inline content control types "rich text" and "checkbox" are the first two types we can now import.
+
+.Word-style inline content controls in Writer.
+image::https://share.vmiklos.hu/blog/sw-content-controls/feature.png[align="center"]
+
+First, thanks to https://dapsi.ngi.eu/[NGI DAPSI] who made this work by
+https://www.collaboraoffice.com/[Collabora] possible.
+
+.This project has received funding from the European Union’s Horizon 2020 research and innovation programme under grant agreement No 871498
+image::https://share.vmiklos.hu/blog/sw-content-controls/eu.png[align="center"]
+
+== Motivation
+
+Word users expect to be able to import their document to Writer and experience a matching feature
+set: form filling is not an exception. Word provides several content control kinds (inline, block,
+row and cell content controls), this project focuses on inline ("run") content controls.
+
+In the scope of inline content controls, the plan is to support rich text, checkbox, dropdown,
+picture and date content controls. This blog post presents the already implemented rich text and
+checkbox types.
+
+You might wonder why content controls are useful, since Writer already has form controls and
+fieldmarks, which provide something similar. Here are some properties of content controls, which
+make them incompatible with field-based fillable forms or form controls:
+
+- inline content controls can't span over multiple paragraphs, while this is allowed for fieldmarks
+  (bookmark-based fields)
+
+- content controls must be well-formed XML elements, this allows nesting (while Writer fields can't
+  be nested), but does not allow the start/end position to be a random place in the document (while
+  this is allowed for fieldmarks, which have separate XML elements for start and end)
+
+- content controls just have a set of properties, while fieldmarks are supposed to have a field
+  command and a result (with a separator between the two)
+
+- content controls can contain rich text (full set of character formatting), while Writer fields can
+  only have one character formatting (e.g. half of the field can't be bold)
+
+== Results
+
+The feature consists of menu items to insert rich text or checkbox content controls, and then you
+can interact with the inserted content controls:
+
+.Menu items to insert rich text and checkbox content controls.
+image::https://share.vmiklos.hu/blog/sw-content-controls/menu.png[align="center"]
+
+Rich text content controls simply show an indicator when you're inside the content control:
+
+.A rich text content control.
+image::https://share.vmiklos.hu/blog/sw-content-controls/rich-text.png[align="center"]
+
+This is similar to input fields, just allows rich text content, not limited to plain text.
+
+Checkbox content controls contain a single character, but you can interact with them: clicking on
+the content control toggles the checked state of the checkbox:
+
+.Checkbox content controls.
+image::https://share.vmiklos.hu/blog/sw-content-controls/checkbox.png[align="center"]
+
+And these content controls can be saved to ODT and DOCX.
+
+== How is this implemented?
+
+If you would like to know a bit more about how this works, continue reading... :-)
+
+As usual, the high-level problem was addressed by a series of incremental commits:
+
+- https://gerrit.libreoffice.org/c/core/+/132291 sw content controls: add document model
+- https://gerrit.libreoffice.org/c/core/+/132350 sw content controls: add UNO API to insert this
+- https://gerrit.libreoffice.org/c/core/+/132404 sw content controls: add UNO API to insert this with custom props
+- https://gerrit.libreoffice.org/c/core/+/132491 sw content controls: include this in the UNO API text portion enum
+- https://gerrit.libreoffice.org/c/core/+/132556 sw content controls: add initial layout support
+- https://gerrit.libreoffice.org/c/core/+/132618 sw content controls: add overlay to render a border around the text portions
+- https://gerrit.libreoffice.org/c/core/+/132652 sw content controls: select the content on click when showing placeholder
+- https://gerrit.libreoffice.org/c/core/+/132717 sw content controls: add ODT export
+- https://gerrit.libreoffice.org/c/core/+/132804 sw content controls: add ODT import
+- https://gerrit.libreoffice.org/c/core/+/132875 sw content controls: add initial DOCX export
+- https://gerrit.libreoffice.org/c/core/+/132944 sw content controls, DOCX export: handle SDT end at para end
+- https://gerrit.libreoffice.org/c/core/+/133195 sw content controls: add initial DOCX import
+- https://gerrit.libreoffice.org/c/core/+/133241 sw content controls: add insert UI
+- https://gerrit.libreoffice.org/c/core/+/133314 sw content controls: add LOK API
+- https://gerrit.libreoffice.org/c/core/+/133363 sw content controls, checkbox: add document model & UNO API
+- https://gerrit.libreoffice.org/c/core/+/133424 sw content controls, checkbox: toggle the checkbox on click
+- https://gerrit.libreoffice.org/c/core/+/133467 sw content controls, checkbox: add ODT filter
+- https://gerrit.libreoffice.org/c/core/+/133532 sw content controls, checkbox: add DOCX export
+- https://gerrit.libreoffice.org/c/core/+/133588 sw content controls, checkbox: add DOCX import
+- https://gerrit.libreoffice.org/c/core/+/133685 sw content controls, checkbox: add insert UI
+
+To make this even more interesting, Rashesh Padia of Collabora started exposing this in Collabora
+Online, see the PR at https://github.com/CollaboraOnline/online/pull/4703.
+
+== Want to start using this?
+
+You can get a snapshot / demo of Collabora Office 2022 and try it out yourself right now:
+https://www.collaboraoffice.com/collabora-office-latest-snapshot/[try unstable snapshot].  Collabora
+intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
+of this work will be available in TDF's next release too (7.4).
+
+// vim: ft=asciidoc
