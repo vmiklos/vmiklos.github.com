@@ -59,6 +59,233 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sw-content-controls.html">Content controls in Writer</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Tue 03 May 2022</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 4 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>Writer now has the start of content controls: a new way to set properties on a piece of text,
+primarily for form filling purposes. This feature improves compatibility with the DOCX format:
+inline content control types "rich text" and "checkbox" are the first two types we can now import.</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://share.vmiklos.hu/blog/sw-content-controls/feature.png" alt="https://share.vmiklos.hu/blog/sw-content-controls/feature.png" />
+</div>
+<div class="title">Figure 1. Word-style inline content controls in Writer.</div>
+</div>
+<div class="paragraph"><p>First, thanks to <a href="https://dapsi.ngi.eu/">NGI DAPSI</a> who made this work by
+<a href="https://www.collaboraoffice.com/">Collabora</a> possible.</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://share.vmiklos.hu/blog/sw-content-controls/eu.png" alt="https://share.vmiklos.hu/blog/sw-content-controls/eu.png" />
+</div>
+<div class="title">Figure 2. This project has received funding from the European Union’s Horizon 2020 research and innovation programme under grant agreement No 871498</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_motivation">Motivation</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Word users expect to be able to import their document to Writer and experience a matching feature
+set: form filling is not an exception. Word provides several content control kinds (inline, block,
+row and cell content controls), this project focuses on inline ("run") content controls.</p></div>
+<div class="paragraph"><p>In the scope of inline content controls, the plan is to support rich text, checkbox, dropdown,
+picture and date content controls. This blog post presents the already implemented rich text and
+checkbox types.</p></div>
+<div class="paragraph"><p>You might wonder why content controls are useful, since Writer already has form controls and
+fieldmarks, which provide something similar. Here are some properties of content controls, which
+make them incompatible with field-based fillable forms or form controls:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+inline content controls can&#8217;t span over multiple paragraphs, while this is allowed for fieldmarks
+  (bookmark-based fields)
+</p>
+</li>
+<li>
+<p>
+content controls must be well-formed XML elements, this allows nesting (while Writer fields can&#8217;t
+  be nested), but does not allow the start/end position to be a random place in the document (while
+  this is allowed for fieldmarks, which have separate XML elements for start and end)
+</p>
+</li>
+<li>
+<p>
+content controls just have a set of properties, while fieldmarks are supposed to have a field
+  command and a result (with a separator between the two)
+</p>
+</li>
+<li>
+<p>
+content controls can contain rich text (full set of character formatting), while Writer fields can
+  only have one character formatting (e.g. half of the field can&#8217;t be bold)
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_results">Results</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>The feature consists of menu items to insert rich text or checkbox content controls, and then you
+can interact with the inserted content controls:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://share.vmiklos.hu/blog/sw-content-controls/menu.png" alt="https://share.vmiklos.hu/blog/sw-content-controls/menu.png" />
+</div>
+<div class="title">Figure 3. Menu items to insert rich text and checkbox content controls.</div>
+</div>
+<div class="paragraph"><p>Rich text content controls simply show an indicator when you&#8217;re inside the content control:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://share.vmiklos.hu/blog/sw-content-controls/rich-text.png" alt="https://share.vmiklos.hu/blog/sw-content-controls/rich-text.png" />
+</div>
+<div class="title">Figure 4. A rich text content control.</div>
+</div>
+<div class="paragraph"><p>This is similar to input fields, just allows rich text content, not limited to plain text.</p></div>
+<div class="paragraph"><p>Checkbox content controls contain a single character, but you can interact with them: clicking on
+the content control toggles the checked state of the checkbox:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://share.vmiklos.hu/blog/sw-content-controls/checkbox.png" alt="https://share.vmiklos.hu/blog/sw-content-controls/checkbox.png" />
+</div>
+<div class="title">Figure 5. Checkbox content controls.</div>
+</div>
+<div class="paragraph"><p>And these content controls can be saved to ODT and DOCX.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_how_is_this_implemented">How is this implemented?</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
+<div class="paragraph"><p>As usual, the high-level problem was addressed by a series of incremental commits:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/132291">https://gerrit.libreoffice.org/c/core/+/132291</a> sw content controls: add document model
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/132350">https://gerrit.libreoffice.org/c/core/+/132350</a> sw content controls: add UNO API to insert this
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/132404">https://gerrit.libreoffice.org/c/core/+/132404</a> sw content controls: add UNO API to insert this with custom props
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/132491">https://gerrit.libreoffice.org/c/core/+/132491</a> sw content controls: include this in the UNO API text portion enum
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/132556">https://gerrit.libreoffice.org/c/core/+/132556</a> sw content controls: add initial layout support
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/132618">https://gerrit.libreoffice.org/c/core/+/132618</a> sw content controls: add overlay to render a border around the text portions
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/132652">https://gerrit.libreoffice.org/c/core/+/132652</a> sw content controls: select the content on click when showing placeholder
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/132717">https://gerrit.libreoffice.org/c/core/+/132717</a> sw content controls: add ODT export
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/132804">https://gerrit.libreoffice.org/c/core/+/132804</a> sw content controls: add ODT import
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/132875">https://gerrit.libreoffice.org/c/core/+/132875</a> sw content controls: add initial DOCX export
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/132944">https://gerrit.libreoffice.org/c/core/+/132944</a> sw content controls, DOCX export: handle SDT end at para end
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/133195">https://gerrit.libreoffice.org/c/core/+/133195</a> sw content controls: add initial DOCX import
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/133241">https://gerrit.libreoffice.org/c/core/+/133241</a> sw content controls: add insert UI
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/133314">https://gerrit.libreoffice.org/c/core/+/133314</a> sw content controls: add LOK API
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/133363">https://gerrit.libreoffice.org/c/core/+/133363</a> sw content controls, checkbox: add document model &amp; UNO API
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/133424">https://gerrit.libreoffice.org/c/core/+/133424</a> sw content controls, checkbox: toggle the checkbox on click
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/133467">https://gerrit.libreoffice.org/c/core/+/133467</a> sw content controls, checkbox: add ODT filter
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/133532">https://gerrit.libreoffice.org/c/core/+/133532</a> sw content controls, checkbox: add DOCX export
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/133588">https://gerrit.libreoffice.org/c/core/+/133588</a> sw content controls, checkbox: add DOCX import
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/133685">https://gerrit.libreoffice.org/c/core/+/133685</a> sw content controls, checkbox: add insert UI
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>To make this even more interesting, Rashesh Padia of Collabora started exposing this in Collabora
+Online, see the PR at <a href="https://github.com/CollaboraOnline/online/pull/4703">https://github.com/CollaboraOnline/online/pull/4703</a>.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_want_to_start_using_this">Want to start using this?</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office 2022 and try it out yourself right now:
+<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
+intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
+of this work will be available in TDF&#8217;s next release too (7.4).</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/sw-clearing-breaks.html">Clearing breaks in Writer</a></h1>
   </div>
   <div class="article_meta">
@@ -1374,117 +1601,6 @@ split out part of <code>SvxItemPropertySet</code> to a separate class, so that w
 of the various properties), while introducing a new <code>SvxItemPropertySetUsrAnys</code> that is specific to
 each not-yet-inserted shape. This way each pending shape is independent, and in case they are not
 inserted to the document model later, that results in no side-effects.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_want_to_start_using_this">Want to start using this?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
-expect all of this work will be available in TDF&#8217;s
-<a href="http://dev-builds.libreoffice.org/daily/master/">next release</a> (7.3).</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/sc-xlsx-button-macro.html">Calc buttons with macros: better XLSX support</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Thu 22 July 2021</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Embedding macros to Calc documents and invoking them by clicking on buttons is a common use-case.
-There was also decent support for importing these from XLSX (XLSM to be precise), but the export
-side was not on par with the binary XLS export.</p></div>
-<div class="paragraph"><p>Calc now got a series of incremental improvements to map our form controls (buttons in particular)
-to OOXML&#8217;s form controls, especially when macros are assigned to such buttons.</p></div>
-<div class="paragraph"><p>This work is primarily for <a href="https://www.collaboraoffice.com/">Collabora Online</a>, but the feature is
-fully available in desktop Calc as well.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_motivation">Motivation</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Excel has both
-<a href="https://support.microsoft.com/en-us/office/assign-a-macro-to-a-form-or-a-control-button-d58edd7d-cb04-4964-bead-9c72c843a283">form
-controls and ActiveX controls</a>, and
-<a href="https://gerrit.libreoffice.org/c/core/+/94161">tdf#106181 XLSX export: output form controls</a>
-last year started adding support for form control export to XLSX.</p></div>
-<div class="paragraph"><p>Hoping that this will be mostly shared drawingML export code fixing (benefiting DOCX and PPTX as
-well), it seemed reasonable to assume that we can improve button handling from the "it&#8217;s lost" state
-to "it&#8217;s good enough" with some effort.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_results_so_far">Results so far</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Now Excel shows the button and you can click on it:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sc-xlsx-button-macro/new.png" alt="https://share.vmiklos.hu/blog/sc-xlsx-button-macro/new.png" />
-</div>
-<div class="title">Figure 1. Excel consuming our XLSM output with a button and a macro</div>
-</div>
-<div class="paragraph"><p>While it used to just refuse our export result:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sc-xlsx-button-macro/old.png" alt="https://share.vmiklos.hu/blog/sc-xlsx-button-macro/old.png" />
-</div>
-<div class="title">Figure 2. Excel refusing bad XLSM output</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_how_is_this_implemented">How is this implemented?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
-<div class="paragraph"><p>As usual, the end goal was reached via a set of incremental commits:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/118085">sc: don&#8217;t require ctrl-click when clicking
-  on internal links of shapes</a> was a UX problem, users don&#8217;t finding Ctrl-click
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/118168">XLSX export: improve handling of checkbox
-  (form controls)</a> was an improvement to the existing checkbox export code, probably today&#8217;s Excel is just more strict in what it accepts
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/118219">XLSX export: handle button form controls</a>
-  adds the initial button support
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/118401">XLSX import: fix handling of named ranges
-  referring to PathMissing sheets</a> fixes an import problem around named ranges and external references
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/118485">XLSX export: handle macros on button form
-  controls</a> adds the macro bits of buttons
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/118600">XSLX export, button form control: fix
-  handling of no macros</a> is a fixup for non-macro buttons
-</p>
-</li>
-</ul></div>
 </div>
 </div>
 <div class="sect1">
