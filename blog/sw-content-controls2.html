@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/pygments.css">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Miklos Vajna">
+  <meta name="description" content="Posts and writings by Miklos Vajna">
+
+  <link href="https://vmiklos.hu/blog/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking RSS" />
+
+<meta name="keywords" content="en">
+
+  <title>
+    What is Miklos hacking
+&ndash; Content controls in Writer: dropdown, picture and date types  </title>
+
+<script type="text/javascript">
+  var _paq = window._paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//analytics.vmiklos.hu/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '1']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <h2><a href="https://vmiklos.hu/blog">What is Miklos hacking</a></h2>
+      <p></p>
+      <ul>
+        <li><a href="/" target="_blank">Root</a></li>
+        <li><a href="https://planet.documentfoundation.org/" target="_blank">LibreOffice Blogs</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://vmiklos.hu/blog">Index</a> &brvbar; <a href="https://vmiklos.hu/blog/archives.html">Archives</a>
+      &brvbar; <a href="https://vmiklos.hu/blog/feeds/all.rss.xml">RSS</a>
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sw-content-controls2.html">Content controls in Writer: dropdown, picture and date types</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Wed 01 June 2022</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 5 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>Writer already had <a href="https://vmiklos.hu/blog/sw-content-controls.html">rich text and checkbox content
+controls</a>: a new way to set properties on a piece of text, primarily for form filling purposes. This
+feature now gained 3 additional types: dropdown, picture and date picker types. This improves
+compatibility with the DOCX format: there are now 5 inline content control types we can now import.</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://share.vmiklos.hu/blog/sw-content-controls2/feature.png" alt="https://share.vmiklos.hu/blog/sw-content-controls2/feature.png" />
+</div>
+<div class="title">Figure 1. Word-style inline content controls in Writer.</div>
+</div>
+<div class="paragraph"><p>First, thanks to <a href="https://dapsi.ngi.eu/">NGI DAPSI</a> who made this work by
+<a href="https://www.collaboraoffice.com/">Collabora</a> possible.</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://share.vmiklos.hu/blog/sw-content-controls/eu.png" alt="https://share.vmiklos.hu/blog/sw-content-controls/eu.png" />
+</div>
+<div class="title">Figure 2. This project has received funding from the European Union’s Horizon 2020 research and innovation programme under grant agreement No 871498</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_motivation">Motivation</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Word users expect to be able to import their document to Writer and experience a matching feature
+set: form filling is not an exception. Word provides several content control kinds (inline, block,
+row and cell content controls), this project focuses on inline ("run") content controls.</p></div>
+<div class="paragraph"><p>In the scope of inline content controls, the above linked blog post already described the rich text
+and checkbox types. In this post, we&#8217;ll focus on the new dropdown, picture and date content
+controls.</p></div>
+<div class="paragraph"><p>You might wonder why content controls are useful, since Writer already has form controls and
+fieldmarks, which provide something similar. Here are some benefits:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Dropdown content controls have a list of dropdown items. Each item is a display-text and value
+  pair, allowing to differentiate between a human-readable string and a machine-readable value.
+  Fieldmarks only handled (machine-readable) values, resulting in document text different from Word.
+</p>
+</li>
+<li>
+<p>
+Picture content controls allow the author of a form to pre-format the image before the filler of
+  the form inserts the actual image. Writer already had placeholder fields for images in the past,
+  but that was just text, allowing image format only after insertion of the actual image.
+</p>
+</li>
+<li>
+<p>
+Date content controls were emulated with Writer fieldmarks in the past, which created trouble
+  during export, since Word itself doesn&#8217;t have a date form-field.
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_results">Results</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>The feature consists of menu items to insert dropdown/picture/date content controls, and then you
+can interact with the inserted content controls or with their properties:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://share.vmiklos.hu/blog/sw-content-controls2/menu.png" alt="https://share.vmiklos.hu/blog/sw-content-controls2/menu.png" />
+</div>
+<div class="title">Figure 3. Menu items to insert drop-down, picture and date content controls.</div>
+</div>
+<div class="paragraph"><p>Drop-down content controls show a dropdown button when you&#8217;re inside the content control:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://share.vmiklos.hu/blog/sw-content-controls2/dropdown.png" alt="https://share.vmiklos.hu/blog/sw-content-controls2/dropdown.png" />
+</div>
+<div class="title">Figure 4. A drop-down content control.</div>
+</div>
+<div class="paragraph"><p>This is similar to dropdown fields, just allows display-text and value pairs, not limited to just
+values.</p></div>
+<div class="paragraph"><p>Picture content controls contain a single as-character image, but you can interact with them: clicking on
+the content control opens the file open dialog to provide a replacement for the placeholder:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://share.vmiklos.hu/blog/sw-content-controls2/picture.png" alt="https://share.vmiklos.hu/blog/sw-content-controls2/picture.png" />
+</div>
+<div class="title">Figure 5. Picture controls.</div>
+</div>
+<div class="paragraph"><p>And these content controls can be saved to ODT and DOCX.</p></div>
+<div class="paragraph"><p>There is also a content control properties dialog, which allows setting if the content controls are
+in placeholder mode or not:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://share.vmiklos.hu/blog/sw-content-controls2/properties.png" alt="https://share.vmiklos.hu/blog/sw-content-controls2/properties.png" />
+</div>
+<div class="title">Figure 6. Content control properties.</div>
+</div>
+<div class="paragraph"><p>It has additional widgets for dropdowns. There is UI to create, update or delete these list items:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://share.vmiklos.hu/blog/sw-content-controls2/properties-inner.png" alt="https://share.vmiklos.hu/blog/sw-content-controls2/properties-inner.png" />
+</div>
+<div class="title">Figure 7. Content control properties inner UI for list items.</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_how_is_this_implemented">How is this implemented?</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
+<div class="paragraph"><p>As usual, the high-level problem was addressed by a series of incremental commits:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/133742">https://gerrit.libreoffice.org/c/core/+/133742</a> sw content controls, drop-down: add doc model &amp; UNO API
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/133801">https://gerrit.libreoffice.org/c/core/+/133801</a> sw content controls: enable indicator on the RHS of the content control end
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/133874">https://gerrit.libreoffice.org/c/core/+/133874</a> sw content controls, drop-down: show list items on click
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/133915">https://gerrit.libreoffice.org/c/core/+/133915</a> sw content controls, drop-down: select list item on click
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/134034">https://gerrit.libreoffice.org/c/core/+/134034</a> sw content controls, drop-down: add ODT filter
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/134041">https://gerrit.libreoffice.org/c/core/+/134041</a> sw content controls: only try to insert placeholders if there is no selection
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/134104">https://gerrit.libreoffice.org/c/core/+/134104</a> sw content controls, drop-down: add DOCX export
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/134143">https://gerrit.libreoffice.org/c/core/+/134143</a> sw content controls, drop-down: add DOCX import
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/134151">https://gerrit.libreoffice.org/c/core/+/134151</a> sw content controls: introduce a word breaking dummy char at the end
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/134215">https://gerrit.libreoffice.org/c/core/+/134215</a> sw content controls, dropdown: add insert UI
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/134239">https://gerrit.libreoffice.org/c/core/+/134239</a> sw content controls: fixes for the ending dummy char
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/134256">https://gerrit.libreoffice.org/c/core/+/134256</a> sw content controls, dropdown: add LOK API
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/134278">https://gerrit.libreoffice.org/c/core/+/134278</a> sw content controls, dropdown: add an initial properties dialog
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/134379">https://gerrit.libreoffice.org/c/core/+/134379</a> sw content controls, dropdown: edit list items in the properties dialog
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/134405">https://gerrit.libreoffice.org/c/core/+/134405</a> sw content controls, dropdown: edit list items: add modify and delete
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/134457">https://gerrit.libreoffice.org/c/core/+/134457</a> sw content controls, picture: add doc model &amp; UNO API
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/134511">https://gerrit.libreoffice.org/c/core/+/134511</a> sw content controls, picture: replace placeholder image on click
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/134538">https://gerrit.libreoffice.org/c/core/+/134538</a> sw content controls, dropdown: disable NOP buttons in the property dialog
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/134595">https://gerrit.libreoffice.org/c/core/+/134595</a> sw content controls, picture: add ODT filter
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/134657">https://gerrit.libreoffice.org/c/core/+/134657</a> sw content controls, picture: add DOCX filter
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/134681">https://gerrit.libreoffice.org/c/core/+/134681</a> sw content controls, picture: add insert UI
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/134750">https://gerrit.libreoffice.org/c/core/+/134750</a> sw content controls, picture: add LOK API
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/134847">https://gerrit.libreoffice.org/c/core/+/134847</a> sw content controls, date: add doc model &amp; UNO API
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/134926">https://gerrit.libreoffice.org/c/core/+/134926</a> sw content controls, date: show a date picker on click
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/134977">https://gerrit.libreoffice.org/c/core/+/134977</a> sw content controls, date: add ODT filter
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/135022">https://gerrit.libreoffice.org/c/core/+/135022</a> sw content controls, picture: add LOK API testcase
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/135033">https://gerrit.libreoffice.org/c/core/+/135033</a> sw content controls, date: add DOCX export
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/135035">https://gerrit.libreoffice.org/c/core/+/135035</a> sw content controls, date: add current date handling
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/135039">https://gerrit.libreoffice.org/c/core/+/135039</a> sw content controls, date: preserve more properties
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/135109">https://gerrit.libreoffice.org/c/core/+/135109</a> sw content controls, date: add DOCX import
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/135153">https://gerrit.libreoffice.org/c/core/+/135153</a> sw content controls, date: add insert UI
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/135214">https://gerrit.libreoffice.org/c/core/+/135214</a> sw content controls, date: add LOK API
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>To make this more interesting, Rashesh Padia of Collabora continued exposing this in Collabora
+Online, see the PR at <a href="https://github.com/CollaboraOnline/online/pull/4803">https://github.com/CollaboraOnline/online/pull/4803</a>.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_want_to_start_using_this">Want to start using this?</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office 2022 and try it out yourself right now:
+<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
+intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
+of this work will be available in TDF&#8217;s next release too (7.4).</p></div>
+</div>
+</div>
+
+  </div>
+  <div class="article_meta">
+    <p>Category: <a href="https://vmiklos.hu/blog/category/libreoffice.html">libreoffice</a>
+ &ndash; Tags:
+      <a href="https://vmiklos.hu/blog/tag/en.html">en</a>    </p>
+  </div>
+
+
+</article>
+
+
+    <div id="ending_message">
+      <p>&copy; Miklos Vajna. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
+</body>
+</html>
