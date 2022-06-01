@@ -1,0 +1,130 @@
+= Content controls in Writer: dropdown, picture and date types
+
+:slug: sw-content-controls2
+:category: libreoffice
+:tags: en
+:date: 2022-06-01T09:09:20+02:00
+
+Writer already had link:|filename|/2022/sw-content-controls.adoc[rich text and checkbox content
+controls]: a new way to set properties on a piece of text, primarily for form filling purposes. This
+feature now gained 3 additional types: dropdown, picture and date picker types. This improves
+compatibility with the DOCX format: there are now 5 inline content control types we can now import.
+
+.Word-style inline content controls in Writer.
+image::https://share.vmiklos.hu/blog/sw-content-controls2/feature.png[align="center"]
+
+First, thanks to https://dapsi.ngi.eu/[NGI DAPSI] who made this work by
+https://www.collaboraoffice.com/[Collabora] possible.
+
+.This project has received funding from the European Union’s Horizon 2020 research and innovation programme under grant agreement No 871498
+image::https://share.vmiklos.hu/blog/sw-content-controls/eu.png[align="center"]
+
+== Motivation
+
+Word users expect to be able to import their document to Writer and experience a matching feature
+set: form filling is not an exception. Word provides several content control kinds (inline, block,
+row and cell content controls), this project focuses on inline ("run") content controls.
+
+In the scope of inline content controls, the above linked blog post already described the rich text
+and checkbox types. In this post, we'll focus on the new dropdown, picture and date content
+controls.
+
+You might wonder why content controls are useful, since Writer already has form controls and
+fieldmarks, which provide something similar. Here are some benefits:
+
+- Dropdown content controls have a list of dropdown items. Each item is a display-text and value
+  pair, allowing to differentiate between a human-readable string and a machine-readable value.
+  Fieldmarks only handled (machine-readable) values, resulting in document text different from Word.
+
+- Picture content controls allow the author of a form to pre-format the image before the filler of
+  the form inserts the actual image. Writer already had placeholder fields for images in the past,
+  but that was just text, allowing image format only after insertion of the actual image.
+
+- Date content controls were emulated with Writer fieldmarks in the past, which created trouble
+  during export, since Word itself doesn't have a date form-field.
+
+== Results
+
+The feature consists of menu items to insert dropdown/picture/date content controls, and then you
+can interact with the inserted content controls or with their properties:
+
+.Menu items to insert drop-down, picture and date content controls.
+image::https://share.vmiklos.hu/blog/sw-content-controls2/menu.png[align="center"]
+
+Drop-down content controls show a dropdown button when you're inside the content control:
+
+.A drop-down content control.
+image::https://share.vmiklos.hu/blog/sw-content-controls2/dropdown.png[align="center"]
+
+This is similar to dropdown fields, just allows display-text and value pairs, not limited to just
+values.
+
+Picture content controls contain a single as-character image, but you can interact with them: clicking on
+the content control opens the file open dialog to provide a replacement for the placeholder:
+
+.Picture controls.
+image::https://share.vmiklos.hu/blog/sw-content-controls2/picture.png[align="center"]
+
+And these content controls can be saved to ODT and DOCX.
+
+There is also a content control properties dialog, which allows setting if the content controls are
+in placeholder mode or not:
+
+.Content control properties.
+image::https://share.vmiklos.hu/blog/sw-content-controls2/properties.png[align="center"]
+
+It has additional widgets for dropdowns. There is UI to create, update or delete these list items:
+
+.Content control properties inner UI for list items.
+image::https://share.vmiklos.hu/blog/sw-content-controls2/properties-inner.png[align="center"]
+
+== How is this implemented?
+
+If you would like to know a bit more about how this works, continue reading... :-)
+
+As usual, the high-level problem was addressed by a series of incremental commits:
+
+- https://gerrit.libreoffice.org/c/core/+/133742 sw content controls, drop-down: add doc model & UNO API
+- https://gerrit.libreoffice.org/c/core/+/133801 sw content controls: enable indicator on the RHS of the content control end
+- https://gerrit.libreoffice.org/c/core/+/133874 sw content controls, drop-down: show list items on click
+- https://gerrit.libreoffice.org/c/core/+/133915 sw content controls, drop-down: select list item on click
+- https://gerrit.libreoffice.org/c/core/+/134034 sw content controls, drop-down: add ODT filter
+- https://gerrit.libreoffice.org/c/core/+/134041 sw content controls: only try to insert placeholders if there is no selection
+- https://gerrit.libreoffice.org/c/core/+/134104 sw content controls, drop-down: add DOCX export
+- https://gerrit.libreoffice.org/c/core/+/134143 sw content controls, drop-down: add DOCX import
+- https://gerrit.libreoffice.org/c/core/+/134151 sw content controls: introduce a word breaking dummy char at the end
+- https://gerrit.libreoffice.org/c/core/+/134215 sw content controls, dropdown: add insert UI
+- https://gerrit.libreoffice.org/c/core/+/134239 sw content controls: fixes for the ending dummy char
+- https://gerrit.libreoffice.org/c/core/+/134256 sw content controls, dropdown: add LOK API
+- https://gerrit.libreoffice.org/c/core/+/134278 sw content controls, dropdown: add an initial properties dialog
+- https://gerrit.libreoffice.org/c/core/+/134379 sw content controls, dropdown: edit list items in the properties dialog
+- https://gerrit.libreoffice.org/c/core/+/134405 sw content controls, dropdown: edit list items: add modify and delete
+- https://gerrit.libreoffice.org/c/core/+/134457 sw content controls, picture: add doc model & UNO API
+- https://gerrit.libreoffice.org/c/core/+/134511 sw content controls, picture: replace placeholder image on click
+- https://gerrit.libreoffice.org/c/core/+/134538 sw content controls, dropdown: disable NOP buttons in the property dialog
+- https://gerrit.libreoffice.org/c/core/+/134595 sw content controls, picture: add ODT filter
+- https://gerrit.libreoffice.org/c/core/+/134657 sw content controls, picture: add DOCX filter
+- https://gerrit.libreoffice.org/c/core/+/134681 sw content controls, picture: add insert UI
+- https://gerrit.libreoffice.org/c/core/+/134750 sw content controls, picture: add LOK API
+- https://gerrit.libreoffice.org/c/core/+/134847 sw content controls, date: add doc model & UNO API
+- https://gerrit.libreoffice.org/c/core/+/134926 sw content controls, date: show a date picker on click
+- https://gerrit.libreoffice.org/c/core/+/134977 sw content controls, date: add ODT filter
+- https://gerrit.libreoffice.org/c/core/+/135022 sw content controls, picture: add LOK API testcase
+- https://gerrit.libreoffice.org/c/core/+/135033 sw content controls, date: add DOCX export
+- https://gerrit.libreoffice.org/c/core/+/135035 sw content controls, date: add current date handling
+- https://gerrit.libreoffice.org/c/core/+/135039 sw content controls, date: preserve more properties
+- https://gerrit.libreoffice.org/c/core/+/135109 sw content controls, date: add DOCX import
+- https://gerrit.libreoffice.org/c/core/+/135153 sw content controls, date: add insert UI
+- https://gerrit.libreoffice.org/c/core/+/135214 sw content controls, date: add LOK API
+
+To make this more interesting, Rashesh Padia of Collabora continued exposing this in Collabora
+Online, see the PR at https://github.com/CollaboraOnline/online/pull/4803.
+
+== Want to start using this?
+
+You can get a snapshot / demo of Collabora Office 2022 and try it out yourself right now:
+https://www.collaboraoffice.com/collabora-office-latest-snapshot/[try unstable snapshot].  Collabora
+intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
+of this work will be available in TDF's next release too (7.4).
+
+// vim: ft=asciidoc
