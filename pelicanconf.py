@@ -34,8 +34,21 @@ DEFAULT_PAGINATION = 10
 
 # Asciidoc is not in core, clone this from <https://github.com/getpelican/pelican-plugins>, check
 # out commit 000fc5acbce7328fcd94a5d9395465fadc3d544d (master as of 2019-03-02).
+# Markdown is in core, just need to enable it with `zypper in python3-Markdown`.
 PLUGIN_PATHS = ['/home/vmiklos/git/pelican-plugins']
 PLUGINS = ['asciidoc_reader', 'readtime']
+MARKDOWN = {
+    'extension_configs': {
+        'markdown.extensions.codehilite': {'css_class': 'highlight'},
+        'markdown.extensions.extra': {},
+        # pip install markdown-captions
+        'markdown_captions': {},
+        'toc': {
+            'permalink': True,
+        },
+    },
+    'output_format': 'html5',
+}
 
 # I don't like the default theme, clone this from <https://github.com/vmiklos/pelican-svbhack>.
 THEME = '/home/vmiklos/git/pelican-svbhack'
