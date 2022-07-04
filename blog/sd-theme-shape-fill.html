@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/pygments.css">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Miklos Vajna">
+  <meta name="description" content="Posts and writings by Miklos Vajna">
+
+  <link href="https://vmiklos.hu/blog/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking RSS" />
+
+<meta name="keywords" content="en">
+
+  <title>
+    What is Miklos hacking
+&ndash; Document themes in Impress: shape fill  </title>
+
+<script type="text/javascript">
+  var _paq = window._paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//analytics.vmiklos.hu/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '1']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <h2><a href="https://vmiklos.hu/blog">What is Miklos hacking</a></h2>
+      <p></p>
+      <ul>
+        <li><a href="/" target="_blank">Root</a></li>
+        <li><a href="https://planet.documentfoundation.org/" target="_blank">LibreOffice Blogs</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://vmiklos.hu/blog">Index</a> &brvbar; <a href="https://vmiklos.hu/blog/archives.html">Archives</a>
+      &brvbar; <a href="https://vmiklos.hu/blog/feeds/all.rss.xml">RSS</a>
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sd-theme-shape-fill.html">Document themes in Impress: shape fill</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Mon 04 July 2022</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 4 minutes</p>
+  </div>
+  <div class="article_text">
+    <p>Impress now has the next step of document theme support: it is possible to refer to the theme colors
+from shape fill colors (including effects).</p>
+<p>This work is primarily for <a href="https://www.collaboraoffice.com/">Collabora Online</a>, but the feature is
+fully available in desktop Impress as well.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sd-theme-shape-fill/ui.png"><figcaption>PowerPoint-style themed shape fill, user interface</figcaption>
+</figure>
+</p>
+<p>PowerPoint users can attach a set of colors (and fonts, etc.) to master pages, and then refer to
+these in many areas, like shape text or shape fill. It was already possible to define theme colors
+and refer to them from shape text (see <a href="https://vmiklos.hu/blog/sd-theme-shape-text.html">Start of document themes in Impress: shape
+text</a> for details).</p>
+<p>The next step in this journey is shape fill: if your shape is filled with some color, it can be a
+theme color, as visible on the above screenshot. One interesting aspect of this is that the default
+shape fill color can now depend on the master page, and it may not be the same for all slides (this
+is what would happen with styles, when not using theming).</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>Here is a demo that shows how it works:</p>
+<p>If one opens the <code>svx/qa/unit/data/theme.pptx</code> test file from core.git, it looks like this:</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sd-theme-shape-fill/old.png"><figcaption>PowerPoint-style themed shape fill, after opening</figcaption>
+</figure>
+</p>
+<p>The middle row has 3 rounded rectangles: the first is filled with the 'Accent 1' color, the second is
+the same, but 60% lighter and finally the last one is the same, but 25% darker.</p>
+<p>Here is how you can change what the 'Accent 1' color is:</p>
+<ul>
+<li>Click 'Master View' on the sidebar to go to the master of the current slide.</li>
+<li>Right click -&gt; 'Slide Properties' opens the 'Slide Properties' dialog.</li>
+<li>The 'Theme' page has an 'Accent 1' row, with a blue color.</li>
+<li>Change that to an orange color: click on the 'Accent 1' drop-down, then select 'Theme colors',
+  finally the 6th choice is orange in the first row -- this comes from the document's theme.</li>
+<li>Click 'OK' to close the dialog, followed by 'Close Master View' on the sidebar.</li>
+</ul>
+<p>Here is how your shapes now look like:</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sd-theme-shape-fill/new.png"><figcaption>PowerPoint-style themed shape fill, after changing the theme</figcaption>
+</figure>
+</p>
+<p>What you can see here is that the color effect (darker, lighter, default) of the rounded rectangles'
+fill color was preserved, but all the blue colors are replaced with orange.</p>
+<p>As a cherry on the cake, now if you insert a new shape, that will also have an orange fill color by
+default as well.</p>
+<p>You can see how this is useful when designing templates: a designer can create something
+good-looking, and all you have to do is to set the theme to the colors of your organization, and
+you're done.</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>As usual, the high-level problem was addressed by a series of small changes:</p>
+<ul>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/128248">sd theme: fix applying new colors after theme change for group shapes</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/130050">sd theme: add doc model for shape fill color</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/130467">sd theme: add UNO API for shape fill color</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/130894">sd theme: add rendering for shape fill color</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/131268">sd theme: add PPTX import for shape fill color</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/131717">sd theme: add ODP import/export for shape fill color</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/131984">sd theme: add PPTX export for shape fill color</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/132327">sd theme: add UI (area dialog) for shape fill color</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/132646">sd theme: add UI (sidebar) for shape fill color</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/132933">sd theme: add UNO API for shape fill color effects</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/133297">sd theme: add rendering for shape fill color effects</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/133525">sd theme: add PPTX import for shape fill color effects</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/133843">sd theme: add ODP import/export for shape fill color effects</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/133908">tdf#148929 sd theme: limit PPTX import for shape fill effects to lum mod/off</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/134208">tdf#148961 sd theme: add PPTX export for shape fill color effects</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/134552">sd theme: add UI (area dialog) for shape fill color effects</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/134883">tdf#149205 sd theme: fix PPTX export loosing dk1 and lt1 colors</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/134952">sd theme: add UI (sidebar) for shape fill color effects</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/136138">sd theme: consider accent1 color when inserting shape with solid fill</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/136599">tdf#149748 sd theme: fix crash on selecting none from color bar</a></li>
+</ul>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a snapshot / demo of Collabora Office 22.05 and try it out yourself right now: <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try
+unstable snapshot</a>.  Collabora
+intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
+of this work will be available in TDF's next release too (7.4).</p>
+  </div>
+  <div class="article_meta">
+    <p>Category: <a href="https://vmiklos.hu/blog/category/libreoffice.html">libreoffice</a>
+ &ndash; Tags:
+      <a href="https://vmiklos.hu/blog/tag/en.html">en</a>    </p>
+  </div>
+
+
+</article>
+
+
+    <div id="ending_message">
+      <p>&copy; Miklos Vajna. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
+</body>
+</html>
