@@ -2,7 +2,7 @@ Title: Document themes in Impress: shape fill
 Slug: sd-theme-shape-fill
 Category: libreoffice
 Tags: en
-Date: 2022-07-01T16:05:21+02:00
+Date: 2022-07-04T08:23:00+02:00
 
 Impress now has the next step of document theme support: it is possible to refer to the theme colors
 from shape fill colors (including effects).
