@@ -5,7 +5,7 @@
 # found in the LICENSE file.
 #
 
-rsync -avP ~/git/turtle-cpm/guide/book/ .
+rsync --exclude '*.swp' -avP ~/git/turtle-cpm/guide/book/ .
 git add .
 git commit -m "turtle-cpm: update from git"
 
