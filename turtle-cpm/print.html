@@ -196,20 +196,12 @@ auto-generated passwords.</p>
 most of the time, though.</p>
 <h2 id="creating"><a class="header" href="#creating">Creating</a></h2>
 <p>You can ask cpm to generate a password for you and remember it using:</p>
-<pre><code class="language-sh">cpm create -m mymachine -s myservice -u myuser
+<pre><code class="language-sh">cpm create -m mymachine -u myuser
 </code></pre>
-<p>Or in case you already have a preferred password:</p>
+<p>Or in case you already have non-HTTP service or a preferred password:</p>
 <pre><code class="language-sh">cpm create -m mymachine -s myservice -u myuser -p mypassword
 </code></pre>
-<p>A couple of useful conventions:</p>
-<ul>
-<li>
-<p><code>mymachine</code> can be e.g. the domain of the website</p>
-</li>
-<li>
-<p><code>myserivce</code> can be e.g. just <code>http</code> if this is not some special protocol like LDAP or SSH</p>
-</li>
-</ul>
+<p>When the machine is not yours, it can be e.g. the domain of a website.</p>
 <p>If you try to insert two passwords for the same machine/service/user combination, you will get an
 error. You can update or delete a password, though (see below).</p>
 <h2 id="reading"><a class="header" href="#reading">Reading</a></h2>
@@ -225,7 +217,7 @@ and search using:</p>
 (Facebook, Twitter, etc). Once a website asks you to scan a QR code for
 <a href="https://en.wikipedia.org/wiki/Time-based_one-time_password">TOTP</a> purposes, just ask for the TOTP
 shared secret and then add it to cpm using:</p>
-<pre><code class="language-sh">cpm create -m mymachine -s myservice -u myuser -p &quot;MY TOTP SHARED SECRET&quot; -t totp
+<pre><code class="language-sh">cpm create -m mymachine -u myuser -p &quot;MY TOTP SHARED SECRET&quot; -t totp
 </code></pre>
 <p>When searching, it's a good idea to first narrow down your search results to a single hit, e.g.
 first confirm that:</p>
@@ -236,10 +228,16 @@ code using:</p>
 <pre><code class="language-sh">cpm --totp twitter
 </code></pre>
 <h2 id="update-and-deletion"><a class="header" href="#update-and-deletion">Update and deletion</a></h2>
-<p>Update is quite similar to creation:</p>
+<p>Update is quite similar to creation. You can generate a new password using:</p>
+<pre><code class="language-sh">cpm update -m mymachine -u myuser
+</code></pre>
+<p>If you want to specify a service or a new password explicitly, you can do that using:</p>
 <pre><code class="language-sh">cpm update -m mymachine -s myservice -u myuser -p mynewpassword
 </code></pre>
-<p>Finally if you really want to delete a password, you can do so by using:</p>
+<p>Finally if you want to delete a password, you can do so by using:</p>
+<pre><code class="language-sh">cpm delete -m mymachine -u myuser
+</code></pre>
+<p>Or if you want to specify the service explicitly:</p>
 <pre><code class="language-sh">cpm delete -m mymachine -s myservice -u myuser
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="advanced-topics"><a class="header" href="#advanced-topics">Advanced topics</a></h1>
