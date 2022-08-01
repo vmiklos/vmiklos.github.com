@@ -59,6 +59,100 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sd-table-transparent-shadow.html">Transparent shadow for tables from PPTX in Impress</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Fri 22 October 2021</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>Impress is now able to correctly render shadows for table shapes, even if the shadow itself or the
+fill of the table cells have transparency. The result is now compatible with PowerPoint.</p></div>
+<div class="paragraph"><p>First, thanks to our partner <a href="https://www.suse.com/">SUSE</a> for working with
+<a href="https://www.collaboraoffice.com/">Collabora</a> to make this possible.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_motivation">Motivation</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>We got a PPTX document, which has a table shape with pink background and a blurry shadow. Impress
+rendered a red background, making the text hard to read.</p></div>
+<div class="paragraph"><p>The request was to improve the shadow rendering to be PowerPoint-compatible and in general correctly
+support transparency when it comes to table cell fills and table shadows.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_results_so_far">Results so far</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>The table shadow now looks like this:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://share.vmiklos.hu/blog/sd-table-transparent-shadow/new.png" alt="https://share.vmiklos.hu/blog/sd-table-transparent-shadow/new.png" />
+</div>
+<div class="title">Figure 1. New render result in Impress</div>
+</div>
+<div class="paragraph"><p>Matching the reference rendering:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://share.vmiklos.hu/blog/sd-table-transparent-shadow/ref.png" alt="https://share.vmiklos.hu/blog/sd-table-transparent-shadow/ref.png" />
+</div>
+<div class="title">Figure 2. Reference render result</div>
+</div>
+<div class="paragraph"><p>While background was red previously:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://share.vmiklos.hu/blog/sd-table-transparent-shadow/old.png" alt="https://share.vmiklos.hu/blog/sd-table-transparent-shadow/old.png" />
+</div>
+<div class="title">Figure 3. Old render result in Impress</div>
+</div>
+<div class="paragraph"><p>You can see that not only the background in the top center cell is pink now, but the blurry table
+shadow is still correct.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_how_is_this_implemented">How is this implemented?</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
+<div class="paragraph"><p>As usual, the high-level problem was addressed by a series of fixes:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/122349">tdf#144091 svx: fix unwanted blur of shadow from
+  table cell fill</a>
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/122532">Related: tdf#144091 svx: fix interaction of transp
+  cell fill and transp shadow</a>
+  (<a href="https://git.libreoffice.org/core/+/00fa364a2403dc23a786d3f91fde06e10b3a4a9a/svx/source/sdr/primitive2d/sdrdecompositiontools.cxx#629">key
+  part</a>)
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>With these, it&#8217;s now possible to add transparency to both table cell fills and to table shadows, and
+the rendering will take both into account, correctly.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_want_to_start_using_this">Want to start using this?</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
+<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
+intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
+of this work will be available in TDF&#8217;s next release too (7.3).</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/sw-parastyle-listlevel.html">Start of list level support in Writer paragraph styles</a></h1>
   </div>
   <div class="article_meta">
@@ -1025,58 +1119,6 @@ http://www.gnu.org/software/src-highlite -->
 <div class="paragraph"><p>With these, it&#8217;s now possible to add, modify, render and delete gutter margins for your documents,
 while preserving them during ODT and DOCX import/export, without introducing any weird fake line
 shapes.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_want_to_start_using_this">Want to start using this?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
-<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
-intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF&#8217;s next release too (7.2).</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/fosdem2021.html">Handling PDF digital signatures with PDFium FOSDEM talk</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Mon 08 February 2021</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://mautic.productivity.collabora.co.uk/asset/151:fosdem21-pdfiumsig-fosdem-online-2k21pdf">
-<img src="https://share.vmiklos.hu/blog/fosdem2021/slides.png" alt="https://share.vmiklos.hu/blog/fosdem2021/slides.png" />
-</a>
-</div>
-<div class="title">Figure 1. Slides of the talk</div>
-</div>
-<div class="paragraph"><p>The next step in the recent <a href="https://vmiklos.hu/blog/pdfium-sign-verify.html">PDFium-based signature
-verification story</a> is my <a href="https://fosdem.org/2021/schedule/event/lo_pdfsignatures/">Handling PDF
-digital signatures in LibreOffice with PDFium</a> talk at FOSDEM 2021, in the
-<a href="https://fosdem.org/2021/schedule/track/libreoffice/">LibreOffice devroom</a>
-(<a href="https://www.youtube.com/watch?v=njoHDY47mnA">pre-recorded video</a>). The talk gives you an overview of
-digital signing in general, all the ODF/OOXML/PDF handling, signing/verification, various other
-related past Collabora projects, and then goes into details regarding how PDFium was improved and is
-used to do a better PDF signature verification in LibreOffice when opening PDF files in Draw.</p></div>
-<div class="paragraph"><p>The virtual room had
-around 150 participants and the Matrix based online conference was well-organized. Speakers even got
-a free t-shirt before the event, I appreciated the "bring your own beer" joke :-)</p></div>
-<div class="paragraph"><p>An other benefit of this unusual setup was to avoid the dreaded
-<a href="https://daniel.haxx.se/blog/2020/01/24/coming-to-fosdem-2020/">room is full</a> problems, where you
-carefully selected a talk to attend and then failed to hear it.</p></div>
-<div class="paragraph"><p>I expect quite some other slides from other Collaborans and the wider community will be available on
-<a href="http://planet.documentfoundation.org/">Planet</a>, don&#8217;t miss them.</p></div>
 </div>
 </div>
 <div class="sect1">

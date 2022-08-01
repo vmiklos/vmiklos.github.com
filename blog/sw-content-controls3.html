@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/pygments.css">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Miklos Vajna">
+  <meta name="description" content="Posts and writings by Miklos Vajna">
+
+  <link href="https://vmiklos.hu/blog/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking RSS" />
+
+<meta name="keywords" content="en">
+
+  <title>
+    What is Miklos hacking
+&ndash; Content controls in Writer: the plain text type  </title>
+
+<script type="text/javascript">
+  var _paq = window._paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//analytics.vmiklos.hu/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '1']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <h2><a href="https://vmiklos.hu/blog">What is Miklos hacking</a></h2>
+      <p></p>
+      <ul>
+        <li><a href="/" target="_blank">Root</a></li>
+        <li><a href="https://planet.documentfoundation.org/" target="_blank">LibreOffice Blogs</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://vmiklos.hu/blog">Index</a> &brvbar; <a href="https://vmiklos.hu/blog/archives.html">Archives</a>
+      &brvbar; <a href="https://vmiklos.hu/blog/feeds/all.rss.xml">RSS</a>
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sw-content-controls3.html">Content controls in Writer: the plain text type</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Mon 01 August 2022</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <p>Writer now supports a 6th content control type: it is possible to insert a plain text content
+control.</p>
+<p>This work is primarily for <a href="https://www.collaboraoffice.com/">Collabora
+Online</a>, done as a
+<a href="https://vmiklos.hu/blog/hackweek-2021.html">HackWeek</a> project, but the feature is
+fully available in desktop Writer as well.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-content-controls3/sw-content-control-plain-text.png"><figcaption>Word-style plain text content control, user interface</figcaption>
+</figure>
+</p>
+<p>Writer users can put a content control around a piece of rich text, see
+<a href="https://vmiklos.hu/blog/sw-content-controls2.html">Content controls in Writer: dropdown, picture and date
+types</a> for the first five types.</p>
+<p>The next step in this journey is plain text: even if one of the big advantages of content controls
+over input fields is that they allow rich formatting, sometimes you want to restrict this. For
+example, if one has to fill in their name, then it makes no sense to mark the family name as bold
+while leaving the given name as non-bold. This would just lead to inconsistent look.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>There is now a new Form → Content Controls → Insert Plain Text Content Control
+menu item to create a plain text content control. If you try to make a
+selection that is a subset of the text inside the content control and you try
+to format it, the whole text in the content control is formatted to maintain
+the invariant that plain text has no formatting itself, just the formatting of
+the whole content control.</p>
+<p>As usual, you can delete this content control later. You can also load/save it
+to ODT/DOCX and it's preserved.</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>As usual, the high-level problem was addressed by a series of small changes:</p>
+<ul>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/137263">sw content controls, plain text: add doc model &amp; UNO API</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/137280">sw content controls, plain text: apply formatting to the entire contents</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/137340">sw content controls, plain text: add ODT filter</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/137349">sw: fix heap-use-after-free in SwTextNode::InsertHint()</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/137398">sw content controls, plain text: add DOCX export</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/137399">sw content controls, plain text: add DOCX import</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/137447">sw content controls, plain text: add insert UI</a></li>
+</ul>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a snapshot / demo of Collabora Office 22.05 and try it out yourself right now: <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try
+unstable snapshot</a>.  Collabora
+intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
+of this work will be available in TDF's next release too (7.5).</p>
+  </div>
+  <div class="article_meta">
+    <p>Category: <a href="https://vmiklos.hu/blog/category/libreoffice.html">libreoffice</a>
+ &ndash; Tags:
+      <a href="https://vmiklos.hu/blog/tag/en.html">en</a>    </p>
+  </div>
+
+
+</article>
+
+
+    <div id="ending_message">
+      <p>&copy; Miklos Vajna. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
+</body>
+</html>
