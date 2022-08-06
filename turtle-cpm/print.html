@@ -208,9 +208,9 @@ error. You can update or delete a password, though (see below).</p>
 <p>You can search in your passwords by entering a search term. You can do this implicitly:</p>
 <pre><code class="language-sh">cpm mymachine
 </code></pre>
-<p>In the less likely case when you have multiple passwords on a website, you can be much more explicit
-and search using:</p>
-<pre><code class="language-sh">cpm search -m mymachine -s myservice -u myuser
+<p>In the less likely case when you have multiple passwords on a website or you want to hide TOTP
+shared secrets, you can be much more explicit and search using:</p>
+<pre><code class="language-sh">cpm search -m mymachine -s myservice -u myuser -t plain
 </code></pre>
 <h2 id="totp-support"><a class="header" href="#totp-support">TOTP support</a></h2>
 <p>TOTP is one from of Two-Factor Authentication (2FA), currently used by many popular websites
@@ -231,14 +231,14 @@ code using:</p>
 <p>Update is quite similar to creation. You can generate a new password using:</p>
 <pre><code class="language-sh">cpm update -m mymachine -u myuser
 </code></pre>
-<p>If you want to specify a service or a new password explicitly, you can do that using:</p>
-<pre><code class="language-sh">cpm update -m mymachine -s myservice -u myuser -p mynewpassword
+<p>If you want to specify a service, a type or a new password explicitly, you can do that using:</p>
+<pre><code class="language-sh">cpm update -m mymachine -s myservice -u myuser -t plain -p mynewpassword
 </code></pre>
 <p>Finally if you want to delete a password, you can do so by using:</p>
 <pre><code class="language-sh">cpm delete -m mymachine -u myuser
 </code></pre>
-<p>Or if you want to specify the service explicitly:</p>
-<pre><code class="language-sh">cpm delete -m mymachine -s myservice -u myuser
+<p>Or if you want to specify the service or type explicitly:</p>
+<pre><code class="language-sh">cpm delete -m mymachine -s myservice -u myuser -t plain
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="advanced-topics"><a class="header" href="#advanced-topics">Advanced topics</a></h1>
 <h2 id="distributed-usage"><a class="header" href="#distributed-usage">Distributed usage</a></h2>
@@ -252,9 +252,8 @@ on the other machines:</p>
 <pre><code>Host cpm
         Hostname myserver.example.com
 </code></pre>
-<p>Finally put <code>scripts/cpmsync.sh</code> somewhere in your <code>$PATH</code>, so you can copy from your master to your
-slave using:</p>
-<pre><code class="language-sh">cpmsync
+<p>Finally pull the remote database to your local one, using:</p>
+<pre><code class="language-sh">cpm sync
 </code></pre>
 <p>This allows searching in your passwords even when you're offline. Keep in mind that editing the
 database on the slaves is not a good idea as the next sync will overwrite your local changes.</p>
