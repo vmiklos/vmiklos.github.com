@@ -82,7 +82,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">User Guide</li><li class="chapter-item expanded "><a href="installation.html"><strong aria-hidden="true">1.</strong> Installation</a></li><li class="chapter-item expanded "><a href="usage.html"><strong aria-hidden="true">2.</strong> Usage</a></li><li class="chapter-item expanded "><a href="advanced.html"><strong aria-hidden="true">3.</strong> Advanced topics</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">User Guide</li><li class="chapter-item expanded "><a href="installation.html"><strong aria-hidden="true">1.</strong> Installation</a></li><li class="chapter-item expanded "><a href="usage.html"><strong aria-hidden="true">2.</strong> Usage</a></li><li class="chapter-item expanded "><a href="advanced.html"><strong aria-hidden="true">3.</strong> Advanced topics</a></li><li class="chapter-item expanded "><a href="news.html"><strong aria-hidden="true">4.</strong> Changelog</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -146,8 +146,7 @@
                         <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
 <p>turtle-cpm is a command line tool to manage passwords, a replacement of the now gone <a href="https://www.harry-b.de/dokuwiki/doku.php?id=harry:cpm">cpm
 project</a>.</p>
-<p>The latest version is v4.0, released on 2022-08-03.  See the <a href="https://github.com/vmiklos/turtle-cpm/blob/main/NEWS.md">release
-notes</a>.</p>
+<p>The latest version is v4.0, released on 2022-08-03.  See the <a href="news.html">release notes</a>.</p>
 <p>Notable features:</p>
 <ul>
 <li>Simple database format: encrypted SQLite (via <code>gpg</code>), tracking machines, services, users and
@@ -186,11 +185,10 @@ interested in TOTP support.</p>
 auto-generated passwords.</p>
 <h2 id="build-from-source"><a class="header" href="#build-from-source">Build from source</a></h2>
 <p>You can install cpm using:</p>
-<pre><code class="language-sh">go install vmiklos.hu/go/turtle-cpm@latest
+<pre><code class="language-sh">go install vmiklos.hu/go/cpm@latest
 </code></pre>
-<p>If you don't have the original cpm around, you can make a symlink to allow less typing:</p>
-<pre><code class="language-sh">ln -s $(go env GOPATH)/bin/turtle-cpm ~/bin/cpm
-</code></pre>
+<p>If <code>$(go env GOPATH)/bin</code> is not in your <code>PATH</code> yet, you may want to add it, so typing <code>cpm</code> will
+invoke the installed executable.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="usage"><a class="header" href="#usage">Usage</a></h1>
 <p>cpm supports creating, reading, updating and deleting passwords. You'll just create and read them
 most of the time, though.</p>
@@ -288,6 +286,41 @@ possible subcommands using:</p>
 <pre><code class="language-sh">cpm create -h
 </code></pre>
 <p>An alternative to this is the manual pages under <code>man/</code>, which provide the same information.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="changelog"><a class="header" href="#changelog">Changelog</a></h1>
+<h2 id="main"><a class="header" href="#main">main</a></h2>
+<ul>
+<li><code>scripts/cpmsync.sh</code> is now a built-in subcommand, <code>cpm sync</code>. No need to install it manually
+anymore.</li>
+<li><code>cpm search</code> no longer encrypts the database at the end, to be a little bit faster.</li>
+<li>create/search/update/delete's -t flag now has a proper type, so it errors on invalid values (other
+than <code>plain</code> or <code>totp</code>)</li>
+</ul>
+<h2 id="40"><a class="header" href="#40">4.0</a></h2>
+<ul>
+<li>New password generation during update, the password flag is now optional.</li>
+<li>The service flag is now optional in general, and defaults to &quot;http&quot;.</li>
+</ul>
+<h2 id="30"><a class="header" href="#30">3.0</a></h2>
+<ul>
+<li>Added overview documentation to augment the existing automatically generated reference
+documentation. (<code>cpm -h</code>, <code>cpm create -h</code>, etc.)</li>
+<li>New quiet mode during search, to consume the output from scripts</li>
+<li>Added manpages</li>
+<li>New password generation during create, the password flag is now optional.</li>
+</ul>
+<h2 id="20"><a class="header" href="#20">2.0</a></h2>
+<ul>
+<li>While encrypting the database, the <code>gpg</code> invocation now defaults to the self recipient, so no need
+to specify a UID manually.</li>
+<li>Search now shows both plain passwords and TOTP shared secrets by default, so in case a site only
+has a TOTP shared secret, there is a search result instead of confusing empty output.</li>
+<li>The decrypted database is removed from disk even in case of application failure.</li>
+<li>More tests: 100% statement coverage.</li>
+</ul>
+<h2 id="10"><a class="header" href="#10">1.0</a></h2>
+<ul>
+<li>Initial release</li>
+</ul>
 
                     </main>
 
