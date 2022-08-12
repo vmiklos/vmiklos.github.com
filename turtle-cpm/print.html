@@ -194,49 +194,75 @@ invoke the installed executable.</p>
 most of the time, though.</p>
 <h2 id="creating"><a class="header" href="#creating">Creating</a></h2>
 <p>You can ask cpm to generate a password for you and remember it using:</p>
-<pre><code class="language-sh">cpm create -m mymachine -u myuser
+<pre><code class="language-console">$ cpm create
+Machine: example.com
+User: myuser
+Generated password: 7U1FvIzubR95Itg
 </code></pre>
-<p>Or in case you already have non-HTTP service or a preferred password:</p>
-<pre><code class="language-sh">cpm create -m mymachine -s myservice -u myuser -p mypassword
+<p>Specifying parameters can be useful if:</p>
+<ul>
+<li>you want to avoid interactive questions</li>
+<li>you want to specify a non-HTTP service or</li>
+<li>you have preferred password</li>
+</ul>
+<p>Example for such usage:</p>
+<pre><code class="language-console">$ cpm create -m example.com -s http -u myuser -p 7U1FvIzubR95Itg
 </code></pre>
 <p>When the machine is not yours, it can be e.g. the domain of a website.</p>
-<p>If you try to insert two passwords for the same machine/service/user combination, you will get an
-error. You can update or delete a password, though (see below).</p>
+<p>If you try to insert a password twice (same machine, service, user and password type), you will get
+an error. You can update or delete a password, though (see below).</p>
 <h2 id="reading"><a class="header" href="#reading">Reading</a></h2>
-<p>You can search in your passwords by entering a search term. You can do this implicitly:</p>
-<pre><code class="language-sh">cpm mymachine
+<p>You can search in your passwords by entering a search term. You can do this interactively:</p>
+<pre><code class="language-console">$ cpm
+Search term: example.com
+machine: example.com, service: http, user: myuser, password type: plain, password: 7U1FvIzubR95Itg
 </code></pre>
-<p>In the less likely case when you have multiple passwords on a website or you want to hide TOTP
-shared secrets, you can be much more explicit and search using:</p>
-<pre><code class="language-sh">cpm search -m mymachine -s myservice -u myuser -t plain
+<p>The search term can also be specified as an argument if non-interactive mode is wanted.</p>
+<p>Lastly, you can search your passwords by entering specifying search filters:</p>
+<ul>
+<li>when you have multiple services or users on a machine</li>
+<li>you want to hide TOTP shared secrets</li>
+</ul>
+<pre><code class="language-console">$ cpm search -m example.com -s http -u myuser -t plain
+machine: example.com, service: http, user: myuser, password type: plain, password: 7U1FvIzubR95Itg
 </code></pre>
 <h2 id="totp-support"><a class="header" href="#totp-support">TOTP support</a></h2>
 <p>TOTP is one from of Two-Factor Authentication (2FA), currently used by many popular websites
 (Facebook, Twitter, etc). Once a website asks you to scan a QR code for
 <a href="https://en.wikipedia.org/wiki/Time-based_one-time_password">TOTP</a> purposes, just ask for the TOTP
 shared secret and then add it to cpm using:</p>
-<pre><code class="language-sh">cpm create -m mymachine -u myuser -p &quot;MY TOTP SHARED SECRET&quot; -t totp
+<pre><code class="language-console">$ cpm create -m mymachine -u myuser -p &quot;MY TOTP SHARED SECRET&quot; -t totp
 </code></pre>
 <p>When searching, it's a good idea to first narrow down your search results to a single hit, e.g.
 first confirm that:</p>
-<pre><code class="language-sh">cpm twitter
+<pre><code class="language-console">$ cpm twitter
+machine: twitter.com, service: http, user: myuser, password type: plain, password: ...
+machine: twitter.com, service: http, user: myuser, password type: TOTP shared secret, password: ...
 </code></pre>
 <p>just returns your password and your TOTP shared secret, and then you can generate the current TOTP
 code using:</p>
-<pre><code class="language-sh">cpm --totp twitter
+<pre><code class="language-console">$ cpm --totp twitter
+machine: twitter.com, service: http, user: myuser, password type: TOTP code, password: ...
 </code></pre>
 <h2 id="update-and-deletion"><a class="header" href="#update-and-deletion">Update and deletion</a></h2>
 <p>Update is quite similar to creation. You can generate a new password using:</p>
-<pre><code class="language-sh">cpm update -m mymachine -u myuser
+<pre><code class="language-console">$ cpm update
+Machine: example.com
+User: myuser
+Generated new password: D95Rx2PlOcPwKbL
+Updated 1 password
 </code></pre>
-<p>If you want to specify a service, a type or a new password explicitly, you can do that using:</p>
-<pre><code class="language-sh">cpm update -m mymachine -s myservice -u myuser -t plain -p mynewpassword
+<p>You can also avoid interactivity and password generation by specifying parameters:</p>
+<pre><code class="language-console">$ cpm update -m mymachine -s myservice -u myuser -t plain -p mynewpassword
+Updated 1 password
 </code></pre>
 <p>Finally if you want to delete a password, you can do so by using:</p>
-<pre><code class="language-sh">cpm delete -m mymachine -u myuser
+<pre><code class="language-console">$ cpm delete -m example.com -u myuser
+Deleted 1 password
 </code></pre>
 <p>Or if you want to specify the service or type explicitly:</p>
-<pre><code class="language-sh">cpm delete -m mymachine -s myservice -u myuser -t plain
+<pre><code class="language-console">$ cpm delete -m mymachine -s myservice -u myuser -t plain
+Deleted 1 password
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="advanced-topics"><a class="header" href="#advanced-topics">Advanced topics</a></h1>
 <h2 id="distributed-usage"><a class="header" href="#distributed-usage">Distributed usage</a></h2>
@@ -287,6 +313,12 @@ possible subcommands using:</p>
 </code></pre>
 <p>An alternative to this is the manual pages under <code>man/</code>, which provide the same information.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="changelog"><a class="header" href="#changelog">Changelog</a></h1>
+<h2 id="main"><a class="header" href="#main">main</a></h2>
+<ul>
+<li>create: add interactive mode in case <code>--machine</code> or <code>--user</code> is not specified</li>
+<li>search: add interactive mode when no search terms are specified</li>
+<li>update: add interactive mode in case <code>--machine</code> or <code>--user</code> is not specified</li>
+</ul>
 <h2 id="50"><a class="header" href="#50">5.0</a></h2>
 <ul>
 <li><code>scripts/cpmsync.sh</code> is now a built-in subcommand, <code>cpm sync</code>. No need to install it manually
