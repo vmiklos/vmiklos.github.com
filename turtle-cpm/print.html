@@ -201,12 +201,14 @@ Generated password: 7U1FvIzubR95Itg
 </code></pre>
 <p>Specifying parameters can be useful if:</p>
 <ul>
-<li>you want to avoid interactive questions</li>
-<li>you want to specify a non-HTTP service or</li>
+<li>you want to avoid an interactive question for the machine</li>
+<li>you want to specify a non-HTTP service</li>
+<li>you want to avoid an interactive question for the user</li>
+<li>you want to specify a password type</li>
 <li>you have preferred password</li>
 </ul>
 <p>Example for such usage:</p>
-<pre><code class="language-console">$ cpm create -m example.com -s http -u myuser -p 7U1FvIzubR95Itg
+<pre><code class="language-console">$ cpm create -m example.com -s http -u myuser -t plain -p 7U1FvIzubR95Itg
 </code></pre>
 <p>When the machine is not yours, it can be e.g. the domain of a website.</p>
 <p>If you try to insert a password twice (same machine, service, user and password type), you will get
@@ -218,11 +220,7 @@ Search term: example.com
 machine: example.com, service: http, user: myuser, password type: plain, password: 7U1FvIzubR95Itg
 </code></pre>
 <p>The search term can also be specified as an argument if non-interactive mode is wanted.</p>
-<p>Lastly, you can search your passwords by entering specifying search filters:</p>
-<ul>
-<li>when you have multiple services or users on a machine</li>
-<li>you want to hide TOTP shared secrets</li>
-</ul>
+<p>Or you can specify paramters to create additional filters for the search:</p>
 <pre><code class="language-console">$ cpm search -m example.com -s http -u myuser -t plain
 machine: example.com, service: http, user: myuser, password type: plain, password: 7U1FvIzubR95Itg
 </code></pre>
@@ -252,15 +250,17 @@ User: myuser
 Generated new password: D95Rx2PlOcPwKbL
 Updated 1 password
 </code></pre>
-<p>You can also avoid interactivity and password generation by specifying parameters:</p>
+<p>You can also specify parameters for <code>cpm update</code>:</p>
 <pre><code class="language-console">$ cpm update -m mymachine -s myservice -u myuser -t plain -p mynewpassword
 Updated 1 password
 </code></pre>
 <p>Finally if you want to delete a password, you can do so by using:</p>
-<pre><code class="language-console">$ cpm delete -m example.com -u myuser
+<pre><code class="language-console">$ cpm delete
+Machine: mymachine
+User: myuser
 Deleted 1 password
 </code></pre>
-<p>Or if you want to specify the service or type explicitly:</p>
+<p>You can also specify parameters for <code>cpm delete</code>:</p>
 <pre><code class="language-console">$ cpm delete -m mymachine -s myservice -u myuser -t plain
 Deleted 1 password
 </code></pre>
@@ -315,9 +315,8 @@ possible subcommands using:</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="changelog"><a class="header" href="#changelog">Changelog</a></h1>
 <h2 id="main"><a class="header" href="#main">main</a></h2>
 <ul>
-<li>create: add interactive mode in case <code>--machine</code> or <code>--user</code> is not specified</li>
+<li>create, update and delete: add interactive mode in case <code>--machine</code> or <code>--user</code> is not specified</li>
 <li>search: add interactive mode when no search terms are specified</li>
-<li>update: add interactive mode in case <code>--machine</code> or <code>--user</code> is not specified</li>
 </ul>
 <h2 id="50"><a class="header" href="#50">5.0</a></h2>
 <ul>
