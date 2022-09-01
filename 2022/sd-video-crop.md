@@ -2,7 +2,7 @@ Title: Cropped video for media shapes in Impress
 Slug: sd-video-crop
 Category: libreoffice
 Tags: en
-Date: 2022-08-31T14:46:37+02:00
+Date: 2022-09-01T09:46:45+02:00
 
 Impress now supports cropped videos in slide edit mode and during slideshow for documents imported
 from PowerPoint.
