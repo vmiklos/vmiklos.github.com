@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/pygments.css">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Miklos Vajna">
+  <meta name="description" content="Posts and writings by Miklos Vajna">
+
+  <link href="https://vmiklos.hu/blog/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking RSS" />
+
+<meta name="keywords" content="en">
+
+  <title>
+    What is Miklos hacking
+&ndash; Cropped video for media shapes in Impress  </title>
+
+<script type="text/javascript">
+  var _paq = window._paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//analytics.vmiklos.hu/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '1']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <h2><a href="https://vmiklos.hu/blog">What is Miklos hacking</a></h2>
+      <p></p>
+      <ul>
+        <li><a href="/" target="_blank">Root</a></li>
+        <li><a href="https://planet.documentfoundation.org/" target="_blank">LibreOffice Blogs</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://vmiklos.hu/blog">Index</a> &brvbar; <a href="https://vmiklos.hu/blog/archives.html">Archives</a>
+      &brvbar; <a href="https://vmiklos.hu/blog/feeds/all.rss.xml">RSS</a>
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sd-video-crop.html">Cropped video for media shapes in Impress</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Thu 01 September 2022</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 3 minutes</p>
+  </div>
+  <div class="article_text">
+    <p>Impress now supports cropped videos in slide edit mode and during slideshow for documents imported
+from PowerPoint.</p>
+<p>First, thanks to our partner <a href="https://www.suse.com/">SUSE</a> for working with
+<a href="https://www.collaboraoffice.com/">Collabora</a> to make this possible.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sd-video-crop/new.png"><figcaption>PowerPoint-style cropped video in Impress</figcaption>
+</figure>
+</p>
+<p>PowerPoint handles videos by taking a preview bitmap from the video, and then it allows users to
+apply various effects on that bitmap, like cropping. The complex aspect of this is that such filters
+are also respected while playing the video as well.</p>
+<p>Impress didn't store such properties on the media shape, which lead to distorted aspect ratio when
+playing some cropped videos from PPTX files. This lead to this preview in Impress before the work:</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sd-video-crop/bad.png"><figcaption>Video with lost cropping in Impress</figcaption>
+</figure>
+</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>The first problem was that the Impress preview was picked from the 3rd second of the video
+(presumably to avoid a black preview in many videos that start with a short black fade-in), while
+PowerPoint can store an explicit preview from the video (seems to be the first frame), so no matter
+what effects you apply, the previews were just different as the source bitmap was different. This
+could be fixed by looking for an explicitly provided bitmap for the video first, and only then
+asking the various <code>avmedia/</code> backends to produce a preview.</p>
+<p>Once the preview's initial bitmap was OK, it was necessary to take cropping into account. This was
+first done for the preview bitmap, and then also for the gstreamer backend (the relevant one for
+Linux, as a start) of <code>avmedia/</code>, which is responsible for the actual video playback. The gstreamer
+bits were done by first creating a
+<a href="https://gstreamer.freedesktop.org/documentation/videocrop/videocrop.html">videocrop</a> element and
+then connecting that to the existing
+<a href="https://gstreamer.freedesktop.org/documentation/playback/playbin.html#playbin:video-filter">playbin</a>.</p>
+<p>With these sorted out, we get rendering which matches the reference:</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sd-video-crop/ref.png"><figcaption>Cropped video in PowerPoint</figcaption>
+</figure>
+</p>
+<p>The last step was to load/save the explicit preview and the crop from/to ODF as well, not only PPTX.
+We use a markup like this to store the information:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;style:style</span> <span class="na">style:name=</span><span class="s">&quot;gr1&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;style:graphic-properties</span> <span class="na">fo:clip=</span><span class="s">&quot;rect(0cm, 1.356cm, 0cm, 1.356cm)&quot;</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/style:style&gt;</span>
+</code></pre></div>
+
+<p>And now that the <code>gr1</code> automatic style is defined, we can refer to it from a media shape:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;draw:frame</span> <span class="na">draw:name=</span><span class="s">&quot;test&quot;</span> <span class="na">draw:style-name=</span><span class="s">&quot;gr1&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;draw:plugin</span> <span class="na">xlink:href=</span><span class="s">&quot;...&quot;</span> <span class="na">xlink:type=</span><span class="s">&quot;simple&quot;</span> <span class="na">xlink:show=</span><span class="s">&quot;embed&quot;</span> <span class="na">xlink:actuate=</span><span class="s">&quot;onLoad&quot;</span> <span class="na">draw:mime-type=</span><span class="s">&quot;application/vnd.sun.star.media&quot;</span><span class="nt">&gt;</span>
+    ...
+  <span class="nt">&lt;/draw:plugin&gt;</span>
+  <span class="nt">&lt;draw:image</span> <span class="na">xlink:href=</span><span class="s">&quot;Pictures/MediaPreview1.png&quot;</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/draw:frame&gt;</span>
+</code></pre></div>
+
+<p>The nice property of this markup is that automatic styles are already used for other shapes and
+image previews are also used for e.g. table shapes, so this is just using existing markup in a new
+context, but the ODF spec already allows this markup.</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>As usual, the high-level problem was addressed by a series of small changes:</p>
+<ul>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/138763">Related: tdf#149971 svx: support explicitly provided snapshots for media shapes</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/138808">Related: tdf#149971 avmedia: add doc model and render for crop of media objects</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/138867">tdf#149971 avmedia: implement video crop support in the gsteamer backend</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/138959">avmedia: implement video crop support in the ODP filter</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/138971">xmloff: extract ExportGraphicPreview() from XMLShapeExport::ImpExportTableShape()</a></li>
+</ul>
+<p>User interface to create such a crop, support for other video effects (e.g. black-and-white) and
+other backends (Windows, macOS) could be done, but is future work currently.</p>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a snapshot / demo of Collabora Office and try it out yourself right now: <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable
+snapshot</a>.  Collabora intends to
+continue supporting and contributing to LibreOffice, the code is merged so we expect all of this
+work will be available in TDF's next release too (7.5).</p>
+  </div>
+  <div class="article_meta">
+    <p>Category: <a href="https://vmiklos.hu/blog/category/libreoffice.html">libreoffice</a>
+ &ndash; Tags:
+      <a href="https://vmiklos.hu/blog/tag/en.html">en</a>    </p>
+  </div>
+
+
+</article>
+
+
+    <div id="ending_message">
+      <p>&copy; Miklos Vajna. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
+</body>
+</html>

@@ -61,6 +61,139 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sw-gutter-margin.html">Gutter margin in Writer</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Fri 12 February 2021</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 3 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>The page gutter defines the amount of extra space added to the specified margin (typically left),
+above any existing margin values.</p></div>
+<div class="paragraph"><p>Writer now has much better support for gutter margins: not only this margin type can be specified
+explicitly, it&#8217;s also possible to select if the gutter should be on the left or on the top, and it
+works with mirrored margins as well.</p></div>
+<div class="paragraph"><p>This work is primarily for <a href="https://www.collaboraoffice.com/">Collabora Online</a>, but the feature is
+fully available in desktop Writer as well.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_motivation">Motivation</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Word has a gutter margin feature, and we saw that some UI-level
+<a href="https://github.com/OSSII/oxool-community/commit/a7e0dec2fad7e6c63e8951875bb28ac015f736a0">workaround</a>
+appeared to have something similar based on the LibreOffice technology. We thought it&#8217;s much better
+to impelement this properly, so that the result is interoperable with Word, and also available both
+in Online and on the desktop.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_results_so_far">Results so far</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>This is how the UI looks like in Online:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://share.vmiklos.hu/blog/sw-gutter-margin/online.png" alt="https://share.vmiklos.hu/blog/sw-gutter-margin/online.png" />
+</div>
+<div class="title">Figure 1. New UI in Online</div>
+</div>
+<div class="paragraph"><p>This is how the new render result looks like:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://share.vmiklos.hu/blog/sw-gutter-margin/new.png" alt="https://share.vmiklos.hu/blog/sw-gutter-margin/new.png" />
+</div>
+<div class="title">Figure 2. New render result in Writer</div>
+</div>
+<div class="paragraph"><p>Matching the reference rendering:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://share.vmiklos.hu/blog/sw-gutter-margin/ref.png" alt="https://share.vmiklos.hu/blog/sw-gutter-margin/ref.png" />
+</div>
+<div class="title">Figure 3. Reference render result</div>
+</div>
+<div class="paragraph"><p>While the gutter was just missing previously:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://share.vmiklos.hu/blog/sw-gutter-margin/old.png" alt="https://share.vmiklos.hu/blog/sw-gutter-margin/old.png" />
+</div>
+<div class="title">Figure 4. Old render result in Writer</div>
+</div>
+<div class="paragraph"><p>You can see that the gutter margin is now handled properly.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_how_is_this_implemented">How is this implemented?</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
+<div class="paragraph"><p>As usual, the high-level problem was addressed by a series of incremental development steps:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+First, we added a new "gutter" margin type (length) and a gutter position (left or top) to the
+  document model &amp; UNO API.
+</p>
+</li>
+<li>
+<p>
+This was followed by adding the layout, which is always the most challenging part of a new Writer
+  feature. In this case the basic functionality was implemented by reducing the "print area" of page
+  frames, so that the positioning of header, body and footer frames all respect the gutter margin.
+  Then additional care was taken to ignore the gutter margin for page borders to be compatible with
+  Word. Finally the margin position and mirrored margin support was implemented.
+</p>
+</li>
+<li>
+<p>
+Then we looked at import/export: this feature is now supported with the ODP, DOCX, DOC and RTF
+  formats. Note that some best-effort handling was there in the DOC filter already, but the gutter
+  margin was (semantically) lost on export.
+</p>
+</li>
+<li>
+<p>
+You already saw the new UI above: this allows changing the amount of the gutter margin, specifying
+  its position, finally the preview widget also takes the gutter margin into account.  Note that
+  this dialog is shared code between Writer, Calc and Impress: we made sure to not break those other
+  apps with the extended UI, which is specific to Writer.
+</p>
+</li>
+<li>
+<p>
+Brief help has been added for these new UI controls and submitting an ODF extension proposal to
+  OASIS is in progress to standardize the so far LO-specific markup:
+</p>
+</li>
+</ul></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">&lt;style:page-layout-properties</span></span> <span style="color: #009900">loext:margin-gutter</span><span style="color: #990000">=</span><span style="color: #FF0000">"1.27cm"</span><span style="font-weight: bold"><span style="color: #0000FF">&gt;</span></span></tt></pre></div></div>
+<div class="paragraph"><p>With these, it&#8217;s now possible to add, modify, render and delete gutter margins for your documents,
+while preserving them during ODT and DOCX import/export, without introducing any weird fake line
+shapes.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_want_to_start_using_this">Want to start using this?</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
+<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
+intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
+of this work will be available in TDF&#8217;s next release too (7.2).</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/fosdem2021.html">Handling PDF digital signatures with PDFium FOSDEM talk</a></h1>
   </div>
   <div class="article_meta">
@@ -887,129 +1020,6 @@ arrow shape. This is expressed by having 100% width for child shapes (OK to scal
 scaling).</p></div>
 <div class="paragraph"><p>All in all, now the background arrow shape has a good position and size, and the text on the arrow
 is readable.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_want_to_start_using_this">Want to start using this?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
-<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
-is a major contributor to LibreOffice and all of this work will be available in TDF&#8217;s next release
-too (7.1).</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/sd-visible-pdf-sign.html">Adding visible signatures to existing PDF files in Draw</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Mon 20 July 2020</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 3 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Draw now has support for adding visible signatures to an existing PDF file. This is in contrast with
-the <a href="https://vmiklos.hu/blog/pdf-sign.html">old functionality</a> which was limited to invisible signatures.</p></div>
-<div class="paragraph"><p>First, thanks to the Dutch Ministry of Defense in cooperation with <a href="http://nouenoff.nl/">Nou&amp;Off</a> who
-made this work by <a href="https://www.collaboraoffice.com/">Collabora</a> possible.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_motivation">Motivation</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>The PDF format allows assigning a shape (a form xobject) to a digital signature in the PDF file, and
-if you use e.g. Adobe Acrobat, then it fills this shape with some visible information about the
-digital signature. Draw used to write a placeholder widget there (a 0x0-sized rectangle on the first
-page, at position 0x0). This is valid, but it&#8217;s not close to real-world signatures, where signing
-has a visual effect as well.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_results_so_far">Results so far</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Here is how this works in practice:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://youtu.be/tPAOXr2UH0M">
-<img src="https://lh3.googleusercontent.com/IDjXX1VwAvlFi1ug9pUSYLwakUyPn2YiMachx7DdiG5Jershph28sFOCWgSuQ6WbfgGdpMcnngjipnetuCBXiOMUR-OqTPO4rlikLXFJtc1WEtQoczPmQDLIXTpPcQD__0WI0T87Cw=w640" alt="https://lh3.googleusercontent.com/IDjXX1VwAvlFi1ug9pUSYLwakUyPn2YiMachx7DdiG5Jershph28sFOCWgSuQ6WbfgGdpMcnngjipnetuCBXiOMUR-OqTPO4rlikLXFJtc1WEtQoczPmQDLIXTpPcQD__0WI0T87Cw=w640" />
-</a>
-</div>
-<div class="title">Figure 1. Demo of adding a visible signature to an existing PDF file in Draw</div>
-</div>
-<div class="paragraph"><p>You can see how the 2 added signatures are visible and Adobe Acrobat confirms they are valid, too.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_how_is_this_implemented">How is this implemented?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-Signature lines were already working in Writer and Calc, this effort brings them to Draw,
-  improving consistency.
-</p>
-</li>
-<li>
-<p>
-Signing existing PDFs were already possible, this allows adding a visible signature with the
-  correct markup. This is important for automated processing of PDFs, maybe even helps
-  accessibility. (I think DocuSign doesn&#8217;t get this right currently.)
-</p>
-</li>
-<li>
-<p>
-This uses the existing "export selected shape to PDF" code to produce that object, so it&#8217;s not a
-  bitmap, but a scalable format. (As I know, DocuSign doesn&#8217;t do this, either.)
-</p>
-</li>
-<li>
-<p>
-If you didn&#8217;t get the signature rectangle right for the first time, you can still move and resize
-  it before the actual signing happens (Acrobat doesn&#8217;t support this currently, I believe.)
-</p>
-</li>
-<li>
-<p>
-The generated object is locale-aware when it comes to the actual signature string and date format.
-</p>
-</li>
-<li>
-<p>
-The feature works for multiple signatures and multiple pages as well.
-</p>
-</li>
-</ul></div>
-<div class="ulist"><ul>
-<li>
-<p>
-The final step was
-  <a href="https://git.libreoffice.org/core/commit/9b7a890fd59744459692d7f66402c6bdd25acec4">this commit</a>,
-  with much more grounding before that one.
-</p>
-</li>
-<li>
-<p>
-Note that the signing is a two step process: first you draw the signature rectangle and optionally
-  finalize its position / size, and only then you use the <em>Finish Signing</em> button on the infobar to
-trigger the actual signing:
-</p>
-</li>
-</ul></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/TMPrD20O0PvPLB7Uru_mmxfeQTaWhJwNQ80jgLj23TWLNqkm44Ww8F9Azce0sEN1TzmjmmVW7MvHZTwtR6Us2H7qpzOSC07CQ0p_myEsM1WRQOToAEus0vsgpTh1yeD65YemFQvv_A=w640" alt="https://lh3.googleusercontent.com/TMPrD20O0PvPLB7Uru_mmxfeQTaWhJwNQ80jgLj23TWLNqkm44Ww8F9Azce0sEN1TzmjmmVW7MvHZTwtR6Us2H7qpzOSC07CQ0p_myEsM1WRQOToAEus0vsgpTh1yeD65YemFQvv_A=w640" />
-</div>
-<div class="title">Figure 2. After drawing a signature rectangle, before finishing the signing.</div>
-</div>
-<div class="paragraph"><p>If you use a HW-based certificate, this second step will ask for your certificate PIN.</p></div>
 </div>
 </div>
 <div class="sect1">

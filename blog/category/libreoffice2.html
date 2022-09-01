@@ -61,6 +61,109 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sw-linked-styles.html">Start of linked paragraph and character styles in Writer</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Fri 12 November 2021</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>Writer now has the start of linked character and paragraph styles. This improves DOCX compatibility,
+extends ODT and it&#8217;ll improve the style previews and the UI in the future, hopefully.</p></div>
+<div class="paragraph"><p>First, thanks <a href="https://www.docmosis.com/">Docmosis</a> who made this work by
+<a href="https://www.collaboraoffice.com/">Collabora</a> possible.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_motivation">Motivation</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Word allows linking paragraph and character styles together, which means only the paragraph one will
+be present on the UI. Such a split has benefits if you customize the character properties on the UI
+and later you want to update the paragraph properties from a template, for example.</p></div>
+<div class="paragraph"><p>This is frequent markup in DOCX files, because Word defaults to splitting out the character
+properties of a <code>Test</code> paragraph style into a <code>Test Char</code> character style on editing.</p></div>
+<div class="paragraph"><p>Saving the document in Writer and then viewing it in Word lead to loosing these links, so their
+style pickers started to show unwanted <code>Test Char</code> rows.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_results_so_far">Results so far</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>We used to preserve such linking information when doing DOCX &#8594; DOCX conversion for a while, since
+about 2013. But such preservation was in-memory, so if you saved the document to ODT, then such
+information was lost. This approach also lacked a real document model, which is necessary to
+incrementally build this feature into a complete solution.</p></div>
+<div class="paragraph"><p>Here is how the style picker in Word looks like now, after a DOCX &#8594; ODT &#8594; DOCX pipeline:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://share.vmiklos.hu/blog/sw-linked-styles/new.png" alt="https://share.vmiklos.hu/blog/sw-linked-styles/new.png" />
+</div>
+<div class="title">Figure 1. Word&#8217;s style picker, new output: no unwanted additional character styles</div>
+</div>
+<div class="paragraph"><p>Here is how this used to look like before the new changes (note the <code>Heading 1 Char</code> line between
+<code>Heading</code> and <code>Index</code>):</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://share.vmiklos.hu/blog/sw-linked-styles/old.png" alt="https://share.vmiklos.hu/blog/sw-linked-styles/old.png" />
+</div>
+<div class="title">Figure 2. Word&#8217;s style picker, old output: unwanted additional character styles</div>
+</div>
+<div class="paragraph"><p>And here is how the input document looks like:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://share.vmiklos.hu/blog/sw-linked-styles/ref.png" alt="https://share.vmiklos.hu/blog/sw-linked-styles/ref.png" />
+</div>
+<div class="title">Figure 3. Word&#8217;s style picker, reference output: no unwanted additional character styles</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_how_is_this_implemented">How is this implemented?</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/122595">sw: paragraph styles: add doc model &amp; UNO
+  API for a linked character style</a> added the document model and API support
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/122681">sw: paragraph styles: add DOCX filter for
+  a linked character style</a> added the DOCX filter
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/122753">sw: paragraph styles: add ODT filter for a
+  linked character style</a> added the ODT filter
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Just to set expectations, this is currently an invisible feature, but unlike the old approach from 8
+years ago, this one can be extended into a full feature, incrementally. It also survives ODT
+roundtrips.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_want_to_start_using_this">Want to start using this?</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
+expect all of this work will be available in TDF&#8217;s
+<a href="http://dev-builds.libreoffice.org/daily/master/">next release</a> (7.3).</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/sd-table-transparent-shadow.html">Transparent shadow for tables from PPTX in Impress</a></h1>
   </div>
   <div class="article_meta">
@@ -997,139 +1100,6 @@ contents.</p></div>
 <div class="paragraph"><p>Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
 expect all of this work will be available in TDF&#8217;s
 <a href="http://dev-builds.libreoffice.org/daily/master/">next release</a> (7.2).</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/sw-gutter-margin.html">Gutter margin in Writer</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Fri 12 February 2021</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 3 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>The page gutter defines the amount of extra space added to the specified margin (typically left),
-above any existing margin values.</p></div>
-<div class="paragraph"><p>Writer now has much better support for gutter margins: not only this margin type can be specified
-explicitly, it&#8217;s also possible to select if the gutter should be on the left or on the top, and it
-works with mirrored margins as well.</p></div>
-<div class="paragraph"><p>This work is primarily for <a href="https://www.collaboraoffice.com/">Collabora Online</a>, but the feature is
-fully available in desktop Writer as well.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_motivation">Motivation</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Word has a gutter margin feature, and we saw that some UI-level
-<a href="https://github.com/OSSII/oxool-community/commit/a7e0dec2fad7e6c63e8951875bb28ac015f736a0">workaround</a>
-appeared to have something similar based on the LibreOffice technology. We thought it&#8217;s much better
-to impelement this properly, so that the result is interoperable with Word, and also available both
-in Online and on the desktop.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_results_so_far">Results so far</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>This is how the UI looks like in Online:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-gutter-margin/online.png" alt="https://share.vmiklos.hu/blog/sw-gutter-margin/online.png" />
-</div>
-<div class="title">Figure 1. New UI in Online</div>
-</div>
-<div class="paragraph"><p>This is how the new render result looks like:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-gutter-margin/new.png" alt="https://share.vmiklos.hu/blog/sw-gutter-margin/new.png" />
-</div>
-<div class="title">Figure 2. New render result in Writer</div>
-</div>
-<div class="paragraph"><p>Matching the reference rendering:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-gutter-margin/ref.png" alt="https://share.vmiklos.hu/blog/sw-gutter-margin/ref.png" />
-</div>
-<div class="title">Figure 3. Reference render result</div>
-</div>
-<div class="paragraph"><p>While the gutter was just missing previously:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-gutter-margin/old.png" alt="https://share.vmiklos.hu/blog/sw-gutter-margin/old.png" />
-</div>
-<div class="title">Figure 4. Old render result in Writer</div>
-</div>
-<div class="paragraph"><p>You can see that the gutter margin is now handled properly.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_how_is_this_implemented">How is this implemented?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
-<div class="paragraph"><p>As usual, the high-level problem was addressed by a series of incremental development steps:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-First, we added a new "gutter" margin type (length) and a gutter position (left or top) to the
-  document model &amp; UNO API.
-</p>
-</li>
-<li>
-<p>
-This was followed by adding the layout, which is always the most challenging part of a new Writer
-  feature. In this case the basic functionality was implemented by reducing the "print area" of page
-  frames, so that the positioning of header, body and footer frames all respect the gutter margin.
-  Then additional care was taken to ignore the gutter margin for page borders to be compatible with
-  Word. Finally the margin position and mirrored margin support was implemented.
-</p>
-</li>
-<li>
-<p>
-Then we looked at import/export: this feature is now supported with the ODP, DOCX, DOC and RTF
-  formats. Note that some best-effort handling was there in the DOC filter already, but the gutter
-  margin was (semantically) lost on export.
-</p>
-</li>
-<li>
-<p>
-You already saw the new UI above: this allows changing the amount of the gutter margin, specifying
-  its position, finally the preview widget also takes the gutter margin into account.  Note that
-  this dialog is shared code between Writer, Calc and Impress: we made sure to not break those other
-  apps with the extended UI, which is specific to Writer.
-</p>
-</li>
-<li>
-<p>
-Brief help has been added for these new UI controls and submitting an ODF extension proposal to
-  OASIS is in progress to standardize the so far LO-specific markup:
-</p>
-</li>
-</ul></div>
-<div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight
-by Lorenzo Bettini
-http://www.lorenzobettini.it
-http://www.gnu.org/software/src-highlite -->
-<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">&lt;style:page-layout-properties</span></span> <span style="color: #009900">loext:margin-gutter</span><span style="color: #990000">=</span><span style="color: #FF0000">"1.27cm"</span><span style="font-weight: bold"><span style="color: #0000FF">&gt;</span></span></tt></pre></div></div>
-<div class="paragraph"><p>With these, it&#8217;s now possible to add, modify, render and delete gutter margins for your documents,
-while preserving them during ODT and DOCX import/export, without introducing any weird fake line
-shapes.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_want_to_start_using_this">Want to start using this?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
-<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
-intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF&#8217;s next release too (7.2).</p></div>
 </div>
 </div>
 
