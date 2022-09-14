@@ -146,7 +146,7 @@
                         <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
 <p>turtle-cpm is a command line tool to manage passwords, a replacement of the now gone <a href="https://www.harry-b.de/dokuwiki/doku.php?id=harry:cpm">cpm
 project</a>.</p>
-<p>The latest version is v7.1, released on 2022-08-31.  See the <a href="news.html">release notes</a>.</p>
+<p>The latest version is v7.3, released on 2022-09-14.  See the <a href="news.html">release notes</a>.</p>
 <p>Notable features:</p>
 <ul>
 <li>Simple database format: encrypted SQLite (via <code>gpg</code>), tracking machines, services, users and
@@ -311,7 +311,7 @@ using:</p>
 </code></pre>
 <h2 id="inspecting-the-encrypted-database-manually"><a class="header" href="#inspecting-the-encrypted-database-manually">Inspecting the encrypted database manually</a></h2>
 <p>In case you want to inspect the SQLite database of <code>cpm</code> manually, you need to decrypt it yourself,
-using:</p>
+using (assuming an empty <code>XDG_STATE_HOME</code> environment variable):</p>
 <pre><code class="language-sh">gpg --decrypt -a -o decrypted.db ~/.local/state/cpm/passwords.db
 </code></pre>
 <p>After this, you can inspect the database using a GUI like:</p>
@@ -343,6 +343,17 @@ machine: twitter.com, service: http, user: myuser, password type: TOTP shared se
 </code></pre>
 <p>The following lines will be a QR code you can scan with a mobile app.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="changelog"><a class="header" href="#changelog">Changelog</a></h1>
+<h2 id="73"><a class="header" href="#73">7.3</a></h2>
+<ul>
+<li>create: new <code>-n</code> switch, introducing a dry run mode to see what style of password would be
+generated</li>
+<li>update and delete: new <code>-n</code> switch, showing how many passwords would be updated/deleted (typically
+0 or 1), without writing the database</li>
+</ul>
+<h2 id="72"><a class="header" href="#72">7.2</a></h2>
+<ul>
+<li>in case the <code>XDG_STATE_HOME</code> environment variable is set to a custom value, it is now respected</li>
+</ul>
 <h2 id="71"><a class="header" href="#71">7.1</a></h2>
 <ul>
 <li>when specifying TOTP shared secrets, it is now supported to specify <code>otpauth://</code> URLs</li>
