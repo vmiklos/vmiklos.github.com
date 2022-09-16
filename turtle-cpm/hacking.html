@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Installation - turtle-cpm user guide</title>
+        <title>Development notes - turtle-cpm user guide</title>
 
 
         <!-- Custom HTML head -->
@@ -81,7 +81,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">User Guide</li><li class="chapter-item expanded "><a href="installation.html" class="active"><strong aria-hidden="true">1.</strong> Installation</a></li><li class="chapter-item expanded "><a href="usage.html"><strong aria-hidden="true">2.</strong> Usage</a></li><li class="chapter-item expanded "><a href="advanced.html"><strong aria-hidden="true">3.</strong> Advanced topics</a></li><li class="chapter-item expanded "><a href="hacking.html"><strong aria-hidden="true">4.</strong> Development notes</a></li><li class="chapter-item expanded "><a href="news.html"><strong aria-hidden="true">5.</strong> Changelog</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">User Guide</li><li class="chapter-item expanded "><a href="installation.html"><strong aria-hidden="true">1.</strong> Installation</a></li><li class="chapter-item expanded "><a href="usage.html"><strong aria-hidden="true">2.</strong> Usage</a></li><li class="chapter-item expanded "><a href="advanced.html"><strong aria-hidden="true">3.</strong> Advanced topics</a></li><li class="chapter-item expanded "><a href="hacking.html" class="active"><strong aria-hidden="true">4.</strong> Development notes</a></li><li class="chapter-item expanded "><a href="news.html"><strong aria-hidden="true">5.</strong> Changelog</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -116,7 +116,7 @@
                         <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
-                        <a href="https://github.com/vmiklos/turtle-cpm/edit/main/guide/src/installation.md" title="Suggest an edit" aria-label="Suggest an edit">
+                        <a href="https://github.com/vmiklos/turtle-cpm/edit/main/guide/src/hacking.md" title="Suggest an edit" aria-label="Suggest an edit">
                             <i id="git-edit-button" class="fa fa-edit"></i>
                         </a>
 
@@ -145,46 +145,26 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="installation"><a class="header" href="#installation">Installation</a></h1>
-<p>cpm has been used on Linux, but nothing was done intentionally to prevent it from working on e.g.
-macOS or Windows.</p>
-<h2 id="dependencies"><a class="header" href="#dependencies">Dependencies</a></h2>
-<p>You need to install <a href="https://gnupg.org/">GPG</a> if you don't have it already and need to generate at
-least a key using:</p>
-<pre><code class="language-console">gpg --gen-key
+                        <h1 id="development-notes"><a class="header" href="#development-notes">Development notes</a></h1>
+<h2 id="updating-dependencies"><a class="header" href="#updating-dependencies">Updating dependencies</a></h2>
+<p>Ideally CI checks everything before a commit hits main, but run</p>
+<pre><code class="language-console">go get -u &amp;&amp; go mod tidy
 </code></pre>
-<p>This will allow cpm to encrypt and decrypt your password database. Don't fear from specifying a
-passphrase for your key: you'll only have to enter it once after login (thanks to
-<a href="https://www.gnupg.org/documentation/manuals/gnupg/Invoking-GPG_002dAGENT.html">gpg-agent</a>), and
-this way an attacker can't get access to your passwords, even if they steal both your private key &amp;
-your cpm database.</p>
-<p>Optionally, you can install <a href="https://www.nongnu.org/oath-toolkit/">oathtool</a> in case you're
-interested in TOTP support.</p>
-<p>Optionally, you can install <a href="http://sourceforge.net/projects/pwgen/">pwgen</a> in case you want to have
-auto-generated passwords.</p>
-<h2 id="build-from-source"><a class="header" href="#build-from-source">Build from source</a></h2>
-<p>You can install cpm using:</p>
-<pre><code class="language-console">go install vmiklos.hu/go/cpm@latest
-</code></pre>
-<p>If <code>$(go env GOPATH)/bin</code> is not in your <code>PATH</code> yet, you may want to add it, so typing <code>cpm</code> will
-invoke the installed executable.</p>
-<h2 id="optional-shell-completion"><a class="header" href="#optional-shell-completion">Optional shell completion</a></h2>
-<p>Optionally, you can install shell completion for cpm, example for bash:</p>
-<pre><code class="language-console">cpm completion bash &gt; ~/.local/share/bash-completion/completions/cpm
-</code></pre>
-<p>You can test if it works in a new shell using:</p>
-<pre><code class="language-console">cpm &lt;tab&gt;&lt;tab&gt;
+<p>from time to time and make sure Go dependencies are reasonably up to date.</p>
+<h2 id="shell-completion"><a class="header" href="#shell-completion">Shell completion</a></h2>
+<p>Changes to the shell completion can be tested, without restarting the shell using:</p>
+<pre><code class="language-console">source &lt;(cpm completion bash)
 </code></pre>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="advanced.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next" href="usage.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="news.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -194,11 +174,11 @@ invoke the installed executable.</p>
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="advanced.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next" href="usage.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="news.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

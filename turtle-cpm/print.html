@@ -82,7 +82,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">User Guide</li><li class="chapter-item expanded "><a href="installation.html"><strong aria-hidden="true">1.</strong> Installation</a></li><li class="chapter-item expanded "><a href="usage.html"><strong aria-hidden="true">2.</strong> Usage</a></li><li class="chapter-item expanded "><a href="advanced.html"><strong aria-hidden="true">3.</strong> Advanced topics</a></li><li class="chapter-item expanded "><a href="news.html"><strong aria-hidden="true">4.</strong> Changelog</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">User Guide</li><li class="chapter-item expanded "><a href="installation.html"><strong aria-hidden="true">1.</strong> Installation</a></li><li class="chapter-item expanded "><a href="usage.html"><strong aria-hidden="true">2.</strong> Usage</a></li><li class="chapter-item expanded "><a href="advanced.html"><strong aria-hidden="true">3.</strong> Advanced topics</a></li><li class="chapter-item expanded "><a href="hacking.html"><strong aria-hidden="true">4.</strong> Development notes</a></li><li class="chapter-item expanded "><a href="news.html"><strong aria-hidden="true">5.</strong> Changelog</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -187,7 +187,7 @@ macOS or Windows.</p>
 <h2 id="dependencies"><a class="header" href="#dependencies">Dependencies</a></h2>
 <p>You need to install <a href="https://gnupg.org/">GPG</a> if you don't have it already and need to generate at
 least a key using:</p>
-<pre><code class="language-sh">gpg --gen-key
+<pre><code class="language-console">gpg --gen-key
 </code></pre>
 <p>This will allow cpm to encrypt and decrypt your password database. Don't fear from specifying a
 passphrase for your key: you'll only have to enter it once after login (thanks to
@@ -200,10 +200,17 @@ interested in TOTP support.</p>
 auto-generated passwords.</p>
 <h2 id="build-from-source"><a class="header" href="#build-from-source">Build from source</a></h2>
 <p>You can install cpm using:</p>
-<pre><code class="language-sh">go install vmiklos.hu/go/cpm@latest
+<pre><code class="language-console">go install vmiklos.hu/go/cpm@latest
 </code></pre>
 <p>If <code>$(go env GOPATH)/bin</code> is not in your <code>PATH</code> yet, you may want to add it, so typing <code>cpm</code> will
 invoke the installed executable.</p>
+<h2 id="optional-shell-completion"><a class="header" href="#optional-shell-completion">Optional shell completion</a></h2>
+<p>Optionally, you can install shell completion for cpm, example for bash:</p>
+<pre><code class="language-console">cpm completion bash &gt; ~/.local/share/bash-completion/completions/cpm
+</code></pre>
+<p>You can test if it works in a new shell using:</p>
+<pre><code class="language-console">cpm &lt;tab&gt;&lt;tab&gt;
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="usage"><a class="header" href="#usage">Usage</a></h1>
 <p>cpm supports creating, reading, updating and deleting passwords. You'll just create and read them
 most of the time, though.</p>
@@ -223,7 +230,7 @@ Generated password: 7U1FvIzubR95Itg
 <li>you have preferred password</li>
 </ul>
 <p>Example for such usage:</p>
-<pre><code class="language-console">$ cpm create -m example.com -s http -u myuser -t plain -p 7U1FvIzubR95Itg
+<pre><code class="language-console">cpm create -m example.com -s http -u myuser -t plain -p 7U1FvIzubR95Itg
 </code></pre>
 <p>When the machine is not yours, it can be e.g. the domain of a website.</p>
 <p>If you try to insert a password twice (same machine, service, user and password type), you will get
@@ -244,7 +251,7 @@ machine: example.com, service: http, user: myuser, password type: plain, passwor
 (Facebook, Twitter, etc). Once a website asks you to scan a QR code for
 <a href="https://en.wikipedia.org/wiki/Time-based_one-time_password">TOTP</a> purposes, just ask for the TOTP
 shared secret and then add it to cpm using:</p>
-<pre><code class="language-console">$ cpm create -m mymachine -u myuser -p &quot;MY TOTP SHARED SECRET&quot; -t totp
+<pre><code class="language-console">cpm create -m mymachine -u myuser -p &quot;MY TOTP SHARED SECRET&quot; -t totp
 </code></pre>
 <p>When searching, it's a good idea to first narrow down your search results to a single hit, e.g.
 first confirm that:</p>
@@ -292,7 +299,7 @@ on the other machines:</p>
         Hostname myserver.example.com
 </code></pre>
 <p>Finally pull the remote database to your local one, using:</p>
-<pre><code class="language-sh">cpm sync
+<pre><code class="language-console">cpm sync
 </code></pre>
 <p>This allows searching in your passwords even when you're offline. Keep in mind that editing the
 database on the slaves is not a good idea as the next sync will overwrite your local changes.</p>
@@ -301,30 +308,30 @@ database on the slaves is not a good idea as the next sync will overwrite your l
 templates, <code>cpm</code> can be integrated into such a workflow, using the quiet mode of the search
 subcommand. For example, if you have an app password at your mail provider, and you want to generate
 your mutt configuration, you can query just the password from <code>cpm</code> using:</p>
-<pre><code class="language-sh">cpm -q -m accounts.example.com -u $USER-mail-$HOSTNAME
+<pre><code class="language-console">cpm -q -m accounts.example.com -u $USER-mail-$HOSTNAME
 </code></pre>
 <h2 id="importing-the-old-cpm-xml-database"><a class="header" href="#importing-the-old-cpm-xml-database">Importing the old CPM XML database</a></h2>
 <p>In case you used the old <code>cpm</code> tool, it used to store its data at <code>~/.cpmdb</code> as an XML file,
 compressed and encrypted. If you want to import that into turtle-cpm's database, you can do so
 using:</p>
-<pre><code class="language-sh">cpm import
+<pre><code class="language-console">cpm import
 </code></pre>
 <h2 id="inspecting-the-encrypted-database-manually"><a class="header" href="#inspecting-the-encrypted-database-manually">Inspecting the encrypted database manually</a></h2>
 <p>In case you want to inspect the SQLite database of <code>cpm</code> manually, you need to decrypt it yourself,
 using (assuming an empty <code>XDG_STATE_HOME</code> environment variable):</p>
-<pre><code class="language-sh">gpg --decrypt -a -o decrypted.db ~/.local/state/cpm/passwords.db
+<pre><code class="language-console">gpg --decrypt -a -o decrypted.db ~/.local/state/cpm/passwords.db
 </code></pre>
 <p>After this, you can inspect the database using a GUI like:</p>
-<pre><code class="language-sh">sqlitebrowser decrypted.db
+<pre><code class="language-console">sqlitebrowser decrypted.db
 </code></pre>
 <p>Don't forget to delete the decrypted database after you're done with your investigation.</p>
 <h2 id="reference-documentation"><a class="header" href="#reference-documentation">Reference documentation</a></h2>
 <p>Apart from this guide, reference documentation is available in <code>cpm</code> itself. You can learn about the
 possible subcommands using:</p>
-<pre><code class="language-sh">cpm -h
+<pre><code class="language-console">cpm -h
 </code></pre>
 <p>You can also check all the available options for one given subcommand using e.g.:</p>
-<pre><code class="language-sh">cpm create -h
+<pre><code class="language-console">cpm create -h
 </code></pre>
 <p>An alternative to this is the manual pages under <code>man/</code>, which provide the same information.</p>
 <h2 id="re-sharing-totp-shared-secrets"><a class="header" href="#re-sharing-totp-shared-secrets">Re-sharing TOTP shared secrets</a></h2>
@@ -337,12 +344,26 @@ QR code image. <code>cpm</code> supports storing these full URLs as well, they l
 <p>Where Myserver is some server-side app name and myuser is your user name.</p>
 <p>The benefit of storing the full URL in the <code>cpm</code> database is that later you can re-share them as QR
 codes using e.g.:</p>
-<pre><code class="language-console">$ cpm -t totp --qrcode twitter
+<pre><code class="language-console">cpm -t totp --qrcode twitter
 machine: twitter.com, service: http, user: myuser, password type: TOTP shared secret, password:
 ...
 </code></pre>
 <p>The following lines will be a QR code you can scan with a mobile app.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="development-notes"><a class="header" href="#development-notes">Development notes</a></h1>
+<h2 id="updating-dependencies"><a class="header" href="#updating-dependencies">Updating dependencies</a></h2>
+<p>Ideally CI checks everything before a commit hits main, but run</p>
+<pre><code class="language-console">go get -u &amp;&amp; go mod tidy
+</code></pre>
+<p>from time to time and make sure Go dependencies are reasonably up to date.</p>
+<h2 id="shell-completion"><a class="header" href="#shell-completion">Shell completion</a></h2>
+<p>Changes to the shell completion can be tested, without restarting the shell using:</p>
+<pre><code class="language-console">source &lt;(cpm completion bash)
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="changelog"><a class="header" href="#changelog">Changelog</a></h1>
+<h2 id="main"><a class="header" href="#main">main</a></h2>
+<ul>
+<li>added shell completion support</li>
+</ul>
 <h2 id="73"><a class="header" href="#73">7.3</a></h2>
 <ul>
 <li>create: new <code>-n</code> switch, introducing a dry run mode to see what style of password would be
