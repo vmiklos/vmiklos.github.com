@@ -58,6 +58,68 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sw-content-controls4.html">Content controls in Writer: PDF export and combo box type</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Mon 03 October 2022</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 3 minutes</p>
+  </div>
+  <div class="article_text">
+    <p>Writer now supports exporting content controls to PDF and a 7th content control type: it is possible
+to differentiate between drop-downs and combo boxes.</p>
+<p>This work is primarily for <a href="https://www.collaboraoffice.com/">Collabora Online</a>, see <a href="https://vmiklos.hu/blog/sw-content-controls3.html">the previous
+post</a> for background.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-content-controls4/adobe-writer.png"><figcaption>PDF export of Writer content controls into PDF</figcaption>
+</figure>
+</p>
+<p>Writer users can create fillable forms using content controls, but the PDF export only contained the
+plain text representation of them. PDF can also have fillable widgets for form filling, so it's
+logical to map content controls to PDF widgets.</p>
+<p>A perfect mapping is not possible, since PDF widgets are always a single rectangle and Writer
+content controls is a list of rectangles (text portions), but this doesn't cause a problem in most
+cases. The size of the PDF rectangle is determined based on the placeholder's size from Writer.</p>
+<p>Benefits includes not having to insert a control shape, manually positioned to look like it's in
+line with the surrounding text. An other benefit is that this way the widget's style (font name,
+size, etc) can be specified using Writer styles, not with shape properties. It's also interesting
+that Word itself doesn't seem to support content controls in its PDF export at the time of writing.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>PDF export now automatically turns Writer content controls into fillable widgets for the rich text,
+plain text, checkbox, drop-down, combo box and date types.</p>
+<p>Combo box itself is a new type: now combo box content can be either free-form or one of its list
+items, while drop-down can only be one of its list items.</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>As usual, the high-level problem was addressed by a series of small changes:</p>
+<ul>
+<li><a href="https://git.libreoffice.org/core/commit/82d90529dc2b3cb8359dec78852cbd910a66d275">sw content controls, rich text: add initial PDF export</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/9bad5be0ffdcdee92d40162b598ed2ab2815e5d5">sw content controls, checkbox: add PDF export</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/6b2433f3b66c1f118dabcd40924122deb2d4f204">sw content controls, dropdown: add PDF export</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/f7408cf0e472be91bdb7a4d2a4b8da3eb9a049a9">sw content controls, date: add PDF export</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/493b10997053882d06803156a98ae8924bf7660d">sw content controls: add PDF export of font properties</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/08bce8eeb2e18c7cea4108dbfc2519ada56e8b61">sw content controls: fix getString() and setString() on SwXContentControl</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/de90c192cb8f1f03a4028493d8bfe9a127a76b2a">sw content controls, plain text: enable DOCX filter with data binding</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/addfb3cce0f7ce8fbd0b169d467b6956ed95dbb5">sw content controls: add a11y description for PDF export</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/276f3a3ce52ca422bf5ebccfa2c926d3e87d5eab">sw content controls, combo box: add doc model &amp; UNO API</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/37656a47d8797d45d706a17ab8843dcb8db90bbc">sw content controls, combo box: make the dropdown case read-only</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/21d93d8d2ffd9c5d5cfe9064590b35e0727295c9">sw content controls, combo box: add ODT filter</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/01b1f57a90172a76faa1489b3b72250ee76169a6">sw content controls, combo box: add DOCX filter</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/49f1bf56ebfa3c96aa90835c1121eb827d713b9d">sw content controls, combo box: add insert UI</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/82b9ff35649cd67ca16296676d2ad1e4eff15493">sw content controls, combo box: add PDF export</a></li>
+</ul>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a snapshot / demo of Collabora Office 22.05 and try it out yourself right now: <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try
+unstable snapshot</a>.  Collabora
+intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
+of this work will be available in TDF's next release too (7.5).</p>
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/sd-video-crop.html">Cropped video for media shapes in Impress</a></h1>
   </div>
   <div class="article_meta">
@@ -1656,110 +1718,6 @@ ODP/PPTX filter and UI work to complete the work started on the branch:</p></div
 <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
 intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
 of this work will be available in TDF&#8217;s next release too (7.4).</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/sw-ole-update.html">Writer embedded objects: reliably update object previews</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Wed 15 December 2021</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Embedded objects in Writer consist of a native data part and a preview part. Until now, there was no
-way to force the update of the preview part in case it was empty.</p></div>
-<div class="paragraph"><p>Now the Tools &#8594; Update &#8594; Update all menu item updates such previews as well. This is especially
-useful if you manipulate the ZIP/XML document directly to insert native data, then load it into
-Writer to generate a preview.</p></div>
-<div class="paragraph"><p>First, thanks <a href="https://vector.com/">Vector</a> who made this work by
-<a href="https://www.collaboraoffice.com/">Collabora</a> possible.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_motivation">Motivation</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>The Update all menu item already updates all sorts of generated content: fields, table of contents,
-charts, the document layout, but not the preview of embedded objects. You could work this around by
-double-clicking on the embedded object to re-generate the preview, but doing this manually for a
-larger document is not efficient. This is especially useful for hand-crafted documents which have
-proper native data, but no preview image yet.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_results_so_far">Results so far</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Here is how an embedded object without a preview looks like:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-ole-update/old.png" alt="https://share.vmiklos.hu/blog/sw-ole-update/old.png" />
-</div>
-<div class="title">Figure 1. Writer embedded object with no preview</div>
-</div>
-<div class="paragraph"><p>Now using the Update all menu item turns a sample document into this preview:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-ole-update/new.png" alt="https://share.vmiklos.hu/blog/sw-ole-update/new.png" />
-</div>
-<div class="title">Figure 2. Writer embedded object with a preview</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_how_is_this_implemented">How is this implemented?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
-<div class="paragraph"><p><a href="https://gerrit.libreoffice.org/c/core/+/126253">sw: update previews of OLE objects on
-"update all"</a> is the change implementing this small feature. It works by:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-Iterating over the frame formats ("special" formats) of the document
-</p>
-</li>
-<li>
-<p>
-Filter out shapes
-</p>
-</li>
-<li>
-<p>
-Filter out objects which are only reachable from the undo stack
-</p>
-</li>
-<li>
-<p>
-Filter out objects which are not embedded ("OLE") objects
-</p>
-</li>
-<li>
-<p>
-Once we have access to the OLE node, jump to its <code>SwOLEObj</code>, then to its <code>svt::EmbeddedObjectRef</code>,
-  which knows how to re-calculate the preview bitmap
-</p>
-</li>
-<li>
-<p>
-Finally notify the OLE node that the preview was updated, so the necessary repaint can happen
-</p>
-</li>
-</ul></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_want_to_start_using_this">Want to start using this?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
-expect all of this work will be available in TDF&#8217;s
-<a href="http://dev-builds.libreoffice.org/daily/master/">next release</a> (7.4).</p></div>
 </div>
 </div>
 

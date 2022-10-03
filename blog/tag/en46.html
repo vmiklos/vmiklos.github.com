@@ -59,6 +59,32 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/new-in-git-1-5-6-git-cvsexportcommit-w.html">new in git-1.5.6: git cvsexportcommit -W</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Sat 14 June 2008</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>git-1.5.6 will be released soon (probably in a few weeks) and there are some interesting news in it.</p><p>one of them is the new git cvsimport -W switch which makes it easy to do bi-directional changes between git and cvs.</p><p>to set up your local repo:</p><p><pre>$ CVSROOT=$URL cvs co module
+$ cd module
+$ git cvsimport</pre></p><p>this will do a fresh checkout of the cvs module and will import it to git. you will have two interesting git branch: origin is the "reference" one, you should not touch it, and you can work in master.</p><p>you can commit to master, etc.</p><p>then there are two tricky operations:</p><p>first, you may want to commit back your local commits.</p><p>to do this:</p><p><pre>$ for i in $(git rev-list --reverse origin..master)
+do
+        git cvsexportcommit -W -c -p -u $i
+done</pre></p><p>second, you may want to fetch upstream changes and rebase your local changes on top of them:</p><p><pre>$ git cvsimport -i
+$ git rebase origin</pre></p><p>that's all.</p><p>cookies goes to Dscho in commit <a href="http://git.kernel.org/?p=git/git.git;a=commit;h=d775734c40afed216160437c59a45c93bdf28689">d775734</a>. :)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/interesting-git-talk.html">interesting git talk</a></h1>
   </div>
   <div class="article_meta">
@@ -270,46 +296,6 @@ Host client
         HostName localhost
         Port 19022
 </pre></p><p>so that you can easily just type</p><p><code>$ ssh client</code></p><p>on the server</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/svn-ggit-conversion-using-git-svn.html">svn->git conversion using git-svn</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Sun 09 December 2007</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>git-svnimport will be removed in git-1.5.4 and i don't think it's tirival to use git-svn (which is great for bi-directional work) to properly convert an svn repo (with multiple branches) to a git one, so here is a recipe.</p><p>first, just use git-svn to create a git-svn repo. it's a git repo but it's a bit weird, it contains metadata which is necessary for bi-directional operations and you won't see the branches by default when you clone it. ah and it's not a bare repo.</p><p>in this example i'll convert ooo-build's svn repo (it has several branches and tags, so it's a good example).</p><p><code>mkdir -p ~/git/ooo-build
-cd ~/git/ooo-build
-git svn init -s svn+ssh://svn.gnome.org/svn/ooo-build
-git svn fetch</code></p><p>this will take a while. once it's completed, you need to convert this to a bare repo:</p><p><code>mkdir ../ooo-build.git
-cd ../ooo-build.git
-git --bare init
-git config remote.origin.url ~/git/ooo-build
-git config remote.origin.fetch +refs/remotes/tags/*:refs/tags/*
-git config --add remote.origin.fetch +refs/remotes/trunk:refs/heads/master
-git config --add remote.origin.fetch +refs/remotes/*:refs/heads/*
-git fetch
-</code></p><p>and you're done! :)</p><p>of course this is an incremental operation, so all you need is to run git svn fetch and git fetch from cron to keep the mirror up to date.</p><p>update:</p><p>it turns out you can even do this by having only one git repo. it has benefints: you don't have to duplicate the object database. and it has one problem: if you later switch fully to git, then you want to remove the git-svn metadata - doing so is the easiest if you just clone the repo.</p><p>so - in case you want this, you have to:</p><p><code>mkdir -p ~/git/ooo-build.git
-cd ~/git/ooo-build.git
-git --bare init
-git --bare svn init -s svn+ssh://svn.gnome.org/svn/ooo-build
-git --bare svn fetch</code></p><p>and then you can fetch from yourself:</p><p><code>
-git config remote.origin.url .
-git config remote.origin.fetch +refs/remotes/tags/*:refs/tags/*
-git config --add remote.origin.fetch +refs/remotes/*:refs/heads/*
-git fetch
-</code></p><p>note: git config --add remote.origin.fetch +refs/remotes/trunk:refs/heads/master it unnecessary as git svn fetch will update this for you (it is different from git fetch)</p><p>thanks for devurandom from #git for pointing out that this is possible using git --bare init before git svn init and using git --bare svn fetch :)</p>
 </div>
 </div>
 

@@ -1,5 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>What is Miklos hacking - libreoffice</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Thu, 01 Sep 2022 09:46:45 +0200</lastBuildDate><item><title>Cropped video for media shapes in Impress</title><link>https://vmiklos.hu/blog/sd-video-crop.html</link><description>&lt;p&gt;Impress now supports cropped videos in slide edit mode and during slideshow for documents imported
+<rss version="2.0"><channel><title>What is Miklos hacking - libreoffice</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Mon, 03 Oct 2022 08:25:28 +0200</lastBuildDate><item><title>Content controls in Writer: PDF export and combo box type</title><link>https://vmiklos.hu/blog/sw-content-controls4.html</link><description>&lt;p&gt;Writer now supports exporting content controls to PDF and a 7th content control type: it is possible
+to differentiate between drop-downs and combo boxes.&lt;/p&gt;
+&lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraoffice.com/"&gt;Collabora Online&lt;/a&gt;, see &lt;a href="https://vmiklos.hu/blog/sw-content-controls3.html"&gt;the previous
+post&lt;/a&gt; for background.&lt;/p&gt;
+&lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;
+&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-content-controls4/adobe-writer.png"&gt;&lt;figcaption&gt;PDF export of Writer content controls into PDF&lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;/p&gt;
+&lt;p&gt;Writer users can create fillable forms using content controls, but the PDF export only contained the
+plain text representation of them. PDF can also have fillable widgets for form filling, so it's
+logical to map content controls to PDF widgets.&lt;/p&gt;
+&lt;p&gt;A perfect mapping is not possible, since PDF widgets are always a single rectangle and Writer
+content controls is a list of rectangles (text portions), but this doesn't cause a problem in most
+cases. The size of the PDF rectangle is determined based on the placeholder's size from Writer.&lt;/p&gt;
+&lt;p&gt;Benefits includes not having to insert a control shape, manually positioned to look like it's in
+line with the surrounding text. An other benefit is that this way the widget's style (font name,
+size, etc) can be specified using Writer styles, not with shape properties. It's also interesting
+that Word itself doesn't seem to support content controls in its PDF export at the time of writing.&lt;/p&gt;
+&lt;h2 id="results-so-far"&gt;Results so far&lt;a class="headerlink" href="#results-so-far" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;PDF export now automatically turns Writer content controls into fillable widgets for the rich text,
+plain text, checkbox, drop-down, combo box and date types.&lt;/p&gt;
+&lt;p&gt;Combo box itself is a new type: now combo box content can be either free-form or one of its list
+items, while drop-down can only be one of its list items.&lt;/p&gt;
+&lt;h2 id="how-is-this-implemented"&gt;How is this implemented?&lt;a class="headerlink" href="#how-is-this-implemented" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;If you would like to know a bit more about how this works, continue reading... :-)&lt;/p&gt;
+&lt;p&gt;As usual, the high-level problem was addressed by a series of small changes:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/82d90529dc2b3cb8359dec78852cbd910a66d275"&gt;sw content controls, rich text: add initial PDF export&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/9bad5be0ffdcdee92d40162b598ed2ab2815e5d5"&gt;sw content controls, checkbox: add PDF export&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/6b2433f3b66c1f118dabcd40924122deb2d4f204"&gt;sw content controls, dropdown: add PDF export&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/f7408cf0e472be91bdb7a4d2a4b8da3eb9a049a9"&gt;sw content controls, date: add PDF export&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/493b10997053882d06803156a98ae8924bf7660d"&gt;sw content controls: add PDF export of font properties&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/08bce8eeb2e18c7cea4108dbfc2519ada56e8b61"&gt;sw content controls: fix getString() and setString() on SwXContentControl&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/de90c192cb8f1f03a4028493d8bfe9a127a76b2a"&gt;sw content controls, plain text: enable DOCX filter with data binding&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/addfb3cce0f7ce8fbd0b169d467b6956ed95dbb5"&gt;sw content controls: add a11y description for PDF export&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/276f3a3ce52ca422bf5ebccfa2c926d3e87d5eab"&gt;sw content controls, combo box: add doc model &amp;amp; UNO API&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/37656a47d8797d45d706a17ab8843dcb8db90bbc"&gt;sw content controls, combo box: make the dropdown case read-only&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/21d93d8d2ffd9c5d5cfe9064590b35e0727295c9"&gt;sw content controls, combo box: add ODT filter&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/01b1f57a90172a76faa1489b3b72250ee76169a6"&gt;sw content controls, combo box: add DOCX filter&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/49f1bf56ebfa3c96aa90835c1121eb827d713b9d"&gt;sw content controls, combo box: add insert UI&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/82b9ff35649cd67ca16296676d2ad1e4eff15493"&gt;sw content controls, combo box: add PDF export&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="want-to-start-using-this"&gt;Want to start using this?&lt;a class="headerlink" href="#want-to-start-using-this" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;You can get a snapshot / demo of Collabora Office 22.05 and try it out yourself right now: &lt;a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/"&gt;try
+unstable snapshot&lt;/a&gt;.  Collabora
+intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
+of this work will be available in TDF's next release too (7.5).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Mon, 03 Oct 2022 08:25:28 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2022-10-03:/blog/sw-content-controls4.html</guid><category>libreoffice</category><category>en</category></item><item><title>Cropped video for media shapes in Impress</title><link>https://vmiklos.hu/blog/sd-video-crop.html</link><description>&lt;p&gt;Impress now supports cropped videos in slide edit mode and during slideshow for documents imported
 from PowerPoint.&lt;/p&gt;
 &lt;p&gt;First, thanks to our partner &lt;a href="https://www.suse.com/"&gt;SUSE&lt;/a&gt; for working with
 &lt;a href="https://www.collaboraoffice.com/"&gt;Collabora&lt;/a&gt; to make this possible.&lt;/p&gt;
@@ -1470,93 +1517,4 @@ intends to continue supporting and contributing to LibreOffice, the code is merg
 of this work will be available in TDF&amp;#8217;s next release too (7.4).&lt;/p&gt;&lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Thu, 06 Jan 2022 09:07:43 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2022-01-06:/blog/sd-theme-shape-text.html</guid><category>libreoffice</category><category>en</category></item><item><title>Writer embedded objects: reliably update object previews</title><link>https://vmiklos.hu/blog/sw-ole-update.html</link><description>&lt;div id="preamble"&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Embedded objects in Writer consist of a native data part and a preview part. Until now, there was no
-way to force the update of the preview part in case it was empty.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Now the Tools &amp;#8594; Update &amp;#8594; Update all menu item updates such previews as well. This is especially
-useful if you manipulate the ZIP/XML document directly to insert native data, then load it into
-Writer to generate a preview.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;First, thanks &lt;a href="https://vector.com/"&gt;Vector&lt;/a&gt; who made this work by
-&lt;a href="https://www.collaboraoffice.com/"&gt;Collabora&lt;/a&gt; possible.&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_motivation"&gt;Motivation&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;The Update all menu item already updates all sorts of generated content: fields, table of contents,
-charts, the document layout, but not the preview of embedded objects. You could work this around by
-double-clicking on the embedded object to re-generate the preview, but doing this manually for a
-larger document is not efficient. This is especially useful for hand-crafted documents which have
-proper native data, but no preview image yet.&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_results_so_far"&gt;Results so far&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Here is how an embedded object without a preview looks like:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;img src="https://share.vmiklos.hu/blog/sw-ole-update/old.png" alt="https://share.vmiklos.hu/blog/sw-ole-update/old.png" /&gt;
-&lt;/div&gt;
-&lt;div class="title"&gt;Figure 1. Writer embedded object with no preview&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Now using the Update all menu item turns a sample document into this preview:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;img src="https://share.vmiklos.hu/blog/sw-ole-update/new.png" alt="https://share.vmiklos.hu/blog/sw-ole-update/new.png" /&gt;
-&lt;/div&gt;
-&lt;div class="title"&gt;Figure 2. Writer embedded object with a preview&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_how_is_this_implemented"&gt;How is this implemented?&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;If you would like to know a bit more about how this works, continue reading&amp;#8230; :-)&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;&lt;a href="https://gerrit.libreoffice.org/c/core/+/126253"&gt;sw: update previews of OLE objects on
-"update all"&lt;/a&gt; is the change implementing this small feature. It works by:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-Iterating over the frame formats ("special" formats) of the document
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-Filter out shapes
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-Filter out objects which are only reachable from the undo stack
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-Filter out objects which are not embedded ("OLE") objects
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-Once we have access to the OLE node, jump to its &lt;code&gt;SwOLEObj&lt;/code&gt;, then to its &lt;code&gt;svt::EmbeddedObjectRef&lt;/code&gt;,
-  which knows how to re-calculate the preview bitmap
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-Finally notify the OLE node that the preview was updated, so the necessary repaint can happen
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_want_to_start_using_this"&gt;Want to start using this?&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
-expect all of this work will be available in TDF&amp;#8217;s
-&lt;a href="http://dev-builds.libreoffice.org/daily/master/"&gt;next release&lt;/a&gt; (7.4).&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Wed, 15 Dec 2021 09:23:28 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2021-12-15:/blog/sw-ole-update.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Thu, 06 Jan 2022 09:07:43 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2022-01-06:/blog/sd-theme-shape-text.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>

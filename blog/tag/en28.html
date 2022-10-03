@@ -59,6 +59,57 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/pptp-client-howto-on-linux-on-console.html">pptp client howto on linux on console</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Tue 09 February 2010</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>So I saw a few howtos on how to set up ms pptp client on linux, but they're mostly about how to click on networkmanager or other guis, so basically they hide the real detail, IOW what config files are actually used.</p><p>First install the necessary packages:</p><p><code>
+# pacman-g2 -S ppp pptp
+</code></p><p>Here is what I have under /etc/ppp:</p><p><code>
+# cat chap-secrets
+# Secrets for authentication using CHAP
+# client        server  secret                  IP addresses
+$user           PPTP    $secret                 *
+</code></p><p><code>
+# cat options
+lock
+</code></p><p><code>
+# cat options.pptp
+lock
+noauth
+nobsdcomp
+nodeflate
+</code></p><p><code>
+# cat peers/$network
+pty "/usr/sbin/pptp $server --nolaunchpppd"
+name "$user"
+file /etc/ppp/options.pptp
+remotename PPTP
+require-mppe-128
+refuse-eap
+ipparam $network
+</code></p><p>And to bring up ppp0:</p><p><code>
+# pon $network debug dump logfd 2 nodetach
+</code></p><p>If it works fine, you can just use:</p><p><code>
+# pon $network
+</code></p><p>(Obviously replace $user, $secret, $server and $network with real values.)</p><p>One thing I did not figure out is how to configure it to set the default gateway as well. Right now I use the debug mode, then in the output I see the remote address, finally:</p><p><code>
+# route add default gw $remoteaddr
+</code></p><p>Other than that, it works fine - without any damn gui! :)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/darcs-import-on-repo-or-cz.html">darcs import on repo.or.cz</a></h1>
   </div>
   <div class="article_meta">
@@ -334,26 +385,6 @@ mplayer -vo xv is broken for intel 8xx cards in Frugalware-current since we enab
 </ul></p><p>The important part of the later links is three lines:</p><p><pre>1> fprof:apply(foo, create_file_slow, [junk, 1024]).
 2> fprof:profile().
 3> fprof:analyse().</pre></p><p>That makes profiling Erlang programs really easy, once you get used to the output, which is a bit weird for the first time. :)</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/http-head-support-in-darcs-fast-export.html">HTTP head support in darcs-fast-export</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Tue 27 October 2009</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>Ian <a href="http://bazaar.launchpad.net/~bzr/bzr-fastimport/fastimport.dev/revision/259">merged</a> my work today, so bzr-fastimport (which contains darcs-fast-export) from bzr now has it out of the box.</p><p>This feature is about the following use-case: if you wanted to import a darcs repo to (for example) git, then you had to 'darcs get' the darcs repo first, then import it to git. Now darcs-fast-export can do this without a 'darcs get' if the repo is available via http, reading much less files, resulting less data transfer. :)</p><p>(The trick behind it is that darcs-fast-export reads only the patches, while darcs get reads boths snapshots of the repo and the patches, so a darcs get takes much more time than a darcs-fast-export.)</p>
 </div>
 </div>
 
