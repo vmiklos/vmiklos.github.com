@@ -30,7 +30,7 @@ a specific tag.
 ## Results so far
 
 Titles (also known as aliases) and tags are now not only preserved, but also we have a UI to create,
-show, edit and delete them. This is available in the desktop rendering and also on the LOK API.
+show, edit and delete them. This is available in the desktop rendering and also in the LOK API.
 
 Somewhat related, in case a content control breaks into multiple lines or has formatting to break
 into multiple text portions, we now only emit one PDF widget for it, taking the description of the
