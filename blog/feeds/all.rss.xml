@@ -1,5 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>What is Miklos hacking</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Mon, 03 Oct 2022 08:25:28 +0200</lastBuildDate><item><title>Content controls in Writer: PDF export and combo box type</title><link>https://vmiklos.hu/blog/sw-content-controls4.html</link><description>&lt;p&gt;Writer now supports exporting content controls to PDF and a 7th content control type: it is possible
+<rss version="2.0"><channel><title>What is Miklos hacking</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Thu, 03 Nov 2022 13:37:09 +0100</lastBuildDate><item><title>Content controls in Writer: titles and tags</title><link>https://vmiklos.hu/blog/sw-content-controls5.html</link><description>&lt;p&gt;Writer now supports titles and tags for content controls, which helps providing context for the
+filled in text even if the placeholder text is replaced already.&lt;/p&gt;
+&lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraoffice.com/"&gt;Collabora Online&lt;/a&gt;, see &lt;a href="https://vmiklos.hu/blog/sw-content-controls4.html"&gt;the previous
+post&lt;/a&gt; for background.&lt;/p&gt;
+&lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;
+&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-content-controls5/content-control-alias.png"&gt;&lt;figcaption&gt;Rendering of a title for a content control&lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;/p&gt;
+&lt;p&gt;Once several content controls are added to a document, it's easy to forget what was the exact
+purpose of what content control. Think of a press release for example -- those regularly start with
+a location and a date, but once this information is provided, one no longer knows which content
+control was for which content.&lt;/p&gt;
+&lt;p&gt;Titles solve this problem for the user: similar to Writer's header/footer buttons, this button
+appears when you enter the content control and reminds you what content is expected there, even if
+the placeholder is already replaced.&lt;/p&gt;
+&lt;p&gt;Tags serve a similar purpose, but they are unique, machine-readable keys or identifiers, so once the
+form is filled in, an external consumer can easily extract the information from the document, given
+a specific tag.&lt;/p&gt;
+&lt;h2 id="results-so-far"&gt;Results so far&lt;a class="headerlink" href="#results-so-far" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Titles (also known as aliases) and tags are now not only preserved, but also we have a UI to create,
+show, edit and delete them. This is available in the desktop rendering and also on the LOK API.&lt;/p&gt;
+&lt;p&gt;Somewhat related, in case a content control breaks into multiple lines or has formatting to break
+into multiple text portions, we now only emit one PDF widget for it, taking the description of the
+widget from the content control's title.&lt;/p&gt;
+&lt;p&gt;The last related improvement is that now we handle data binding for date content controls, which
+means that you can specify a timestamp, a language and a date format, and we'll format that
+timestamp and update the content control's string value at import time from DOCX.&lt;/p&gt;
+&lt;h2 id="how-is-this-implemented"&gt;How is this implemented?&lt;a class="headerlink" href="#how-is-this-implemented" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;If you would like to know a bit more about how this works, continue reading... :-)&lt;/p&gt;
+&lt;p&gt;As usual, the high-level problem was addressed by a series of small changes:&lt;/p&gt;
+&lt;!-- s/\([^ ]\+\) \(.*\)/- [\2](https:\/\/git.libreoffice.org\/core\/commit\/\1)/g --&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/481a082469802ffce08cd8c110e715260015eb97"&gt;sw content controls: preserve alias&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/5262aab9d220675f616579720b4bb43ee03cccfb"&gt;sw content controls: preserve tag&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/a70f5f141c1e6013abb4c1b3219e017b2eea40a8"&gt;sw content controls: emit only one PDF widget for multiple text portions&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/b138d6c12aaeb0b87dce15ea52dd134cf1abf6ac"&gt;tdf#151190 sw content controls: make them read-write in protected sections&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/1a94cd8257ef4c462eaaa6d49bf4f26c9ac56a5e"&gt;sw content controls: add rendering for the alias&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/888a8c3ca70ed19309c15ff7b9f0968ece337cb5"&gt;sw content controls, alias and tag: add ODT filter&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/add110bad816fadeb96e7af0d4689389c04c263e"&gt;sw content controls, alias and tag: add UI&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/e368d26a7f24dc25f3d855511baabc128bc151e6"&gt;sw content controls, alias: add LOK API&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/122419be4f7bf576f7db5456b8b6b1f6f700487f"&gt;sw content controls, alias: add PDF export&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/58002ab85d992c7ac44d8bb4d135246b67aa5cc7"&gt;sw content controls: enable data binding for date&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="want-to-start-using-this"&gt;Want to start using this?&lt;a class="headerlink" href="#want-to-start-using-this" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;You can get a snapshot / demo of Collabora Office 22.05 and try it out yourself right now: &lt;a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/"&gt;try
+unstable snapshot&lt;/a&gt;.  Collabora
+intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
+of this work will be available in TDF's next release too (7.5).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Thu, 03 Nov 2022 13:37:09 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2022-11-03:/blog/sw-content-controls5.html</guid><category>libreoffice</category><category>en</category></item><item><title>Content controls in Writer: PDF export and combo box type</title><link>https://vmiklos.hu/blog/sw-content-controls4.html</link><description>&lt;p&gt;Writer now supports exporting content controls to PDF and a 7th content control type: it is possible
 to differentiate between drop-downs and combo boxes.&lt;/p&gt;
 &lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraoffice.com/"&gt;Collabora Online&lt;/a&gt;, see &lt;a href="https://vmiklos.hu/blog/sw-content-controls3.html"&gt;the previous
 post&lt;/a&gt; for background.&lt;/p&gt;
@@ -1290,231 +1339,4 @@ of this work will be available in TDF&amp;#8217;s next release too (7.4).&lt;/p&
 present in the current release (2021).&lt;/p&gt;&lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Tue, 08 Feb 2022 08:13:28 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2022-02-08:/blog/pdf-convert-to.html</guid><category>libreoffice</category><category>en</category></item><item><title>Start of document themes in Impress: shape text</title><link>https://vmiklos.hu/blog/sd-theme-shape-text.html</link><description>&lt;div id="preamble"&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Impress now has the start of document theme support: it is possible to define a document theme on
-master pages and you can refer to the theme colors from shape text (including effects).&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;First, thanks to our partner &lt;a href="https://www.suse.com/"&gt;SUSE&lt;/a&gt; for working with
-&lt;a href="https://www.collaboraoffice.com/"&gt;Collabora&lt;/a&gt; to make this possible.&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_motivation"&gt;Motivation&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;PowerPoint users can attach a set of colors (and fonts, formattings) to master pages, and then refer
-to these in shape text, shape fill, shape geometry. You can even make the original color lighter and
-darker. These effects are preserved when you change the theme colors.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;This is a larger feature, this blog post shows how theme colors can be defined and how to refer to
-those colors from Impress shape text. The rest of the feature is to be done in follow-up steps.&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_results_so_far"&gt;Results so far&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Here is a demo that shows how it works:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;a class="image" href="https://youtu.be/4QeN58AkuxE"&gt;
-&lt;img src="https://share.vmiklos.hu/blog/sd-theme-shape-text/sd-theme-shape-text.png" alt="https://share.vmiklos.hu/blog/sd-theme-shape-text/sd-theme-shape-text.png" /&gt;
-&lt;/a&gt;
-&lt;/div&gt;
-&lt;div class="title"&gt;Figure 1. Demo of theme support in Impress shape text&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;In other words, it consists of 2 parts on the UI:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-You can define theme colors once you click on "Master View" in Impress, and then select the Slide
-  &amp;#8594; Slide properties menu item, and there choosing the new Theme tab. You can e.g. make "accent1"
-  blue, "accent2" orange, and so on.
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-Then you can refer to these theme colors. Select some shape text, and then either use Format &amp;#8594;
-  Character &amp;#8594; Font effects &amp;#8594; Font color &amp;#8594; Theme colors or use the sidebar to set the font color.
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;This later shows a grid of colors: each column is one theme color and then the column offers various
-lighter and darker variants of the color.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;And the important bit: if you later change theme colors, then the color of shape text (using theme
-colors) is updated, even the effects (lighter or darker variants) are preserved.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;To set expectations, this only works for shape text for now, and only in Impress, as a start.&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_how_is_this_implemented"&gt;How is this implemented?&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;If you would like to know a bit more about how this works, continue reading&amp;#8230; :-)&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;As usual, the high-level problem was addressed by a series of small changes. The first step was to
-upstream work by &lt;a href="https://tomazvajngerl.blogspot.com/"&gt;Tomaž Vajngerl&lt;/a&gt; and &lt;a href="https://quwex.com/"&gt;Sarper
-Akdemir&lt;/a&gt; from the &lt;code&gt;feature/themesupport2&lt;/code&gt; feature branch:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/125296"&gt;https://gerrit.libreoffice.org/c/core/+/125296&lt;/a&gt; Theme color and tint/shade attribute for SvxColorItem
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/125304"&gt;https://gerrit.libreoffice.org/c/core/+/125304&lt;/a&gt; Support reading back theme color from an ooxml document
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/125313"&gt;https://gerrit.libreoffice.org/c/core/+/125313&lt;/a&gt; make colorsets work outside of styles and with direct formatting
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/125394"&gt;https://gerrit.libreoffice.org/c/core/+/125394&lt;/a&gt; expose the SvxColorItem theme related uno for draw/impress
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/125404"&gt;https://gerrit.libreoffice.org/c/core/+/125404&lt;/a&gt; implement initial pptx theme color import
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/125414"&gt;https://gerrit.libreoffice.org/c/core/+/125414&lt;/a&gt; rename getSchemeName getSchemeIndex to remove ambiguity
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/125426"&gt;https://gerrit.libreoffice.org/c/core/+/125426&lt;/a&gt; implement color tint or shade import for pptx
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/125436"&gt;https://gerrit.libreoffice.org/c/core/+/125436&lt;/a&gt; introduce XColorSetsManager interface
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/125477"&gt;https://gerrit.libreoffice.org/c/core/+/125477&lt;/a&gt; import pptx color schemes as color sets
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;The rest of the work was to go through the usual stages of document model, UNO API, rendering,
-ODP/PPTX filter and UI work to complete the work started on the branch:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/125532"&gt;https://gerrit.libreoffice.org/c/core/+/125532&lt;/a&gt; PPTX import: handle &amp;lt;a:clrScheme name="&amp;#8230;"&amp;gt;
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/125651"&gt;https://gerrit.libreoffice.org/c/core/+/125651&lt;/a&gt; PPTX: implement native handling of &amp;lt;a:clrScheme&amp;gt; children
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/125684"&gt;https://gerrit.libreoffice.org/c/core/+/125684&lt;/a&gt; PPTX import: implement native handling of a color&amp;#8217;s luminance modulation
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/125749"&gt;https://gerrit.libreoffice.org/c/core/+/125749&lt;/a&gt; PPTX import: implement native handling of a color&amp;#8217;s luminance offset
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/126011"&gt;https://gerrit.libreoffice.org/c/core/+/126011&lt;/a&gt; tools Color: implement MSO-style luminance modulation/offset filter
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/126082"&gt;https://gerrit.libreoffice.org/c/core/+/126082&lt;/a&gt; svx: update objects of pages of a master page when the theme changes
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/126164"&gt;https://gerrit.libreoffice.org/c/core/+/126164&lt;/a&gt; PPTX export: write the theme for the master pages from the doc model
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/126215"&gt;https://gerrit.libreoffice.org/c/core/+/126215&lt;/a&gt; PPTX export: handle theme colors from the doc model for shape text
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/126270"&gt;https://gerrit.libreoffice.org/c/core/+/126270&lt;/a&gt; svx: consider color effects when updating objects for theme changes
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/126400"&gt;https://gerrit.libreoffice.org/c/core/+/126400&lt;/a&gt; PPTX export: handle theme color of shape text with effects
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/126466"&gt;https://gerrit.libreoffice.org/c/core/+/126466&lt;/a&gt; ODP export: write the theme of a master page
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/126502"&gt;https://gerrit.libreoffice.org/c/core/+/126502&lt;/a&gt; ODP import: handle theme of master pages
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/126566"&gt;https://gerrit.libreoffice.org/c/core/+/126566&lt;/a&gt; ODP import/export: refer to theme from shape text color
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/126722"&gt;https://gerrit.libreoffice.org/c/core/+/126722&lt;/a&gt; ODP import/export: refer to theme from shape text color with effects
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/126798"&gt;https://gerrit.libreoffice.org/c/core/+/126798&lt;/a&gt; sd: add initial theme UI for master slides
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/126850"&gt;https://gerrit.libreoffice.org/c/core/+/126850&lt;/a&gt; sd theme: add UI to set/get the name of a color set
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/126905"&gt;https://gerrit.libreoffice.org/c/core/+/126905&lt;/a&gt; sd theme: add UI to set individual colors of a color set
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/126994"&gt;https://gerrit.libreoffice.org/c/core/+/126994&lt;/a&gt; sd theme: add a "theme" palette to the color picker
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/127135"&gt;https://gerrit.libreoffice.org/c/core/+/127135&lt;/a&gt; sd theme: allow setting the color&amp;#8217;s theme index in the chardlg
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/127211"&gt;https://gerrit.libreoffice.org/c/core/+/127211&lt;/a&gt; sd theme: allow setting color effects in the chardlg
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/127304"&gt;https://gerrit.libreoffice.org/c/core/+/127304&lt;/a&gt; sd theme: allow setting color effects in the sidebar
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_want_to_start_using_this"&gt;Want to start using this?&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;You can get a snapshot / demo of Collabora Office and try it out yourself right now:
-&lt;a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/"&gt;try unstable snapshot&lt;/a&gt;.  Collabora
-intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF&amp;#8217;s next release too (7.4).&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Thu, 06 Jan 2022 09:07:43 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2022-01-06:/blog/sd-theme-shape-text.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Tue, 08 Feb 2022 08:13:28 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2022-02-08:/blog/pdf-convert-to.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
