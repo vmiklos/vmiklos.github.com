@@ -15,7 +15,7 @@ post]({filename}/2022/sw-content-controls4.md) for background.
 ![Rendering of a title for a content control](https://share.vmiklos.hu/blog/sw-content-controls5/content-control-alias.png)
 
 Once several content controls are added to a document, it's easy to forget what was the exact
-purpose of what content control. Think of a press release for example -- those regularly start with
+purpose of what content control. Think of a press release for example – those regularly start with
 a location and a date, but once this information is provided, one no longer knows which content
 control was for which content.
 
