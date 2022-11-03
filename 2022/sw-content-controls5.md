@@ -61,7 +61,7 @@ As usual, the high-level problem was addressed by a series of small changes:
 
 ## Want to start using this?
 
-You can get a snapshot / demo of Collabora Office 22.05 and try it out yourself right now: [try
+You can get a snapshot / demo of Collabora Office 22.05 and try it out yourself right now: [try the
 unstable snapshot](https://www.collaboraoffice.com/collabora-office-latest-snapshot/).  Collabora
 intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
 of this work will be available in TDF's next release too (7.5).
