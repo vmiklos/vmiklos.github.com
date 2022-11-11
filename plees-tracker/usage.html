@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Introduction - plees-tracker user guide</title>
+        <title>Usage - plees-tracker user guide</title>
 
 
         <!-- Custom HTML head -->
@@ -81,7 +81,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html" class="active">Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">User Guide</li><li class="chapter-item expanded "><a href="installation.html"><strong aria-hidden="true">1.</strong> Installation</a></li><li class="chapter-item expanded "><a href="usage.html"><strong aria-hidden="true">2.</strong> Usage</a></li><li class="chapter-item expanded "><a href="hacking.html"><strong aria-hidden="true">3.</strong> Development notes</a></li><li class="chapter-item expanded "><a href="news.html"><strong aria-hidden="true">4.</strong> Changelog</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">User Guide</li><li class="chapter-item expanded "><a href="installation.html"><strong aria-hidden="true">1.</strong> Installation</a></li><li class="chapter-item expanded "><a href="usage.html" class="active"><strong aria-hidden="true">2.</strong> Usage</a></li><li class="chapter-item expanded "><a href="hacking.html"><strong aria-hidden="true">3.</strong> Development notes</a></li><li class="chapter-item expanded "><a href="news.html"><strong aria-hidden="true">4.</strong> Changelog</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -116,7 +116,7 @@
                         <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
-                        <a href="https://github.com/vmiklos/plees-tracker/edit/master/guide/src/README.md" title="Suggest an edit" aria-label="Suggest an edit">
+                        <a href="https://github.com/vmiklos/plees-tracker/edit/master/guide/src/usage.md" title="Suggest an edit" aria-label="Suggest an edit">
                             <i id="git-edit-button" class="fa fa-edit"></i>
                         </a>
 
@@ -145,46 +145,148 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
-<p>Plees Tracker is a simple sleep tracker for your Android phone.</p>
-<p>The latest version is v7.4.3, released on 2022-11-01.</p>
-<h2 id="description"><a class="header" href="#description">Description</a></h2>
-<p>This is meant to be a very simple open source clone of
-<a href="https://play.google.com/store/apps/details?id=com.primenap">PrimeNap</a>, i.e. just track sleep
-start/stop times and count the average / day.</p>
-<p>Features:</p>
+                        <h1 id="usage"><a class="header" href="#usage">Usage</a></h1>
+<h2 id="main-activity"><a class="header" href="#main-activity">Main activity</a></h2>
+<p>Plees tracker is essentially a stopwatch application. It intentionally requires you to manually
+track your sleep with explicitly starting and ending a tracked sleep. This has the benefit that it's
+simple: causing no battery drain, nor any privacy problems.</p>
+<p>This activity allows:</p>
 <ul>
 <li>
-<p>It literally does nothing while you sleep, causes no battery drain.</p>
+<p>Seeing the status of the tracking: not yet started, in progress and finished.</p>
 </li>
 <li>
-<p>Stores past sleeps, counts stat from them.</p>
+<p>Dashboard: the number of all tracked sleeps, average of sleep durations and a daily average (in
+case you sleep multiple times a day or you sometimes skip a whole day) for a customizable
+duration (see the preferences activity below).</p>
 </li>
 <li>
-<p>Exports/imports sleep data to/from CSV.</p>
+<p>A list of past sleeps for the chosen duration: start/stop time for each sleep, awake time and
+duration counted from these and a rating you can manually specify after the tracking stopped.
+The awake time of the latest sleep depends on the current time, so it'll increase if you restart
+plees-tracker.</p>
 </li>
 <li>
-<p>Can show past sleeps, can selectively delete individual sleeps.</p>
+<p>Swiping a sleep left/right will remove the sleep.</p>
+</li>
+<li>
+<p>Tapping on a sleep allows getting to a dedicated sleep activity for a single sleep.</p>
+</li>
+<li>
+<p>A floating action button at the bottom right corner allows to actually start / stop the tracking.</p>
 </li>
 </ul>
-<p>It looks like this:</p>
-<p><img src="https://vmiklos.hu/plees-tracker/app/1.png"
-    width="360"
-    height="640"></p>
-<h2 id="contributing"><a class="header" href="#contributing">Contributing</a></h2>
-<p>plees-tracker is free and open source. You can find the source code on
-<a href="https://github.com/vmiklos/plees-tracker">GitHub</a> and issues and feature requests can be posted on
-the issue tracker. If you'd like to contribute, please consider opening a pull request.</p>
-<h2 id="license"><a class="header" href="#license">License</a></h2>
-<p>Use of this source code is governed by a BSD-style license that can be found in
-the LICENSE file.</p>
+<p>The menu of this activity allows:</p>
+<ul>
+<li>
+<p>Import/export your sleeps to CSV. The start and stop columns are UNIX timestamps in milliseconds.
+The import is incremental, i.e. it remembers what items are imported and the next time only newer
+items will be imported.</p>
+</li>
+<li>
+<p>Import/export your sleeps to calendar. The export is incremental, i.e. it remembers what items are
+exported, and the next time only newer items will be exported.</p>
+</li>
+<li>
+<p>See more stats on your sleeps (see the sleep activity below).</p>
+</li>
+<li>
+<p>Customize settings (see the preferences activity below).</p>
+</li>
+</ul>
+<h2 id="toggle-widget"><a class="header" href="#toggle-widget">Toggle widget</a></h2>
+<p>A widget can be added to your home screen. This allows starting or stopping the tracking with a
+single tap: i.e. it's the same as opening the app and tapping on the start/stop button.</p>
+<h2 id="quick-settings-tile"><a class="header" href="#quick-settings-tile">Quick settings tile</a></h2>
+<p>A quick settings tile can be added to your panel. This allows starting or stopping the tracking with
+a single tap: i.e. it's the same as opening the app and tapping on the start/stop button.</p>
+<h2 id="preferences-activity"><a class="header" href="#preferences-activity">Preferences activity</a></h2>
+<p>This allows manually setting the dark mode for plees-tracker. This is useful on Android versions &lt;=
+9, where there is no system-provided dark mode. This works out of the box on newer Android versions.</p>
+<p>Backup settings allow you to automatically back up your sleeps after a tracking stopped. This is
+useful in case you selected a path which is then implicitly synchronized to some external server,
+e.g. Nextcloud.</p>
+<p>You can also customize the dashboard duration, which limits the sleeps and sleep statistics on the
+dashboard and graphs to the time period selected in the main activity. The default is to only show
+the past week.</p>
+<p>There is also an option to define your ideal sleep length, which is used for some of the graphs (see
+Graphs activity below).</p>
+<p>The other setting influencing the sleep stats is a sleep start delay. Assuming that one presses
+start, followed by 8 hours, then stop, in case a sleep delay of 15 minutes is set, the recorded
+sleep length will be 7:45, not 8:00, by increasing the sleep start timestamp.</p>
+<p>The past sleeps section allow configuring the contents of the individual sleep cards:</p>
+<ul>
+<li>
+<p>awake time is hidden by default</p>
+</li>
+<li>
+<p>the read-only rating is hidden by default on the main activity, the read-write rating is always
+visible in the sleep activity</p>
+</li>
+</ul>
+<p>The sleep cards are not re-created when changing settings, so you need to restart plees-tracker to
+see the effect.</p>
+<h2 id="sleep-activity"><a class="header" href="#sleep-activity">Sleep activity</a></h2>
+<p>The sleep activity allows modifying the start,  stop time or rating of a single recorded sleep,
+which is useful if you want to update the recorded timestamps to better match reality.</p>
+<p>You can also take a one-liner plain text note for the sleep there.</p>
+<h2 id="stats-activity"><a class="header" href="#stats-activity">Stats activity</a></h2>
+<p>The main activity considers all sleeps for the selected duration when counting the sleeps or when
+calculating the 2 kind of averages for your sleeps. The stats activity provides the same stats for
+all possible durations, specifically:</p>
+<ul>
+<li>
+<p>last week</p>
+</li>
+<li>
+<p>last two weeks</p>
+</li>
+<li>
+<p>last month</p>
+</li>
+<li>
+<p>last year</p>
+</li>
+<li>
+<p>all time</p>
+</li>
+</ul>
+<h2 id="graphs-activity"><a class="header" href="#graphs-activity">Graphs activity</a></h2>
+<p>The graphs activity provides an alternative way to analyze your sleep data. Currently, the following
+graphs are provided (select the graph via the menu in the upper right):</p>
+<ul>
+<li>
+<p>Deficit/surplus: This graph shows the difference between the ideal sleep length (as customized in
+settings) versus the actual hours slept per day - positive is surplus, negative is deficit - along
+with a cumulative total.</p>
+</li>
+<li>
+<p>Length: This graph shows the hours slept per day, along with a cumulative moving average.</p>
+</li>
+<li>
+<p>Start time: This graph shows the start time of the first sleep per day (where day is based on the
+date of the sleep's ending time), along with a cumulative moving average.</p>
+</li>
+<li>
+<p>Rating: This graph shows the user-provided rating of the sleeps per day, along with a cumulative
+moving average. Note that no rating counts as 0.</p>
+</li>
+</ul>
+<p>The graphs are generated based on sleeps within the selected dashboard duration.</p>
+<h2 id="credits"><a class="header" href="#credits">Credits</a></h2>
+<p>Icons made by <a href="https://www.flaticon.com/authors/dave-gandy">Dave Gandy</a> and
+<a href="https://www.flaticon.com/authors/freepik">Freepik</a> from
+<a href="https://www.flaticon.com/">Flaticon</a>.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="installation.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
 
-                            <a rel="next" href="installation.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="hacking.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -194,8 +296,11 @@ the LICENSE file.</p>
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="installation.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
 
-                    <a rel="next" href="installation.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="hacking.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
