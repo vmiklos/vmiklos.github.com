@@ -216,8 +216,10 @@ invoke the installed executable.</p>
 most of the time, though.</p>
 <h2 id="creating"><a class="header" href="#creating">Creating</a></h2>
 <p>You can ask cpm to generate a password for you and remember it using:</p>
-<pre><code class="language-console">$ cpm create
-Machine: example.com
+<pre><code class="language-console">cpm create
+</code></pre>
+<p>You'll have to provide the machine and the user:</p>
+<pre><code class="language-console">Machine: example.com
 User: myuser
 Generated password: 7U1FvIzubR95Itg
 </code></pre>
@@ -237,14 +239,18 @@ Generated password: 7U1FvIzubR95Itg
 an error. You can update or delete a password, though (see below).</p>
 <h2 id="reading"><a class="header" href="#reading">Reading</a></h2>
 <p>You can search in your passwords by entering a search term. You can do this interactively:</p>
-<pre><code class="language-console">$ cpm
-Search term: example.com
+<pre><code class="language-console">cpm
+</code></pre>
+<p>You'll have to provide a search term:</p>
+<pre><code class="language-console">Search term: example.com
 machine: example.com, service: http, user: myuser, password type: plain, password: 7U1FvIzubR95Itg
 </code></pre>
 <p>The search term can also be specified as an argument if non-interactive mode is wanted.</p>
 <p>Or you can specify parameters to create additional filters for the search:</p>
-<pre><code class="language-console">$ cpm search -m example.com -s http -u myuser -t plain
-machine: example.com, service: http, user: myuser, password type: plain, password: 7U1FvIzubR95Itg
+<pre><code class="language-console">cpm search -m example.com -s http -u myuser -t plain
+</code></pre>
+<p>The search term is already specified in this case:</p>
+<pre><code>machine: example.com, service: http, user: myuser, password type: plain, password: 7U1FvIzubR95Itg
 </code></pre>
 <h2 id="totp-support"><a class="header" href="#totp-support">TOTP support</a></h2>
 <p>TOTP is one from of Two-Factor Authentication (2FA), currently used by many popular websites
@@ -255,36 +261,48 @@ shared secret and then add it to cpm using:</p>
 </code></pre>
 <p>When searching, it's a good idea to first narrow down your search results to a single hit, e.g.
 first confirm that:</p>
-<pre><code class="language-console">$ cpm twitter
-machine: twitter.com, service: http, user: myuser, password type: plain, password: ...
+<pre><code class="language-console">cpm twitter
+</code></pre>
+<p>The search term is already specified in this case:</p>
+<pre><code>machine: twitter.com, service: http, user: myuser, password type: plain, password: ...
 machine: twitter.com, service: http, user: myuser, password type: TOTP shared secret, password: ...
 </code></pre>
 <p>just returns your password and your TOTP shared secret, and then you can generate the current TOTP
 code using:</p>
-<pre><code class="language-console">$ cpm --totp twitter
-machine: twitter.com, service: http, user: myuser, password type: TOTP code, password: ...
+<pre><code class="language-console">cpm --totp twitter
+</code></pre>
+<p>The search term is already specified in this case:</p>
+<pre><code class="language-console">machine: twitter.com, service: http, user: myuser, password type: TOTP code, password: ...
 </code></pre>
 <h2 id="update-and-deletion"><a class="header" href="#update-and-deletion">Update and deletion</a></h2>
 <p>Update is quite similar to creation. You can generate a new password using:</p>
-<pre><code class="language-console">$ cpm update
-Machine: example.com
+<pre><code class="language-console">cpm update
+</code></pre>
+<p>You'll have to specify the machine and the user:</p>
+<pre><code class="language-console">Machine: example.com
 User: myuser
 Generated new password: D95Rx2PlOcPwKbL
 Updated 1 password
 </code></pre>
 <p>You can also specify parameters for <code>cpm update</code>:</p>
-<pre><code class="language-console">$ cpm update -m mymachine -s myservice -u myuser -t plain -p mynewpassword
-Updated 1 password
+<pre><code class="language-console">cpm update -m mymachine -s myservice -u myuser -t plain -p mynewpassword
+</code></pre>
+<p>You'll see the amount of updated passwords:</p>
+<pre><code class="language-console">Updated 1 password
 </code></pre>
 <p>Finally if you want to delete a password, you can do so by using:</p>
-<pre><code class="language-console">$ cpm delete
-Machine: mymachine
+<pre><code class="language-console">cpm delete
+</code></pre>
+<p>You'll have to specify the machine and the user:</p>
+<pre><code class="language-console:">Machine: mymachine
 User: myuser
 Deleted 1 password
 </code></pre>
 <p>You can also specify parameters for <code>cpm delete</code>:</p>
-<pre><code class="language-console">$ cpm delete -m mymachine -s myservice -u myuser -t plain
-Deleted 1 password
+<pre><code class="language-console">cpm delete -m mymachine -s myservice -u myuser -t plain
+</code></pre>
+<p>In which case the command is not interactive:</p>
+<pre><code class="language-console">Deleted 1 password
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="advanced-topics"><a class="header" href="#advanced-topics">Advanced topics</a></h1>
 <h2 id="distributed-usage"><a class="header" href="#distributed-usage">Distributed usage</a></h2>
