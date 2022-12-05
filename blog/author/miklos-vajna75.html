@@ -59,6 +59,26 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/taxi3.html">taxi3</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Sat 05 July 2008</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>[video:youtube:1Ejnib14rMU]</p><p>hasonloan mokas mint a masodik. gorkorcsolyas mikulasok nyaron es tarsaik :P</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/taxi2.html">taxi2</a></h1>
   </div>
   <div class="article_meta">
@@ -231,32 +251,6 @@
     <div id="preamble">
 <div class="sectionbody">
 <p>i find it really interesting that some people think that the scm for free software doesn't matter that much. just think about the "open"suse buildscripts, where the svn (in which they are tracked) is closed, or about "free"bsd, where the perforce repos (where _real_ development happens) is not checkoutable anonymously.</p><p>and no, i'm not rms who says you must use a free scm to develop free software, i just think a public access to it would be nice.</p><p>of course there are other projects like archlinux as well (no anonsvn), but i didn't wanted to start with it, since this post is not (just) about distro war..</p><p>ah and yes, the best of these is Debian where many maintainer use just a single huge generated diff and the real scm where they develop such diffs isn't public, either.</p><p>(finally a bad example is Ubuntu where the whole webapp behind the distro where all the bzr code and bugs are stored is closed source as well.)</p><p>so at the end it'll turn out that we're more free, without having any "open" or "free" in our name, without having a frugalware-legal@ and such? ;)</p><p>update:</p><p>the blacklist seem to grow.</p><p>see <a href="http://www.gentoo.org/proj/en/releng/release/2008.0/index.xml">gentoo</a>, where the releng repo isn't public, either.</p><p>an other funny fact is that they refuse to give security support for the <a href="http://www.gentoo.org/security/en/vulnerability-policy.xml">kernel</a>, the base of your system..</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/new-in-git-1-5-6-git-cvsexportcommit-w.html">new in git-1.5.6: git cvsexportcommit -W</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Sat 14 June 2008</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>git-1.5.6 will be released soon (probably in a few weeks) and there are some interesting news in it.</p><p>one of them is the new git cvsimport -W switch which makes it easy to do bi-directional changes between git and cvs.</p><p>to set up your local repo:</p><p><pre>$ CVSROOT=$URL cvs co module
-$ cd module
-$ git cvsimport</pre></p><p>this will do a fresh checkout of the cvs module and will import it to git. you will have two interesting git branch: origin is the "reference" one, you should not touch it, and you can work in master.</p><p>you can commit to master, etc.</p><p>then there are two tricky operations:</p><p>first, you may want to commit back your local commits.</p><p>to do this:</p><p><pre>$ for i in $(git rev-list --reverse origin..master)
-do
-        git cvsexportcommit -W -c -p -u $i
-done</pre></p><p>second, you may want to fetch upstream changes and rebase your local changes on top of them:</p><p><pre>$ git cvsimport -i
-$ git rebase origin</pre></p><p>that's all.</p><p>cookies goes to Dscho in commit <a href="http://git.kernel.org/?p=git/git.git;a=commit;h=d775734c40afed216160437c59a45c93bdf28689">d775734</a>. :)</p>
 </div>
 </div>
 

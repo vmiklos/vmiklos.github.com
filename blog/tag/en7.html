@@ -59,6 +59,58 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/mutt-address-book.html">mutt/vim offline address book with multiple sources</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Sat 22 September 2018</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>I used to have a hackish setup to trigger address book in the form of code
+completion from vim, when mutt starts it. I recently migrated the last part of
+it from python2, so it&#8217;s now in a relatively consistent state. On a boring
+flight trip I finally got around to summarize how it works, perhaps it&#8217;s
+useful to someone else as well. :-)</p></div>
+<div class="paragraph"><p>By multiple sources, I mean Google Contacts for my private account, and LDAP
+for work-related accounts. I have one script for each to have a local backup:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="http://github.com/vmiklos/vmexam/tree/master/google/contacts/backup">google/contacts/backup</a>
+  backs up Google Contacts to <code>$HOME/.google-contacts/</code>
+</p>
+</li>
+<li>
+<p>
+<a href="https://github.com/vmiklos/vmexam/blob/master/ldap/contacts/backup">ldap/contacts/backup</a>
+  backs up from an LDAP source to <code>$HOME/.ldap-contacts/</code>
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Then comes
+<a href="https://github.com/vmiklos/vmexam/blob/master/mutt/contacts/search">mutt/contacts/search</a>,
+which can read these backups from <code>$HOME/.mutt/contacts/</code> (you can create
+symlinks to decide which backup should be included in the search results).</p></div>
+<div class="paragraph"><p>The rest is just a short
+<a href="https://github.com/vmiklos/vmexam/blob/master/mutt/contacts/search.vim">search.vim</a>
+that integrates the search script into vim, so when mutt starts it with
+<code>ft=mail</code>, the search script is invoked when you start typing and you press
+Ctrl-X Ctrl-O (trigger code completion).</p></div>
+<div class="paragraph"><p>And that&#8217;s it, I can start typing mails to friends and customers even without
+network connectivity, without manually maintaining an own address book just
+for mutt!</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/unoconv-user-profile.html">Custom user profiles with unoconv</a></h1>
   </div>
   <div class="article_meta">
@@ -837,137 +889,6 @@ existing Writer layout and SVG export means the hard work is really done by
 these components, the EPUB fixed layout export just puts these together.</p></div>
 <div class="paragraph"><p>The picture shows a Writer document with a table of contents containing page
 numbers, a header and a footer in Readium.</p></div>
-<div class="paragraph"><p>All this is available in master (towards LibreOffice 6.1), or you can grab a
-<a href="http://dev-builds.libreoffice.org/daily/master/">daily build</a> and try it out
-right now. :-)</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/epub3-improvements.html">EPUB3 export improvements in Libreoffice Writer</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Tue 05 December 2017</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>I worked on improving the EPUB3 export filter in LibreOffice recently. First,
-thanks to <a href="http://nouenoff.nl/">Nou&amp;Off</a> in cooperation with a customer who made
-this work possible. Since the <a href="https://vmiklos.hu/blog/basic-epub3-export.html">previous blog
-entry</a> there have been a number of improvements around 4 topics.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_improved_links">Improved links</h2>
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://farm5.staticflickr.com/4540/38847800651_d5271ced3a_o.png" alt="https://farm5.staticflickr.com/4540/38847800651_d5271ced3a_o.png" />
-</div>
-</div>
-<div class="paragraph"><p>The character properties of link text is now handled correctly, in the above
-example you can see that the text is red, and this comes from a character
-style.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_improved_table_support">Improved table support</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Previously the support for tables was there just to not loose content, now all
-kinds cell, row and table properties are handled correctly. A few samples</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-custom cell width:
-</p>
-</li>
-</ul></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://farm5.staticflickr.com/4566/38847800611_38b8483d7f_o.png" alt="https://farm5.staticflickr.com/4566/38847800611_38b8483d7f_o.png" />
-</div>
-</div>
-<div class="ulist"><ul>
-<li>
-<p>
-custom row height:
-</p>
-</li>
-</ul></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://farm5.staticflickr.com/4580/38847800521_26285a9152_o.png" alt="https://farm5.staticflickr.com/4580/38847800521_26285a9152_o.png" />
-</div>
-</div>
-<div class="ulist"><ul>
-<li>
-<p>
-row span:
-</p>
-</li>
-</ul></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://farm5.staticflickr.com/4540/38847800461_359651bc3d_o.png" alt="https://farm5.staticflickr.com/4540/38847800461_359651bc3d_o.png" />
-</div>
-</div>
-<div class="paragraph"><p>So the table support should be now decent, covering row and column spanning
-and various cell border properties.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_improved_image_support">Improved image support</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Previously only the simplest as-character anchoring was supported. Now much
-more cases are handled. Two examples:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-image borders:
-</p>
-</li>
-</ul></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://farm5.staticflickr.com/4541/24975193838_94818bd1ed_o.png" alt="https://farm5.staticflickr.com/4541/24975193838_94818bd1ed_o.png" />
-</div>
-</div>
-<div class="ulist"><ul>
-<li>
-<p>
-image with a caption:
-</p>
-</li>
-</ul></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://farm5.staticflickr.com/4568/24975193608_83239bf287_o.png" alt="https://farm5.staticflickr.com/4568/24975193608_83239bf287_o.png" />
-</div>
-</div>
-<div class="paragraph"><p>This includes various wrap types (to the extent HTML5 allows representing ODF
-wrap types).</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_font_embedding">Font embedding</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>If the user chooses to embed fonts (via File &#8594; Properties &#8594; Font &#8594; Embed),
-then the EPUB export now handles this. Here is a custom font that is typically
-not available:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://farm5.staticflickr.com/4561/38847800811_613d6fbbd2_o.png" alt="https://farm5.staticflickr.com/4561/38847800811_613d6fbbd2_o.png" />
-</div>
-</div>
-<div class="paragraph"><p>(The screenshot is from the Calibre ebook reader.)</p></div>
 <div class="paragraph"><p>All this is available in master (towards LibreOffice 6.1), or you can grab a
 <a href="http://dev-builds.libreoffice.org/daily/master/">daily build</a> and try it out
 right now. :-)</p></div>

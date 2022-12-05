@@ -1,5 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>What is Miklos hacking</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Thu, 03 Nov 2022 13:37:09 +0100</lastBuildDate><item><title>Content controls in Writer: titles and tags</title><link>https://vmiklos.hu/blog/sw-content-controls5.html</link><description>&lt;p&gt;Writer now supports titles and tags for content controls, which helps providing context for the
+<rss version="2.0"><channel><title>What is Miklos hacking</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Mon, 05 Dec 2022 17:07:21 +0100</lastBuildDate><item><title>Improved watermark in the PDF export</title><link>https://vmiklos.hu/blog/pdf-watermark.html</link><description>&lt;p&gt;The PDF export now supports various additional properties for the optional PDF watermark.&lt;/p&gt;
+&lt;p&gt;First, thanks &lt;a href="https://www.docmosis.com/"&gt;Docmosis&lt;/a&gt; for funding this work by
+&lt;a href="https://www.collaboraoffice.com/"&gt;Collabora&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;
+&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/pdf-watermark/rotate-and-color.png"&gt;&lt;figcaption&gt;Rendering of a PDF watermark with custom rotation and color&lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;/p&gt;
+&lt;p&gt;When you hear the word "watermark", you probably have something like the above picture in mind.&lt;/p&gt;
+&lt;p&gt;Instead, what the PDF export had is more like a proof of concept:&lt;/p&gt;
+&lt;p&gt;
+&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/pdf-watermark/default.png"&gt;&lt;figcaption&gt;Rendering of a PDF watermark with default settings&lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;/p&gt;
+&lt;p&gt;The request was to add new options to control the font size, font name, rotation angle and color of
+the watermark, so in case an organization already has a given style of watermarks they prefer, our
+PDF export can be adapted accordingly.&lt;/p&gt;
+&lt;h2 id="results-so-far"&gt;Results so far&lt;a class="headerlink" href="#results-so-far" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;First, now you can specify a custom color, e.g. gray (#7f7f7f), using:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;soffice --convert-to pdf:writer_pdf_Export:&amp;#39;{&amp;quot;Watermark&amp;quot;:{&amp;quot;type&amp;quot;:&amp;quot;string&amp;quot;,&amp;quot;value&amp;quot;:&amp;quot;draft&amp;quot;}, &amp;quot;WatermarkColor&amp;quot;:{&amp;quot;type&amp;quot;:&amp;quot;long&amp;quot;,&amp;quot;value&amp;quot;:&amp;quot;8355711&amp;quot;}}&amp;#39; test.odt&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;
+&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/pdf-watermark/color.png"&gt;&lt;figcaption&gt;Rendering of a PDF watermark with custom color&lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;/p&gt;
+&lt;p&gt;Then you can also customize the font size, in case the automatic size would not fit your needs,
+using:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;soffice --convert-to pdf:writer_pdf_Export:&amp;#39;{&amp;quot;Watermark&amp;quot;:{&amp;quot;type&amp;quot;:&amp;quot;string&amp;quot;,&amp;quot;value&amp;quot;:&amp;quot;draft&amp;quot;}, &amp;quot;WatermarkFontHeight&amp;quot;:{&amp;quot;type&amp;quot;:&amp;quot;long&amp;quot;,&amp;quot;value&amp;quot;:&amp;quot;100&amp;quot;}}&amp;#39; test.odt&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;
+&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/pdf-watermark/font-size.png"&gt;&lt;figcaption&gt;Rendering of a PDF watermark with custom font size&lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;/p&gt;
+&lt;p&gt;Or perhaps you want a serif font, not a sans one:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;soffice --convert-to pdf:writer_pdf_Export:&amp;#39;{&amp;quot;Watermark&amp;quot;:{&amp;quot;type&amp;quot;:&amp;quot;string&amp;quot;,&amp;quot;value&amp;quot;:&amp;quot;draft&amp;quot;}, &amp;quot;WatermarkFontName&amp;quot;:{&amp;quot;type&amp;quot;:&amp;quot;string&amp;quot;,&amp;quot;value&amp;quot;:&amp;quot;Times&amp;quot;}}&amp;#39; test.odt&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;
+&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/pdf-watermark/font-name.png"&gt;&lt;figcaption&gt;Rendering of a PDF watermark with custom font name&lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;/p&gt;
+&lt;p&gt;Finally you can have a custom rotate angle:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;soffice --convert-to pdf:writer_pdf_Export:&amp;#39;{&amp;quot;Watermark&amp;quot;:{&amp;quot;type&amp;quot;:&amp;quot;string&amp;quot;,&amp;quot;value&amp;quot;:&amp;quot;draft&amp;quot;}, &amp;quot;WatermarkRotateAngle&amp;quot;:{&amp;quot;type&amp;quot;:&amp;quot;long&amp;quot;,&amp;quot;value&amp;quot;:&amp;quot;450&amp;quot;}}&amp;#39; test.odt&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;
+&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/pdf-watermark/rotate.png"&gt;&lt;figcaption&gt;Rendering of a PDF watermark with custom rotation&lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;/p&gt;
+&lt;p&gt;Using these building blocks, you can also build combinations, the first screenshot above was created
+using:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;soffice --convert-to pdf:writer_pdf_Export:&amp;#39;{&amp;quot;Watermark&amp;quot;:{&amp;quot;type&amp;quot;:&amp;quot;string&amp;quot;,&amp;quot;value&amp;quot;:&amp;quot;draft&amp;quot;}, &amp;quot;WatermarkRotateAngle&amp;quot;:{&amp;quot;type&amp;quot;:&amp;quot;long&amp;quot;,&amp;quot;value&amp;quot;:&amp;quot;450&amp;quot;}, &amp;quot;WatermarkColor&amp;quot;:{&amp;quot;type&amp;quot;:&amp;quot;long&amp;quot;,&amp;quot;value&amp;quot;:&amp;quot;8355711&amp;quot;}}&amp;#39; test.odt&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;i.e. the configuration JSON is:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;Watermark&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="nt"&gt;&amp;quot;type&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;string&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="nt"&gt;&amp;quot;value&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;draft&amp;quot;&lt;/span&gt;
+    &lt;span class="p"&gt;},&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;WatermarkRotateAngle&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="nt"&gt;&amp;quot;type&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;long&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="nt"&gt;&amp;quot;value&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;450&amp;quot;&lt;/span&gt;
+    &lt;span class="p"&gt;},&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;WatermarkColor&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="nt"&gt;&amp;quot;type&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;long&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="nt"&gt;&amp;quot;value&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;8355711&amp;quot;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h2 id="how-is-this-implemented"&gt;How is this implemented?&lt;a class="headerlink" href="#how-is-this-implemented" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;If you would like to know a bit more about how this works, continue reading... :-)&lt;/p&gt;
+&lt;p&gt;As usual, the high-level problem was addressed by a series of small changes:&lt;/p&gt;
+&lt;!-- s/\([^ ]\+\) \(.*\)/- [\2](https:\/\/git.libreoffice.org\/core\/commit\/\1)/g --&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/21c4749d0205d1ba90494edc2527ff9d11f86f87"&gt;Related: tdf#54053 PDF export: add UNO API to customize the watermark color&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/175e514c93b3696faa8c331c8b8f56e832ceb4c1"&gt;Related: tdf#54053 PDF export: add UNO API to customize the watermark font size&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/d1dd9b9733511ff451e264169537c08fa14c574f"&gt;Related: tdf#54053 PDF export: add UNO API to customize the watermark font name&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/574db5efa9a2ab6d70faedf538be77a1eb8c597b"&gt;Related: tdf#54053 PDF export: add UNO API to customize the watermark rotation&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="want-to-start-using-this"&gt;Want to start using this?&lt;a class="headerlink" href="#want-to-start-using-this" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;You can get a snapshot / demo of Collabora Office 22.05 and try it out yourself right now: &lt;a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/"&gt;try the
+unstable snapshot&lt;/a&gt;.  Collabora
+intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
+of this work will be available in TDF's next release too (7.5).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Mon, 05 Dec 2022 17:07:21 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2022-12-05:/blog/pdf-watermark.html</guid><category>libreoffice</category><category>en</category></item><item><title>Content controls in Writer: titles and tags</title><link>https://vmiklos.hu/blog/sw-content-controls5.html</link><description>&lt;p&gt;Writer now supports titles and tags for content controls, which helps providing context for the
 filled in text even if the placeholder text is replaced already.&lt;/p&gt;
 &lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraoffice.com/"&gt;Collabora Online&lt;/a&gt;, see &lt;a href="https://vmiklos.hu/blog/sw-content-controls4.html"&gt;the previous
 post&lt;/a&gt; for background.&lt;/p&gt;
@@ -1190,153 +1278,4 @@ intends to continue supporting and contributing to LibreOffice, the code is merg
 of this work will be available in TDF&amp;#8217;s next release too (7.4).&lt;/p&gt;&lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Tue, 08 Mar 2022 12:11:27 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2022-03-08:/blog/sw-page-table-para-border.html</guid><category>libreoffice</category><category>en</category></item><item><title>Improved PDF export options in the command-line and in Online</title><link>https://vmiklos.hu/blog/pdf-convert-to.html</link><description>&lt;div id="preamble"&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;The LibreOffice Technology now has much better support for creating custom PDF exports of documents:
-options available in the interactive PDF export options dialog are now also possible to set from the
-command-line, and also when using the document conversion feature of
-&lt;a href="https://www.collaboraoffice.com/document-conversion/"&gt;Collabora Online&lt;/a&gt;.&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_motivation"&gt;Motivation&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;I was working on a regression that only happens if you export the second and third pages of a
-document to PDF. While investigating, I needed a quick way to trigger the problematic code-path, and
-clicking through a dialog is not convenient.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;img src="https://share.vmiklos.hu/blog/pdf-convert-to/pdf-export-partial.png" alt="https://share.vmiklos.hu/blog/pdf-convert-to/pdf-export-partial.png" /&gt;
-&lt;/div&gt;
-&lt;div class="title"&gt;Figure 1. UI to specify a partial export to PDF&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;The PDF export in LibreOffice has a lot of options, but those are only available from extension code
-(using the UNO API) or from the UI dialog. The idea was to expose much of this to the &lt;code&gt;soffice
---convert-to&lt;/code&gt; command as well, and if we&amp;#8217;re at it, also to the &lt;code&gt;/cool/convert-to&lt;/code&gt; endpoint of
-Online.&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_results_so_far"&gt;Results so far&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Here are a few examples to show the possibilities:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-Skip the first page of a Draw document:
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-&lt;div class="listingblock"&gt;
-&lt;div class="content"&gt;
-&lt;pre&gt;&lt;code&gt;soffice --convert-to 'pdf:draw_pdf_Export:{"PageRange":{"type":"string","value":"2-"}}' test.odg&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;&lt;/div&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-Add watermark:
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-&lt;div class="listingblock"&gt;
-&lt;div class="content"&gt;
-&lt;pre&gt;&lt;code&gt;soffice --convert-to 'pdf:draw_pdf_Export:{"TiledWatermark":{"type":"string","value":"draft"}}' test.odg&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;&lt;/div&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-Encrypt the output:
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-&lt;div class="listingblock"&gt;
-&lt;div class="content"&gt;
-&lt;pre&gt;&lt;code&gt;soffice --convert-to 'pdf:draw_pdf_Export:{"EncryptFile":{"type":"boolean","value":"true"},"DocumentOpenPassword":{"type":"string","value":"secret"}}' test.odg&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;&lt;/div&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-We default to PDF 1.6, perhaps you want to write PDF 1.5:
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-&lt;div class="listingblock"&gt;
-&lt;div class="content"&gt;
-&lt;pre&gt;&lt;code&gt;soffice --convert-to 'pdf:draw_pdf_Export:{"SelectPdfVersion":{"type":"long","value":"15"}}' test.odg&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;&lt;/div&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-Sign the PDF:
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-&lt;div class="listingblock"&gt;
-&lt;div class="content"&gt;
-&lt;pre&gt;&lt;code&gt;soffice --convert-to 'pdf:draw_pdf_Export:{"SignPDF":{"type":"boolean","value":"true"},"SignCertificateSubjectName":{"type":"string","value":"CN=..."}}' test.odg&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;And the best is that the same also works in Online, e.g.:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="listingblock"&gt;
-&lt;div class="content"&gt;
-&lt;pre&gt;&lt;code&gt;curl -k -F "data=@3page.odg" -F "format=pdf" -F "options={\"PageRange\":{\"type\":\"string\",\"value\":\"2-\"}}" https://localhost:9980/cool/convert-to &amp;gt; out.pdf&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_how_is_this_implemented"&gt;How is this implemented?&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;If you would like to know a bit more about how this works, continue reading&amp;#8230; :-)&lt;/p&gt;&lt;/div&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/128643"&gt;https://gerrit.libreoffice.org/c/core/+/128643&lt;/a&gt; &lt;em&gt;tdf#141340 PDF export: fix hyperlinks on the wrong
-  page with page num range&lt;/em&gt; was the use-case that initially motivated to add the feature.
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/128709"&gt;https://gerrit.libreoffice.org/c/core/+/128709&lt;/a&gt; &lt;em&gt;comphelper: move JsonToPropertyValues() from
-  desktop/&lt;/em&gt; was grounding work to use the "convert JSON to a string-any map" functionality we
-  already had in core.git, as part of the LOK API.
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/128849"&gt;https://gerrit.libreoffice.org/c/core/+/128849&lt;/a&gt; &lt;em&gt;PDF export: allow setting filter data keys from
-  the cmdline&lt;/em&gt; is the actual improvement to the PDF exporter
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/128970"&gt;https://gerrit.libreoffice.org/c/core/+/128970&lt;/a&gt; &lt;em&gt;desktop lok, export options: allow passing through
-  a JSON string as-is&lt;/em&gt; is a tweak to let the LOK API also use this
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/129387"&gt;https://gerrit.libreoffice.org/c/core/+/129387&lt;/a&gt; &lt;em&gt;filter: allow PDF export to sign from the cmdline&lt;/em&gt;
-  added the PDF signing as a string option, since referring to a certificate object from the command-line
-  was not possible
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://github.com/CollaboraOnline/online/pull/4069"&gt;https://github.com/CollaboraOnline/online/pull/4069&lt;/a&gt; &lt;em&gt;wsd, convert-to: allow specifying filter
-  options as JSON&lt;/em&gt; implemented the Online side
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_want_to_start_using_this"&gt;Want to start using this?&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;You can get a snapshot / demo of Collabora Office and try it out yourself right now:
-&lt;a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/"&gt;try unstable snapshot&lt;/a&gt;.  Collabora
-intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF&amp;#8217;s next release too (7.4).&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;For the Online side, see the &lt;a href="https://www.collaboraoffice.com/code/"&gt;CODE&lt;/a&gt; page, the feature is
-present in the current release (2021).&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Tue, 08 Feb 2022 08:13:28 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2022-02-08:/blog/pdf-convert-to.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Tue, 08 Mar 2022 12:11:27 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2022-03-08:/blog/sw-page-table-para-border.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>

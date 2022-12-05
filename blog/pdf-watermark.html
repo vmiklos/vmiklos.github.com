@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/pygments.css">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Miklos Vajna">
+  <meta name="description" content="Posts and writings by Miklos Vajna">
+
+  <link href="https://vmiklos.hu/blog/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking RSS" />
+
+<meta name="keywords" content="en">
+
+  <title>
+    What is Miklos hacking
+&ndash; Improved watermark in the PDF export  </title>
+
+<script type="text/javascript">
+  var _paq = window._paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//analytics.vmiklos.hu/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '1']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <h2><a href="https://vmiklos.hu/blog">What is Miklos hacking</a></h2>
+      <p></p>
+      <ul>
+        <li><a href="/" target="_blank">Root</a></li>
+        <li><a href="https://planet.documentfoundation.org/" target="_blank">LibreOffice Blogs</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://vmiklos.hu/blog">Index</a> &brvbar; <a href="https://vmiklos.hu/blog/archives.html">Archives</a>
+      &brvbar; <a href="https://vmiklos.hu/blog/feeds/all.rss.xml">RSS</a>
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/pdf-watermark.html">Improved watermark in the PDF export</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Mon 05 December 2022</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 3 minutes</p>
+  </div>
+  <div class="article_text">
+    <p>The PDF export now supports various additional properties for the optional PDF watermark.</p>
+<p>First, thanks <a href="https://www.docmosis.com/">Docmosis</a> for funding this work by
+<a href="https://www.collaboraoffice.com/">Collabora</a>.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/pdf-watermark/rotate-and-color.png"><figcaption>Rendering of a PDF watermark with custom rotation and color</figcaption>
+</figure>
+</p>
+<p>When you hear the word "watermark", you probably have something like the above picture in mind.</p>
+<p>Instead, what the PDF export had is more like a proof of concept:</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/pdf-watermark/default.png"><figcaption>Rendering of a PDF watermark with default settings</figcaption>
+</figure>
+</p>
+<p>The request was to add new options to control the font size, font name, rotation angle and color of
+the watermark, so in case an organization already has a given style of watermarks they prefer, our
+PDF export can be adapted accordingly.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>First, now you can specify a custom color, e.g. gray (#7f7f7f), using:</p>
+<div class="highlight"><pre><span></span><code><span class="err">soffice --convert-to pdf:writer_pdf_Export:&#39;{&quot;Watermark&quot;:{&quot;type&quot;:&quot;string&quot;,&quot;value&quot;:&quot;draft&quot;}, &quot;WatermarkColor&quot;:{&quot;type&quot;:&quot;long&quot;,&quot;value&quot;:&quot;8355711&quot;}}&#39; test.odt</span>
+</code></pre></div>
+
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/pdf-watermark/color.png"><figcaption>Rendering of a PDF watermark with custom color</figcaption>
+</figure>
+</p>
+<p>Then you can also customize the font size, in case the automatic size would not fit your needs,
+using:</p>
+<div class="highlight"><pre><span></span><code><span class="err">soffice --convert-to pdf:writer_pdf_Export:&#39;{&quot;Watermark&quot;:{&quot;type&quot;:&quot;string&quot;,&quot;value&quot;:&quot;draft&quot;}, &quot;WatermarkFontHeight&quot;:{&quot;type&quot;:&quot;long&quot;,&quot;value&quot;:&quot;100&quot;}}&#39; test.odt</span>
+</code></pre></div>
+
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/pdf-watermark/font-size.png"><figcaption>Rendering of a PDF watermark with custom font size</figcaption>
+</figure>
+</p>
+<p>Or perhaps you want a serif font, not a sans one:</p>
+<div class="highlight"><pre><span></span><code><span class="err">soffice --convert-to pdf:writer_pdf_Export:&#39;{&quot;Watermark&quot;:{&quot;type&quot;:&quot;string&quot;,&quot;value&quot;:&quot;draft&quot;}, &quot;WatermarkFontName&quot;:{&quot;type&quot;:&quot;string&quot;,&quot;value&quot;:&quot;Times&quot;}}&#39; test.odt</span>
+</code></pre></div>
+
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/pdf-watermark/font-name.png"><figcaption>Rendering of a PDF watermark with custom font name</figcaption>
+</figure>
+</p>
+<p>Finally you can have a custom rotate angle:</p>
+<div class="highlight"><pre><span></span><code><span class="err">soffice --convert-to pdf:writer_pdf_Export:&#39;{&quot;Watermark&quot;:{&quot;type&quot;:&quot;string&quot;,&quot;value&quot;:&quot;draft&quot;}, &quot;WatermarkRotateAngle&quot;:{&quot;type&quot;:&quot;long&quot;,&quot;value&quot;:&quot;450&quot;}}&#39; test.odt</span>
+</code></pre></div>
+
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/pdf-watermark/rotate.png"><figcaption>Rendering of a PDF watermark with custom rotation</figcaption>
+</figure>
+</p>
+<p>Using these building blocks, you can also build combinations, the first screenshot above was created
+using:</p>
+<div class="highlight"><pre><span></span><code><span class="err">soffice --convert-to pdf:writer_pdf_Export:&#39;{&quot;Watermark&quot;:{&quot;type&quot;:&quot;string&quot;,&quot;value&quot;:&quot;draft&quot;}, &quot;WatermarkRotateAngle&quot;:{&quot;type&quot;:&quot;long&quot;,&quot;value&quot;:&quot;450&quot;}, &quot;WatermarkColor&quot;:{&quot;type&quot;:&quot;long&quot;,&quot;value&quot;:&quot;8355711&quot;}}&#39; test.odt</span>
+</code></pre></div>
+
+<p>i.e. the configuration JSON is:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+    <span class="nt">&quot;Watermark&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;draft&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;WatermarkRotateAngle&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;long&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;450&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;WatermarkColor&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;long&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;8355711&quot;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>As usual, the high-level problem was addressed by a series of small changes:</p>
+<!-- s/\([^ ]\+\) \(.*\)/- [\2](https:\/\/git.libreoffice.org\/core\/commit\/\1)/g -->
+
+<ul>
+<li><a href="https://git.libreoffice.org/core/commit/21c4749d0205d1ba90494edc2527ff9d11f86f87">Related: tdf#54053 PDF export: add UNO API to customize the watermark color</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/175e514c93b3696faa8c331c8b8f56e832ceb4c1">Related: tdf#54053 PDF export: add UNO API to customize the watermark font size</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/d1dd9b9733511ff451e264169537c08fa14c574f">Related: tdf#54053 PDF export: add UNO API to customize the watermark font name</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/574db5efa9a2ab6d70faedf538be77a1eb8c597b">Related: tdf#54053 PDF export: add UNO API to customize the watermark rotation</a></li>
+</ul>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a snapshot / demo of Collabora Office 22.05 and try it out yourself right now: <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try the
+unstable snapshot</a>.  Collabora
+intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
+of this work will be available in TDF's next release too (7.5).</p>
+  </div>
+  <div class="article_meta">
+    <p>Category: <a href="https://vmiklos.hu/blog/category/libreoffice.html">libreoffice</a>
+ &ndash; Tags:
+      <a href="https://vmiklos.hu/blog/tag/en.html">en</a>    </p>
+  </div>
+
+
+</article>
+
+
+    <div id="ending_message">
+      <p>&copy; Miklos Vajna. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
+</body>
+</html>
