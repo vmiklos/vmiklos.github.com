@@ -13,3 +13,6 @@ sync:
 
 run:
 	python3 -m http.server
+
+404.html: 404.md Makefile
+	pandoc -s -o 404.html 404.md
