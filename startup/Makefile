@@ -1,2 +1,2 @@
-index.html: index.txt
-	asciidoctor index.txt
+index.html: index.md Makefile
+	pandoc -s -o index.html index.md
