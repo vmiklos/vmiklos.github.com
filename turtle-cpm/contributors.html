@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Advanced topics - turtle-cpm user guide</title>
+        <title>Contributors - turtle-cpm user guide</title>
 
 
         <!-- Custom HTML head -->
@@ -81,7 +81,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">User Guide</li><li class="chapter-item expanded "><a href="installation.html"><strong aria-hidden="true">1.</strong> Installation</a></li><li class="chapter-item expanded "><a href="usage.html"><strong aria-hidden="true">2.</strong> Usage</a></li><li class="chapter-item expanded "><a href="advanced.html" class="active"><strong aria-hidden="true">3.</strong> Advanced topics</a></li><li class="chapter-item expanded "><a href="hacking.html"><strong aria-hidden="true">4.</strong> Development notes</a></li><li class="chapter-item expanded "><a href="news.html"><strong aria-hidden="true">5.</strong> Changelog</a></li><li class="chapter-item expanded "><a href="contributors.html"><strong aria-hidden="true">6.</strong> Contributors</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">User Guide</li><li class="chapter-item expanded "><a href="installation.html"><strong aria-hidden="true">1.</strong> Installation</a></li><li class="chapter-item expanded "><a href="usage.html"><strong aria-hidden="true">2.</strong> Usage</a></li><li class="chapter-item expanded "><a href="advanced.html"><strong aria-hidden="true">3.</strong> Advanced topics</a></li><li class="chapter-item expanded "><a href="hacking.html"><strong aria-hidden="true">4.</strong> Development notes</a></li><li class="chapter-item expanded "><a href="news.html"><strong aria-hidden="true">5.</strong> Changelog</a></li><li class="chapter-item expanded "><a href="contributors.html" class="active"><strong aria-hidden="true">6.</strong> Contributors</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -116,7 +116,7 @@
                         <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
-                        <a href="https://github.com/vmiklos/turtle-cpm/edit/main/guide/src/advanced.md" title="Suggest an edit" aria-label="Suggest an edit">
+                        <a href="https://github.com/vmiklos/turtle-cpm/edit/main/guide/src/contributors.md" title="Suggest an edit" aria-label="Suggest an edit">
                             <i id="git-edit-button" class="fa fa-edit"></i>
                         </a>
 
@@ -145,81 +145,41 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="advanced-topics"><a class="header" href="#advanced-topics">Advanced topics</a></h1>
-<h2 id="distributed-usage"><a class="header" href="#distributed-usage">Distributed usage</a></h2>
-<p>One big downside of mobile-based TOTP apps is that you can't login to machines if you loose your
-phone, and the TOTP shared secrets on those devices are not backed up.  <code>cpm</code> supports distributed
-storage of passwords in a way that's similar to single-master replication in DBMS terms.</p>
-<p>One possible setup is to have a central machine where you edit your cpm database, e.g. your home
-router which is usually available or your VPS in some hosting. Then you can replicate the <code>cpm</code>
-database to your other devices by configuring a virtual <code>cpm</code> remote machine in your <code>.ssh/config</code>
-on the other machines:</p>
-<pre><code>Host cpm
-        Hostname myserver.example.com
-</code></pre>
-<p>Finally pull the remote database to your local one, using:</p>
-<pre><code class="language-console">cpm sync
-</code></pre>
-<p>This allows searching in your passwords even when you're offline. Keep in mind that editing the
-database on the slaves is not a good idea as the next sync will overwrite your local changes.</p>
-<h2 id="toolkit-integration"><a class="header" href="#toolkit-integration">Toolkit integration</a></h2>
-<p>In case you have scripts to generate your local configuration files containing passwords from
-templates, <code>cpm</code> can be integrated into such a workflow, using the quiet mode of the search
-subcommand. For example, if you have an app password at your mail provider, and you want to generate
-your mutt configuration, you can query just the password from <code>cpm</code> using:</p>
-<pre><code class="language-console">cpm -q -m accounts.example.com -u $USER-mail-$HOSTNAME
-</code></pre>
-<h2 id="importing-the-old-cpm-xml-database"><a class="header" href="#importing-the-old-cpm-xml-database">Importing the old CPM XML database</a></h2>
-<p>In case you used the old <code>cpm</code> tool, it used to store its data at <code>~/.cpmdb</code> as an XML file,
-compressed and encrypted. If you want to import that into turtle-cpm's database, you can do so
-using:</p>
-<pre><code class="language-console">cpm import
-</code></pre>
-<h2 id="inspecting-the-encrypted-database-manually"><a class="header" href="#inspecting-the-encrypted-database-manually">Inspecting the encrypted database manually</a></h2>
-<p>In case you want to inspect the SQLite database of <code>cpm</code> manually, you need to decrypt it yourself,
-using (assuming an empty <code>XDG_STATE_HOME</code> environment variable):</p>
-<pre><code class="language-console">gpg --decrypt -a -o decrypted.db ~/.local/state/cpm/passwords.db
-</code></pre>
-<p>After this, you can inspect the database using a GUI like:</p>
-<pre><code class="language-console">sqlitebrowser decrypted.db
-</code></pre>
-<p>Don't forget to delete the decrypted database after you're done with your investigation.</p>
-<h2 id="reference-documentation"><a class="header" href="#reference-documentation">Reference documentation</a></h2>
-<p>Apart from this guide, reference documentation is available in <code>cpm</code> itself. You can learn about the
-possible subcommands using:</p>
-<pre><code class="language-console">cpm -h
-</code></pre>
-<p>You can also check all the available options for one given subcommand using e.g.:</p>
-<pre><code class="language-console">cpm create -h
-</code></pre>
-<p>An alternative to this is the manual pages under <code>man/</code>, which provide the same information.</p>
-<h2 id="re-sharing-totp-shared-secrets"><a class="header" href="#re-sharing-totp-shared-secrets">Re-sharing TOTP shared secrets</a></h2>
-<p>TOTP shared secrets are typically transferred as QR codes, though there is usually a fallback option
-to get the shared secret string itself, which is what <code>cpm</code> can manage. However, the QR code also
-contains other information about the shared secret, and there are tools like
-<a href="https://stefansundin.github.io/2fa-qr/">2fa-qr</a> that allow obtaining the full <code>otpauth://</code> URL from the
-QR code image. <code>cpm</code> supports storing these full URLs as well, they look something like this:</p>
-<p>otpauth://totp/Myserver:myuser?secret=...&amp;digits=6&amp;algorithm=SHA1&amp;issuer=Myserver&amp;period=30</p>
-<p>Where Myserver is some server-side app name and myuser is your user name.</p>
-<p>The benefit of storing the full URL in the <code>cpm</code> database is that later you can re-share them as QR
-codes using e.g.:</p>
-<pre><code class="language-console">cpm -t totp --qrcode twitter
-machine: twitter.com, service: http, user: myuser, password type: TOTP shared secret, password:
-...
-</code></pre>
-<p>The following lines will be a QR code you can scan with a mobile app.</p>
+                        <h1 id="contributors"><a class="header" href="#contributors">Contributors</a></h1>
+<p>Here is a list of the contributors who have helped improving turtle-cpm. Big
+shout-out to them!</p>
+<ul>
+<li>Miklos Vajna <a href="mailto:turtle-cpm@vmiklos.hu">turtle-cpm@vmiklos.hu</a></li>
+</ul>
+<p>If you feel you're missing from this list, feel free to add yourself in a PR.</p>
+<h2 id="contributing"><a class="header" href="#contributing">Contributing</a></h2>
+<p>turtle-cpm is free and open source. You can find the source code on
+<a href="https://github.com/vmiklos/turtle-cpm">GitHub</a> and issues and feature requests can be posted on the
+issue tracker. If you'd like to contribute, please consider opening a pull request.</p>
+<h2 id="reporting-problems"><a class="header" href="#reporting-problems">Reporting problems</a></h2>
+<p>If you post a bugreport in the issue tracker, please always describe a single problem in one issue.</p>
+<p>Here is what to include in a bugreport:</p>
+<p><strong>Reproducer steps</strong></p>
+<ol>
+<li>First step</li>
+<li>Second step</li>
+<li>Third step</li>
+</ol>
+<p><strong>Actual result</strong>
+A description of what happens currently.</p>
+<p><strong>Expected behavior</strong>
+A description of what you expected to happen.</p>
+<p><strong>Version information</strong>
+The output of <code>cpm version</code>.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="usage.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="news.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next" href="hacking.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                                <i class="fa fa-angle-right"></i>
-                            </a>
 
                         <div style="clear: both"></div>
                     </nav>
@@ -227,13 +187,10 @@ machine: twitter.com, service: http, user: myuser, password type: TOTP shared se
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="usage.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="news.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next" href="hacking.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                        <i class="fa fa-angle-right"></i>
-                    </a>
             </nav>
 
         </div>
