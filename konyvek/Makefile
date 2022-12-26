@@ -1,5 +1,5 @@
-index.html: index.txt Makefile
-	asciidoctor -a numbered -a sectids -a toc index.txt
+index.html: index.adoc Makefile
+	asciidoctor -a numbered -a sectids -a toc index.adoc
 
 count:
-	grep -c ^- index.txt
+	grep -c ^- index.adoc
