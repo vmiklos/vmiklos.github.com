@@ -1,2 +1,2 @@
-index.html: index.txt Makefile
+index.html: index.adoc Makefile
 	asciidoctor $^
