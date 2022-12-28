@@ -1,8 +1,8 @@
-index.html: index.txt Makefile
-	asciidoctor -a numbered -a sectids -a toc index.txt
+index.html: index.adoc Makefile
+	asciidoctor -a numbered -a sectids -a toc index.adoc
 
-index.txt: Makefile ohdump
-	./ohdump index.txt
+index.adoc: Makefile ohdump
+	./ohdump index.adoc
 
 check:
 	pep8 ohdump
