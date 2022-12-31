@@ -68,6 +68,7 @@ These are tutorials I found very useful before jumping into an actual spec.
 # lego
 
 - [Find LEGO Sets and MOCs you can Build](https://rebrickable.com/build/)
+- ['10696, LEGO® Medium Creative Brick Box, LEGO® Classic' instructions](https://www.lego.com/en-us/service/buildinginstructions/10696) -- some of these are not printed, even if you buy the product
 
 # libreoffice
 
