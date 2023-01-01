@@ -15,29 +15,18 @@ title: Machines
 
 Favorite feature: aarch64.
 
-## Optiplex 7050
+## Vostro 3681
 
-- In use: 2018 -
-- Intel Core i7-7700 CPU @ 3.60GHz (4 cores, 8 threads)
+- In use: 2023 -
+- Intel® Core™ i7-10700 2.9 (8 cores, 16 threads)
 - Memory: 32GB
-- Storage: 2 x 2TB (RAID1)
-- [more](http://www.dell.com/en-us/work/shop/desktop-and-all-in-one-pcs/optiplex-7050-tower-small-form-factor/spd/optiplex-7050-desktop)
+- Storage: 2TB SSD
+- [more](https://www.dell.com/ae/business/p/vostro-3681-desktop/pd)
+- Backup storage: 4TB HDD (2018)
 - Display: 27" (1920x1080) (2019)
 - Headset: [Sony MDR-ZX310AP](https://www.sony.com/electronics/headband-headphones/mdr-zx310-zx310ap) (2020)
 - Camera: [Logitech HD Webcam C270](https://www.logitech.com/en-us/products/webcams/c270-hd-webcam.960-000694.html) (2020)
 - [TRENDNET 2-Port HDMI KVM Switch](https://www.trendnet.com/products/KVM-2-Port-switch/TK-215i) (2020)
-
-### Performance
-
-Test case: building LibreOffice 6.0, on Linux with empty ccache:
-
-```
-$ time make build-nocheck
-...
-real    58m4.915s
-user    317m0.968s
-sys     27m42.201s
-```
 
 ## ThinkPad T580
 
