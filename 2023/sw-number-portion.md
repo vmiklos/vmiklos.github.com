@@ -2,10 +2,10 @@ Title: Improved number portion formatting in Writer
 Slug: sw-number-portion
 Category: libreoffice
 Tags: en
-Date: 2023-01-02T16:01:41+01:00
+Date: 2023-01-03T08:30:40+01:00
 
-Text portions generated when using lists/numberings/bullets in Writer now can have formatting which
-is preserved in ODT files as well.
+Number portions generated when using lists/numberings/bullets in Writer now can have formatting
+which is preserved in ODT files as well.
 
 First, thanks [Docmosis](https://www.docmosis.com/) for funding this work by
 [Collabora](https://www.collaboraoffice.com/).
@@ -20,7 +20,7 @@ from / saved to DOCX, but it was lost when saving to ODT.
 
 First, we got a bug document, where the reference rendering and our rendering differed:
 
-![Reference (on the left) and our (on the right) rendering, due to bookmarks](https://share.vmiklos.hu/blog/sw-number-portion/sw-number-portion-1.png)
+![Reference (on the left) and our old (on the right) rendering, due to bookmarks](https://share.vmiklos.hu/blog/sw-number-portion/sw-number-portion-1.png)
 
 In this case, what happened was that part of the heading text was covered by a bookmark, so we first
 created multiple character ranges (outside the bookmark, inside the bookmark), then as an
@@ -29,7 +29,10 @@ paragraph. This was a document model that is different from the bookmark-free ve
 character formatting was set on the paragraph itself.
 
 This was fixed at render time and at DOCX export time to consider both full-paragraph character
-ranges and in-paragraph character properties. For a while, this looked like the entire story.
+ranges and in-paragraph character properties. For a while, this looked like the entire story, since
+this now looks good in Writer:
+
+![Our new rendering, handling bookmarks](https://share.vmiklos.hu/blog/sw-number-portion/sw-number-portion-1good.png)
 
 A bit later another, related bug was discovered. Given a reference document:
 
@@ -77,4 +80,4 @@ As usual, the high-level problem was addressed by a series of small changes:
 You can get a snapshot / demo of Collabora Office 22.05 and try it out yourself right now: [try the
 unstable snapshot](https://www.collaboraoffice.com/collabora-office-latest-snapshot/).  Collabora
 intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF's next release too (7.5).
+of this work will be available in TDF's next release too (7.6).
