@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/pygments.css">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Miklos Vajna">
+  <meta name="description" content="Posts and writings by Miklos Vajna">
+
+  <link href="https://vmiklos.hu/blog/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking RSS" />
+
+<meta name="keywords" content="en">
+
+  <title>
+    What is Miklos hacking
+&ndash; Improved number portion formatting in Writer  </title>
+
+<script type="text/javascript">
+  var _paq = window._paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//analytics.vmiklos.hu/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '1']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <h2><a href="https://vmiklos.hu/blog">What is Miklos hacking</a></h2>
+      <p></p>
+      <ul>
+        <li><a href="/" target="_blank">Root</a></li>
+        <li><a href="https://planet.documentfoundation.org/" target="_blank">LibreOffice Blogs</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://vmiklos.hu/blog">Index</a> &brvbar; <a href="https://vmiklos.hu/blog/archives.html">Archives</a>
+      &brvbar; <a href="https://vmiklos.hu/blog/feeds/all.rss.xml">RSS</a>
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sw-number-portion.html">Improved number portion formatting in Writer</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Tue 03 January 2023</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 3 minutes</p>
+  </div>
+  <div class="article_text">
+    <p>Number portions generated when using lists/numberings/bullets in Writer now can have formatting
+which is preserved in ODT files as well.</p>
+<p>First, thanks <a href="https://www.docmosis.com/">Docmosis</a> for funding this work by
+<a href="https://www.collaboraoffice.com/">Collabora</a>.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>Word and DOCX files support explicit character properties for the paragraph marker, and these are
+also used for the formatting of a number portion if the paragraph has one. This was already loaded
+from / saved to DOCX, but it was lost when saving to ODT.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>First, we got a bug document, where the reference rendering and our rendering differed:</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-number-portion/sw-number-portion-1.png"><figcaption>Reference (on the left) and our old (on the right) rendering, due to bookmarks</figcaption>
+</figure>
+</p>
+<p>In this case, what happened was that part of the heading text was covered by a bookmark, so we first
+created multiple character ranges (outside the bookmark, inside the bookmark), then as an
+optimization we even unified them to be a single formatted character range, covering the entire
+paragraph. This was a document model that is different from the bookmark-free version, where the
+character formatting was set on the paragraph itself.</p>
+<p>This was fixed at render time and at DOCX export time to consider both full-paragraph character
+ranges and in-paragraph character properties. For a while, this looked like the entire story, since
+this now looks good in Writer:</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-number-portion/sw-number-portion-1good.png"><figcaption>Our new rendering, handling bookmarks</figcaption>
+</figure>
+</p>
+<p>A bit later another, related bug was discovered. Given a reference document:</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-number-portion/sw-number-portion-2-ref.png"><figcaption>Reference rendering of a second document</figcaption>
+</figure>
+</p>
+<p>Just opening this DOCX file in Writer, it looked like this:</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-number-portion/sw-number-portion-3-import.png"><figcaption>Old rendering in Writer</figcaption>
+</figure>
+</p>
+<p>Note how the first number portion turned into bold! This was expected after the above layout change
+to consider full-paragraph formatted character ranges, but it also meant that Word can have one
+set of character formatting for the entire character range of a paragraph, and another for the
+paragraph marker.</p>
+<p>To make the problem worse, this second document was showing that even the ODT export/export feature
+had problems, still:</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-number-portion/sw-number-portion-4-odf.png"><figcaption>Old rendering in Writer after ODT save + load</figcaption>
+</figure>
+</p>
+<p>The fix to solve all of the above was to undo the previous render / DOCX export change, then teach
+the ODT export to explicitly save the paragraph marker formatting (as an empty span at the end of
+the text node) to ODT, and also to load it back.</p>
+<p>This means that now Writer can render the second document correctly, without breaking the first
+document:</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-number-portion/sw-number-portion-5-good.png"><figcaption>New rendering in Writer</figcaption>
+</figure>
+</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>As usual, the high-level problem was addressed by a series of small changes:</p>
+<!-- s/\([^ ]\+\) \(.*\)/- [\2](https:\/\/git.libreoffice.org\/core\/commit\/\1)/g -->
+
+<ul>
+<li><a href="https://git.libreoffice.org/core/commit/e6907bc15cfa3c561d4aafbcc92eff291dc68cdd">sw, numbering portion format: consider full-para char formats as well</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/dfba56830288b381eaaaf6b8f9454834301497db">DOCX export, numbering portion format: consider full-para char formats as well</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/585d440df98ff3b967c191908ac2d4b2f7e29326">sw, numbering portion format: ignore char formats covering the entire paragraph</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/3998b98749739b2c499ffc4d83188e1034b66750">sw: ODT import/export of DOCX's paragraph marker formatting</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/4634a27dd6f762168b3d7820326611b20b7d385c">sw: fix ODT import of paragraph marker formatting</a></li>
+</ul>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a snapshot / demo of Collabora Office 22.05 and try it out yourself right now: <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try the
+unstable snapshot</a>.  Collabora
+intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
+of this work will be available in TDF's next release too (7.6).</p>
+  </div>
+  <div class="article_meta">
+    <p>Category: <a href="https://vmiklos.hu/blog/category/libreoffice.html">libreoffice</a>
+ &ndash; Tags:
+      <a href="https://vmiklos.hu/blog/tag/en.html">en</a>    </p>
+  </div>
+
+
+</article>
+
+
+    <div id="ending_message">
+      <p>&copy; Miklos Vajna. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
+</body>
+</html>
