@@ -1,2 +1,2 @@
-index.html: index.adoc Makefile
-	asciidoctor -a numbered -a sectids -a toc index.adoc
+index.html: index.md Makefile
+	pandoc -s -o index.html index.md
