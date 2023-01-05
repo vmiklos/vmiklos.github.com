@@ -1,2 +1,2 @@
 index.html: index.adoc Makefile
-	asciidoctor $^
+	asciidoctor index.adoc
