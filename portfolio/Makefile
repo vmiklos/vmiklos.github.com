@@ -1,8 +1,8 @@
-index.html: index.adoc Makefile
-	asciidoctor -a numbered -a sectids -a toc index.adoc
+index.html: index.md Makefile
+	pandoc -s --toc --number-sections -o index.html index.md
 
-index.adoc: Makefile ohdump
-	./ohdump index.adoc
+index.md: Makefile ohdump
+	./ohdump index.md
 
 check:
 	pep8 ohdump

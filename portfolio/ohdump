@@ -60,16 +60,13 @@ class ContentHandler(xml.sax.handler.ContentHandler):
     def endElement(self, name):
         if name == "position":
             self.inPosition = False
-            if not self.commits or int(self.commits) < 25:
+            if self.commits and int(self.commits) >= 25:
                 # Let's see if this is a good limit to filter out noise.
-                self.outSock.write("// ")
-            self.outSock.write(".")
-            if self.smallLogoURL:
-                self.outSock.write(' image:%s["%s"] ' % (self.smallLogoURL, self.projectName))
-            commits = "commit"
-            if self.commits != "1":
-                commits += "s"
-            self.outSock.write(" %s[%s]: %s[%s %s]\n" % (self.projectHTMLURL, self.projectName, self.HTMLURL, self.commits, commits))
+                self.outSock.write("-")
+                if self.smallLogoURL:
+                    self.outSock.write(' ![%s](%s) ' % (self.projectName, self.smallLogoURL))
+                commits = "commits"
+                self.outSock.write(" [%s](%s): [%s commits](%s)\n" % (self.projectName, self.projectHTMLURL, self.commits, self.HTMLURL))
             self.smallLogoURL = None
             self.projectHTMLURL = None
             self.projectName = None
@@ -114,8 +111,7 @@ class ContentHandler(xml.sax.handler.ContentHandler):
 
 def main(argv):
     out = open(argv[0], "w")
-    out.write("= My portfolio\n\n")
-    out.write("Major contributions:\n\n")
+    out.write("---\ntitle: My portfolio\n...\n\n")
 
     page = 1
     while True:
@@ -136,7 +132,7 @@ def main(argv):
             break
         page += 1
 
-    out.write("\n\nFor more details, see my https://www.openhub.net/accounts/%s[Open Hub profile]." % os.environ['USER'])
+    out.write("\nFor more details, see my [Open Hub profile](https://www.openhub.net/accounts/%s)." % os.environ['USER'])
     out.close()
 
 if __name__ == "__main__":
