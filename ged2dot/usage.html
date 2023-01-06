@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Introduction - ged2dot user guide</title>
+        <title>Usage - ged2dot user guide</title>
 
 
         <!-- Custom HTML head -->
@@ -81,7 +81,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html" class="active">Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">User Guide</li><li class="chapter-item expanded "><a href="installation.html"><strong aria-hidden="true">1.</strong> Installation</a></li><li class="chapter-item expanded "><a href="usage.html"><strong aria-hidden="true">2.</strong> Usage</a></li><li class="chapter-item expanded "><a href="hacking.html"><strong aria-hidden="true">3.</strong> Development notes</a></li><li class="chapter-item expanded "><a href="news.html"><strong aria-hidden="true">4.</strong> Changelog</a></li><li class="chapter-item expanded "><a href="contributors.html"><strong aria-hidden="true">5.</strong> Contributors</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">User Guide</li><li class="chapter-item expanded "><a href="installation.html"><strong aria-hidden="true">1.</strong> Installation</a></li><li class="chapter-item expanded "><a href="usage.html" class="active"><strong aria-hidden="true">2.</strong> Usage</a></li><li class="chapter-item expanded "><a href="hacking.html"><strong aria-hidden="true">3.</strong> Development notes</a></li><li class="chapter-item expanded "><a href="news.html"><strong aria-hidden="true">4.</strong> Changelog</a></li><li class="chapter-item expanded "><a href="contributors.html"><strong aria-hidden="true">5.</strong> Contributors</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -116,7 +116,7 @@
                         <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
-                        <a href="https://github.com/vmiklos/ged2dot/edit/master/guide/src/README.md" title="Suggest an edit" aria-label="Suggest an edit">
+                        <a href="https://github.com/vmiklos/ged2dot/edit/master/guide/src/usage.md" title="Suggest an edit" aria-label="Suggest an edit">
                             <i id="git-edit-button" class="fa fa-edit"></i>
                         </a>
 
@@ -145,29 +145,85 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
-<p>ged2dot is a GEDCOM to Graphviz converter.</p>
-<p>The latest version is v7.4, released on 2022-08-01.</p>
-<h2 id="description"><a class="header" href="#description">Description</a></h2>
-<p><code>ged2dot</code> is a script that takes a <a href="http://en.wikipedia.org/wiki/GEDCOM">GEDCOM</a> file and tries to
-visualize it using <a href="http://www.graphviz.org/">Graphviz</a>'s <code>dot</code> tool. The basic idea is that you can
-map individuals and families to graph nodes and connections between them to graph edges, then <code>dot</code>
-takes care of the rest. What's unique about <code>ged2dot</code> is that it allows more than showing ancestors
-and descendants of a single individual (what you can easily do with random family editor software).</p>
-<h2 id="contributing"><a class="header" href="#contributing">Contributing</a></h2>
-<p>ged2dot is free and open source. You can find the source code on
-<a href="https://github.com/vmiklos/ged2dot">GitHub</a> and issues and feature requests can be posted on
-the issue tracker. If you'd like to contribute, please consider opening a pull request.</p>
-<h2 id="license"><a class="header" href="#license">License</a></h2>
-<p>Use of this source code is governed by a MPL-style license that can be found in
-the LICENSE file.</p>
+                        <h1 id="usage"><a class="header" href="#usage">Usage</a></h1>
+<p>You usually want to customize your input filename, output filenames, the root family and the depth
+of the graph visitor. You can provide these either by using command-line arguments (see <code>ged2dot.py --help</code>) or by using a configuration file (see <code>ged2dotrc.sample</code>). When using both, the
+command-line arguments overwrite configuration values.</p>
+<p>A typical flow looks like this with a provided test input:</p>
+<pre><code class="language-console">./ged2dot.py --input tests/happy.ged --output test.dot --rootfamily F1 --familydepth 3
+dot -Tsvg -o test.svg test.dot
+</code></pre>
+<p>At this point you can open test.svg in your web browser and check the result. Mouse tooltips on the
+marriage nodes give you family IDs. You can change the familydepth parameter to include less or more
+nodes around the root family.</p>
+<h2 id="layout"><a class="header" href="#layout">Layout</a></h2>
+<p>The layout does a Breadth First Search (BFS) traversal on the graph, from the starting family:</p>
+<p><img src="https://vmiklos.hu/ged2dot/tests/screenshot.png" alt="screenshot" /></p>
+<p>This has several benefits over explicitly trying to guess which family belongs to which generation.
+Some example more tricky cases, which are handled by <code>ged2dot</code>:</p>
+<ul>
+<li>
+<p>root family -&gt; husband -&gt; sister -&gt; showing her kids</p>
+</li>
+<li>
+<p>root family -&gt; wife -&gt; cousin -&gt; showing her kid</p>
+</li>
+<li>
+<p>root family -&gt; husband -&gt; grand father -&gt; showing both wives with the matching kids</p>
+</li>
+<li>
+<p>marrying cousins</p>
+</li>
+</ul>
+<p>(ged2dot &lt;= 7.0 allowed multiple layouts, none of them supported the above more tricky cases.)</p>
+<p>GEDCOM files don't contain images, but you can put images next to the GEDCOM file, and in that case
+ged2dot will try to pick them up when generating <code>dot</code> output. The expected location is
+<code>images/Given Family 1234.jpg</code>, relative to the GEDCOM file. For example, there is a person called
+Ray Smith in the above screenshot. The birth year string is <code>Y</code>, so the image location has to be
+<code>images/Ray Smith Y.jpg</code>.</p>
+<h2 id="bugs"><a class="header" href="#bugs">Bugs</a></h2>
+<p>For <code>ged2dot</code>, in case a given input results in a runtime crash, it's
+considered a bug. If you have a fix for it,
+<a href="https://github.com/vmiklos/ged2dot/pull/new/master">pull requests</a> on GitHub are
+welcome. Make sure to run <code>make check</code> before submitting your changes.</p>
+<p>For the LibreOffice extension, in case you get an error during opening:</p>
+<ul>
+<li>For Windows, the log file location is something like:</li>
+</ul>
+<pre><code>C:/Users/John/Application Data/LibreOffice/4/user/Scripts/python/log.txt
+</code></pre>
+<ul>
+<li>
+<p>For Linux, start LibreOffice from a terminal, the log is printed to the
+standard error.</p>
+</li>
+<li>
+<p>For Mac, start LibreOffice from Terminal:</p>
+</li>
+</ul>
+<pre><code>cd /Applications/LibreOffice.app/Contents/program
+./soffice --nologo /path/to/test.ged
+</code></pre>
+<p>then the log is printed to the standard error as well.</p>
+<h2 id="icons"><a class="header" href="#icons">Icons</a></h2>
+<p>Icons are from
+<a href="http://www.wpzoom.com/wpzoom/new-freebie-wpzoom-developer-icon-set-154-free-icons/">WPZOOM</a>,
+in case placeholders have to be used for missing images.</p>
+<h2 id="resources"><a class="header" href="#resources">Resources</a></h2>
+<ul>
+<li><a href="https://www.familysearch.org/developers/docs/guides/gedcom">GEDCOM specification</a></li>
+<li><a href="https://gist.github.com/fetsorn/1d5f6cbc47989b32cb461528c1e253b4">Translation of ged2dot to JavaScript</a></li>
+</ul>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="installation.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
 
-                            <a rel="next" href="installation.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="hacking.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -177,8 +233,11 @@ the LICENSE file.</p>
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="installation.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
 
-                    <a rel="next" href="installation.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="hacking.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
