@@ -149,6 +149,10 @@ These are tutorials I found very useful before jumping into an actual spec.
 - [antisleepers](http://web.archive.org/web/20090131194011/http://antisleepers.xtrinal.net/archivum/5/summer08/)
 - [sleepavg](https://github.com/vmiklos/vmexam/blob/master/python/sleepavg)
 
+# twitter
+
+- [find twitter people on the fediverse](https://fedifinder.glitch.me/)
+
 # vim
 
 - [hex dump](http://vim.wikia.com/wiki/Hex_dump): `xxd -p foo.bin > foo.hex` or
