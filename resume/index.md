@@ -65,8 +65,8 @@ Rust: https://github.com/matrix-org/matrix-ircd/pull/75
 
 # Professional experience
 
-- Consultant Software Engineer, LibreOffice,
-  [Collabora](http://www.collabora.com/) (2013-). A selection of majors features I worked on:
+- Consultant Productivity Senior Software Engineer, [Collabora](http://www.collabora.com/) (2013-).
+  A selection of majors LibreOffice / Collabora Online features I worked on:
 
   - Writer comments on text ranges -- and later on images (2012)
   - Writer RTF import/export and DOT export filters (2013)
