@@ -10,7 +10,7 @@ title: GitHub status
 [![issues](https://img.shields.io/github/issues/vmiklos/ged2dot.svg)](https://github.com/vmiklos/ged2dot/issues)
 [![contributors](https://img.shields.io/github/contributors/vmiklos/ged2dot.svg)](https://github.com/vmiklos/ged2dot/graphs/contributors)
 
-- [osm-gimmisn](https://osm-gimmisn.vmiklos.hu) (2019) status:
+- [osm-gimmisn](https://vmiklos.hu/osm-gimmisn) (2019) status:
 ![releases](https://img.shields.io/github/release/vmiklos/osm-gimmisn.svg)
 [![tests](https://github.com/vmiklos/osm-gimmisn/workflows/tests/badge.svg)](https://github.com/vmiklos/osm-gimmisn/actions)
 [![issues](https://img.shields.io/github/issues/vmiklos/osm-gimmisn.svg)](https://github.com/vmiklos/osm-gimmisn/issues)
