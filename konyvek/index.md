@@ -91,6 +91,7 @@ title: Könyvek
 - [Nagy Bandó András: Kalandárium 2005](http://bookline.hu/product/home!execute.action?id=243528&type=20)
 - [Giovannino Guareschi: Don Camillo és a fiatalok](http://bookline.hu/product/home!execute.action?id=104205&type=22)
 - [Jerome K. Jerome: Három ember kerékpáron-Három ember egy csónakban](http://bookline.hu/product/home!execute.action?type=20&id=85469)
+- [Rejtő Jenő: Piszkos Fred, a kapitány](https://bookline.hu/product/home.action?_v=Rejto_Jeno_Piszkos_Fred_a_kapitany&type=22&id=272667)
 
 ## Kalandregény
 
