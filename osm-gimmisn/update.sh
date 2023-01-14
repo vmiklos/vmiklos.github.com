@@ -5,6 +5,7 @@
 # found in the LICENSE file.
 #
 
+(cd~/git/osm-gimmisn; make guide)
 rsync --exclude '*.swp' -avP ~/git/osm-gimmisn/guide/book/ .
 git add .
 git commit -m "osm-gimmisn: update from git"
