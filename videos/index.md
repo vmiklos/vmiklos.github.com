@@ -75,6 +75,7 @@ title: Videos
 ## Biography, Drama, History
 
 - [Hacksaw Ridge](https://www.imdb.com/title/tt2119532/) (2016)
+- [First Man](https://www.imdb.com/title/tt1213641/) (2018)
 
 # Comedy
 
