@@ -2,10 +2,9 @@ Title: Citation handling: plumbing in Writer for e.g. Zotero
 Slug: sw-zotero-plumbing
 Category: libreoffice
 Tags: en
-Date: 2023-01-31T16:39:26+01:00
-Status: draft
+Date: 2023-02-06T08:45:24+01:00
 
-Writer now had a set of new automation commands and APIs that allow clients to build user interface
+Writer now has a set of new automation commands and APIs that allow clients to build user interface
 for citation handling that's more advanced than the default in-Writer bibliography support.
 
 This work is primarily for [Collabora Online](https://www.collaboraoffice.com/), see [the CODE
@@ -20,7 +19,7 @@ Users frequently using scientific citations are probably familiar with the limit
 built-in bibliography support, and solutions like [Zotero](https://www.zotero.org/) appeared (with a
 LibreOffice extension included) to improve that situation.
 
-This means that instead of storing all your scientific notes and date locally, you can store them on
+This means that instead of storing all your scientific notes and data locally, you can store them on
 a Zotero server, then work with that from anywhere, once you provide your credentials.
 
 The trouble comes when you want to combine this with collaborative editing, which is provided by
