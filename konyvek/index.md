@@ -25,6 +25,7 @@ title: Könyvek
 ### Kortárs
 
 - [Berg Judit: Drifter - A darknet árnyékában](https://bookline.hu/product/home.action?_v=Berg_Judit_Drifter&type=22&id=308872)
+- [Margit Auer: Mágikus állatok iskolája 1.](https://bookline.hu/product/home.action?_v=Margit_Auer_Magikus_allatok_iskolaja_1_&type=22&id=277745)
 
 # Gyerekek és szülők -> Gyereknevelés
 
