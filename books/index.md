@@ -68,3 +68,7 @@ and read in parallel
   - [Professional Android, 4th Edition](https://www.oreilly.com/library/view/professional-android-4th/9781118949528/) (2018)
 
   * [Dmitry Jemerov, Svetlana Isakova: Kotlin in Action](https://books.google.hu/books?id=qtcIkAEACAAJ) (2017)
+
+# Fantasy
+
+- [Terry Pratchett: Truckers](https://www.goodreads.com/book/show/23346759-truckers) (2022)
