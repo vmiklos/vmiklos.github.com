@@ -2,7 +2,7 @@ Title: Start of multi-page floating tables in Writer
 Slug: sw-floattable
 Category: libreoffice
 Tags: en
-Date: 2023-02-28T16:05:07+01:00
+Date: 2023-03-01T08:11:39+01:00
 
 Writer now has the early steps to handle tables that are both floating and span over multiple pages.
 
@@ -27,6 +27,9 @@ And what we want is a combination of them, like this:
 This is a quite complicated feature, since both floating objects and tables are complex, and this
 combines them to create even more complexity.
 
+However, such constructs are used in existing DOCX files and we're expected to correctly display
+them.
+
 ## Results so far
 
 The feature is enabled by default, but the DOCX import only makes use of it if you set the
@@ -34,7 +37,12 @@ The feature is enabled by default, but the DOCX import only makes use of it if y
 lots of known problems still.
 
 On the positive side, core.git `sw/qa/core/layout/data/` has 4 files now which are rendered exactly
-the way Word does. Here are some screenshots from the journey so far:
+the way Word does.
+
+A bit of terminology: once a frame is split, the first element of the chain is called master, the
+remaining frames are called follows.
+
+Here are some screenshots from the journey so far:
 
 ![Not splitting Writer text frame](https://share.vmiklos.hu/blog/sw-floattable/fly-nosplit.png)
 
