@@ -1,5 +1,173 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>What is Miklos hacking</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Mon, 06 Feb 2023 08:45:24 +0100</lastBuildDate><item><title>Citation handling: plumbing in Writer for e.g. Zotero</title><link>https://vmiklos.hu/blog/sw-zotero-plumbing.html</link><description>&lt;p&gt;Writer now has a set of new automation commands and APIs that allow clients to build user interface
+<rss version="2.0"><channel><title>What is Miklos hacking</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Wed, 01 Mar 2023 08:11:39 +0100</lastBuildDate><item><title>Start of multi-page floating tables in Writer</title><link>https://vmiklos.hu/blog/sw-floattable.html</link><description>&lt;p&gt;Writer now has the early steps to handle tables that are both floating and span over multiple pages.&lt;/p&gt;
+&lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraoffice.com/"&gt;Collabora Online&lt;/a&gt;, but is useful on
+the desktop as well.&lt;/p&gt;
+&lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;As requested in &lt;a href="https://bugs.documentfoundation.org/show_bug.cgi?id=61594"&gt;tdf#61594&lt;/a&gt; 10 year ago,
+the use-case is that you can already have floating tables:&lt;/p&gt;
+&lt;p&gt;
+&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable/fly.png"&gt;&lt;figcaption&gt;Table in a Writer text frame&lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;/p&gt;
+&lt;p&gt;And multi-page tables:&lt;/p&gt;
+&lt;p&gt;
+&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable/multi-page.png"&gt;&lt;figcaption&gt;Multi-page table&lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;/p&gt;
+&lt;p&gt;And what we want is a combination of them, like this:&lt;/p&gt;
+&lt;p&gt;
+&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable/floattable-more-wrap.png"&gt;&lt;figcaption&gt;Multi-page floating table&lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;/p&gt;
+&lt;p&gt;This is a quite complicated feature, since both floating objects and tables are complex, and this
+combines them to create even more complexity.&lt;/p&gt;
+&lt;p&gt;However, such constructs are used in existing DOCX files and we're expected to correctly display
+them.&lt;/p&gt;
+&lt;h2 id="results-so-far"&gt;Results so far&lt;a class="headerlink" href="#results-so-far" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;The feature is enabled by default, but the DOCX import only makes use of it if you set the
+&lt;code&gt;SW_FORCE_FLY_SPLIT=1&lt;/code&gt; environment variable. This allows playing with the feature even if there are
+lots of known problems still.&lt;/p&gt;
+&lt;p&gt;On the positive side, core.git &lt;code&gt;sw/qa/core/layout/data/&lt;/code&gt; has 4 files now which are rendered exactly
+the way Word does.&lt;/p&gt;
+&lt;p&gt;A bit of terminology: once a frame is split, the first element of the chain is called master, the
+remaining frames are called follows.&lt;/p&gt;
+&lt;p&gt;Here are some screenshots from the journey so far:&lt;/p&gt;
+&lt;p&gt;
+&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable/fly-nosplit.png"&gt;&lt;figcaption&gt;Not splitting Writer text frame&lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;/p&gt;
+&lt;p&gt;This is a fly frame with enough content that it doesn't fit the body frame. It should split, but fly
+frames could not be split.&lt;/p&gt;
+&lt;p&gt;
+&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable/fly-split-wip.png"&gt;&lt;figcaption&gt;Writer text frame kept inside the body frame&lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;/p&gt;
+&lt;p&gt;First try, just limit the height of the (master) fly frame, so at least it stays inside the body
+frame. But now some content is not rendered.&lt;/p&gt;
+&lt;p&gt;
+&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable/fly-split-2nd-buggy.png"&gt;&lt;figcaption&gt;Incorrect split of a text frame&lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;/p&gt;
+&lt;p&gt;Next try. Now have have 2 flys, but the second has zero height and the content of the second fly
+leaks into the body of the second page.&lt;/p&gt;
+&lt;p&gt;
+&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable/fly-split-bad-anchor-poc.png"&gt;&lt;figcaption&gt;Last version with bad anchoring&lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;/p&gt;
+&lt;p&gt;This one is better, but the position of the follow fly frame is bad, no actual wrapping happens.
+Also, we assume that there are multiple paragraphs after the table, which will cause problems for
+floating tables at the end of the document. So I reworked the anchoring code to split the anchor to
+as many pages as necessary...&lt;/p&gt;
+&lt;p&gt;
+&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable/fly-anchor-text-bad.png"&gt;&lt;figcaption&gt;Duplicated anchor text&lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;/p&gt;
+&lt;p&gt;Which sounds good, but now the text around the anchor point is duplicated.&lt;/p&gt;
+&lt;p&gt;
+&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable/fly-anchor-text-better.png"&gt;&lt;figcaption&gt;Less duplicated anchor text on the first page&lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;/p&gt;
+&lt;p&gt;Better, now the anchor text is gone in the master anchor, but still there is a misleading paragraph
+marker.&lt;/p&gt;
+&lt;p&gt;
+&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable/fly-anchor-text-good.png"&gt;&lt;figcaption&gt;Last text frame without a table&lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;/p&gt;
+&lt;p&gt;And now this looks reasonable. Fine, we have some minimal split flys, let's try it with tables
+instead of just two paragraphs:&lt;/p&gt;
+&lt;p&gt;
+&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable/multi-page-floating-table-dupetext.png"&gt;&lt;figcaption&gt;Floating table with duplicated anchor text&lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;/p&gt;
+&lt;p&gt;With a bit of work, the table's two rows can split, but again the text in the anchor is duplicated.&lt;/p&gt;
+&lt;p&gt;
+&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable/floattable-bad-hori-pos.png"&gt;&lt;figcaption&gt;Bad horizontal position&lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;/p&gt;
+&lt;p&gt;Next try, now the anchor text is correct, but the horizontal position of the table is still bad, it
+bleeds out towards the left margin area.&lt;/p&gt;
+&lt;p&gt;
+&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable/floattable-good-hori-pos.png"&gt;&lt;figcaption&gt;Fixed horizontal position&lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;/p&gt;
+&lt;p&gt;And with more work, now this looks correct.&lt;/p&gt;
+&lt;p&gt;
+&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable/floattable-good-vert-pos.png"&gt;&lt;figcaption&gt;Fixed vertical position&lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;/p&gt;
+&lt;p&gt;Let's add some vertical offset! That should be only applied on the first page, and now the follow
+fly doesn't have that unwanted offset.&lt;/p&gt;
+&lt;p&gt;Now we have 2 documents that lay out correctly on 2 pages. Let's try 3 pages:&lt;/p&gt;
+&lt;p&gt;
+&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable/floattable-3page-bad.png"&gt;&lt;figcaption&gt;Wanted 3 pages, have 2 pages&lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;/p&gt;
+&lt;p&gt;This falls apart, the 2nd and the 3rd row are both on page 2.&lt;/p&gt;
+&lt;p&gt;
+&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable/floattable-3page-good.png"&gt;&lt;figcaption&gt;Correctly rendered 3 pages&lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;/p&gt;
+&lt;p&gt;After partitioning the fly frames to 3 categories (master, non-last follows, last follow), more
+than 2 pages also work.&lt;/p&gt;
+&lt;p&gt;
+&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable/floattable-row-split-writer-bad.png"&gt;&lt;figcaption&gt;Row split is not performed at all&lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;/p&gt;
+&lt;p&gt;This is a sample where the table has a single cell, so we need to split the (only) row, not just
+split the table's rows. The first is harder. Currently we don't even try to split it.&lt;/p&gt;
+&lt;p&gt;
+&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable/floattable-row-split-writer-bad2.png"&gt;&lt;figcaption&gt;Row split is performed, but the 2nd page's object has a bad position&lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;/p&gt;
+&lt;p&gt;Next try, now we split it, but the position of the follow fly is wrong.&lt;/p&gt;
+&lt;p&gt;
+&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable/floattable-row-split-writer-good.png"&gt;&lt;figcaption&gt;Row split with correct object positioning on all pages&lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;/p&gt;
+&lt;p&gt;Finally split of a single row inside multi-page floating tables also work. That's where we are.
+Don't try to do anything too custom (like inserting a header or footer), those cases are still
+known-broken.&lt;/p&gt;
+&lt;h2 id="how-is-this-implemented"&gt;How is this implemented?&lt;a class="headerlink" href="#how-is-this-implemented" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;If you would like to know a bit more about how this works, continue reading... :-)&lt;/p&gt;
+&lt;p&gt;As usual, the high-level problem was addressed by a series of small changes:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/0bb90afaeb193181d7b98b79e962549d8a1dd85a"&gt;sw: add document model for multi-page fly frames&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/fd3d4d894d96f16a28d5b58c5bcf5a44fb83617f"&gt;sw: add UNO API for multi-page fly frames &lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/bef6c5ca4edf55e64284d9dd264ba9a76476adab"&gt;sw: inherit SwFlyAtContentFrame from SwFlowFrame&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/a6b64d02843d186485ff5c82106e6f9268a539c7"&gt;sw: add an SwFlyAtContentFrame ctor that creates a follow fly frame&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/66d235012c0c02db3b25f91a0fc981c66ed7388e"&gt;sw: add an initial SwFrame::GetNextFlyLeaf()&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/ed9d987e2ad8f6af554a5fc1f858ca48c6970446"&gt;sw: if the fly is to be split, then limit its growth in SwFlyFrame::Format()&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/b052ec2f2fbe0f3044ba824c064a280a5ee9cd7f"&gt;sw: introduce SwFlyFrame::IsFlySplitAllowed()&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/4c6c317e1743166ee772ab03413f0fa59c59f859"&gt;sw: call GetNextFlyLeaf() in SwFrame::GetLeaf()&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/8855813f8147f430348a32703b89dfb7b0793fee"&gt;sw: avoid unwanted initial content in split/follow fly frames&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/27fbab13557a75b5402c11a1697541edc124116a"&gt;sw: implement SwFrame::GetPrevFlyLeaf()&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/6275bd9db475cb984ac153d06ed1ddadfa2fadb7"&gt;sw: handle split flys in SwTextFormatter::FormatLine()&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/ddfb800e60d98340c99c8013f6df3f2060687dd0"&gt;sw: fix anchoring in SwFrame::GetNextFlyLeaf()&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/d6b9529c4f63d1dd5c57db4f4912471cce2507d9"&gt;sw floattable: fix cid#1520800&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/25a16e7543965565a4227506003adc916deea500"&gt;sw floattable: fix cid#1520804&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/00b9b33334791079c2dc26b1ed4c123450cabf7d"&gt;sw: call FormatEmpty() in SwTextFrame::Format() for split fly masters&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/995198bfff4ae8abaf2129fe99d9f8ef899a4f25"&gt;sw floattable: handle table-in-fly in SwFrame::GetNextFlyLeaf()&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/1cf13b8b11e7c122631394e308b66b46ffaae718"&gt;sw floattable: improve handling of split flys in SwTextFrame::FormatEmpty()&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/7fb8b73ad320e32af130ceddec80a9ff08407eab"&gt;DOCX filter: fix horizontal pos of floattables with compat mode &amp;gt;= 15&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/2f0b16a6a9bfff1646b14412e5918b6d483b9cdc"&gt;sw floattable: limit vertical position for the follows of split flys&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/3282508f8deeafd50f5af45ca0adf760efb114a3"&gt;sw floattable: add ImportFloatingTableAsSplitFly expert setting&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/e11e1d48abedf17db40c069d9f37b4edcbcc09c4"&gt;sw floattable: it's fine to recalc the table in SwTabFrame::MakeAll()&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/7c9acfe5baef275f07c185c6fedf8b6d62d88637"&gt;sw floattable: fix handling of multiple splits, i.e. table over 3 or more pages&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/b697ee5dc3c38806fc6f096364590e9e60256aeb"&gt;sw floattable: fix locking in SwTextFrame::Prepare()&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/e7be3b821cd42fdc9d8e51772b8202030d76497e"&gt;sw floatable: teach the DOCX filter about SwFormatFlySplit&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/3a8ecbc70320151cb7dde7d8f89dee67a7c6e3e5"&gt;DOCX export: move the bulk of the table export code to a new file&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/2da16ff9f018fae68c53a801e5a234dafc2ebcec"&gt;sw floattable: teach the ODT filter about SwFormatFlySplit&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/6068ae5df9da179e1d187e27117a9d761116f968"&gt;sw floattable: don't promise infinite growth in SwFlyFrame::Grow_()&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/7677e16217349a0a0e94edb6a90b00089432c6ce"&gt;sw floattable: allow extra space on top of child content in SwFlyFrame::Grow_()&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/f13eb476ea6620bc444d9533959fea78afe720c5"&gt;sw floattable: fix fly pos invalidation in follow anchor frames&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The design of the layout representation is documented in the &lt;a href="https://github.com/libreoffice/core/blob/d25567e7e2fb96242b9bd4aca44df6f0287c2aa3/sw/source/core/attr/formatflysplit.cxx#L27-L44"&gt;SwFormatFlySplit
+constructor&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 id="want-to-start-using-this"&gt;Want to start using this?&lt;a class="headerlink" href="#want-to-start-using-this" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;You can get a snapshot / demo of Collabora Office 23.05 and try it out yourself right now: &lt;a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/"&gt;try the
+unstable snapshot&lt;/a&gt;.  Collabora
+intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
+of this work will be available in TDF's next release too (7.6).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Wed, 01 Mar 2023 08:11:39 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2023-03-01:/blog/sw-floattable.html</guid><category>libreoffice</category><category>en</category></item><item><title>Citation handling: plumbing in Writer for e.g. Zotero</title><link>https://vmiklos.hu/blog/sw-zotero-plumbing.html</link><description>&lt;p&gt;Writer now has a set of new automation commands and APIs that allow clients to build user interface
 for citation handling that's more advanced than the default in-Writer bibliography support.&lt;/p&gt;
 &lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraoffice.com/"&gt;Collabora Online&lt;/a&gt;, see &lt;a href="https://www.collaboraoffice.com/code-22-05-release-notes/"&gt;the CODE
 release notes&lt;/a&gt; for one possible way to
@@ -894,216 +1062,4 @@ intends to continue supporting and contributing to LibreOffice, the code is merg
 of this work will be available in TDF&amp;#8217;s next release too (7.4).&lt;/p&gt;&lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Wed, 01 Jun 2022 09:09:20 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2022-06-01:/blog/sw-content-controls2.html</guid><category>libreoffice</category><category>en</category></item><item><title>Content controls in Writer</title><link>https://vmiklos.hu/blog/sw-content-controls.html</link><description>&lt;div id="preamble"&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Writer now has the start of content controls: a new way to set properties on a piece of text,
-primarily for form filling purposes. This feature improves compatibility with the DOCX format:
-inline content control types "rich text" and "checkbox" are the first two types we can now import.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;img src="https://share.vmiklos.hu/blog/sw-content-controls/feature.png" alt="https://share.vmiklos.hu/blog/sw-content-controls/feature.png" /&gt;
-&lt;/div&gt;
-&lt;div class="title"&gt;Figure 1. Word-style inline content controls in Writer.&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;First, thanks to &lt;a href="https://dapsi.ngi.eu/"&gt;NGI DAPSI&lt;/a&gt; who made this work by
-&lt;a href="https://www.collaboraoffice.com/"&gt;Collabora&lt;/a&gt; possible.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;img src="https://share.vmiklos.hu/blog/sw-content-controls/eu.png" alt="https://share.vmiklos.hu/blog/sw-content-controls/eu.png" /&gt;
-&lt;/div&gt;
-&lt;div class="title"&gt;Figure 2. This project has received funding from the European Union’s Horizon 2020 research and innovation programme under grant agreement No 871498&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_motivation"&gt;Motivation&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Word users expect to be able to import their document to Writer and experience a matching feature
-set: form filling is not an exception. Word provides several content control kinds (inline, block,
-row and cell content controls), this project focuses on inline ("run") content controls.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;In the scope of inline content controls, the plan is to support rich text, checkbox, dropdown,
-picture and date content controls. This blog post presents the already implemented rich text and
-checkbox types.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;You might wonder why content controls are useful, since Writer already has form controls and
-fieldmarks, which provide something similar. Here are some properties of content controls, which
-make them incompatible with field-based fillable forms or form controls:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-inline content controls can&amp;#8217;t span over multiple paragraphs, while this is allowed for fieldmarks
-  (bookmark-based fields)
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-content controls must be well-formed XML elements, this allows nesting (while Writer fields can&amp;#8217;t
-  be nested), but does not allow the start/end position to be a random place in the document (while
-  this is allowed for fieldmarks, which have separate XML elements for start and end)
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-content controls just have a set of properties, while fieldmarks are supposed to have a field
-  command and a result (with a separator between the two)
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-content controls can contain rich text (full set of character formatting), while Writer fields can
-  only have one character formatting (e.g. half of the field can&amp;#8217;t be bold)
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_results"&gt;Results&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;The feature consists of menu items to insert rich text or checkbox content controls, and then you
-can interact with the inserted content controls:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;img src="https://share.vmiklos.hu/blog/sw-content-controls/menu.png" alt="https://share.vmiklos.hu/blog/sw-content-controls/menu.png" /&gt;
-&lt;/div&gt;
-&lt;div class="title"&gt;Figure 3. Menu items to insert rich text and checkbox content controls.&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Rich text content controls simply show an indicator when you&amp;#8217;re inside the content control:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;img src="https://share.vmiklos.hu/blog/sw-content-controls/rich-text.png" alt="https://share.vmiklos.hu/blog/sw-content-controls/rich-text.png" /&gt;
-&lt;/div&gt;
-&lt;div class="title"&gt;Figure 4. A rich text content control.&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;This is similar to input fields, just allows rich text content, not limited to plain text.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Checkbox content controls contain a single character, but you can interact with them: clicking on
-the content control toggles the checked state of the checkbox:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="imageblock" style="text-align:center;"&gt;
-&lt;div class="content"&gt;
-&lt;img src="https://share.vmiklos.hu/blog/sw-content-controls/checkbox.png" alt="https://share.vmiklos.hu/blog/sw-content-controls/checkbox.png" /&gt;
-&lt;/div&gt;
-&lt;div class="title"&gt;Figure 5. Checkbox content controls.&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;And these content controls can be saved to ODT and DOCX.&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_how_is_this_implemented"&gt;How is this implemented?&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;If you would like to know a bit more about how this works, continue reading&amp;#8230; :-)&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;As usual, the high-level problem was addressed by a series of incremental commits:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="ulist"&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/132291"&gt;https://gerrit.libreoffice.org/c/core/+/132291&lt;/a&gt; sw content controls: add document model
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/132350"&gt;https://gerrit.libreoffice.org/c/core/+/132350&lt;/a&gt; sw content controls: add UNO API to insert this
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/132404"&gt;https://gerrit.libreoffice.org/c/core/+/132404&lt;/a&gt; sw content controls: add UNO API to insert this with custom props
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/132491"&gt;https://gerrit.libreoffice.org/c/core/+/132491&lt;/a&gt; sw content controls: include this in the UNO API text portion enum
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/132556"&gt;https://gerrit.libreoffice.org/c/core/+/132556&lt;/a&gt; sw content controls: add initial layout support
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/132618"&gt;https://gerrit.libreoffice.org/c/core/+/132618&lt;/a&gt; sw content controls: add overlay to render a border around the text portions
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/132652"&gt;https://gerrit.libreoffice.org/c/core/+/132652&lt;/a&gt; sw content controls: select the content on click when showing placeholder
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/132717"&gt;https://gerrit.libreoffice.org/c/core/+/132717&lt;/a&gt; sw content controls: add ODT export
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/132804"&gt;https://gerrit.libreoffice.org/c/core/+/132804&lt;/a&gt; sw content controls: add ODT import
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/132875"&gt;https://gerrit.libreoffice.org/c/core/+/132875&lt;/a&gt; sw content controls: add initial DOCX export
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/132944"&gt;https://gerrit.libreoffice.org/c/core/+/132944&lt;/a&gt; sw content controls, DOCX export: handle SDT end at para end
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/133195"&gt;https://gerrit.libreoffice.org/c/core/+/133195&lt;/a&gt; sw content controls: add initial DOCX import
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/133241"&gt;https://gerrit.libreoffice.org/c/core/+/133241&lt;/a&gt; sw content controls: add insert UI
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/133314"&gt;https://gerrit.libreoffice.org/c/core/+/133314&lt;/a&gt; sw content controls: add LOK API
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/133363"&gt;https://gerrit.libreoffice.org/c/core/+/133363&lt;/a&gt; sw content controls, checkbox: add document model &amp;amp; UNO API
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/133424"&gt;https://gerrit.libreoffice.org/c/core/+/133424&lt;/a&gt; sw content controls, checkbox: toggle the checkbox on click
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/133467"&gt;https://gerrit.libreoffice.org/c/core/+/133467&lt;/a&gt; sw content controls, checkbox: add ODT filter
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/133532"&gt;https://gerrit.libreoffice.org/c/core/+/133532&lt;/a&gt; sw content controls, checkbox: add DOCX export
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/133588"&gt;https://gerrit.libreoffice.org/c/core/+/133588&lt;/a&gt; sw content controls, checkbox: add DOCX import
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;
-&lt;a href="https://gerrit.libreoffice.org/c/core/+/133685"&gt;https://gerrit.libreoffice.org/c/core/+/133685&lt;/a&gt; sw content controls, checkbox: add insert UI
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;To make this even more interesting, Rashesh Padia of Collabora started exposing this in Collabora
-Online, see the PR at &lt;a href="https://github.com/CollaboraOnline/online/pull/4703"&gt;https://github.com/CollaboraOnline/online/pull/4703&lt;/a&gt;.&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="_want_to_start_using_this"&gt;Want to start using this?&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;You can get a snapshot / demo of Collabora Office 2022 and try it out yourself right now:
-&lt;a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/"&gt;try unstable snapshot&lt;/a&gt;.  Collabora
-intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF&amp;#8217;s next release too (7.4).&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Tue, 03 May 2022 08:16:54 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2022-05-03:/blog/sw-content-controls.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Wed, 01 Jun 2022 09:09:20 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2022-06-01:/blog/sw-content-controls2.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
