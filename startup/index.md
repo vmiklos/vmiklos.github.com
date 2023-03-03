@@ -25,7 +25,7 @@ misc:
 Phab bugs:
 
 - [
-  [my phab bugs](https://phabricator.collabora.com/people/tasks/236/) |
+  [my phab bugs](https://phabricator.collabora.com/maniphest/query/YyncZ248uXkR/#R) |
   [phab bugs where I'm in CC](https://phabricator.collabora.com/search/query/oflUoqPHdta0/#R) |
   [reported phab bugs](https://phabricator.collabora.com/search/query/H.Q.Ls2nxEAI/#R)
   ]
