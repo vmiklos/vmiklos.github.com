@@ -233,12 +233,44 @@ cd osm-gimmisn
 </code></pre>
 <p>See <code>osm-gimmisn cron --help</code> for details on what switches are supported for that tool.</p>
 <h2 id="custom-configuration"><a class="header" href="#custom-configuration">Custom configuration</a></h2>
-<p><code>wsgi.ini</code> contains the configuration. Common keys to be customized (showing the defaults):</p>
+<p><code>workdir/wsgi.ini</code> contains the configuration. Common keys to be customized (showing the defaults):</p>
 <pre><code class="language-toml">uri_prefix = '/osm'
 tcp_port = '8000'
 overpass_uri = 'https://z.overpass-api.de'
 cron_update_inactive = 'False'
 </code></pre>
+<h2 id="running-within-a-container"><a class="header" href="#running-within-a-container">Running within a container</a></h2>
+<p>You can try osm-gimmisn in 5 minutes following these basic steps:</p>
+<ol>
+<li>Clone the repo:</li>
+</ol>
+<pre><code>git clone https://github.com/vmiklos/osm-gimmisn
+</code></pre>
+<ol start="2">
+<li>Build the container:</li>
+</ol>
+<pre><code>cd osm-gimmisn/tools/container &amp;&amp; ./build.sh
+</code></pre>
+<ol start="3">
+<li>Run the container:</li>
+</ol>
+<pre><code>./run.sh
+</code></pre>
+<ol start="4">
+<li>Sync the reference data:</li>
+</ol>
+<pre><code>podman exec -t -i osm-gimmisn bash -c 'cd /opt/osm-gimmisn &amp;&amp; target/release/osm-gimmisn sync-ref --mode download --url https://www.example.com/osm/data/'
+</code></pre>
+<ol start="5">
+<li>Go to <a href="http://0.0.0.0:8000/osm/">http://0.0.0.0:8000/osm/</a> in your web browser.</li>
+</ol>
+<p>Note that the comparison results are not only affected by changes in the OSM database, false
+positives are also silenced by osm-gimmisn filters. To update those filters, run:</p>
+<pre><code>podman exec -t -i osm-gimmisn bash -c 'cd /opt/osm-gimmisn &amp;&amp; git pull -r &amp;&amp; make data/yamls.cache'
+</code></pre>
+<p>from time to time.</p>
+<p>Also note that you can decide what container manager you want to use. It's not a problem if you
+prefer <code>docker</code> instead of <code>podman</code>, the commands documented here are still meant to work.</p>
 
                     </main>
 
