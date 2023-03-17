@@ -152,7 +152,7 @@ project</a>.</p>
 <li>Simple database format: encrypted SQLite (via <code>gpg</code>), tracking machines, services, users and
 passwords</li>
 <li>Supports plain passwords and also Time-based one-time password (TOTP) shared secrets, calculating
-the actual TOTP code via <code>oathtool</code></li>
+the actual TOTP code</li>
 <li>Can import the original cpm's XML database</li>
 <li>A little bit better than trivial search: you can search for e.g. <code>ldap</code> or <code>mybank</code> without
 telling if you are searching for a service type or machine name</li>
@@ -191,8 +191,6 @@ passphrase for your key: you'll only have to enter it once after login (thanks t
 <a href="https://www.gnupg.org/documentation/manuals/gnupg/Invoking-GPG_002dAGENT.html">gpg-agent</a>), and
 this way an attacker can't get access to your passwords, even if they steal both your private key &amp;
 your cpm database.</p>
-<p>Optionally, you can install <a href="https://www.nongnu.org/oath-toolkit/">oathtool</a> in case you're
-interested in TOTP support.</p>
 <h2 id="build-from-source"><a class="header" href="#build-from-source">Build from source</a></h2>
 <p>You can install cpm using:</p>
 <pre><code class="language-console">go install vmiklos.hu/go/cpm@latest
@@ -254,41 +252,35 @@ id:        1, machine: example.com, service: http, user: myuser, password type: 
 shared secret and then add it to cpm using:</p>
 <pre><code class="language-console">cpm create -m mymachine -u myuser -p &quot;MY TOTP SHARED SECRET&quot; -t totp
 </code></pre>
-<p>When searching, it's a good idea to first narrow down your search results to a single hit, e.g.
-first confirm that:</p>
+<p>When searching, only the TOTP shared secret is shown by default:</p>
 <pre><code class="language-console">cpm twitter
-</code></pre>
-<p>The search term is already specified in this case:</p>
-<pre><code>id:        1, machine: twitter.com, service: http, user: myuser, password type: plain, password: 7U1FvIzubR95Itg
+id:        1, machine: twitter.com, service: http, user: myuser, password type: plain, password: 7U1FvIzubR95Itg
 id:        2, machine: twitter.com, service: http, user: myuser, password type: TOTP shared secret, password: ...
 </code></pre>
-<p>just returns your password and your TOTP shared secret, and then you can generate the current TOTP
-code using:</p>
+<p>You can generate the current TOTP code using:</p>
 <pre><code class="language-console">cpm --totp twitter
-</code></pre>
-<p>The search term is already specified in this case:</p>
-<pre><code class="language-console">id:        2, machine: twitter.com, service: http, user: myuser, password type: TOTP code, password: ...
+id:        2, machine: twitter.com, service: http, user: myuser, password type: TOTP code, password: ...
 </code></pre>
 <h2 id="update-and-deletion"><a class="header" href="#update-and-deletion">Update and deletion</a></h2>
-<p>Update is quite similar to creation. You can generate a new password using:</p>
-<pre><code class="language-console">cpm update
+<p>Update is quite similar to creation. If you want to update a password to a new, generated value, you
+can do so by using:</p>
+<pre><code class="language-console">cpm update -p -
 </code></pre>
-<p>You'll have to specify the machine and the user:</p>
-<pre><code class="language-console">Machine: example.com
-User: myuser
-Generated new password: D95Rx2PlOcPwKbL
+<p>You'll have to specify the ID:</p>
+<pre><code class="language-console:">Id: 2
 Updated 1 password
+Generated password: aDu3WwGlVP60HEn
 </code></pre>
-<p>You can also specify parameters for <code>cpm update</code>:</p>
-<pre><code class="language-console">cpm update -m mymachine -s myservice -u myuser -t plain -p mynewpassword
+<p>You can also specify more parameters for <code>cpm update</code>:</p>
+<pre><code class="language-console">cpm update -i 2 -p -
 </code></pre>
-<p>You'll see the amount of updated passwords:</p>
+<p>In which case the command is not interactive:</p>
 <pre><code class="language-console">Updated 1 password
+Generated password: Ilsd08zGov5JyBR
 </code></pre>
-<p>If you want to update some property other than the password itself, then for use <code>cpm search</code> to
-find its ID, then you can edit based on that ID:</p>
-<pre><code>cpm update -i &lt;id&gt; -m example2.com
-</code></pre>
+<p>You can use <code>cpm search</code> to find the password ID.</p>
+<p>The rest of the <code>cpm update</code> parameters allow explicitly setting the
+machine/service/user/type/password of an ID to a new, specified value.</p>
 <p>Finally if you want to delete a password, you can do so by using:</p>
 <pre><code class="language-console">cpm delete
 </code></pre>
@@ -302,7 +294,7 @@ Deleted 1 password
 <p>In which case the command is not interactive:</p>
 <pre><code class="language-console">Deleted 1 password
 </code></pre>
-<p>You can use <code>cpm search</code> to find the password ID.</p>
+<p>Again, you can use <code>cpm search</code> to find the password ID.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="advanced-topics"><a class="header" href="#advanced-topics">Advanced topics</a></h1>
 <h2 id="distributed-usage"><a class="header" href="#distributed-usage">Distributed usage</a></h2>
 <p>One big downside of mobile-based TOTP apps is that you can't login to machines if you loose your
@@ -383,8 +375,13 @@ machine: twitter.com, service: http, user: myuser, password type: TOTP shared se
 created.</li>
 <li><a href="http://sourceforge.net/projects/pwgen/">pwgen</a> installation is not necessary, <code>cpm</code> now uses
 <a href="https://github.com/sethvargo/go-password">go-password</a> instead.</li>
+<li><code>update</code> now has only a single way to select which password to update: the ID has to be specified
+using <code>-i</code> or interactively. This allows updating the password or type to a specified value while
+only specifying an ID.</li>
 <li><code>delete</code> now has only a single way to select which password to delete: the ID has to be specified
 using <code>-i</code> or interactively.</li>
+<li><a href="https://www.nongnu.org/oath-toolkit/">oathtool</a> installation is no longer necessary, <code>cpm</code> now
+uses <a href="https://github.com/pquerna/otp">otp</a> instead.</li>
 </ul>
 <h2 id="75"><a class="header" href="#75">7.5</a></h2>
 <ul>
