@@ -59,6 +59,26 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/using-git-filter-branch.html">using git filter-branch</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Wed 14 November 2007</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>git filter-branch is a new command in git-1.5.3 and today i met a situation where it was really useful. here is the scenario:</p><p>i have a 'vmexam' (like soxexam, "vmiklos' examples") repo, random small code chunks, every commit touches only a given subdir. after some time some projects need an own repo and i do versioned releases. this was the case with <a href="http://vmiklos.hu/project/pyrssi/">pyrssi</a>, too</p><p>so i wanted to have a new repo with only the pyrssi-related commits and without anything else. this is exactly the case git filter-branch's subdirectory filter is for:</p><p><code>git filter-branch --subdirectory-filter python/cgi/pyrssi HEAD</code></p><p>then in the old repo i just rm -rf'd the code and i had it in the root dir of the new repo. yay! :)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/using-xosd-for-irc-notifications-and-other-goodness.html">using xosd for irc notifications and other goodness</a></h1>
   </div>
   <div class="article_meta">
@@ -276,27 +296,6 @@ git.frugalware.org:/home/ftp/pub/other/pacman-g2/pacman-g2</p><p>are available i
     <div id="preamble">
 <div class="sectionbody">
 <p>i've uploaded an updated mplayer package to <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/bmf/">my repo</a> which includes dvdnav support to mplayer. at the moment it seems you need to</p><p><code># pacman -R codecs</code></p><p>otherwise mplayer will crash</p><p>many thanks to <a href="http://onebithq.com/root/mplayer/dvdnav">Otvos Attila</a>, the dvdnav patch author for his help (two additional build fixes was needed for our "enable everything what is possible" mplayer configuration)</p><p>hopefully we'll figure out soon how to resolve the conflict with the binary codecs, too :)</p><p>(a <a href="http://frugalware.org/~vmiklos/pics/shots/mplayer-dvdnav.png">screenshot</a>)</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/git-svn-howto.html">git-svn howto</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Fri 07 September 2007</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>i think using git-svn is really easy, once you figured out how to use it. so here is how i use it. no, i'm not a git-svn expert, just a user. and the way i use it - i think it's easy. so here is our situation:</p><p>1) foo project uses svn for managing their code
-2) you wish they would use git</p><p>how to do both:</p><p>1) get the full svn repo:</p><p><code>$ git svn clone --prefix=origin/ url</code></p><p>yes, in my situation this project does not use the trunk/tags/branches structure, see the git-svn manpage if the project you clone does (s/clone/clone -s/ should do the trick)</p><p>the --prefix parameter is needed so that you'll see the svn branches as if they were normal git remote branches</p><p>2) your local repo is a git repo, so you can do whatever you want, commit, revert, bisect, etc</p><p>3) instead of git pull, you need</p><p><code>$ git svn rebase</code></p><p>this does the same as git fetch + git rebase (since you can't merge because of svn)</p><p>4) instead of git push, you need</p><p><code>$ git svn dcommit</code></p><p>and we're ready. 3 and not more command, right? :)</p>
 </div>
 </div>
 

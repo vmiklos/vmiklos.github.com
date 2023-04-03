@@ -61,6 +61,97 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/pdfium-sign-verify.html">Better PDF signature verification in Draw</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Fri 11 December 2020</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>Draw now has much better support for detecting unsigned incremental updates between signatures at
+the end of PDF documents. We now also make sure that incremental updates introduced for adding
+signatures really just add annotations and don&#8217;t change the actual content.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_motivation">Motivation</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>There has been a recent <a href="https://pdf-insecurity.org/signature-shadow/evaluation_2020.html">evaluation</a>
+of PDF signature verification, which included Draw. While we got a checkmark on their Shadow Hide
+test, their Shadow Replace test found conditional problems and their Shadow Hide-and-Replace test
+was not happy, either.</p></div>
+<div class="paragraph"><p>So time to look at what are those corner-cases and how the situation can be improved, so people keep
+trusting that if Draw says a signature is valid, it&#8217;s indeed valid.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_results_so_far">Results so far</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>There were 4 incremental improvements in this area:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/99361">detect unsigned incremental update between
+  signatures</a>
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/101712">fix infobar vs signature dialog inconsistency</a>
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/101926">avoid saying OK when the signature is partial</a>
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/102057">pdf incremental updates that are non-commenting are
+  invalid</a>
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>These were enough so that talking to the authors of that evaluation now confirmed that these
+problems are all gone.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_how_is_this_implemented">How is this implemented?</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
+<div class="paragraph"><p>PDF signature verification works by using a custom PDF tokenizer. You can read about that code in
+the PDF tokenizer section of <a href="https://vmiklos.hu/blog/pdf-sign.html">this post</a>. The bottom line is that
+we now have both PDFium and this custom tokenizer, somewhat duplicating the functionality.</p></div>
+<div class="paragraph"><p>After talking to the PDFium developers (see the relevant
+<a href="https://groups.google.com/g/pdfium/c/Z0fC8Fg3yek/m/IE6yD066AAAJ">mailing list thread</a>), there were
+open regarding adding all the high level API to allow PDF signature verification based on PDFium,
+and not via our own tokenizer. See
+<a href="https://pdfium.googlesource.com/pdfium/+/refs/heads/master/public/fpdf_signature.h">this
+header file</a> for the set of relevant APIs added. A combinations of those allowed to
+<a href="https://gerrit.libreoffice.org/c/core/+/105766">adapt</a> the code on our side and use PDFium for
+signature verification, not the own tokanizer.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_want_to_start_using_this">Want to start using this?</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
+<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
+intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
+of this work will be available in TDF&#8217;s next release too (7.1).</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/sw-cached-fields.html">Better handling of cached field results in Writer</a></h1>
   </div>
   <div class="article_meta">
@@ -956,119 +1047,6 @@ The trick is that now PDF&#8217;s unit is no longer points all the time, but we 
 </div></div>
 <div class="paragraph"><p>Notice how we still avoid values larger than 14 400, but now the UserUnit says that 1 unit means 2
 points.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_want_to_start_using_this">Want to start using this?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
-<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
-is a major contributor to LibreOffice and all of this work will be available in TDF&#8217;s next release
-too (7.0).</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/sw-padded-numbering-2.html">Padded numbering in Writer, part 2</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Wed 08 April 2020</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>I already <a href="https://vmiklos.hu/blog/hackweek-2020.html">posted</a> about the start of padded numbering
-support in Writer, there the focus was to insert <em>0</em> characters to pad up the result to 2
-characters. Let&#8217;s see how that got extended in the recent past&#8230;</p></div>
-<div class="paragraph"><p>First, thanks Nicolas Christener who made this work by <a href="https://www.collaboraoffice.com/">Collabora</a>
-possible.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_motivation">Motivation</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Padded numbering is a style where you insert 0 characters in front of an otherwise normal (Arabic)
-numbering, making sure that the result always has at least N characters. Up to now, you had to
-number your content manually to have this effect, while Word supports this feature.</p></div>
-<div class="paragraph"><p>OOXML supports padding up to 2, 3, 4 and 5 characters. The news is now now it&#8217;s possible to not only
-pad up to 2 characters, but also to any number between 2 and 5.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_results_so_far">Results so far</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Here is how the current rendering of padded numbering looks like, with a custom prefix and suffix:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/JHqkVdHkLLkFV1Mrh5jR1FFqq8PvU3lmjuOrl6SwBnM-ygsbugL-FccMHIod9Uyj2-hAyADRX7VwozUHgzBTZTdo72FB_nuHzEH-iQngSl5ND0o6h1sZDTs1uv8H5cLNv0cHDgRv2A=w640" alt="https://lh3.googleusercontent.com/JHqkVdHkLLkFV1Mrh5jR1FFqq8PvU3lmjuOrl6SwBnM-ygsbugL-FccMHIod9Uyj2-hAyADRX7VwozUHgzBTZTdo72FB_nuHzEH-iQngSl5ND0o6h1sZDTs1uv8H5cLNv0cHDgRv2A=w640" />
-</div>
-<div class="title">Figure 1. numbering-padded4.docx, current rendering</div>
-</div>
-<div class="paragraph"><p>You can see how 0 is inserted before 999, but not before 1000 as this is the pad-to-4 case.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_how_is_this_implemented">How is this implemented?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-Padding to a custom number is not something that works in general, because both ODF and OOXML has
-  a separate number format for each padding. So Writer supports the 4 cases Word supports, but (for
-  now) not more.
-</p>
-</li>
-<li>
-<p>
-Padding to 3 or more is more complicated than pad to 2, because OOXML has different markups for
-  them.
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>Here is how the pad-to-2 markup looks like:</p></div>
-<div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight
-by Lorenzo Bettini
-http://www.lorenzobettini.it
-http://www.gnu.org/software/src-highlite -->
-<pre><tt>      <span style="font-weight: bold"><span style="color: #0000FF">&lt;w:numFmt</span></span> <span style="color: #009900">w:val</span><span style="color: #990000">=</span><span style="color: #FF0000">"decimalZero"</span><span style="font-weight: bold"><span style="color: #0000FF">/&gt;</span></span></tt></pre></div></div>
-<div class="paragraph"><p>And here is how you define pad-to-3:</p></div>
-<div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight
-by Lorenzo Bettini
-http://www.lorenzobettini.it
-http://www.gnu.org/software/src-highlite -->
-<pre><tt>      <span style="font-weight: bold"><span style="color: #0000FF">&lt;mc:AlternateContent&gt;</span></span>
-        <span style="font-weight: bold"><span style="color: #0000FF">&lt;mc:Choice</span></span> <span style="color: #009900">Requires</span><span style="color: #990000">=</span><span style="color: #FF0000">"w14"</span><span style="font-weight: bold"><span style="color: #0000FF">&gt;</span></span>
-          <span style="font-weight: bold"><span style="color: #0000FF">&lt;w:numFmt</span></span> <span style="color: #009900">w:val</span><span style="color: #990000">=</span><span style="color: #FF0000">"custom"</span> <span style="color: #009900">w:format</span><span style="color: #990000">=</span><span style="color: #FF0000">"001, 002, 003, ..."</span><span style="font-weight: bold"><span style="color: #0000FF">/&gt;</span></span>
-        <span style="font-weight: bold"><span style="color: #0000FF">&lt;/mc:Choice&gt;</span></span>
-        <span style="font-weight: bold"><span style="color: #0000FF">&lt;mc:Fallback&gt;</span></span>
-          <span style="font-weight: bold"><span style="color: #0000FF">&lt;w:numFmt</span></span> <span style="color: #009900">w:val</span><span style="color: #990000">=</span><span style="color: #FF0000">"decimal"</span><span style="font-weight: bold"><span style="color: #0000FF">/&gt;</span></span>
-        <span style="font-weight: bold"><span style="color: #0000FF">&lt;/mc:Fallback&gt;</span></span>
-      <span style="font-weight: bold"><span style="color: #0000FF">&lt;/mc:AlternateContent&gt;</span></span></tt></pre></div></div>
-<div class="ulist"><ul>
-<li>
-<p>
-This required taking the <code>w14</code> branch when we hit such a conditional, we used to read the fallback
-  branch previously.
-</p>
-</li>
-<li>
-<p>
-This required mapping the data of the <code>&lt;w:numFmt&gt;</code> XML element not to an enumeration value, but to
-  a pair of objects: the numbering format&#8217;s value and format.
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>The rest was reasonably straightforward, since the actual padding implementation just had to be generalized.</p></div>
 </div>
 </div>
 <div class="sect1">

@@ -58,6 +58,178 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sw-floattable2.html">Multi-page floating tables in Writer: part 2</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Mon 03 April 2023</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 6 minutes</p>
+  </div>
+  <div class="article_text">
+    <p>Writer now has the early steps to handle tables that are both floating and span over multiple pages.</p>
+<p>This work is primarily for <a href="https://www.collaboraoffice.com/">Collabora Online</a>, but is useful on
+the desktop as well. See the <a href="https://vmiklos.hu/blog/sw-floattable.html">first post</a> for background.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>The previous post finished with split rows are now in a reasonable shape towards our journey to fix
+<a href="https://bugs.documentfoundation.org/show_bug.cgi?id=61594">tdf#61594</a>. In this post, we'll see what
+else is needed to get perfect rendering for that single document.</p>
+<p>The plan is to iterate on that later, adding more and more incremental improvements &amp; fixes for this
+feature.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>The feature is still enabled by default, but the DOCX import only makes use of it if you set the
+<code>SW_FORCE_FLY_SPLIT=1</code> environment variable. This allows playing with the feature even if there are
+lots of known problems still.</p>
+<p>On the positive side, core.git <code>sw/qa/core/layout/data/</code> has 12 files now which are rendered exactly
+the way Word does. Also, there are additional tests that quickly build a specific multi-page
+floating table in the memory and do some operation on it, e.g. delete the last row and assert what
+happens.</p>
+<p>Here are some screenshots from the effort so far:</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-floattable2/2023-03-01-floattable-split-row-and-last-2pages-not-3pages-good.png"><figcaption>Split row and an additional one on 2 pages</figcaption>
+</figure>
+</p>
+<p>Here the problem was that a normal row went to a next page after a split row. Now the document is
+correctly of 2 pages, instead of the previous unwanted 3 pages.</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-floattable2/2023-03-02-floattable-2cols-good.png"><figcaption>Floating table with multiple columns</figcaption>
+</figure>
+</p>
+<p>Here the additional complexity was to have multiple columns on a table, since previously we always
+had 1 column and 2 or more rows. Now these are also split correctly across pages.</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-floattable2/2023-03-03-floattable-widow-orphan-bad.png"><figcaption>Incorrect widow control inside split floating tables</figcaption>
+</figure>
+</p>
+<p>This is an incorrect table row split, because widow control is broken.</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-floattable2/2023-03-07-floattable-widow-fixed.png"><figcaption>Fixed widow control inside split floating tables</figcaption>
+</figure>
+</p>
+<p>And here is how it looks when it's working. That little line on page 2 is no longer alone.</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-floattable2/2023-03-08-floattable-minimal-height-fixed.png"><figcaption>Working minimal height</figcaption>
+</figure>
+</p>
+<p>Even better when the minimal height for non-first ("follow") table frames is working, as you can
+notice that space between the last line and the table bottom border on page 2.</p>
+<p>At this point, the bug document from the motivation section worked fine, apart from the workaround
+that one has to re-save it in non-legacy mode in Word. So what's next? We need to instantly add a
+legacy mode for the brand new (not even fully enabled) multi-page floating table feature, since
+otherwise whatever we do, some DOCX files will be handled incorrectly.</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-floattable2/2023-03-09-floattable-legacy-margin-bad.png"><figcaption>Legacy mode: bad margin</figcaption>
+</figure>
+</p>
+<p>As it turns out, the core of the legacy mode is that the floating table is sometimes allowed to flow
+into the footer / bottom margin area of the page, but not always. It's quite inconsistent, so one
+can understand why this is no longer the default behavior. The above is the naive rendering, which
+is logical, but incorrect.</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-floattable2/2023-03-10-floattable-legacy-margin-good.png"><figcaption>Legacy mode: good margin</figcaption>
+</figure>
+</p>
+<p>And this is the correct result in legacy mode. After a bit of experimenting, it seems one can flow into
+the bottom margin area if the height of the table frame would fit the body frame, but some vertical
+offset causes it to be pushed down.</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-floattable2/2023-03-13-floattable-legacy-min-row-height-no-split-good.png"><figcaption>Legacy mode: minimal row height causes no row split</figcaption>
+</figure>
+</p>
+<p>The final trick with legacy mode is to make sure that all tables (first one, middle ones, last one)
+have the required minimal height, which can result in not splitting the row in case a part of that
+would be less than the minimal height. E.g. a 3 cm minimal height means that a total height of 4 cm
+(2cm + 2cm) is not enough for a split row.</p>
+<p>With this, we reached the goal to render that given bug document perfectly (when compared to Word),
+and the next step is to fix up breakage that would be caused by enabling by default.</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-floattable2/2023-03-14-floattable-redline.png"><figcaption>Tracked changes in floating tables</figcaption>
+</figure>
+</p>
+<p>The first problem was tracked changes support, which needs special care: as the importer
+converts body text to table cells, we need to keep the tracked insert/delete text ranges correctly. This is
+now working fine.</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-floattable2/2023-03-16-floattable-inner-normal.png"><figcaption>Nested tables: the outer is floating</figcaption>
+</figure>
+</p>
+<p>The next problem is around nested tables: a normal inner table inside a floating table was lost on
+DOCX file open, now fixed.</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-floattable2/2023-03-17-floattable-nested-bad.png"><figcaption>Nested tables: broken inner floating table</figcaption>
+</figure>
+</p>
+<p>The other version is when a normal table has an inner floating table. This broke badly, the outer
+table was not imported at all.</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-floattable2/2023-03-20-floattable-nested-innerfloat-better.png"><figcaption>Nested tables: better inner floating table</figcaption>
+</figure>
+</p>
+<p>And it's now better. The inner table is still not actually floating, but turns out that was never
+working for DOCX files, so it's not a regression. Fine to revisit that only later.</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-floattable2/2023-03-21-floattable-follow-pos-bad.png"><figcaption>Follow table: bad horizontal positioning</figcaption>
+</figure>
+</p>
+<p>So far all the previous tables were aligned to the left. It turns out that the horizontal
+positioning was bad in every other case for non-first tables, e.g. when you wanted to center them.</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-floattable2/2023-03-22-floattable-follow-pos-fixed.png"><figcaption>Follow table: good horizontal positioning</figcaption>
+</figure>
+</p>
+<p>And it's now fixed.</p>
+<p>As a last fix for this post, let's look at traveling with the cursor:</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-floattable2/2023-03-23-floattable-cursor-traversal-good.png"><figcaption>Good cursor traversal</figcaption>
+</figure>
+</p>
+<p>After fixing this, now you can use the up/down arrows to go from the A1 cell to A2 and back. The
+cursor traversal code wasn't aware that the master/follow table frame was connected.</p>
+<p>And that's where we stand. Hope to enable even the DOCX import bit by default soon.</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>As usual, the high-level problem was addressed by a series of small changes:</p>
+<ul>
+<li><a href="https://git.libreoffice.org/core/commit/25a01778f998618d9a4d0de9da5784e0e60e3259">sw floattable: update layout when enabling fly split via UNO</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/e32dfaf15563372ffae6e0da53998e20068ebf81">sw floattable: teach the UI about SwFormatFlySplit</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/34794e122fb4570376e712a7a356fc41620a46c7">sw floattable: don't leave body in SwFrame::GetNextFlyLeaf()</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/b9bf9bf9d1d1e0fb9eb765cd5060d611af7176df">sw floattable: fix vertical position of follow flys with rel orient = page</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/edaf6155496d452c67aa191c1d45a0328ef079e0">sw floattable: undefined behavior in SwFlyFrame::UpdateAttr_()</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/e66632b023ee1cf25a381536f53458f631964bb8">sw floattable: try to grow fly parent when trying section/table</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/aac624d1e3cd6fc023e25fedbfe48ed330a308ec">sw floattable: clean up not needed scope in SwTextFormatter::FormatLine()</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/5d5dca66e17c90e20197d0d76113254b13ff0bb7">sw floattable: grow the print area as well in SwFlyFrame::Grow_()</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/65dd1525e826006f78f86688032459dbd7ab4bb4">sw floattable: partially re-enable widow / orphan control in tables</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/78b1631e9649402e29c906c7023f55ed2cbe84f9">sw floattable: enable widow / orphan control in split rows</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/913b71dbe06c33773c4d779e00c6ec4b6a4af59f">sw floattable: ignore height of masters in lcl_CalcMinRowHeight()</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/da2707a83f13cba98b22aba1ca6568dbbc4c5fd8">sw floattable: handle Word 2010 legacy mode in SwFlyFrame</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/baebe41647e4522a2d58f7a4eb392ceab66fc2c9">sw floattable: reject small(er than min height) row master at page bottom</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/ee8e9b993595e728f827a5fe6ab1ae5fb1f6aaae">sw floattable, legacy: restrict height when using bottom margin area</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/90523e10ec053347719309403a4d8566da1dfc4a">sw floattable, legacy: also consier fly position when deciding the bottom</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/d477fa8ac1b0d3ee81427217bbb5950278ab16db">sw floattable: unconditionally map <w:tblpPr> to SwFormatFlySplit</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/9a9ee21ec237eda5df6ea70bfa3bec07b44b4d21">sw floattable: fix redline import from DOCX</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/28325983db2f7613b94bc70ef920ba13ebe6d817">sw floattable: fix CppunitTest_sw_ooxmlexport10's testTdf8255</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/75249d502e83c10ec38ef8cc8ee58c6c877c6ee9">sw floattable: fix CppunitTest_sw_ooxmlexport10's testTdf99140</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/48818dd359fbf0f37e1b318de89ab2ea7d735f58">sw floattable: fix handling of nested non-floating tables at cell start</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/8bc607225e6bc9ba343e2292f9185b6491108e44">sw floattable, CppunitTest_sw_ooxmlexport9: assert the layout in testTdf107889</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/3911b23c89da02eca92a0069bf1035155b7fddae">sw floattable, CppunitTest_sw_ooxmlexport9: assert can-split in testTdf109063</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/28b16870553f436b8dd0f74894896136057402a3">sw floattable, CppunitTest_sw_ooxmlimport2: assert the layout in testTdf114217</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/a1b935ca1bb6d48241e73e7206a367fe2b51f948">sw floattable: fix inner floating table inside normal outer table from DOCX</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/2b7b272e28bf95c4ed85cb118eacf065fb6dca3c">sw floattable: limit the unfloat button to non-DOCX files</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/015da04a8f3e1368c6b9668ca22d7e320e1ecae6">sw floattable: fix current page number when editing document with a split fly</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/12a9009a1c19ee26c65fb44fc90f3432c88ab6a5">sw floattable: fix bad position of follow fly if anchor is positioned late</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/3c3a47e911a7ee4d199fe96bd3003c7d9afa9deb">sw floattable: fix up/down cursor travel at fly boundary</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/f6fbd9d5ff5b049112e6ca7a8943c156b3e4f411">sw floattable: remove empty follow flys on follow table removal</a></li>
+</ul>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a snapshot / demo of Collabora Office 23.05 and try it out yourself right now: <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try the
+unstable snapshot</a>.  Collabora
+intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
+of this work will be available in TDF's next release too (7.6).</p>
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/sw-floattable.html">Start of multi-page floating tables in Writer</a></h1>
   </div>
   <div class="article_meta">
@@ -968,304 +1140,6 @@ you're done.</p>
 unstable snapshot</a>.  Collabora
 intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
 of this work will be available in TDF's next release too (7.4).</p>
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/sw-content-controls2.html">Content controls in Writer: dropdown, picture and date types</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Wed 01 June 2022</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 5 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Writer already had <a href="https://vmiklos.hu/blog/sw-content-controls.html">rich text and checkbox content
-controls</a>: a new way to set properties on a piece of text, primarily for form filling purposes. This
-feature now gained 3 additional types: dropdown, picture and date picker types. This improves
-compatibility with the DOCX format: there are now 5 inline content control types we can now import.</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-content-controls2/feature.png" alt="https://share.vmiklos.hu/blog/sw-content-controls2/feature.png" />
-</div>
-<div class="title">Figure 1. Word-style inline content controls in Writer.</div>
-</div>
-<div class="paragraph"><p>First, thanks to <a href="https://dapsi.ngi.eu/">NGI DAPSI</a> who made this work by
-<a href="https://www.collaboraoffice.com/">Collabora</a> possible.</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-content-controls/eu.png" alt="https://share.vmiklos.hu/blog/sw-content-controls/eu.png" />
-</div>
-<div class="title">Figure 2. This project has received funding from the European Union’s Horizon 2020 research and innovation programme under grant agreement No 871498</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_motivation">Motivation</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Word users expect to be able to import their document to Writer and experience a matching feature
-set: form filling is not an exception. Word provides several content control kinds (inline, block,
-row and cell content controls), this project focuses on inline ("run") content controls.</p></div>
-<div class="paragraph"><p>In the scope of inline content controls, the above linked blog post already described the rich text
-and checkbox types. In this post, we&#8217;ll focus on the new dropdown, picture and date content
-controls.</p></div>
-<div class="paragraph"><p>You might wonder why content controls are useful, since Writer already has form controls and
-fieldmarks, which provide something similar. Here are some benefits:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-Dropdown content controls have a list of dropdown items. Each item is a display-text and value
-  pair, allowing to differentiate between a human-readable string and a machine-readable value.
-  Fieldmarks only handled (machine-readable) values, resulting in document text different from Word.
-</p>
-</li>
-<li>
-<p>
-Picture content controls allow the author of a form to pre-format the image before the filler of
-  the form inserts the actual image. Writer already had placeholder fields for images in the past,
-  but that was just text, allowing image format only after insertion of the actual image.
-</p>
-</li>
-<li>
-<p>
-Date content controls were emulated with Writer fieldmarks in the past, which created trouble
-  during export, since Word itself doesn&#8217;t have a date form-field.
-</p>
-</li>
-</ul></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_results">Results</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>The feature consists of menu items to insert dropdown/picture/date content controls, and then you
-can interact with the inserted content controls or with their properties:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-content-controls2/menu.png" alt="https://share.vmiklos.hu/blog/sw-content-controls2/menu.png" />
-</div>
-<div class="title">Figure 3. Menu items to insert drop-down, picture and date content controls.</div>
-</div>
-<div class="paragraph"><p>Drop-down content controls show a dropdown button when you&#8217;re inside the content control:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-content-controls2/dropdown.png" alt="https://share.vmiklos.hu/blog/sw-content-controls2/dropdown.png" />
-</div>
-<div class="title">Figure 4. A drop-down content control.</div>
-</div>
-<div class="paragraph"><p>This is similar to dropdown fields, just allows display-text and value pairs, not limited to just
-values.</p></div>
-<div class="paragraph"><p>Picture content controls contain a single as-character image, but you can interact with them: clicking on
-the content control opens the file open dialog to provide a replacement for the placeholder:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-content-controls2/picture.png" alt="https://share.vmiklos.hu/blog/sw-content-controls2/picture.png" />
-</div>
-<div class="title">Figure 5. Picture controls.</div>
-</div>
-<div class="paragraph"><p>And these content controls can be saved to ODT and DOCX.</p></div>
-<div class="paragraph"><p>There is also a content control properties dialog, which allows setting if the content controls are
-in placeholder mode or not:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-content-controls2/properties.png" alt="https://share.vmiklos.hu/blog/sw-content-controls2/properties.png" />
-</div>
-<div class="title">Figure 6. Content control properties.</div>
-</div>
-<div class="paragraph"><p>It has additional widgets for dropdowns. There is UI to create, update or delete these list items:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-content-controls2/properties-inner.png" alt="https://share.vmiklos.hu/blog/sw-content-controls2/properties-inner.png" />
-</div>
-<div class="title">Figure 7. Content control properties inner UI for list items.</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_how_is_this_implemented">How is this implemented?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
-<div class="paragraph"><p>As usual, the high-level problem was addressed by a series of incremental commits:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/133742">https://gerrit.libreoffice.org/c/core/+/133742</a> sw content controls, drop-down: add doc model &amp; UNO API
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/133801">https://gerrit.libreoffice.org/c/core/+/133801</a> sw content controls: enable indicator on the RHS of the content control end
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/133874">https://gerrit.libreoffice.org/c/core/+/133874</a> sw content controls, drop-down: show list items on click
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/133915">https://gerrit.libreoffice.org/c/core/+/133915</a> sw content controls, drop-down: select list item on click
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/134034">https://gerrit.libreoffice.org/c/core/+/134034</a> sw content controls, drop-down: add ODT filter
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/134041">https://gerrit.libreoffice.org/c/core/+/134041</a> sw content controls: only try to insert placeholders if there is no selection
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/134104">https://gerrit.libreoffice.org/c/core/+/134104</a> sw content controls, drop-down: add DOCX export
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/134143">https://gerrit.libreoffice.org/c/core/+/134143</a> sw content controls, drop-down: add DOCX import
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/134151">https://gerrit.libreoffice.org/c/core/+/134151</a> sw content controls: introduce a word breaking dummy char at the end
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/134215">https://gerrit.libreoffice.org/c/core/+/134215</a> sw content controls, dropdown: add insert UI
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/134239">https://gerrit.libreoffice.org/c/core/+/134239</a> sw content controls: fixes for the ending dummy char
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/134256">https://gerrit.libreoffice.org/c/core/+/134256</a> sw content controls, dropdown: add LOK API
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/134278">https://gerrit.libreoffice.org/c/core/+/134278</a> sw content controls, dropdown: add an initial properties dialog
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/134379">https://gerrit.libreoffice.org/c/core/+/134379</a> sw content controls, dropdown: edit list items in the properties dialog
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/134405">https://gerrit.libreoffice.org/c/core/+/134405</a> sw content controls, dropdown: edit list items: add modify and delete
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/134457">https://gerrit.libreoffice.org/c/core/+/134457</a> sw content controls, picture: add doc model &amp; UNO API
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/134511">https://gerrit.libreoffice.org/c/core/+/134511</a> sw content controls, picture: replace placeholder image on click
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/134538">https://gerrit.libreoffice.org/c/core/+/134538</a> sw content controls, dropdown: disable NOP buttons in the property dialog
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/134595">https://gerrit.libreoffice.org/c/core/+/134595</a> sw content controls, picture: add ODT filter
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/134657">https://gerrit.libreoffice.org/c/core/+/134657</a> sw content controls, picture: add DOCX filter
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/134681">https://gerrit.libreoffice.org/c/core/+/134681</a> sw content controls, picture: add insert UI
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/134750">https://gerrit.libreoffice.org/c/core/+/134750</a> sw content controls, picture: add LOK API
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/134847">https://gerrit.libreoffice.org/c/core/+/134847</a> sw content controls, date: add doc model &amp; UNO API
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/134926">https://gerrit.libreoffice.org/c/core/+/134926</a> sw content controls, date: show a date picker on click
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/134977">https://gerrit.libreoffice.org/c/core/+/134977</a> sw content controls, date: add ODT filter
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/135022">https://gerrit.libreoffice.org/c/core/+/135022</a> sw content controls, picture: add LOK API testcase
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/135033">https://gerrit.libreoffice.org/c/core/+/135033</a> sw content controls, date: add DOCX export
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/135035">https://gerrit.libreoffice.org/c/core/+/135035</a> sw content controls, date: add current date handling
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/135039">https://gerrit.libreoffice.org/c/core/+/135039</a> sw content controls, date: preserve more properties
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/135109">https://gerrit.libreoffice.org/c/core/+/135109</a> sw content controls, date: add DOCX import
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/135153">https://gerrit.libreoffice.org/c/core/+/135153</a> sw content controls, date: add insert UI
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/135214">https://gerrit.libreoffice.org/c/core/+/135214</a> sw content controls, date: add LOK API
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>To make this more interesting, Rashesh Padia of Collabora continued exposing this in Collabora
-Online, see the PR at <a href="https://github.com/CollaboraOnline/online/pull/4803">https://github.com/CollaboraOnline/online/pull/4803</a>.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_want_to_start_using_this">Want to start using this?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office 22.05 and try it out yourself right now:
-<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
-intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF&#8217;s next release too (7.4).</p></div>
-</div>
-</div>
-
   </div>
 </article>
 

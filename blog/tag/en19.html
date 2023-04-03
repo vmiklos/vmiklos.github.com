@@ -59,6 +59,55 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/lo-zero-rtf-regressions.html">Zero RTF Regressions?</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Fri 28 December 2012</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh4.googleusercontent.com/-VpSgFTUoC7o/UN26BTFBz_I/AAAAAAAAB9U/rFoWruRijss/s739/0regressions.png">
+<img src="https://lh4.googleusercontent.com/-VpSgFTUoC7o/UN26BTFBz_I/AAAAAAAAB9U/rFoWruRijss/s400/0regressions.png" alt="https://lh4.googleusercontent.com/-VpSgFTUoC7o/UN26BTFBz_I/AAAAAAAAB9U/rFoWruRijss/s400/0regressions.png" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>I think the first attempt to track LibreOffice RTF Writer regressions (bugs not
+presenting in some earlier versions) was in
+<a href="http://article.gmane.org/gmane.comp.documentfoundation.libreoffice.devel/27680">this</a>
+mail. That started with 14 bugs, and of course while I fixed a few, new ones
+were added as well. I guess this is mostly due to testing work, since new fixes
+are usually covered by unit tests, so re-introducing the same problems
+nowadays is a bit more work.</p></div>
+<div class="paragraph"><p>I remember I was down to one regression a few months ago, but we still had
+performance problems, which
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=a48e2fd9049797110b3b2505c363557284987ca8">got
+solved</a> a few weeks ago, so I had the idea that I want to go down to zero
+during the holidays. It seems today I finally managed to do so&#8201;&#8212;&#8201;bugs tagged
+as <code>rtf_filter</code> and <code>regression</code> are gone, thanks everyone who helped! :-)</p></div>
+<div class="paragraph"><p>For the reference here are the queries:
+<a href="https://bugs.freedesktop.org/buglist.cgi?keywords=regression&amp;keywords_type=allwords&amp;status_whiteboard_type=allwordssubstr&amp;query_format=advanced&amp;status_whiteboard=rtf_filter&amp;bug_status=NEW&amp;bug_status=ASSIGNED&amp;bug_status=REOPENED&amp;bug_status=UNCONFIRMED&amp;bug_status=NEEDINFO">RTF
+regressions</a>,
+<a href="https://bugs.freedesktop.org/buglist.cgi?keywords=regression&amp;keywords_type=allwords&amp;status_whiteboard_type=allwordssubstr&amp;query_format=advanced&amp;status_whiteboard=rtf_filter&amp;bug_status=RESOLVED&amp;list_id=196270">fixed
+RTF regressions</a>,
+<a href="https://bugs.freedesktop.org/buglist.cgi?cmdtype=dorem&amp;remaction=run&amp;namedcmd=Writer%20regressions&amp;sharer_id=14344">Writer
+regressions</a>.</p></div>
+<div class="paragraph"><p>Now that the list is empty, feel free to tag more bugs as <code>rtf_filter</code> from the
+long Writer list when needed.</p></div>
+<div class="paragraph"><p>Update: the list is now empty again, as of 2014-11-24, for the 4.4 release. ;-)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/szszk-2012.html">Free Software Conference 2012</a></h1>
   </div>
   <div class="article_meta">
@@ -896,138 +945,6 @@ The non-XML-specific part of the existing OOXML export was abstracted to a
 author of the OOXML math import/export. :-) In case you way to play with this
 feature, test documents are
 <a href="http://cgit.freedesktop.org/libreoffice/core/tree/sw/qa/extras/rtfexport/data">available</a>.</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/grub2.html">GRUB2 vs. RAID1, cfdisk and serial console</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Sun 29 July 2012</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Since the Frugalware 1.7 release is near, and it uses GRUB2 by default, I
-created a virtual machine, that is similar to the one we use under
-<code>genesis.frugalware.org</code>, which hosts this blog as well.</p></div>
-<div class="paragraph"><p>The relevant details:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-it has two RAID1 arrays with ext3:
-</p>
-</li>
-</ul></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>$ mount|grep /md
-/dev/md126 on / type ext3 (rw,relatime,errors=continue,barrier=1,data=ordered)
-/dev/md127 on /home/ftp/pub type ext3 (rw,relatime,errors=continue,barrier=1,data=ordered)</code></pre>
-</div></div>
-<div class="ulist"><ul>
-<li>
-<p>
-the partition tables are created by cfdisk:
-</p>
-</li>
-</ul></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>   Device Boot      Start         End      Blocks   Id  System
-/dev/sda1              63  1465144064   732572001   fd  Linux raid autodetect</code></pre>
-</div></div>
-<div class="ulist"><ul>
-<li>
-<p>
-the machine has a serial console configured:
-</p>
-</li>
-</ul></div>
-<div class="listingblock">
-<div class="content">
-<pre><code># cat /proc/cmdline
-root=/dev/disk/by-uuid/7e41c95d-cd73-4043-b0ba-4797af6ddeff ro vga=normal nomodeset console=ttyS1,115200</code></pre>
-</div></div>
-<div class="paragraph"><p>Now the question is how does this config deal with the GRUB2 upgrade. First,
-don&#8217;t miss the official <a href="http://frugalware.org/docs/upgrade">upgrade howto</a>, it
-covers most cases. What I want to detail here is how did I avoid starting from
-scratch and creating a proper partition table using fdisk.</p></div>
-<div class="paragraph"><p>Here are the steps I needed:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-Backup. Yes, I did screw up for the first time, so it&#8217;s really needed.
-</p>
-</li>
-<li>
-<p>
-Resize parts of the / RAID1 (/dev/sda1 and /dev/sdb1) with gparted livecd (resizing ext3 from cmdline parted didn&#8217;t work for me).
-</p>
-</li>
-<li>
-<p>
-mdadm re-creation as described in the upgrade howto, from fw install cd, so you&#8217;ll have the required 1.0 metadata.
-</p>
-</li>
-<li>
-<p>
-Reinstall GRUB1 to sda and sdb, since the physical location of GRUB1&#8217;s stage* changed.
-</p>
-</li>
-<li>
-<p>
-Boot back to 1.6, run <code>pacman-g2 -Syu</code>, and <code>grub-install</code>&#8201;&#8212;&#8201;again, see the upgrade howto for details.
-</p>
-</li>
-<li>
-<p>
-Now given that serial console needs a custom GRUB config and kernel parameters, you need to modify GRUB2&#8217;s <code>/etc/default/grub</code>. Here is my diff:
-</p>
-<div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight
-by Lorenzo Bettini
-http://www.lorenzobettini.it
-http://www.gnu.org/software/src-highlite -->
-<pre><tt>/etc/default# diff -u grub.orig grub
-<span style="color: #FF6600">--- grub.orig   2012-07-19 01:57:20.000000000 +0200</span>
-<span style="color: #009900">+++ grub        2012-07-29 14:45:50.000000000 +0200</span>
-<span style="color: #0000FF">@@ -1,11 +1,12 @@</span>
- GRUB_DEFAULT=0
- GRUB_TIMEOUT=5
- GRUB_DISTRIBUTOR="Frugalware 1.6"
-<span style="color: #FF6600">-GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"</span>
-<span style="color: #009900">+GRUB_CMDLINE_LINUX_DEFAULT="vga=normal nomodeset plymouth.enable=0 console=ttyS0,115200"</span>
- GRUB_CMDLINE_LINUX=""
- GRUB_PRELOAD_MODULES=""
-<span style="color: #FF6600">-GRUB_TERMINAL_INPUT=console</span>
-<span style="color: #FF6600">-GRUB_TERMINAL_OUTPUT=gfxterm</span>
-<span style="color: #009900">+GRUB_TERMINAL_INPUT=serial</span>
-<span style="color: #009900">+GRUB_SERIAL_COMMAND="serial --speed=115200 --port=0x3f8"</span>
-<span style="color: #009900">+GRUB_TERMINAL_OUTPUT=serial</span>
- #GRUB_GFXPAYLOAD_LINUX=keep
- GRUB_GFXMODE=auto
- #GRUB_DISABLE_LINUX_UUID=true</tt></pre></div></div>
-<div class="paragraph"><p>(Refer to <a href="https://vmiklos.hu/blog/amtterm.html">this post</a> if you don&#8217;t know the needed port number.)</p></div>
-</li>
-<li>
-<p>
-Finally run <code>grub-mkconfig</code> to create the real config from the just modified default settings.
-</p>
-</li>
-<li>
-<p>
-Reboot, and GRUB2, the boot process and the login prompt should be accessible over the serial console again.
-</p>
-</li>
-</ul></div>
 </div>
 </div>
 
