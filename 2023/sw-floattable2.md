@@ -2,7 +2,7 @@ Title: Multi-page floating tables in Writer: part 2
 Slug: sw-floattable2
 Category: libreoffice
 Tags: en
-Date: 2023-03-31T16:19:10+02:00
+Date: 2023-04-03T08:54:19+02:00
 
 Writer now has the early steps to handle tables that are both floating and span over multiple pages.
 
@@ -11,9 +11,9 @@ the desktop as well. See the [first post]({filename}/2023/sw-floattable.md) for 
 
 ## Motivation
 
-The previous post finished with the sencence that split rows are now in a reasonable shape towards
-our journey to fix [tdf#61594](https://bugs.documentfoundation.org/show_bug.cgi?id=61594). In this
-post, we'll see what else is needed to get perfect rendering for that single document.
+The previous post finished with split rows are now in a reasonable shape towards our journey to fix
+[tdf#61594](https://bugs.documentfoundation.org/show_bug.cgi?id=61594). In this post, we'll see what
+else is needed to get perfect rendering for that single document.
 
 The plan is to iterate on that later, adding more and more incremental improvements & fixes for this
 feature.
@@ -29,7 +29,7 @@ the way Word does. Also, there are additional tests that quickly build a specifi
 floating table in the memory and do some operation on it, e.g. delete the last row and assert what
 happens.
 
-Here are some screenshots from the journey so far:
+Here are some screenshots from the effort so far:
 
 ![Split row and an additional one on 2 pages](https://share.vmiklos.hu/blog/sw-floattable2/2023-03-01-floattable-split-row-and-last-2pages-not-3pages-good.png)
 
@@ -47,17 +47,17 @@ This is an incorrect table row split, because widow control is broken.
 
 ![Fixed widow control inside split floating tables](https://share.vmiklos.hu/blog/sw-floattable2/2023-03-07-floattable-widow-fixed.png)
 
-And hit is how it looks when it's working. That little line on page 2 is no longer alone.
+And here is how it looks when it's working. That little line on page 2 is no longer alone.
 
 ![Working minimal height](https://share.vmiklos.hu/blog/sw-floattable2/2023-03-08-floattable-minimal-height-fixed.png)
 
 Even better when the minimal height for non-first ("follow") table frames is working, as you can
-notie that space between the last line and the table bottom border on page 2.
+notice that space between the last line and the table bottom border on page 2.
 
-At this point, the bugdoc from the motivation section worked fine, apart from the workaround that
-one has to re-save it in non-legacy mode in Word. So what's next? We need to instantly add a legacy
-mode for the brand new (not even fully enabled) multi-page floating table feature, since otherwise
-whatever we do, some DOCX files will be mis-rendered.
+At this point, the bug document from the motivation section worked fine, apart from the workaround
+that one has to re-save it in non-legacy mode in Word. So what's next? We need to instantly add a
+legacy mode for the brand new (not even fully enabled) multi-page floating table feature, since
+otherwise whatever we do, some DOCX files will be handled incorrectly.
 
 ![Legacy mode: bad margin](https://share.vmiklos.hu/blog/sw-floattable2/2023-03-09-floattable-legacy-margin-bad.png)
 
@@ -68,7 +68,7 @@ is logical, but incorrect.
 
 ![Legacy mode: good margin](https://share.vmiklos.hu/blog/sw-floattable2/2023-03-10-floattable-legacy-margin-good.png)
 
-And this the correct result in legacy mode. After a bit of experimenting, it seems one can flow into
+And this is the correct result in legacy mode. After a bit of experimenting, it seems one can flow into
 the bottom margin area if the height of the table frame would fit the body frame, but some vertical
 offset causes it to be pushed down.
 
@@ -79,13 +79,13 @@ have the required minimal height, which can result in not splitting the row in c
 would be less than the minimal height. E.g. a 3 cm minimal height means that a total height of 4 cm
 (2cm + 2cm) is not enough for a split row.
 
-With this, we reached the goal to render that given bugdoc perfectly (when compared to Word), and
-the next step is to fix up breakage that would be caused by enabling by default.
+With this, we reached the goal to render that given bug document perfectly (when compared to Word),
+and the next step is to fix up breakage that would be caused by enabling by default.
 
 ![Tracked changes in floating tables](https://share.vmiklos.hu/blog/sw-floattable2/2023-03-14-floattable-redline.png)
 
-The first breakage was tracked changes support, which needs special case, so as the importer
-converts body text to table cells, we keep the tracked insert/delete text ranges correctly. This is
+The first problem was tracked changes support, which needs special care: as the importer
+converts body text to table cells, we need to keep the tracked insert/delete text ranges correctly. This is
 now working fine.
 
 ![Nested tables: the outer is floating](https://share.vmiklos.hu/blog/sw-floattable2/2023-03-16-floattable-inner-normal.png)
@@ -101,7 +101,7 @@ table was not imported at all.
 ![Nested tables: better inner floating table](https://share.vmiklos.hu/blog/sw-floattable2/2023-03-20-floattable-nested-innerfloat-better.png)
 
 And it's now better. The inner table is still not actually floating, but turns out that was never
-working for DOCX files, so it's not a regression to revisit that only later.
+working for DOCX files, so it's not a regression. Fine to revisit that only later.
 
 ![Follow table: bad horizontal positioning](https://share.vmiklos.hu/blog/sw-floattable2/2023-03-21-floattable-follow-pos-bad.png)
 
