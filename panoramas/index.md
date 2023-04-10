@@ -1,8 +1,12 @@
-= My {sys2:grep -c ^image:: index.txt} panoramas
+---
+title: My panoramas
+...
 
 - Sunday, 31 March 2019: Nagybajcs
 
-image::https://lh3.googleusercontent.com/tQeJFjRpKj4Ocs_tmkl_UR80PEmy3lIjIMKqv0g3Z_D8P2kwOMLU2c2rv7d97D7zs5BUarua8cvIw5xrsPl1NZVMLCc9eVRwFiLb56okwZqyeLNB7yCJ45xgmmEXoA1kH7ettBlJMQ=w640[align="center",link="https://photos.app.goo.gl/rHEpcy3EWUh2T43N8"]
+[![nagybajcs](https://share.vmiklos.hu/panoramas/PANO_20190331_122537.t.jpg)](nagybajcs.html)
+
+<!---
 
 - Saturday, 28 May 2016: Pannonhalma
 
@@ -86,4 +90,4 @@ image::https://farm8.staticflickr.com/7437/27606522450_826cf021cc_z.jpg[align="c
 
 Made with http://hugin.sourceforge.net/[Hugin].
 
-// vim: ft=asciidoc
+--->
