@@ -4,7 +4,7 @@ title: My panoramas
 
 - Sunday, 31 March 2019: Nagybajcs
 
-[![nagybajcs](https://share.vmiklos.hu/panoramas/PANO_20190331_122537.t.jpg)](nagybajcs.html)
+[![nagybajcs](https://share.vmiklos.hu/panoramas/PANO_20190331_122537.t.jpg)](viewer.html?image=https://share.vmiklos.hu/panoramas/PANO_20190331_122537.jpg)
 
 <!---
 
