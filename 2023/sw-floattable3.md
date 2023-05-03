@@ -58,7 +58,7 @@ in Word.
 
 ![In-footer floating table](https://share.vmiklos.hu/blog/sw-floattable3/2023-04-17-floattable-in-footer.png)
 
-At this point the first crashtest results arrived (we try to import about 280 thousands documents
+At this point the first crashtest results arrived (we try to import about 280 thousand documents
 and see what crashes). The first problem was floating tables in footers. Well, we should not try to
 split such tables (even if they don't fit): adding one more page does not give us more footer space.
 
