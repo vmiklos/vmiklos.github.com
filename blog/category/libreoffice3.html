@@ -61,6 +61,86 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sw-parastyle-listlevel.html">Start of list level support in Writer paragraph styles</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Wed 29 September 2021</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>Writer now has the start of list level support in Writer paragraph styles. This improves ODT and
+DOCX compatibility, and it&#8217;ll improve the style previews and the UI in the future.</p></div>
+<div class="paragraph"><p>First, thanks <a href="https://www.docmosis.com/">Docmosis</a> who made this work by
+<a href="https://www.collaboraoffice.com/">Collabora</a> possible.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_motivation">Motivation</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>A paragraph might have an associated list in Writer and that list can have multiple levels. This is
+direct formatting. When it comes to paragraph styles, referring to a list was already possible, but
+defining a custom list level was not.</p></div>
+<div class="paragraph"><p>Loosing this information in Word documents was quite annoying, and it turned out that ODF also has
+markup for this, just LibreOffice didn&#8217;t implement it.</p></div>
+<div class="paragraph"><p>This work is currently done for the document model, scripting API and file filters: style previews &amp;
+UI still needs finishing.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_results_so_far">Results so far</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Writer can at the moment preserve list level info from ODT and DOCX files. Here is how a file written
+by Writer looks like in Word:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://share.vmiklos.hu/blog/sw-parastyle-listlevel/parastyle-listlevel.png" alt="https://share.vmiklos.hu/blog/sw-parastyle-listlevel/parastyle-listlevel.png" />
+</div>
+<div class="title">Figure 1. Writer exporting a paragraph style with list level info</div>
+</div>
+<div class="paragraph"><p>You can see that the style preview in Word takes the list level into account. Doing the same and
+applying the list level as part of applying the paragraph style on the Writer UI is still future work.</p></div>
+<div class="paragraph"><p>Thanks to Justin Luth who did the follow-up work to adapt the DOC filter accordingly, and also doing
+other related fixes.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_how_is_this_implemented">How is this implemented?</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/121141">tdf#137363 DOCX filter: don&#8217;t loose
+  &lt;w:ilvl w:val="&#8230;"&gt; of paragraph styles</a> added document model, API and DOCX import/export support
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/121515">Related: tdf#137363 ODT import: handle
+  style:list-level="&#8230;" for para styles</a> added ODT import/export support
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_want_to_start_using_this">Want to start using this?</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
+expect all of this work will be available in TDF&#8217;s
+<a href="http://dev-builds.libreoffice.org/daily/master/">next release</a> (7.3).</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/sd-groupshape-unshare.html">Unshare shape properties for the same type before insertion in Impress</a></h1>
   </div>
   <div class="article_meta">
@@ -999,131 +1079,6 @@ a free t-shirt before the event, I appreciated the "bring your own beer" joke :-
 carefully selected a talk to attend and then failed to hear it.</p></div>
 <div class="paragraph"><p>I expect quite some other slides from other Collaborans and the wider community will be available on
 <a href="http://planet.documentfoundation.org/">Planet</a>, don&#8217;t miss them.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_want_to_start_using_this">Want to start using this?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
-<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
-intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF&#8217;s next release too (7.2).</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/sd-table-shadow.html">Shadow for tables from PPTX in Impress</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Fri 08 January 2021</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Impress now has much better support for the shadow of table shapes: not only shape styles can result
-in table shadows, but it&#8217;s also possible to add this as direct formatting. Also the shadow result is
-PowerPoint-compatible in the direct formatting case.</p></div>
-<div class="paragraph"><p>First, thanks to our partner <a href="https://www.suse.com/">SUSE</a> for working with
-<a href="https://www.collaboraoffice.com/">Collabora</a> to make this possible.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_motivation">Motivation</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>We got a PPTX document, which has a table shape with blurry shadow. The shadow was completely
-missing in Impress. It was discovered that in case you configure the default shape style to have
-shadow, then there is some initial table shadow support in Impress, but that was not used in the
-PPTX case.</p></div>
-<div class="paragraph"><p>The request was to improve the shadow rendering to be PowerPoint-compatible and in general support
-table shadows as direct formatting as a new feature.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_results_so_far">Results so far</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>The table shadow now looks like this:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sd-table-shadow/new.png" alt="https://share.vmiklos.hu/blog/sd-table-shadow/new.png" />
-</div>
-<div class="title">Figure 1. New render result in Impress</div>
-</div>
-<div class="paragraph"><p>Matching the reference rendering:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sd-table-shadow/ref.png" alt="https://share.vmiklos.hu/blog/sd-table-shadow/ref.png" />
-</div>
-<div class="title">Figure 2. Reference render result</div>
-</div>
-<div class="paragraph"><p>While shadow was just missing previously:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sd-table-shadow/old.png" alt="https://share.vmiklos.hu/blog/sd-table-shadow/old.png" />
-</div>
-<div class="title">Figure 3. Old render result in Impress</div>
-</div>
-<div class="paragraph"><p>You can see that not only the shadow is there, but also the cell backgrounds and the blurry shadow
-is rendered properly.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_how_is_this_implemented">How is this implemented?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
-<div class="paragraph"><p>As usual, the high-level problem was addressed by a series of small fixes:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/106902">tdf#129961 svx: add doc model xml dump for
-  shadow-related pool items</a>
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/106987">tdf#129961 svx: add UNO API for table shadow as
-  direct format</a>
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/107073">tdf#129961 svx: add rendering for table shadow as
-  direct format</a>
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/107529">tdf#129961 oox: add PPTX import for table shadow as
-  direct format</a>
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/107682">tdf#129961 cui: start UI for table shadow as direct
-  format</a>
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/107781">tdf#129961 svx: finish UI for table shadow as
-  direct format</a>
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/107836">tdf#129961 oox: add PPTX export for table shadow as
-  direct format</a>
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>With these, it&#8217;s now possible to add, edit, render and delete these table shadows, while preserving
-them during ODP and PPTX import/export.</p></div>
 </div>
 </div>
 <div class="sect1">

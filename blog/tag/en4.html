@@ -59,6 +59,131 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sd-table-shadow.html">Shadow for tables from PPTX in Impress</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Fri 08 January 2021</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>Impress now has much better support for the shadow of table shapes: not only shape styles can result
+in table shadows, but it&#8217;s also possible to add this as direct formatting. Also the shadow result is
+PowerPoint-compatible in the direct formatting case.</p></div>
+<div class="paragraph"><p>First, thanks to our partner <a href="https://www.suse.com/">SUSE</a> for working with
+<a href="https://www.collaboraoffice.com/">Collabora</a> to make this possible.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_motivation">Motivation</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>We got a PPTX document, which has a table shape with blurry shadow. The shadow was completely
+missing in Impress. It was discovered that in case you configure the default shape style to have
+shadow, then there is some initial table shadow support in Impress, but that was not used in the
+PPTX case.</p></div>
+<div class="paragraph"><p>The request was to improve the shadow rendering to be PowerPoint-compatible and in general support
+table shadows as direct formatting as a new feature.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_results_so_far">Results so far</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>The table shadow now looks like this:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://share.vmiklos.hu/blog/sd-table-shadow/new.png" alt="https://share.vmiklos.hu/blog/sd-table-shadow/new.png" />
+</div>
+<div class="title">Figure 1. New render result in Impress</div>
+</div>
+<div class="paragraph"><p>Matching the reference rendering:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://share.vmiklos.hu/blog/sd-table-shadow/ref.png" alt="https://share.vmiklos.hu/blog/sd-table-shadow/ref.png" />
+</div>
+<div class="title">Figure 2. Reference render result</div>
+</div>
+<div class="paragraph"><p>While shadow was just missing previously:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://share.vmiklos.hu/blog/sd-table-shadow/old.png" alt="https://share.vmiklos.hu/blog/sd-table-shadow/old.png" />
+</div>
+<div class="title">Figure 3. Old render result in Impress</div>
+</div>
+<div class="paragraph"><p>You can see that not only the shadow is there, but also the cell backgrounds and the blurry shadow
+is rendered properly.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_how_is_this_implemented">How is this implemented?</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
+<div class="paragraph"><p>As usual, the high-level problem was addressed by a series of small fixes:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/106902">tdf#129961 svx: add doc model xml dump for
+  shadow-related pool items</a>
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/106987">tdf#129961 svx: add UNO API for table shadow as
+  direct format</a>
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/107073">tdf#129961 svx: add rendering for table shadow as
+  direct format</a>
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/107529">tdf#129961 oox: add PPTX import for table shadow as
+  direct format</a>
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/107682">tdf#129961 cui: start UI for table shadow as direct
+  format</a>
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/107781">tdf#129961 svx: finish UI for table shadow as
+  direct format</a>
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/107836">tdf#129961 oox: add PPTX export for table shadow as
+  direct format</a>
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>With these, it&#8217;s now possible to add, edit, render and delete these table shadows, while preserving
+them during ODP and PPTX import/export.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_want_to_start_using_this">Want to start using this?</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
+<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
+intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
+of this work will be available in TDF&#8217;s next release too (7.2).</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/pdfium-sign-verify.html">Better PDF signature verification in Draw</a></h1>
   </div>
   <div class="article_meta">
@@ -936,124 +1061,6 @@ trigger the actual signing:
 <div class="title">Figure 2. After drawing a signature rectangle, before finishing the signing.</div>
 </div>
 <div class="paragraph"><p>If you use a HW-based certificate, this second step will ask for your certificate PIN.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_want_to_start_using_this">Want to start using this?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
-<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
-is a major contributor to LibreOffice and all of this work will be available in TDF&#8217;s next release
-too (7.1).</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/sw-page-content-bottom-anchor.html">Page-content-bottom vertical relation in Writer</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Wed 10 June 2020</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 3 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Writer now has support for anchoring shapes relative to the bottom of the page content frame.</p></div>
-<div class="paragraph"><p>First, thanks to our partner <a href="https://www.suse.com/">SUSE</a> for working with
-<a href="https://www.collaboraoffice.com/">Collabora</a> to make this possible.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_motivation">Motivation</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Users sometimes want to specify the vertical position of their shapes in text documents in a way
-that is relative from the bottom of the page content area. Also, this improves consistency,
-specifying a position that is relative from the top of the page content area is already possible.</p></div>
-<div class="paragraph"><p>Alternatively, it is possible to have the same calculated position when positioning from the top of
-the page content area. The downside of this approach is that the position changes when the page
-height changes. So if the user intention is to position a shape 2 cm above the bottom of the page
-content area and the page height changes, the shape has to be manually re-positioned. This manual
-re-positioning is not needed with the new page-content-bottom vertical relation.</p></div>
-<div class="paragraph"><p>For example, if a shape has a height of 10 cm and a 2 cm spacing is wanted between the bottom of the
-shape and the bottom of the page content area, the position can be set to -12 cm, and then the 2 cm
-spacing will be maintained, even after the page height changes.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_results_so_far">Results so far</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Here is how this works in practice:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://youtu.be/X49IbS97axs">
-<img src="https://lh3.googleusercontent.com/3r0eHqOn48OkUPHLGlhWTjPwwkWYWouF3LtMtVTmRITJ9oGHuRW1-COvswp71G7-ySMvZ-fsP8-0R5ELVNmiaN2FCxtFLfnun4OFYmFvmZk-W1UBw4EhJ4P8RAgPHhQtdcmjiCe9Eg=w640" alt="https://lh3.googleusercontent.com/3r0eHqOn48OkUPHLGlhWTjPwwkWYWouF3LtMtVTmRITJ9oGHuRW1-COvswp71G7-ySMvZ-fsP8-0R5ELVNmiaN2FCxtFLfnun4OFYmFvmZk-W1UBw4EhJ4P8RAgPHhQtdcmjiCe9Eg=w640" />
-</a>
-</div>
-<div class="title">Figure 1. Demo of a stable vertical position (relative to the bottom of the page content frame), during a page height change</div>
-</div>
-<div class="paragraph"><p>You can see how the distance of the shape from the bottom is 2 cm, even if the page height changes.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_how_is_this_implemented">How is this implemented?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-the UNO API now supports a new <code>PAGE_PRINT_AREA_BOTTOM</code> relative orientation
-</p>
-</li>
-<li>
-<p>
-the have the expected layout, <code>SwToContentAnchoredObjectPosition::CalcPosition()</code> now considers
-  this from-bottom anchoring when handling the vertical relative orientation
-</p>
-</li>
-<li>
-<p>
-the DOCX format already had a markup for this:
-</p>
-</li>
-</ul></div>
-<div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight
-by Lorenzo Bettini
-http://www.lorenzobettini.it
-http://www.gnu.org/software/src-highlite -->
-<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">&lt;wp:positionV</span></span> <span style="color: #009900">relativeFrom</span><span style="color: #990000">=</span><span style="color: #FF0000">"bottomMargin"</span><span style="font-weight: bold"><span style="color: #0000FF">&gt;</span></span>
-  <span style="font-weight: bold"><span style="color: #0000FF">&lt;wp:posOffset&gt;</span></span>...<span style="font-weight: bold"><span style="color: #0000FF">&lt;/wp:posOffset&gt;</span></span>
-<span style="font-weight: bold"><span style="color: #0000FF">&lt;/wp:positionV&gt;</span></span></tt></pre></div></div>
-<div class="paragraph"><p>now the import/export code maps this markup to the new feature.</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-The UI allows setting a new "Page text area bottom" frame position. It turns out that the UI is
-  quite nice here, it tries to prevent you from setting positions which would be outside the limits
-  of the current page. This logic in <code>SwFEShell::CalcBoundRect()</code> now handles the new relative
-  orientation.
-</p>
-</li>
-<li>
-<p>
-The ODF filter now has a markup to represent the new vertical relation:
-</p>
-</li>
-</ul></div>
-<div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight
-by Lorenzo Bettini
-http://www.lorenzobettini.it
-http://www.gnu.org/software/src-highlite -->
-<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">&lt;style:graphic-properties</span></span> ... <span style="color: #009900">loext:vertical-rel</span><span style="color: #990000">=</span><span style="color: #FF0000">"page-content-bottom"</span> ...<span style="font-weight: bold"><span style="color: #0000FF">/&gt;</span></span></tt></pre></div></div>
-<div class="paragraph"><p>There is a <a href="https://issues.oasis-open.org/browse/OFFICE-4073">proposal</a> to promote this from our
-extension namespace to normal ODF (thanks to Regina for the help there!).</p></div>
 </div>
 </div>
 <div class="sect1">

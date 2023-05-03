@@ -59,6 +59,69 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/osl-trace.html">OSL_TRACE()</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Wed 24 November 2010</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>Background: <code>OSL_TRACE()</code> is an internal LibreOffice macro that is like
+<code>printf()</code>, but it&#8217;s only enabled in debug mode. Without it, you would
+add a debug printf during development:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #000000">printf</span></span><span style="color: #990000">(</span><span style="color: #FF0000">"debug, foo</span><span style="color: #CC33CC">\n</span><span style="color: #FF0000">"</span><span style="color: #990000">);</span></tt></pre></div></div>
+<div class="paragraph"><p>then you would comment it out when the code started working,:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900">//printf("debug, foo\n");</span></span></tt></pre></div></div>
+<div class="paragraph"><p>then remove the comment when it breaks again, etc.</p></div>
+<div class="paragraph"><p>In the past, if you built a LibreOffice module, then you executed:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>build</code></pre>
+</div></div>
+<div class="paragraph"><p>inside a module, and in case you wanted debug symbols and such messages you built using:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>build debug=t</code></pre>
+</div></div>
+<div class="paragraph"><p>which increased the debug level to 2 (from 0), where 1 is required for
+debug symbols, 2 for debug messages. (See the OOo
+<a href="http://wiki.services.openoffice.org/wiki/Debug_Levels">wiki page</a>.)</p></div>
+<div class="paragraph"><p>The recent update, why I&#8217;m writing this post: Now this has been
+<a href="http://cgit.freedesktop.org/libreoffice/bootstrap/commit/?id=47d09469e96485f93623a6fbeb42f709c2ce49bb">changed</a>,
+and <code>debug=t</code> gives you debug symbols only, but no extra debug output.
+While this is
+<a href="http://lists.freedesktop.org/archives/libreoffice/2010-November/002894.html">great
+in most cases</a>, sometimes you still want the old behaviour to get the
+debug messages. In that case the solution (as pointed out in the mailing
+list post) is to use:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>build debug=t dbglevel=2</code></pre>
+</div></div>
+<div class="paragraph"><p>(Hopefully this post will be handy for who missed that post, like I did
+the first time.)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/rejourn-vanilla.html">Rejourn: Using an unpatched version</a></h1>
   </div>
   <div class="article_meta">
@@ -390,29 +453,6 @@ I have to manually truncate the contents of each table. Worths checking
 a bit later again, though - since I already used in-memory SQLite for my
 unit tests when I had a project in PHP with Doctrine, and it was working
 just fine.</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/frugalware-song.html">A song mentioning Frugalware!</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Mon 01 November 2010</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p><code>chee</code> on <code>#frugalware</code> linked a <a href="http://ompldr.org/vNXhlMw">song</a> and its
-<a href="http://ompldr.org/vNXhlZQ">lyrics</a>, mentioning Frugalware. Please don&#8217;t
-compare it to an OpenBSD professional release song, then you&#8217;ll like it!
-:)</p></div>
 </div>
 </div>
 
