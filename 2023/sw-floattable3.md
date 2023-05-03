@@ -2,7 +2,7 @@ Title: Multi-page floating tables in Writer: part 3
 Slug: sw-floattable3
 Category: libreoffice
 Tags: en
-Date: 2023-05-02T16:15:24+02:00
+Date: 2023-05-03T08:40:28+02:00
 
 Writer now has continued steps to handle tables that are both floating and span over multiple pages.
 
@@ -19,7 +19,7 @@ the same page. In this post, we'll see what else started to work during the past
 
 The feature is enabled by default and now the DOCX/DOC/RTF import makes use of it if. This allows
 stress-testing the layout code with complex user documents, hopefully with the found breakage fixed
-before it would be released on a stable version.
+before it would be released in a stable version.
 
 On the positive side, core.git repository has has 19 files now which are focusing on correct
 handling of floating tables.  Also, there are additional tests that quickly build a specific
@@ -69,8 +69,8 @@ RTF document before.
 
 ![Good RTF import](https://share.vmiklos.hu/blog/sw-floattable3/2023-04-19-floattable-rtf-good.png)
 
-And here is how we import it currently now. The RTF control words are quite close to the binary DOC
-markup, just the syntax is different.
+And here is how we import it currently. The RTF control words are quite close to the binary DOC
+markup semantically, just the syntax is different.
 
 ![Bad RTF export](https://share.vmiklos.hu/blog/sw-floattable3/2023-04-20-floattable-rtf-export-bad.png)
 
