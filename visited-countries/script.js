@@ -17,7 +17,8 @@
     });
 
     countries.map(function(country) {
-      d3.select('#' + country).style('fill', '#c0442c');
+      // Set fill color & tooltip.
+      d3.select('#' + country).style('fill', '#c0442c').append("title").text(country);
       d3.select('#' + country + ' path').style('fill', '#c0442c');
     });
 
