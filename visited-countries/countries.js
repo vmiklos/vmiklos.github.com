@@ -20,6 +20,7 @@ countries = [
 	'slovenia', // Slovenia: Koper 2011
 	'slovakia', // Slovakia: Krompachy, etc.
 	'turkey', // Turkey: Marmaris 2012
+	'portugal', // Portugal: Albufeira 2023
 ];
 
 countriesSigla =
