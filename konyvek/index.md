@@ -99,6 +99,7 @@ title: Könyvek
 - [Giovannino Guareschi: Don Camillo és a fiatalok](http://bookline.hu/product/home!execute.action?id=104205&type=22)
 - [Jerome K. Jerome: Három ember kerékpáron-Három ember egy csónakban](http://bookline.hu/product/home!execute.action?type=20&id=85469)
 - [Rejtő Jenő: Piszkos Fred, a kapitány](https://bookline.hu/product/home.action?_v=Rejto_Jeno_Piszkos_Fred_a_kapitany&type=22&id=272667)
+- [Gerald Durrell: Családom és egyéb állatfajták](https://bookline.hu/product/home.action?_v=Gerald_Durrell_Csaladom_es_egyeb_allatf&type=22&id=100478)
 
 ## Kalandregény
 
