@@ -2,7 +2,11 @@
 title: My panoramas
 ...
 
-- Sunday, 31 March 2019: Nagybajcs
+- 2023-05-10: Albufeira
+
+[![albufeira](https://share.vmiklos.hu/panoramas/PXL_20230510_165823905.PHOTOSPHERE.t.jpg)](viewer.html?image=https://share.vmiklos.hu/panoramas/PXL_20230510_165823905.PHOTOSPHERE.jpg)
+
+- 2019-03-31: Nagybajcs
 
 [![nagybajcs](https://share.vmiklos.hu/panoramas/PANO_20190331_122537.t.jpg)](viewer.html?image=https://share.vmiklos.hu/panoramas/PANO_20190331_122537.jpg)
 
