@@ -10,9 +10,15 @@ title: Könyvek
 
 - [Beck Andrea: A Titoktündér - A Tündérek Kalendáriuma](https://bookline.hu/product/home.action?_v=Beck_Andrea_A_Titoktunder_A_Tunderek_&type=22&id=280279)
 
-### 6-10 éveseknek -> Kortárs mesék
+### 6-10 éveseknek
+
+#### Kortárs mesék
 
 - [J. K. Rowling: A karácsonyi malac](https://bookline.hu/product/home.action?_v=J_K_Rowling_A_karacsonyi_malac&type=22&id=327880)
+
+#### Klasszikus mesék
+
+- [Frank L. Baum: Oz, a nagy varázsló](https://bookline.hu/product/home.action?_v=Frank_L_Baum_Oz_a_nagy_varazslo&type=22&id=98951)
 
 ## Ifjúsági irodalom -> 10-14 éveseknek
 
