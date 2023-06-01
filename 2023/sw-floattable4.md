@@ -2,7 +2,7 @@ Title: Multi-page floating tables in Writer: part 4
 Slug: sw-floattable4
 Category: libreoffice
 Tags: en
-Date: 2023-05-31T14:16:51+02:00
+Date: 2023-06-01T08:44:46+02:00
 
 Writer now has continued steps to handle tables that are both floating and span over multiple pages.
 
@@ -11,8 +11,8 @@ the desktop as well. See the [third post]({filename}/2023/sw-floattable3.md) for
 
 ## Motivation
 
-The previous post finished with crashtesting: the interesting subset of that testing tool is to take
-hunderds of thousands of documents and in the Writer case import them into a document model and
+The previous post finished with crash testing: the interesting subset of that testing tool is to take
+hundreds of thousands of documents and in the Writer case import them into a document model and
 layout them. If any of this crashes, mark that for future investigation. In this post, we'll see
 what else started to work during the past month.
 
@@ -23,15 +23,15 @@ stress-testing the layout code with complex user documents, hopefully with the f
 before it would be released in a stable version.
 
 On the positive side, core.git repository has has 37 files now which are focusing on correct
-handling of floating tables (floattables).  Also, there are additional tests that quickly build a
-specific multi-page floating table in the memory and do some operation on it, e.g. delete the last
-row and assert what happens.
+handling of floating tables (abbreviated as "floattables").  Also, there are additional tests that
+quickly build a specific multi-page floating table in the memory and do some operation on it, e.g.
+delete the last row and assert what happens.
 
 Here are some screenshots from the effort so far:
 
 ![Floating table inside a multi-column section](https://share.vmiklos.hu/blog/sw-floattable4/2023-05-03-floattable-multicol-good-nosplit.png)
 
-The first case is about multi-column sections: this this case Word doesn't try to split them between
+The first case is about multi-column sections: in this case Word doesn't try to split them between
 pages. What you can see on the screenshot is that Writer lays out content on the previous page so
 that remaining space is left, but we don't try to split the table between the first and the second
 page, even if there would be space on the first page and even if this means the table overlaps with
@@ -47,7 +47,7 @@ current page, which is now fixed.
 ![Chaining enabled, so no split frames](https://share.vmiklos.hu/blog/sw-floattable4/2023-05-15-floattable-ui-disable-chain-good.png)
 
 Writer already had a feature to split content in a frame into multiple frames, but that one required
-creating those frames in the model explicitly, such chaning is a feature that is useful in other
+creating those frames in the model explicitly, such chaining is a feature that is useful in other
 use-cases and is parallel to multi-page floating tables. The UI now ensures that the user can split
 frames only in case chaining is not used, to avoid confusion.
 
