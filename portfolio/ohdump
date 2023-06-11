@@ -65,7 +65,6 @@ class ContentHandler(xml.sax.handler.ContentHandler):
                 self.outSock.write("-")
                 if self.smallLogoURL:
                     self.outSock.write(' ![%s](%s) ' % (self.projectName, self.smallLogoURL))
-                commits = "commits"
                 self.outSock.write(" [%s](%s): [%s commits](%s)\n" % (self.projectName, self.projectHTMLURL, self.commits, self.HTMLURL))
             self.smallLogoURL = None
             self.projectHTMLURL = None
@@ -118,7 +117,14 @@ def main(argv):
         print("Page %s..." % page)
         params = urllib.parse.urlencode({'api_key': '3ede1a5eff4f15ff75306a849c68676c1e2a3503b86d6c3c77b29f0d61de9811', 'v': 1, 'page': str(page)})
         url = "https://www.openhub.net/accounts/%s/positions.xml?%s" % (os.environ['USER'], params)
-        sock = urllib.request.urlopen(url)
+        req = urllib.request.Request(
+                url,
+                data=None,
+                headers={
+                    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101 Firefox/68.0'
+                    }
+                )
+        sock = urllib.request.urlopen(req)
 
         buf = sock.read()
         sock.close()
