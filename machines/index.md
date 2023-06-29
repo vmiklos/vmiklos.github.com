@@ -52,14 +52,14 @@ Battery 0: Discharging, 99%, 05:36:15 remaining
 Battery 1: Unknown, 5%
 ```
 
-## Google Pixel 2
+## Google Pixel 6a
 
-- In use: 2018-
-- CPU: Octa-core (4 × 2.35 GHz, 4 × 1.9 GHz) Kryo
-- Memory: 4 GB LPDDR4X RAM
-- Storage: 64 GB
-- Display: 5" FHD AMOLED (1920 × 1080)
-- [more](https://store.google.com/product/pixel_2)
+- In use: 2023-
+- CPU: Octa-core (2x2.80 GHz & 2x2.25 GHz & 4x1.80 GHz)
+- Memory: 6GB RAM
+- Storage: 128GB
+- Display: 6.1"
+- [more](https://store.google.com/sg/product/pixel_6a)
 
 Favorite feature: reliable security.
 
@@ -139,6 +139,17 @@ minute-based billing!)
 - Storage: 2 x 512GB (RAID)
 - Display: None
 - [more](https://www.solid-run.com/product/cubox-i2ex-2/)
+
+## Google Pixel 2
+
+- In use: 2018-2023
+- CPU: Octa-core (4 × 2.35 GHz, 4 × 1.9 GHz) Kryo
+- Memory: 4 GB LPDDR4X RAM
+- Storage: 64 GB
+- Display: 5" FHD AMOLED (1920 × 1080)
+- [more](https://store.google.com/product/pixel_2)
+
+Favorite feature: reliable security.
 
 # Other active machines I admin
 
