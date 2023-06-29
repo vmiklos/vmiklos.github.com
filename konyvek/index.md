@@ -60,9 +60,15 @@ title: Könyvek
 
 ### Próza
 
-#### Magyar irodalom -> Antológiák
+#### Magyar irodalom
+
+##### Antológiák
 
 - [Szőnyi Szilárd: Isten hozott! - Vallomások apaságról, anyaságról](http://bookline.hu/product/home!execute.action?id=274478&type=22)
+
+##### Regények -> Klasszikus
+
+- [Jókai Mór: A gazdag szegények](https://bookline.hu/product/home.action?_v=Jokai_Mor_A_gazdag_szegenyek&type=22&id=274117)
 
 #### Világirodalom -> Regények -> Történelmi
 
