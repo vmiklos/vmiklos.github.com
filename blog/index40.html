@@ -58,6 +58,40 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/globalsat-bt-338x-gps.html">Globalsat BT-338X GPS</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Fri 27 August 2010</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>Yesterday I bought a cheap GPS data logger / receiver, and given that the attached install CD did not support Linux, I'm collecting some hopefully useful links here.</p><p><ul>
+  <li>The <a href="http://wiki.openstreetmap.org/wiki/GPS_Reviews#Globalsat_BT-338">OpenStreetMap</a> wiki had an incorrect statement about the device has no memory - it has.</li>
+  <li><a href="http://www.globalsat.com.tw/products-page.php?menu=2&amp;gs_en_product_id=6&amp;gs_en_product_cnt_id=56">Vendor homepage</a>. (<a href="http://speedshop.hu/main.php?page=termek&amp;iid=44261">Hungarian one</a>.)</li>
+  <li>A <a href="http://blog.pjvenda.net/2007/09/my-new-toy-globalsat-dg-100-gps-data.html">blog post</a> about <a href="http://frugalware.org/packages/23237">gpsbabel</a> usage.</li>
+  <li>More gpsbabel docs: the <a href="http://www.gpsbabel.org/htmldoc-development/fmt_dg-100.html">dg-100</a> and the <a href="http://www.gpsbabel.org/htmldoc-development/fmt_skytraq.html">skytraq</a> formats.</li>
+</ul></p><p>Putting everything together, to get the log from the device using bluetooth I first had to create an rfcomm interface, as gpsbabel does not support bluetooth natively:</p><p><pre>
+# rfcomm bind 0 00:0D:B5:38:BA:C6
+</pre></p><p>Then to download and erase the log from the device:</p><p><pre>
+$ gpsbabel -i dg-100,erase=1 -f /dev/rfcomm0 -o gpx \
+        -F $(date +%Y-%m-%d).gpx
+</pre></p><p>The gpx format is fine in case you want to later reuse log with digikam's gpssync plugin (available from <a href="http://frugalware.org/packages/9654">kipi-plugins</a>).</p><p>Now in case you want to convert it to kml to show on Google Maps:</p><p><pre>
+$ gpsbabel -i gpx -f $(date +%Y-%m-%d).gpx -o kml -F $(date +%Y-%m-%d).kml
+</pre></p><p>Finally release the rfcomm interface in case you don't need it anymore:</p><p><pre>
+# rfcomm release 0
+</pre></p><p>Update: there is also a <a href="http://code.google.com/p/globdog-dg100/">gui</a> which can be used to enable logging of altitude info, etc - just <a href="http://frugalware.org/~vmiklos/patches/globdog-dg100-enable-rtcomm.patch">trivial patching</a> is needed and it works with BT-338X as well.</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/upgrading-to-haven.html">Upgrading to Haven</a></h1>
   </div>
   <div class="article_meta">
@@ -396,30 +430,6 @@ Köszönöm&#8230;
     <div id="preamble">
 <div class="sectionbody">
 <p>In case you got bored and you want to try something blending edge, have a look at my <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/ooo33/">ooo33</a> repo.</p><p>It contains an early snapshot of OpenOffice.org 3.3 (+ ooo-build patches, of course), including <a href="http://socghop.appspot.com/gsoc/student_project/show/google/gsoc2010/go_oo/t127230759830">this work</a>.</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/googlecl-and-geeqie.html">googlecl and geeqie</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Mon 02 August 2010</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>I recently tested two new Frugalware packages.</p><p>googlecl is a commandline utility, I wanted to try it out as it has browser-based authentication, which is supposed to be compatible with Google Apps, while the API-based method used by picu is not. To make it short, in case you are in a directory containing photos for an album and you just want to upload all of them to an album named after the directory name, you need:</p><p><pre>
-google picasa create --title $(basename $(pwd)) *.jpg
-</pre></p><p>The other package I recently tested is geeqie, it's a replacement (see history <a href="http://geeqie.sourceforge.net/">here</a>) for gqview I usually use to watch a lot of photos in a directory. And yes, they seem not to break any of the nice feature of the old gqview project, good work! ;)</p><p>Update: there is a <a href="http://code.google.com/p/googlecl/issues/detail?id=170">patch</a> to add sync support, it's usage:</p><p><pre>
-google picasa post --title $(basename $(pwd)) --sync *.jpg
-</pre></p>
 </div>
 </div>
 

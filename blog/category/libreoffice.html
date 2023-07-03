@@ -61,6 +61,152 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sw-floattable5.html">Multi-page floating tables in Writer: part 5</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Mon 03 July 2023</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 5 minutes</p>
+  </div>
+  <div class="article_text">
+    <p>Writer now has continued steps to handle tables that are both floating and span over multiple pages.</p>
+<p>This work is primarily for <a href="https://www.collaboraoffice.com/">Collabora Online</a>, but is useful on
+the desktop as well. See the <a href="https://vmiklos.hu/blog/sw-floattable4.html">fourth post</a> for background.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>The previous post finished with a first fix for overlapping tables: this is a cluster of problems
+where tables are allowed to overlap, but various other formatting make them not overlap in practice
+in Word, but they do overlap in Writer. In this post, we'll see what started to work during the past
+month.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>The feature is enabled by default and the DOCX/DOC/RTF import makes use of it. This allows
+stress-testing the layout code with complex user documents. The next target is to actively search
+for documents that rendered reasonably in the past but are now unreadable and fix them.</p>
+<p>On the positive side, core.git repository has has 40 files now which are focusing on correct
+handling of floating tables (filename matching <code>floattable-|floating-table-</code>).  Also, there are
+additional tests that quickly build a specific multi-page floating table in the memory and do some
+operation on it, e.g.  delete the last row and assert what happens.</p>
+<p>Here are some screenshots from the fixes this month:</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-floattable5/2023-06-01-floattable-lost-good.png"><figcaption>Section break directly between floating tables</figcaption>
+</figure>
+</p>
+<p>The first problem was that in case two floating tables were directly after each other, a section
+break between them was lost. What you can see above is a successful transfer of the break
+properties to the first paragraph on the next page, so the tables don't overlap but are laid out on
+separate pages.</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-floattable5/2023-06-02-floattable-split-1-bad.png"><figcaption>Incorrect split of a multi-page floating table</figcaption>
+</figure>
+</p>
+<p>Looking through internal documents, a sample was found where a table with 2 rows was not split, even
+if the previous page would have enough space for the first row. This is the old, bad layout.</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-floattable5/2023-06-02-floattable-split-2-good.png"><figcaption>Correct split of a multi-page floating table</figcaption>
+</figure>
+</p>
+<p>And this is how it looks after the fix.</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-floattable5/2023-06-05-floattable-lost-2-tables-bad.png"><figcaption>2 floating tables are lost</figcaption>
+</figure>
+</p>
+<p>The rest of the screenshots are from a complex internal document, which has 4 pages, but in total
+contains 11 floating tables. First I focused on getting correct rendering of this in Writer for
+DOCX. All the problems were not visible previously, as non-floating tables can't overlap, so bad
+formatting problems did not cause problems in practice. The first subset (public reproducer) had 3
+tables in it, but Writer only rendered one of them.</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-floattable5/2023-06-05-floattable-lost-2-tables-good.png"><figcaption>Normal table and 2 floating tables are fixed</figcaption>
+</figure>
+</p>
+<p>After fixing the problem, both lost tables are now there.</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-floattable5/2023-06-07-floattable-overlap-bad.png"><figcaption>Unwanted overlap of two floating tables</figcaption>
+</figure>
+</p>
+<p>The next case is about overlapping tables: the table is there, but the anchor positions are so
+close that the content overlaps and it's hard or impossible to read the text.</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-floattable5/2023-06-08-floattable-overlap-good.png"><figcaption>Fixed overlap of two floating tables</figcaption>
+</figure>
+</p>
+<p>And this is how it looks after the fix.</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-floattable5/2023-06-09-floattable-nested-bad.png"><figcaption>Bad handling of nested floating tables</figcaption>
+</figure>
+</p>
+<p>The next trouble is with nested floating tables: in case all inner tables are inline, then the table
+above the images will require more space then requested and that will lead to overlapping text
+later.</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-floattable5/2023-06-12-floattable-nested-better.png"><figcaption>Better handling of nested floating tables</figcaption>
+</figure>
+</p>
+<p>The first fix is to make these inner tables also float if requested in the file format (but not
+split for now, to develop incrementally). This helps, but the position of the inner table's anchor
+is still incorrect.</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-floattable5/2023-06-13-floattable-nested-good.png"><figcaption>Good handling of nested floating tables</figcaption>
+</figure>
+</p>
+<p>Finally the anchor position of the table is also correct: no intersecting borders, no overlapping
+text, no unexpected need for lots of vertical space.</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-floattable5/2023-06-15-floattable-loop-bad.png"><figcaption>Layout-loop for a floating table</figcaption>
+</figure>
+</p>
+<p>The next problem was a layout loop, which was terminated by the built-in loop control in a way that
+rendered text outside the table to show up inside the table.</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-floattable5/2023-06-16-floattable-loop-good.png"><figcaption>Fixed layout-loop for a floating table</figcaption>
+</figure>
+</p>
+<p>And here is the correct rendering. Note that in case a floating table's anchor is positioned with a
+negative vertical offset, then it can happen that text before the table will be rendered below the
+table. But this is intentional and also happens in Word.</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-floattable5/2023-06-19-floattable-negative-vert-offset-bad.png"><figcaption>Bad handling of negative vertical offsets</figcaption>
+</figure>
+</p>
+<p>The last problem for this blog post is the case when a large floating table is anchored in a
+single-line paragraph. Now Writer insists that the anchored object and the anchor text is on the
+same page, so even if there is space for the last table on a previous page, it moves the table to
+the next page.</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-floattable5/2023-06-20-floattable-negative-vert-offset-good.png"><figcaption>Good handling of negative vertical offsets</figcaption>
+</figure>
+</p>
+<p>And here is the correct rendering: all tables fitting the first page. Also note that the last table
+is moved up, so while the document model order is "after-table-2-second table-3 after-table-3", the
+rendered / layout order will be "table-3 after-table-2-second after-table-3" -- again,
+intentionally.</p>
+<p>And that's where we stand. Certainly more work is needed to fix some remaining unwanted overlapping
+of floating tables, but we get there step by step.</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>As usual, the high-level problem was addressed by a series of small changes:</p>
+<ul>
+<li><a href="https://git.libreoffice.org/core/commit/e2f90d1d0e51c68dd01c9968cdb7a3bbb5658613">tdf#103869 sw floattable: fix lost table right before a section break from DOCX</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/920e76f15b78398de62002e30002f4f8e0fee7c1">sw floattable: ignore keep-with-next for anchors of non-last split flys</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/01ad8ec4bb5425446e95dbada81de435646824b4">sw floattable: fix lost tables around a floating table from DOCX</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/4c5438b2c447403194420b69311a81ea7d36e157">sw floattable, DOCX import: clean up not needed dmapper-level anchor insert</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/81a108770233825557c2dae5776d7417be017fb8">sw floattable, compat mode: handle lower margin of anchor for fly intersect</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/b71a9bcc2e1b4541c14e8197b5b888ee92297a6e">sw floattable: import non-split inner floating tables from DOCX</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/c374628126ad222be48d5d06857b7dc6b879f783">sw floattable: fix anchor position of inner floating table</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/737d90b7b7cb03bb6128b74a32906b0391868830">sw floattable: fix handling of upper margin of anchor for fly intersect</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/01eff4a68b05dd4eeee94bc4b3b018059efa60d4">sw floattable: avoid layout loop for negative vert offset in MakePos()</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/2d0a4ef1d83b8de6cb133970c2c35ae706fb058e">sw floattable: fix negative vertical offset handling on page boundary</a></li>
+</ul>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a snapshot / demo of Collabora Office 23.05 and try it out yourself right now: <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try the
+unstable snapshot</a>.  Collabora
+intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
+of this work will be available in TDF's next release too (7.6).</p>
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/sw-floattable4.html">Multi-page floating tables in Writer: part 4</a></h1>
   </div>
   <div class="article_meta">
@@ -1195,93 +1341,6 @@ items, while drop-down can only be one of its list items.</p>
 unstable snapshot</a>.  Collabora
 intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
 of this work will be available in TDF's next release too (7.5).</p>
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/sd-video-crop.html">Cropped video for media shapes in Impress</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Thu 01 September 2022</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 3 minutes</p>
-  </div>
-  <div class="article_text">
-    <p>Impress now supports cropped videos in slide edit mode and during slideshow for documents imported
-from PowerPoint.</p>
-<p>First, thanks to our partner <a href="https://www.suse.com/">SUSE</a> for working with
-<a href="https://www.collaboraoffice.com/">Collabora</a> to make this possible.</p>
-<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
-<p>
-<figure><img src="https://share.vmiklos.hu/blog/sd-video-crop/new.png"><figcaption>PowerPoint-style cropped video in Impress</figcaption>
-</figure>
-</p>
-<p>PowerPoint handles videos by taking a preview bitmap from the video, and then it allows users to
-apply various effects on that bitmap, like cropping. The complex aspect of this is that such filters
-are also respected while playing the video as well.</p>
-<p>Impress didn't store such properties on the media shape, which lead to distorted aspect ratio when
-playing some cropped videos from PPTX files. This lead to this preview in Impress before the work:</p>
-<p>
-<figure><img src="https://share.vmiklos.hu/blog/sd-video-crop/bad.png"><figcaption>Video with lost cropping in Impress</figcaption>
-</figure>
-</p>
-<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
-<p>The first problem was that the Impress preview was picked from the 3rd second of the video
-(presumably to avoid a black preview in many videos that start with a short black fade-in), while
-PowerPoint can store an explicit preview from the video (seems to be the first frame), so no matter
-what effects you apply, the previews were just different as the source bitmap was different. This
-could be fixed by looking for an explicitly provided bitmap for the video first, and only then
-asking the various <code>avmedia/</code> backends to produce a preview.</p>
-<p>Once the preview's initial bitmap was OK, it was necessary to take cropping into account. This was
-first done for the preview bitmap, and then also for the gstreamer backend (the relevant one for
-Linux, as a start) of <code>avmedia/</code>, which is responsible for the actual video playback. The gstreamer
-bits were done by first creating a
-<a href="https://gstreamer.freedesktop.org/documentation/videocrop/videocrop.html">videocrop</a> element and
-then connecting that to the existing
-<a href="https://gstreamer.freedesktop.org/documentation/playback/playbin.html#playbin:video-filter">playbin</a>.</p>
-<p>With these sorted out, we get rendering which matches the reference:</p>
-<p>
-<figure><img src="https://share.vmiklos.hu/blog/sd-video-crop/ref.png"><figcaption>Cropped video in PowerPoint</figcaption>
-</figure>
-</p>
-<p>The last step was to load/save the explicit preview and the crop from/to ODF as well, not only PPTX.
-We use a markup like this to store the information:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">&lt;style:style</span> <span class="na">style:name=</span><span class="s">&quot;gr1&quot;</span><span class="nt">&gt;</span>
-  <span class="nt">&lt;style:graphic-properties</span> <span class="na">fo:clip=</span><span class="s">&quot;rect(0cm, 1.356cm, 0cm, 1.356cm)&quot;</span><span class="nt">/&gt;</span>
-<span class="nt">&lt;/style:style&gt;</span>
-</code></pre></div>
-
-<p>And now that the <code>gr1</code> automatic style is defined, we can refer to it from a media shape:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">&lt;draw:frame</span> <span class="na">draw:name=</span><span class="s">&quot;test&quot;</span> <span class="na">draw:style-name=</span><span class="s">&quot;gr1&quot;</span><span class="nt">&gt;</span>
-  <span class="nt">&lt;draw:plugin</span> <span class="na">xlink:href=</span><span class="s">&quot;...&quot;</span> <span class="na">xlink:type=</span><span class="s">&quot;simple&quot;</span> <span class="na">xlink:show=</span><span class="s">&quot;embed&quot;</span> <span class="na">xlink:actuate=</span><span class="s">&quot;onLoad&quot;</span> <span class="na">draw:mime-type=</span><span class="s">&quot;application/vnd.sun.star.media&quot;</span><span class="nt">&gt;</span>
-    ...
-  <span class="nt">&lt;/draw:plugin&gt;</span>
-  <span class="nt">&lt;draw:image</span> <span class="na">xlink:href=</span><span class="s">&quot;Pictures/MediaPreview1.png&quot;</span><span class="nt">/&gt;</span>
-<span class="nt">&lt;/draw:frame&gt;</span>
-</code></pre></div>
-
-<p>The nice property of this markup is that automatic styles are already used for other shapes and
-image previews are also used for e.g. table shapes, so this is just using existing markup in a new
-context, but the ODF spec already allows this markup.</p>
-<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
-<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
-<p>As usual, the high-level problem was addressed by a series of small changes:</p>
-<ul>
-<li><a href="https://gerrit.libreoffice.org/c/core/+/138763">Related: tdf#149971 svx: support explicitly provided snapshots for media shapes</a></li>
-<li><a href="https://gerrit.libreoffice.org/c/core/+/138808">Related: tdf#149971 avmedia: add doc model and render for crop of media objects</a></li>
-<li><a href="https://gerrit.libreoffice.org/c/core/+/138867">tdf#149971 avmedia: implement video crop support in the gsteamer backend</a></li>
-<li><a href="https://gerrit.libreoffice.org/c/core/+/138959">avmedia: implement video crop support in the ODP filter</a></li>
-<li><a href="https://gerrit.libreoffice.org/c/core/+/138971">xmloff: extract ExportGraphicPreview() from XMLShapeExport::ImpExportTableShape()</a></li>
-</ul>
-<p>User interface to create such a crop, support for other video effects (e.g. black-and-white) and
-other backends (Windows, macOS) could be done, but is future work currently.</p>
-<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
-<p>You can get a snapshot / demo of Collabora Office and try it out yourself right now: <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable
-snapshot</a>.  Collabora intends to
-continue supporting and contributing to LibreOffice, the code is merged so we expect all of this
-work will be available in TDF's next release too (7.5).</p>
   </div>
 </article>
 

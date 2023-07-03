@@ -59,6 +59,59 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/improved-relative-sized-textframes-in-libreoffice.html">Improved support for text frames with relative sizes in LibreOffice Writer</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Wed 02 April 2014</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh6.googleusercontent.com/-YDWSLjQcV1U/UzxP5AJhnyI/AAAAAAAAEIo/8uurEY7s90k/s0/">
+<img src="https://lh6.googleusercontent.com/-YDWSLjQcV1U/UzxP5AJhnyI/AAAAAAAAEIo/8uurEY7s90k/s400/" alt="https://lh6.googleusercontent.com/-YDWSLjQcV1U/UzxP5AJhnyI/AAAAAAAAEIo/8uurEY7s90k/s400/" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>When using text frames in Writer, you can always choose if you set an absolute
+size for it or you set a relative one. Oddly enough, in case of relative
+sizes, it wasn&#8217;t entirely clear what 100% percent means. With a bit of
+<a href="https://help.libreoffice.org/Writer/Type#Relative">searching</a>, the help says
+"it&#8217;s the page text area", which in practice means the page size, excluding
+the margins.</p></div>
+<div class="paragraph"><p>And that&#8217;s where the problem lies: in many cases (importing foreign formats,
+cover page of a document, etc.) you want to have a textframe which is 100%
+wide, compared to the full page size, including margins. It was already
+possible previously to work this around by manually specifying the same size
+what was used for page size, but that&#8217;s ugly, you duplicate the setting at two
+places.</p></div>
+<div class="paragraph"><p>As you can see on the above screenshot, in LibreOffice 4.3, I now implemented
+this as a new option, you can choose what 100% means for both width and
+height. File filters are also updated accordingly: in case of ODF an
+<a href="https://wiki.documentfoundation.org/Development/ODF_Implementer_Notes#LibreOffice_ODF_extensions">extension</a>
+is proposed, and also DOCX and RTF filters are updated, where the file format
+already supported this feature.</p></div>
+<div class="paragraph"><p>For the curious ones, the feature is in <code>master</code> for almost two months now,
+but I only implemented my favorite part&#8201;&#8212;&#8201;RTF filter&#8201;&#8212;&#8201;only last week,
+that&#8217;s the "news" here. ;-)</p></div>
+<div class="paragraph"><p>If you want to try these out yourself, get a
+<a href="http://dev-builds.libreoffice.org/daily/">daily build</a> and play with it! If
+something goes wrong, report it to us in the
+<a href="https://www.libreoffice.org/get-help/bug/">Bugzilla</a>, so we can try fix it
+before 4.3 gets branched off. Last, but not at least, thanks for
+<a href="http://www.cloudon.com/">CloudOn</a> for funding this improvement! :-)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/kavicsos-to.html">Kavicsos-tó</a></h1>
   </div>
   <div class="article_meta">
@@ -480,185 +533,6 @@ játssza&#8230;</p></div>
 <a href="http://port.hu/pls/fi/films.film_page?i_film_id=385">port.hu</a> szerint viszont
 '90-es a film? ;-)</p></div>
 <div class="paragraph"><p>(<a href="http://www.imdb.com/title/tt0101632/">imdb</a>, <a href="http://www.youtube.com/watch?v=WguLcAQaKYw">trailer</a>)</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/lo-writer-drawingml-shape-improvements.html">OOXML shape improvements in LibreOffice Writer 4.3</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Sat 11 January 2014</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Although LibreOffice 4.2.0 is
-<a href="https://wiki.documentfoundation.org/ReleasePlan/4.2">not yet released</a>, it was
-already branched off from <code>master</code> in November last year, and improvements for
-the next release are already cooking in <code>master</code>. One of these will be a major
-improvement of shape handling in the DOCX import/export filter.</p></div>
-<div class="paragraph"><p>Some background: when DOCX was initially introduced, it still used
-<a href="http://en.wikipedia.org/wiki/Vector_Markup_Language">VML</a> (which is in short
-an XML equivalent of the binary shape format), and only Word 2010 started to
-write shapes using
-<a href="http://en.wikipedia.org/wiki/Office_Open_XML_file_formats#DrawingML">drawingML</a>.
-Given that Word still understands VML, it wasn&#8217;t urgent for us to write shapes
-using the drawingML markup. As for import, Word still writes an approximate
-version of the shape in VML as a fallback&#8201;&#8212;&#8201;that&#8217;s what we read till now.
-Needless to say, newer drawingML features have no VML equivalent so with time
-it became more and more important for us to finally read and write shapes in
-DOCX using drawingML, which just happened in Writer.</p></div>
-<div class="paragraph"><p>I&#8217;m posting here a few screenshots showing the improvements I&#8217;ve implemented.
-Note that final 4.3 is still far from being released, so this is not a
-complete list. :-) In each case I&#8217;m providing a screenshot showing how it
-looked (at the end of an import/export/import again roundtrip) <em>before</em>, how
-it looks <em>now</em> in 4.3 and the <em>reference</em> layout. Click on the images to get a
-larger image:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-document with different colors
-  (<a href="http://people.freedesktop.org/~vmiklos/2014/docx-drawingml/color.docx">test doc</a>):
-</p>
-</li>
-</ul></div>
-<div align="center">
-<div class="paragraph"><p><span class="image">
-<a class="image" href="https://lh3.googleusercontent.com/-9mP2CfnGea4/UtFifqpPAII/AAAAAAAAD7k/5vJFQNHZOew/s500/color-lo42.png">
-<img src="https://lh3.googleusercontent.com/-9mP2CfnGea4/UtFifqpPAII/AAAAAAAAD7k/5vJFQNHZOew/s400/color-lo42.png" alt="https://lh3.googleusercontent.com/-9mP2CfnGea4/UtFifqpPAII/AAAAAAAAD7k/5vJFQNHZOew/s400/color-lo42.png" />
-</a>
-</span>
-<span class="image">
-<a class="image" href="https://lh4.googleusercontent.com/-zVLbX6nvZLY/UtFifqBENbI/AAAAAAAAD7c/r9PQuAd5g18/s500/color-lo43.png">
-<img src="https://lh4.googleusercontent.com/-zVLbX6nvZLY/UtFifqBENbI/AAAAAAAAD7c/r9PQuAd5g18/s400/color-lo43.png" alt="https://lh4.googleusercontent.com/-zVLbX6nvZLY/UtFifqBENbI/AAAAAAAAD7c/r9PQuAd5g18/s400/color-lo43.png" />
-</a>
-</span>
-<span class="image">
-<a class="image" href="https://lh6.googleusercontent.com/-OQdaaTTH0Aw/UtFifrL-jTI/AAAAAAAAD7U/inr0Zx0lHmo/s500/color-word2007.png">
-<img src="https://lh6.googleusercontent.com/-OQdaaTTH0Aw/UtFifrL-jTI/AAAAAAAAD7U/inr0Zx0lHmo/s400/color-word2007.png" alt="https://lh6.googleusercontent.com/-OQdaaTTH0Aw/UtFifrL-jTI/AAAAAAAAD7U/inr0Zx0lHmo/s400/color-word2007.png" />
-</a>
-</span>
-<span class="image">
-<a class="image" href="https://lh4.googleusercontent.com/-Yb2am1Vc65g/UtFigUF9fkI/AAAAAAAAD7w/nRZhF0iUYMA/s500/color-word2010.png">
-<img src="https://lh4.googleusercontent.com/-Yb2am1Vc65g/UtFigUF9fkI/AAAAAAAAD7w/nRZhF0iUYMA/s400/color-word2010.png" alt="https://lh4.googleusercontent.com/-Yb2am1Vc65g/UtFigUF9fkI/AAAAAAAAD7w/nRZhF0iUYMA/s400/color-word2010.png" />
-</a>
-</span></p></div>
-</div>
-<div class="paragraph"><p>OK, this has four pictures: before, now, Word 2007 and Word2010. As you can see now we&#8217;re now on par with Word 2010. ;-)</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-document with textboxes inside a group shape
-  (<a href="http://people.freedesktop.org/~vmiklos/2014/docx-drawingml/groupshape-textbox.docx">test doc</a>):
-</p>
-</li>
-</ul></div>
-<div align="center">
-<div class="paragraph"><p><span class="image">
-<a class="image" href="https://lh6.googleusercontent.com/-G4vltiHehvQ/UtFigLmY6fI/AAAAAAAAD8Q/I1iPtoh4hHE/s500/groupshape-textbox-lo42.png">
-<img src="https://lh6.googleusercontent.com/-G4vltiHehvQ/UtFigLmY6fI/AAAAAAAAD8Q/I1iPtoh4hHE/s400/groupshape-textbox-lo42.png" alt="https://lh6.googleusercontent.com/-G4vltiHehvQ/UtFigLmY6fI/AAAAAAAAD8Q/I1iPtoh4hHE/s400/groupshape-textbox-lo42.png" />
-</a>
-</span>
-<span class="image">
-<a class="image" href="https://lh6.googleusercontent.com/-wncA0mX92hA/UtFighZK4HI/AAAAAAAAD70/pwB6tGwyPbk/s500/groupshape-textbox-lo43.png">
-<img src="https://lh6.googleusercontent.com/-wncA0mX92hA/UtFighZK4HI/AAAAAAAAD70/pwB6tGwyPbk/s400/groupshape-textbox-lo43.png" alt="https://lh6.googleusercontent.com/-wncA0mX92hA/UtFighZK4HI/AAAAAAAAD70/pwB6tGwyPbk/s400/groupshape-textbox-lo43.png" />
-</a>
-</span>
-<span class="image">
-<a class="image" href="https://lh6.googleusercontent.com/-X3X_AXClLyw/UtFig15lsrI/AAAAAAAAD74/_YntDxB1pUk/s500/groupshape-textbox-word2010.png">
-<img src="https://lh6.googleusercontent.com/-X3X_AXClLyw/UtFig15lsrI/AAAAAAAAD74/_YntDxB1pUk/s400/groupshape-textbox-word2010.png" alt="https://lh6.googleusercontent.com/-X3X_AXClLyw/UtFig15lsrI/AAAAAAAAD74/_YntDxB1pUk/s400/groupshape-textbox-word2010.png" />
-</a>
-</span></p></div>
-</div>
-<div class="ulist"><ul>
-<li>
-<p>
-document with textbox, having a special
-  <a href="http://api.libreoffice.org/docs/idl/ref/namespacecom_1_1sun_1_1star_1_1text_1_1RelOrientation.html">RelOrientation</a>
-  (<a href="http://people.freedesktop.org/~vmiklos/2014/docx-drawingml/relorentation-textbox.docx">test doc</a>):
-</p>
-</li>
-</ul></div>
-<div align="center">
-<div class="paragraph"><p><span class="image">
-<a class="image" href="https://lh3.googleusercontent.com/-hpAhQ8Jd2R4/UtFihLad6RI/AAAAAAAAD8M/sgFpaLTRnAE/s800/relorientaton-textbox-lo42.png">
-<img src="https://lh3.googleusercontent.com/-hpAhQ8Jd2R4/UtFihLad6RI/AAAAAAAAD8M/sgFpaLTRnAE/s400/relorientaton-textbox-lo42.png" alt="https://lh3.googleusercontent.com/-hpAhQ8Jd2R4/UtFihLad6RI/AAAAAAAAD8M/sgFpaLTRnAE/s400/relorientaton-textbox-lo42.png" />
-</a>
-</span>
-<span class="image">
-<a class="image" href="https://lh6.googleusercontent.com/-1Ca-ZW3ugKg/UtFihSSXf0I/AAAAAAAAD8I/lQt2qu7XDQA/s800/relorientaton-textbox-lo43.png">
-<img src="https://lh6.googleusercontent.com/-1Ca-ZW3ugKg/UtFihSSXf0I/AAAAAAAAD8I/lQt2qu7XDQA/s400/relorientaton-textbox-lo43.png" alt="https://lh6.googleusercontent.com/-1Ca-ZW3ugKg/UtFihSSXf0I/AAAAAAAAD8I/lQt2qu7XDQA/s400/relorientaton-textbox-lo43.png" />
-</a>
-</span>
-<span class="image">
-<a class="image" href="https://lh6.googleusercontent.com/-LgNJNRlraq8/UtFikZ2L43I/AAAAAAAAD9I/VgOKGQt0o9M/s800/relorientaton-textbox-word2010.png">
-<img src="https://lh6.googleusercontent.com/-LgNJNRlraq8/UtFikZ2L43I/AAAAAAAAD9I/VgOKGQt0o9M/s400/relorientaton-textbox-word2010.png" alt="https://lh6.googleusercontent.com/-LgNJNRlraq8/UtFikZ2L43I/AAAAAAAAD9I/VgOKGQt0o9M/s400/relorientaton-textbox-word2010.png" />
-</a>
-</span></p></div>
-</div>
-<div class="ulist"><ul>
-<li>
-<p>
-document with a shape having a custom adjustment
-  (<a href="http://people.freedesktop.org/~vmiklos/2014/docx-drawingml/shape-adj.docx">test doc</a>):
-</p>
-</li>
-</ul></div>
-<div align="center">
-<div class="paragraph"><p><span class="image">
-<a class="image" href="https://lh3.googleusercontent.com/-VeqomDNiRDg/UtFiiM9h93I/AAAAAAAAD8k/5iGiGUEan4s/s500/shape-adj-lo42.png">
-<img src="https://lh3.googleusercontent.com/-VeqomDNiRDg/UtFiiM9h93I/AAAAAAAAD8k/5iGiGUEan4s/s400/shape-adj-lo42.png" alt="https://lh3.googleusercontent.com/-VeqomDNiRDg/UtFiiM9h93I/AAAAAAAAD8k/5iGiGUEan4s/s400/shape-adj-lo42.png" />
-</a>
-</span>
-<span class="image">
-<a class="image" href="https://lh6.googleusercontent.com/-Jd3N1X6jvcA/UtFiiTc_GWI/AAAAAAAAD8g/-ExLQkNqMfQ/s500/shape-adj-lo43.png">
-<img src="https://lh6.googleusercontent.com/-Jd3N1X6jvcA/UtFiiTc_GWI/AAAAAAAAD8g/-ExLQkNqMfQ/s400/shape-adj-lo43.png" alt="https://lh6.googleusercontent.com/-Jd3N1X6jvcA/UtFiiTc_GWI/AAAAAAAAD8g/-ExLQkNqMfQ/s400/shape-adj-lo43.png" />
-</a>
-</span>
-<span class="image">
-<a class="image" href="https://lh4.googleusercontent.com/-aLbCIiyql48/UtFii62b47I/AAAAAAAAD8o/W0EDNoQtCl0/s500/shape-adj-word2010.png">
-<img src="https://lh4.googleusercontent.com/-aLbCIiyql48/UtFii62b47I/AAAAAAAAD8o/W0EDNoQtCl0/s400/shape-adj-word2010.png" alt="https://lh4.googleusercontent.com/-aLbCIiyql48/UtFii62b47I/AAAAAAAAD8o/W0EDNoQtCl0/s400/shape-adj-word2010.png" />
-</a>
-</span></p></div>
-</div>
-<div class="ulist"><ul>
-<li>
-<p>
-document with different colors
-  (<a href="http://people.freedesktop.org/~vmiklos/2014/docx-drawingml/smiley.docx">test doc</a>):
-</p>
-</li>
-</ul></div>
-<div align="center">
-<div class="paragraph"><p><span class="image">
-<a class="image" href="https://lh6.googleusercontent.com/-HRRivr0f-a0/UtFijDe8cfI/AAAAAAAAD88/rnVTutXIE84/s500/smiley-lo42.png">
-<img src="https://lh6.googleusercontent.com/-HRRivr0f-a0/UtFijDe8cfI/AAAAAAAAD88/rnVTutXIE84/s400/smiley-lo42.png" alt="https://lh6.googleusercontent.com/-HRRivr0f-a0/UtFijDe8cfI/AAAAAAAAD88/rnVTutXIE84/s400/smiley-lo42.png" />
-</a>
-</span>
-<span class="image">
-<a class="image" href="https://lh5.googleusercontent.com/-mITRnHUfrqA/UtFijZriQeI/AAAAAAAAD84/92BbOA8DRfk/s500/smiley-lo43.png">
-<img src="https://lh5.googleusercontent.com/-mITRnHUfrqA/UtFijZriQeI/AAAAAAAAD84/92BbOA8DRfk/s400/smiley-lo43.png" alt="https://lh5.googleusercontent.com/-mITRnHUfrqA/UtFijZriQeI/AAAAAAAAD84/92BbOA8DRfk/s400/smiley-lo43.png" />
-</a>
-</span>
-<span class="image">
-<a class="image" href="https://lh6.googleusercontent.com/--_LhqgTxNM0/UtFij6NNYaI/AAAAAAAAD9A/5UFA4kEvBp0/s500/smiley-word2010.png">
-<img src="https://lh6.googleusercontent.com/--_LhqgTxNM0/UtFij6NNYaI/AAAAAAAAD9A/5UFA4kEvBp0/s400/smiley-word2010.png" alt="https://lh6.googleusercontent.com/--_LhqgTxNM0/UtFij6NNYaI/AAAAAAAAD9A/5UFA4kEvBp0/s400/smiley-word2010.png" />
-</a>
-</span></p></div>
-</div>
-<div class="paragraph"><p>If you want to try these out yourself, get a
-<a href="http://dev-builds.libreoffice.org/daily/">daily build</a> and play with it! If
-something goes wrong, report it to us in the
-<a href="https://www.libreoffice.org/get-help/bug/">Bugzilla</a>, so we can try fix it
-before 4.3 gets branched off. Last, but not at least, thanks for
-<a href="http://www.cloudon.com/">CloudOn</a> for funding these improvements! :-)</p></div>
 </div>
 </div>
 

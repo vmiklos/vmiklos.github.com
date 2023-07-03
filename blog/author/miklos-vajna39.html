@@ -59,6 +59,26 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/gammu-1-28-issue.html">gammu-1.28 issue</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Tue 05 October 2010</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>I recently upgraded gammu from 1.27 to 1.28 in -current and I noticed that the backup of my phone is now way slower than before. The <a href="http://gitorious.org/gammu/mainline/commit/9e7b902b8b80dd953bf491e494e42865b0f232d5.patch">fix</a> was trivial (already backported to the Frugalware package as well) for the maintainer so it's now fine again.</p><p>Well done, mcihar! :)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/playing-with-libvirt.html">Playing with libvirt</a></h1>
   </div>
   <div class="article_meta">
@@ -326,40 +346,6 @@ This was almost two days ago, but... So I got the next problem report from OS, w
 </div>
 <div class="paragraph"><p>Mert mar annyian kerdeztek, hogy "es azt te nem is lattad?" - hat megneztem. Tetszett.</p></div>
 <div class="paragraph"><p>(<a href="http://www.imdb.com/title/tt0120338/">imdb</a>, <a href="http://www.youtube.com/watch?v=zCy5WQ9S4c0">trailer</a>)</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/globalsat-bt-338x-gps.html">Globalsat BT-338X GPS</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Fri 27 August 2010</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>Yesterday I bought a cheap GPS data logger / receiver, and given that the attached install CD did not support Linux, I'm collecting some hopefully useful links here.</p><p><ul>
-  <li>The <a href="http://wiki.openstreetmap.org/wiki/GPS_Reviews#Globalsat_BT-338">OpenStreetMap</a> wiki had an incorrect statement about the device has no memory - it has.</li>
-  <li><a href="http://www.globalsat.com.tw/products-page.php?menu=2&amp;gs_en_product_id=6&amp;gs_en_product_cnt_id=56">Vendor homepage</a>. (<a href="http://speedshop.hu/main.php?page=termek&amp;iid=44261">Hungarian one</a>.)</li>
-  <li>A <a href="http://blog.pjvenda.net/2007/09/my-new-toy-globalsat-dg-100-gps-data.html">blog post</a> about <a href="http://frugalware.org/packages/23237">gpsbabel</a> usage.</li>
-  <li>More gpsbabel docs: the <a href="http://www.gpsbabel.org/htmldoc-development/fmt_dg-100.html">dg-100</a> and the <a href="http://www.gpsbabel.org/htmldoc-development/fmt_skytraq.html">skytraq</a> formats.</li>
-</ul></p><p>Putting everything together, to get the log from the device using bluetooth I first had to create an rfcomm interface, as gpsbabel does not support bluetooth natively:</p><p><pre>
-# rfcomm bind 0 00:0D:B5:38:BA:C6
-</pre></p><p>Then to download and erase the log from the device:</p><p><pre>
-$ gpsbabel -i dg-100,erase=1 -f /dev/rfcomm0 -o gpx \
-        -F $(date +%Y-%m-%d).gpx
-</pre></p><p>The gpx format is fine in case you want to later reuse log with digikam's gpssync plugin (available from <a href="http://frugalware.org/packages/9654">kipi-plugins</a>).</p><p>Now in case you want to convert it to kml to show on Google Maps:</p><p><pre>
-$ gpsbabel -i gpx -f $(date +%Y-%m-%d).gpx -o kml -F $(date +%Y-%m-%d).kml
-</pre></p><p>Finally release the rfcomm interface in case you don't need it anymore:</p><p><pre>
-# rfcomm release 0
-</pre></p><p>Update: there is also a <a href="http://code.google.com/p/globdog-dg100/">gui</a> which can be used to enable logging of altitude info, etc - just <a href="http://frugalware.org/~vmiklos/patches/globdog-dg100-enable-rtcomm.patch">trivial patching</a> is needed and it works with BT-338X as well.</p>
 </div>
 </div>
 
