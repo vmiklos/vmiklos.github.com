@@ -11,7 +11,7 @@ countries = [
 	'france', // France: Isola 2009, Isola 2011, Paris 2011
 	'britain', // United Kingdom: Cambridge 2015, etc: 4 times
 	'greece', // Greece: Rhodes 2012
-	'croatia', // Croatia: Poreč 2011, Plitvice Lakes 2012
+	'croatia', // Croatia: Poreč 2011, Plitvice Lakes 2012, Nin 2023
 	'hungary', // Hungary
 	'italy', // Italy: Rome 2009, Milan 2013
 	'poland', // Poland: Poznan 2010
