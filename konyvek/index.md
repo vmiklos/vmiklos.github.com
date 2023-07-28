@@ -40,6 +40,10 @@ title: Könyvek
 - [A baba - Felhasználói Kézikönyv](http://bookline.hu/product/home!execute.action?id=116917&type=22)
 - [Daniel Siegel, Tina Payne Bryson: Drámamentes fegyelmezés - A káosz lecsillapítása és a fejlődő gyermeki elme integrált szemléletű gondozása](http://bookline.hu/product/home!execute.action?id=279808&type=22)
 
+# Hobbi, szabadidő -> Egyéb
+
+- [Rubik Ernő: A bűvös kocka](https://bookline.hu/product/home.action?_v=Rubik_Erno_A_buvos_kocka&type=20&id=147099)
+
 # Irodalom
 
 ## Irodalomtörténet -> Magyar irodalom -> Életrajz
