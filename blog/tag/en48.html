@@ -59,6 +59,46 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/svn-ggit-conversion-using-git-svn.html">svn->git conversion using git-svn</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Sun 09 December 2007</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>git-svnimport will be removed in git-1.5.4 and i don't think it's tirival to use git-svn (which is great for bi-directional work) to properly convert an svn repo (with multiple branches) to a git one, so here is a recipe.</p><p>first, just use git-svn to create a git-svn repo. it's a git repo but it's a bit weird, it contains metadata which is necessary for bi-directional operations and you won't see the branches by default when you clone it. ah and it's not a bare repo.</p><p>in this example i'll convert ooo-build's svn repo (it has several branches and tags, so it's a good example).</p><p><code>mkdir -p ~/git/ooo-build
+cd ~/git/ooo-build
+git svn init -s svn+ssh://svn.gnome.org/svn/ooo-build
+git svn fetch</code></p><p>this will take a while. once it's completed, you need to convert this to a bare repo:</p><p><code>mkdir ../ooo-build.git
+cd ../ooo-build.git
+git --bare init
+git config remote.origin.url ~/git/ooo-build
+git config remote.origin.fetch +refs/remotes/tags/*:refs/tags/*
+git config --add remote.origin.fetch +refs/remotes/trunk:refs/heads/master
+git config --add remote.origin.fetch +refs/remotes/*:refs/heads/*
+git fetch
+</code></p><p>and you're done! :)</p><p>of course this is an incremental operation, so all you need is to run git svn fetch and git fetch from cron to keep the mirror up to date.</p><p>update:</p><p>it turns out you can even do this by having only one git repo. it has benefints: you don't have to duplicate the object database. and it has one problem: if you later switch fully to git, then you want to remove the git-svn metadata - doing so is the easiest if you just clone the repo.</p><p>so - in case you want this, you have to:</p><p><code>mkdir -p ~/git/ooo-build.git
+cd ~/git/ooo-build.git
+git --bare init
+git --bare svn init -s svn+ssh://svn.gnome.org/svn/ooo-build
+git --bare svn fetch</code></p><p>and then you can fetch from yourself:</p><p><code>
+git config remote.origin.url .
+git config remote.origin.fetch +refs/remotes/tags/*:refs/tags/*
+git config --add remote.origin.fetch +refs/remotes/*:refs/heads/*
+git fetch
+</code></p><p>note: git config --add remote.origin.fetch +refs/remotes/trunk:refs/heads/master it unnecessary as git svn fetch will update this for you (it is different from git fetch)</p><p>thanks for devurandom from #git for pointing out that this is possible using git --bare init before git svn init and using git --bare svn fetch :)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/we-love-ohloh.html">we love ohloh</a></h1>
   </div>
   <div class="article_meta">
@@ -263,40 +303,6 @@ Is this okay? (y/N) y</code></p><p>you can notice that the uid is now listed as 
 dht = auto
 dht_port = 6986
 </pre></p><p>of course the port can be anything else.</p><p>during testing, i had one "server" - where i had the test file already - and one "client" - where i had only the torrent.</p><p>i opened one port for torrent communication and one port for the dht server on the server, of course no ports were open on the client. and yes, it did work fine! :)</p><p>(<a href="http://frugalware.org/~vmiklos/pics/shots/trackerless.png">screenshot</a>)</p><p>let's hope the patch will be included in the vanilla rtorrent soon!</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/using-git-request-pull.html">using git request-pull</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Fri 21 September 2007</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>it's a nice simple script to generate a message body for you when you have no write access to a repo and you want to request the m8r to pull from you. here is how to use it:</p><p><pre>$ git request-pull origin/master \
-<a href="mailto:vmiklos@vmiklos.dev.frugalware.org">vmiklos@vmiklos.dev.frugalware.org</a>:git/pacman-g2/
-The following changes since commit 52a29e40a52bb09e0db7f167712a9be3ad8d0d3c:
-  Priyank (1):
-        Merge branch 'master' of \
-git.frugalware.org:/home/ftp/pub/other/pacman-g2/pacman-g2</p><p>are available in the git repository at:</p><p>  <a href="mailto:vmiklos@vmiklos.dev.frugalware.org">vmiklos@vmiklos.dev.frugalware.org</a>:git/pacman-g2/ master</p><p>VMiklos (4):
-      new NOARCH trans flag for _pacman_pkg_load()
-      _pacman_pkg_load(): indentation fix
-      parseargs(): new --noarch option
-      tests/upgrade071.py: new test for --noarch</p><p> lib/libpacman/package.c     |   36 +-----------------
- lib/libpacman/pacman.h      |    1 +
- pactest/tests/upgrade071.py |   10 +
- src/pacman-g2/pacman-g2.c   |    3 
- 4 files changed, 33 insertions(+), 17 deletions(-)
- create mode 100644 pactest/tests/upgrade071.py</pre></p><p>of course in real life, you want to use http:// or git:// since probably the m8r won't be be able to login to your own machine via ssh :)</p>
 </div>
 </div>
 

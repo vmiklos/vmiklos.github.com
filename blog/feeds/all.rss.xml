@@ -1,5 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>What is Miklos hacking</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Mon, 03 Jul 2023 14:23:10 +0200</lastBuildDate><item><title>Multi-page floating tables in Writer: part 5</title><link>https://vmiklos.hu/blog/sw-floattable5.html</link><description>&lt;p&gt;Writer now has continued steps to handle tables that are both floating and span over multiple pages.&lt;/p&gt;
+<rss version="2.0"><channel><title>What is Miklos hacking</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Tue, 01 Aug 2023 09:29:19 +0200</lastBuildDate><item><title>Multi-page floating tables in Writer: part 6</title><link>https://vmiklos.hu/blog/sw-floattable6.html</link><description>&lt;p&gt;Writer now has continued steps to handle tables that are both floating and span over multiple pages.&lt;/p&gt;
+&lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraoffice.com/"&gt;Collabora Online&lt;/a&gt;, but is useful on
+the desktop as well. See the &lt;a href="https://vmiklos.hu/blog/sw-floattable5.html"&gt;fifth post&lt;/a&gt; for background.&lt;/p&gt;
+&lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;The previous post finished with an "almost done" state for overlapping tables: this is a cluster of
+problems where tables are allowed to overlap, but various other formatting make them not overlap in
+practice in Word, but they do overlap in Writer. In this post, we'll see what was necessary so an
+initial set of old documents now render perfectly, which started to work during the past month.&lt;/p&gt;
+&lt;h2 id="results-so-far"&gt;Results so far&lt;a class="headerlink" href="#results-so-far" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;The feature is enabled by default and the DOCX/DOC/RTF import makes use of it.&lt;/p&gt;
+&lt;p&gt;On the positive side, core.git repository has has 49 files now which are focusing on correct
+handling of floating tables (filename matching &lt;code&gt;floattable-|floating-table-&lt;/code&gt;).  Also, there are
+additional tests that quickly build a specific multi-page floating table in the memory and do some
+operation on it, e.g.  delete the last row and assert what happens.&lt;/p&gt;
+&lt;p&gt;Here are some screenshots from the fixes this month (right click, open image in new tab for larger size):&lt;/p&gt;
+&lt;p&gt;
+&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable6/2023-07-03-floattable-negative-vert-offset-emptyanchor.png"&gt;&lt;figcaption&gt;Old, new and reference rendering of a floating table with negative vertical position, relative to an empty anchor.&lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;/p&gt;
+&lt;p&gt;The first case is about a document where the bottom of the page had a floating table, where the
+position (relative to the anchor) was a negative vertical offset. In this case Writer used to move
+the floating table to the next page, but now matches Word: the space in the previous page is used
+for the floating table. This fixed overlapping text on the next page.&lt;/p&gt;
+&lt;p&gt;
+&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable6/2023-07-05-floattable-anchor-bottom-margin.png"&gt;&lt;figcaption&gt;Old, new and reference rendering of a floating table with a large bottom margin in the anchor paragraph.&lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;/p&gt;
+&lt;p&gt;The next case is about floating tables in footnotes, the anchor needs to have no visible margins to
+provide the correct layout.&lt;/p&gt;
+&lt;p&gt;
+&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable6/2023-07-06-floattable-overlap-vert-offset.png"&gt;&lt;figcaption&gt;Old, new and reference rendering of a floating table with an overlap due to vertical offsets.&lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;/p&gt;
+&lt;p&gt;This case was about an unwanted overlap of floating tables. Incorrect handling of the vertical
+offsets meant that the second floating table was rendered on top of the first one, making the text
+in the first floating table unreadable. Now we shift down the second floating table, so no overlap
+happens.&lt;/p&gt;
+&lt;p&gt;
+&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable6/2023-07-12-floattable-newline-loop.png"&gt;&lt;figcaption&gt;New rendering of a floating table with anchor text that starts with a newline.&lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;/p&gt;
+&lt;p&gt;This document had a layout loop on load. The problem was specific to the case when the anchor text
+of a floating table started with a newline character, which has its own position in the document
+model, but doesn't really have a width at a layout level, so needs special handling. This is now
+fixed, the document loads and renders fine.&lt;/p&gt;
+&lt;p&gt;
+&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable6/2023-07-13-floattable-suse.png"&gt;&lt;figcaption&gt;Old, new and reference rendering of a document with lots of floating tables.&lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;/p&gt;
+&lt;p&gt;This document had only 4 pages, but lots of floating tables, carefully positioned to not overlap in
+Word. You can see how the old Writer rendering result was hard to read and it now looks correct.&lt;/p&gt;
+&lt;p&gt;
+&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable6/2023-07-14-floattable-suse-hidden.png"&gt;&lt;figcaption&gt;Old, new and reference rendering of a floating table with a hidden anchor.&lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;/p&gt;
+&lt;p&gt;Writer used to hide floating tables anchored inside hidden paragraphs, but Word shows them all the
+time, now we match this behavior.&lt;/p&gt;
+&lt;p&gt;
+&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable6/2023-07-17-floattable-overlap-table.png"&gt;&lt;figcaption&gt;Old, new and reference rendering of a floating table with an overlap.&lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;/p&gt;
+&lt;p&gt;The next document first had all of its tables in the first page, now fixed.&lt;/p&gt;
+&lt;p&gt;
+&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable6/2023-07-18-floattable-overlap-footer.png"&gt;&lt;figcaption&gt;Old, new and reference rendering of a floating table with an overlap between the table and the footer area.&lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;/p&gt;
+&lt;p&gt;A remaining problem was that the second table and the footer area could still overlap. This is now
+fixed: Word sometimes does allow such an overlap, but it depends on the baseline of the anchor
+position, so in the current case we can detect that such an overlap is not wanted.&lt;/p&gt;
+&lt;p&gt;
+&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable6/2023-07-19-floattable-halfrow.png"&gt;&lt;figcaption&gt;Old, new and reference rendering of a floating table with a half row on the first page.&lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;/p&gt;
+&lt;p&gt;The last problem with this document was a poor split of the floating table, the first half row of
+the second table still went to the first page. Now we correctly detect that such a split is not
+wanted and simply start the second floating table on the second page, which results in a pretty good
+rendering of this document.&lt;/p&gt;
+&lt;p&gt;And that's where we stand. Certainly more work is needed to fix rough edges, but we get there step
+by step -- the theme is slowly transitioning from overlap problems right after load to unexpected
+rendering problems during editing.&lt;/p&gt;
+&lt;h2 id="how-is-this-implemented"&gt;How is this implemented?&lt;a class="headerlink" href="#how-is-this-implemented" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;If you would like to know a bit more about how this works, continue reading... :-)&lt;/p&gt;
+&lt;p&gt;As usual, the high-level problem was addressed by a series of small changes:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/16b5b21d36da87be9b50235acbbb8008ed23b8bb"&gt;sw floattable: fix negative vert offset with on page boundary without anch text&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/79ddca4def81198e3eee42eca8aca42fef964c80"&gt;sw floattable: fix lost floating table right before a table from DOC&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/9ac864159b241d2093e86f664ab6f4b76c69196d"&gt;tdf#156059 sw floattable: fix lost 0 bottom margin of anchor in ftn from DOCX&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/1f2d523aeeafd241c71a468c970054120fb23b3d"&gt;sw floattable: enable AddVerticalFrameOffsets compat flag for DOC&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/663db89378aa1f0425e795ef5d471f134e658dc4"&gt;sw floattable: make sure floattable after floattable gets own anch pos from DOC&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/d59704b6b8c7e5395c0606fa01f37392afc4b2cd"&gt;cool#6857 sw floattable: try harder to keep anchor text in the last follow&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/52d265c0d2f2638c386475e58c3ee489ccd3f06c"&gt;sw floattable: fix lost floating table right before a hidden para from DOCX&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/8bd30999098567b3bdb84a6ca65c071952192932"&gt;tdf#120262 sw floattable: don't wrap text around fly when no content would fit&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/a4af5432753408c4eea8a8d56c2f48202160c5fe"&gt;tdf#120262 sw floattable, legacy: fix text wrap around fly when no content fits&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/9a5d1c250cbaac855b3e63d8c5fa0882ba7d14a2"&gt;tdf#120262 sw floattable, legacy: go outside body only for page frame vert pos&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/45574624ff05673d44f11cdbbbb49e1af599133e"&gt;tdf#120262 sw floattable: no split when none of first row fits the vert space&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="want-to-start-using-this"&gt;Want to start using this?&lt;a class="headerlink" href="#want-to-start-using-this" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;You can get a snapshot / demo of Collabora Office 23.05 and try it out yourself right now: &lt;a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/"&gt;try the
+unstable snapshot&lt;/a&gt;.  Collabora
+intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
+of this work will be available in TDF's next release too (7.6).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Tue, 01 Aug 2023 09:29:19 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2023-08-01:/blog/sw-floattable6.html</guid><category>libreoffice</category><category>en</category></item><item><title>Multi-page floating tables in Writer: part 5</title><link>https://vmiklos.hu/blog/sw-floattable5.html</link><description>&lt;p&gt;Writer now has continued steps to handle tables that are both floating and span over multiple pages.&lt;/p&gt;
 &lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraoffice.com/"&gt;Collabora Online&lt;/a&gt;, but is useful on
 the desktop as well. See the &lt;a href="https://vmiklos.hu/blog/sw-floattable4.html"&gt;fourth post&lt;/a&gt; for background.&lt;/p&gt;
 &lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
@@ -1087,51 +1187,4 @@ timestamp and update the content control's string value at import time from DOCX
 &lt;p&gt;You can get a snapshot / demo of Collabora Office 22.05 and try it out yourself right now: &lt;a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/"&gt;try the
 unstable snapshot&lt;/a&gt;.  Collabora
 intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF's next release too (7.5).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Thu, 03 Nov 2022 13:37:09 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2022-11-03:/blog/sw-content-controls5.html</guid><category>libreoffice</category><category>en</category></item><item><title>Content controls in Writer: PDF export and combo box type</title><link>https://vmiklos.hu/blog/sw-content-controls4.html</link><description>&lt;p&gt;Writer now supports exporting content controls to PDF and a 7th content control type: it is possible
-to differentiate between drop-downs and combo boxes.&lt;/p&gt;
-&lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraoffice.com/"&gt;Collabora Online&lt;/a&gt;, see &lt;a href="https://vmiklos.hu/blog/sw-content-controls3.html"&gt;the previous
-post&lt;/a&gt; for background.&lt;/p&gt;
-&lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;
-&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-content-controls4/adobe-writer.png"&gt;&lt;figcaption&gt;PDF export of Writer content controls into PDF&lt;/figcaption&gt;
-&lt;/figure&gt;
-&lt;/p&gt;
-&lt;p&gt;Writer users can create fillable forms using content controls, but the PDF export only contained the
-plain text representation of them. PDF can also have fillable widgets for form filling, so it's
-logical to map content controls to PDF widgets.&lt;/p&gt;
-&lt;p&gt;A perfect mapping is not possible, since PDF widgets are always a single rectangle and Writer
-content controls is a list of rectangles (text portions), but this doesn't cause a problem in most
-cases. The size of the PDF rectangle is determined based on the placeholder's size from Writer.&lt;/p&gt;
-&lt;p&gt;Benefits includes not having to insert a control shape, manually positioned to look like it's in
-line with the surrounding text. An other benefit is that this way the widget's style (font name,
-size, etc) can be specified using Writer styles, not with shape properties. It's also interesting
-that Word itself doesn't seem to support content controls in its PDF export at the time of writing.&lt;/p&gt;
-&lt;h2 id="results-so-far"&gt;Results so far&lt;a class="headerlink" href="#results-so-far" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;PDF export now automatically turns Writer content controls into fillable widgets for the rich text,
-plain text, checkbox, drop-down, combo box and date types.&lt;/p&gt;
-&lt;p&gt;Combo box itself is a new type: now combo box content can be either free-form or one of its list
-items, while drop-down can only be one of its list items.&lt;/p&gt;
-&lt;h2 id="how-is-this-implemented"&gt;How is this implemented?&lt;a class="headerlink" href="#how-is-this-implemented" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;If you would like to know a bit more about how this works, continue reading... :-)&lt;/p&gt;
-&lt;p&gt;As usual, the high-level problem was addressed by a series of small changes:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/82d90529dc2b3cb8359dec78852cbd910a66d275"&gt;sw content controls, rich text: add initial PDF export&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/9bad5be0ffdcdee92d40162b598ed2ab2815e5d5"&gt;sw content controls, checkbox: add PDF export&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/6b2433f3b66c1f118dabcd40924122deb2d4f204"&gt;sw content controls, dropdown: add PDF export&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/f7408cf0e472be91bdb7a4d2a4b8da3eb9a049a9"&gt;sw content controls, date: add PDF export&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/493b10997053882d06803156a98ae8924bf7660d"&gt;sw content controls: add PDF export of font properties&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/08bce8eeb2e18c7cea4108dbfc2519ada56e8b61"&gt;sw content controls: fix getString() and setString() on SwXContentControl&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/de90c192cb8f1f03a4028493d8bfe9a127a76b2a"&gt;sw content controls, plain text: enable DOCX filter with data binding&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/addfb3cce0f7ce8fbd0b169d467b6956ed95dbb5"&gt;sw content controls: add a11y description for PDF export&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/276f3a3ce52ca422bf5ebccfa2c926d3e87d5eab"&gt;sw content controls, combo box: add doc model &amp;amp; UNO API&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/37656a47d8797d45d706a17ab8843dcb8db90bbc"&gt;sw content controls, combo box: make the dropdown case read-only&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/21d93d8d2ffd9c5d5cfe9064590b35e0727295c9"&gt;sw content controls, combo box: add ODT filter&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/01b1f57a90172a76faa1489b3b72250ee76169a6"&gt;sw content controls, combo box: add DOCX filter&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/49f1bf56ebfa3c96aa90835c1121eb827d713b9d"&gt;sw content controls, combo box: add insert UI&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/82b9ff35649cd67ca16296676d2ad1e4eff15493"&gt;sw content controls, combo box: add PDF export&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id="want-to-start-using-this"&gt;Want to start using this?&lt;a class="headerlink" href="#want-to-start-using-this" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;You can get a snapshot / demo of Collabora Office 22.05 and try it out yourself right now: &lt;a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/"&gt;try
-unstable snapshot&lt;/a&gt;.  Collabora
-intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF's next release too (7.5).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Mon, 03 Oct 2022 08:25:28 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2022-10-03:/blog/sw-content-controls4.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
+of this work will be available in TDF's next release too (7.5).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Thu, 03 Nov 2022 13:37:09 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2022-11-03:/blog/sw-content-controls5.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
