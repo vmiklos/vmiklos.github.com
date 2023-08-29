@@ -129,6 +129,10 @@ These are tutorials I found very useful before jumping into an actual spec.
 
 - [ELI5](https://www.reddit.com/r/explainlikeimfive/)
 
+# rubik
+
+- [wca notation](https://meep.cubing.net/wcanotation.html)
+
 # rust
 
 - [Matthias Endler - Idiomatic Rust](https://www.youtube.com/watch?v=P2mooqNMxMs) (mentions [clippy](https://github.com/rust-lang/rust-clippy))
