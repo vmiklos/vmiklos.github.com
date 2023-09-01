@@ -77,46 +77,31 @@ the desktop as well. See the <a href="https://vmiklos.hu/blog/sw-floattable6.htm
 explicit table overlap control that Word has (and Writer lacked so far), compatible border rendering
 of split tables and having footnotes in floating tables, which was not working previously.</p>
 <h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
-<p>Regarding testing, the core.git repository has has 60 files now which are focusing on correct
+<p>Regarding testing, the core.git repository has 60 files now which are focusing on correct
 handling of floating tables (filename matching <code>floattable-|floating-table-</code>). This doesn't count
 cases where the document model is built using C++ code in the memory and then we assert the result
 of some operation.</p>
-<p>Here are some screenshots from the fixes this month (right click, open image in new tab for larger size):</p>
-<p>
-<figure><img src="https://share.vmiklos.hu/blog/sw-floattable7/2023-08-02-floattable-edit-dummy-text.png"><figcaption>Old, new and reference rendering after expanding an autotext.</figcaption>
-</figure>
-</p>
+<p>Here are some screenshots from the fixes this month:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-floattable7/2023-08-02-floattable-edit-dummy-text.png"><figure><img src="https://share.vmiklos.hu/blog/sw-floattable7/2023-08-02-floattable-edit-dummy-text.png"><figcaption>Old, new and reference rendering after expanding an autotext.</figcaption></figure></a></p>
 <p>The first screenshot shows a case where the anchor paragraph of a floating table had some autotext
 (e.g. "dt", which stands for dummy text), and pressing the relevant shortcut (F3) expands that
 autotext with the actual content. This includes changing the anchor position of the floating table,
 which lead to overlapping text. (A multi-page floating table has multiple anchors, we have to make
 sure we don't set all of them to the new value as-is.)</p>
-<p>
-<figure><img src="https://share.vmiklos.hu/blog/sw-floattable7/2023-08-10-floattable-overlap-never.png"><figcaption>Old, new and reference rendering of tables with the overlap=never markup.</figcaption>
-</figure>
-</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-floattable7/2023-08-10-floattable-overlap-never.png"><figure><img src="https://share.vmiklos.hu/blog/sw-floattable7/2023-08-10-floattable-overlap-never.png"><figcaption>Old, new and reference rendering of tables with the overlap=never markup.</figcaption></figure></a></p>
 <p>The next screenshot shows a case where two tables are positioned in a way that they would overlap.
 Word has a flag that asks the layout to still re-position the second table so the overlap doesn't
 happen, and now Writer supports this as well.</p>
-<p>
-<figure><img src="https://share.vmiklos.hu/blog/sw-floattable7/2023-08-16-floattable-duplicated.png"><figcaption>Old, new and reference rendering of duplicated anchor text.</figcaption>
-</figure>
-</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-floattable7/2023-08-16-floattable-duplicated.png"><figure><img src="https://share.vmiklos.hu/blog/sw-floattable7/2023-08-16-floattable-duplicated.png"><figcaption>Old, new and reference rendering of duplicated anchor text.</figcaption></figure></a></p>
 <p>This screenshot shows a bug where the anchor text on the first page was also duplicated on the
 second page. Now we properly start the anchor text on the last page of the floating table, like Word
 does.</p>
-<p>
-<figure><img src="https://share.vmiklos.hu/blog/sw-floattable7/2023-08-21-floattable-split-border.png"><figcaption>Old, new and reference rendering of a multi-page floating table with borders.</figcaption>
-</figure>
-</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-floattable7/2023-08-21-floattable-split-border.png"><figure><img src="https://share.vmiklos.hu/blog/sw-floattable7/2023-08-21-floattable-split-border.png"><figcaption>Old, new and reference rendering of a multi-page floating table with borders.</figcaption></figure></a></p>
 <p>What you can see is a floating table that has 2 pages, but simply a split of the table would result
 in no bottom border on the first page and no top border for the second, like perhaps you would
 expect it, matching Word. This is now fixed, the layout infers the border style in those cases
 correctly.</p>
-<p>
-<figure><img src="https://share.vmiklos.hu/blog/sw-floattable7/2023-08-24-floattable-footnote.png"><figcaption>Old, new and reference rendering of a footnote in a floating table.</figcaption>
-</figure>
-</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-floattable7/2023-08-24-floattable-footnote.png"><figure><img src="https://share.vmiklos.hu/blog/sw-floattable7/2023-08-24-floattable-footnote.png"><figcaption>Old, new and reference rendering of a footnote in a floating table.</figcaption></figure></a></p>
 <p>The last screenshot shows a mini-feature: it was possible to float tables and to have footnotes in
 tables, but not both at the same time. The screenshot shows a case where a floating table is
 needed, so a specific paragraph is <em>above</em> the table. But we couldn't float the table, because
