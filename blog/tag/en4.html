@@ -59,6 +59,134 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/hackweek-2021.html">My hack week at Collabora: improvements to gutter margin in Writer</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Fri 09 April 2021</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 3 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>As mentioned in a <a href="https://vmiklos.hu/blog/hackweek-2020.html">previous</a> such report, a hack week is when
+we are allowed to hack on anything we want in LibreOffice / Collabora Office / Collabora Online for
+a few days at <a href="https://www.collaboraoffice.com/">Collabora</a>. I used this time to implement core
+support for RTL gutter margin in Writer.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_motivation">Motivation</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>I posted about Writer gutter margin in general <a href="https://vmiklos.hu/blog/sw-gutter-margin.html">back in
+February</a>, and two follow-up requests accumulated around this new feature since then.</p></div>
+<div class="paragraph"><p>First, the gutter margin could be on the left or at the top for non-mirrored documents, which
+initially sounded like a complete solution, but later it turned out that right-to-left (RTL)
+documents <a href="https://bugs.documentfoundation.org/show_bug.cgi?id=140343">want it on the right</a>.</p></div>
+<div class="paragraph"><p>Second, there was a <a href="https://issues.oasis-open.org/browse/OFFICE-4105">request from the OASIS TC to</a>
+to implement the ODF filter differently for gutter margin.</p></div>
+<div class="paragraph"><p>Neither of these is simple to do, so this hackweek was a good opportunity to address these problems.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_results_so_far">Results so far</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Here is the layout and user interface for RTL gutter looks like:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://share.vmiklos.hu/blog/hackweek-2021/layout-ui.png" alt="https://share.vmiklos.hu/blog/hackweek-2021/layout-ui.png" />
+</div>
+<div class="title">Figure 1. RTL gutter margin in Writer, layout and UI</div>
+</div>
+<div class="paragraph"><p>You can see how the gutter is on the right (not the left) and you can alter this behavior with a
+dedicated checkbox on the UI.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_how_is_this_implemented">How is this implemented?</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="https://git.libreoffice.org/core/commit/67e53dfeadbbc4f4ab207af0d2cd4e8f556b73d4">sw page rtl
+  gutter margin: add doc model</a> introduced a new RES_RTL_GUTTER page style property
+</p>
+</li>
+<li>
+<p>
+<a href="https://git.libreoffice.org/core/commit/bcbf1c245fa13cfbae2059a996006179c7f4b747">sw page rtl
+  gutter margin: add UNO API</a> added a new public RtlGutter UNO API property
+</p>
+</li>
+<li>
+<p>
+<a href="https://git.libreoffice.org/core/commit/c088d26578d1be352efa49bd164a8217627648de">sw page rtl
+  gutter margin: add layout</a> was the tricky layout piece, extending <code>SwBorderAttrs</code>
+</p>
+</li>
+<li>
+<p>
+<a href="https://git.libreoffice.org/core/commit/3db477fd0e6cfc4ff77b3c911ca4ab14fd980932">sw page rtl
+  gutter margin: add DOCX filter</a> mapped this to DOCX&#8217;s <code>&lt;w:rtlGutter&gt;</code>
+</p>
+</li>
+<li>
+<p>
+<a href="https://git.libreoffice.org/core/commit/fac65bb9d831a854298d6cba09ad6159d15b8323">sw page rtl
+  gutter margin: add ODF import</a> mapped this to <code>&lt;style:page-layout-properties
+  style:writing-mode="..."&gt;</code> in case the attribute value is RTL
+</p>
+</li>
+<li>
+<p>
+<a href="https://git.libreoffice.org/core/commit/8b7ff52ac87795881a4d86395885778f1da3d18b">sw page rtl
+  gutter margin: add DOC filter</a> mapped this to DOC&#8217;s SFRTLGutter, amusingly that handling of that
+  was somewhat there, but more or less broken since 2002-02-04
+</p>
+</li>
+<li>
+<p>
+<a href="https://git.libreoffice.org/core/commit/f15c6c5d2947a61e6521471b6b7541812953efc3">sw page rtl
+  gutter margin: add RTF filter</a> mapped this to RTF&#8217;s <code>\rtlgutter</code> section flag
+</p>
+</li>
+<li>
+<p>
+<a href="https://git.libreoffice.org/core/commit/d48a4174708ce0850577dba76dccaf85c4f6ffa1">sw page rtl
+  gutter margin: add UI</a> introduced a new checkbox on the UI to set/get this, and fixed up
+  notifications, so that the incremental layout repaints the necessary page frames when this setting
+  changes
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Finally I had a little bit of remaining time, so I addressed a request from the OASIS ODF TC:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="https://git.libreoffice.org/core/commit/f3cf833f7079ce8d2f53681cae1b430a875cc320">sw page gutter
+  margin: reimplement ODF filter</a> changed the ODF markup to be more compatible with readers ignoring
+  <code>&lt;style:page-layout-properties loext:margin-gutter="..."&gt;</code>
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_want_to_start_using_this">Want to start using this?</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
+expect all of this work will be available in TDF&#8217;s
+<a href="http://dev-builds.libreoffice.org/daily/master/">next release</a> (7.2).</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/sw-bibliography.html">Bibliography improvements in LibreOffice Writer</a></h1>
   </div>
   <div class="article_meta">
@@ -882,167 +1010,6 @@ improvements, like visible PDF signing.</p></div>
 now: <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.
 Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
 expect all of this work will be available in TDF&#8217;s next release too (7.1).</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/smartart-improvements-6.html">SmartArt improvements in Impress, part 6</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Fri 02 October 2020</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 3 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Impress now has support for an improved auto-fit-of-text layout across multiple shapes, also the
-snake algorithm now handles width requests from constraints much better for SmartArt graphics from
-PPTX files. This builds on top of the <a href="https://vmiklos.hu/blog/smartart-improvements-5.html">previous
-improvements</a> around SmartArt support.</p></div>
-<div class="paragraph"><p>First, thanks to our partner <a href="https://www.suse.com/">SUSE</a> for working with
-<a href="https://www.collaboraoffice.com/">Collabora</a> to make this possible.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_motivation">Motivation</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>SmartArt allows declaring your content and requirements for a graphic, then the layout will take
-care of arranging that in a suitable way. It is allowed to ask for an automatic font size, which is
-small enough so that all the content fits into the shape. At the same time, you can ask that the
-font size is the same in multiple shapes. Impress lacked the ability to do the latter, leading to
-different font sizes in different shapes, all automatic inside a single shape.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_results_so_far">Results so far</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Here is how the automatic text scaling across multiple shapes works in practice:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/5f-rH0nKGed-6GhBn3bAOMH6sVUeZUeqt2TsFydVSFlL_185Hj6BjNkchKn7DVKpAQmRsg6bGNwKyBIN9bR1sRYacqcKnLYOeqasGZB2IWRohN8mtgFG9aNN_k5ofC_ZqunSeHqIYTc=w640" alt="https://lh3.googleusercontent.com/5f-rH0nKGed-6GhBn3bAOMH6sVUeZUeqt2TsFydVSFlL_185Hj6BjNkchKn7DVKpAQmRsg6bGNwKyBIN9bR1sRYacqcKnLYOeqasGZB2IWRohN8mtgFG9aNN_k5ofC_ZqunSeHqIYTc=w640" />
-</div>
-<div class="title">Figure 1. Autofit synchronization, new output</div>
-</div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/lncpRp13-vUBJH5Kt4ccYHMULGQ8U1Qw8v5z7LmRSE9bv6yjukFMfuiJolCKbVOpjT-85zw_BQMj72dKJLVnMI242CQlIxR7tDUbhBuVaYDuGPRVnAqhCsGbDmGLmyu-7ueA39kNXIg=w640" alt="https://lh3.googleusercontent.com/lncpRp13-vUBJH5Kt4ccYHMULGQ8U1Qw8v5z7LmRSE9bv6yjukFMfuiJolCKbVOpjT-85zw_BQMj72dKJLVnMI242CQlIxR7tDUbhBuVaYDuGPRVnAqhCsGbDmGLmyu-7ueA39kNXIg=w640" />
-</div>
-<div class="title">Figure 2. Autofit synchronization, old output</div>
-</div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/Go9LGPftmbtFnQXgzxITJVLhEVJF1B13Ge3PGbyKPNEzCJ2zi2DfYBMak92v127PJGYyzjL8V9fTh8Fb_vZXpAdBrBRQizd2onXM8dBka38BkBEi2FE8UP3JCPecKN1m9u8fR591GMM=w640" alt="https://lh3.googleusercontent.com/Go9LGPftmbtFnQXgzxITJVLhEVJF1B13Ge3PGbyKPNEzCJ2zi2DfYBMak92v127PJGYyzjL8V9fTh8Fb_vZXpAdBrBRQizd2onXM8dBka38BkBEi2FE8UP3JCPecKN1m9u8fR591GMM=w640" />
-</div>
-<div class="title">Figure 3. Autofit synchronization, reference output</div>
-</div>
-<div class="paragraph"><p>You can see how the old output used to have unexpected large text in shape A, but now has the same
-text size as shape B. This is not applied unconditionally, shape C can request to have an
-independent, fixed font size.</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/7IBC-z9NfhP0mjutFPQLPN312AH5Jch6Gss-75kROjLksQ3MnSZnhTodrPDJBm3MmkcQ-rHKvzozgB1O8j8rDBJEkzCf9vgmgrSYa3kH7GqnDS0BgBnlSOWC0GQxVBCIMYX0-Blf_F8=w640" alt="https://lh3.googleusercontent.com/7IBC-z9NfhP0mjutFPQLPN312AH5Jch6Gss-75kROjLksQ3MnSZnhTodrPDJBm3MmkcQ-rHKvzozgB1O8j8rDBJEkzCf9vgmgrSYa3kH7GqnDS0BgBnlSOWC0GQxVBCIMYX0-Blf_F8=w640" />
-</div>
-<div class="title">Figure 4. Snake rows, new output</div>
-</div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/4y0pEF3utBcpXMcCsrvrkvnNCdKKyhVlwejiwsI6cMUrA1nV4u1VuE4l1Xhuw60jQYrkeQD54Y0JuB4NR571kwtluUGceclQPZPcYITEyqf0GF1Y7fr_GXNnSRCtnXO1jjtcO_nSLS0=w640" alt="https://lh3.googleusercontent.com/4y0pEF3utBcpXMcCsrvrkvnNCdKKyhVlwejiwsI6cMUrA1nV4u1VuE4l1Xhuw60jQYrkeQD54Y0JuB4NR571kwtluUGceclQPZPcYITEyqf0GF1Y7fr_GXNnSRCtnXO1jjtcO_nSLS0=w640" />
-</div>
-<div class="title">Figure 5. Snake rows, old output</div>
-</div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/JqIugvyKapfY6Hw0bs7OtWMJ2sj5mdFOv8ebJwZac_BgmuJXKyHxDUdzCj0xZl9zcksXDjdqthce1xrHJzZdGG_024CLbVBSoCmR-X_qFxdWupFwXBa281LId18qezAU80vuT69kGl0=w640" alt="https://lh3.googleusercontent.com/JqIugvyKapfY6Hw0bs7OtWMJ2sj5mdFOv8ebJwZac_BgmuJXKyHxDUdzCj0xZl9zcksXDjdqthce1xrHJzZdGG_024CLbVBSoCmR-X_qFxdWupFwXBa281LId18qezAU80vuT69kGl0=w640" />
-</div>
-<div class="title">Figure 6. Snake rows, reference output</div>
-</div>
-<div class="paragraph"><p>You can see that the old output laid shapes all over the place, while the new output puts them to a
-3 by 2 matrix. The reason this works is because now we parse width requests from constraints
-correctly. This means we give spacings a smaller width, real shapes a larger width, so the content
-fits in less rows and the layout looks like a grid, matching the reference rendering.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_how_is_this_implemented">How is this implemented?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
-<div class="paragraph"><p>As for the autofit synchronization:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/102266">svx UNO API for shapes: expose what scaling factor
-  is used for autofit scaling</a> made it possible to know what is a good scaling factor for one shape
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/102324">svx UNO API for shapes: allow setting a max factor
-  for autofit text scale</a> made it possible to set the scaling factor, overriding what it would
-  calculate by itself. This is a trade-off: setting the scaling factor on the shape inside the
-  document model has the benefit that the importer doesn&#8217;t duplicate any text measuring code. The cost
-  is that now there is an UNO property that you can set, but the value of that won&#8217;t be retained if
-  you save to ODF and load the document back. At least not currently
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/102490">oox smartart: add support for syncing font heights
-  of multiple shapes</a> is the SmartArt code to use the above mentioned building blocks
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/102689">oox smartart: handle &lt;dgm:prSet &#8230; custT="1"/&gt;</a>
-  made it possible to not perform auto-scaling for certain shapes, if they request so
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>Beyond that, for the snake rows:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/103411">oox smartart: snake algo: consider child&#8217;s aspect
-  ratio request for cols/rows</a> started to improve the grid calculation, so less vertical space is
-  needed
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/103594">oox smartart: snake algo: start parsing relative
-  width constraints</a> allows differentiating between space items on a snake path (small width) and
-  shape items, which typically have a larger width
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/103629">oox smartart: snake algo: apply constraints on
-  child shape widths</a> uses the information collected in the previous step, so the sample document is
-  requesting the expected 3 by 2 grid
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/103680">oox smartart: snake algo: make sure child shape
-  height stays within parent</a> finally makes sure that the content is not falling off the slide,
-  which would make it impossible to read when projecting
-</p>
-</li>
-</ul></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_want_to_start_using_this">Want to start using this?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
-<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
-intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF&#8217;s next release too (7.1).</p></div>
 </div>
 </div>
 
