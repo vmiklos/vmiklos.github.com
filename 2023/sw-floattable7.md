@@ -18,14 +18,14 @@ of split tables and having footnotes in floating tables, which was not working p
 
 ## Results so far
 
-Regarding testing, the core.git repository has has 60 files now which are focusing on correct
+Regarding testing, the core.git repository has 60 files now which are focusing on correct
 handling of floating tables (filename matching `floattable-|floating-table-`). This doesn't count
 cases where the document model is built using C++ code in the memory and then we assert the result
 of some operation.
 
-Here are some screenshots from the fixes this month (right click, open image in new tab for larger size):
+Here are some screenshots from the fixes this month:
 
-![Old, new and reference rendering after expanding an autotext.](https://share.vmiklos.hu/blog/sw-floattable7/2023-08-02-floattable-edit-dummy-text.png)
+[![Old, new and reference rendering after expanding an autotext.](https://share.vmiklos.hu/blog/sw-floattable7/2023-08-02-floattable-edit-dummy-text.png)](https://share.vmiklos.hu/blog/sw-floattable7/2023-08-02-floattable-edit-dummy-text.png)
 
 The first screenshot shows a case where the anchor paragraph of a floating table had some autotext
 (e.g. "dt", which stands for dummy text), and pressing the relevant shortcut (F3) expands that
@@ -33,26 +33,26 @@ autotext with the actual content. This includes changing the anchor position of 
 which lead to overlapping text. (A multi-page floating table has multiple anchors, we have to make
 sure we don't set all of them to the new value as-is.)
 
-![Old, new and reference rendering of tables with the overlap=never markup.](https://share.vmiklos.hu/blog/sw-floattable7/2023-08-10-floattable-overlap-never.png)
+[![Old, new and reference rendering of tables with the overlap=never markup.](https://share.vmiklos.hu/blog/sw-floattable7/2023-08-10-floattable-overlap-never.png)](https://share.vmiklos.hu/blog/sw-floattable7/2023-08-10-floattable-overlap-never.png)
 
 The next screenshot shows a case where two tables are positioned in a way that they would overlap.
 Word has a flag that asks the layout to still re-position the second table so the overlap doesn't
 happen, and now Writer supports this as well.
 
-![Old, new and reference rendering of duplicated anchor text.](https://share.vmiklos.hu/blog/sw-floattable7/2023-08-16-floattable-duplicated.png)
+[![Old, new and reference rendering of duplicated anchor text.](https://share.vmiklos.hu/blog/sw-floattable7/2023-08-16-floattable-duplicated.png)](https://share.vmiklos.hu/blog/sw-floattable7/2023-08-16-floattable-duplicated.png)
 
 This screenshot shows a bug where the anchor text on the first page was also duplicated on the
 second page. Now we properly start the anchor text on the last page of the floating table, like Word
 does.
 
-![Old, new and reference rendering of a multi-page floating table with borders.](https://share.vmiklos.hu/blog/sw-floattable7/2023-08-21-floattable-split-border.png)
+[![Old, new and reference rendering of a multi-page floating table with borders.](https://share.vmiklos.hu/blog/sw-floattable7/2023-08-21-floattable-split-border.png)](https://share.vmiklos.hu/blog/sw-floattable7/2023-08-21-floattable-split-border.png)
 
 What you can see is a floating table that has 2 pages, but simply a split of the table would result
 in no bottom border on the first page and no top border for the second, like perhaps you would
 expect it, matching Word. This is now fixed, the layout infers the border style in those cases
 correctly.
 
-![Old, new and reference rendering of a footnote in a floating table.](https://share.vmiklos.hu/blog/sw-floattable7/2023-08-24-floattable-footnote.png)
+[![Old, new and reference rendering of a footnote in a floating table.](https://share.vmiklos.hu/blog/sw-floattable7/2023-08-24-floattable-footnote.png)](https://share.vmiklos.hu/blog/sw-floattable7/2023-08-24-floattable-footnote.png)
 
 The last screenshot shows a mini-feature: it was possible to float tables and to have footnotes in
 tables, but not both at the same time. The screenshot shows a case where a floating table is
