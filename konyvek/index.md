@@ -20,15 +20,23 @@ title: Könyvek
 
 - [Frank L. Baum: Oz, a nagy varázsló](https://bookline.hu/product/home.action?_v=Frank_L_Baum_Oz_a_nagy_varazslo&type=22&id=98951)
 
-## Ifjúsági irodalom -> 10-14 éveseknek
+## Ifjúsági irodalom
 
-### Klasszikus 
+### 7-10 éveseknek
+
+#### Kortárs
+
+- [Holly Webb: Az ellopott kiskutya](https://bookline.hu/product/home.action?_v=Holly_Webb_Az_ellopott_kiskutya&type=22&id=84803)
+
+### 10-14 éveseknek
+
+#### Klasszikus
 
 - [Jules Verne: Nemo kapitány](https://bookline.hu/product/home.action?_v=Jules_Verne_Nemo_kapitany&type=22&id=287559)
 
 - [Jules Verne: Grant kapitány gyermekei](https://bookline.hu/product/home.action?_v=Verne_Gyula_Grant_kapitany_gyermekei&type=22&id=75389)
 
-### Kortárs
+#### Kortárs
 
 - [Berg Judit: Drifter - A darknet árnyékában](https://bookline.hu/product/home.action?_v=Berg_Judit_Drifter&type=22&id=308872)
 - [Margit Auer: Mágikus állatok iskolája 1.](https://bookline.hu/product/home.action?_v=Margit_Auer_Magikus_allatok_iskolaja_1_&type=22&id=277745)

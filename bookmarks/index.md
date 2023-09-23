@@ -43,6 +43,7 @@ title: Bookmarks
 # hungary
 
 - [car parking info](https://nmzrt.hu/szolgaltatasok/parkolas/parkolasi-zonak.html)
+- [puzzle helper](https://bitepito.hu/rejtveny/)
 
 # imagemagick
 
