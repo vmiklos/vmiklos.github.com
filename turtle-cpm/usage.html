@@ -188,19 +188,26 @@ id:        1, machine: example.com, service: http, user: myuser, password type: 
 </code></pre>
 <h2 id="totp-support"><a class="header" href="#totp-support">TOTP support</a></h2>
 <p>TOTP is one from of Two-Factor Authentication (2FA), currently used by many popular websites
-(Facebook, Twitter, etc). Once a website asks you to scan a QR code for
+(Facebook, Mastodon, etc). Once a website asks you to scan a QR code for
 <a href="https://en.wikipedia.org/wiki/Time-based_one-time_password">TOTP</a> purposes, just ask for the TOTP
 shared secret and then add it to cpm using:</p>
 <pre><code class="language-console">cpm create -m mymachine -u myuser -p &quot;MY TOTP SHARED SECRET&quot; -t totp
 </code></pre>
 <p>When searching, only the TOTP shared secret is shown by default:</p>
-<pre><code class="language-console">cpm twitter
-id:        1, machine: twitter.com, service: http, user: myuser, password type: plain, password: 7U1FvIzubR95Itg
-id:        2, machine: twitter.com, service: http, user: myuser, password type: TOTP shared secret, password: ...
+<pre><code class="language-console">cpm facebook
+id:        1, machine: facebook.com, service: http, user: myuser, password type: plain, password: 7U1FvIzubR95Itg
+id:        2, machine: facebook.com, service: http, user: myuser, password type: TOTP shared secret, password: ...
 </code></pre>
 <p>You can generate the current TOTP code using:</p>
-<pre><code class="language-console">cpm --totp twitter
-id:        2, machine: twitter.com, service: http, user: myuser, password type: TOTP code, password: ...
+<pre><code class="language-console">cpm --totp facebook
+id:        2, machine: facebook.com, service: http, user: myuser, password type: TOTP code, password: ...
+</code></pre>
+<p>You can make this interaction easier using:</p>
+<pre><code class="language-console">alias 2fa='cpm --totp'
+</code></pre>
+<p>And then you can generate the current TOTP code just by:</p>
+<pre><code class="language-console">2fa facebook
+id:        2, machine: facebook.com, service: http, user: myuser, password type: TOTP code, password: ...
 </code></pre>
 <h2 id="update-and-deletion"><a class="header" href="#update-and-deletion">Update and deletion</a></h2>
 <p>Update is quite similar to creation. If you want to update a password to a new, generated value, you
