@@ -1,4 +1,4 @@
-Title: Multi-page floating tables in Writer: part 5
+Title: Multi-page floating tables in Writer: from section breaks to negative vertical offsets
 Slug: sw-floattable5
 Category: libreoffice
 Tags: en

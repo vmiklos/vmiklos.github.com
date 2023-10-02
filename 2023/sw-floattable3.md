@@ -1,4 +1,4 @@
-Title: Multi-page floating tables in Writer: part 3
+Title: Multi-page floating tables in Writer: from row deletion to page breaks
 Slug: sw-floattable3
 Category: libreoffice
 Tags: en

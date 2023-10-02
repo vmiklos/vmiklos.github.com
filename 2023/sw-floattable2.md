@@ -1,4 +1,4 @@
-Title: Multi-page floating tables in Writer: part 2
+Title: Multi-page floating tables in Writer: from split rows to cursor traversal
 Slug: sw-floattable2
 Category: libreoffice
 Tags: en

@@ -1,4 +1,4 @@
-Title: Multi-page floating tables in Writer: part 6
+Title: Multi-page floating tables in Writer: hidden anchors and more
 Slug: sw-floattable6
 Category: libreoffice
 Tags: en

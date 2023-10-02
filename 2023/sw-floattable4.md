@@ -1,4 +1,4 @@
-Title: Multi-page floating tables in Writer: part 4
+Title: Multi-page floating tables in Writer: from multiple columns to chaining
 Slug: sw-floattable4
 Category: libreoffice
 Tags: en
