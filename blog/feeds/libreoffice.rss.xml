@@ -1,5 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>What is Miklos hacking - libreoffice</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Fri, 01 Sep 2023 13:33:39 +0200</lastBuildDate><item><title>Multi-page floating tables in Writer: overlap control, border and footnotes</title><link>https://vmiklos.hu/blog/sw-floattable7.html</link><description>&lt;p&gt;This post is part of a series to describe how Writer now gets a feature to handle tables that are
+<rss version="2.0"><channel><title>What is Miklos hacking - libreoffice</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Tue, 03 Oct 2023 08:26:55 +0200</lastBuildDate><item><title>Multi-page floating tables in Writer: nested tables</title><link>https://vmiklos.hu/blog/sw-floattable8.html</link><description>&lt;p&gt;This post is part of a series to describe how Writer now gets a feature to handle tables that are
+both floating and span over multiple pages.&lt;/p&gt;
+&lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraoffice.com/"&gt;Collabora Online&lt;/a&gt;, but is useful on
+the desktop as well. See the &lt;a href="https://vmiklos.hu/blog/sw-floattable7.html"&gt;seventh post&lt;/a&gt; for the previous part.&lt;/p&gt;
+&lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Multi-page floating tables and nested tables could not be combined so far. Instead we tried to lay
+out the outer table on multiple pages and all inner tables were still limited to a single page. In
+this part, you can read about removing this limitation.&lt;/p&gt;
+&lt;h2 id="results-so-far"&gt;Results so far&lt;a class="headerlink" href="#results-so-far" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Regarding testing, the core.git repository has 73 files now which are focusing on correct
+handling of floating tables (filenames matching &lt;code&gt;floattable-|floating-table-&lt;/code&gt;). This doesn't count
+cases where the document model is built using C++ code in the memory and then we assert the result
+of some operation.&lt;/p&gt;
+&lt;p&gt;Here are some screenshots from the fixes this month:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-floattable8/2023-09-08-floattable-nested.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable8/2023-09-08-floattable-nested.png"&gt;&lt;figcaption&gt;Old, new and reference rendering of a floating inner table in a floating outer table from DOCX.&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;The first screenshot shows a case where not only a single floating table is split across pages, but
+also the table's only cell hosts an inner multi-page floating table. This is more complicated at a
+layout level, because we can't just move part of the table to a next page, which has no parts of the
+outer table yet.&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-floattable8/2023-09-15-floattable-nested-cellstart.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable8/2023-09-15-floattable-nested-cellstart.png"&gt;&lt;figcaption&gt;Old, new and reference rendering of nested, multi-page floating table at cell start.&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;The next screenshot shows a case where the inner floating table starts at the cell start of the
+outer table. The DOCX import case needed addition effort to get working, because as soon as the
+inner floating table's content is moved to the floating frame from the body text, the reference to
+the cell start at the outer table level was invalidated and the whole table conversion failed.&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-floattable8/2023-09-18-floattable-nested-cellstarts.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable8/2023-09-18-floattable-nested-cellstarts.png"&gt;&lt;figcaption&gt;Old, new and reference rendering of multiple inner floating tables starting at cell start of an outer floating table.&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;This screenshot shows a bug where multiple inner floating tables started at the cell start of the
+outer table. Handling this correctly on our end had to ensure that each (potentially multi-page)
+floating table gets its own unique anchor point, and this can be combined with nesting, with the "at
+cell start" special case on top of it. Once all three can be combined, a real-world documents
+gets its table instead of just having the content the of the table in the body text.&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-floattable8/2023-09-21-floattable-move-master.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable8/2023-09-21-floattable-move-master.png"&gt;&lt;figcaption&gt;Old, new and reference rendering of moving the table start to a new page.&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;The last screenshot shows an editing session where we keep inserting new paragraphs at the start of
+the document, so new items are created at the end of the fly chain as needed, and old items are
+deleted at the start of the fly chain as needed. We had a bug here so that the content we wanted to
+move forward was inserted at the end of the document, leading to a weird selection that started at the
+document end and continued on a previous page. Now this works correctly: once the first page is full
+of empty paragraphs, the second page hosts the first row and half of the second row. The third page then
+can host the second half of the second row and the third row.&lt;/p&gt;
+&lt;h2 id="how-is-this-implemented"&gt;How is this implemented?&lt;a class="headerlink" href="#how-is-this-implemented" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;If you would like to know a bit more about how this works, continue reading... :-)&lt;/p&gt;
+&lt;p&gt;As usual, the high-level problem was addressed by a series of small changes:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/7d4213b9f0253b323750acceca8f4edb9d1a7fc5"&gt;Related: tdf#156318 sw floattable: fix handling of vert orient == top&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/401c175d1bbe3c64e5dd96e3b23779999271cfb1"&gt;tdf#156318 sw floattable: fix follow text flow handling on interactive edit&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/d29c1a90ae77dde7c87c51f21e859fa254f23e01"&gt;sw floattable, nesting: fix layout crash&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/3aa3f0a1638a8d8006955b62bb647526768be3d8"&gt;sw floattable, nesting: fix position of the inner follow table&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/facdac2443d50339f81415d09c1869d19dded7bf"&gt;sw floattable, nesting: fix PDF export&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/e20bacc209a8e8483209cb4ec51c9e0b55423cdb"&gt;sw floattable, nesting: fix overlap support&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/2887e6b8edbb4fdb093515a3a68269ed40e42116"&gt;sw floattable, nesting: fix DOCX export&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/5127b1961b762643d47a26704556fd9b8664c6fc"&gt;sw floattable, nesting: add DOCX import&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/d50e5d6d53c94124f825758a74e186b934fc2a4e"&gt;Related: tdf#55160 sw floattable, nested DOCX exp: fix inner tbl at cell start&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/2d43c34333076fad092f0cdc0f60f81580acdbee"&gt;Related: tdf#55160 sw floattable, nested DOCX imp: fix inner tbl at cell start&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/a33316afa4a20499159b8c900e56658512deb74a"&gt;tdf#55160 sw floattable, nested DOCX imp: fix inner tables at cell start&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/cf2be3754b4c48382a61e044209c077bf59c72f2"&gt;tdf#157005 sw floattable: fix missing format of next row in follow fly&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/cfe9c68a7a19dd77d1fcbde3a7dd75730634becc"&gt;tdf#157119 sw floattable: fix moving master of split fly to next page&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/b8521d969ab5be4fc947e467d4afe969f9d3b563"&gt;tdf#157263 sw floattable: prefer join over split after moving fwd&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/c86d6111525f09e895483c7c4919a4b9a5dbd9b9"&gt;Related: tdf#126449 sw floattable: fix bad join of inline tbl with inner fly&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/25b8fdd3b939a221ba00ca37fbf89adaf893aab7"&gt;sw floattable: maintain the invariant that fly height is at least MINFLY&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/83abd141bf41c1c8a1d4e5a894b235c842da2a07"&gt;Related: tdf#126449 sw floattable: fix bad position of in-table follow fly&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="want-to-start-using-this"&gt;Want to start using this?&lt;a class="headerlink" href="#want-to-start-using-this" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;You can get a snapshot / demo of Collabora Office 23.05 and try it out yourself right now: &lt;a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/"&gt;try the
+unstable snapshot&lt;/a&gt;.  Collabora
+intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
+of this work will be available in TDF's next release too (24.2).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Tue, 03 Oct 2023 08:26:55 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2023-10-03:/blog/sw-floattable8.html</guid><category>libreoffice</category><category>en</category></item><item><title>Multi-page floating tables in Writer: overlap control, border and footnotes</title><link>https://vmiklos.hu/blog/sw-floattable7.html</link><description>&lt;p&gt;This post is part of a series to describe how Writer now gets a feature to handle tables that are
 both floating and span over multiple pages.&lt;/p&gt;
 &lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraoffice.com/"&gt;Collabora Online&lt;/a&gt;, but is useful on
 the desktop as well. See the &lt;a href="https://vmiklos.hu/blog/sw-floattable6.html"&gt;sixth post&lt;/a&gt; for the previous part.&lt;/p&gt;
@@ -1119,92 +1183,4 @@ document:&lt;/p&gt;
 &lt;p&gt;You can get a snapshot / demo of Collabora Office 22.05 and try it out yourself right now: &lt;a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/"&gt;try the
 unstable snapshot&lt;/a&gt;.  Collabora
 intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF's next release too (7.6).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Tue, 03 Jan 2023 08:30:40 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2023-01-03:/blog/sw-number-portion.html</guid><category>libreoffice</category><category>en</category></item><item><title>Improved watermark in the PDF export</title><link>https://vmiklos.hu/blog/pdf-watermark.html</link><description>&lt;p&gt;The PDF export now supports various additional properties for the optional PDF watermark.&lt;/p&gt;
-&lt;p&gt;First, thanks &lt;a href="https://www.docmosis.com/"&gt;Docmosis&lt;/a&gt; for funding this work by
-&lt;a href="https://www.collaboraoffice.com/"&gt;Collabora&lt;/a&gt;.&lt;/p&gt;
-&lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;
-&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/pdf-watermark/rotate-and-color.png"&gt;&lt;figcaption&gt;Rendering of a PDF watermark with custom rotation and color&lt;/figcaption&gt;
-&lt;/figure&gt;
-&lt;/p&gt;
-&lt;p&gt;When you hear the word "watermark", you probably have something like the above picture in mind.&lt;/p&gt;
-&lt;p&gt;Instead, what the PDF export had is more like a proof of concept:&lt;/p&gt;
-&lt;p&gt;
-&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/pdf-watermark/default.png"&gt;&lt;figcaption&gt;Rendering of a PDF watermark with default settings&lt;/figcaption&gt;
-&lt;/figure&gt;
-&lt;/p&gt;
-&lt;p&gt;The request was to add new options to control the font size, font name, rotation angle and color of
-the watermark, so in case an organization already has a given style of watermarks they prefer, our
-PDF export can be adapted accordingly.&lt;/p&gt;
-&lt;h2 id="results-so-far"&gt;Results so far&lt;a class="headerlink" href="#results-so-far" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;First, now you can specify a custom color, e.g. gray (#7f7f7f), using:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;soffice --convert-to pdf:writer_pdf_Export:&amp;#39;{&amp;quot;Watermark&amp;quot;:{&amp;quot;type&amp;quot;:&amp;quot;string&amp;quot;,&amp;quot;value&amp;quot;:&amp;quot;draft&amp;quot;}, &amp;quot;WatermarkColor&amp;quot;:{&amp;quot;type&amp;quot;:&amp;quot;long&amp;quot;,&amp;quot;value&amp;quot;:&amp;quot;8355711&amp;quot;}}&amp;#39; test.odt&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;
-&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/pdf-watermark/color.png"&gt;&lt;figcaption&gt;Rendering of a PDF watermark with custom color&lt;/figcaption&gt;
-&lt;/figure&gt;
-&lt;/p&gt;
-&lt;p&gt;Then you can also customize the font size, in case the automatic size would not fit your needs,
-using:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;soffice --convert-to pdf:writer_pdf_Export:&amp;#39;{&amp;quot;Watermark&amp;quot;:{&amp;quot;type&amp;quot;:&amp;quot;string&amp;quot;,&amp;quot;value&amp;quot;:&amp;quot;draft&amp;quot;}, &amp;quot;WatermarkFontHeight&amp;quot;:{&amp;quot;type&amp;quot;:&amp;quot;long&amp;quot;,&amp;quot;value&amp;quot;:&amp;quot;100&amp;quot;}}&amp;#39; test.odt&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;
-&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/pdf-watermark/font-size.png"&gt;&lt;figcaption&gt;Rendering of a PDF watermark with custom font size&lt;/figcaption&gt;
-&lt;/figure&gt;
-&lt;/p&gt;
-&lt;p&gt;Or perhaps you want a serif font, not a sans one:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;soffice --convert-to pdf:writer_pdf_Export:&amp;#39;{&amp;quot;Watermark&amp;quot;:{&amp;quot;type&amp;quot;:&amp;quot;string&amp;quot;,&amp;quot;value&amp;quot;:&amp;quot;draft&amp;quot;}, &amp;quot;WatermarkFontName&amp;quot;:{&amp;quot;type&amp;quot;:&amp;quot;string&amp;quot;,&amp;quot;value&amp;quot;:&amp;quot;Times&amp;quot;}}&amp;#39; test.odt&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;
-&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/pdf-watermark/font-name.png"&gt;&lt;figcaption&gt;Rendering of a PDF watermark with custom font name&lt;/figcaption&gt;
-&lt;/figure&gt;
-&lt;/p&gt;
-&lt;p&gt;Finally you can have a custom rotate angle:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;soffice --convert-to pdf:writer_pdf_Export:&amp;#39;{&amp;quot;Watermark&amp;quot;:{&amp;quot;type&amp;quot;:&amp;quot;string&amp;quot;,&amp;quot;value&amp;quot;:&amp;quot;draft&amp;quot;}, &amp;quot;WatermarkRotateAngle&amp;quot;:{&amp;quot;type&amp;quot;:&amp;quot;long&amp;quot;,&amp;quot;value&amp;quot;:&amp;quot;450&amp;quot;}}&amp;#39; test.odt&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;
-&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/pdf-watermark/rotate.png"&gt;&lt;figcaption&gt;Rendering of a PDF watermark with custom rotation&lt;/figcaption&gt;
-&lt;/figure&gt;
-&lt;/p&gt;
-&lt;p&gt;Using these building blocks, you can also build combinations, the first screenshot above was created
-using:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;soffice --convert-to pdf:writer_pdf_Export:&amp;#39;{&amp;quot;Watermark&amp;quot;:{&amp;quot;type&amp;quot;:&amp;quot;string&amp;quot;,&amp;quot;value&amp;quot;:&amp;quot;draft&amp;quot;}, &amp;quot;WatermarkRotateAngle&amp;quot;:{&amp;quot;type&amp;quot;:&amp;quot;long&amp;quot;,&amp;quot;value&amp;quot;:&amp;quot;450&amp;quot;}, &amp;quot;WatermarkColor&amp;quot;:{&amp;quot;type&amp;quot;:&amp;quot;long&amp;quot;,&amp;quot;value&amp;quot;:&amp;quot;8355711&amp;quot;}}&amp;#39; test.odt&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;i.e. the configuration JSON is:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="nt"&gt;&amp;quot;Watermark&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-        &lt;span class="nt"&gt;&amp;quot;type&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;string&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
-        &lt;span class="nt"&gt;&amp;quot;value&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;draft&amp;quot;&lt;/span&gt;
-    &lt;span class="p"&gt;},&lt;/span&gt;
-    &lt;span class="nt"&gt;&amp;quot;WatermarkRotateAngle&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-        &lt;span class="nt"&gt;&amp;quot;type&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;long&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
-        &lt;span class="nt"&gt;&amp;quot;value&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;450&amp;quot;&lt;/span&gt;
-    &lt;span class="p"&gt;},&lt;/span&gt;
-    &lt;span class="nt"&gt;&amp;quot;WatermarkColor&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-        &lt;span class="nt"&gt;&amp;quot;type&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;long&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
-        &lt;span class="nt"&gt;&amp;quot;value&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;8355711&amp;quot;&lt;/span&gt;
-    &lt;span class="p"&gt;}&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;h2 id="how-is-this-implemented"&gt;How is this implemented?&lt;a class="headerlink" href="#how-is-this-implemented" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;If you would like to know a bit more about how this works, continue reading... :-)&lt;/p&gt;
-&lt;p&gt;As usual, the high-level problem was addressed by a series of small changes:&lt;/p&gt;
-&lt;!-- s/\([^ ]\+\) \(.*\)/- [\2](https:\/\/git.libreoffice.org\/core\/commit\/\1)/g --&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/21c4749d0205d1ba90494edc2527ff9d11f86f87"&gt;Related: tdf#54053 PDF export: add UNO API to customize the watermark color&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/175e514c93b3696faa8c331c8b8f56e832ceb4c1"&gt;Related: tdf#54053 PDF export: add UNO API to customize the watermark font size&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/d1dd9b9733511ff451e264169537c08fa14c574f"&gt;Related: tdf#54053 PDF export: add UNO API to customize the watermark font name&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/574db5efa9a2ab6d70faedf538be77a1eb8c597b"&gt;Related: tdf#54053 PDF export: add UNO API to customize the watermark rotation&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id="want-to-start-using-this"&gt;Want to start using this?&lt;a class="headerlink" href="#want-to-start-using-this" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;You can get a snapshot / demo of Collabora Office 22.05 and try it out yourself right now: &lt;a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/"&gt;try the
-unstable snapshot&lt;/a&gt;.  Collabora
-intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF's next release too (7.5).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Mon, 05 Dec 2022 17:07:21 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2022-12-05:/blog/pdf-watermark.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
+of this work will be available in TDF's next release too (7.6).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Tue, 03 Jan 2023 08:30:40 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2023-01-03:/blog/sw-number-portion.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
