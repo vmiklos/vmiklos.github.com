@@ -2,7 +2,7 @@ Title: Multi-page floating tables in Writer: nested tables
 Slug: sw-floattable8
 Category: libreoffice
 Tags: en
-Date: 2023-10-02T16:10:47+02:00
+Date: 2023-10-03T08:26:55+02:00
 
 This post is part of a series to describe how Writer now gets a feature to handle tables that are
 both floating and span over multiple pages.
@@ -19,7 +19,7 @@ this part, you can read about removing this limitation.
 ## Results so far
 
 Regarding testing, the core.git repository has 73 files now which are focusing on correct
-handling of floating tables (filename matching `floattable-|floating-table-`). This doesn't count
+handling of floating tables (filenames matching `floattable-|floating-table-`). This doesn't count
 cases where the document model is built using C++ code in the memory and then we assert the result
 of some operation.
 
