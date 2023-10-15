@@ -27,6 +27,7 @@ title: Könyvek
 #### Kortárs
 
 - [Holly Webb: Az ellopott kiskutya](https://bookline.hu/product/home.action?_v=Holly_Webb_Az_ellopott_kiskutya&type=22&id=84803)
+- [Holly Webb: Elli hazavágyik](https://bookline.hu/product/home.action?_v=Holly_Webb_Elli_hazavagyik&type=22&id=107459)
 
 ### 10-14 éveseknek
 
