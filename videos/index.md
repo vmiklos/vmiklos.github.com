@@ -124,6 +124,10 @@ title: Videos
 
 # Drama
 
+## Drama, Music
+
+- [Music of the Heart](https://www.imdb.com/title/tt0166943/)
+
 ## Drama, Mystery, Sci-Fi
 
 - [Predestination](http://www.imdb.com/title/tt2397535/)

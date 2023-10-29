@@ -80,6 +80,11 @@ These are tutorials I found very useful before jumping into an actual spec.
 - [how to mount encrypted lvm in rescue system](https://forums.opensuse.org/showthread.php/494317-How-to-access-encrypted-LVM-filesystem-in-rescue-mode-ext3-filesystem-cannot-mount?p=2615131#post2615131): `cryptsetup luksOpen /dev/sdXY cr_lvm; vgscan; vgchange -a y`
 - [Set the system timezone based on IP geolocation](https://github.com/cdown/tzupdate)
 
+# matrix
+
+- [heisenbridge](https://github.com/hifi/heisenbridge) irc bridge
+- [mautrix-bridges](https://docs.mau.fi/bridges/)
+
 # mutt
 
 - [why mutt](https://useplaintext.email/)
