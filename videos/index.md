@@ -121,6 +121,7 @@ title: Videos
 # Documentary
 
 - [Citizenfour](http://www.imdb.com/title/tt4044364/)
+- [Free Solo](https://www.imdb.com/title/tt7775622/)
 
 # Drama
 
