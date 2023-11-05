@@ -9,6 +9,7 @@ title: Könyvek
 ### 3-6 éveseknek -> Kortárs mesék
 
 - [Beck Andrea: A Titoktündér - A Tündérek Kalendáriuma](https://bookline.hu/product/home.action?_v=Beck_Andrea_A_Titoktunder_A_Tunderek_&type=22&id=280279)
+- [Takács Mari: Bingaminga és a babkák](https://bookline.hu/product/home.action?_v=Takacs_Mari_Bingaminga_es_a_babkak&type=22&id=319430)
 
 ### 6-10 éveseknek
 
@@ -68,6 +69,7 @@ title: Könyvek
 - [Kiss Gergő: Életem a játék](http://bookline.hu/product/home!execute.action?id=272015&type=22)
 - [Fa Nándor: Magad, uram](http://bookline.hu/product/home!execute.action?id=297910&type=22)
 - [Rubik Ernő: A mi kockánk](https://bookline.hu/product/home.action?_v=Rubik_Erno_A_mi_kockank&type=22&id=319543)
+- [Szőnyi Szilárd: Mit ad Isten? - Vallomások hitről és életről - Vallomások hitről és életről](https://bookline.hu/product/home.action?_v=Szonyi_Szilard_szerk_Mit_ad_Isten_&type=22&id=84154)
 
 ## Szépirodalom
 
