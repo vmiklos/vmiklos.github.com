@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/pygments.css">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Miklos Vajna">
+  <meta name="description" content="Posts and writings by Miklos Vajna">
+
+  <link href="https://vmiklos.hu/blog/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking RSS" />
+
+<meta name="keywords" content="en">
+
+  <title>
+    What is Miklos hacking
+&ndash; Multi-page floating tables in Writer: wrap on all pages  </title>
+
+<script type="text/javascript">
+  var _paq = window._paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//analytics.vmiklos.hu/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '1']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <h2><a href="https://vmiklos.hu/blog">What is Miklos hacking</a></h2>
+      <p></p>
+      <ul>
+        <li><a href="/" target="_blank">Root</a></li>
+        <li><a href="https://planet.documentfoundation.org/" target="_blank">LibreOffice Blogs</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://vmiklos.hu/blog">Index</a> &brvbar; <a href="https://vmiklos.hu/blog/archives.html">Archives</a>
+      &brvbar; <a href="https://vmiklos.hu/blog/feeds/all.rss.xml">RSS</a>
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sw-floattable9.html">Multi-page floating tables in Writer: wrap on all pages</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Tue 07 November 2023</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 3 minutes</p>
+  </div>
+  <div class="article_text">
+    <p>This post is part of a series to describe how Writer now gets a feature to handle tables that are
+both floating and span over multiple pages.</p>
+<p>This work is primarily for <a href="https://www.collaboraoffice.com/">Collabora Online</a>, but is useful on
+the desktop as well. See the <a href="https://vmiklos.hu/blog/sw-floattable8.html">8th post</a> for the previous part.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>Multi-page floating tables always wrapped their anchor text only on the last page, to be compatible
+with Word's default behavior. There is a special flag in DOCX files to wrap on all pages, though. In
+this part, you can read about handling of this flag in Writer.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>Regarding testing of the floating table feature in general, the core.git repository has 84 files now which are focusing on correct
+handling of floating tables (filenames matching <code>floattable-|floating-table-</code>). This doesn't count
+cases where the document model is built using C++ code in the memory and then we assert the result
+of some operation.</p>
+<p>Here are some screenshots from the fixes this month:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-floattable9/2023-10-03-floattable-nested3.png"><figure><img src="https://share.vmiklos.hu/blog/sw-floattable9/2023-10-03-floattable-nested3.png"><figcaption>Old, new and reference rendering of a 3 nested, multi-page floating tables</figcaption></figure></a></p>
+<p>The first screenshot shows a case where multi-page floating tables are nested. For this document, we
+not only have an inner and an out table, but we also have a middle one, giving us 3 nesting tables.
+Some of the inner table frames had a bad position, leading to overlapping text, now fixed.</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-floattable9/2023-10-16-floattable-wraponallpages.png"><figure><img src="https://share.vmiklos.hu/blog/sw-floattable9/2023-10-16-floattable-wraponallpages.png"><figcaption>Old, new and reference rendering of wrapping on all pages</figcaption></figure></a></p>
+<p>The next screenshot shows the case where the magic <code>allowTextAfterFloatingTableBreak</code> flag is set.
+We used to wrap content of the anchor only on the last page, unconditionally. Now we either wrap on
+the last page (default) or on all pages (when this flag is present).</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-floattable9/2023-10-24-floattable-overlap.png"><figure><img src="https://share.vmiklos.hu/blog/sw-floattable9/2023-10-24-floattable-overlap.png"><figcaption>Old, new and reference rendering of overlapping floating tables.</figcaption></figure></a></p>
+<p>The last screenshot shows a document full of floating tables. These used to be inline ones, and then
+they could not overlap by definition, but now extra effort was needed to position them in a way that
+no overlap happens between the tables. Now our render result matches Word.</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>As usual, the high-level problem was addressed by a series of small changes:</p>
+<ul>
+<li><a href="https://git.libreoffice.org/core/commit/695390b08799af34b393c81c834d615bea330d89">tdf#126449 sw floattable: fix too small height of non-last anchors</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/89a75cd194371002247d0138e759835bc673f7b0">tdf#126449 sw floattable: DOC import: handle inner floating table</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/2d6f48d53674ee85179ec8cee8648830207200a2">sw floattable, crashtesting: fix PDF export of fdo56210-3.docx</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/d530651e4e70febb1046727e85a8edcda610d722">crashtesting: fix PDF export of fdo45193-1.docx</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/4a5fb05d5e2448453477ce14862a8cf9846ecb49">tdf#157571 sw floattable: fix incorrect blank space after table-in-shape</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/6b9378154f9b504b9e924fe4565df444786e7d73">sw floattable, crashtesting: fix PDF export of ooo91654-1.doc</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/5b9249e950165015ba57cc2c0503381df9751bf6">sw floattable: add an AllowTextAfterFloatingTableBreak compat flag</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/7d7ca347fafa7a06094b00e8fb0d0452c4c81366">sw floattable, wrap on all pages: add layout</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/33ade4171a1a443fd24e6463a9eaa279f7d778bb">sw floattable, wrap on all pages: add DOCX filter</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/626fe9ab5ebebc4ef36e35f4aa597c03a3564d22">tdf#157573 sw floattable: fix incorrect lack of left margin after table</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/65f508b44ecbc20c8bd5172d1656639f686730ff">tdf#157573 sw floattable: add missing testcase</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/8e03dfd6a4bff4eabf779ace9b758b49cf80f8ba">tdf#157590 sw floattable: avoid hang in the nested + row span case</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/5e7f7917fd589f661982d481a45bf84337e4c03c">sw floattable: remove now unused FloattableNomargins compat flag</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/612629f4a81acd7b851b7eccc97aba9a5915d13c">tdf#155040 sw floattable, RTF: fix table is overlapped by subsequent inline one</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/9704f61982360ce35983a61cca3fd00bbdf51ab6">tdf#155682 sw floattable: fix DOCX with big pictures causes endless loop</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/d6527f127622f23ac529ce667fac5ff69ea33ea4">Related: tdf#157590 sw floattable: avoid a bit of not needed work</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/8ad82fc115a337604c064d37adfffcc81440248e">sw floattable: fix nullptr deref in TableManager::endLevel()</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/435f1aadf7dd8087a8997924bedfccff0f496ba2">tdf#99822 sw floattable: allow nomimal overlap of objects from different cells</a></li>
+</ul>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a snapshot / demo of Collabora Office 23.05 and try it out yourself right now: <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try the
+unstable snapshot</a>.  Collabora
+intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
+of this work will be available in TDF's next release too (24.2).</p>
+  </div>
+  <div class="article_meta">
+    <p>Category: <a href="https://vmiklos.hu/blog/category/libreoffice.html">libreoffice</a>
+ &ndash; Tags:
+      <a href="https://vmiklos.hu/blog/tag/en.html">en</a>    </p>
+  </div>
+
+
+</article>
+
+
+    <div id="ending_message">
+      <p>&copy; Miklos Vajna. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
+</body>
+</html>

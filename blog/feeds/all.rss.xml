@@ -1,5 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>What is Miklos hacking</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Tue, 03 Oct 2023 08:26:55 +0200</lastBuildDate><item><title>Multi-page floating tables in Writer: nested tables</title><link>https://vmiklos.hu/blog/sw-floattable8.html</link><description>&lt;p&gt;This post is part of a series to describe how Writer now gets a feature to handle tables that are
+<rss version="2.0"><channel><title>What is Miklos hacking</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Tue, 07 Nov 2023 14:35:34 +0100</lastBuildDate><item><title>Multi-page floating tables in Writer: wrap on all pages</title><link>https://vmiklos.hu/blog/sw-floattable9.html</link><description>&lt;p&gt;This post is part of a series to describe how Writer now gets a feature to handle tables that are
+both floating and span over multiple pages.&lt;/p&gt;
+&lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraoffice.com/"&gt;Collabora Online&lt;/a&gt;, but is useful on
+the desktop as well. See the &lt;a href="https://vmiklos.hu/blog/sw-floattable8.html"&gt;8th post&lt;/a&gt; for the previous part.&lt;/p&gt;
+&lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Multi-page floating tables always wrapped their anchor text only on the last page, to be compatible
+with Word's default behavior. There is a special flag in DOCX files to wrap on all pages, though. In
+this part, you can read about handling of this flag in Writer.&lt;/p&gt;
+&lt;h2 id="results-so-far"&gt;Results so far&lt;a class="headerlink" href="#results-so-far" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Regarding testing of the floating table feature in general, the core.git repository has 84 files now which are focusing on correct
+handling of floating tables (filenames matching &lt;code&gt;floattable-|floating-table-&lt;/code&gt;). This doesn't count
+cases where the document model is built using C++ code in the memory and then we assert the result
+of some operation.&lt;/p&gt;
+&lt;p&gt;Here are some screenshots from the fixes this month:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-floattable9/2023-10-03-floattable-nested3.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable9/2023-10-03-floattable-nested3.png"&gt;&lt;figcaption&gt;Old, new and reference rendering of a 3 nested, multi-page floating tables&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;The first screenshot shows a case where multi-page floating tables are nested. For this document, we
+not only have an inner and an out table, but we also have a middle one, giving us 3 nesting tables.
+Some of the inner table frames had a bad position, leading to overlapping text, now fixed.&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-floattable9/2023-10-16-floattable-wraponallpages.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable9/2023-10-16-floattable-wraponallpages.png"&gt;&lt;figcaption&gt;Old, new and reference rendering of wrapping on all pages&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;The next screenshot shows the case where the magic &lt;code&gt;allowTextAfterFloatingTableBreak&lt;/code&gt; flag is set.
+We used to wrap content of the anchor only on the last page, unconditionally. Now we either wrap on
+the last page (default) or on all pages (when this flag is present).&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-floattable9/2023-10-24-floattable-overlap.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable9/2023-10-24-floattable-overlap.png"&gt;&lt;figcaption&gt;Old, new and reference rendering of overlapping floating tables.&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;The last screenshot shows a document full of floating tables. These used to be inline ones, and then
+they could not overlap by definition, but now extra effort was needed to position them in a way that
+no overlap happens between the tables. Now our render result matches Word.&lt;/p&gt;
+&lt;h2 id="how-is-this-implemented"&gt;How is this implemented?&lt;a class="headerlink" href="#how-is-this-implemented" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;If you would like to know a bit more about how this works, continue reading... :-)&lt;/p&gt;
+&lt;p&gt;As usual, the high-level problem was addressed by a series of small changes:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/695390b08799af34b393c81c834d615bea330d89"&gt;tdf#126449 sw floattable: fix too small height of non-last anchors&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/89a75cd194371002247d0138e759835bc673f7b0"&gt;tdf#126449 sw floattable: DOC import: handle inner floating table&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/2d6f48d53674ee85179ec8cee8648830207200a2"&gt;sw floattable, crashtesting: fix PDF export of fdo56210-3.docx&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/d530651e4e70febb1046727e85a8edcda610d722"&gt;crashtesting: fix PDF export of fdo45193-1.docx&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/4a5fb05d5e2448453477ce14862a8cf9846ecb49"&gt;tdf#157571 sw floattable: fix incorrect blank space after table-in-shape&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/6b9378154f9b504b9e924fe4565df444786e7d73"&gt;sw floattable, crashtesting: fix PDF export of ooo91654-1.doc&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/5b9249e950165015ba57cc2c0503381df9751bf6"&gt;sw floattable: add an AllowTextAfterFloatingTableBreak compat flag&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/7d7ca347fafa7a06094b00e8fb0d0452c4c81366"&gt;sw floattable, wrap on all pages: add layout&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/33ade4171a1a443fd24e6463a9eaa279f7d778bb"&gt;sw floattable, wrap on all pages: add DOCX filter&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/626fe9ab5ebebc4ef36e35f4aa597c03a3564d22"&gt;tdf#157573 sw floattable: fix incorrect lack of left margin after table&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/65f508b44ecbc20c8bd5172d1656639f686730ff"&gt;tdf#157573 sw floattable: add missing testcase&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/8e03dfd6a4bff4eabf779ace9b758b49cf80f8ba"&gt;tdf#157590 sw floattable: avoid hang in the nested + row span case&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/5e7f7917fd589f661982d481a45bf84337e4c03c"&gt;sw floattable: remove now unused FloattableNomargins compat flag&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/612629f4a81acd7b851b7eccc97aba9a5915d13c"&gt;tdf#155040 sw floattable, RTF: fix table is overlapped by subsequent inline one&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/9704f61982360ce35983a61cca3fd00bbdf51ab6"&gt;tdf#155682 sw floattable: fix DOCX with big pictures causes endless loop&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/d6527f127622f23ac529ce667fac5ff69ea33ea4"&gt;Related: tdf#157590 sw floattable: avoid a bit of not needed work&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/8ad82fc115a337604c064d37adfffcc81440248e"&gt;sw floattable: fix nullptr deref in TableManager::endLevel()&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/435f1aadf7dd8087a8997924bedfccff0f496ba2"&gt;tdf#99822 sw floattable: allow nomimal overlap of objects from different cells&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="want-to-start-using-this"&gt;Want to start using this?&lt;a class="headerlink" href="#want-to-start-using-this" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;You can get a snapshot / demo of Collabora Office 23.05 and try it out yourself right now: &lt;a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/"&gt;try the
+unstable snapshot&lt;/a&gt;.  Collabora
+intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
+of this work will be available in TDF's next release too (24.2).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Tue, 07 Nov 2023 14:35:34 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2023-11-07:/blog/sw-floattable9.html</guid><category>libreoffice</category><category>en</category></item><item><title>Multi-page floating tables in Writer: nested tables</title><link>https://vmiklos.hu/blog/sw-floattable8.html</link><description>&lt;p&gt;This post is part of a series to describe how Writer now gets a feature to handle tables that are
 both floating and span over multiple pages.&lt;/p&gt;
 &lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraoffice.com/"&gt;Collabora Online&lt;/a&gt;, but is useful on
 the desktop as well. See the &lt;a href="https://vmiklos.hu/blog/sw-floattable7.html"&gt;seventh post&lt;/a&gt; for the previous part.&lt;/p&gt;
@@ -1112,75 +1165,4 @@ document macros or extensions as well.&lt;/p&gt;
 &lt;p&gt;You can get a snapshot / demo of Collabora Office 22.05 and try it out yourself right now: &lt;a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/"&gt;try the
 unstable snapshot&lt;/a&gt;.  Collabora
 intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF's next release too (7.6).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Mon, 06 Feb 2023 08:45:24 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2023-02-06:/blog/sw-zotero-plumbing.html</guid><category>libreoffice</category><category>en</category></item><item><title>Improved number portion formatting in Writer</title><link>https://vmiklos.hu/blog/sw-number-portion.html</link><description>&lt;p&gt;Number portions generated when using lists/numberings/bullets in Writer now can have formatting
-which is preserved in ODT files as well.&lt;/p&gt;
-&lt;p&gt;First, thanks &lt;a href="https://www.docmosis.com/"&gt;Docmosis&lt;/a&gt; for funding this work by
-&lt;a href="https://www.collaboraoffice.com/"&gt;Collabora&lt;/a&gt;.&lt;/p&gt;
-&lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;Word and DOCX files support explicit character properties for the paragraph marker, and these are
-also used for the formatting of a number portion if the paragraph has one. This was already loaded
-from / saved to DOCX, but it was lost when saving to ODT.&lt;/p&gt;
-&lt;h2 id="results-so-far"&gt;Results so far&lt;a class="headerlink" href="#results-so-far" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;First, we got a bug document, where the reference rendering and our rendering differed:&lt;/p&gt;
-&lt;p&gt;
-&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-number-portion/sw-number-portion-1.png"&gt;&lt;figcaption&gt;Reference (on the left) and our old (on the right) rendering, due to bookmarks&lt;/figcaption&gt;
-&lt;/figure&gt;
-&lt;/p&gt;
-&lt;p&gt;In this case, what happened was that part of the heading text was covered by a bookmark, so we first
-created multiple character ranges (outside the bookmark, inside the bookmark), then as an
-optimization we even unified them to be a single formatted character range, covering the entire
-paragraph. This was a document model that is different from the bookmark-free version, where the
-character formatting was set on the paragraph itself.&lt;/p&gt;
-&lt;p&gt;This was fixed at render time and at DOCX export time to consider both full-paragraph character
-ranges and in-paragraph character properties. For a while, this looked like the entire story, since
-this now looks good in Writer:&lt;/p&gt;
-&lt;p&gt;
-&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-number-portion/sw-number-portion-1good.png"&gt;&lt;figcaption&gt;Our new rendering, handling bookmarks&lt;/figcaption&gt;
-&lt;/figure&gt;
-&lt;/p&gt;
-&lt;p&gt;A bit later another, related bug was discovered. Given a reference document:&lt;/p&gt;
-&lt;p&gt;
-&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-number-portion/sw-number-portion-2-ref.png"&gt;&lt;figcaption&gt;Reference rendering of a second document&lt;/figcaption&gt;
-&lt;/figure&gt;
-&lt;/p&gt;
-&lt;p&gt;Just opening this DOCX file in Writer, it looked like this:&lt;/p&gt;
-&lt;p&gt;
-&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-number-portion/sw-number-portion-3-import.png"&gt;&lt;figcaption&gt;Old rendering in Writer&lt;/figcaption&gt;
-&lt;/figure&gt;
-&lt;/p&gt;
-&lt;p&gt;Note how the first number portion turned into bold! This was expected after the above layout change
-to consider full-paragraph formatted character ranges, but it also meant that Word can have one
-set of character formatting for the entire character range of a paragraph, and another for the
-paragraph marker.&lt;/p&gt;
-&lt;p&gt;To make the problem worse, this second document was showing that even the ODT export/export feature
-had problems, still:&lt;/p&gt;
-&lt;p&gt;
-&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-number-portion/sw-number-portion-4-odf.png"&gt;&lt;figcaption&gt;Old rendering in Writer after ODT save + load&lt;/figcaption&gt;
-&lt;/figure&gt;
-&lt;/p&gt;
-&lt;p&gt;The fix to solve all of the above was to undo the previous render / DOCX export change, then teach
-the ODT export to explicitly save the paragraph marker formatting (as an empty span at the end of
-the text node) to ODT, and also to load it back.&lt;/p&gt;
-&lt;p&gt;This means that now Writer can render the second document correctly, without breaking the first
-document:&lt;/p&gt;
-&lt;p&gt;
-&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-number-portion/sw-number-portion-5-good.png"&gt;&lt;figcaption&gt;New rendering in Writer&lt;/figcaption&gt;
-&lt;/figure&gt;
-&lt;/p&gt;
-&lt;h2 id="how-is-this-implemented"&gt;How is this implemented?&lt;a class="headerlink" href="#how-is-this-implemented" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;If you would like to know a bit more about how this works, continue reading... :-)&lt;/p&gt;
-&lt;p&gt;As usual, the high-level problem was addressed by a series of small changes:&lt;/p&gt;
-&lt;!-- s/\([^ ]\+\) \(.*\)/- [\2](https:\/\/git.libreoffice.org\/core\/commit\/\1)/g --&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/e6907bc15cfa3c561d4aafbcc92eff291dc68cdd"&gt;sw, numbering portion format: consider full-para char formats as well&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/dfba56830288b381eaaaf6b8f9454834301497db"&gt;DOCX export, numbering portion format: consider full-para char formats as well&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/585d440df98ff3b967c191908ac2d4b2f7e29326"&gt;sw, numbering portion format: ignore char formats covering the entire paragraph&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/3998b98749739b2c499ffc4d83188e1034b66750"&gt;sw: ODT import/export of DOCX's paragraph marker formatting&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/4634a27dd6f762168b3d7820326611b20b7d385c"&gt;sw: fix ODT import of paragraph marker formatting&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id="want-to-start-using-this"&gt;Want to start using this?&lt;a class="headerlink" href="#want-to-start-using-this" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;You can get a snapshot / demo of Collabora Office 22.05 and try it out yourself right now: &lt;a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/"&gt;try the
-unstable snapshot&lt;/a&gt;.  Collabora
-intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF's next release too (7.6).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Tue, 03 Jan 2023 08:30:40 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2023-01-03:/blog/sw-number-portion.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
+of this work will be available in TDF's next release too (7.6).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Mon, 06 Feb 2023 08:45:24 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2023-02-06:/blog/sw-zotero-plumbing.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
