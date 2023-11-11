@@ -126,6 +126,7 @@ These are tutorials I found very useful before jumping into an actual spec.
 - [why no change detector tests](https://testing.googleblog.com/2015/01/testing-on-toilet-change-detector-tests.html)
 - [why no GC](https://blog.discordapp.com/why-discord-is-switching-from-go-to-rust-a190bbca2b1f) (if performance is critical)
 - [why don't publish depend on google play store](https://blog.pushbullet.com/2022/10/27/how-we-became-the-worlds-foremost-expert-on-google-play-store-policy-violations/)
+- [why no Oracle](https://lwn.net/Articles/935092/)
 
 # recipe
 
