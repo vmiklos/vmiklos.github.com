@@ -100,7 +100,7 @@ These are tutorials I found very useful before jumping into an actual spec.
 
 # pdf
 
-- [pdfnup](http://go.warwick.ac.uk/pdfjam): `pdfnup --no-landscape -o out.pdf --nup 2x2 in1.pdf in2.pdf in3.pdf in4.pdf`
+- [pdfnup](https://github.com/rrthomas/pdfjam-extras/blob/master/bin/pdfnup): `pdfnup --landscape -o out.pdf --nup 2x1 in.pdf`
 
 # python
 
