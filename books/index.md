@@ -55,6 +55,8 @@ Notes:
 and read in parallel
 --->
 
+  - [David Drysdale: A collection of specific ways to improve your use of Rust](https://www.lurklurk.org/effective-rust/)
+
 - Objective-C Programming
 
   - [The Objective-C Programming Language](http://andrewd.ces.clemson.edu/courses/cpsc102/notes/ObjC.pdf)
