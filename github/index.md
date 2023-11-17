@@ -32,3 +32,6 @@ title: GitHub status
 [![tests](https://github.com/vmiklos/turtle-cpm/workflows/tests/badge.svg)](https://github.com/vmiklos/turtle-cpm/actions)
 [![news](https://shields.io/badge/-news-blue)](https://vmiklos.hu/turtle-cpm/news.html)
 [![issues](https://img.shields.io/github/issues/vmiklos/turtle-cpm.svg)](https://github.com/vmiklos/turtle-cpm/issues)
+
+- vmexam status:
+[![tests](https://github.com/vmiklos/vmexam/workflows/tests/badge.svg)](https://github.com/vmiklos/vmexam/actions)
