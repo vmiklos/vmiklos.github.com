@@ -59,6 +59,59 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/virtualdevice-leak.html">8884 VirtualDevices</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Tue 18 August 2015</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div style="text-align: center; font-size: 0.6em;">
+<img src="https://lh3.googleusercontent.com/-RAsPMFc8JVk/VdH9h_W4r_I/AAAAAAAAF6U/PDpQIbBtPKg/s475-Ic42/"/>
+<p>(via <a href="http://www.teq.com/smart-pointers">teq</a>)</p>
+</div>
+<div class="paragraph"><p>If you are into C++ programming, you probably know that smart pointers are
+not just literally strange things like the above ones. ;-) LibreOffice 5.0 got
+<a href="https://gerrit.libreoffice.org/gitweb?p=core.git;a=blob;f=vcl/README.lifecycle;h=6b5cbd6e8df4bcc77b28b0e296e50a96ca8899a0;hb=HEAD">VclPtr</a>,
+which is smart pointer specialized to VCL&#8217;s needs.</p></div>
+<div class="paragraph"><p>Such refactorings are good things, except that there is no huge rework without
+regressions. In <a href="https://bugs.documentfoundation.org/show_bug.cgi?id=93284">this
+case</a> the WMF filter had 3 places where we were leaking VirtualDevices due to
+a misconversion to the new VclPtr API. The problem was that the document had
+135 images, WMF files to be exact. Now given that the leaks were during
+parsing of WMF records (a WMF file consists of multiple WMF records), at the
+end we leaked 8884 VirtualDevices. At first the problem was seen as
+Windows-specific, as at least X on Linux has no problem with creating that
+many VirtualDevices, but Windows' default resource limits are hit in this
+case.</p></div>
+<div class="paragraph"><p>A note about testing this bugfix effectively, so it never happens again. The
+problem was that I wanted to create a minimal reproducer, but I also needed a
+document with lots of WMF images, each complex enough to trigger the resource
+limit. At the end I manually created a DOCX file that had the same image
+copy&amp;pasted multiple times: that way we really imported them multiple times
+(normally we notice that they&#8217;re the same, and only save the image to the file
+once, and put multiple references to it), and because DOCX is also a ZIP
+container, the test file can be still only 99KB instead of the original 17MB
+RTF.</p></div>
+<div class="paragraph"><p>Thanks to the
+<a href="https://wiki.documentfoundation.org/QA/Bibisect/Windows#Versions">4.4 &#8594; 5.0
+Windows bibisect repo</a>, it was immediately obvious that this is a VclPtr
+problem, and then it was possible to identify the root cause, and finally see
+that the bug title mentioning RTF was just container of the WMF images in this
+case, the problem had nothing to with with RTF and the leak wasn&#8217;t
+Windows-specific, either.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/mail-merge-embedding.html">Mail merge embedding</a></h1>
   </div>
   <div class="article_meta">
@@ -597,134 +650,6 @@ so that LOK callbacks always emit coordinates in twips.</p></div>
 <div class="paragraph"><p>We also prepared more in-depth technical documentation about the Android
 editing work, <code>libreofficekit/README</code> and <code>android/README</code> now has much more
 details about how exactly the editing works.</p></div>
-<div class="paragraph"><p>That&#8217;s it for now&#8201;&#8212;&#8201;as usual the commits are in master (a few of them is only
-in feature/tiled-editing for now), so you can try this right now, or wait till
-the next Tuesday and get the
-<a href="http://dev-builds.libreoffice.org/daily/master/Android-ARM@24-Bytemark-Hosting/current/">Android
-daily build</a>. :-)</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/tiled-editing-part-4.html">Android editing: from selections to graphic handling</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Thu 19 March 2015</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 3 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>In <a href="https://vmiklos.hu/blog/tiled-editing-part-3.html">from input handling to
-selections</a>, I wrote about how we let LibreOffice Android app draw the
-selections around text content natively. A next step in this
-<a href="http://blog.documentfoundation.org/2015/01/27/the-document-foundation-announces-the-results-of-the-android-tender/">TDF-funded
-project</a> is to provide selections around more UI elements: images and shapes.</p></div>
-<div class="paragraph"><p>Here are a number of challenges we (<a href="http://tomazvajngerl.blogspot.com/">Tomaž Vajngerl</a> and me) faced while we implemented this:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-On Linux (the desktop), the move and resize operations are really similar:
-  if you click near a resize handle (you "hit it"), then it&#8217;ll be a resize,
-  otherwise it&#8217;ll be a move. Defining "near" means that you don&#8217;t have to
-  click exactly at the center of the handle, but we allow some tolerance. Turns
-  out that the tolerance depended on the pixel size of the handle drawn on the
-  desktop: and because we don&#8217;t package the bitmaps of the desktop UI, that
-  tolerance was 0.
-</p>
-</li>
-<li>
-<p>
-Writer normally requires a click and a double-click to start editing shape
-  text. One to select the shape and another to actually start the text
-  editing. Instead of literally translating this to a tap and a long push, we
-  wanted to start text editing right away if the user tapped on shape text.
-</p>
-</li>
-<li>
-<p>
-Shape text doesn&#8217;t use the normal Writer text, but editeng&#8201;&#8212;&#8201;used by
-  Impress and Calc, too. So we had to instrument the editeng module as well to
-  expose the blinking cursor, so that if you tap inside the editeng text, you
-  have some feedback where you are. Same is true for the cursor handle: once we
-  knew where the cursor is, we could draw the cursor handle, but dragging it did
-  nothing: now the <code>setTextSelection()</code> LOK API handles the case when the cursor
-  is inside editeng text and can adjust the cursor position there, too.
-</p>
-</li>
-<li>
-<p>
-On Linux, users got used to the following resize behavior: when images are
-  resized, the aspect ratio is kept, but this is not the case for shapes. We
-  wanted to keep this behavior on Android, too.
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>If you are interested how this looks like, here is a demo (click on the image to see the video):</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="http://youtu.be/bTWLz_4YQtA">
-<img src="https://lh5.googleusercontent.com/-JEuiW789JEM/VQqrR8zDHjI/AAAAAAAAFVo/ORgDKNBIIJA/s800/" alt="https://lh5.googleusercontent.com/-JEuiW789JEM/VQqrR8zDHjI/AAAAAAAAFVo/ORgDKNBIIJA/s800/" />
-</a>
-</div>
-</div>
-<div class="paragraph"><p>Notice how the word selection in a table turns into a table selection, or how
-a long push inside an empty cell creates a selection containing only the empty
-cell.</p></div>
-<div class="paragraph"><p>An other direction we&#8217;re working towards is to show / hide the soft keyboard
-of Android as you would expect it. On Linux, it&#8217;s easy: the keyboard is always
-available. However on Android you should track when it makes sense to use the
-keyboard and when not&#8201;&#8212;&#8201;and show/hide automatically according to the context.
-Examples:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-When you tap inside text, we show the keyboard.
-</p>
-</li>
-<li>
-<p>
-When you finish editing, we hide it.
-</p>
-</li>
-<li>
-<p>
-When you start scrolling, we hide it.
-</p>
-</li>
-<li>
-<p>
-When you select an image, we hide it.
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>Additionally, we need to handle the situation when this automagic goes wrong.
-The Android soft keyboard has a button to hide itself, but we added a toolbar
-button to force-show it, too (click on the image to see the video):</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="http://youtu.be/36MsGe-7Mpo">
-<img src="https://lh6.googleusercontent.com/-rUxX9gC9z4M/VQqrR0rIyMI/AAAAAAAAFVk/y5GluM-u5eg/s800/" alt="https://lh6.googleusercontent.com/-rUxX9gC9z4M/VQqrR0rIyMI/AAAAAAAAFVk/y5GluM-u5eg/s800/" />
-</a>
-</div>
-</div>
-<div class="paragraph"><p>Finally, <a href="https://siqi43.wordpress.com/">Siqi Liu</a> added a new callback type,
-allowing to tap on hyperlinks and handle them according to how you
-configured URL handling on your Android device. Here is a demo to show this in
-action:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="http://youtu.be/dBcGVu5pcSk">
-<img src="https://lh6.googleusercontent.com/-tNnSAiN3p-o/VQqrR5UslSI/AAAAAAAAFVg/xCbkq7-Vark/s800/" alt="https://lh6.googleusercontent.com/-tNnSAiN3p-o/VQqrR5UslSI/AAAAAAAAFVg/xCbkq7-Vark/s800/" />
-</a>
-</div>
-</div>
 <div class="paragraph"><p>That&#8217;s it for now&#8201;&#8212;&#8201;as usual the commits are in master (a few of them is only
 in feature/tiled-editing for now), so you can try this right now, or wait till
 the next Tuesday and get the
