@@ -28,6 +28,14 @@ Favorite feature: aarch64.
 - Camera: [Logitech HD Webcam C270](https://www.logitech.com/en-us/products/webcams/c270-hd-webcam.960-000694.html) (2020)
 - [TRENDNET 2-Port HDMI KVM Switch](https://www.trendnet.com/products/KVM-2-Port-switch/TK-215i) (2020)
 
+## ThinkPad T14 Gen 4
+
+- CPU: Intel® Core™ i7-1355U (10 cores, 12 threads)
+- Memory: 32GB
+- Storage: 2TB SSD
+- Display: 14" (1920x1200)
+- [more](https://www.lenovo.com/us/en/p/laptops/thinkpad/thinkpadt/thinkpad-t14-gen-4-(14-inch-intel)/len101t0057)
+
 ## ThinkPad T580
 
 - In use: 2019 -
