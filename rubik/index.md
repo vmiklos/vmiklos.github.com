@@ -9,3 +9,8 @@ title: Rubik cheat sheets
 
 Based on [the
 book](https://bookline.hu/product/home.action?_v=Rubik_Erno_A_buvos_kocka&type=20&id=147099).
+
+# Solver
+
+- [try it](https://share.vmiklos.hu/pages/rubik/)
+- [demo](https://share.vmiklos.hu/pages/rubik/?faces=ULFLULURBRULDRFDUBRDUBFLBDRUBFDDBBUDFFFFLRRFLDBLUBRLRD)
