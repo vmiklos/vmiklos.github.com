@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/pygments.css">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Miklos Vajna">
+  <meta name="description" content="Posts and writings by Miklos Vajna">
+
+  <link href="https://vmiklos.hu/blog/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking RSS" />
+
+<meta name="keywords" content="en">
+
+  <title>
+    What is Miklos hacking
+&ndash; Multi-page floating tables in Writer: tables wrapping tables  </title>
+
+<script type="text/javascript">
+  var _paq = window._paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//analytics.vmiklos.hu/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '1']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <h2><a href="https://vmiklos.hu/blog">What is Miklos hacking</a></h2>
+      <p></p>
+      <ul>
+        <li><a href="/" target="_blank">Root</a></li>
+        <li><a href="https://planet.documentfoundation.org/" target="_blank">LibreOffice Blogs</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://vmiklos.hu/blog">Index</a> &brvbar; <a href="https://vmiklos.hu/blog/archives.html">Archives</a>
+      &brvbar; <a href="https://vmiklos.hu/blog/feeds/all.rss.xml">RSS</a>
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sw-floattable11.html">Multi-page floating tables in Writer: tables wrapping tables</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Wed 03 January 2024</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 3 minutes</p>
+  </div>
+  <div class="article_text">
+    <p>This post is part of a series to describe how Writer now gets a feature to handle tables that are
+both floating and span over multiple pages.</p>
+<p>This work is primarily for <a href="https://www.collaboraoffice.com/">Collabora Online</a>, but is useful on
+the desktop as well. See the <a href="https://vmiklos.hu/blog/sw-floattable10.html">10th post</a> for the previous part.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>Previous posts described the hardest part of multi-page floating tables: making sure that text can
+wrap around them and they can split across pages. In this part, we'll look at a case where that
+content is not just text, but the wrapping content itself is also a table.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>Regarding testing of the floating table feature in general, the core.git repository has 92 files now
+which are focusing on correct handling of floating tables (filenames matching
+<code>floattable-|floating-table-</code>). This doesn't count cases where the document model is built using C++
+code in the memory and then we assert the result of some operation.</p>
+<p>Here are some screenshots from the improvements this month:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-floattable11/2023-12-01-floattable-click-correct.png"><figure><img src="https://share.vmiklos.hu/blog/sw-floattable11/2023-12-01-floattable-click-correct.png"><figcaption>Improved click handling near the first page of a floating table</figcaption></figure></a></p>
+<p>The first screenshot shows a situation where the mouse cursor is near the right edge of the first
+page of a floating table. What used to happen is we found this position close to the invisible
+anchor of the floating table on that page, then corrected this position to be at the real anchor on
+the last page. In short, the user clicked on one page and we jumped to the last page. This is now
+fixed, we notice that part of the floating table is close to the click position and we correct the
+cursor to be at the closest position inside the table's content.</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-floattable11/2023-12-05-floattable-tablewrap.png"><figure><img src="https://share.vmiklos.hu/blog/sw-floattable11/2023-12-05-floattable-tablewrap.png"><figcaption>A floating table, wrapped by an inline table: old, new and reference rendering</figcaption></figure></a></p>
+<p>The next screenshot shows a floating table where the content wrapping around the table happens to be
+an inline table. You can see how such wrapping didn't happen in the past, and the new rendering is
+close to the reference now.</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>As usual, the high-level problem was addressed by a series of small changes:</p>
+<ul>
+<li><a href="https://git.libreoffice.org/core/commit/f461853b11439c4e485a79174d34735395e5bf52">sw floattable: fix finding the nearest text in split flys on mouse click</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/868140fcc1311259b9d5f666637b33d226511a53">tdf#60558 sw floattable: allow wrap of table on the right of a floattable</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/0746d13365139c356eb9d297a358c486bf47d6fb">sw floattable: fix split of anchor text in 2nd half of the paragraph</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/d852e27ed205c1a60de0979b80f3861bf93c44ae">sw floattable: fix split of anchor text at para start</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/5fec60b4732bdbdb681be08e43a9be47c3bfb320">sw floattable: fix outdated text frame portions after split</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/4e8895d3d86db3776c56070c395cd727fd4b9101">sw floattable: disable UI to enable this when anchored inside TextBox</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/164fb25f7b2db7d833d6d0f28e49c5cac68426b3">tdf#158686 sw floattable: fix print preview crash</a></li>
+</ul>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a snapshot / demo of Collabora Office 23.05 and try it out yourself right now: <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try the
+unstable snapshot</a>.  Collabora
+intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
+of this work will be available in TDF's next release too (24.8).</p>
+  </div>
+  <div class="article_meta">
+    <p>Category: <a href="https://vmiklos.hu/blog/category/libreoffice.html">libreoffice</a>
+ &ndash; Tags:
+      <a href="https://vmiklos.hu/blog/tag/en.html">en</a>    </p>
+  </div>
+
+
+</article>
+
+
+    <div id="ending_message">
+      <p>&copy; Miklos Vajna. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
+</body>
+</html>
