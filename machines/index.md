@@ -30,35 +30,12 @@ Favorite feature: aarch64.
 
 ## ThinkPad T14 Gen 4
 
+- In use: 2024 -
 - CPU: Intel® Core™ i7-1355U (10 cores, 12 threads)
 - Memory: 32GB
 - Storage: 2TB SSD
 - Display: 14" (1920x1200)
 - [more](https://www.lenovo.com/us/en/p/laptops/thinkpad/thinkpadt/thinkpad-t14-gen-4-(14-inch-intel)/len101t0057)
-
-## ThinkPad T580
-
-- In use: 2019 -
-- CPU: 8 x Intel Core i7-8550U CPU @ 1.80GHz
-- Memory: 16GB
-- Storage: 1TB SSD
-- Display: 15.6" (1920x1080)
-- [more](https://www.lenovo.com/us/en/laptops/thinkpad/thinkpad-t-series/T580/p/22TP2TT5800)
-- External mouse: [ThinkPad Bluetooth Silent Mouse](https://www.lenovo.com/us/en/accessories-and-monitors/keyboards-and-mice/mice/MICE-BO-ThinkPad-BT-Silent-Mouse/p/4Y50X88822) (2020)
-
-Favorite feature: 32Wh + 24Wh Li-Ion battery
-
-```
-$ acpi -i
-Battery 0: design capacity 2063 mAh, last full capacity 1986 mAh = 96%
-Battery 1: design capacity 2177 mAh, last full capacity 2171 mAh = 99%
-
-Battery 0: Full, 100%
-Battery 1: Discharging, 100%, 05:34:58 remaining
-...
-Battery 0: Discharging, 99%, 05:36:15 remaining
-Battery 1: Unknown, 5%
-```
 
 ## Google Pixel 6a
 
@@ -161,14 +138,29 @@ Favorite feature: reliable security.
 
 # Other active machines I admin
 
-## Lenovo ThinkPad E570
+## ThinkPad T580
 
-- In use: 2018 -
-- CPU: 4 x Intel Core i7-7500U CPU @ 2.70GHz
-- Memory: 8GB
-- Storage: 256GB SSD
+- In use: 2019 -
+- CPU: 8 x Intel Core i7-8550U CPU @ 1.80GHz
+- Memory: 16GB
+- Storage: 1TB SSD
 - Display: 15.6" (1920x1080)
-- [more](https://www.lenovo.com/us/en/laptops/thinkpad/thinkpad-e-series/Thinkpad-E570/p/22TP2TEE570)
+- [more](https://www.lenovo.com/us/en/laptops/thinkpad/thinkpad-t-series/T580/p/22TP2TT5800)
+- External mouse: [ThinkPad Bluetooth Silent Mouse](https://www.lenovo.com/us/en/accessories-and-monitors/keyboards-and-mice/mice/MICE-BO-ThinkPad-BT-Silent-Mouse/p/4Y50X88822) (2020)
+
+Favorite feature: 32Wh + 24Wh Li-Ion battery
+
+```
+$ acpi -i
+Battery 0: design capacity 2063 mAh, last full capacity 1986 mAh = 96%
+Battery 1: design capacity 2177 mAh, last full capacity 2171 mAh = 99%
+
+Battery 0: Full, 100%
+Battery 1: Discharging, 100%, 05:34:58 remaining
+...
+Battery 0: Discharging, 99%, 05:36:15 remaining
+Battery 1: Unknown, 5%
+```
 
 ## Cat S42
 
