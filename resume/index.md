@@ -66,7 +66,7 @@ Rust: https://github.com/matrix-org/matrix-ircd/pull/75
 # Professional experience
 
 - Consultant Productivity Senior Software Engineer, [Collabora](http://www.collabora.com/) (2013-).
-  A selection of majors LibreOffice / Collabora Online features I worked on:
+  A selection of major LibreOffice / Collabora Online features I worked on:
 
   - Writer comments on text ranges -- and later on images (2012)
   - Writer RTF import/export and DOT export filters (2013)
@@ -79,6 +79,7 @@ Rust: https://github.com/matrix-org/matrix-ircd/pull/75
   - New Writer numbering types to improve DOCX support (2020)
   - New gutter margin type in Writer (2021)
   - New inline content controls in Writer (2022)
+  - Multi-page floating table support in Writer (2023)
 
 - LibreOffice developer, [SUSE](http://www.suse.com/). (2012-2013)
 
