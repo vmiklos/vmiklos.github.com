@@ -30,6 +30,10 @@ Phab bugs:
   [reported phab bugs](https://phabricator.collabora.com/search/query/H.Q.Ls2nxEAI/#R)
   ]
 
+Collabora Online bugs:
+
+- [bugs I fixed](https://github.com/CollaboraOnline/online/issues?q=is%3Aissue+is%3Aclosed+assignee%3Avmiklos)
+
 # English style bookmarks
   
 - past tense in status reports
