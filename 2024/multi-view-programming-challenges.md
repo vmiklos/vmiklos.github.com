@@ -37,7 +37,7 @@ synchronously (while the clicking view is still active) and not later, when the 
 may not be the correct one.
 
 It turns out the same problem (async command dispatch) affects not only hyperlinks, but many other
-cases as well, where we want to stay async, for example, when one dialogs would invoke an other
+cases as well, where we want to stay async, for example, when one dialog would invoke another
 dialog, like the Calc conditional format -> add dialog:
 
 [![Calc conditional format add dialog appearing on the left, should be on the right, now fixed](https://share.vmiklos.hu/blog/multi-view-programming-challenges/2024-01-02-cool-calc-condformat-wrong-view.png)](https://share.vmiklos.hu/blog/multi-view-programming-challenges/2024-01-02-cool-calc-condformat-wrong-view.png)
