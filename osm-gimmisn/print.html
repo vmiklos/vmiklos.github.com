@@ -242,7 +242,7 @@ cd osm-gimmisn
 <pre><code class="language-bash">make
 </code></pre>
 <p>Populate the reference directory with TSV files for the house number and street list:</p>
-<pre><code class="language-bash">osm-gimmisn sync-ref --mode download --url https://www.example.com/osm/data/
+<pre><code class="language-bash">osm-gimmisn sync-ref --mode download --url https://osm.example.com/data/
 </code></pre>
 <h2 id="install-steps-windows"><a class="header" href="#install-steps-windows">Install steps (Windows)</a></h2>
 <ul>
@@ -317,7 +317,7 @@ cron_update_inactive = 'False'
 <ol start="4">
 <li>Sync the reference data:</li>
 </ol>
-<pre><code>podman exec -t -i osm-gimmisn bash -c 'cd /opt/osm-gimmisn &amp;&amp; target/release/osm-gimmisn sync-ref --mode download --url https://www.example.com/osm/data/'
+<pre><code>podman exec -t -i osm-gimmisn bash -c 'cd /opt/osm-gimmisn &amp;&amp; target/release/osm-gimmisn sync-ref --mode download --url https://osm.example.com/data/'
 </code></pre>
 <ol start="5">
 <li>Go to <a href="http://0.0.0.0:8000/osm/">http://0.0.0.0:8000/osm/</a> in your web browser.</li>
@@ -685,7 +685,7 @@ echo RSDEBUG=1 &gt; config.mak
 make
 </code></pre>
 <p>To run a single test:</p>
-<pre><code class="language-bash">cargo test --lib -- --exact --nocapture wsgi_json::tests::test_missing_streets_update_result_json
+<pre><code class="language-bash">RUST_BACKTRACE=1 cargo test --lib -- --exact --nocapture wsgi_json::tests::test_missing_streets_update_result_json
 </code></pre>
 <p>Tests follow the <a href="https://stackoverflow.blog/2022/01/03/favor-real-dependencies-for-unit-testing/">Favor real dependencies for unit
 testing</a> pattern,
@@ -727,6 +727,10 @@ things which are not part of CI:</p>
 </li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="changelog"><a class="header" href="#changelog">Changelog</a></h1>
+<h2 id="master"><a class="header" href="#master">master</a></h2>
+<ul>
+<li>Resolves: gh#3558 <code>,</code> is now also recognized as a housenumber separator, similar to <code>;</code></li>
+</ul>
 <h2 id="242"><a class="header" href="#242">24.2</a></h2>
 <ul>
 <li>Resolves: gh#3073 New <code>/missing-housenumbers/.../view-lints</code> endpoint, listing per-relation lints
