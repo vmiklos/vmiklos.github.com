@@ -4,6 +4,10 @@ title: Rubik cheat sheets
 
 # Rotations
 
+## English
+
+- 3x3: [HTML](/rubik/3x3-en/), [ODT](3x3-en.odt), [PDF](3x3-en.pdf)
+
 ## Hungarian
 
 - 2x2: [HTML](/rubik/2x2-hu/), [ODT](2x2-hu.odt), [PDF](2x2-hu.pdf)
