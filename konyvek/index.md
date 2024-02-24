@@ -10,6 +10,7 @@ title: Könyvek
 
 - [Beck Andrea: A Titoktündér - A Tündérek Kalendáriuma](https://bookline.hu/product/home.action?_v=Beck_Andrea_A_Titoktunder_A_Tunderek_&type=22&id=280279)
 - [Takács Mari: Bingaminga és a babkák](https://bookline.hu/product/home.action?_v=Takacs_Mari_Bingaminga_es_a_babkak&type=22&id=319430)
+- [Berg Judit: Két kis dinó a zsírkréta korban](https://bookline.hu/product/home.action?_v=Berg_Judit_Ket_kis_dino_a_zsirkreta_kor&type=22&id=125250)
 
 ### 6-10 éveseknek
 
