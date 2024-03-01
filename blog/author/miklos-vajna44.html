@@ -59,6 +59,32 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/gcalsync-3-vmware-xrandr.html">gcalsync #3, vmware, xrandr</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Thu 04 March 2010</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>First, I wasted a few more hours with my never-ending "sync events form my Nokia S40 phone to Google Calendar" project. The result: it's not a daemon, it checks if the last sync was more than a day ago, if it can ping google.com, and if both, but it can't reach the phone via bluetooth, then it raises a kde4 notification, and it also notifies me when (and how) the sync was done, so that I switch bluetooth off on the phone after the sync. As usual, available <a href="http://git.frugalware.org/repos/vmexam/bash/gcalsync">here</a>.</p><p>Second, I managed to fix two annoying bugs when installing Frugalware under VMware: dhcpcd did not update /etc/resolv.conf in the installer properly, now that I changed from dhcpcd to busybox's udhcpc, it seems to be fine. (And udhcpc still works fine in qemu as well.). The other vmware-related improvement is that the newport xorg driver somehow locked up the whole virtual machine, now it's moved to extra, so xconfig does not freeze the VM on a default install.</p><p>Third, today finally I managed to figure out how to enable the external output on my netbook, using the openchrome driver. It's just about a single line in xorg.conf:</p><p><pre>
+Option     "ActiveDevice"               "LCD,CRT"
+</pre></p><p>This won't do more than just cloning the output, but it's far enough for me, who just uses the external output for presentation only.</p><p>(There is a binary driver which locks up the whole machine about 5-8 times a day, which has a bit better external video support, but stability is far more important for me, and the openchrome driver _is_ stable.)</p><p>Partly related, when I connected the external output to a projector, I had to set the screen resolution to 1024x768, and later back to 1280x800. 5 years earlier you had to edit xorg.conf and restart X to do this, now you can do this with xrandr:</p><p><pre>
+$ xrandr --output default --mode 1024x768
+</pre></p><p>and then to switch back:</p><p><pre>
+$ xrandr --output default --mode 1280x800
+</pre></p><p>OK, enough entries for today. :)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/bsc-diplomaoszto.html">BSc diplomaoszto</a></h1>
   </div>
   <div class="article_meta">
@@ -337,29 +363,6 @@ egyet, hogy csak az imax miatt.</p></div>
     <div id="preamble">
 <div class="sectionbody">
 Gyengebbek kedveert: "Felvételi döntés: Felvételi pontszáma elérte az államilag támogatott képzés ponthatárát"
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/mails.html">mails</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Mon 11 January 2010</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>Say you have two servers, the first is just a mail proxy, the second is a real mail server. So the MX record points to the first box and you usually just read your mail on the second one.</p><p>We use this system at frugalware.org as well to make the service a bit more robust: if genesis (the "second" box) goes down, the proxy machine(s) can just queue up the input and in case one of the proxy machines go down, then the sender will just try an other proxy.</p><p>The problem occurs when the "second" box goes down and you need to read your mail ASAP. Let's say you have access to the first box. You see in the output of 'mailq' that there are messages in the queue but how to read those mails?</p><p>'mailq' gives the ID of each message, and then the following script (I call it 'mails' - s for show) can generate mbox format from it, which means you can read it with for example 'mutt -f foo.mbox'.</p><p>The script itself is fairly easy:</p><p><pre>
-#!/bin/sh</p><p>echo 'From <a href="mailto:news@gmane.org">news@gmane.org</a> Tue Mar 04 03:33:20 2003'
-        |sed '1,/^\*\*\* MESSAGE CONTENTS/d;/^\*\*\* HEADER EXTRACTED/,$ d'
-</pre></p><p>(And of course it's possible there is a better tool to do the job, but I use this for months now.)</p>
 </div>
 </div>
 

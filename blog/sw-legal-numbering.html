@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/pygments.css">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Miklos Vajna">
+  <meta name="description" content="Posts and writings by Miklos Vajna">
+
+  <link href="https://vmiklos.hu/blog/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking RSS" />
+
+<meta name="keywords" content="en">
+
+  <title>
+    What is Miklos hacking
+&ndash; Legal numbering in Writer: DOC and RTF support  </title>
+
+<script type="text/javascript">
+  var _paq = window._paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//analytics.vmiklos.hu/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '1']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <h2><a href="https://vmiklos.hu/blog">What is Miklos hacking</a></h2>
+      <p></p>
+      <ul>
+        <li><a href="/" target="_blank">Root</a></li>
+        <li><a href="https://planet.documentfoundation.org/" target="_blank">LibreOffice Blogs</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://vmiklos.hu/blog">Index</a> &brvbar; <a href="https://vmiklos.hu/blog/archives.html">Archives</a>
+      &brvbar; <a href="https://vmiklos.hu/blog/feeds/all.rss.xml">RSS</a>
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sw-legal-numbering.html">Legal numbering in Writer: DOC and RTF support</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Fri 01 March 2024</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 3 minutes</p>
+  </div>
+  <div class="article_text">
+    <p>Writer now supports legal numbering for two more formats: DOC and RTF (ODT and DOCX were working
+already.)</p>
+<p>This work is primarily for <a href="https://www.collaboraoffice.com/">Collabora Online</a>, done as a
+<a href="https://vmiklos.hu/blog/sw-content-controls3.html">HackWeek</a> project, but the feature is fully available in
+desktop Writer as well.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>Legal numbering is a way to influence the number format of values inherited in a multi-level
+numbering. Say, the outer numbering uses Roman numerals and the inner numbering uses X.Y as the number
+format, but the inner level wants to display the outer values as Arabic numerals. If this is wanted
+(and guessing from the name, sometimes lawyers do want this), then the inner number portion will
+expand to values like "2.01" instead of "II.01", while the outer number portions will remain values
+like "II".</p>
+<p>Mike did <a href="https://bugs.documentfoundation.org/show_bug.cgi?id=150408">80% of the work</a>, what you can
+see here is just the RTF/DOC filters.</p>
+<p>Picking a smaller feature task like this looked like a good idea, since I wanted to spend some of
+the time on regression fixing around last year's multi-page floating table project.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>For (binary) DOC, the relevant detail is the <code>fLegal</code> bit in the <code>LVLF</code> structure. Here is the
+result:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-legal-numbering/2024-02-29-writer-legal-numbering-doc.png"><figure><img src="https://share.vmiklos.hu/blog/sw-legal-numbering/2024-02-29-writer-legal-numbering-doc.png"><figcaption>Improved handling of legal numbering from DOC: old, new and reference rendering</figcaption></figure></a></p>
+<p>It shows how the outer "II" gets turned into "2", while it remained "II" in the past. This works for
+both loading and saving.</p>
+<p>The same feature is now handled in the RTF filter as well. There the relevant detail is the
+<code>\levellegal</code> control word, which has an odd 1 default value (the default is usually 0). Here is the
+result:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-legal-numbering/2024-02-29-writer-legal-numbering-rtf.png"><figure><img src="https://share.vmiklos.hu/blog/sw-legal-numbering/2024-02-29-writer-legal-numbering-rtf.png"><figcaption>Improved handling of legal numbering from RTF: old, new and reference rendering</figcaption></figure></a></p>
+<p>It shows that the RTF filter is up to speed with the DOC one by now.</p>
+<p>As for the multi-page floating tables, I looked at
+<a href="https://bugs.documentfoundation.org/show_bug.cgi?id=158986">tdf#158986</a> and
+<a href="https://bugs.documentfoundation.org/show_bug.cgi?id=158801">tdf#158801</a>.</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>As usual, the high-level problem was addressed by a series of small changes:</p>
+<ul>
+<li><a href="https://git.libreoffice.org/core/commit/397d72e582c725d162c7e0b819dc6c0bb62e42b0">Related: tdf#158986 sw floattable: fix unexpected page break with sections</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/b7c4c4d45f44a26283678f3dc32982b3a728c614">tdf#158986 sw floattable: fix RTF import of table followed by \sect</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/a73b3994fb6a2cc10b2d65cbaad201762610cecc">Related: tdf#150408 DOC filter: handle legal numbering</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/e8487bedb20a429565b4a0e4bd2d6806cc603b7f">Related: tdf#150408 RTF filter: handle legal numbering</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/c98ff922831f56253af2a050b8e07cfc89b7a387">Related: tdf#158986 sw floattable, RTF import: use more setNeedPar()</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/186de7178c6065e1de13fd216b46ac9b716e44c5">tdf#158801 sw floattable: fix crash with headers and interactive editing</a></li>
+</ul>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a snapshot / demo of Collabora Office 24.04 and try it out yourself right now: <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try the
+unstable snapshot</a>.  Collabora
+intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
+of this work will be available in TDF's next release too (24.8).</p>
+  </div>
+  <div class="article_meta">
+    <p>Category: <a href="https://vmiklos.hu/blog/category/libreoffice.html">libreoffice</a>
+ &ndash; Tags:
+      <a href="https://vmiklos.hu/blog/tag/en.html">en</a>    </p>
+  </div>
+
+
+</article>
+
+
+    <div id="ending_message">
+      <p>&copy; Miklos Vajna. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
+</body>
+</html>
