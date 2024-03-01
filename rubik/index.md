@@ -20,7 +20,7 @@ book](https://bookline.hu/product/home.action?_v=Rubik_Erno_A_buvos_kocka&type=2
 
 # Generate a scramble
 
-- [my simple generator](https://share.vmiklos.hu/rubikscramble/)
+- [my simple generator](https://share.vmiklos.hu/pges/rubik-scramble/)
 
 # Solver
 
