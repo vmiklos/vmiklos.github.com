@@ -2,9 +2,9 @@ Title: Legal numbering in Writer: DOC and RTF support
 Slug: sw-legal-numbering
 Category: libreoffice
 Tags: en
-Date: 2024-02-29T14:32:36+01:00
+Date: 2024-03-01T08:46:39+01:00
 
-Writer now support legal numbering for two more formats: DOC and RTF (ODT and DOCX was working
+Writer now supports legal numbering for two more formats: DOC and RTF (ODT and DOCX were working
 already.)
 
 This work is primarily for [Collabora Online](https://www.collaboraoffice.com/), done as a
@@ -14,17 +14,17 @@ desktop Writer as well.
 ## Motivation
 
 Legal numbering is a way to influence the number format of values inherited in a multi-level
-numbering. Say, the outer numbering uses Roman number and the inner numbering uses X.Y as the number
-format, but the inner level wants to display the outer values as Arabic numbers. If this is wanted
+numbering. Say, the outer numbering uses Roman numerals and the inner numbering uses X.Y as the number
+format, but the inner level wants to display the outer values as Arabic numerals. If this is wanted
 (and guessing from the name, sometimes lawyers do want this), then the inner number portion will
-expand to values like "1.2" instead of "I.2", while the outer number portions will remain values
-like "I".
+expand to values like "2.01" instead of "II.01", while the outer number portions will remain values
+like "II".
 
 Mike did [80% of the work](https://bugs.documentfoundation.org/show_bug.cgi?id=150408), what you can
 see here is just the RTF/DOC filters.
 
 Picking a smaller feature task like this looked like a good idea, since I wanted to spend some of
-the time on regression fixing from last year's multi-page floating table project.
+the time on regression fixing around last year's multi-page floating table project.
 
 ## Results so far
 
@@ -33,10 +33,10 @@ result:
 
 [![Improved handling of legal numbering from DOC: old, new and reference rendering](https://share.vmiklos.hu/blog/sw-legal-numbering/2024-02-29-writer-legal-numbering-doc.png)](https://share.vmiklos.hu/blog/sw-legal-numbering/2024-02-29-writer-legal-numbering-doc.png)
 
-It shows how the outer "I" gets turned into "1", while it remained "I" in the past. This works for
+It shows how the outer "II" gets turned into "2", while it remained "II" in the past. This works for
 both loading and saving.
 
-The same feture is now handled in the RTF filter as well. There the relevant detail is the
+The same feature is now handled in the RTF filter as well. There the relevant detail is the
 `\levellegal` control word, which has an odd 1 default value (the default is usually 0). Here is the
 result:
 
