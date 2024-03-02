@@ -5,7 +5,7 @@ title: Rubik cheat sheets
 # Rotations
 
 - 3x3: [HTML](/rubik/3x3-en/), [ODT](3x3-en.odt), [PDF](3x3-en.pdf)
-- 2x2: [HTML](/rubik/2x2-en/)
+- 2x2: [HTML](/rubik/2x2-en/), [ODT](2x2-en.odt), [PDF](2x2-en.pdf)
 
 ## Credit
 
