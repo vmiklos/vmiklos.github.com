@@ -173,7 +173,7 @@ These are tutorials I found very useful before jumping into an actual spec.
 
 # xpath
 
-- [interactive playground](https://scrapinghub.github.io/xpath-playground/)
+- [interactive playground](https://scrapinghub.github.io/xpath-playground/) ([mirror](https://share.vmiklos.hu/pages/xpath-playground/))
 - [xpather: interactive playground with namespace support](http://xpather.com/)
 
 # youtube
