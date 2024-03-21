@@ -174,6 +174,7 @@ These are tutorials I found very useful before jumping into an actual spec.
 # xpath
 
 - [interactive playground](https://scrapinghub.github.io/xpath-playground/)
+- [xpathium: interactive playground](https://extendsclass.com/xpath-tester.html)
 - [xpather: interactive playground with namespace support](http://xpather.com/)
 
 # youtube
