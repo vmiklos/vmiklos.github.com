@@ -278,6 +278,7 @@ id:        1, machine: example.com, service: http, user: myuser, password type: 
 <p>The search term is already specified in this case:</p>
 <pre><code>id:        1, machine: example.com, service: http, user: myuser, password type: plain, password: 7U1FvIzubR95Itg
 </code></pre>
+<p>Archived passwords are not shown, unless <code>-v</code> or <code>--verbose</code> is used.</p>
 <h2 id="totp-support"><a class="header" href="#totp-support">TOTP support</a></h2>
 <p>TOTP is one from of Two-Factor Authentication (2FA), currently used by many popular websites
 (Facebook, Mastodon, etc). Once a website asks you to scan a QR code for
@@ -336,6 +337,9 @@ Deleted 1 password
 <pre><code class="language-console">Deleted 1 password
 </code></pre>
 <p>Again, you can use <code>cpm search</code> to find the password ID.</p>
+<p>An alternative for deletion is to just mark the password as archived:</p>
+<pre><code class="language-console">cpm update -i ... -a 1
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="advanced-topics"><a class="header" href="#advanced-topics">Advanced topics</a></h1>
 <h2 id="distributed-usage"><a class="header" href="#distributed-usage">Distributed usage</a></h2>
 <p>One big downside of mobile-based TOTP apps is that you can't login to machines if you loose your
@@ -409,7 +413,17 @@ machine: facebook.com, service: http, user: myuser, password type: TOTP shared s
 <p>Changes to the shell completion can be tested, without restarting the shell using:</p>
 <pre><code class="language-console">source &lt;(cpm completion bash)
 </code></pre>
+<h2 id="go-debugging"><a class="header" href="#go-debugging">Go debugging</a></h2>
+<p>To run a single test:</p>
+<pre><code class="language-console">go test -run=TestInsert ./...
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="changelog"><a class="header" href="#changelog">Changelog</a></h1>
+<h2 id="main"><a class="header" href="#main">main</a></h2>
+<ul>
+<li>search / update: passwords can be now archived, search hides these by default without deleting the
+password</li>
+<li>drop compatibility with cpm &lt; 7.5: update from old versions to 24.2 first</li>
+</ul>
 <h2 id="242"><a class="header" href="#242">24.2</a></h2>
 <ul>
 <li>create / update: new <code>-y</code> switch to generate more secure passwords (3 instead of 0 numeric
