@@ -2,10 +2,9 @@ Title: Improve copy&paste in Calc and elsewhere
 Slug: sc-clipboard-paste
 Category: libreoffice
 Tags: en
-Date: 2024-04-03T17:00:40+02:00
+Date: 2024-04-04T09:50:39+02:00
 
-Calc now supports much better copy&paste when you copy and paste data between Google Sheets and
-Calc.
+Calc now supports much better copy&paste when you transfer data between Google Sheets and Calc.
 
 This work is primarily for [Collabora Online](https://www.collaboraoffice.com/), but the feature is
 fully available in desktop Calc as well.
