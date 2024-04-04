@@ -1,5 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>What is Miklos hacking</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Fri, 01 Mar 2024 08:46:39 +0100</lastBuildDate><item><title>Legal numbering in Writer: DOC and RTF support</title><link>https://vmiklos.hu/blog/sw-legal-numbering.html</link><description>&lt;p&gt;Writer now supports legal numbering for two more formats: DOC and RTF (ODT and DOCX were working
+<rss version="2.0"><channel><title>What is Miklos hacking</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Thu, 04 Apr 2024 09:50:39 +0200</lastBuildDate><item><title>Improve copy&amp;paste in Calc and elsewhere</title><link>https://vmiklos.hu/blog/sc-clipboard-paste.html</link><description>&lt;p&gt;Calc now supports much better copy&amp;amp;paste when you transfer data between Google Sheets and Calc.&lt;/p&gt;
+&lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraoffice.com/"&gt;Collabora Online&lt;/a&gt;, but the feature is
+fully available in desktop Calc as well.&lt;/p&gt;
+&lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;First, Collabora Online was using the
+&lt;a href="https://developer.mozilla.org/en-US/docs/Web/API/Document/execCommand"&gt;deprecated&lt;/a&gt;
+&lt;code&gt;document.execCommand()&lt;/code&gt; API to paste text, which is problematic, as the "paste" button on the
+toolbar can't behave the same way as pressing Ctrl-V on the keyboard.&lt;/p&gt;
+&lt;p&gt;Second, it turns out Google Sheets came up with some additional HTML attributes to represent
+spreadsheet data in HTML in a much better way, and Calc HTML import/export had no support for this,
+while this is all fixable.&lt;/p&gt;
+&lt;h2 id="results-so-far"&gt;Results so far&lt;a class="headerlink" href="#results-so-far" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;In short, Collabora Online now uses the &lt;a href="https://developer.mozilla.org/en-US/docs/Web/API/Clipboard/read"&gt;Clipboard
+API&lt;/a&gt; to read from the system
+clipboard -- this has to be supported by the
+&lt;a href="https://sdk.collaboraonline.com/docs/advanced_integration.html#allow-the-clipboard-permission-query"&gt;integration&lt;/a&gt;,
+and Calc's HTML filter now support the subset of the Google Sheets markup I figured out so far. This
+subset is also
+&lt;a href="https://sdk.collaboraonline.com/docs/advanced_integration.html#spreadsheet-html-extensions"&gt;documented&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;For the longer version, here are some screenshots:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-01-15-cool-clipboard-popup.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-01-15-cool-clipboard-popup.png"&gt;&lt;figcaption&gt;We used to show a popup when you clicked on the paste button on the notebookbar&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-01-18-cool-clipboard-image-paste.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-01-18-cool-clipboard-image-paste.png"&gt;&lt;figcaption&gt;The new paste code in action, handling an image&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-01-31-sc-html-import-text-bad.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-01-31-sc-html-import-text-bad.png"&gt;&lt;figcaption&gt;Import from Google Sheets to Calc: text is auto-converted to a number, bad&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-01-sc-html-import-text-good.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-01-sc-html-import-text-good.png"&gt;&lt;figcaption&gt;Import from Google Sheets to Calc: text is no longer auto-converted to a number, good&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-02-sc-html-import-celledit-fix.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-02-sc-html-import-celledit-fix.png"&gt;&lt;figcaption&gt;HTML import into an active cell edit, only RTF was working there previously&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-07-sc-html-paste-text-good.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-07-sc-html-paste-text-good.png"&gt;&lt;figcaption&gt;Paste from Google Sheets to Calc: text is no longer auto-converted to a number, good&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-08-sc-html-paste-boolean-good.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-08-sc-html-paste-boolean-good.png"&gt;&lt;figcaption&gt;Paste from Google Sheets to Calc: booleans are now also preserved&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-09-sc-html-paste-numfmt-good.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-09-sc-html-paste-numfmt-good.png"&gt;&lt;figcaption&gt;Paste from Google Sheets to Calc: number formats are now also preserved&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-12-sc-html-paste-formula-good.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-12-sc-html-paste-formula-good.png"&gt;&lt;figcaption&gt;Paste from Google Sheets to Calc: formulas are now also preserved&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-13-sc-html-paste-singlecell-good.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-13-sc-html-paste-singlecell-good.png"&gt;&lt;figcaption&gt;Paste from Google Sheets to Calc: also handling a single cell&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-14-sc-html-copy-text-good.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-14-sc-html-copy-text-good.png"&gt;&lt;figcaption&gt;Copy from Calc to Google sheets: text is now handled, no longer auto-converted to a number&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-15-sc-html-copy-bool-good.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-15-sc-html-copy-bool-good.png"&gt;&lt;figcaption&gt;Copy from Calc to Google sheets: booleans are now handled&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-20-cool-cross-origin-iframe-clipboard-bad.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-20-cool-cross-origin-iframe-clipboard-bad.png"&gt;&lt;figcaption&gt;Cross-origin iframes also block clipboard access, now fixed&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-03-01-sc-html-copy-formatted-number-good.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-03-01-sc-html-copy-formatted-number-good.png"&gt;&lt;figcaption&gt;Copy from Calc to Google sheets: number formats are now also preserved&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-03-04-sc-html-copy-formula-good.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-03-04-sc-html-copy-formula-good.png"&gt;&lt;figcaption&gt;Copy from Calc to Google sheets: formulas are now also preserved&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-03-08-cool-plain-text-copy.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-03-08-cool-plain-text-copy.png"&gt;&lt;figcaption&gt;Copy from COOL Writer to a text editor: much better result, new one on the right hand side&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id="how-is-this-implemented"&gt;How is this implemented?&lt;a class="headerlink" href="#how-is-this-implemented" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;If you would like to know a bit more about how this works, continue reading... :-)&lt;/p&gt;
+&lt;p&gt;As usual, the high-level problem was addressed by a series of small changes:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/e6e5660b726ecf3b0c39b277568568973b43c9f0"&gt;tdf#159483 sc HTML import: handle data-sheets-value attribute for the text case&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/543e52481e764b8e0eea6cf0123a77cf492bdf8e"&gt;tdf#159483 sc HTML paste: handle data-sheets-value here, too&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/f8c95cf93ce9ab8b9b78f3af03411d0cc2e195ba"&gt;tdf#159483 sc HTML import: handle data-sheets-value attribute for the bool case&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/789964785a61daab5f8065f006dd7aaf843c7236"&gt;tdf#159483 sc HTML import: handle data-sheets-value attribute for the num case&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/7812adb2ed11a3e08be24d3f2f94d14bfd740c55"&gt;tdf#159483 sc HTML paste: handle data-sheets-formula attribute&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/c0da56cb3e9f9678cae7142dee03fb706a2aebd9"&gt;tdf#159483 sc HTML paste: handle data-sheets- attributes on a span&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/4e2a4fbeb7c44cc47b3cf803cbcc6cba63b3d481"&gt;tdf#159483 sc HTML export: handle data-sheets-value attribute for the text case&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/411158832462b1077a8f5dc6379f2056f2338249"&gt;tdf#159483 sc HTML copy: handle data-sheets-value attribute for the bool case&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/17581e684ca701bfd96ed2bf16aa14c3903b74d4"&gt;tdf#159483 sc HTML copy: handle data-sheets-value attribute for the num case&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/2efe362c99a9fa6e9a71b9b675b025c64b6c7f9d"&gt;tdf#159483 sc HTML copy: handle data-sheets-formula attribute&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The tracking issue on the Online side was &lt;a href="https://github.com/CollaboraOnline/online/issues/8023"&gt;cool#8023&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 id="want-to-start-using-this"&gt;Want to start using this?&lt;a class="headerlink" href="#want-to-start-using-this" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;You can get a snapshot / demo of Collabora Office 24.04 and try it out yourself right now: &lt;a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/"&gt;try the
+unstable snapshot&lt;/a&gt;.  Collabora
+intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
+of this work will be available in TDF's next release too (24.8).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Thu, 04 Apr 2024 09:50:39 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2024-04-04:/blog/sc-clipboard-paste.html</guid><category>libreoffice</category><category>en</category></item><item><title>Legal numbering in Writer: DOC and RTF support</title><link>https://vmiklos.hu/blog/sw-legal-numbering.html</link><description>&lt;p&gt;Writer now supports legal numbering for two more formats: DOC and RTF (ODT and DOCX were working
 already.)&lt;/p&gt;
 &lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraoffice.com/"&gt;Collabora Online&lt;/a&gt;, done as a
 &lt;a href="https://vmiklos.hu/blog/sw-content-controls3.html"&gt;HackWeek&lt;/a&gt; project, but the feature is fully available in
@@ -614,111 +670,4 @@ of floating tables, but we get there step by step.&lt;/p&gt;
 &lt;p&gt;You can get a snapshot / demo of Collabora Office 23.05 and try it out yourself right now: &lt;a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/"&gt;try the
 unstable snapshot&lt;/a&gt;.  Collabora
 intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF's next release too (7.6).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Mon, 03 Jul 2023 14:23:10 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2023-07-03:/blog/sw-floattable5.html</guid><category>libreoffice</category><category>en</category></item><item><title>Multi-page floating tables in Writer: from multiple columns to chaining</title><link>https://vmiklos.hu/blog/sw-floattable4.html</link><description>&lt;p&gt;Writer now has continued steps to handle tables that are both floating and span over multiple pages.&lt;/p&gt;
-&lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraoffice.com/"&gt;Collabora Online&lt;/a&gt;, but is useful on
-the desktop as well. See the &lt;a href="https://vmiklos.hu/blog/sw-floattable3.html"&gt;third post&lt;/a&gt; for background.&lt;/p&gt;
-&lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;The previous post finished with crash testing: the interesting subset of that testing tool is to take
-hundreds of thousands of documents and in the Writer case import them into a document model and
-layout them. If any of this crashes, mark that for future investigation. In this post, we'll see
-what else started to work during the past month.&lt;/p&gt;
-&lt;h2 id="results-so-far"&gt;Results so far&lt;a class="headerlink" href="#results-so-far" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;The feature is enabled by default and now the DOCX/DOC/RTF import makes use of it if. This allows
-stress-testing the layout code with complex user documents, hopefully with the found breakage fixed
-before it would be released in a stable version.&lt;/p&gt;
-&lt;p&gt;On the positive side, core.git repository has has 37 files now which are focusing on correct
-handling of floating tables (abbreviated as "floattables").  Also, there are additional tests that
-quickly build a specific multi-page floating table in the memory and do some operation on it, e.g.
-delete the last row and assert what happens.&lt;/p&gt;
-&lt;p&gt;Here are some screenshots from the effort so far:&lt;/p&gt;
-&lt;p&gt;
-&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable4/2023-05-03-floattable-multicol-good-nosplit.png"&gt;&lt;figcaption&gt;Floating table inside a multi-column section&lt;/figcaption&gt;
-&lt;/figure&gt;
-&lt;/p&gt;
-&lt;p&gt;The first case is about multi-column sections: in this case Word doesn't try to split them between
-pages. What you can see on the screenshot is that Writer lays out content on the previous page so
-that remaining space is left, but we don't try to split the table between the first and the second
-page, even if there would be space on the first page and even if this means the table overlaps with
-the second column, matching what Word does.&lt;/p&gt;
-&lt;p&gt;
-&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable4/2023-05-04-floattable-ui-disable-good.png"&gt;&lt;figcaption&gt;UI to disable split of a floating table&lt;/figcaption&gt;
-&lt;/figure&gt;
-&lt;/p&gt;
-&lt;p&gt;UI to enable split of floating tables were added quite early: this is a new checkbox on the frame
-properties dialog. However, &lt;em&gt;disabling&lt;/em&gt; the split of floating tables was broken, the already
-created layout was not updated to properly move back "follow" fly frames from later pages to the
-current page, which is now fixed.&lt;/p&gt;
-&lt;p&gt;
-&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable4/2023-05-15-floattable-ui-disable-chain-good.png"&gt;&lt;figcaption&gt;Chaining enabled, so no split frames&lt;/figcaption&gt;
-&lt;/figure&gt;
-&lt;/p&gt;
-&lt;p&gt;Writer already had a feature to split content in a frame into multiple frames, but that one required
-creating those frames in the model explicitly, such chaining is a feature that is useful in other
-use-cases and is parallel to multi-page floating tables. The UI now ensures that the user can split
-frames only in case chaining is not used, to avoid confusion.&lt;/p&gt;
-&lt;p&gt;
-&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable4/2023-05-16-floattable-chain-ui-disable-good.png"&gt;&lt;figcaption&gt;Split enabled, so no chaining&lt;/figcaption&gt;
-&lt;/figure&gt;
-&lt;/p&gt;
-&lt;p&gt;This is now also true in the other way around: if split of a floating table is allowed, then we
-disable the frame chaining UI to avoid trouble later.&lt;/p&gt;
-&lt;p&gt;
-&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable4/2023-05-23-floattable-crash-good-writer.png"&gt;&lt;figcaption&gt;The latest crashing document&lt;/figcaption&gt;
-&lt;/figure&gt;
-&lt;/p&gt;
-&lt;p&gt;At this point I went back to crashtesting &amp;amp; crash bugreports, and the latest reported crash was for
-a document that is visible on the above screenshot. This was a bit tricky: it required 3 fixes to
-make it not crash and also a layout loop fix.&lt;/p&gt;
-&lt;p&gt;
-&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable4/2023-05-24-floattable-nosplit-compat-good-writer-odt.png"&gt;&lt;figcaption&gt;Disabling split of frames at a layout level&lt;/figcaption&gt;
-&lt;/figure&gt;
-&lt;/p&gt;
-&lt;p&gt;Next was a mini-feature: even if floating tables normally split across pages by default, Word has a
-document-level compatibility switch to turn this split on or off by default, at a layout level.
-Floating tables from RTF are not split by default, DOC and DOCX split them by default.&lt;/p&gt;
-&lt;p&gt;What you can see on this screenshot is that a DOCX document may have this flag enabled, and then you
-allow splitting on the UI / at a document model level, but Writer may still decide to not split
-them, to provide the correct layout.&lt;/p&gt;
-&lt;p&gt;
-&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable4/2023-05-26-floattable-overlap-bad.png"&gt;&lt;figcaption&gt;Overlapping floating tables&lt;/figcaption&gt;
-&lt;/figure&gt;
-&lt;/p&gt;
-&lt;p&gt;The previous post already mentioned the problem area of overlapping tables. A first step in this
-direction is to fix this bug document with Arabic text and 2 overlapping tables, making them
-unreadable.&lt;/p&gt;
-&lt;p&gt;
-&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable4/2023-05-30-floattable-overlap-good.png"&gt;&lt;figcaption&gt;Fixed overlap of floating tables&lt;/figcaption&gt;
-&lt;/figure&gt;
-&lt;/p&gt;
-&lt;p&gt;And in this case here is the fixed version, where reading the table now depends on your language
-skills. :-)&lt;/p&gt;
-&lt;p&gt;In this case, the problem was a lost section break of type next page, when a section started with a
-floating table, which is a corner-case.&lt;/p&gt;
-&lt;p&gt;And that's where we stand. Certainly more work is needed to fix more unwanted overlapping of
-floating tables, but we get there step by step.&lt;/p&gt;
-&lt;h2 id="how-is-this-implemented"&gt;How is this implemented?&lt;a class="headerlink" href="#how-is-this-implemented" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;If you would like to know a bit more about how this works, continue reading... :-)&lt;/p&gt;
-&lt;p&gt;As usual, the high-level problem was addressed by a series of small changes:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/1c99616f86f7d5b83b91edc225fc95fec227d710"&gt;sw floattable, crashtesting: fix PDF export of forum-mso-en3-26783.docx&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/8c78361b05ba3cefe5b0f31f35113f7890fd2296"&gt;sw floattable: don't try to set various character properties as table property&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/8c34ed6e8d62c5fe558b11bb91c5405e5bf2798e"&gt;sw floattable, crashtesting: fix PDF export of ooo9470-1.doc&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/f7e1cdf951f7f9cbb5822c49b86ba8a77a2fa878"&gt;sw floattable: fix UI for turning fly split off&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/61f3c796702f725f2c65b53b79ab7e190d39b6b8"&gt;sw floattable: fix UI / property dialog for shape containing table&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/d9cd177b9b08d454882dd77ffeb825a184a1b540"&gt;sw floattable: disable UI if the frame is chained already&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/a13264fc7578cbd3267065f4992ded9f7558ec7a"&gt;sw floattable: disable chain UI if the frame is allowed to split already&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/4cb6e54a3dcdd771ef76bd98b58f0bf1c4be4c45"&gt;sw floattable: fix missing table join when moving master fly to next page&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/632f36cc972116cd8da8245590f74014c22532db"&gt;sw floattable: fix legacy max height of split flys with negative vert offset&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/b47401e12d9c45386899df0aa26653bd26c9abd4"&gt;sw floattable: fix assert fail when object formatter gets the wrong anchor&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/807ad65661c122a33fccb4fd3453ef92c0e9129d"&gt;tdf#155002 sw floattable, split but not yet moved follow: fix GetNextFlyLeaf()&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/08fa2903df1a7cf9a1647fcf967e4c8b57dad793"&gt;sw floattable: add a DoNotBreakWrappedTables compat flag&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/f5dc52dc9a068fec3323c3089929a81675b0d1ba"&gt;sw floattable: handle &lt;code&gt;&amp;lt;w:doNotBreakWrappedTables&amp;gt;&lt;/code&gt; in the DOCX filter&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/63de1ea465ef72ecb8d4a7dcdaf5e92ea875eb00"&gt;sw floattable: handle fDontBreakWrappedTables in the DOC filter&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/d785d26a5599d3d546b96958b0f1c6d5ed777a0d"&gt;sw floattable: handle \nobrkwrptbl in the RTF filter&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/2a380dba73d57f825128fbada91c7a9fe79e8a06"&gt;tdf#150769 sw floattable: fix lost PageDescName if section starts with a table&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id="want-to-start-using-this"&gt;Want to start using this?&lt;a class="headerlink" href="#want-to-start-using-this" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;You can get a snapshot / demo of Collabora Office 23.05 and try it out yourself right now: &lt;a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/"&gt;try the
-unstable snapshot&lt;/a&gt;.  Collabora
-intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF's next release too (7.6).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Thu, 01 Jun 2023 08:44:46 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2023-06-01:/blog/sw-floattable4.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
+of this work will be available in TDF's next release too (7.6).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Mon, 03 Jul 2023 14:23:10 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2023-07-03:/blog/sw-floattable5.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>

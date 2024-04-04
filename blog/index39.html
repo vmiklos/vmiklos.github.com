@@ -58,6 +58,61 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/latex-sources.html">Handy Latex bookmarks</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Wed 03 November 2010</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>Today I had some Hungarian mathematical logic notes to type in Latex,
+and again I had to dig up the various references to get the proper
+symbols I needed.</p></div>
+<div class="paragraph"><p>I used the following pages:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="ftp://ftp.ams.org/pub/tex/doc/amsmath/amsldoc.pdf">amsmath</a> is unique
+  in that for example it explains how to use <code>\begin{cases}</code>
+</p>
+</li>
+<li>
+<p>
+<a href="http://amath.colorado.edu/documentation/LaTeX/Symbols.pdf">this one</a> is
+  a collection of lot of symbols, I found <code>\mathcal</code> here
+</p>
+</li>
+<li>
+<p>
+An <a href="http://en.wikipedia.org/wiki/List_of_logic_symbols">article from
+  Wikipedia</a> about logic symbols
+</p>
+</li>
+<li>
+<p>
+<a href="http://en.wikibooks.org/wiki/LaTeX/Mathematics">The Math chapter</a> of
+  the well-known LaTeX wikibook
+</p>
+</li>
+<li>
+<p>
+<a href="http://www.maths.tcd.ie/~dwilkins/LaTeXPrimer/Theorems.html">A set of
+  macros</a> making easy to declare lemmas, definitions, proofs.
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/qtsql-sqlite.html">QtSql vs. SQLite</a></h1>
   </div>
   <div class="article_meta">
@@ -337,41 +392,6 @@ pentek este kiderult, hogy nem indul a biciklis valtozat, igy sajat turat csinal
     <div id="preamble">
 <div class="sectionbody">
 <p>I recently upgraded gammu from 1.27 to 1.28 in -current and I noticed that the backup of my phone is now way slower than before. The <a href="http://gitorious.org/gammu/mainline/commit/9e7b902b8b80dd953bf491e494e42865b0f232d5.patch">fix</a> was trivial (already backported to the Frugalware package as well) for the maintainer so it's now fine again.</p><p>Well done, mcihar! :)</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/playing-with-libvirt.html">Playing with libvirt</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Sun 03 October 2010</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 4 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>I've been playing with <a href="http://frugalware.org/packages/14204">libvirt</a> in the last two days. My motivation was that I saw:<ol>
-  <li>plain kvm is not that fast</li>
-  <li>there is this virtio framework which aims to make it faster</li>
-  <li>using virtio directly is hard, better not reinventing the wheel and just try libvirt</li>
-</ol></p><p>So if you want to try it yourself, you need to pacman -S libvirt, service libvirtd start. Check /var/log/syslog for error messages, in case it can't find some commands (bridge-utils, dnsmasq, etc.), install them.</p><p>If you want to create a new virtual machine, you need pacman -S virtinst. Then you can use something like:</p><p><code>virt-install --name=syncpkgcd-helicon --arch=x86_64 --vcpus=1 --ram=1024 --os-type=linux --os-variant=virtio26 --connect=qemu:///system --network network=default --cdrom=/virt/iso/frugalware-1.3-i686-net.iso --disk path=/virt/syncpkgcd/syncpkgcd.img,size=40 --accelerate --vnc --noautoconsole --keymap=us</code></p><p>See man virt-isntall for more info about the meaning of the switches. One trick: kvm can't handle the gfxmenu in our grub on the install cd, so you need to disable that. One way to do it is to use <code>vim -b frugalware-1.3-i686-net.iso</code>, search for "menu /boot", and change "gfx" to "#fx". Then you can run virt-install. It'll start the install in the background. The easiest way (for me) to connect to the console is to create an ssh tunnel to the server running the kvm machine (for example ssh -L 5900:localhost:5900 server), then run <code>krdc localhost:0</code> on my own machine.</p><p>Next trick is that you need kernel support to boot from virtio disks (/dev/vda), that's enabled in frugalware-current.git but there were no rebuild yet, so you need to build it yourself for now.</p><p>Once the installation finished, the machine will be shut down. You can use <code>virsh</code> to start it. <a href="http://acidborg.wordpress.com/2010/02/19/how-to-manage-kvm-virtual-machines-using-virsh/">Here</a> is a great summary about virsh subcommands. Something not to forget: if you want to automatically start the machine after the host booted, use <code>virsh autostart $name</code>.</p><p>(You can also do a service libvirt-guests add, that way all guests will be automatically suspended/resumed on shutdown/boot. Just to be clear: if you want the "resume if it was a proper shutdown, start if there was a power cut" feature: you need both init scripts because libvirtd will always start/resume autostart guests, but it will never suspend them on shutdown.)</p><p>If grub hangs after reboot, try creating a small (I used 32MB) separate /boot partition first, that should fix the issue.</p><p><code>virsh shutdown $machine</code> won't work if you don't install acpid and enable it as well, so it's a good idea to do so.</p><p>The last trick: if you want to use the virt-manager gui from your local machine to manage a remote host, it isn't trivial to do so. First, it would try to login via ssh as root, and that's disabled by default. (And why would you enable it?). Also, even if you allow that, it would try to use <code>nc -U</code> which is supported by the openbsd nc only, the gnu nc does not have such a switch. Instead, we can use socat to connect to unix sockets. So I created a wrapper script under ~/bin with the following contents:</p><p><pre>
-#!/bin/sh
-if [ "$1" == "-U" ]; then
-        sudo socat - unix-client:$2
-else
-        /usr/bin/netcat $@
-fi
-</pre></p><p>Don't forget to add PATH=what_you_want line to ~/.ssh/environment, and include the full path of ~/bin there. This way you can keep using gnu nc and you can also login as a user to manage your machines, as long as you set up nopasswd sudo for your user for socat.</p><p>Finally a mini-benchmark:</p><p>The SBU of yugo (i686 buildserver, a bit old HW) is 645 seconds, SBU of an i686 guest on helicon (c2q machine with 8g ram) is 264, SBU of the host build on helicon is 76.</p><p>I would call this usable (not right now, but once we sort out the kernel part). Finally something that is free software and is comparable to VMware ESX. :)</p><p>Update: I recently did the same install with 1.4pre1 (which installs -current, so the kernel is 2.6.36), the list of tricks you still need:</p><p><ul>
-  <li>separate /boot (haven't tried without)</li>
-  <li>edit iso image to get rid of gfxboot (tried, still fails without)</li>
-  <li>some problem with grub, you need to manually add "(hd0) /dev/vda" to /boot/grub/device.map, then run grub-install /dev/vda</li>
-</ul></p><p>So no more custom kernel, boot from virtio works by default! :)</p>
 </div>
 </div>
 

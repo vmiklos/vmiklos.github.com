@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/pygments.css">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Miklos Vajna">
+  <meta name="description" content="Posts and writings by Miklos Vajna">
+
+  <link href="https://vmiklos.hu/blog/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking RSS" />
+
+<meta name="keywords" content="en">
+
+  <title>
+    What is Miklos hacking
+&ndash; Improve copy&paste in Calc and elsewhere  </title>
+
+<script type="text/javascript">
+  var _paq = window._paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//analytics.vmiklos.hu/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '1']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <h2><a href="https://vmiklos.hu/blog">What is Miklos hacking</a></h2>
+      <p></p>
+      <ul>
+        <li><a href="/" target="_blank">Root</a></li>
+        <li><a href="https://planet.documentfoundation.org/" target="_blank">LibreOffice Blogs</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://vmiklos.hu/blog">Index</a> &brvbar; <a href="https://vmiklos.hu/blog/archives.html">Archives</a>
+      &brvbar; <a href="https://vmiklos.hu/blog/feeds/all.rss.xml">RSS</a>
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sc-clipboard-paste.html">Improve copy&paste in Calc and elsewhere</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Thu 04 April 2024</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 3 minutes</p>
+  </div>
+  <div class="article_text">
+    <p>Calc now supports much better copy&amp;paste when you transfer data between Google Sheets and Calc.</p>
+<p>This work is primarily for <a href="https://www.collaboraoffice.com/">Collabora Online</a>, but the feature is
+fully available in desktop Calc as well.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>First, Collabora Online was using the
+<a href="https://developer.mozilla.org/en-US/docs/Web/API/Document/execCommand">deprecated</a>
+<code>document.execCommand()</code> API to paste text, which is problematic, as the "paste" button on the
+toolbar can't behave the same way as pressing Ctrl-V on the keyboard.</p>
+<p>Second, it turns out Google Sheets came up with some additional HTML attributes to represent
+spreadsheet data in HTML in a much better way, and Calc HTML import/export had no support for this,
+while this is all fixable.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>In short, Collabora Online now uses the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Clipboard/read">Clipboard
+API</a> to read from the system
+clipboard -- this has to be supported by the
+<a href="https://sdk.collaboraonline.com/docs/advanced_integration.html#allow-the-clipboard-permission-query">integration</a>,
+and Calc's HTML filter now support the subset of the Google Sheets markup I figured out so far. This
+subset is also
+<a href="https://sdk.collaboraonline.com/docs/advanced_integration.html#spreadsheet-html-extensions">documented</a>.</p>
+<p>For the longer version, here are some screenshots:</p>
+<p><a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-01-15-cool-clipboard-popup.png"><figure><img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-01-15-cool-clipboard-popup.png"><figcaption>We used to show a popup when you clicked on the paste button on the notebookbar</figcaption></figure></a></p>
+<p><a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-01-18-cool-clipboard-image-paste.png"><figure><img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-01-18-cool-clipboard-image-paste.png"><figcaption>The new paste code in action, handling an image</figcaption></figure></a></p>
+<p><a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-01-31-sc-html-import-text-bad.png"><figure><img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-01-31-sc-html-import-text-bad.png"><figcaption>Import from Google Sheets to Calc: text is auto-converted to a number, bad</figcaption></figure></a></p>
+<p><a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-01-sc-html-import-text-good.png"><figure><img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-01-sc-html-import-text-good.png"><figcaption>Import from Google Sheets to Calc: text is no longer auto-converted to a number, good</figcaption></figure></a></p>
+<p><a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-02-sc-html-import-celledit-fix.png"><figure><img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-02-sc-html-import-celledit-fix.png"><figcaption>HTML import into an active cell edit, only RTF was working there previously</figcaption></figure></a></p>
+<p><a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-07-sc-html-paste-text-good.png"><figure><img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-07-sc-html-paste-text-good.png"><figcaption>Paste from Google Sheets to Calc: text is no longer auto-converted to a number, good</figcaption></figure></a></p>
+<p><a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-08-sc-html-paste-boolean-good.png"><figure><img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-08-sc-html-paste-boolean-good.png"><figcaption>Paste from Google Sheets to Calc: booleans are now also preserved</figcaption></figure></a></p>
+<p><a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-09-sc-html-paste-numfmt-good.png"><figure><img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-09-sc-html-paste-numfmt-good.png"><figcaption>Paste from Google Sheets to Calc: number formats are now also preserved</figcaption></figure></a></p>
+<p><a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-12-sc-html-paste-formula-good.png"><figure><img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-12-sc-html-paste-formula-good.png"><figcaption>Paste from Google Sheets to Calc: formulas are now also preserved</figcaption></figure></a></p>
+<p><a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-13-sc-html-paste-singlecell-good.png"><figure><img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-13-sc-html-paste-singlecell-good.png"><figcaption>Paste from Google Sheets to Calc: also handling a single cell</figcaption></figure></a></p>
+<p><a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-14-sc-html-copy-text-good.png"><figure><img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-14-sc-html-copy-text-good.png"><figcaption>Copy from Calc to Google sheets: text is now handled, no longer auto-converted to a number</figcaption></figure></a></p>
+<p><a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-15-sc-html-copy-bool-good.png"><figure><img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-15-sc-html-copy-bool-good.png"><figcaption>Copy from Calc to Google sheets: booleans are now handled</figcaption></figure></a></p>
+<p><a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-20-cool-cross-origin-iframe-clipboard-bad.png"><figure><img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-20-cool-cross-origin-iframe-clipboard-bad.png"><figcaption>Cross-origin iframes also block clipboard access, now fixed</figcaption></figure></a></p>
+<p><a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-03-01-sc-html-copy-formatted-number-good.png"><figure><img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-03-01-sc-html-copy-formatted-number-good.png"><figcaption>Copy from Calc to Google sheets: number formats are now also preserved</figcaption></figure></a></p>
+<p><a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-03-04-sc-html-copy-formula-good.png"><figure><img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-03-04-sc-html-copy-formula-good.png"><figcaption>Copy from Calc to Google sheets: formulas are now also preserved</figcaption></figure></a></p>
+<p><a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-03-08-cool-plain-text-copy.png"><figure><img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-03-08-cool-plain-text-copy.png"><figcaption>Copy from COOL Writer to a text editor: much better result, new one on the right hand side</figcaption></figure></a></p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>As usual, the high-level problem was addressed by a series of small changes:</p>
+<ul>
+<li><a href="https://git.libreoffice.org/core/commit/e6e5660b726ecf3b0c39b277568568973b43c9f0">tdf#159483 sc HTML import: handle data-sheets-value attribute for the text case</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/543e52481e764b8e0eea6cf0123a77cf492bdf8e">tdf#159483 sc HTML paste: handle data-sheets-value here, too</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/f8c95cf93ce9ab8b9b78f3af03411d0cc2e195ba">tdf#159483 sc HTML import: handle data-sheets-value attribute for the bool case</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/789964785a61daab5f8065f006dd7aaf843c7236">tdf#159483 sc HTML import: handle data-sheets-value attribute for the num case</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/7812adb2ed11a3e08be24d3f2f94d14bfd740c55">tdf#159483 sc HTML paste: handle data-sheets-formula attribute</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/c0da56cb3e9f9678cae7142dee03fb706a2aebd9">tdf#159483 sc HTML paste: handle data-sheets- attributes on a span</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/4e2a4fbeb7c44cc47b3cf803cbcc6cba63b3d481">tdf#159483 sc HTML export: handle data-sheets-value attribute for the text case</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/411158832462b1077a8f5dc6379f2056f2338249">tdf#159483 sc HTML copy: handle data-sheets-value attribute for the bool case</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/17581e684ca701bfd96ed2bf16aa14c3903b74d4">tdf#159483 sc HTML copy: handle data-sheets-value attribute for the num case</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/2efe362c99a9fa6e9a71b9b675b025c64b6c7f9d">tdf#159483 sc HTML copy: handle data-sheets-formula attribute</a></li>
+</ul>
+<p>The tracking issue on the Online side was <a href="https://github.com/CollaboraOnline/online/issues/8023">cool#8023</a>.</p>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a snapshot / demo of Collabora Office 24.04 and try it out yourself right now: <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try the
+unstable snapshot</a>.  Collabora
+intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
+of this work will be available in TDF's next release too (24.8).</p>
+  </div>
+  <div class="article_meta">
+    <p>Category: <a href="https://vmiklos.hu/blog/category/libreoffice.html">libreoffice</a>
+ &ndash; Tags:
+      <a href="https://vmiklos.hu/blog/tag/en.html">en</a>    </p>
+  </div>
+
+
+</article>
+
+
+    <div id="ending_message">
+      <p>&copy; Miklos Vajna. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
+</body>
+</html>

@@ -58,6 +58,64 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sw-content-controls3.html">Content controls in Writer: the plain text type</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Mon 01 August 2022</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <p>Writer now supports a 6th content control type: it is possible to insert a plain text content
+control.</p>
+<p>This work is primarily for <a href="https://www.collaboraoffice.com/">Collabora
+Online</a>, done as a
+<a href="https://vmiklos.hu/blog/hackweek-2021.html">HackWeek</a> project, but the feature is
+fully available in desktop Writer as well.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-content-controls3/sw-content-control-plain-text.png"><figcaption>Word-style plain text content control, user interface</figcaption>
+</figure>
+</p>
+<p>Writer users can put a content control around a piece of rich text, see
+<a href="https://vmiklos.hu/blog/sw-content-controls2.html">Content controls in Writer: dropdown, picture and date
+types</a> for the first five types.</p>
+<p>The next step in this journey is plain text: even if one of the big advantages of content controls
+over input fields is that they allow rich formatting, sometimes you want to restrict this. For
+example, if one has to fill in their name, then it makes no sense to mark the family name as bold
+while leaving the given name as non-bold. This would just lead to inconsistent look.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>There is now a new Form → Content Controls → Insert Plain Text Content Control
+menu item to create a plain text content control. If you try to make a
+selection that is a subset of the text inside the content control and you try
+to format it, the whole text in the content control is formatted to maintain
+the invariant that plain text has no formatting itself, just the formatting of
+the whole content control.</p>
+<p>As usual, you can delete this content control later. You can also load/save it
+to ODT/DOCX and it's preserved.</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>As usual, the high-level problem was addressed by a series of small changes:</p>
+<ul>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/137263">sw content controls, plain text: add doc model &amp; UNO API</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/137280">sw content controls, plain text: apply formatting to the entire contents</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/137340">sw content controls, plain text: add ODT filter</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/137349">sw: fix heap-use-after-free in SwTextNode::InsertHint()</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/137398">sw content controls, plain text: add DOCX export</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/137399">sw content controls, plain text: add DOCX import</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/137447">sw content controls, plain text: add insert UI</a></li>
+</ul>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a snapshot / demo of Collabora Office 22.05 and try it out yourself right now: <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try
+unstable snapshot</a>.  Collabora
+intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
+of this work will be available in TDF's next release too (7.5).</p>
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/sd-theme-shape-fill.html">Document themes in Impress: shape fill</a></h1>
   </div>
   <div class="article_meta">
@@ -1718,100 +1776,6 @@ roundtrips.</p></div>
 <div class="paragraph"><p>Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
 expect all of this work will be available in TDF&#8217;s
 <a href="http://dev-builds.libreoffice.org/daily/master/">next release</a> (7.3).</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/sd-table-transparent-shadow.html">Transparent shadow for tables from PPTX in Impress</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Fri 22 October 2021</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Impress is now able to correctly render shadows for table shapes, even if the shadow itself or the
-fill of the table cells have transparency. The result is now compatible with PowerPoint.</p></div>
-<div class="paragraph"><p>First, thanks to our partner <a href="https://www.suse.com/">SUSE</a> for working with
-<a href="https://www.collaboraoffice.com/">Collabora</a> to make this possible.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_motivation">Motivation</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>We got a PPTX document, which has a table shape with pink background and a blurry shadow. Impress
-rendered a red background, making the text hard to read.</p></div>
-<div class="paragraph"><p>The request was to improve the shadow rendering to be PowerPoint-compatible and in general correctly
-support transparency when it comes to table cell fills and table shadows.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_results_so_far">Results so far</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>The table shadow now looks like this:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sd-table-transparent-shadow/new.png" alt="https://share.vmiklos.hu/blog/sd-table-transparent-shadow/new.png" />
-</div>
-<div class="title">Figure 1. New render result in Impress</div>
-</div>
-<div class="paragraph"><p>Matching the reference rendering:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sd-table-transparent-shadow/ref.png" alt="https://share.vmiklos.hu/blog/sd-table-transparent-shadow/ref.png" />
-</div>
-<div class="title">Figure 2. Reference render result</div>
-</div>
-<div class="paragraph"><p>While background was red previously:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sd-table-transparent-shadow/old.png" alt="https://share.vmiklos.hu/blog/sd-table-transparent-shadow/old.png" />
-</div>
-<div class="title">Figure 3. Old render result in Impress</div>
-</div>
-<div class="paragraph"><p>You can see that not only the background in the top center cell is pink now, but the blurry table
-shadow is still correct.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_how_is_this_implemented">How is this implemented?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
-<div class="paragraph"><p>As usual, the high-level problem was addressed by a series of fixes:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/122349">tdf#144091 svx: fix unwanted blur of shadow from
-  table cell fill</a>
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/122532">Related: tdf#144091 svx: fix interaction of transp
-  cell fill and transp shadow</a>
-  (<a href="https://git.libreoffice.org/core/+/00fa364a2403dc23a786d3f91fde06e10b3a4a9a/svx/source/sdr/primitive2d/sdrdecompositiontools.cxx#629">key
-  part</a>)
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>With these, it&#8217;s now possible to add transparency to both table cell fills and to table shadows, and
-the rendering will take both into account, correctly.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_want_to_start_using_this">Want to start using this?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
-<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
-intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF&#8217;s next release too (7.3).</p></div>
 </div>
 </div>
 
