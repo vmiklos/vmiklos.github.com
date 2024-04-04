@@ -30,6 +30,9 @@ and Calc's HTML filter now support the subset of the Google Sheets markup I figu
 subset is also
 [documented](https://sdk.collaboraonline.com/docs/advanced_integration.html#spreadsheet-html-extensions).
 
+Note that the default behavior is that the new Clipboard API is available in Chrome/Safari, but not
+in Firefox.
+
 For the longer version, here are some screenshots:
 
 [![We used to show a popup when you clicked on the paste button on the notebookbar](https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-01-15-cool-clipboard-popup.png)](https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-01-15-cool-clipboard-popup.png)
@@ -52,15 +55,15 @@ For the longer version, here are some screenshots:
 
 [![Paste from Google Sheets to Calc: also handling a single cell](https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-13-sc-html-paste-singlecell-good.png)](https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-13-sc-html-paste-singlecell-good.png)
 
-[![Copy from Calc to Google sheets: text is now handled, no longer auto-converted to a number](https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-14-sc-html-copy-text-good.png)](https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-14-sc-html-copy-text-good.png)
+[![Copy from Calc to Google Sheets: text is now handled, no longer auto-converted to a number](https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-14-sc-html-copy-text-good.png)](https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-14-sc-html-copy-text-good.png)
 
-[![Copy from Calc to Google sheets: booleans are now handled](https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-15-sc-html-copy-bool-good.png)](https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-15-sc-html-copy-bool-good.png)
+[![Copy from Calc to Google Sheets: booleans are now handled](https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-15-sc-html-copy-bool-good.png)](https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-15-sc-html-copy-bool-good.png)
 
 [![Cross-origin iframes also block clipboard access, now fixed](https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-20-cool-cross-origin-iframe-clipboard-bad.png)](https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-20-cool-cross-origin-iframe-clipboard-bad.png)
 
-[![Copy from Calc to Google sheets: number formats are now also preserved](https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-03-01-sc-html-copy-formatted-number-good.png)](https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-03-01-sc-html-copy-formatted-number-good.png)
+[![Copy from Calc to Google Sheets: number formats are now also preserved](https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-03-01-sc-html-copy-formatted-number-good.png)](https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-03-01-sc-html-copy-formatted-number-good.png)
 
-[![Copy from Calc to Google sheets: formulas are now also preserved](https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-03-04-sc-html-copy-formula-good.png)](https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-03-04-sc-html-copy-formula-good.png)
+[![Copy from Calc to Google Sheets: formulas are now also preserved](https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-03-04-sc-html-copy-formula-good.png)](https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-03-04-sc-html-copy-formula-good.png)
 
 [![Copy from COOL Writer to a text editor: much better result, new one on the right hand side](https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-03-08-cool-plain-text-copy.png)](https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-03-08-cool-plain-text-copy.png)
 
