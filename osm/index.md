@@ -6,9 +6,9 @@ title: OpenStreetmap notes
 
 - [my contributions](https://www.openstreetmap.org/user/vmiklos)
 
-- [addr-osmify](https://vmiklos.hu/addr-osmify/)
+- [addr-osmify](https://share.vmiklos.hu/pages/addr-osmify/)
 
-- [missing-housenumbers status](https://vmiklos.hu//osm/missing-housenumbers/)
+- [missing-housenumbers status](https://vmiklos.hu/osm/missing-housenumbers/)
 
 - [osm-gimmisn](https://osm-gimmisn.vmiklos.hu/)
 
