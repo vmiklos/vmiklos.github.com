@@ -32,7 +32,10 @@ Phab bugs:
 
 Collabora Online bugs:
 
-- [bugs I fixed](https://github.com/CollaboraOnline/online/issues?q=is%3Aissue+is%3Aclosed+assignee%3Avmiklos)
+- [
+  [my bugs](https://github.com/CollaboraOnline/online/issues/assigned/vmiklos) |
+  [bugs I fixed](https://github.com/CollaboraOnline/online/issues?q=is%3Aissue+is%3Aclosed+assignee%3Avmiklos)
+  ]
 
 # English style bookmarks
   
