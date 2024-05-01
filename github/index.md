@@ -4,14 +4,14 @@ title: GitHub status
 
 - [my repos](https://github.com/vmiklos)
 
-- [ged2dot](https://vmiklos.hu/ged2dot) (2013) status:
+- [ged2dot](/ged2dot) (2013) status:
 ![releases](https://img.shields.io/github/release/vmiklos/ged2dot.svg)
 [![tests](https://github.com/vmiklos/ged2dot/workflows/tests/badge.svg)](https://github.com/vmiklos/ged2dot/actions)
 [![issues](https://img.shields.io/github/issues/vmiklos/ged2dot.svg)](https://github.com/vmiklos/ged2dot/issues)
 [![news](https://shields.io/badge/-news-blue)](https://vmiklos.hu/ged2dot/news.html)
 [![contributors](https://img.shields.io/github/contributors/vmiklos/ged2dot.svg)](https://github.com/vmiklos/ged2dot/graphs/contributors)
 
-- [osm-gimmisn](https://vmiklos.hu/osm-gimmisn) (2019) status:
+- [osm-gimmisn](/osm-gimmisn) (2019) status:
 ![releases](https://img.shields.io/github/release/vmiklos/osm-gimmisn.svg)
 [![tests](https://github.com/vmiklos/osm-gimmisn/workflows/tests/badge.svg)](https://github.com/vmiklos/osm-gimmisn/actions)
 [![issues](https://img.shields.io/github/issues/vmiklos/osm-gimmisn.svg)](https://github.com/vmiklos/osm-gimmisn/issues)
@@ -19,7 +19,7 @@ title: GitHub status
 [![contributors](https://img.shields.io/github/contributors/vmiklos/osm-gimmisn.svg)](https://github.com/vmiklos/osm-gimmisn/graphs/contributors)
 [![website](https://img.shields.io/website-up-down-green-red/https/osm-gimmisn.vmiklos.hu.svg)](https://osm-gimmisn.vmiklos.hu)
 
-- [plees-tracker](https://vmiklos.hu/plees-tracker) (2020) status
+- [plees-tracker](/plees-tracker) (2020) status
 ![releases](https://img.shields.io/github/release/vmiklos/plees-tracker.svg)
 ![fdroid](https://img.shields.io/f-droid/v/hu.vmiklos.plees_tracker.svg)
 [![tests](https://github.com/vmiklos/plees-tracker/workflows/tests/badge.svg)](https://github.com/vmiklos/plees-tracker/actions)
@@ -27,7 +27,7 @@ title: GitHub status
 [![news](https://shields.io/badge/-news-blue)](https://vmiklos.hu/plees-tracker/news.html)
 [![contributors](https://img.shields.io/github/contributors/vmiklos/plees-tracker.svg)](https://github.com/vmiklos/plees-tracker/graphs/contributors)
 
-- [turtle-cpm](https://vmiklos.hu/turtle-cpm) (2022) status:
+- [turtle-cpm](/turtle-cpm) (2022) status:
 ![releases](https://img.shields.io/github/release/vmiklos/turtle-cpm.svg)
 [![tests](https://github.com/vmiklos/turtle-cpm/workflows/tests/badge.svg)](https://github.com/vmiklos/turtle-cpm/actions)
 [![news](https://shields.io/badge/-news-blue)](https://vmiklos.hu/turtle-cpm/news.html)

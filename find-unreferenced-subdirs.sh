@@ -14,6 +14,10 @@ do
         continue
     fi
 
+    if grep -q 'href="/'$i github/index.html; then
+        continue
+    fi
+
     echo "WARN: unreferenced subdir: $i"
 done
 
