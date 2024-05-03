@@ -1,5 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>What is Miklos hacking</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Thu, 04 Apr 2024 09:50:39 +0200</lastBuildDate><item><title>Improve copy&amp;paste in Calc and elsewhere</title><link>https://vmiklos.hu/blog/sc-clipboard-paste.html</link><description>&lt;p&gt;Calc now supports much better copy&amp;amp;paste when you transfer data between Google Sheets and Calc.&lt;/p&gt;
+<rss version="2.0"><channel><title>What is Miklos hacking</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Fri, 03 May 2024 08:19:04 +0200</lastBuildDate><item><title>Improved copy &amp; paste in Collabora Online: the copy side</title><link>https://vmiklos.hu/blog/cool-clipboard-copy.html</link><description>&lt;p&gt;&lt;a href="https://www.collaboraoffice.com/"&gt;Collabora Online&lt;/a&gt; now uses the &lt;a href="https://developer.mozilla.org/en-US/docs/Web/API/Clipboard_API"&gt;Clipboard
+API&lt;/a&gt; if it's available in the used
+browser, getting rid of many annoying dialogs.&lt;/p&gt;
+&lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;The &lt;a href="https://vmiklos.hu/blog/sc-clipboard-paste.html"&gt;paste side&lt;/a&gt; was covered by an earlier post, but in
+short, if you're on Chrome (or Safari), you won't see the "can't paste" dialog:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/cool-clipboard-copy/2024-05-02-paste-bad.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/cool-clipboard-copy/2024-05-02-paste-bad.png"&gt;&lt;figcaption&gt;"Can't paste" dialog in COOL 23.05&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Also you won't see a "Can't paste special" dialog:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/cool-clipboard-copy/2024-05-02-pastespecial-bad.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/cool-clipboard-copy/2024-05-02-pastespecial-bad.png"&gt;&lt;figcaption&gt;"Can't paste special" dialog in COOL 23.05&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Wouldn't it be nice to improve the copy side in a similar way?&lt;/p&gt;
+&lt;h2 id="results-so-far"&gt;Results so far&lt;a class="headerlink" href="#results-so-far" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;The primary reason why we needed similar, annoying dialogs for copy in the past is that the
+clipboard API was synchronous but the network API is async. This means that writing to the clipboard
+("copy") is only possible with data that we have in the browser when the copy is executed. This is a
+problem, since in general we don't have data for your selection in the browser.&lt;/p&gt;
+&lt;p&gt;With the Clipboard API, the copy side can be improved as well. Instead of always fetching the HTML
+for a simple selection (even if you don't copy) and having a three step copy for complex selections,
+async clipboard write is now possible. This gets us rid of the "You need to download" dialog:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/cool-clipboard-copy/2024-05-02-copy-bad1.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/cool-clipboard-copy/2024-05-02-copy-bad1.png"&gt;&lt;figcaption&gt;"You need to download" dialog in COOL 23.05&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Also it eliminates the "Download completed dialog:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/cool-clipboard-copy/2024-05-02-copy-bad2.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/cool-clipboard-copy/2024-05-02-copy-bad2.png"&gt;&lt;figcaption&gt;"Download completed" dialog in COOL 23.05&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Instead, we still need to nominally write to the clipboard in the special keyboard or click context
+initiating the copy (Chrome doesn't require this, Safari does), but the written object can be a
+callback that will do the network operation for us.&lt;/p&gt;
+&lt;p&gt;Unfortunately it's hard to screenshot the new code, since part of the result is that all these
+dialogs are now eliminated, copy &amp;amp; paste just works. :-)&lt;/p&gt;
+&lt;p&gt;Note that this can be used also in Firefox, but first you need to set
+&lt;code&gt;dom.events.asyncClipboard.clipboardItem&lt;/code&gt; to &lt;code&gt;true&lt;/code&gt; in &lt;code&gt;about:config&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;The last part was to adapt tests to this new world, because previously it was handy to just create a
+selection and assert what would be copied to the clipboard as HTML, but now we don't download the
+HTML anymore every time you create a selection.&lt;/p&gt;
+&lt;h2 id="how-is-this-implemented"&gt;How is this implemented?&lt;a class="headerlink" href="#how-is-this-implemented" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;If you would like to know a bit more about how this works, continue reading... :-)&lt;/p&gt;
+&lt;p&gt;As usual, the high-level problem was addressed by a series of small changes:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://github.com/CollaboraOnline/online/commit/25342ed3172d3689309ed0833bdd2d3248818c56"&gt;Related: cool#8648 clipboard: extract parseClipboard() from Control.DownloadProgress.js&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/CollaboraOnline/online/commit/ea8202268ce4aa772a6e89cb58508d862b5e82d7"&gt;Related: cool#8648 clipboard: use JSON when requesting HTML only&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/CollaboraOnline/online/commit/75251f9496f44f8678e43c1525719e5e4cc3b6ee"&gt;cool#8648 clipboard: try to use navigator.clipboard.write()&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/CollaboraOnline/online/commit/286cd1ccf7f354e212bef4f02f4b51c50e37800c"&gt;cool#8648 clipboard: fix &lt;code&gt;desktop/writer/copy_paste_spec.js&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/CollaboraOnline/online/commit/803df018daf8575674ad4483d181f9c65fddd842"&gt;cool#8648 clipboard: fix &lt;code&gt;desktop/calc/clipboard_spec.js&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/CollaboraOnline/online/commit/635a45aac07c58a14d4dce38145fd28eea3ae04d"&gt;cool#8648 clipboard: fix &lt;code&gt;desktop/writer/undo_redo_spec.js&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/CollaboraOnline/online/commit/b3f2c690d8c610bffd2584b8d02b095bb144ed16"&gt;cool#8648 clipboard: fix &lt;code&gt;desktop/writer/track_changes_spec.js&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/CollaboraOnline/online/commit/91c702e42012b59f7747a0cfb1a1394cbcc180ff"&gt;cool#8648 clipboard: fix &lt;code&gt;most of desktop/writer/top_toolbar_spec.js&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/CollaboraOnline/online/commit/1f0aec8f19ddb6053f48625fabdf19d8e59049bb"&gt;cool#8648 clipboard: fix insert hyperlink dialog&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/CollaboraOnline/online/commit/56adf9983e60ad6259b28e2a24fa2c1b67209c56"&gt;cool#8648 clipboard: fix &lt;code&gt;desktop/writer/table_operation_spec.js&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/CollaboraOnline/online/commit/1e4afce8a193de2d307737f029f5a9096582ec7b"&gt;cool#8648 clipboard: fix &lt;code&gt;desktop/writer/searchbar_spec.js&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/CollaboraOnline/online/commit/406dad2128a2a5daa8f24e4728560bbdccbcd1e7"&gt;cool#8648 clipboard: fix &lt;code&gt;desktop/writer/notebookbar_spec.js&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/CollaboraOnline/online/commit/359e7eca6772dd0daf6b7dcfb5bc6e9b628510fc"&gt;cool#8648 clipboard: fix &lt;code&gt;desktop/writer/editable_area_spec.js&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/CollaboraOnline/online/commit/770feebf1318d8f4ab4bd68d13957cfaf6aee74d"&gt;cool#8648 clipboard: fix &lt;code&gt;desktop/impress/undo_redo_spec.js&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/CollaboraOnline/online/commit/c10cc6d8b8b6fb60a3a1248d0f8d73ce37af5a17"&gt;cool#8648 clipboard: fix &lt;code&gt;desktop/impress/delete_objects_spec.js&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/CollaboraOnline/online/commit/7f9c80988153b88c3ffb4a490c1f9d2d3da2ed39"&gt;cool#8648 clipboard: fix &lt;code&gt;desktop/calc/undo_redo_spec.js&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/CollaboraOnline/online/commit/e396df494cab6f88dfa0d51b91d44a35db8dd7f1"&gt;cool#8648 clipboard: fix &lt;code&gt;desktop/calc/top_toolbar_spec.js&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/CollaboraOnline/online/commit/5bf298243f5c1b6621cbb237d40358d5c411ec67"&gt;cool#8648 clipboard: fix &lt;code&gt;desktop/calc/searchbar_spec.js&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/CollaboraOnline/online/commit/a8d4a3e8592d3fcdd8a9007b49613a3fa5f58bf3"&gt;cool#8648 clipboard: fix &lt;code&gt;desktop/calc/searchbar_spec.js&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/CollaboraOnline/online/commit/67d38b64a4af4fc949ea19388a996f3818a4b03d"&gt;cool#8648 clipboard: fix &lt;code&gt;desktop/calc/focus_spec.js&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/CollaboraOnline/online/commit/25b377efb44bcde58df160edabc486eecfc73144"&gt;cool#8648 clipboard: fix &lt;code&gt;desktop/calc/delete_objects_spec.js&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/CollaboraOnline/online/commit/3c9272c1bf3b2f6cf14edb8a590d8f3fb7ab7d02"&gt;cool#8648 clipboard: fix &lt;code&gt;desktop/calc/autofilter_spec.js&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/CollaboraOnline/online/commit/fdb1f8c7fc101a75a7a90ad6b06cfb3a417ffab4"&gt;cool#8648 clipboard: fix &lt;code&gt;desktop/calc/cell_appearance_spec.js&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/CollaboraOnline/online/commit/4c5adb70e6946d8d9e01bf8d7b45744b02f1310b"&gt;cool#8648 clipboard: fix &lt;code&gt;mobile/calc/apply_font_spec.js&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/CollaboraOnline/online/commit/0c21b6e833de9aa257313ad3b514564c6209139f"&gt;cool#8648 clipboard: fix &lt;code&gt;mobile/calc/autofilter_spec.js&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/CollaboraOnline/online/commit/a5d05f23647df8987f053dd7e7b7d42e9bc15a0c"&gt;cool#8648 clipboard: fix &lt;code&gt;mobile/calc/bottom_toolbar_spec.js&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/CollaboraOnline/online/commit/2b37f2113f71d13d8c3bbd29f248713cb88e865d"&gt;cool#8648 clipboard: fix &lt;code&gt;mobile/calc/cell_appearance_spec.js&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/CollaboraOnline/online/commit/a12bcd3fb0b990566a8f2be0a4de2c2bff5236a1"&gt;cool#8648 clipboard: fix &lt;code&gt;mobile/calc/delete_objects_spec.js&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/CollaboraOnline/online/commit/3a1dd02dd15a184d4a54b28a84bf9079b6934029"&gt;cool#8648 clipboard: fix &lt;code&gt;mobile/calc/insertion_wizard_spec.js&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/CollaboraOnline/online/commit/9ea5add21752c234145e6d78c4ceb56c06e1b4e5"&gt;cool#8648 clipboard: fix &lt;code&gt;mobile/calc/searchbar_spec.js&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/CollaboraOnline/online/commit/283b5a1637121d00f5d41d2067f2221fde1d14ff"&gt;cool#8648 clipboard: fix &lt;code&gt;mobile/calc/spellchecking_spec.js&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/CollaboraOnline/online/commit/027a87157bd723d79ef2329d1cd7e41ade2e01e9"&gt;cool#8648 clipboard: fix &lt;code&gt;mobile/impress/delete_objects_spec.js&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/CollaboraOnline/online/commit/ad737657c6c3fe37e703587b869aba100a9228e6"&gt;cool#8648 clipboard: fix &lt;code&gt;mobile/impress/impress_focus_spec.js&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/CollaboraOnline/online/commit/1dc4bae0c96462c18a14ce634675b6f898926c8b"&gt;cool#8648 clipboard: fix &lt;code&gt;mobile/impress/insertion_wizard_spec.js&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/CollaboraOnline/online/commit/04a6af39cfb6949eab23c041656c05f7dfc026ef"&gt;cool#8648 clipboard: fix &lt;code&gt;mobile/impress/spellchecking_spec.js&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/CollaboraOnline/online/commit/a2db31f4378f5561b19afb53150e9ef0871f2e74"&gt;cool#8648 clipboard: fix &lt;code&gt;mobile/writer/apply_font_spec.js&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/CollaboraOnline/online/commit/9cca40deda7df20d72d6f96e5b91fa71ced89312"&gt;cool#8648 clipboard: fix &lt;code&gt;mobile/writer/delete_objects_spec.js&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/CollaboraOnline/online/commit/ad22a9f017b15658d90a50c011e5bcf8c2c64b87"&gt;cool#8648 clipboard: fix &lt;code&gt;mobile/writer/insert_formatting_mark_spec.js&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/CollaboraOnline/online/commit/a91036247b79403a6d8af9fec559de4cbc76045b"&gt;cool#8648 clipboard: fix &lt;code&gt;mobile/impress/insertion_wizard_spec.js&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/CollaboraOnline/online/commit/82dc3e1a46908c1306360cd335243d4345e842b0"&gt;cool#8648 clipboard: fix &lt;code&gt;mobile/writer/track_changes_spec.js&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/CollaboraOnline/online/commit/9b95bf829fefba288ff296c57e4323356e673ded"&gt;cool#8648 clipboard: fix &lt;code&gt;mobile/writer/table_properties_spec.js&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/CollaboraOnline/online/commit/28e51d58f446bb081a9630672f0b410b1e385886"&gt;cool#8648 clipboard: stop fetching the clipboard on text selection create in tests&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/CollaboraOnline/online/commit/24109be2e3889a45cfa90f0fa0cfce827a17f53b"&gt;cool#8648 clipboard: fix idle tests&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The tracking issue was &lt;a href="https://github.com/CollaboraOnline/online/issues/8648"&gt;cool#8648&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 id="want-to-start-using-this"&gt;Want to start using this?&lt;a class="headerlink" href="#want-to-start-using-this" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;You can get a development edition of Collabora Online 24.04 and try it out yourself right now: &lt;a href="https://www.collaboraoffice.com/code/"&gt;try
+the development edition&lt;/a&gt;.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 03 May 2024 08:19:04 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2024-05-03:/blog/cool-clipboard-copy.html</guid><category>collabora-online</category><category>en</category></item><item><title>Improve copy&amp;paste in Calc and elsewhere</title><link>https://vmiklos.hu/blog/sc-clipboard-paste.html</link><description>&lt;p&gt;Calc now supports much better copy&amp;amp;paste when you transfer data between Google Sheets and Calc.&lt;/p&gt;
 &lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraoffice.com/"&gt;Collabora Online&lt;/a&gt;, but the feature is
 fully available in desktop Calc as well.&lt;/p&gt;
 &lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
@@ -541,135 +623,4 @@ rendering problems during editing.&lt;/p&gt;
 &lt;p&gt;You can get a snapshot / demo of Collabora Office 23.05 and try it out yourself right now: &lt;a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/"&gt;try the
 unstable snapshot&lt;/a&gt;.  Collabora
 intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF's next release too (7.6).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Tue, 01 Aug 2023 09:29:19 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2023-08-01:/blog/sw-floattable6.html</guid><category>libreoffice</category><category>en</category></item><item><title>Multi-page floating tables in Writer: from section breaks to negative vertical offsets</title><link>https://vmiklos.hu/blog/sw-floattable5.html</link><description>&lt;p&gt;Writer now has continued steps to handle tables that are both floating and span over multiple pages.&lt;/p&gt;
-&lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraoffice.com/"&gt;Collabora Online&lt;/a&gt;, but is useful on
-the desktop as well. See the &lt;a href="https://vmiklos.hu/blog/sw-floattable4.html"&gt;fourth post&lt;/a&gt; for background.&lt;/p&gt;
-&lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;The previous post finished with a first fix for overlapping tables: this is a cluster of problems
-where tables are allowed to overlap, but various other formatting make them not overlap in practice
-in Word, but they do overlap in Writer. In this post, we'll see what started to work during the past
-month.&lt;/p&gt;
-&lt;h2 id="results-so-far"&gt;Results so far&lt;a class="headerlink" href="#results-so-far" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;The feature is enabled by default and the DOCX/DOC/RTF import makes use of it. This allows
-stress-testing the layout code with complex user documents. The next target is to actively search
-for documents that rendered reasonably in the past but are now unreadable and fix them.&lt;/p&gt;
-&lt;p&gt;On the positive side, core.git repository has has 40 files now which are focusing on correct
-handling of floating tables (filename matching &lt;code&gt;floattable-|floating-table-&lt;/code&gt;).  Also, there are
-additional tests that quickly build a specific multi-page floating table in the memory and do some
-operation on it, e.g.  delete the last row and assert what happens.&lt;/p&gt;
-&lt;p&gt;Here are some screenshots from the fixes this month:&lt;/p&gt;
-&lt;p&gt;
-&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable5/2023-06-01-floattable-lost-good.png"&gt;&lt;figcaption&gt;Section break directly between floating tables&lt;/figcaption&gt;
-&lt;/figure&gt;
-&lt;/p&gt;
-&lt;p&gt;The first problem was that in case two floating tables were directly after each other, a section
-break between them was lost. What you can see above is a successful transfer of the break
-properties to the first paragraph on the next page, so the tables don't overlap but are laid out on
-separate pages.&lt;/p&gt;
-&lt;p&gt;
-&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable5/2023-06-02-floattable-split-1-bad.png"&gt;&lt;figcaption&gt;Incorrect split of a multi-page floating table&lt;/figcaption&gt;
-&lt;/figure&gt;
-&lt;/p&gt;
-&lt;p&gt;Looking through internal documents, a sample was found where a table with 2 rows was not split, even
-if the previous page would have enough space for the first row. This is the old, bad layout.&lt;/p&gt;
-&lt;p&gt;
-&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable5/2023-06-02-floattable-split-2-good.png"&gt;&lt;figcaption&gt;Correct split of a multi-page floating table&lt;/figcaption&gt;
-&lt;/figure&gt;
-&lt;/p&gt;
-&lt;p&gt;And this is how it looks after the fix.&lt;/p&gt;
-&lt;p&gt;
-&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable5/2023-06-05-floattable-lost-2-tables-bad.png"&gt;&lt;figcaption&gt;2 floating tables are lost&lt;/figcaption&gt;
-&lt;/figure&gt;
-&lt;/p&gt;
-&lt;p&gt;The rest of the screenshots are from a complex internal document, which has 4 pages, but in total
-contains 11 floating tables. First I focused on getting correct rendering of this in Writer for
-DOCX. All the problems were not visible previously, as non-floating tables can't overlap, so bad
-formatting problems did not cause problems in practice. The first subset (public reproducer) had 3
-tables in it, but Writer only rendered one of them.&lt;/p&gt;
-&lt;p&gt;
-&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable5/2023-06-05-floattable-lost-2-tables-good.png"&gt;&lt;figcaption&gt;Normal table and 2 floating tables are fixed&lt;/figcaption&gt;
-&lt;/figure&gt;
-&lt;/p&gt;
-&lt;p&gt;After fixing the problem, both lost tables are now there.&lt;/p&gt;
-&lt;p&gt;
-&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable5/2023-06-07-floattable-overlap-bad.png"&gt;&lt;figcaption&gt;Unwanted overlap of two floating tables&lt;/figcaption&gt;
-&lt;/figure&gt;
-&lt;/p&gt;
-&lt;p&gt;The next case is about overlapping tables: the table is there, but the anchor positions are so
-close that the content overlaps and it's hard or impossible to read the text.&lt;/p&gt;
-&lt;p&gt;
-&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable5/2023-06-08-floattable-overlap-good.png"&gt;&lt;figcaption&gt;Fixed overlap of two floating tables&lt;/figcaption&gt;
-&lt;/figure&gt;
-&lt;/p&gt;
-&lt;p&gt;And this is how it looks after the fix.&lt;/p&gt;
-&lt;p&gt;
-&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable5/2023-06-09-floattable-nested-bad.png"&gt;&lt;figcaption&gt;Bad handling of nested floating tables&lt;/figcaption&gt;
-&lt;/figure&gt;
-&lt;/p&gt;
-&lt;p&gt;The next trouble is with nested floating tables: in case all inner tables are inline, then the table
-above the images will require more space then requested and that will lead to overlapping text
-later.&lt;/p&gt;
-&lt;p&gt;
-&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable5/2023-06-12-floattable-nested-better.png"&gt;&lt;figcaption&gt;Better handling of nested floating tables&lt;/figcaption&gt;
-&lt;/figure&gt;
-&lt;/p&gt;
-&lt;p&gt;The first fix is to make these inner tables also float if requested in the file format (but not
-split for now, to develop incrementally). This helps, but the position of the inner table's anchor
-is still incorrect.&lt;/p&gt;
-&lt;p&gt;
-&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable5/2023-06-13-floattable-nested-good.png"&gt;&lt;figcaption&gt;Good handling of nested floating tables&lt;/figcaption&gt;
-&lt;/figure&gt;
-&lt;/p&gt;
-&lt;p&gt;Finally the anchor position of the table is also correct: no intersecting borders, no overlapping
-text, no unexpected need for lots of vertical space.&lt;/p&gt;
-&lt;p&gt;
-&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable5/2023-06-15-floattable-loop-bad.png"&gt;&lt;figcaption&gt;Layout-loop for a floating table&lt;/figcaption&gt;
-&lt;/figure&gt;
-&lt;/p&gt;
-&lt;p&gt;The next problem was a layout loop, which was terminated by the built-in loop control in a way that
-rendered text outside the table to show up inside the table.&lt;/p&gt;
-&lt;p&gt;
-&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable5/2023-06-16-floattable-loop-good.png"&gt;&lt;figcaption&gt;Fixed layout-loop for a floating table&lt;/figcaption&gt;
-&lt;/figure&gt;
-&lt;/p&gt;
-&lt;p&gt;And here is the correct rendering. Note that in case a floating table's anchor is positioned with a
-negative vertical offset, then it can happen that text before the table will be rendered below the
-table. But this is intentional and also happens in Word.&lt;/p&gt;
-&lt;p&gt;
-&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable5/2023-06-19-floattable-negative-vert-offset-bad.png"&gt;&lt;figcaption&gt;Bad handling of negative vertical offsets&lt;/figcaption&gt;
-&lt;/figure&gt;
-&lt;/p&gt;
-&lt;p&gt;The last problem for this blog post is the case when a large floating table is anchored in a
-single-line paragraph. Now Writer insists that the anchored object and the anchor text is on the
-same page, so even if there is space for the last table on a previous page, it moves the table to
-the next page.&lt;/p&gt;
-&lt;p&gt;
-&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable5/2023-06-20-floattable-negative-vert-offset-good.png"&gt;&lt;figcaption&gt;Good handling of negative vertical offsets&lt;/figcaption&gt;
-&lt;/figure&gt;
-&lt;/p&gt;
-&lt;p&gt;And here is the correct rendering: all tables fitting the first page. Also note that the last table
-is moved up, so while the document model order is "after-table-2-second table-3 after-table-3", the
-rendered / layout order will be "table-3 after-table-2-second after-table-3" -- again,
-intentionally.&lt;/p&gt;
-&lt;p&gt;And that's where we stand. Certainly more work is needed to fix some remaining unwanted overlapping
-of floating tables, but we get there step by step.&lt;/p&gt;
-&lt;h2 id="how-is-this-implemented"&gt;How is this implemented?&lt;a class="headerlink" href="#how-is-this-implemented" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;If you would like to know a bit more about how this works, continue reading... :-)&lt;/p&gt;
-&lt;p&gt;As usual, the high-level problem was addressed by a series of small changes:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/e2f90d1d0e51c68dd01c9968cdb7a3bbb5658613"&gt;tdf#103869 sw floattable: fix lost table right before a section break from DOCX&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/920e76f15b78398de62002e30002f4f8e0fee7c1"&gt;sw floattable: ignore keep-with-next for anchors of non-last split flys&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/01ad8ec4bb5425446e95dbada81de435646824b4"&gt;sw floattable: fix lost tables around a floating table from DOCX&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/4c5438b2c447403194420b69311a81ea7d36e157"&gt;sw floattable, DOCX import: clean up not needed dmapper-level anchor insert&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/81a108770233825557c2dae5776d7417be017fb8"&gt;sw floattable, compat mode: handle lower margin of anchor for fly intersect&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/b71a9bcc2e1b4541c14e8197b5b888ee92297a6e"&gt;sw floattable: import non-split inner floating tables from DOCX&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/c374628126ad222be48d5d06857b7dc6b879f783"&gt;sw floattable: fix anchor position of inner floating table&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/737d90b7b7cb03bb6128b74a32906b0391868830"&gt;sw floattable: fix handling of upper margin of anchor for fly intersect&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/01eff4a68b05dd4eeee94bc4b3b018059efa60d4"&gt;sw floattable: avoid layout loop for negative vert offset in MakePos()&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/2d0a4ef1d83b8de6cb133970c2c35ae706fb058e"&gt;sw floattable: fix negative vertical offset handling on page boundary&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id="want-to-start-using-this"&gt;Want to start using this?&lt;a class="headerlink" href="#want-to-start-using-this" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;You can get a snapshot / demo of Collabora Office 23.05 and try it out yourself right now: &lt;a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/"&gt;try the
-unstable snapshot&lt;/a&gt;.  Collabora
-intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF's next release too (7.6).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Mon, 03 Jul 2023 14:23:10 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2023-07-03:/blog/sw-floattable5.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
+of this work will be available in TDF's next release too (7.6).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Tue, 01 Aug 2023 09:29:19 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2023-08-01:/blog/sw-floattable6.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
