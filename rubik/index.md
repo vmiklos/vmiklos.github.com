@@ -4,9 +4,14 @@ title: Rubik cheat sheets
 
 # General
 
-- [my simple scrambler](https://share.vmiklos.hu/pages/rubik-scramble/)
 - solver: [try it](https://share.vmiklos.hu/pages/rubik/), [demo](https://share.vmiklos.hu/pages/rubik/?faces=ULFLULURBRULDRFDUBRDUBFLBDRUBFDDBBUDFFFFLRRFLDBLUBRLRD)
 - credit: [the book](https://bookline.hu/product/home.action?_v=Rubik_Erno_A_buvos_kocka&type=20&id=147099)
+
+# Simple scrambler
+
+- [English](https://share.vmiklos.hu/pages/rubik-scramble/)
+
+- [Hungarian](https://share.vmiklos.hu/pages/rubik-scramble/?lang=hu)
 
 # Rotations: Varga method
 
