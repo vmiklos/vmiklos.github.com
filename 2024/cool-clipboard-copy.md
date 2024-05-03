@@ -2,7 +2,7 @@ Title: Improved copy & paste in Collabora Online: the copy side
 Slug: cool-clipboard-copy
 Category: collabora-online
 Tags: en
-Date: 2024-05-02T13:30:13+02:00
+Date: 2024-05-03T08:19:04+02:00
 
 [Collabora Online](https://www.collaboraoffice.com/) now uses the [Clipboard
 API](https://developer.mozilla.org/en-US/docs/Web/API/Clipboard_API) if it's available in the used
@@ -46,10 +46,10 @@ Unfortunately it's hard to screenshot the new code, since part of the result is 
 dialogs are now eliminated, copy & paste just works. :-)
 
 Note that this can be used also in Firefox, but first you need to set
-`dom.events.asyncClipboard.clipboardItem` to `true` in `about:config` first.
+`dom.events.asyncClipboard.clipboardItem` to `true` in `about:config`.
 
 The last part was to adapt tests to this new world, because previously it was handy to just create a
-selection and assert that would be copied to the clipboard as HTML, but now we don't download the
+selection and assert what would be copied to the clipboard as HTML, but now we don't download the
 HTML anymore every time you create a selection.
 
 ## How is this implemented?
