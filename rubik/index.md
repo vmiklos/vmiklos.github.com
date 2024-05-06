@@ -27,4 +27,6 @@ title: Rubik cheat sheets
 
 # Rotations: Kéri method
 
-TBD
+## Hungarian
+
+- 3x3: [ODT](3x3-hu-keri.odt), [PDF](3x3-hu-keri.pdf)
