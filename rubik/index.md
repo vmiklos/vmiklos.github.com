@@ -29,4 +29,4 @@ title: Rubik cheat sheets
 
 ## Hungarian
 
-- 3x3: [ODT](3x3-hu-keri.odt), [PDF](3x3-hu-keri.pdf)
+- 3x3: [HTML](/rubik/3x3-hu-keri/), [ODT](3x3-hu-keri.odt), [PDF](3x3-hu-keri.pdf)
