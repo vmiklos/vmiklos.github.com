@@ -6,7 +6,7 @@
 
 for i in *
 do
-    if [ ! -d $i ]; then
+    if [ ! -d $i -o $i = go -o $i = odp ]; then
         continue
     fi
 
