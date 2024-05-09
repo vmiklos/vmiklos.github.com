@@ -6,7 +6,7 @@
 
 for i in *
 do
-    if [ ! -d $i -o $i = go -o $i = odp ]; then
+    if [ ! -d $i -o $i = go -o $i = odp -o $i = grid ]; then
         continue
     fi
 
