@@ -5,7 +5,6 @@ title: Rubik cheat sheets
 # General
 
 - solver: [try it](https://share.vmiklos.hu/pages/rubik/), [demo](https://share.vmiklos.hu/pages/rubik/?faces=ULFLULURBRULDRFDUBRDUBFLBDRUBFDDBBUDFFFFLRRFLDBLUBRLRD)
-- credit: [the book](https://bookline.hu/product/home.action?_v=Rubik_Erno_A_buvos_kocka&type=20&id=147099)
 
 # Simple scrambler
 
@@ -14,6 +13,8 @@ title: Rubik cheat sheets
 - [Hungarian](https://share.vmiklos.hu/pages/rubik-scramble/?lang=hu)
 
 # Rotations: Varga method
+
+- credit: [the book](https://bookline.hu/product/home.action?_v=Rubik_Erno_A_buvos_kocka&type=20&id=147099)
 
 ## English
 
@@ -27,6 +28,12 @@ title: Rubik cheat sheets
 
 # Rotations: Kéri method
 
+- credit: [the book](https://bookline.hu/product/home.action?_v=Rubik_Erno_A_buvos_kocka&type=20&id=147099)
+
 ## Hungarian
 
 - 3x3: [HTML](/rubik/3x3-hu-keri/), [ODT](3x3-hu-keri.odt), [PDF](3x3-hu-keri.pdf)
+
+# Rotations: The Beginners Method
+
+- see [learningtocube.com](https://learningtocube.com/how-to-solve-a-rubiks-cube/)
