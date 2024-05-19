@@ -34,6 +34,12 @@ title: Rubik cheat sheets
 
 - 3x3: [HTML](/rubik/3x3-hu-keri/), [ODT](3x3-hu-keri.odt), [PDF](3x3-hu-keri.pdf)
 
+# Rotations: Wang method
+
+## Hungarian
+
+- 2x2: [ODT](2x2-hu-wang.odt), [PDF](2x2-hu-wang.pdf)
+
 # Rotations: The Beginners Method
 
 - see [learningtocube.com](https://learningtocube.com/how-to-solve-a-rubiks-cube/)
