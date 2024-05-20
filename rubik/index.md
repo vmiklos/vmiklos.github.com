@@ -34,11 +34,13 @@ title: Rubik cheat sheets
 
 - 3x3: [HTML](/rubik/3x3-hu-keri/), [ODT](3x3-hu-keri.odt), [PDF](3x3-hu-keri.pdf)
 
-# Rotations: Wang method
+# Rotations: jperm.net
+
+- credit: [jperm.net](https://jperm.net/2x2)
 
 ## Hungarian
 
-- 2x2: [ODT](2x2-hu-wang.odt), [PDF](2x2-hu-wang.pdf)
+- 2x2: [ODT](2x2-hu-jperm.odt), [PDF](2x2-hu-jperm.pdf)
 
 # Rotations: The Beginners Method
 
