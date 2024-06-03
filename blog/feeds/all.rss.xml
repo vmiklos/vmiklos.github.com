@@ -1,5 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>What is Miklos hacking</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Fri, 03 May 2024 08:19:04 +0200</lastBuildDate><item><title>Improved copy &amp; paste in Collabora Online: the copy side</title><link>https://vmiklos.hu/blog/cool-clipboard-copy.html</link><description>&lt;p&gt;&lt;a href="https://www.collaboraoffice.com/"&gt;Collabora Online&lt;/a&gt; now uses the &lt;a href="https://developer.mozilla.org/en-US/docs/Web/API/Clipboard_API"&gt;Clipboard
+<rss version="2.0"><channel><title>What is Miklos hacking</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Mon, 03 Jun 2024 16:26:52 +0200</lastBuildDate><item><title>Section-based continuous endnotes in Writer</title><link>https://vmiklos.hu/blog/sw-continuous-endnotes2.html</link><description>&lt;p&gt;Writer now has much better support for continuous / inline endnotes (not on a separate page) in
+Writer, enabled by default for DOCX files.&lt;/p&gt;
+&lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraoffice.com/"&gt;Collabora Online&lt;/a&gt;, but the feature is
+fully available in desktop Writer as well.&lt;/p&gt;
+&lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;As described in a &lt;a href="https://vmiklos.hu/blog/sw-continuous-endnotes.html"&gt;previous post&lt;/a&gt;, Writer already had
+minimal support for not rendering endnotes on a separate endnote page, but it was not mature enough
+to enable is by default for DOCX files.&lt;/p&gt;
+&lt;h2 id="results-so-far"&gt;Results so far&lt;a class="headerlink" href="#results-so-far" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;What changed from the previous "continuous endnotes" approach is that instead of trying to map
+endnotes to footnotes, we now create a special endnotes section, which only exists at a layout level
+(no section node is backing this one), and this hosts all endnotes at the end of the document. It
+turns out this is a much more scalable technique, for example a stress-test with 72 endnotes over
+several pages is now handled just fine.&lt;/p&gt;
+&lt;p&gt;Here are some screenshots:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-continuous-endnotes2/old.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-continuous-endnotes2/old.png"&gt;&lt;figcaption&gt;Before: reference is red, Writer result is painted on top of it&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-continuous-endnotes2/new.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-continuous-endnotes2/new.png"&gt;&lt;figcaption&gt;After: reference is red, Writer result is rendered on top of it&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;As you can see, there were various differences for this document, but the most problematic one was
+that the entire endnote was missing from the (originally) last page, as it was rendered on a
+separate page.&lt;/p&gt;
+&lt;p&gt;Now it's not only on the correct page, but also its position is correct: the endnote is after the
+body text, while the footnote is at the bottom of the page, as expected. The second screenshot shows
+~no red, which means there is ~no reference output, where the Writer output would be missing.&lt;/p&gt;
+&lt;h2 id="how-is-this-implemented"&gt;How is this implemented?&lt;a class="headerlink" href="#how-is-this-implemented" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;If you would like to know a bit more about how this works, continue reading... :-)&lt;/p&gt;
+&lt;p&gt;As usual, the high-level problem was addressed by a series of small changes:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/90f19126fa405a0632eae4ee8525b66bbce12625"&gt;tdf#160984 sw continuous endnotes: introduce an endnote section&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/8bae684c93bd23bbe98707ba9cf75d1a39427131"&gt;tdf#160984 sw continuous endnotes: add a way to find the endnote section start&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/ab3416cad1dd4e706432f9b1a3592cec823c76b0"&gt;tdf#160984 sw continuous endnotes: fix testContinuousEndnotesMoveBackwards&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/9c7acbc937b3b341c10187b837e09cc20399f04e"&gt;tdf#160984 sw continuous endnotes: fix &lt;code&gt;CppunitTest_sw_layoutwriter3&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/6885dcd7ec7b82a946d8344bfc27a3e88eecc44a"&gt;tdf#160984 sw continuous endnotes: switch to a section-based layout&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/82dd81a9d2049ac95535880fc67c1867f90e1427"&gt;tdf#161083 sw continuous endnotes: fix layout with a section at doc end&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/d74fb6b571304b41c13b7a6dcdd2b853bfca7210"&gt;tdf#160984 sw continuous endnotes, DOC import: enable this unconditionally&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/1ae5ea3f78cca11ba18f2dd1a06f875263336a3b"&gt;tdf#160984 sw continuous endnotes: enable DOCX import&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/d1ddd136a1b0e452492464d58715eaec144fd811"&gt;tdf#160984 sw continuous endnotes: fix the endnote container's top margin&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/f1d0b4e34a1f467e9f54baa7ac31ca28fdae3efb"&gt;tdf#160984 sw continuous endnotes: fix the endnote separator position&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/755f3bebd96ec7ae43b1dcf247f907b9c15c1995"&gt;tdf#160984 sw continuous endnotes: fix the endnote separator length&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/3f2d0414686a8f9a042413c47c4c8ffa5d61f436"&gt;tdf#160984 sw continuous endnotes: fix crash on loading forum-mso-en-7731.docx&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/2d2dd56e0b2dc708f1f758d7fc9a1263ff09b83c"&gt;tdf#160984 sw continuous endnotes: DOCX: import &lt;code&gt;&amp;lt;w:endnotePr&amp;gt;&lt;/code&gt; pos == sectEnd&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/566c7017a84e3d573de85a6d986b81d3f59de0fa"&gt;tdf#160984 sw continuous endnotes: DOCX: export of &lt;code&gt;&amp;lt;w:endnotePr&amp;gt;&lt;/code&gt; pos == sectEnd&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/6450159e0e7c5fac9c998087e99f3fec602ff84d"&gt;tdf#160984 sw continuous endnotes: fix the endnote continuation separator len&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/8f3e11dc9a4b3fd9ad1985d88b241df7bcb66fec"&gt;tdf#160984 sw continuous endnotes: hide not functional UI in this mode&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The tracking bug was &lt;a href="https://bugs.documentfoundation.org/show_bug.cgi?id=160984"&gt;tdf#160984&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 id="want-to-start-using-this"&gt;Want to start using this?&lt;a class="headerlink" href="#want-to-start-using-this" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;You can get a snapshot / demo of Collabora Office 24.04 and try it out yourself right now: &lt;a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/"&gt;try the
+unstable snapshot&lt;/a&gt;.  Collabora
+intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
+of this work will be available in TDF's next release too (24.8).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Mon, 03 Jun 2024 16:26:52 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2024-06-03:/blog/sw-continuous-endnotes2.html</guid><category>libreoffice</category><category>en</category></item><item><title>Improved copy &amp; paste in Collabora Online: the copy side</title><link>https://vmiklos.hu/blog/cool-clipboard-copy.html</link><description>&lt;p&gt;&lt;a href="https://www.collaboraoffice.com/"&gt;Collabora Online&lt;/a&gt; now uses the &lt;a href="https://developer.mozilla.org/en-US/docs/Web/API/Clipboard_API"&gt;Clipboard
 API&lt;/a&gt; if it's available in the used
 browser, getting rid of many annoying dialogs.&lt;/p&gt;
 &lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
@@ -523,104 +572,4 @@ paragraph and the footnote is there as well, at the same time.&lt;/p&gt;
 &lt;p&gt;You can get a snapshot / demo of Collabora Office 23.05 and try it out yourself right now: &lt;a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/"&gt;try the
 unstable snapshot&lt;/a&gt;.  Collabora
 intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF's next release too (24.2).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 01 Sep 2023 13:33:39 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2023-09-01:/blog/sw-floattable7.html</guid><category>libreoffice</category><category>en</category></item><item><title>Multi-page floating tables in Writer: hidden anchors and more</title><link>https://vmiklos.hu/blog/sw-floattable6.html</link><description>&lt;p&gt;Writer now has continued steps to handle tables that are both floating and span over multiple pages.&lt;/p&gt;
-&lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraoffice.com/"&gt;Collabora Online&lt;/a&gt;, but is useful on
-the desktop as well. See the &lt;a href="https://vmiklos.hu/blog/sw-floattable5.html"&gt;fifth post&lt;/a&gt; for background.&lt;/p&gt;
-&lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;The previous post finished with an "almost done" state for overlapping tables: this is a cluster of
-problems where tables are allowed to overlap, but various other formatting make them not overlap in
-practice in Word, but they do overlap in Writer. In this post, we'll see what was necessary so an
-initial set of old documents now render perfectly, which started to work during the past month.&lt;/p&gt;
-&lt;h2 id="results-so-far"&gt;Results so far&lt;a class="headerlink" href="#results-so-far" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;The feature is enabled by default and the DOCX/DOC/RTF import makes use of it.&lt;/p&gt;
-&lt;p&gt;On the positive side, core.git repository has has 49 files now which are focusing on correct
-handling of floating tables (filename matching &lt;code&gt;floattable-|floating-table-&lt;/code&gt;).  Also, there are
-additional tests that quickly build a specific multi-page floating table in the memory and do some
-operation on it, e.g.  delete the last row and assert what happens.&lt;/p&gt;
-&lt;p&gt;Here are some screenshots from the fixes this month (right click, open image in new tab for larger size):&lt;/p&gt;
-&lt;p&gt;
-&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable6/2023-07-03-floattable-negative-vert-offset-emptyanchor.png"&gt;&lt;figcaption&gt;Old, new and reference rendering of a floating table with negative vertical position, relative to an empty anchor.&lt;/figcaption&gt;
-&lt;/figure&gt;
-&lt;/p&gt;
-&lt;p&gt;The first case is about a document where the bottom of the page had a floating table, where the
-position (relative to the anchor) was a negative vertical offset. In this case Writer used to move
-the floating table to the next page, but now matches Word: the space in the previous page is used
-for the floating table. This fixed overlapping text on the next page.&lt;/p&gt;
-&lt;p&gt;
-&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable6/2023-07-05-floattable-anchor-bottom-margin.png"&gt;&lt;figcaption&gt;Old, new and reference rendering of a floating table with a large bottom margin in the anchor paragraph. Notice how the old rendering had a larger spacing between footnotes, which resulted in a 2 page document. The new and reference renderings have smaller spacing between footnotes and are of 1 page.&lt;/figcaption&gt;
-&lt;/figure&gt;
-&lt;/p&gt;
-&lt;p&gt;The next case is about floating tables in footnotes, the anchor needs to have no visible margins to
-provide the correct layout.&lt;/p&gt;
-&lt;p&gt;
-&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable6/2023-07-06-floattable-overlap-vert-offset.png"&gt;&lt;figcaption&gt;Old, new and reference rendering of a floating table with an overlap due to vertical offsets. The old rendering had a big second table, it completely covered the first table. The new and reference renderings shift the second table to a next page to avoid overlap.&lt;/figcaption&gt;
-&lt;/figure&gt;
-&lt;/p&gt;
-&lt;p&gt;This case was about an unwanted overlap of floating tables. Incorrect handling of the vertical
-offsets meant that the second floating table was rendered on top of the first one, making the text
-in the first floating table unreadable. Now we shift down the second floating table, so no overlap
-happens.&lt;/p&gt;
-&lt;p&gt;
-&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable6/2023-07-12-floattable-newline-loop.png"&gt;&lt;figcaption&gt;New rendering of a floating table with anchor text that starts with a newline.&lt;/figcaption&gt;
-&lt;/figure&gt;
-&lt;/p&gt;
-&lt;p&gt;This document had a layout loop on load. The problem was specific to the case when the anchor text
-of a floating table started with a newline character, which has its own position in the document
-model, but doesn't really have a width at a layout level, so needs special handling. This is now
-fixed, the document loads and renders fine.&lt;/p&gt;
-&lt;p&gt;
-&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable6/2023-07-13-floattable-suse.png"&gt;&lt;figcaption&gt;Old, new and reference rendering of a document with lots of floating tables.&lt;/figcaption&gt;
-&lt;/figure&gt;
-&lt;/p&gt;
-&lt;p&gt;This document had only 4 pages, but lots of floating tables, carefully positioned to not overlap in
-Word. You can see how the old Writer rendering result was hard to read and it now looks correct.&lt;/p&gt;
-&lt;p&gt;
-&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable6/2023-07-14-floattable-suse-hidden.png"&gt;&lt;figcaption&gt;Old, new and reference rendering of a floating table with a hidden anchor.&lt;/figcaption&gt;
-&lt;/figure&gt;
-&lt;/p&gt;
-&lt;p&gt;Writer used to hide floating tables anchored inside hidden paragraphs, but Word shows them all the
-time, now we match this behavior.&lt;/p&gt;
-&lt;p&gt;
-&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable6/2023-07-17-floattable-overlap-table.png"&gt;&lt;figcaption&gt;Old, new and reference rendering of a floating table with an overlap.&lt;/figcaption&gt;
-&lt;/figure&gt;
-&lt;/p&gt;
-&lt;p&gt;The next document first had all of its tables in the first page, now fixed.&lt;/p&gt;
-&lt;p&gt;
-&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable6/2023-07-18-floattable-overlap-footer.png"&gt;&lt;figcaption&gt;Old, new and reference rendering of a floating table with an overlap between the table and the footer area.&lt;/figcaption&gt;
-&lt;/figure&gt;
-&lt;/p&gt;
-&lt;p&gt;A remaining problem was that the second table and the footer area could still overlap. This is now
-fixed: Word sometimes does allow such an overlap, but it depends on the baseline of the anchor
-position, so in the current case we can detect that such an overlap is not wanted.&lt;/p&gt;
-&lt;p&gt;
-&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable6/2023-07-19-floattable-halfrow.png"&gt;&lt;figcaption&gt;Old, new and reference rendering of a floating table with a half row on the first page.&lt;/figcaption&gt;
-&lt;/figure&gt;
-&lt;/p&gt;
-&lt;p&gt;The last problem with this document was a poor split of the floating table, the first half row of
-the second table still went to the first page. Now we correctly detect that such a split is not
-wanted and simply start the second floating table on the second page, which results in a pretty good
-rendering of this document.&lt;/p&gt;
-&lt;p&gt;And that's where we stand. Certainly more work is needed to fix rough edges, but we get there step
-by step -- the theme is slowly transitioning from overlap problems right after load to unexpected
-rendering problems during editing.&lt;/p&gt;
-&lt;h2 id="how-is-this-implemented"&gt;How is this implemented?&lt;a class="headerlink" href="#how-is-this-implemented" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;If you would like to know a bit more about how this works, continue reading... :-)&lt;/p&gt;
-&lt;p&gt;As usual, the high-level problem was addressed by a series of small changes:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/16b5b21d36da87be9b50235acbbb8008ed23b8bb"&gt;sw floattable: fix negative vert offset with on page boundary without anch text&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/79ddca4def81198e3eee42eca8aca42fef964c80"&gt;sw floattable: fix lost floating table right before a table from DOC&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/9ac864159b241d2093e86f664ab6f4b76c69196d"&gt;tdf#156059 sw floattable: fix lost 0 bottom margin of anchor in ftn from DOCX&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/1f2d523aeeafd241c71a468c970054120fb23b3d"&gt;sw floattable: enable AddVerticalFrameOffsets compat flag for DOC&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/663db89378aa1f0425e795ef5d471f134e658dc4"&gt;sw floattable: make sure floattable after floattable gets own anch pos from DOC&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/d59704b6b8c7e5395c0606fa01f37392afc4b2cd"&gt;cool#6857 sw floattable: try harder to keep anchor text in the last follow&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/52d265c0d2f2638c386475e58c3ee489ccd3f06c"&gt;sw floattable: fix lost floating table right before a hidden para from DOCX&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/8bd30999098567b3bdb84a6ca65c071952192932"&gt;tdf#120262 sw floattable: don't wrap text around fly when no content would fit&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/a4af5432753408c4eea8a8d56c2f48202160c5fe"&gt;tdf#120262 sw floattable, legacy: fix text wrap around fly when no content fits&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/9a5d1c250cbaac855b3e63d8c5fa0882ba7d14a2"&gt;tdf#120262 sw floattable, legacy: go outside body only for page frame vert pos&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/45574624ff05673d44f11cdbbbb49e1af599133e"&gt;tdf#120262 sw floattable: no split when none of first row fits the vert space&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id="want-to-start-using-this"&gt;Want to start using this?&lt;a class="headerlink" href="#want-to-start-using-this" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;You can get a snapshot / demo of Collabora Office 23.05 and try it out yourself right now: &lt;a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/"&gt;try the
-unstable snapshot&lt;/a&gt;.  Collabora
-intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF's next release too (7.6).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Tue, 01 Aug 2023 09:29:19 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2023-08-01:/blog/sw-floattable6.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
+of this work will be available in TDF's next release too (24.2).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 01 Sep 2023 13:33:39 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2023-09-01:/blog/sw-floattable7.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
