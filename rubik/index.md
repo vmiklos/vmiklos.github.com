@@ -45,3 +45,7 @@ title: Rubik cheat sheets
 # Rotations: The Beginners Method
 
 - see [learningtocube.com](https://learningtocube.com/how-to-solve-a-rubiks-cube/)
+
+## English
+
+- 3x3: [ODT](3x3-ltc-en.odt), [PDF](3x3-ltc-en.pdf)
