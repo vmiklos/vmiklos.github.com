@@ -49,3 +49,7 @@ title: Rubik cheat sheets
 ## English
 
 - 3x3: [ODT](3x3-ltc-en.odt), [PDF](3x3-ltc-en.pdf)
+
+## Hungarian
+
+- 3x3: [ODT](3x3-ltc-hu.odt), [PDF](3x3-ltc-hu.pdf)
