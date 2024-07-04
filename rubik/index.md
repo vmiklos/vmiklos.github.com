@@ -10,6 +10,8 @@ title: Rubik cheat sheets
 
 - [English](https://share.vmiklos.hu/pages/rubik-scramble/)
 
+- [English 4x4](https://share.vmiklos.hu/pages/rubik-scramble/?wide=t)
+
 - [Hungarian](https://share.vmiklos.hu/pages/rubik-scramble/?lang=hu)
 
 # Rotations: Varga method
