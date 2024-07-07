@@ -12,6 +12,8 @@ title: Rubik cheat sheets
 
 - [English 4x4](https://share.vmiklos.hu/pages/rubik-scramble/?wide=t)
 
+- [English f2l-solved](https://share.vmiklos.hu/pages/rubik-scramble/?state=f2l-solved)
+
 - [Hungarian](https://share.vmiklos.hu/pages/rubik-scramble/?lang=hu)
 
 # Rotations: Varga method
