@@ -65,7 +65,7 @@ The tracking bug was [tdf#160984](https://bugs.documentfoundation.org/show_bug.c
 
 ## Want to start using this?
 
-You can get a snapshot / demo of Collabora Office 24.04 and try it out yourself right now: [try the
-unstable snapshot](https://www.collaboraoffice.com/collabora-office-latest-snapshot/).  Collabora
-intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF's next release too (24.8).
+You can get a development edition of Collabora Online 24.04 and try it out yourself right now: [try
+the development edition](https://www.collaboraoffice.com/code/).  Collabora intends to continue
+supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
+available in TDF's next release too (24.8).
