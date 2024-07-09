@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/pygments.css">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Miklos Vajna">
+  <meta name="description" content="Posts and writings by Miklos Vajna">
+
+  <link href="https://vmiklos.hu/blog/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking RSS" />
+
+<meta name="keywords" content="en">
+
+  <title>
+    What is Miklos hacking
+&ndash; Fixing handling of line object transformations in the DOCX import of Writer  </title>
+
+<script type="text/javascript">
+  var _paq = window._paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//analytics.vmiklos.hu/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '1']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <h2><a href="https://vmiklos.hu/blog">What is Miklos hacking</a></h2>
+      <p></p>
+      <ul>
+        <li><a href="/" target="_blank">Root</a></li>
+        <li><a href="https://planet.documentfoundation.org/" target="_blank">LibreOffice Blogs</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://vmiklos.hu/blog">Index</a> &brvbar; <a href="https://vmiklos.hu/blog/archives.html">Archives</a>
+      &brvbar; <a href="https://vmiklos.hu/blog/feeds/all.rss.xml">RSS</a>
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sw-drawingml-line-transform.html">Fixing handling of line object transformations in the DOCX import of Writer</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Tue 09 July 2024</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <p>Writer now has improved support for toplevel line shapes when you import those from DOCX.</p>
+<p>This work is primarily for <a href="https://www.collaboraoffice.com/">Collabora Online</a>, but the feature is
+fully available in desktop Writer as well.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>As described in a <a href="https://vmiklos.hu/blog/lo-writer-drawingml-shape-improvements.html">post from 2014</a>,
+Writer reads the drawingML markup for shapes in DOCX files, including line shapes. While
+investigating a simple-looking problem around a horizontal vs vertical line, it turns out that there
+is a deeper issue here, and it looks like now have proper fix for this bug.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>Imagine that your company template has a nice footer in two columns, and the content in the columns
+are separated by a vertical line shape, but when you open your DOCX in Writer, it crosses the text
+of that footer instead:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-drawingml-line-transform/diff-old.png"><figure><img src="https://share.vmiklos.hu/blog/sw-drawingml-line-transform/diff-old.png"><figcaption>Bugdoc, before: reference is red, Writer result is painted on top of it</figcaption></figure></a></p>
+<p>While researching how line shapes are represented in our document model and how ODT import works, it
+turned out that the proper way to create a line shape is to only consider size / scaling when it
+comes to the individual points of the line, everything else (e.g. position / translation) should go
+to the transform matrix of the shape, then the render result will be as expected:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-drawingml-line-transform/diff-new.png"><figure><img src="https://share.vmiklos.hu/blog/sw-drawingml-line-transform/diff-new.png"><figcaption>Bugdoc, after: reference is red, Writer result is painted on top of it</figcaption></figure></a></p>
+<p>It was also interesting to see that this also improved other, existing test documents, e.g. core.git
+<code>sw/qa/extras/ooxmlimport/data/line-rotation.docx</code> looked like this before:</p>
+<p><a href="https://share.vmiklos.hu/blog/line-rotation-diff-old.png"><figure><img src="https://share.vmiklos.hu/blog/sw-drawingml-line-transform/line-rotation-diff-old.png"><figcaption>3 rotated lines, before: reference is red, Writer result is painted on top of it</figcaption></figure></a></p>
+<p>And the same fix makes it perfect:</p>
+<p><a href="https://share.vmiklos.hu/blog/line-rotation-diff-new.png"><figure><img src="https://share.vmiklos.hu/blog/sw-drawingml-line-transform/line-rotation-diff-new.png"><figcaption>3 rotated lines, after: reference is red, Writer result is painted on top of it</figcaption></figure></a></p>
+<p>Just stick to the rule: scaling goes to the points -- translation, rotation and horizontal shear
+goes to the shape.</p>
+<p>For now, this is only there for toplevel Writer lines, but in-groupshape and Calc/Impress lines
+could also follow this technique if there is a practical need.</p>
+<p>The "after" screenshots show ~no red, which means there is ~no reference output, where the Writer
+output would be missing.</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>The bugfix commit was <a href="https://git.libreoffice.org/core/commit/6c09c85ec384e88c89bff0817e7fe9889d7ed68e">tdf#161779 DOCX import, drawingML: fix handling of translation for
+lines</a>.</p>
+<p>The tracking bug was <a href="https://bugs.documentfoundation.org/show_bug.cgi?id=161779">tdf#161779</a>.</p>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a development edition of Collabora Online 24.04 and try it out yourself right now: <a href="https://www.collaboraoffice.com/code/">try
+the development edition</a>.  Collabora intends to continue
+supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
+available in TDF's next release too (24.8).</p>
+  </div>
+  <div class="article_meta">
+    <p>Category: <a href="https://vmiklos.hu/blog/category/libreoffice.html">libreoffice</a>
+ &ndash; Tags:
+      <a href="https://vmiklos.hu/blog/tag/en.html">en</a>    </p>
+  </div>
+
+
+</article>
+
+
+    <div id="ending_message">
+      <p>&copy; Miklos Vajna. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
+</body>
+</html>
