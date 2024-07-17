@@ -58,9 +58,15 @@ title: Rubik cheat sheets
 
 - 3x3: [ODT](3x3-ltc-hu.odt), [PDF](3x3-ltc-hu.pdf)
 
-# Rotations: 4×4×4 (Rubik's Revenge/Master Cube)
+# Rotations: 4×4×4 (Master)
+
+## English
 
 - beginner's guide: [Reduction method](https://de.speedcube.com.au/blogs/speedcubing-solutions/how-to-solve-a-4x4-rubiks-cube-complete-beginners-guide)
   - [Last 2 edges, edge flip](https://ukspeedcubes.co.uk/pages/4x4-last-2-edges-parity)
   - [OLL Parity Algorithms, last layer edge is flipped](https://de.speedcube.com.au/blogs/speedcubing-solutions/4x4-oll-parity-algorithms)
   - [Corner swap parity](https://de.speedcube.com.au/blogs/speedcubing-solutions/4x4-corner-swap-parity)
+
+## Hungarian
+
+- [ODT](4x4-hu.odt), [PDF](4x4-hu.pdf)
