@@ -1,4 +1,4 @@
 all: index.html
 
 index.html: index.md Makefile
-	pandoc -s -o index.html index.md
+	pandoc -s --toc --number-sections -o index.html index.md
