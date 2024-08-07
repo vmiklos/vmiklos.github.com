@@ -58,6 +58,74 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/git-notes-merge.html">Merging git notes</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Thu 07 June 2012</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>The <code>git notes</code> command is really about local annotation of commits&#8201;&#8212;&#8201;nothing
+to share. If you decide to still do so, for example the
+<a href="http://git-scm.com/2010/08/25/notes.html">git-scm.com</a> HOWTO can show you how to
+pull and push them. But what about merging?  There is no UI for that, but&#8201;&#8212;&#8201;given that with git, everything is possible&#8201;&#8212;&#8201;you can still do so manually.</p></div>
+<div class="paragraph"><p>So the problem comes when Alice fetches notes, Bob does so, Alice pushes her
+notes back, Bob annotates a different commit and when Bob wants to push, he
+gets <code>rejected, non-fast-forward</code>. Normally you would merge or rebase in this
+situation, but given that <code>git notes</code> by default updates the
+<code>refs/notes/commits</code> ref and you typically have a different branch checked out,
+you can&#8217;t use <code>git merge</code> or <code>git rebase</code> directly.</p></div>
+<div class="paragraph"><p>What works is:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>git checkout refs/notes/commits
+git fetch origin refs/notes/commits
+git merge FETCH_HEAD
+git update-ref refs/notes/commits HEAD
+git checkout master</code></pre>
+</div></div>
+<div class="colist arabic"><ol>
+<li>
+<p>
+Check out the notes, so if you have conflicts, you can resolve them.
+</p>
+</li>
+<li>
+<p>
+Fetch remote notes to FETCH_HEAD.
+</p>
+</li>
+<li>
+<p>
+Do the merge.
+</p>
+</li>
+<li>
+<p>
+Necessary, as <code>git merge</code> won&#8217;t update the ref automatically, since we&#8217;re not on a branch.
+</p>
+</li>
+<li>
+<p>
+Or whereever you were before.
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p>And now you can push your notes, as detailed in the above referred blog post.
+Yes, rebasing would be possible as well, that&#8217;s left as an exercise for the
+reader. ;-)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/lo-smartart-sw.html">LibreOffice can now import SmartArt in Writer</a></h1>
   </div>
   <div class="article_meta">
@@ -402,47 +470,6 @@ korabban sose voltunk (csak a youtube-rol volt ismeros par produkcio), a
 tobbiek mondtak el, hogy a 3.5 oras eloadas tenyleg maratoninak szamitott. ;)</p></div>
 <div class="paragraph"><p>Nehez egy szamot kiemelni, de az egyik amit nem ismertunk a
 <a href="http://www.youtube.com/watch?v=hWtSxsS9eyA">zengo abc</a> volt.</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/lpsp.html">LPSP</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Sun 29 January 2012</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="http://www.fosdem.org">
-<img src="http://www.fosdem.org/promo/going-to" alt="I'm going to FOSDEM, the Free and Open Source Software Developers' European Meeting" />
-</a>
-</div>
-</div>
-<div class="paragraph"><p>We will <a href="http://fosdem.org/2012/schedule/event/libosharep">give a talk</a> about
-LPSP and CMIS with Cedric at FOSDEM2012. If you wonder what LPSP and CMIS are:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-<a href="http://extensions.libreoffice.org/extension-center/lpsp/">LPSP</a>: LibreOffice extension providing connection to SharePoint
-</p>
-</li>
-<li>
-<p>
-<a href="http://www.oasis-open.org/committees/cmis/">CMIS</a>: Content Management Interoperability Services
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>See you in Brussels!</p></div>
 </div>
 </div>
 
