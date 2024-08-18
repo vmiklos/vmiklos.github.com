@@ -178,7 +178,7 @@ These are tutorials I found very useful before jumping into an actual spec.
 
 # youtube
 
-- [Budai Szent Imre Plébánia](https://www.youtube.com/channel/UC875fZvRf9SsQPihFtqGy6w)
 - [Csíksomlyó Élő](https://www.youtube.com/channel/UChrkbh0y4ut-mELoCTRPR_Q)
 - [jezsuitak live](https://www.youtube.com/jezsuitak/live)
+- [országúti ferencesek](https://www.youtube.com/@orszagutiferencesplebania389)
 - [meetthegermans](https://www.youtube.com/hashtag/meetthegermans)
