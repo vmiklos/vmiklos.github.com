@@ -70,4 +70,4 @@ The tracking issue for this problem was
 You can get a development edition of Collabora Online 24.04 and try it out yourself right now: [try
 the development edition](https://www.collaboraonline.com/code/).  Collabora intends to continue
 supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
-available in TDF's next release too (24.8).
+available in TDF's next release too (25.2).
