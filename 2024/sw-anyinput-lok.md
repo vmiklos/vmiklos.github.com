@@ -8,7 +8,7 @@ Writer now has support for doing partial layout passes when LOK clients have pen
 sometimes improves interactivity a lot.
 
 This work is primarily for [Collabora Online](https://www.collaboraonline.com/), but the feature is
-useful for any LOK client.
+useful for any LOK clients.
 
 ## Motivation
 
