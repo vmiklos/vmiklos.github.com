@@ -59,6 +59,44 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/rtf-font-table.html">Positions in RTF font tables</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Fri 26 August 2011</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>Tonight I worked on
+<a href="https://bugs.freedesktop.org/show_bug.cgi?id=39337">fdo#39337</a>, and while
+the writerfilter-based RTF import filter almost handled the document in
+question correctly, the fonts were not correct.</p></div>
+<div class="paragraph"><p>It turned out that this was caused by the fact that RTF&#8217;s font table (a
+table where each row has an ID and it contains the font name, charset
+and other properties) does not require continuous ID&#8217;s (for example
+positions 0, 2, 3 are allowed, even if 1 is not set), but dmapper (the
+glue layer between the RTF tokenizer and the Writer UNO API) does.</p></div>
+<div class="paragraph"><p>I already sent the position of the entry to dmapper, but the position
+turned out to be
+<a href="http://opengrok.libreoffice.org/xref/core/writerfilter/source/dmapper/FontTable.cxx#157">ignored</a>,
+so now I fixed the RTF tokenizer to send continuous ID&#8217;s.</p></div>
+<div class="paragraph"><p>A related improvement is that I just discovered the
+<code>writerfilter::TagLogger::unoPropertySet()</code> method, which can dump the
+properties of an UNO object, and now I&#8217;ve
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=120003152826b7450bbf384a9633c83dda4782c7">enabled</a>
+dumping of shape properties, which can help a lot when something goes
+wrong there.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/kvm-port-forward.html">KVM port forwarding</a></h1>
   </div>
   <div class="article_meta">
@@ -536,36 +574,6 @@ LGee kepei
 </p>
 </li>
 </ul></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/million-dollar-baby.html">Million Dollar Baby</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Sun 29 May 2011</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="/pic/mdb.t.jpg" alt="/pic/mdb.t.jpg" />
-</div>
-</div>
-<div class="paragraph"><p>Ugy tunik a Clint Eastwood altal rendezett filmek bejonnek, a Gran
-Torinohoz hasonloan ebben is szinesz es rendezo egyben. Valamint Hilary
-Swank (P.S. I Love You) es Morgan Freeman (The Dark Knight, Batman
-Begins, Se7en, stb.) is hozzak a vart szintet. Akit nem zavar, hogy nem
-happy end a vege (sot! ;) ), annak csak ajanlani tudom.</p></div>
-<div class="paragraph"><p>(<a href="http://www.imdb.com/title/tt0405159/">imdb</a>, <a href="http://www.youtube.com/watch?v=WHgPJjub790">trailer</a>)</p></div>
 </div>
 </div>
 
