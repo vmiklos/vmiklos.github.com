@@ -460,6 +460,7 @@ filter, and then the website will be updated accordingly.</li>
 <p>In other words, there is only minimal filtering for the reference data (1-999 and 2-998 is
 accepted) by default. If you want to filter out noise, then you need to cover the correct house
 numbers with ranges, and whatever is not in this range will be filtered out.</p>
+<h3 id="invalid-house-numbers-instead-of-ranges"><a class="header" href="#invalid-house-numbers-instead-of-ranges">Invalid house numbers instead of ranges</a></h3>
 <p>An alternative way of filtering out invalid data from the reference is explicitly stating what items
 are invalid:</p>
 <pre><code class="language-yaml">  Magasúti köz:
@@ -472,6 +473,9 @@ filtered out with '47'.</p>
 case '42a' is normalized to '42', you can write '42a' in the invalid list, and it'll silence '42'.
 This has the benefit that the <code>invalid</code> items will keep working even if you later decide to set the
 <code>housenumber-letters: true</code> mode.</p>
+<p>The items of the <code>invalid</code> list containing hyphens (<code>-</code>) are handled before other <code>invalid</code> items:
+the hyphen is not expanded, and they filter out reference items. Both sides delete slashes (<code>/</code>) and
+convert to lowercase before comparing.</p>
 <h2 id="searching-for-missing-streets"><a class="header" href="#searching-for-missing-streets">Searching for missing streets</a></h2>
 <p>The yaml format is like this:</p>
 <ul>
@@ -734,6 +738,7 @@ things which are not part of CI:</p>
 <h2 id="master"><a class="header" href="#master">master</a></h2>
 <ul>
 <li>Resolves: gh#4088 missing-housenumbers output is now deterministic for the <code>housenumber-letters: true</code> case when <code>1/a</code>, <code>1/b</code>, etc is simplified to only one of the matches</li>
+<li>Resolves: gh#3892 relation filters: <code>invalid</code> items can now contain hyphens</li>
 </ul>
 <h2 id="248"><a class="header" href="#248">24.8</a></h2>
 <ul>
