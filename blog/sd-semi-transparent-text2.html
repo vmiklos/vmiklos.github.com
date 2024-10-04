@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/pygments.css">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Miklos Vajna">
+  <meta name="description" content="Posts and writings by Miklos Vajna">
+
+  <link href="https://vmiklos.hu/blog/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking RSS" />
+
+<meta name="keywords" content="en">
+
+  <title>
+    What is Miklos hacking
+&ndash; Per-paragraph semi-transparent shape text in Impress  </title>
+
+<script type="text/javascript">
+  var _paq = window._paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//analytics.vmiklos.hu/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '1']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <h2><a href="https://vmiklos.hu/blog">What is Miklos hacking</a></h2>
+      <p></p>
+      <ul>
+        <li><a href="/" target="_blank">Root</a></li>
+        <li><a href="https://planet.documentfoundation.org/" target="_blank">LibreOffice Blogs</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://vmiklos.hu/blog">Index</a> &brvbar; <a href="https://vmiklos.hu/blog/archives.html">Archives</a>
+      &brvbar; <a href="https://vmiklos.hu/blog/feeds/all.rss.xml">RSS</a>
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sd-semi-transparent-text2.html">Per-paragraph semi-transparent shape text in Impress</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Fri 04 October 2024</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <p>The SVG export in Impress now supports a per-paragraph setting to handle semi-transparent shape
+text, while previously this was only possible to control at a per-shape level.</p>
+<p>This work is primarily for <a href="https://www.collaboraonline.com/">Collabora Online</a>, but the feature is
+available in desktop Impress as well.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>As described in a <a href="https://vmiklos.hu/blog/sd-semi-transparent-text.html">previous post</a>, Impress already
+had the capability to have semi-transparent shape text, but the SVG export of this for the case when
+not all paragraphs have the same setting was broken.</p>
+<p>Transparency in SVG can be described as a property of a group (<code>&lt;g style="opacity: 0.5"&gt;...&lt;/g&gt;</code>)
+and it can be also a property of the text (<code>&lt;tspan fill-opacity="0.5"&gt;...&lt;/tspan&gt;</code>).</p>
+<p>The SVG export works with the metafile of the shape, so when looking for meta actions, it tries to
+guess if the transparency will be for text: if so, it needs to use the <code>tspan</code> markup, otherwise
+going with the <code>g</code> markup is OK.</p>
+<p>What happened here is that meta action for a normal text started, so the SVG export assumed the text
+is not semi-transparent, but later the second line was still transparent, so we started a group
+element, and this resulted in a not even well-formed XML output.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>The relevant part of the test document is simple: just 3 paragraphs, the second one is
+semi-transparent (and also has a bullet, as an extra):</p>
+<p><a href="https://share.vmiklos.hu/blog/sd-semi-transparent-text2/svg-1input.png"><figure><img src="https://share.vmiklos.hu/blog/sd-semi-transparent-text2/svg-1input.png"><figcaption>Bugdoc: original Impress render</figcaption></figure></a></p>
+<p>Once this was exported to SVG, this resulted in a non-well-formed XML, so you got this error in a
+web browser:</p>
+<p><a href="https://share.vmiklos.hu/blog/sd-semi-transparent-text2/svg-2bad.png"><figure><img src="https://share.vmiklos.hu/blog/sd-semi-transparent-text2/svg-2bad.png"><figcaption>Bugdoc: old SVG render</figcaption></figure></a></p>
+<p>Once tweaking the transparency mask writer to check if text started already, we get the correct SVG
+render:</p>
+<p><a href="https://share.vmiklos.hu/blog/sd-semi-transparent-text2/svg-3good.png"><figure><img src="https://share.vmiklos.hu/blog/sd-semi-transparent-text2/svg-3good.png"><figcaption>Bugdoc: new SVG render</figcaption></figure></a></p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>The bugfix commit was <a href="https://git.libreoffice.org/core/commit/0a89d65e6bb7be293c1a7b4615a08292701694dc">SVG export: fix handling of semi-transparent text inside a
+list</a>.</p>
+<p>The tracking bug was <a href="https://bugs.documentfoundation.org/show_bug.cgi?id=162782">tdf#162782</a>.</p>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a development edition of Collabora Online 24.04 and try it out yourself right now: <a href="https://www.collaboraonline.com/code/">try
+the development edition</a>.  Collabora intends to continue
+supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
+available in TDF's next release too (25.2).</p>
+  </div>
+  <div class="article_meta">
+    <p>Category: <a href="https://vmiklos.hu/blog/category/libreoffice.html">libreoffice</a>
+ &ndash; Tags:
+      <a href="https://vmiklos.hu/blog/tag/en.html">en</a>    </p>
+  </div>
+
+
+</article>
+
+
+    <div id="ending_message">
+      <p>&copy; Miklos Vajna. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
+</body>
+</html>
