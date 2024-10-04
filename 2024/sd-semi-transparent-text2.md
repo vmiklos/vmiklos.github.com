@@ -2,7 +2,7 @@ Title: Per-paragraph semi-transparent shape text in Impress
 Slug: sd-semi-transparent-text2
 Category: libreoffice
 Tags: en
-Date: 2024-10-03T14:56:37+02:00
+Date: 2024-10-04T08:22:01+02:00
 
 The SVG export in Impress now supports a per-paragraph setting to handle semi-transparent shape
 text, while previously this was only possible to control at a per-shape level.
