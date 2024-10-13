@@ -21,4 +21,5 @@ countries = [
 	'slovakia', // Slovakia: Krompachy, etc.
 	'turkey', // Turkey: Marmaris 2012
 	'portugal', // Portugal: Albufeira 2023
+	'luxembourg', // Luxembourg: Luxembourg 2024
 ];
