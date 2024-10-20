@@ -70,4 +70,4 @@ title: Rubik cheat sheets
 ## Hungarian
 
 - [ODT](4x4-hu.odt), [PDF](4x4-hu.pdf)
-- mini: [ODT](4x4-hu-mini.odt), [PDF](4x4-hu-mini.pdf)
+- mini: [ODT](4x4-hu-mini.odt), [PDF](4x4-hu-mini.pdf), [PDF-A4](4x4-hu-mini2.pdf)
