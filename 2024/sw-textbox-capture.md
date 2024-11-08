@@ -2,11 +2,11 @@ Title: Handling page captures for Writer TextBoxes
 Slug: sw-textbox-capture
 Category: libreoffice
 Tags: en
-Date: 2024-11-07T15:40:01+01:00
+Date: 2024-11-08T08:58:46+01:00
 
 Writer TextBoxes provide the user with shapes that can have complex geometry and complex content.
-There is a related feature to capture shapes inside page boundaries: now the two features interact
-with each other botter.
+There is also a feature to capture shapes inside page boundaries: now the two features interact with
+each other better.
 
 This work is primarily for [Collabora Online](https://www.collaboraonline.com/), but the feature is
 available in desktop Writer as well.
@@ -14,7 +14,7 @@ available in desktop Writer as well.
 ## Motivation
 
 As described in a [previous post]({filename}/2014/textbox.adoc), Writer implements the TextBox
-feature with a pair of object: a Draw shape (with complex geometry) and a (hidden) Writer TextFrame,
+feature with a pair of objects: a Draw shape (with complex geometry) and a (hidden) Writer TextFrame,
 providing complex content. To avoid wrapping problems, the underlying TextFrame always has its wrap
 type set to "through", i.e. text may wrap around the Draw shape, but the hidden TextFrame is always
 ignored during text wrapping.
