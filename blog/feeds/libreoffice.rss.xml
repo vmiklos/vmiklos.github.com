@@ -1,5 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>What is Miklos hacking - libreoffice</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Fri, 04 Oct 2024 08:22:01 +0200</lastBuildDate><item><title>Per-paragraph semi-transparent shape text in Impress</title><link>https://vmiklos.hu/blog/sd-semi-transparent-text2.html</link><description>&lt;p&gt;The SVG export in Impress now supports a per-paragraph setting to handle semi-transparent shape
+<rss version="2.0"><channel><title>What is Miklos hacking - libreoffice</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Fri, 08 Nov 2024 08:58:46 +0100</lastBuildDate><item><title>Handling page captures for Writer TextBoxes</title><link>https://vmiklos.hu/blog/sw-textbox-capture.html</link><description>&lt;p&gt;Writer TextBoxes provide the user with shapes that can have complex geometry and complex content.
+There is also a feature to capture shapes inside page boundaries: now the two features interact with
+each other better.&lt;/p&gt;
+&lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraonline.com/"&gt;Collabora Online&lt;/a&gt;, but the feature is
+available in desktop Writer as well.&lt;/p&gt;
+&lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;As described in a &lt;a href="https://vmiklos.hu/blog/textbox.html"&gt;previous post&lt;/a&gt;, Writer implements the TextBox
+feature with a pair of objects: a Draw shape (with complex geometry) and a (hidden) Writer TextFrame,
+providing complex content. To avoid wrapping problems, the underlying TextFrame always has its wrap
+type set to "through", i.e. text may wrap around the Draw shape, but the hidden TextFrame is always
+ignored during text wrapping.&lt;/p&gt;
+&lt;p&gt;In most cases this provides the expected behavior, because the user sees one object, so wrapping
+around at most one object is not surprising.&lt;/p&gt;
+&lt;p&gt;However, there is also an other feature, that shapes may be captured inside page frames: if their
+position would be outside the page frame, Writer corrects this, so they are not off-page. This also
+makes sense, so it can't happen that your document has a shape that is hard to find, due to a silly
+position.&lt;/p&gt;
+&lt;p&gt;The trouble comes when these two are combined: the Draw shape's position gets adjusted to be
+captured inside the page frame, but the TextFrame's wrap type is "through", and objects with this
+wrap type are an exception from the capturing mechanism, so the position of the two shapes get out
+of sync.&lt;/p&gt;
+&lt;h2 id="results-so-far"&gt;Results so far&lt;a class="headerlink" href="#results-so-far" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;The problem is now solved by improving the layout, so in case the TextFrame is actually part of a
+Draw shape + TextFrame pair (forming a TextBox), then we calculate the effective wrap type of the
+TextFrame based on the wrap type of its Draw shape, so either both objects are captured or none,
+which results in consistent render result.&lt;/p&gt;
+&lt;p&gt;Here is a sample document where all margins are configured to be equal, but capturing corrected the
+Draw shape (and not the TextFrame):&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-textbox-capture/old.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-textbox-capture/old.png"&gt;&lt;figcaption&gt;Bugdoc: old Writer render&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;And here is the same document, with consistent positioning:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-textbox-capture/new.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-textbox-capture/new.png"&gt;&lt;figcaption&gt;Bugdoc: new Writer render&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;As you can see, now the rendered margins actually equal, as wanted.&lt;/p&gt;
+&lt;h2 id="how-is-this-implemented"&gt;How is this implemented?&lt;a class="headerlink" href="#how-is-this-implemented" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;If you would like to know a bit more about how this works, continue reading... :-)&lt;/p&gt;
+&lt;p&gt;The bugfix commit was &lt;a href="https://git.libreoffice.org/core/commit/c8549fa3204802daec8597ba0f9f4f7ef23d5cd2"&gt;sw textbox: capture fly when its draw object is captured&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The tracking bug was &lt;a href="https://bugs.documentfoundation.org/show_bug.cgi?id=138711"&gt;tdf#138711&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 id="want-to-start-using-this"&gt;Want to start using this?&lt;a class="headerlink" href="#want-to-start-using-this" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;You can get a development edition of Collabora Online 24.04 and try it out yourself right now: &lt;a href="https://www.collaboraonline.com/code/"&gt;try
+the development edition&lt;/a&gt;.  Collabora intends to continue
+supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
+available in TDF's next release too (25.2).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 08 Nov 2024 08:58:46 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2024-11-08:/blog/sw-textbox-capture.html</guid><category>libreoffice</category><category>en</category></item><item><title>Per-paragraph semi-transparent shape text in Impress</title><link>https://vmiklos.hu/blog/sd-semi-transparent-text2.html</link><description>&lt;p&gt;The SVG export in Impress now supports a per-paragraph setting to handle semi-transparent shape
 text, while previously this was only possible to control at a per-shape level.&lt;/p&gt;
 &lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraonline.com/"&gt;Collabora Online&lt;/a&gt;, but the feature is
 available in desktop Impress as well.&lt;/p&gt;
@@ -407,60 +447,4 @@ close to the reference now.&lt;/p&gt;
 &lt;p&gt;You can get a snapshot / demo of Collabora Office 23.05 and try it out yourself right now: &lt;a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/"&gt;try the
 unstable snapshot&lt;/a&gt;.  Collabora
 intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF's next release too (24.8).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Wed, 03 Jan 2024 15:15:21 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2024-01-03:/blog/sw-floattable11.html</guid><category>libreoffice</category><category>en</category></item><item><title>Multi-page floating tables in Writer: UI improvements</title><link>https://vmiklos.hu/blog/sw-floattable10.html</link><description>&lt;p&gt;This post is part of a series to describe how Writer now gets a feature to handle tables that are
-both floating and span over multiple pages.&lt;/p&gt;
-&lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraoffice.com/"&gt;Collabora Online&lt;/a&gt;, but is useful on
-the desktop as well. See the &lt;a href="https://vmiklos.hu/blog/sw-floattable9.html"&gt;9th post&lt;/a&gt; for the previous part.&lt;/p&gt;
-&lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;Previous posts described the hardest part of multi-page floating tables: reading them from
-documents, so we layout and render them. In this part, you can read about UI improvements when it
-comes to creating, updating and deleting them in Writer.&lt;/p&gt;
-&lt;h2 id="results-so-far"&gt;Results so far&lt;a class="headerlink" href="#results-so-far" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;Regarding testing of the floating table feature in general, the core.git repository has 89 files now which are focusing on correct
-handling of floating tables (filenames matching &lt;code&gt;floattable-|floating-table-&lt;/code&gt;). This doesn't count
-cases where the document model is built using C++ code in the memory and then we assert the result
-of some operation.&lt;/p&gt;
-&lt;p&gt;Here are some screenshots from the improvements this month:&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-floattable10/2023-11-13-floattable-lok-insert-ui.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable10/2023-11-13-floattable-lok-insert-ui.png"&gt;&lt;figcaption&gt;Improved insertion of floating tables&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;The first screenshot shows that the underlying LibreOffice Insert Frame dialog is now async
-(compatible with collaborative editing) and is now exposed in the Collabora Online notebookbar.&lt;/p&gt;
-&lt;p&gt;There were other improvements as well, so in case you select a whole table and insert a new frame,
-the result is close to what the DOCX import creates to floating tables. This includes a default
-frame width that matches the table width, and also disabling frame borders, since the table can
-already have one.&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-floattable10/2023-11-21-floattable-lok-edit-delete-ui.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable10/2023-11-21-floattable-lok-edit-delete-ui.png"&gt;&lt;figcaption&gt;Unfloating a floating table&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;The next screenshot shows an inserted floating table, where the context menu allows updating the
-properties of an already inserted floating table, and also allows to delete ("unfloat") it.&lt;/p&gt;
-&lt;p&gt;Several of these changes are shared improvements between LibreOffice and Collabora Online, so
-everyone benefits. For example, inserting a frame when a whole table was selected also cleared the
-undo stack, which is now fixed. Or unfloating table was only possible if some part of the table was
-clipped, but now this is always possible to do.&lt;/p&gt;
-&lt;h2 id="how-is-this-implemented"&gt;How is this implemented?&lt;a class="headerlink" href="#how-is-this-implemented" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;If you would like to know a bit more about how this works, continue reading... :-)&lt;/p&gt;
-&lt;p&gt;As usual, the high-level problem was addressed by a series of small changes:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/35925357f86e01612df28a092d71b6e216195636"&gt;sw floattable: make Insert Frame dialog async and mark it as a jsdialog&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/0bf60e32c0ac2bf79fad6c29c39c6f6a3f9ce8e8"&gt;tdf#99822 sw floattable: testcase for objects from different cells&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/4f1121255ebac035a439d242b47c2f81124418c3"&gt;sw floattable, insert UI: fix default frame width when inserting a new one&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/0ecb69d53864b582eb59533729ada01d85d383e6"&gt;sw floattable, insert UI: inherit fly width from selected table width&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/e306352b9ddd8bddfc37f0cfaac078d9260650d6"&gt;sw floattable, insert UI: allow direct creation of floating tables&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/8d973c5b9405bfa6964d3dfebd0017fd60ec3eca"&gt;sw floattable, insert UI: default to at-char for non-split flys&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/6c761fa3b40d296444681d8d2f991e5a6b7e5b71"&gt;sw floattable, insert UI: fix missing undo/redo&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/c1a535ee2db757b2e40683dc918cbad8b7429cfa"&gt;sw floattable, insert UI: fix unexpected border and spacing&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/bda066a77f4167bf83c0167afb6998c2890e60e0"&gt;sw floattable: link ODF proposal&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/47d824dd167eb34b08e5aec7141d2d9e6e996b34"&gt;tdf#157911 sw floattable: fix inconsistent inferred bottom border on split&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/2f42d8acd2d06f848c9e680c42a0f7834a9a641f"&gt;sw floattable, delete UI: fix unfloat button for cant-split frames&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/871ca5dd73b34086fad1e57d4697f43a6739a11d"&gt;sw floattable, delete UI: add an uno command to unfloat frame from context menu&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/45a4ed02281a7a8ca52fccf626c792e417c8ef1c"&gt;sw floattable, delete UI: fix undo/redo&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/223d2fac61e061478721a7a4a89b1362f5037d8f"&gt;sw floattable: fix crash by trying harder to split tables&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/b1b0cc1b0bb473155b5b089199ca99bb1dc40e42"&gt;sw floattable: add per-frame wrap-on-all-pages mode&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/a596070f8ac11ed0cd22baf55704037a6b8d9c4d"&gt;sw floattable, per-frame wrap-on-all-pages mode: add UNO API&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/272c3548c4d2362eb737947c8cbb017e2d55aae1"&gt;sw floattable, per-frame wrap-on-all-pages mode: add layout&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/7f58b57b47e6642cb9a7aeac48915b30148042d2"&gt;sw floattable, per-frame wrap-on-all-pages mode: add ODT filter&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/ce2fc5eb29b4e252993b549dee002fa8948c8386"&gt;tdf#158341 sw floattable: fix layout loop when fly is below the body frame&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id="want-to-start-using-this"&gt;Want to start using this?&lt;a class="headerlink" href="#want-to-start-using-this" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;You can get a snapshot / demo of Collabora Office 23.05 and try it out yourself right now: &lt;a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/"&gt;try the
-unstable snapshot&lt;/a&gt;.  Collabora
-intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF's next release too (24.2).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Mon, 04 Dec 2023 16:26:07 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2023-12-04:/blog/sw-floattable10.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
+of this work will be available in TDF's next release too (24.8).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Wed, 03 Jan 2024 15:15:21 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2024-01-03:/blog/sw-floattable11.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>

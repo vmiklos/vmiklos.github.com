@@ -59,6 +59,142 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/libvisio-setup.html">Document Liberation Project hacking experience</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Sat 29 November 2014</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 4 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>As someone who usually hacks on LibreOffice, external import filters produced
+by the Document Liberation Project cut both ways: they are great, as they deal
+with obscure formats and we get them for free, OTOH hacking such code is more
+complex than the usual LO code. I recently contributed a few patches to
+<a href="http://cgit.freedesktop.org/libreoffice/libvisio/commit/?id=2060d364bc0f7df97b864bf01fc5a27da12061c3">libvisio</a>
+and
+<a href="http://sourceforge.net/p/libwpd/libodfgen/ci/fb43d79e12ce132fc127cc0481ff5a6bdbcd1afe/">libodfgen</a>,
+but before I was able to do actual code changes, I had to set up a number of
+repositories and configure them to talk to each other&#8201;&#8212;&#8201;this post describes one
+possible setup that suited my needs.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_building_blocks">Building blocks</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>DLP&#8217;s central project is librevenge and everything builds on top of that,
+either by calling it or called by it. In case the task is to turn VSDX files
+into ODG ones, it looks like this:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh3.googleusercontent.com/-cxQ9QnWmyAo/VHoyKdHXSAI/AAAAAAAAFAY/Rqqr8xPorNM/s0/">
+<img src="https://lh3.googleusercontent.com/-cxQ9QnWmyAo/VHoyKdHXSAI/AAAAAAAAFAY/Rqqr8xPorNM/s400/" alt="https://lh3.googleusercontent.com/-cxQ9QnWmyAo/VHoyKdHXSAI/AAAAAAAAFAY/Rqqr8xPorNM/s400/" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>libvisio can build a librevenge document model from Visio files (more on the
+various librevenge-based libraries
+<a href="http://davetardon.wordpress.com/2014/05/06/writing-import-libraries-with-librevenge-part-i-getting-started/">here</a>),
+libodfgen can generate ODF output from such document models (one other
+possibility would be e.g.
+<a href="http://sourceforge.net/projects/libepubgen/">libepubgen</a>), and the
+writerperfect module provides kind of a controller for the remaining modules,
+e.g. for our purpose, a vsd2odg binary.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_alternatives_considered">Alternatives considered</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>One possibility is to build LibreOffice, use <code>--with-system-libvisio</code> and
+similar switches, then clone the repos, install them system-wide (possibly
+with your modifications), and then you can test your changes just with
+building the various libs, without changing your LO build (more
+<a href="http://fridrich.blogspot.hu/2012/01/fosdem-2012-how-to-make-best-of-it-and.html">here</a>).
+The drawback is that this way you pollute your system with unstable versions
+of those libs.</p></div>
+<div class="paragraph"><p>An other possibility is to build LibreOffice as usual, and then use the
+<a href="https://wiki.documentfoundation.org/Development/Patching_External_Libraries">external
+libraries patching mechanism</a> to hack on the code. The drawback is that you
+have to work without git on the code, and also you can only work with a
+released version.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_the_pkg_config_approach">The pkg-config approach</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>So here is what I did to avoid the above mentioned drawbacks: all DLP projects
+use pkg-config to find the required libraries, so you can configure them in a
+way that allows building as a user, avoid installing them at all, and still
+execute vsd2odg using the libs with your changes. Here is how to do it:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+librevenge:
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p><code>git clone git://git.code.sf.net/p/libwpd/librevenge</code><br />
+<code>cd librevenge</code><br />
+<code>./autogen.sh</code><br />
+<code>./configure --enable-debug</code><br />
+<code>make</code></p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+libvisio:
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p><code>git clone git://gerrit.libreoffice.org/libvisio</code><br />
+<code>cd libvisio</code><br />
+<code>./autogen.sh</code><br />
+<code>./configure REVENGE_CFLAGS="-I/home/vmiklos/git/libreoffice/librevenge/inc" REVENGE_LIBS="-L/home/vmiklos/git/libreoffice/librevenge/src/lib/.libs/ -lrevenge-0.0" REVENGE_GENERATORS_CFLAGS="-I/home/vmiklos/git/libreoffice/librevenge/inc" REVENGE_GENERATORS_LIBS="-L/home/vmiklos/git/libreoffice/librevenge/src/lib/.libs/ -lrevenge-generators-0.0" REVENGE_STREAM_CFLAGS="-I/home/vmiklos/git/libreoffice/librevenge/inc" REVENGE_STREAM_LIBS="-L/home/vmiklos/git/libreoffice/librevenge/src/lib/.libs/ -lrevenge-stream-0.0" --enable-debug --enable-werror</code><br />
+<code>make</code></p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+libodfgen:
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p><code>git clone git://git.code.sf.net/p/libwpd/libodfgen</code><br />
+<code>cd libodfgen</code><br />
+<code>./autogen.sh</code><br />
+<code>./configure REVENGE_CFLAGS="-I/home/vmiklos/git/libreoffice/librevenge/inc" REVENGE_LIBS="-L/home/vmiklos/git/libreoffice/librevenge/src/lib/.libs/ -lrevenge-0.0" REVENGE_STREAM_CFLAGS="-I/home/vmiklos/git/libreoffice/librevenge/inc" REVENGE_STREAM_LIBS="-L/home/vmiklos/git/libreoffice/librevenge/src/lib/.libs/ -lrevenge-stream-0.0" --enable-debug</code><br />
+<code>make</code></p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+writerperfect:
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p><code>git clone git://git.code.sf.net/p/libwpd/writerperfect</code><br />
+<code>cd writerperfect</code><br />
+<code>./autogen.sh</code><br />
+<code>./configure REVENGE_CFLAGS="-I/home/vmiklos/git/libreoffice/librevenge/inc" REVENGE_LIBS="-L/home/vmiklos/git/libreoffice/librevenge/src/lib/.libs/ -lrevenge-0.0" REVENGE_STREAM_CFLAGS="-I/home/vmiklos/git/libreoffice/librevenge/inc" REVENGE_STREAM_LIBS="-L/home/vmiklos/git/libreoffice/librevenge/src/lib/.libs/ -lrevenge-stream-0.0" ODFGEN_CFLAGS="-I/home/vmiklos/git/libreoffice/libodfgen/inc" ODFGEN_LIBS="-L/home/vmiklos/git/libreoffice/libodfgen/src/.libs -lodfgen-0.1 -lrevenge-0.0 -lrevenge-stream-0.0" VISIO_CFLAGS="-I/home/vmiklos/git/libreoffice/libvisio/inc" VISIO_LIBS="-L/home/vmiklos/git/libreoffice/libvisio/src/lib/.libs -lvisio-0.1 -lrevenge-0.0" --enable-debug --with-libvisio</code><br /></p></div>
+<div class="paragraph"><p>Of course, replace <code>/home/vmiklos/git/libreoffice/</code> with any other directory
+you like, just be consistent. ;-)</p></div>
+<div class="paragraph"><p>Now you can hack on any of these libraries, you just need to build your
+changes, and then vsd2odg will produce a flat ODG that you can quickly test
+with any ODF processor, like LibreOffice. One remaining trick (in case you&#8217;re
+not an autotools expert) is that vsd2odg is a libtool shell script, not a
+binary. If you still want to run the underlying binary in gdb, here is how you
+can do that:</p></div>
+<div class="paragraph"><p><code>libtool --mode=execute gdb --args vsd2odg /home/vmiklos/git/libreoffice/test.vsdx</code></p></div>
+<div class="paragraph"><p>In case the above considered two alternatives are not sufficient for your
+purposes, then I hope you find this setup useful. ;-)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/kasa.html">Kása</a></h1>
   </div>
   <div class="article_meta">
@@ -792,61 +928,6 @@ documentation like
 <a href="https://people.gnome.org/~michael/blog/2013-07-26.html">generic intro</a> slides,
 and with that, the reader can have a good "big picture" understanding of the
 code base. For the gory details, you always need to read the code anyway. ;-)</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/cluc2014.html">CLUC 2014 Conference</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Thu 19 June 2014</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://speakerdeck.com/vmiklos/4-dot-3">
-<img src="https://lh4.googleusercontent.com/-8H5VKexBW1Q/U6Kz9kfXv7I/AAAAAAAAEX8/GVuWhXuueUs/s400/" alt="https://lh4.googleusercontent.com/-8H5VKexBW1Q/U6Kz9kfXv7I/AAAAAAAAEX8/GVuWhXuueUs/s400/" />
-</a>
-</div>
-</div>
-<div class="paragraph"><p>I&#8217;ve arrived home yesterday from Zagreb where I
-<a href="http://2014.dorscluc.org/en/keynotes/#miklos">gave a keynote</a> at CLUC 2014
-<a href="http://2014.dorscluc.org/en/conference-schedule/">on Tuesday</a>.</p></div>
-<div class="paragraph"><p>Here are a few talks I enjoyed:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-Dave Whiteland&#8217;s <a href="https://www.mysociety.org/">mysociety.org</a> talk
-</p>
-</li>
-<li>
-<p>
-<a href="http://en.wikipedia.org/wiki/Harald_Welte">Harald Welte</a>'s
-  <a href="http://osmocom.org/">osmocom.org</a> talk
-</p>
-</li>
-<li>
-<p>
-Elizabeth Krumbach Joseph&#8217;s <a href="http://openstack.org">OpenStack</a> talk (explaining
-  how do they use gerrit, git-review and related tools)
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>I also took a <a href="/panoramas/zagreb.html">panorama</a> and some
-pictures, available
-<a href="https://www.flickr.com/photos/vmiklos/albums/72157672777872180">here</a>,
-including photos of some speakers.</p></div>
-<div class="paragraph"><p>Thanks Elizabeth for the above photo, and also to the organizers of the
-conference, it was a great one! ;-)</p></div>
 </div>
 </div>
 

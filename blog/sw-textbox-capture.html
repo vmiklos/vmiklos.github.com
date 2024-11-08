@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/pygments.css">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Miklos Vajna">
+  <meta name="description" content="Posts and writings by Miklos Vajna">
+
+  <link href="https://vmiklos.hu/blog/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking RSS" />
+
+<meta name="keywords" content="en">
+
+  <title>
+    What is Miklos hacking
+&ndash; Handling page captures for Writer TextBoxes  </title>
+
+<script type="text/javascript">
+  var _paq = window._paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//analytics.vmiklos.hu/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '1']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <h2><a href="https://vmiklos.hu/blog">What is Miklos hacking</a></h2>
+      <p></p>
+      <ul>
+        <li><a href="/" target="_blank">Root</a></li>
+        <li><a href="https://planet.documentfoundation.org/" target="_blank">LibreOffice Blogs</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://vmiklos.hu/blog">Index</a> &brvbar; <a href="https://vmiklos.hu/blog/archives.html">Archives</a>
+      &brvbar; <a href="https://vmiklos.hu/blog/feeds/all.rss.xml">RSS</a>
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sw-textbox-capture.html">Handling page captures for Writer TextBoxes</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Fri 08 November 2024</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 3 minutes</p>
+  </div>
+  <div class="article_text">
+    <p>Writer TextBoxes provide the user with shapes that can have complex geometry and complex content.
+There is also a feature to capture shapes inside page boundaries: now the two features interact with
+each other better.</p>
+<p>This work is primarily for <a href="https://www.collaboraonline.com/">Collabora Online</a>, but the feature is
+available in desktop Writer as well.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>As described in a <a href="https://vmiklos.hu/blog/textbox.html">previous post</a>, Writer implements the TextBox
+feature with a pair of objects: a Draw shape (with complex geometry) and a (hidden) Writer TextFrame,
+providing complex content. To avoid wrapping problems, the underlying TextFrame always has its wrap
+type set to "through", i.e. text may wrap around the Draw shape, but the hidden TextFrame is always
+ignored during text wrapping.</p>
+<p>In most cases this provides the expected behavior, because the user sees one object, so wrapping
+around at most one object is not surprising.</p>
+<p>However, there is also an other feature, that shapes may be captured inside page frames: if their
+position would be outside the page frame, Writer corrects this, so they are not off-page. This also
+makes sense, so it can't happen that your document has a shape that is hard to find, due to a silly
+position.</p>
+<p>The trouble comes when these two are combined: the Draw shape's position gets adjusted to be
+captured inside the page frame, but the TextFrame's wrap type is "through", and objects with this
+wrap type are an exception from the capturing mechanism, so the position of the two shapes get out
+of sync.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>The problem is now solved by improving the layout, so in case the TextFrame is actually part of a
+Draw shape + TextFrame pair (forming a TextBox), then we calculate the effective wrap type of the
+TextFrame based on the wrap type of its Draw shape, so either both objects are captured or none,
+which results in consistent render result.</p>
+<p>Here is a sample document where all margins are configured to be equal, but capturing corrected the
+Draw shape (and not the TextFrame):</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-textbox-capture/old.png"><figure><img src="https://share.vmiklos.hu/blog/sw-textbox-capture/old.png"><figcaption>Bugdoc: old Writer render</figcaption></figure></a></p>
+<p>And here is the same document, with consistent positioning:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-textbox-capture/new.png"><figure><img src="https://share.vmiklos.hu/blog/sw-textbox-capture/new.png"><figcaption>Bugdoc: new Writer render</figcaption></figure></a></p>
+<p>As you can see, now the rendered margins actually equal, as wanted.</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>The bugfix commit was <a href="https://git.libreoffice.org/core/commit/c8549fa3204802daec8597ba0f9f4f7ef23d5cd2">sw textbox: capture fly when its draw object is captured</a>.</p>
+<p>The tracking bug was <a href="https://bugs.documentfoundation.org/show_bug.cgi?id=138711">tdf#138711</a>.</p>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a development edition of Collabora Online 24.04 and try it out yourself right now: <a href="https://www.collaboraonline.com/code/">try
+the development edition</a>.  Collabora intends to continue
+supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
+available in TDF's next release too (25.2).</p>
+  </div>
+  <div class="article_meta">
+    <p>Category: <a href="https://vmiklos.hu/blog/category/libreoffice.html">libreoffice</a>
+ &ndash; Tags:
+      <a href="https://vmiklos.hu/blog/tag/en.html">en</a>    </p>
+  </div>
+
+
+</article>
+
+
+    <div id="ending_message">
+      <p>&copy; Miklos Vajna. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
+</body>
+</html>
