@@ -1,4 +1,4 @@
-Title: Editeng RTF export: fixing a lost paragrpah style
+Title: Editeng RTF export: fixing a lost paragraph style
 Slug: editeng-rtf-export-lost-para-style
 Category: libreoffice
 Tags: en
