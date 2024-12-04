@@ -2,13 +2,13 @@ Title: Editeng RTF export: fixing a lost paragrpah style
 Slug: editeng-rtf-export-lost-para-style
 Category: libreoffice
 Tags: en
-Date: 2024-12-03T15:02:08+01:00
+Date: 2024-12-04T11:34:30+01:00
 
 Impress shape text doesn't have much support for styles, e.g. the default UI in Writer gives you a
 paragraph style dropdown, and you don't get the same in Impress. Still, a paragraph style is
-attached to bullets based on their outline level, and Impress has a View -> Outline menu item to
-give you that styled text you can copy. Pasting that to Writer started to lose styles recently and
-it's now fixed to work again.
+attached to bullets based on their outline level, and Impress has a View → Outline menu item to give
+you that styled text you can copy. Pasting that to Writer started to lose styles recently and it's
+now fixed to work again.
 
 This work is primarily for [Collabora Online](https://www.collaboraonline.com/), but the feature is
 available in desktop Impress as well.
@@ -27,8 +27,8 @@ Turns out filtering out paragraph styles has to happen at two locations:
 - when referring to those styles
 
 The problem was that unused styles were removed from the style table, but not from the style → index
-mapping, so as soon as you had an unused paragraph style, the declared and the referred style
-indexes didn't match anymore.
+mapping, so as soon as you had both used and unused paragraph styles, the declared and the referred
+style indexes didn't match anymore.
 
 ## Results so far
 
