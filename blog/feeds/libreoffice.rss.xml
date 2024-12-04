@@ -1,5 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>What is Miklos hacking - libreoffice</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Fri, 08 Nov 2024 08:58:46 +0100</lastBuildDate><item><title>Handling page captures for Writer TextBoxes</title><link>https://vmiklos.hu/blog/sw-textbox-capture.html</link><description>&lt;p&gt;Writer TextBoxes provide the user with shapes that can have complex geometry and complex content.
+<rss version="2.0"><channel><title>What is Miklos hacking - libreoffice</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Wed, 04 Dec 2024 11:34:30 +0100</lastBuildDate><item><title>Editeng RTF export: fixing a lost paragrpah style</title><link>https://vmiklos.hu/blog/editeng-rtf-export-lost-para-style.html</link><description>&lt;p&gt;Impress shape text doesn't have much support for styles, e.g. the default UI in Writer gives you a
+paragraph style dropdown, and you don't get the same in Impress. Still, a paragraph style is
+attached to bullets based on their outline level, and Impress has a View → Outline menu item to give
+you that styled text you can copy. Pasting that to Writer started to lose styles recently and it's
+now fixed to work again.&lt;/p&gt;
+&lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraonline.com/"&gt;Collabora Online&lt;/a&gt;, but the feature is
+available in desktop Impress as well.&lt;/p&gt;
+&lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;As described in a &lt;a href="https://git.libreoffice.org/core/commit/70d1bd6ee0eba9d6661cd6280566f77a87f2d068"&gt;previous
+commit&lt;/a&gt;, I had a
+case where lots of not needed paragraph styles were exported to RTF in case an Impress document had
+enough master pages. The idea was to only export actually used paragraph styles, to avoid wasting
+CPU power.&lt;/p&gt;
+&lt;p&gt;Turns out filtering out paragraph styles has to happen at two locations:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;in the style table to assign an index to a paragraph style&lt;/li&gt;
+&lt;li&gt;when referring to those styles&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The problem was that unused styles were removed from the style table, but not from the style → index
+mapping, so as soon as you had both used and unused paragraph styles, the declared and the referred
+style indexes didn't match anymore.&lt;/p&gt;
+&lt;h2 id="results-so-far"&gt;Results so far&lt;a class="headerlink" href="#results-so-far" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Here is a sample paste result in Writer, where you can see that the text doesn't have a custom
+paragraph style:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/editeng-rtf-export-lost-para-style/old.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/editeng-rtf-export-lost-para-style/old.png"&gt;&lt;figcaption&gt;Bugdoc: old Writer paste&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;And here is the same paste, now with paragraph styles restored:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/editeng-rtf-export-lost-para-style/new.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/editeng-rtf-export-lost-para-style/new.png"&gt;&lt;figcaption&gt;Bugdoc: new Writer paste&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;As you can see, now the pasted text has paragraph styles.&lt;/p&gt;
+&lt;h2 id="how-is-this-implemented"&gt;How is this implemented?&lt;a class="headerlink" href="#how-is-this-implemented" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;If you would like to know a bit more about how this works, continue reading... :-)&lt;/p&gt;
+&lt;p&gt;The bugfix commit was &lt;a href="https://git.libreoffice.org/core/commit/c8b607b7c0096c58dc5187262bf0133dee728d50"&gt;editeng RTF export: fix broken offsets into the para style table&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The tracking bug was &lt;a href="https://bugs.documentfoundation.org/show_bug.cgi?id=163883"&gt;tdf#163883&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 id="want-to-start-using-this"&gt;Want to start using this?&lt;a class="headerlink" href="#want-to-start-using-this" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;You can get a development edition of Collabora Online 24.04 and try it out yourself right now: &lt;a href="https://www.collaboraonline.com/code/"&gt;try
+the development edition&lt;/a&gt;.  Collabora intends to continue
+supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
+available in TDF's next release too (25.2).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Wed, 04 Dec 2024 11:34:30 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2024-12-04:/blog/editeng-rtf-export-lost-para-style.html</guid><category>libreoffice</category><category>en</category></item><item><title>Handling page captures for Writer TextBoxes</title><link>https://vmiklos.hu/blog/sw-textbox-capture.html</link><description>&lt;p&gt;Writer TextBoxes provide the user with shapes that can have complex geometry and complex content.
 There is also a feature to capture shapes inside page boundaries: now the two features interact with
 each other better.&lt;/p&gt;
 &lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraonline.com/"&gt;Collabora Online&lt;/a&gt;, but the feature is
@@ -406,45 +442,4 @@ that needed a fix similar to what the statusbar already had, now done.&lt;/p&gt;
 &lt;p&gt;You can get the latest Collabora Online Development Edition 23.05 and try it out yourself right now:
 &lt;a href="https://www.collaboraoffice.com/code/quick-tryout-nextcloud-docker/"&gt;try the development edition&lt;/a&gt;.
 Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
-expect all of this work will be available in TDF's next release too (24.8).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Tue, 06 Feb 2024 09:49:18 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2024-02-06:/blog/multi-view-programming-challenges.html</guid><category>libreoffice</category><category>en</category></item><item><title>Multi-page floating tables in Writer: tables wrapping tables</title><link>https://vmiklos.hu/blog/sw-floattable11.html</link><description>&lt;p&gt;This post is part of a series to describe how Writer now gets a feature to handle tables that are
-both floating and span over multiple pages.&lt;/p&gt;
-&lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraoffice.com/"&gt;Collabora Online&lt;/a&gt;, but is useful on
-the desktop as well. See the &lt;a href="https://vmiklos.hu/blog/sw-floattable10.html"&gt;10th post&lt;/a&gt; for the previous part.&lt;/p&gt;
-&lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;Previous posts described the hardest part of multi-page floating tables: making sure that text can
-wrap around them and they can split across pages. In this part, we'll look at a case where that
-content is not just text, but the wrapping content itself is also a table.&lt;/p&gt;
-&lt;h2 id="results-so-far"&gt;Results so far&lt;a class="headerlink" href="#results-so-far" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;Regarding testing of the floating table feature in general, the core.git repository has 92 files now
-which are focusing on correct handling of floating tables (filenames matching
-&lt;code&gt;floattable-|floating-table-&lt;/code&gt;). This doesn't count cases where the document model is built using C++
-code in the memory and then we assert the result of some operation.&lt;/p&gt;
-&lt;p&gt;Here are some screenshots from the improvements this month:&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-floattable11/2023-12-01-floattable-click-correct.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable11/2023-12-01-floattable-click-correct.png"&gt;&lt;figcaption&gt;Improved click handling near the first page of a floating table&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;The first screenshot shows a situation where the mouse cursor is near the right edge of the first
-page of a floating table. What used to happen is we found this position close to the invisible
-anchor of the floating table on that page, then corrected this position to be at the real anchor on
-the last page. In short, the user clicked on one page and we jumped to the last page. This is now
-fixed, we notice that part of the floating table is close to the click position and we correct the
-cursor to be at the closest position inside the table's content.&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-floattable11/2023-12-05-floattable-tablewrap.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-floattable11/2023-12-05-floattable-tablewrap.png"&gt;&lt;figcaption&gt;A floating table, wrapped by an inline table: old, new and reference rendering&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;The next screenshot shows a floating table where the content wrapping around the table happens to be
-an inline table. You can see how such wrapping didn't happen in the past, and the new rendering is
-close to the reference now.&lt;/p&gt;
-&lt;h2 id="how-is-this-implemented"&gt;How is this implemented?&lt;a class="headerlink" href="#how-is-this-implemented" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;If you would like to know a bit more about how this works, continue reading... :-)&lt;/p&gt;
-&lt;p&gt;As usual, the high-level problem was addressed by a series of small changes:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/f461853b11439c4e485a79174d34735395e5bf52"&gt;sw floattable: fix finding the nearest text in split flys on mouse click&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/868140fcc1311259b9d5f666637b33d226511a53"&gt;tdf#60558 sw floattable: allow wrap of table on the right of a floattable&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/0746d13365139c356eb9d297a358c486bf47d6fb"&gt;sw floattable: fix split of anchor text in 2nd half of the paragraph&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/d852e27ed205c1a60de0979b80f3861bf93c44ae"&gt;sw floattable: fix split of anchor text at para start&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/5fec60b4732bdbdb681be08e43a9be47c3bfb320"&gt;sw floattable: fix outdated text frame portions after split&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/4e8895d3d86db3776c56070c395cd727fd4b9101"&gt;sw floattable: disable UI to enable this when anchored inside TextBox&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/164fb25f7b2db7d833d6d0f28e49c5cac68426b3"&gt;tdf#158686 sw floattable: fix print preview crash&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id="want-to-start-using-this"&gt;Want to start using this?&lt;a class="headerlink" href="#want-to-start-using-this" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;You can get a snapshot / demo of Collabora Office 23.05 and try it out yourself right now: &lt;a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/"&gt;try the
-unstable snapshot&lt;/a&gt;.  Collabora
-intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF's next release too (24.8).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Wed, 03 Jan 2024 15:15:21 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2024-01-03:/blog/sw-floattable11.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
+expect all of this work will be available in TDF's next release too (24.8).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Tue, 06 Feb 2024 09:49:18 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2024-02-06:/blog/multi-view-programming-challenges.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>

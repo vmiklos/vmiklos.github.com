@@ -1,5 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>What is Miklos hacking</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Fri, 08 Nov 2024 08:58:46 +0100</lastBuildDate><item><title>Handling page captures for Writer TextBoxes</title><link>https://vmiklos.hu/blog/sw-textbox-capture.html</link><description>&lt;p&gt;Writer TextBoxes provide the user with shapes that can have complex geometry and complex content.
+<rss version="2.0"><channel><title>What is Miklos hacking</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Wed, 04 Dec 2024 11:34:30 +0100</lastBuildDate><item><title>Editeng RTF export: fixing a lost paragrpah style</title><link>https://vmiklos.hu/blog/editeng-rtf-export-lost-para-style.html</link><description>&lt;p&gt;Impress shape text doesn't have much support for styles, e.g. the default UI in Writer gives you a
+paragraph style dropdown, and you don't get the same in Impress. Still, a paragraph style is
+attached to bullets based on their outline level, and Impress has a View → Outline menu item to give
+you that styled text you can copy. Pasting that to Writer started to lose styles recently and it's
+now fixed to work again.&lt;/p&gt;
+&lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraonline.com/"&gt;Collabora Online&lt;/a&gt;, but the feature is
+available in desktop Impress as well.&lt;/p&gt;
+&lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;As described in a &lt;a href="https://git.libreoffice.org/core/commit/70d1bd6ee0eba9d6661cd6280566f77a87f2d068"&gt;previous
+commit&lt;/a&gt;, I had a
+case where lots of not needed paragraph styles were exported to RTF in case an Impress document had
+enough master pages. The idea was to only export actually used paragraph styles, to avoid wasting
+CPU power.&lt;/p&gt;
+&lt;p&gt;Turns out filtering out paragraph styles has to happen at two locations:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;in the style table to assign an index to a paragraph style&lt;/li&gt;
+&lt;li&gt;when referring to those styles&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The problem was that unused styles were removed from the style table, but not from the style → index
+mapping, so as soon as you had both used and unused paragraph styles, the declared and the referred
+style indexes didn't match anymore.&lt;/p&gt;
+&lt;h2 id="results-so-far"&gt;Results so far&lt;a class="headerlink" href="#results-so-far" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Here is a sample paste result in Writer, where you can see that the text doesn't have a custom
+paragraph style:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/editeng-rtf-export-lost-para-style/old.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/editeng-rtf-export-lost-para-style/old.png"&gt;&lt;figcaption&gt;Bugdoc: old Writer paste&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;And here is the same paste, now with paragraph styles restored:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/editeng-rtf-export-lost-para-style/new.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/editeng-rtf-export-lost-para-style/new.png"&gt;&lt;figcaption&gt;Bugdoc: new Writer paste&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;As you can see, now the pasted text has paragraph styles.&lt;/p&gt;
+&lt;h2 id="how-is-this-implemented"&gt;How is this implemented?&lt;a class="headerlink" href="#how-is-this-implemented" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;If you would like to know a bit more about how this works, continue reading... :-)&lt;/p&gt;
+&lt;p&gt;The bugfix commit was &lt;a href="https://git.libreoffice.org/core/commit/c8b607b7c0096c58dc5187262bf0133dee728d50"&gt;editeng RTF export: fix broken offsets into the para style table&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The tracking bug was &lt;a href="https://bugs.documentfoundation.org/show_bug.cgi?id=163883"&gt;tdf#163883&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 id="want-to-start-using-this"&gt;Want to start using this?&lt;a class="headerlink" href="#want-to-start-using-this" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;You can get a development edition of Collabora Online 24.04 and try it out yourself right now: &lt;a href="https://www.collaboraonline.com/code/"&gt;try
+the development edition&lt;/a&gt;.  Collabora intends to continue
+supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
+available in TDF's next release too (25.2).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Wed, 04 Dec 2024 11:34:30 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2024-12-04:/blog/editeng-rtf-export-lost-para-style.html</guid><category>libreoffice</category><category>en</category></item><item><title>Handling page captures for Writer TextBoxes</title><link>https://vmiklos.hu/blog/sw-textbox-capture.html</link><description>&lt;p&gt;Writer TextBoxes provide the user with shapes that can have complex geometry and complex content.
 There is also a feature to capture shapes inside page boundaries: now the two features interact with
 each other better.&lt;/p&gt;
 &lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraonline.com/"&gt;Collabora Online&lt;/a&gt;, but the feature is
@@ -432,60 +468,4 @@ result:&lt;/p&gt;
 &lt;p&gt;You can get a snapshot / demo of Collabora Office 24.04 and try it out yourself right now: &lt;a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/"&gt;try the
 unstable snapshot&lt;/a&gt;.  Collabora
 intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF's next release too (24.8).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 01 Mar 2024 08:46:39 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2024-03-01:/blog/sw-legal-numbering.html</guid><category>libreoffice</category><category>en</category></item><item><title>Fixing multi-view programming challenges in Calc and elsewhere</title><link>https://vmiklos.hu/blog/multi-view-programming-challenges.html</link><description>&lt;p&gt;This post describes some challenges around having multiple views of one opened document in
-LibreOffice core, when those views belong to LOK views, representing different users, with their
-own language, locale and other view settings.&lt;/p&gt;
-&lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraoffice.com/"&gt;Collabora Online&lt;/a&gt;, but is useful for
-all clients of the LOK API.&lt;/p&gt;
-&lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;LOK views are meant to represent separate users, so we need to make sure that when a user sets their
-preferences and trigger an action, then the response to that action goes to the correct view, with
-the correct view settings.&lt;/p&gt;
-&lt;p&gt;This is different from the desktop LibreOffice use-case, where multiple windows are still meant to
-share the same user name, language, undo stack and so on.&lt;/p&gt;
-&lt;h2 id="results-so-far"&gt;Results so far&lt;a class="headerlink" href="#results-so-far" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;In this post, I would like to present 4 small improvements that recently happened to the LOK API to
-provide this wanted separation of views.&lt;/p&gt;
-&lt;p&gt;The first was an &lt;a href="https://github.com/CollaboraOnline/online/issues/7853"&gt;issue&lt;/a&gt; where two users were
-editing the same document, one busily typing and the other clicked on a link in Calc. What could
-happen sometimes is the link popup appeared for the user who typed, not for the user who clicked on
-the link:&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/multi-view-programming-challenges/2023-12-18-cool-calc-hyprelink-bad-view.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/multi-view-programming-challenges/2023-12-18-cool-calc-hyprelink-bad-view.png"&gt;&lt;figcaption&gt;Link popup is actually on the left, should be on the right, now fixed&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;This specific problem can be fixed by making sure that link click callbacks are invoked
-synchronously (while the clicking view is still active) and not later, when the current view may or
-may not be the correct one.&lt;/p&gt;
-&lt;p&gt;It turns out the same problem (async command dispatch) affects not only hyperlinks, but many other
-cases as well, where we want to stay async, for example, when one dialog would invoke another
-dialog, like the Calc conditional format -&amp;gt; add dialog:&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/multi-view-programming-challenges/2024-01-02-cool-calc-condformat-wrong-view.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/multi-view-programming-challenges/2024-01-02-cool-calc-condformat-wrong-view.png"&gt;&lt;figcaption&gt;Calc conditional format add dialog appearing on the left, should be on the right, now fixed&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;There you don't want to change async commands into sync commands, because that may mean spinning the
-main loop inside a dialog, resulting in nested main loops. This can be fixed by making sure that
-async commands to be dispatched (sfx2 hints in general) are processed in a way that the current view
-at dispatch &amp;amp; processing is the same, which is now the case.&lt;/p&gt;
-&lt;p&gt;The third problem was around wrong language &amp;amp; locale in the status bar:&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/multi-view-programming-challenges/2024-01-04-cool-calc-statusbar-wrong-lang.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/multi-view-programming-challenges/2024-01-04-cool-calc-statusbar-wrong-lang.png"&gt;&lt;figcaption&gt;Unexpected English strings in localized statubar UI, now fixed&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;This is not simply a problem of missing translation, the trouble was that the status bar update is
-also async and by the time the update happened, the locale of the view on the left was used, for a
-string that appears on the right.&lt;/p&gt;
-&lt;p&gt;The way to fix this is to perform the update of toolbars/statusbar/etc (in general: SfxBindings) in
-a way that the language at job schedule time and at UI string creation time is the same.&lt;/p&gt;
-&lt;p&gt;The last problem was quite similar, still about bad language on the UI, but this time on the
-sidebar:&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/multi-view-programming-challenges/2024-01-09-cool-calc-sidebar-wrong-lang.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/multi-view-programming-challenges/2024-01-09-cool-calc-sidebar-wrong-lang.png"&gt;&lt;figcaption&gt;Unexpected English strings in localized sidebar UI, now fixed&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;This is similar to the statusbar case, but the sidebar has its own executor for its async jobs, so
-that needed a fix similar to what the statusbar already had, now done.&lt;/p&gt;
-&lt;h2 id="how-is-this-implemented"&gt;How is this implemented?&lt;a class="headerlink" href="#how-is-this-implemented" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;If you would like to know a bit more about how this works, continue reading... :-)&lt;/p&gt;
-&lt;p&gt;As usual, the high-level problem was addressed by a series of small changes:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/e83309d97d0bbad131a7fdfd365fb6122d6f415b"&gt;cool#7853 sc lok: fix bad view id on hyperlink click&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/ee7ca8e4ea8ed93655f99e77a9e77032ac830c46"&gt;cool#7865 sfx2 lok: fix bad view id on async command dispatch&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/51d8a2ef54751403fa707816e27ddb4e7faa8231"&gt;cool#7492 sfx2 lok: fix bad view id / statusbar string on async binding update&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/fb7b0b944741e4efae8d92a6e305036aff906c7a"&gt;cool#7492 sfx2 lok: just set language/locale on async binding update&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/aaf6ce108e91b1504befe19afcee471e3316ae7a"&gt;cool#7492 sfx2 lok: set language/locale on async sidebar update&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id="want-to-start-using-this"&gt;Want to start using this?&lt;a class="headerlink" href="#want-to-start-using-this" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;You can get the latest Collabora Online Development Edition 23.05 and try it out yourself right now:
-&lt;a href="https://www.collaboraoffice.com/code/quick-tryout-nextcloud-docker/"&gt;try the development edition&lt;/a&gt;.
-Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
-expect all of this work will be available in TDF's next release too (24.8).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Tue, 06 Feb 2024 09:49:18 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2024-02-06:/blog/multi-view-programming-challenges.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
+of this work will be available in TDF's next release too (24.8).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 01 Mar 2024 08:46:39 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2024-03-01:/blog/sw-legal-numbering.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/pygments.css">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Miklos Vajna">
+  <meta name="description" content="Posts and writings by Miklos Vajna">
+
+  <link href="https://vmiklos.hu/blog/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking RSS" />
+
+<meta name="keywords" content="en">
+
+  <title>
+    What is Miklos hacking
+&ndash; Editeng RTF export: fixing a lost paragrpah style  </title>
+
+<script type="text/javascript">
+  var _paq = window._paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//analytics.vmiklos.hu/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '1']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <h2><a href="https://vmiklos.hu/blog">What is Miklos hacking</a></h2>
+      <p></p>
+      <ul>
+        <li><a href="/" target="_blank">Root</a></li>
+        <li><a href="https://planet.documentfoundation.org/" target="_blank">LibreOffice Blogs</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://vmiklos.hu/blog">Index</a> &brvbar; <a href="https://vmiklos.hu/blog/archives.html">Archives</a>
+      &brvbar; <a href="https://vmiklos.hu/blog/feeds/all.rss.xml">RSS</a>
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/editeng-rtf-export-lost-para-style.html">Editeng RTF export: fixing a lost paragrpah style</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Wed 04 December 2024</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <p>Impress shape text doesn't have much support for styles, e.g. the default UI in Writer gives you a
+paragraph style dropdown, and you don't get the same in Impress. Still, a paragraph style is
+attached to bullets based on their outline level, and Impress has a View → Outline menu item to give
+you that styled text you can copy. Pasting that to Writer started to lose styles recently and it's
+now fixed to work again.</p>
+<p>This work is primarily for <a href="https://www.collaboraonline.com/">Collabora Online</a>, but the feature is
+available in desktop Impress as well.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>As described in a <a href="https://git.libreoffice.org/core/commit/70d1bd6ee0eba9d6661cd6280566f77a87f2d068">previous
+commit</a>, I had a
+case where lots of not needed paragraph styles were exported to RTF in case an Impress document had
+enough master pages. The idea was to only export actually used paragraph styles, to avoid wasting
+CPU power.</p>
+<p>Turns out filtering out paragraph styles has to happen at two locations:</p>
+<ul>
+<li>in the style table to assign an index to a paragraph style</li>
+<li>when referring to those styles</li>
+</ul>
+<p>The problem was that unused styles were removed from the style table, but not from the style → index
+mapping, so as soon as you had both used and unused paragraph styles, the declared and the referred
+style indexes didn't match anymore.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>Here is a sample paste result in Writer, where you can see that the text doesn't have a custom
+paragraph style:</p>
+<p><a href="https://share.vmiklos.hu/blog/editeng-rtf-export-lost-para-style/old.png"><figure><img src="https://share.vmiklos.hu/blog/editeng-rtf-export-lost-para-style/old.png"><figcaption>Bugdoc: old Writer paste</figcaption></figure></a></p>
+<p>And here is the same paste, now with paragraph styles restored:</p>
+<p><a href="https://share.vmiklos.hu/blog/editeng-rtf-export-lost-para-style/new.png"><figure><img src="https://share.vmiklos.hu/blog/editeng-rtf-export-lost-para-style/new.png"><figcaption>Bugdoc: new Writer paste</figcaption></figure></a></p>
+<p>As you can see, now the pasted text has paragraph styles.</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>The bugfix commit was <a href="https://git.libreoffice.org/core/commit/c8b607b7c0096c58dc5187262bf0133dee728d50">editeng RTF export: fix broken offsets into the para style table</a>.</p>
+<p>The tracking bug was <a href="https://bugs.documentfoundation.org/show_bug.cgi?id=163883">tdf#163883</a>.</p>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a development edition of Collabora Online 24.04 and try it out yourself right now: <a href="https://www.collaboraonline.com/code/">try
+the development edition</a>.  Collabora intends to continue
+supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
+available in TDF's next release too (25.2).</p>
+  </div>
+  <div class="article_meta">
+    <p>Category: <a href="https://vmiklos.hu/blog/category/libreoffice.html">libreoffice</a>
+ &ndash; Tags:
+      <a href="https://vmiklos.hu/blog/tag/en.html">en</a>    </p>
+  </div>
+
+
+</article>
+
+
+    <div id="ending_message">
+      <p>&copy; Miklos Vajna. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
+</body>
+</html>
