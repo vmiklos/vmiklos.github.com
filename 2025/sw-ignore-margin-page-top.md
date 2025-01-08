@@ -2,7 +2,7 @@ Title: Ignoring the paragraph margin at the top of pages in Writer
 Slug: sw-ignore-margin-page-top
 Category: libreoffice
 Tags: en
-Date: 2025-01-07T15:01:40+01:00
+Date: 2025-01-08T09:53:05+01:00
 
 Writer has the concept of paragraph margins and page margins, but what happens when you combine the
 two? It turns out the expectation is that sometimes the top paragraph margin is ignored in this
