@@ -1,5 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>What is Miklos hacking</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Wed, 04 Dec 2024 11:34:30 +0100</lastBuildDate><item><title>Editeng RTF export: fixing a lost paragraph style</title><link>https://vmiklos.hu/blog/editeng-rtf-export-lost-para-style.html</link><description>&lt;p&gt;Impress shape text doesn't have much support for styles, e.g. the default UI in Writer gives you a
+<rss version="2.0"><channel><title>What is Miklos hacking</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Wed, 08 Jan 2025 09:53:05 +0100</lastBuildDate><item><title>Ignoring the paragraph margin at the top of pages in Writer</title><link>https://vmiklos.hu/blog/sw-ignore-margin-page-top.html</link><description>&lt;p&gt;Writer has the concept of paragraph margins and page margins, but what happens when you combine the
+two? It turns out the expectation is that sometimes the top paragraph margin is ignored in this
+case. We'll see two cases where the behavior of Writer is now improved to better match Word in this
+regard.&lt;/p&gt;
+&lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraonline.com/"&gt;Collabora Online&lt;/a&gt;, but the feature is
+available in desktop Writer as well.&lt;/p&gt;
+&lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;As described in a &lt;a href="https://bugs.documentfoundation.org/show_bug.cgi?id=160952"&gt;previous bugreport&lt;/a&gt;,
+there was a first problem where Word ignored the top paragraph margin of a document, but Writer did
+not. A &lt;a href="https://bugs.documentfoundation.org/show_bug.cgi?id=164095"&gt;recent bugreport&lt;/a&gt; then pointed
+out that the first implementation went too far and now a wanted top margin was ignored. This lead to
+a set of conditions which now does a decent emulation of Word's rules in this regard.&lt;/p&gt;
+&lt;h2 id="results-so-far"&gt;Results so far&lt;a class="headerlink" href="#results-so-far" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Here is the old Writer render result for a document where the top margin should be ignored:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-ignore-margin-page-top/old.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-ignore-margin-page-top/old.png"&gt;&lt;figcaption&gt;Bugdoc: old Writer render&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;And here is the new Writer render result for a document where the top margin is ignored:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-ignore-margin-page-top/new.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-ignore-margin-page-top/new.png"&gt;&lt;figcaption&gt;Bugdoc: new Writer render&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Finally, the reference render result, showing the ignored top paragraph margin:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-ignore-margin-page-top/ref.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-ignore-margin-page-top/ref.png"&gt;&lt;figcaption&gt;Bugdoc: reference render&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;As you can see, now the unwanted top paragraph margin is omitted at page top.&lt;/p&gt;
+&lt;h2 id="how-is-this-implemented"&gt;How is this implemented?&lt;a class="headerlink" href="#how-is-this-implemented" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;If you would like to know a bit more about how this works, continue reading... :-)&lt;/p&gt;
+&lt;p&gt;As usual, the high-level problem was addressed by a series of small changes:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/abd90828cf101581a07b9d1c371a8c3156521e9f"&gt;tdf#160952 sw: ignore top margin of para on non-first pages with newer DOCX&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/ae7900dd42a65aaf60df6b21b9ad511496b209d9"&gt;tdf#164095 sw: fix missing top margin on paragraph after changing page style&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="want-to-start-using-this"&gt;Want to start using this?&lt;a class="headerlink" href="#want-to-start-using-this" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;You can get a development edition of Collabora Online 24.04 and try it out yourself right now: &lt;a href="https://www.collaboraonline.com/code/"&gt;try
+the development edition&lt;/a&gt;.  Collabora intends to continue
+supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
+available in TDF's next release too (25.2).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Wed, 08 Jan 2025 09:53:05 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2025-01-08:/blog/sw-ignore-margin-page-top.html</guid><category>libreoffice</category><category>en</category></item><item><title>Editeng RTF export: fixing a lost paragraph style</title><link>https://vmiklos.hu/blog/editeng-rtf-export-lost-para-style.html</link><description>&lt;p&gt;Impress shape text doesn't have much support for styles, e.g. the default UI in Writer gives you a
 paragraph style dropdown, and you don't get the same in Impress. Still, a paragraph style is
 attached to bullets based on their outline level, and Impress has a View → Outline menu item to give
 you that styled text you can copy. Pasting that to Writer started to lose styles recently and it's
@@ -423,49 +454,4 @@ in Firefox.&lt;/p&gt;
 &lt;p&gt;You can get a snapshot / demo of Collabora Office 24.04 and try it out yourself right now: &lt;a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/"&gt;try the
 unstable snapshot&lt;/a&gt;.  Collabora
 intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF's next release too (24.8).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Thu, 04 Apr 2024 09:50:39 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2024-04-04:/blog/sc-clipboard-paste.html</guid><category>libreoffice</category><category>en</category></item><item><title>Legal numbering in Writer: DOC and RTF support</title><link>https://vmiklos.hu/blog/sw-legal-numbering.html</link><description>&lt;p&gt;Writer now supports legal numbering for two more formats: DOC and RTF (ODT and DOCX were working
-already.)&lt;/p&gt;
-&lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraoffice.com/"&gt;Collabora Online&lt;/a&gt;, done as a
-&lt;a href="https://vmiklos.hu/blog/sw-content-controls3.html"&gt;HackWeek&lt;/a&gt; project, but the feature is fully available in
-desktop Writer as well.&lt;/p&gt;
-&lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;Legal numbering is a way to influence the number format of values inherited in a multi-level
-numbering. Say, the outer numbering uses Roman numerals and the inner numbering uses X.Y as the number
-format, but the inner level wants to display the outer values as Arabic numerals. If this is wanted
-(and guessing from the name, sometimes lawyers do want this), then the inner number portion will
-expand to values like "2.01" instead of "II.01", while the outer number portions will remain values
-like "II".&lt;/p&gt;
-&lt;p&gt;Mike did &lt;a href="https://bugs.documentfoundation.org/show_bug.cgi?id=150408"&gt;80% of the work&lt;/a&gt;, what you can
-see here is just the RTF/DOC filters.&lt;/p&gt;
-&lt;p&gt;Picking a smaller feature task like this looked like a good idea, since I wanted to spend some of
-the time on regression fixing around last year's multi-page floating table project.&lt;/p&gt;
-&lt;h2 id="results-so-far"&gt;Results so far&lt;a class="headerlink" href="#results-so-far" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;For (binary) DOC, the relevant detail is the &lt;code&gt;fLegal&lt;/code&gt; bit in the &lt;code&gt;LVLF&lt;/code&gt; structure. Here is the
-result:&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-legal-numbering/2024-02-29-writer-legal-numbering-doc.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-legal-numbering/2024-02-29-writer-legal-numbering-doc.png"&gt;&lt;figcaption&gt;Improved handling of legal numbering from DOC: old, new and reference rendering&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;It shows how the outer "II" gets turned into "2", while it remained "II" in the past. This works for
-both loading and saving.&lt;/p&gt;
-&lt;p&gt;The same feature is now handled in the RTF filter as well. There the relevant detail is the
-&lt;code&gt;\levellegal&lt;/code&gt; control word, which has an odd 1 default value (the default is usually 0). Here is the
-result:&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-legal-numbering/2024-02-29-writer-legal-numbering-rtf.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-legal-numbering/2024-02-29-writer-legal-numbering-rtf.png"&gt;&lt;figcaption&gt;Improved handling of legal numbering from RTF: old, new and reference rendering&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;It shows that the RTF filter is up to speed with the DOC one by now.&lt;/p&gt;
-&lt;p&gt;As for the multi-page floating tables, I looked at
-&lt;a href="https://bugs.documentfoundation.org/show_bug.cgi?id=158986"&gt;tdf#158986&lt;/a&gt; and
-&lt;a href="https://bugs.documentfoundation.org/show_bug.cgi?id=158801"&gt;tdf#158801&lt;/a&gt;.&lt;/p&gt;
-&lt;h2 id="how-is-this-implemented"&gt;How is this implemented?&lt;a class="headerlink" href="#how-is-this-implemented" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;If you would like to know a bit more about how this works, continue reading... :-)&lt;/p&gt;
-&lt;p&gt;As usual, the high-level problem was addressed by a series of small changes:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/397d72e582c725d162c7e0b819dc6c0bb62e42b0"&gt;Related: tdf#158986 sw floattable: fix unexpected page break with sections&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/b7c4c4d45f44a26283678f3dc32982b3a728c614"&gt;tdf#158986 sw floattable: fix RTF import of table followed by \sect&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/a73b3994fb6a2cc10b2d65cbaad201762610cecc"&gt;Related: tdf#150408 DOC filter: handle legal numbering&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/e8487bedb20a429565b4a0e4bd2d6806cc603b7f"&gt;Related: tdf#150408 RTF filter: handle legal numbering&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/c98ff922831f56253af2a050b8e07cfc89b7a387"&gt;Related: tdf#158986 sw floattable, RTF import: use more setNeedPar()&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/186de7178c6065e1de13fd216b46ac9b716e44c5"&gt;tdf#158801 sw floattable: fix crash with headers and interactive editing&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id="want-to-start-using-this"&gt;Want to start using this?&lt;a class="headerlink" href="#want-to-start-using-this" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;You can get a snapshot / demo of Collabora Office 24.04 and try it out yourself right now: &lt;a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/"&gt;try the
-unstable snapshot&lt;/a&gt;.  Collabora
-intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF's next release too (24.8).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 01 Mar 2024 08:46:39 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2024-03-01:/blog/sw-legal-numbering.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
+of this work will be available in TDF's next release too (24.8).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Thu, 04 Apr 2024 09:50:39 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2024-04-04:/blog/sc-clipboard-paste.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>

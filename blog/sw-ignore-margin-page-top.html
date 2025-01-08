@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/pygments.css">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Miklos Vajna">
+  <meta name="description" content="Posts and writings by Miklos Vajna">
+
+  <link href="https://vmiklos.hu/blog/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking RSS" />
+
+<meta name="keywords" content="en">
+
+  <title>
+    What is Miklos hacking
+&ndash; Ignoring the paragraph margin at the top of pages in Writer  </title>
+
+<script type="text/javascript">
+  var _paq = window._paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//analytics.vmiklos.hu/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '1']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <h2><a href="https://vmiklos.hu/blog">What is Miklos hacking</a></h2>
+      <p></p>
+      <ul>
+        <li><a href="/" target="_blank">Root</a></li>
+        <li><a href="https://planet.documentfoundation.org/" target="_blank">LibreOffice Blogs</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://vmiklos.hu/blog">Index</a> &brvbar; <a href="https://vmiklos.hu/blog/archives.html">Archives</a>
+      &brvbar; <a href="https://vmiklos.hu/blog/feeds/all.rss.xml">RSS</a>
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sw-ignore-margin-page-top.html">Ignoring the paragraph margin at the top of pages in Writer</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Wed 08 January 2025</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <p>Writer has the concept of paragraph margins and page margins, but what happens when you combine the
+two? It turns out the expectation is that sometimes the top paragraph margin is ignored in this
+case. We'll see two cases where the behavior of Writer is now improved to better match Word in this
+regard.</p>
+<p>This work is primarily for <a href="https://www.collaboraonline.com/">Collabora Online</a>, but the feature is
+available in desktop Writer as well.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>As described in a <a href="https://bugs.documentfoundation.org/show_bug.cgi?id=160952">previous bugreport</a>,
+there was a first problem where Word ignored the top paragraph margin of a document, but Writer did
+not. A <a href="https://bugs.documentfoundation.org/show_bug.cgi?id=164095">recent bugreport</a> then pointed
+out that the first implementation went too far and now a wanted top margin was ignored. This lead to
+a set of conditions which now does a decent emulation of Word's rules in this regard.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>Here is the old Writer render result for a document where the top margin should be ignored:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-ignore-margin-page-top/old.png"><figure><img src="https://share.vmiklos.hu/blog/sw-ignore-margin-page-top/old.png"><figcaption>Bugdoc: old Writer render</figcaption></figure></a></p>
+<p>And here is the new Writer render result for a document where the top margin is ignored:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-ignore-margin-page-top/new.png"><figure><img src="https://share.vmiklos.hu/blog/sw-ignore-margin-page-top/new.png"><figcaption>Bugdoc: new Writer render</figcaption></figure></a></p>
+<p>Finally, the reference render result, showing the ignored top paragraph margin:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-ignore-margin-page-top/ref.png"><figure><img src="https://share.vmiklos.hu/blog/sw-ignore-margin-page-top/ref.png"><figcaption>Bugdoc: reference render</figcaption></figure></a></p>
+<p>As you can see, now the unwanted top paragraph margin is omitted at page top.</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>As usual, the high-level problem was addressed by a series of small changes:</p>
+<ul>
+<li><a href="https://git.libreoffice.org/core/commit/abd90828cf101581a07b9d1c371a8c3156521e9f">tdf#160952 sw: ignore top margin of para on non-first pages with newer DOCX</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/ae7900dd42a65aaf60df6b21b9ad511496b209d9">tdf#164095 sw: fix missing top margin on paragraph after changing page style</a></li>
+</ul>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a development edition of Collabora Online 24.04 and try it out yourself right now: <a href="https://www.collaboraonline.com/code/">try
+the development edition</a>.  Collabora intends to continue
+supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
+available in TDF's next release too (25.2).</p>
+  </div>
+  <div class="article_meta">
+    <p>Category: <a href="https://vmiklos.hu/blog/category/libreoffice.html">libreoffice</a>
+ &ndash; Tags:
+      <a href="https://vmiklos.hu/blog/tag/en.html">en</a>    </p>
+  </div>
+
+
+</article>
+
+
+    <div id="ending_message">
+      <p>&copy; Miklos Vajna. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
+</body>
+</html>
