@@ -66,6 +66,7 @@ title: Rubik cheat sheets
   - [Last 2 edges, edge flip](https://ukspeedcubes.co.uk/pages/4x4-last-2-edges-parity)
   - [OLL Parity Algorithms, last layer edge is flipped](https://de.speedcube.com.au/blogs/speedcubing-solutions/4x4-oll-parity-algorithms)
   - [Corner swap parity](https://de.speedcube.com.au/blogs/speedcubing-solutions/4x4-corner-swap-parity)
+- mini: [HTML](/rubik/4x4-en-mini/)
 
 ## Hungarian
 
