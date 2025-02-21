@@ -33,7 +33,7 @@ Second, loading a long document calculated the entire layout before showing the 
 now improved, the document loading time itself at a LOK API level for such a long document is now
 about 5 times faster.
 
-[![Faster render of the first page in COOL 24.05](https://share.vmiklos.hu/blog/cool-sw-visible-area-perf/faster-load.png)](https://www.youtube.com/watch?v=0vnEgwBaqt8)
+[![Faster render of the first page in COOL 24.04](https://share.vmiklos.hu/blog/cool-sw-visible-area-perf/faster-load.png)](https://www.youtube.com/watch?v=0vnEgwBaqt8)
 
 Third, COOL didn't consider the priority of core tasks when interrupting to do its own work (COOL's
 document editing process and LibreOffice core shares the same main loop). Now we do this,
