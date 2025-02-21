@@ -1,5 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>What is Miklos hacking - collabora-online</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Fri, 03 May 2024 08:19:04 +0200</lastBuildDate><item><title>Improved copy &amp; paste in Collabora Online: the copy side</title><link>https://vmiklos.hu/blog/cool-clipboard-copy.html</link><description>&lt;p&gt;&lt;a href="https://www.collaboraoffice.com/"&gt;Collabora Online&lt;/a&gt; now uses the &lt;a href="https://developer.mozilla.org/en-US/docs/Web/API/Clipboard_API"&gt;Clipboard
+<rss version="2.0"><channel><title>What is Miklos hacking - collabora-online</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Fri, 21 Feb 2025 08:21:45 +0100</lastBuildDate><item><title>Improving interactivity: the Writer visible area in Collabora Online</title><link>https://vmiklos.hu/blog/cool-sw-visible-area-perf.html</link><description>&lt;p&gt;&lt;a href="https://www.collaboraoffice.com/"&gt;Collabora Online&lt;/a&gt; now takes the visible area (viewport) of large
+Writer documents into account in more cases, leading to better performance &amp;amp; interactivity.&lt;/p&gt;
+&lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Collabora Online has two kinds of "visible areas" for a document: on one hand, the entire document
+is visible, so in case any part of the document changes, the browser client gets notified; on the
+other hand, there is a viewport in the web browser, and keeping that up to date is a priority,
+compared to the rest of the document.&lt;/p&gt;
+&lt;p&gt;There were some cases in the past where we handled the entire document with the same priority,
+leading to slower than ideal update times on the UI.&lt;/p&gt;
+&lt;p&gt;Wouldn't it be nice to always update the visible part first, and only then deal with the rest, on
+idle?&lt;/p&gt;
+&lt;h2 id="results-so-far"&gt;Results so far&lt;a class="headerlink" href="#results-so-far" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;When looking at this topic, we noticed a cluster of problems:&lt;/p&gt;
+&lt;p&gt;First, consider the case of a long (~300 pages) document, where you insert a page break at the start
+and wait for the update of the visible area. The entire document layout (now 301 pages) were
+calculated, and now we do this for the visible area synchronously (and the rest on idle).  This
+operation is now about 19 times faster.&lt;/p&gt;
+&lt;p&gt;Second, loading a long document calculated the entire layout before showing the first page. This is
+now improved, the document loading time itself at a LOK API level for such a long document is now
+about 5 times faster.&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://www.youtube.com/watch?v=0vnEgwBaqt8"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/cool-sw-visible-area-perf/faster-load.png"&gt;&lt;figcaption&gt;Faster render of the first page in COOL 24.05&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Third, COOL didn't consider the priority of core tasks when interrupting to do its own work (COOL's
+document editing process and LibreOffice core shares the same main loop). Now we do this,
+categorizing the core tasks into "high priority" and "low priority" buckets and we only interrupt
+when core doesn't have high priority tasks any more (this is only in 25.04).&lt;/p&gt;
+&lt;p&gt;Fourth, there was no easy access to a large Writer document during development. Now &lt;code&gt;make run
+COOL_WRITER_LARGE=y&lt;/code&gt; allows opening a long document in your local browser for development / testing
+purposes.&lt;/p&gt;
+&lt;h2 id="how-is-this-implemented"&gt;How is this implemented?&lt;a class="headerlink" href="#how-is-this-implemented" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;If you would like to know a bit more about how this works, continue reading... :-)&lt;/p&gt;
+&lt;p&gt;As usual, the high-level problem was addressed by a series of small changes:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/dec9a0d135bad35c958d1eee8f76048189a5601e"&gt;cool#11064 kit: send the client's visible area during file load&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/500df64292e53fe07c92d492511ed82bfcb8b546"&gt;cool#11064 kit: check for callbacks &amp;amp; wsd socket in the anyInput callback&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/31dae7872b914e15bf81ab49fd731383808b3a01"&gt;cool#11064 any input: conditionally consider priority of core tasks&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/92573acd1bd45b643ab361484cdbfac7dc262dc6"&gt;cool#11064 any input: add page insert testcase&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/73793c24c7b77f2026e3af2673c4513278dd27c6"&gt;cool#11064 test: support creating a large Writer document with many pages&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The tracking issue was &lt;a href="https://github.com/CollaboraOnline/online/issues/11064"&gt;cool#11064&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 id="want-to-start-using-this"&gt;Want to start using this?&lt;a class="headerlink" href="#want-to-start-using-this" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;You can get a development edition of Collabora Online 24.04 and try it out yourself right now: &lt;a href="https://www.collaboraoffice.com/code/"&gt;try
+the development edition&lt;/a&gt;.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 21 Feb 2025 08:21:45 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2025-02-21:/blog/cool-sw-visible-area-perf.html</guid><category>collabora-online</category><category>en</category></item><item><title>Improved copy &amp; paste in Collabora Online: the copy side</title><link>https://vmiklos.hu/blog/cool-clipboard-copy.html</link><description>&lt;p&gt;&lt;a href="https://www.collaboraoffice.com/"&gt;Collabora Online&lt;/a&gt; now uses the &lt;a href="https://developer.mozilla.org/en-US/docs/Web/API/Clipboard_API"&gt;Clipboard
 API&lt;/a&gt; if it's available in the used
 browser, getting rid of many annoying dialogs.&lt;/p&gt;
 &lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;

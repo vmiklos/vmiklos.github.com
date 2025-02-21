@@ -1,5 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>What is Miklos hacking</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Wed, 08 Jan 2025 09:53:05 +0100</lastBuildDate><item><title>Ignoring the paragraph margin at the top of pages in Writer</title><link>https://vmiklos.hu/blog/sw-ignore-margin-page-top.html</link><description>&lt;p&gt;Writer has the concept of paragraph margins and page margins, but what happens when you combine the
+<rss version="2.0"><channel><title>What is Miklos hacking</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Fri, 21 Feb 2025 08:21:45 +0100</lastBuildDate><item><title>Improving interactivity: the Writer visible area in Collabora Online</title><link>https://vmiklos.hu/blog/cool-sw-visible-area-perf.html</link><description>&lt;p&gt;&lt;a href="https://www.collaboraoffice.com/"&gt;Collabora Online&lt;/a&gt; now takes the visible area (viewport) of large
+Writer documents into account in more cases, leading to better performance &amp;amp; interactivity.&lt;/p&gt;
+&lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Collabora Online has two kinds of "visible areas" for a document: on one hand, the entire document
+is visible, so in case any part of the document changes, the browser client gets notified; on the
+other hand, there is a viewport in the web browser, and keeping that up to date is a priority,
+compared to the rest of the document.&lt;/p&gt;
+&lt;p&gt;There were some cases in the past where we handled the entire document with the same priority,
+leading to slower than ideal update times on the UI.&lt;/p&gt;
+&lt;p&gt;Wouldn't it be nice to always update the visible part first, and only then deal with the rest, on
+idle?&lt;/p&gt;
+&lt;h2 id="results-so-far"&gt;Results so far&lt;a class="headerlink" href="#results-so-far" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;When looking at this topic, we noticed a cluster of problems:&lt;/p&gt;
+&lt;p&gt;First, consider the case of a long (~300 pages) document, where you insert a page break at the start
+and wait for the update of the visible area. The entire document layout (now 301 pages) were
+calculated, and now we do this for the visible area synchronously (and the rest on idle).  This
+operation is now about 19 times faster.&lt;/p&gt;
+&lt;p&gt;Second, loading a long document calculated the entire layout before showing the first page. This is
+now improved, the document loading time itself at a LOK API level for such a long document is now
+about 5 times faster.&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://www.youtube.com/watch?v=0vnEgwBaqt8"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/cool-sw-visible-area-perf/faster-load.png"&gt;&lt;figcaption&gt;Faster render of the first page in COOL 24.05&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Third, COOL didn't consider the priority of core tasks when interrupting to do its own work (COOL's
+document editing process and LibreOffice core shares the same main loop). Now we do this,
+categorizing the core tasks into "high priority" and "low priority" buckets and we only interrupt
+when core doesn't have high priority tasks any more (this is only in 25.04).&lt;/p&gt;
+&lt;p&gt;Fourth, there was no easy access to a large Writer document during development. Now &lt;code&gt;make run
+COOL_WRITER_LARGE=y&lt;/code&gt; allows opening a long document in your local browser for development / testing
+purposes.&lt;/p&gt;
+&lt;h2 id="how-is-this-implemented"&gt;How is this implemented?&lt;a class="headerlink" href="#how-is-this-implemented" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;If you would like to know a bit more about how this works, continue reading... :-)&lt;/p&gt;
+&lt;p&gt;As usual, the high-level problem was addressed by a series of small changes:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/dec9a0d135bad35c958d1eee8f76048189a5601e"&gt;cool#11064 kit: send the client's visible area during file load&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/500df64292e53fe07c92d492511ed82bfcb8b546"&gt;cool#11064 kit: check for callbacks &amp;amp; wsd socket in the anyInput callback&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/31dae7872b914e15bf81ab49fd731383808b3a01"&gt;cool#11064 any input: conditionally consider priority of core tasks&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/92573acd1bd45b643ab361484cdbfac7dc262dc6"&gt;cool#11064 any input: add page insert testcase&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/73793c24c7b77f2026e3af2673c4513278dd27c6"&gt;cool#11064 test: support creating a large Writer document with many pages&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The tracking issue was &lt;a href="https://github.com/CollaboraOnline/online/issues/11064"&gt;cool#11064&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 id="want-to-start-using-this"&gt;Want to start using this?&lt;a class="headerlink" href="#want-to-start-using-this" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;You can get a development edition of Collabora Online 24.04 and try it out yourself right now: &lt;a href="https://www.collaboraoffice.com/code/"&gt;try
+the development edition&lt;/a&gt;.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 21 Feb 2025 08:21:45 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2025-02-21:/blog/cool-sw-visible-area-perf.html</guid><category>collabora-online</category><category>en</category></item><item><title>Ignoring the paragraph margin at the top of pages in Writer</title><link>https://vmiklos.hu/blog/sw-ignore-margin-page-top.html</link><description>&lt;p&gt;Writer has the concept of paragraph margins and page margins, but what happens when you combine the
 two? It turns out the expectation is that sometimes the top paragraph margin is ignored in this
 case. We'll see two cases where the behavior of Writer is now improved to better match Word in this
 regard.&lt;/p&gt;
@@ -396,62 +437,4 @@ HTML anymore every time you create a selection.&lt;/p&gt;
 &lt;p&gt;The tracking issue was &lt;a href="https://github.com/CollaboraOnline/online/issues/8648"&gt;cool#8648&lt;/a&gt;.&lt;/p&gt;
 &lt;h2 id="want-to-start-using-this"&gt;Want to start using this?&lt;a class="headerlink" href="#want-to-start-using-this" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;You can get a development edition of Collabora Online 24.04 and try it out yourself right now: &lt;a href="https://www.collaboraoffice.com/code/"&gt;try
-the development edition&lt;/a&gt;.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 03 May 2024 08:19:04 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2024-05-03:/blog/cool-clipboard-copy.html</guid><category>collabora-online</category><category>en</category></item><item><title>Improve copy&amp;paste in Calc and elsewhere</title><link>https://vmiklos.hu/blog/sc-clipboard-paste.html</link><description>&lt;p&gt;Calc now supports much better copy&amp;amp;paste when you transfer data between Google Sheets and Calc.&lt;/p&gt;
-&lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraoffice.com/"&gt;Collabora Online&lt;/a&gt;, but the feature is
-fully available in desktop Calc as well.&lt;/p&gt;
-&lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;First, Collabora Online was using the
-&lt;a href="https://developer.mozilla.org/en-US/docs/Web/API/Document/execCommand"&gt;deprecated&lt;/a&gt;
-&lt;code&gt;document.execCommand()&lt;/code&gt; API to paste text, which is problematic, as the "paste" button on the
-toolbar can't behave the same way as pressing Ctrl-V on the keyboard.&lt;/p&gt;
-&lt;p&gt;Second, it turns out Google Sheets came up with some additional HTML attributes to represent
-spreadsheet data in HTML in a much better way, and Calc HTML import/export had no support for this,
-while this is all fixable.&lt;/p&gt;
-&lt;h2 id="results-so-far"&gt;Results so far&lt;a class="headerlink" href="#results-so-far" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;In short, Collabora Online now uses the &lt;a href="https://developer.mozilla.org/en-US/docs/Web/API/Clipboard/read"&gt;Clipboard
-API&lt;/a&gt; to read from the system
-clipboard -- this has to be supported by the
-&lt;a href="https://sdk.collaboraonline.com/docs/advanced_integration.html#allow-the-clipboard-permission-query"&gt;integration&lt;/a&gt;,
-and Calc's HTML filter now support the subset of the Google Sheets markup I figured out so far. This
-subset is also
-&lt;a href="https://sdk.collaboraonline.com/docs/advanced_integration.html#spreadsheet-html-extensions"&gt;documented&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;Note that the default behavior is that the new Clipboard API is available in Chrome/Safari, but not
-in Firefox.&lt;/p&gt;
-&lt;p&gt;For the longer version, here are some screenshots:&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-01-15-cool-clipboard-popup.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-01-15-cool-clipboard-popup.png"&gt;&lt;figcaption&gt;We used to show a popup when you clicked on the paste button on the notebookbar&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-01-18-cool-clipboard-image-paste.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-01-18-cool-clipboard-image-paste.png"&gt;&lt;figcaption&gt;The new paste code in action, handling an image&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-01-31-sc-html-import-text-bad.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-01-31-sc-html-import-text-bad.png"&gt;&lt;figcaption&gt;Import from Google Sheets to Calc: text is auto-converted to a number, bad&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-01-sc-html-import-text-good.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-01-sc-html-import-text-good.png"&gt;&lt;figcaption&gt;Import from Google Sheets to Calc: text is no longer auto-converted to a number, good&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-02-sc-html-import-celledit-fix.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-02-sc-html-import-celledit-fix.png"&gt;&lt;figcaption&gt;HTML import into an active cell edit, only RTF was working there previously&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-07-sc-html-paste-text-good.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-07-sc-html-paste-text-good.png"&gt;&lt;figcaption&gt;Paste from Google Sheets to Calc: text is no longer auto-converted to a number, good&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-08-sc-html-paste-boolean-good.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-08-sc-html-paste-boolean-good.png"&gt;&lt;figcaption&gt;Paste from Google Sheets to Calc: booleans are now also preserved&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-09-sc-html-paste-numfmt-good.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-09-sc-html-paste-numfmt-good.png"&gt;&lt;figcaption&gt;Paste from Google Sheets to Calc: number formats are now also preserved&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-12-sc-html-paste-formula-good.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-12-sc-html-paste-formula-good.png"&gt;&lt;figcaption&gt;Paste from Google Sheets to Calc: formulas are now also preserved&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-13-sc-html-paste-singlecell-good.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-13-sc-html-paste-singlecell-good.png"&gt;&lt;figcaption&gt;Paste from Google Sheets to Calc: also handling a single cell&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-14-sc-html-copy-text-good.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-14-sc-html-copy-text-good.png"&gt;&lt;figcaption&gt;Copy from Calc to Google Sheets: text is now handled, no longer auto-converted to a number&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-15-sc-html-copy-bool-good.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-15-sc-html-copy-bool-good.png"&gt;&lt;figcaption&gt;Copy from Calc to Google Sheets: booleans are now handled&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-20-cool-cross-origin-iframe-clipboard-bad.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-20-cool-cross-origin-iframe-clipboard-bad.png"&gt;&lt;figcaption&gt;Cross-origin iframes also block clipboard access, now fixed&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-03-01-sc-html-copy-formatted-number-good.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-03-01-sc-html-copy-formatted-number-good.png"&gt;&lt;figcaption&gt;Copy from Calc to Google Sheets: number formats are now also preserved&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-03-04-sc-html-copy-formula-good.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-03-04-sc-html-copy-formula-good.png"&gt;&lt;figcaption&gt;Copy from Calc to Google Sheets: formulas are now also preserved&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-03-08-cool-plain-text-copy.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-03-08-cool-plain-text-copy.png"&gt;&lt;figcaption&gt;Copy from COOL Writer to a text editor: much better result, new one on the right hand side&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;h2 id="how-is-this-implemented"&gt;How is this implemented?&lt;a class="headerlink" href="#how-is-this-implemented" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;If you would like to know a bit more about how this works, continue reading... :-)&lt;/p&gt;
-&lt;p&gt;As usual, the high-level problem was addressed by a series of small changes:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/e6e5660b726ecf3b0c39b277568568973b43c9f0"&gt;tdf#159483 sc HTML import: handle data-sheets-value attribute for the text case&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/543e52481e764b8e0eea6cf0123a77cf492bdf8e"&gt;tdf#159483 sc HTML paste: handle data-sheets-value here, too&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/f8c95cf93ce9ab8b9b78f3af03411d0cc2e195ba"&gt;tdf#159483 sc HTML import: handle data-sheets-value attribute for the bool case&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/789964785a61daab5f8065f006dd7aaf843c7236"&gt;tdf#159483 sc HTML import: handle data-sheets-value attribute for the num case&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/7812adb2ed11a3e08be24d3f2f94d14bfd740c55"&gt;tdf#159483 sc HTML paste: handle data-sheets-formula attribute&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/c0da56cb3e9f9678cae7142dee03fb706a2aebd9"&gt;tdf#159483 sc HTML paste: handle data-sheets- attributes on a span&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/4e2a4fbeb7c44cc47b3cf803cbcc6cba63b3d481"&gt;tdf#159483 sc HTML export: handle data-sheets-value attribute for the text case&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/411158832462b1077a8f5dc6379f2056f2338249"&gt;tdf#159483 sc HTML copy: handle data-sheets-value attribute for the bool case&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/17581e684ca701bfd96ed2bf16aa14c3903b74d4"&gt;tdf#159483 sc HTML copy: handle data-sheets-value attribute for the num case&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/2efe362c99a9fa6e9a71b9b675b025c64b6c7f9d"&gt;tdf#159483 sc HTML copy: handle data-sheets-formula attribute&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;The tracking issue on the Online side was &lt;a href="https://github.com/CollaboraOnline/online/issues/8023"&gt;cool#8023&lt;/a&gt;.&lt;/p&gt;
-&lt;h2 id="want-to-start-using-this"&gt;Want to start using this?&lt;a class="headerlink" href="#want-to-start-using-this" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;You can get a snapshot / demo of Collabora Office 24.04 and try it out yourself right now: &lt;a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/"&gt;try the
-unstable snapshot&lt;/a&gt;.  Collabora
-intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF's next release too (24.8).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Thu, 04 Apr 2024 09:50:39 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2024-04-04:/blog/sc-clipboard-paste.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
+the development edition&lt;/a&gt;.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 03 May 2024 08:19:04 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2024-05-03:/blog/cool-clipboard-copy.html</guid><category>collabora-online</category><category>en</category></item></channel></rss>

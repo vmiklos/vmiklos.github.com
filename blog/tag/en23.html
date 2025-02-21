@@ -59,6 +59,46 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/mtd-utils.html">mtd-utils</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Fri 06 January 2012</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>Quick node about this useful project I packaged two days ago. It has a
+<a href="http://www.linux-mtd.infradead.org/faq/ubi.html">long FAQ</a> - I was interested in
+how can one access the builtin nand storage on an arm board using it.</p></div>
+<div class="paragraph"><p>First, check your dmesg, you should see something like:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>Creating 3 MTD partitions on "orion_nand":
+0x000000000000-0x000000100000 : "u-boot"
+0x000000100000-0x000000500000 : "uImage"
+0x000000500000-0x000020000000 : "root"</code></pre>
+</div></div>
+<div class="paragraph"><p>As the names say, the three items here are the bootloader, the kernel and the
+root filesystem. To access and mount the last one, you need:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>ubiattach /dev/ubi_ctrl -m 2
+mount /dev/ubi0_0 root
+... hack hack hack ...
+umount root
+ubidetach /dev/ubi_ctrl -m 2</code></pre>
+</div></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/frugalware-arm-install-howto.html">Frugalware arm port install HOWTO</a></h1>
   </div>
   <div class="article_meta">
@@ -556,57 +596,6 @@ a
 </li>
 </ul></div>
 <div class="paragraph"><p>Thank you for the invitation, it was great fun!</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/userspace-boot-speed.html">Userspace boot speed: less than a second</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Sat 24 September 2011</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>I did not care about boot speed for a long time, since servers usually
-restarted only for kernel upgrades, laptops suspend to ram all the time,
-and I have no desktop machine at home for years now.  Though one use
-case started to motivate me recently: I use virtual machines a lot, and
-waiting for them to boot up is boring.</p></div>
-<div class="paragraph"><p>So I looked at the <code>systemd-analyze blame</code> output, and it turned out
-that for a base-only install the only service that takes a lot of time
-is <code>netconfig</code>. It&#8217;s because it was a <code>oneshot</code> service, so the whole
-boot process waited for <code>dhcpcd</code> to get an IP. A much better solution is
-to just start netconfig in the background and move on&#8201;&#8212;&#8201;and that&#8217;s
-exactly frugalwareutils in git does now.</p></div>
-<div class="paragraph"><p>Before:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>$ systemd-analyze
-Startup finished in 2030ms (kernel) + 1166ms (initrd) + 6755ms (userspace) = 9953ms</code></pre>
-</div></div>
-<div class="paragraph"><p>After:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>$ systemd-analyze
-Startup finished in 2039ms (kernel) + 1146ms (initrd) + 892ms (userspace) = 4079ms</code></pre>
-</div></div>
-<div class="admonitionblock">
-<table><tr>
-<td class="icon">
-<div class="title">Note</div>
-</td>
-<td class="content">Again, this is for a virtual machine (where the host has some IO
-cache) and for a base-only install.</td>
-</tr></table>
-</div>
 </div>
 </div>
 
