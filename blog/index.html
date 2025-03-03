@@ -58,6 +58,273 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/cool-esign.html">Electronic signing in Collabora Online</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Mon 03 March 2025</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 13 minutes</p>
+  </div>
+  <div class="article_text">
+    <p>LibreOffice Technology had the concept of digital signing, but this was not available in <a href="https://www.collaboraonline.com/">Collabora
+Online</a>, so it was not possible to combine this with collaborative
+editing. Also, once Collabora Online started to expose digital signing with software certificates
+for ODF files, that also allowed taking a further step and start supporting electronic signing for PDF
+files. Partnering with <a href="https://eideasy.com/">eID Easy</a>, you can create strongest of the electronic
+signatures – <a href="https://en.wikipedia.org/wiki/Qualified_electronic_signature">the mighty QES</a>. This
+means signing with Collabora Online allows you to:</p>
+<ul>
+<li>create proper electronic signatures</li>
+<li>not share your document with a 3rd-party, only the
+  <a href="https://docs.eideasy.com/electronic-signatures/api-flow-with-file-hashes-pdf.html">hash</a> of your
+  PDF will be sent to the external service</li>
+<li>integrate with e.g. Nextcloud, use the feature without installing anything other than the
+  <a href="https://hub.docker.com/r/nextcloud/all-in-one">Nextcloud AIO</a> image</li>
+<li>potentially combine signing with other security features like <a href="https://www.collaboraonline.com/blog/collabora-secure-view/">Secure
+  View</a> and</li>
+<li>work with visual signing in a <a href="https://en.wikipedia.org/wiki/WYSIWYG">WYSIWYG</a> way, which allows
+  placing a visible signature widget at the specified page, then dragging it to the preferred
+  position.</li>
+</ul>
+<p>The sample integration presented here is for Nextcloud, but the feature can be made available in
+other integrations as well.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>Digital and electronic signing of documents is meant to be based on cryptographic security, and
+traditionally this has been exposed to users in a very complex way. You need to know that first you
+have to sign your macros and only then your document, you need to somehow get PEM files to have a
+signing certificate, you need to somehow get your certificate trusted by some certificate authority
+that is commonly trusted by other people who will verify your signature, and so on.</p>
+<p>This lead to the need to first support digital signatures in COOL using a single signatures dialog
+for ODF files and then later to provide electronic visual signing for PDF files, while continuing to
+respect your privacy by not sharing your document with a 3rd-party service.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<h3 id="a-read-write-signatures-dialog">A read-write signatures dialog<a class="headerlink" href="#a-read-write-signatures-dialog" title="Permanent link">&para;</a></h3>
+<p>First the signature viewer dialog was turned into a read-write digital signatures dialog in COOL
+that is still async (compatible with collaborative editing), first for ODF files &amp; using PEM files.</p>
+<p>Related to this, we automatically sign macros (if the document has macros) when signing the
+document, so you can’t forget about this or get the order wrong (sign macros first, then the
+document).</p>
+<p>At this stage implementing signature removal was possible, which again needs an async conversion so
+the user can confirm they really want to remove a signature. This also means the signature status of
+the document can change, the COOL UI now supports this.</p>
+<p>You can now associate a signing certificate / key / CA chain with a COOL editor, so you can sign the
+document, but not an other editor working on the same document.</p>
+<p>Finally adding a digital signature is now possible, where the certificate chooser just shows your
+signing certificates and hides it from other editors.</p>
+<p>Here is a screenshot of the early digital signatures dialog at this stage:</p>
+<p><a href="https://share.vmiklos.hu/blog/cool-esig/01.png"><figure><img src="https://share.vmiklos.hu/blog/cool-esig/01.png"><figcaption>Initial async digital signatures dialog in COOL with sign and remove buttons</figcaption></figure></a></p>
+<h3 id="automatically-signed-documents">Automatically signed documents<a class="headerlink" href="#automatically-signed-documents" title="Permanent link">&para;</a></h3>
+<p>The second half of digital signing support in COOL started with WOPI extensions, so an integrator of
+COOL can specify the signature settings on their user settings page and pass that to COOL when a
+document is edited. We then send this to the document editor process only when needed, i.e. not on
+file open, but when the actual signing process would start.</p>
+<p>UI is also added on the notebookbar in the form of a new button that allows adding signatures to a
+previously unsigned document – before you could only trigger the signatures dialog if the status bar
+said something about existing signatures, and only then you could add a signature. This button is
+hidden if you don’t have signature settings configured. It looks like this:</p>
+<p><a href="https://share.vmiklos.hu/blog/cool-esig/02.png"><figure><img src="https://share.vmiklos.hu/blog/cool-esig/02.png"><figcaption>New sign button on the notebookbar</figcaption></figure></a></p>
+<p>When was still missing here is automated Cypress tests to make sure signing e.g. an ODT file keeps
+working and the <a href="https://sdk.collaboraonline.com/docs/advanced_integration.html#document-signing">SDK
+documentation</a> now
+also describes what does it take to support digital signatures in your COOL integration. For example
+you can create a Nextcloud integration like this:</p>
+<p><a href="https://share.vmiklos.hu/blog/cool-esig/03.png"><figure><img src="https://share.vmiklos.hu/blog/cool-esig/03.png"><figcaption>Nextcloud integration for digital signing</figcaption></figure></a></p>
+<p>Finally, COOL’s convert-to endpoint is hooked up with signature support, so you can export to a
+signed PDF. Example curl invocation:</p>
+<div class="highlight"><pre><span></span><code><span class="n">curl</span><span class="w"> </span><span class="o">-</span><span class="n">k</span><span class="w"> </span><span class="o">-</span><span class="n">F</span><span class="w"> </span><span class="ss">&quot;data=@in.odt&quot;</span><span class="w"> </span><span class="o">-</span><span class="n">F</span><span class="w"> </span><span class="ss">&quot;format=pdf&quot;</span><span class="w"> </span><span class="o">-</span><span class="n">F</span><span class="w"> </span><span class="s1">&#39;options={&quot;SignPDF&quot;:{&quot;type&quot;:&quot;boolean&quot;,&quot;value&quot;:&quot;true&quot;},&quot;SignCertificateCaPem&quot;:{&quot;type&quot;:&quot;string&quot;,&quot;value&quot;:&quot;...&quot;},&quot;SignCertificateCertPem&quot;:{&quot;type&quot;:&quot;string&quot;,&quot;value&quot;:&quot;...&quot;},&quot;SignCertificateKeyPem&quot;:{&quot;type&quot;:&quot;string&quot;,&quot;value&quot;:&quot;...&quot;}}&#39;</span><span class="w"> </span><span class="nl">https</span><span class="p">:</span><span class="o">//</span><span class="nl">localhost</span><span class="p">:</span><span class="mi">9980</span><span class="o">/</span><span class="n">cool</span><span class="o">/</span><span class="nf">convert</span><span class="o">-</span><span class="k">to</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="k">out</span><span class="p">.</span><span class="n">pdf</span>
+</code></pre></div>
+
+<h3 id="plumbing-for-electronic-signing">Plumbing for electronic signing<a class="headerlink" href="#plumbing-for-electronic-signing" title="Permanent link">&para;</a></h3>
+<p>Once digital signing of ODF files is handled, let’s switch to PDF signing, which is much more
+interesting: you typically want to sign something final, and we see PDF as a final output of your
+documents. So first support for digital signing of PDFs was added.</p>
+<p>The next part is to integrate with eID Easy, which can do privacy-friendly electronic signing for
+us. This is a 5 step process:</p>
+<ol>
+<li>Extract the hash of the to-be-signed document. This is similar to signing, you start the process
+   but once you have the hash that you would sign locally, you just take that hash and abort the
+   actual signing.</li>
+<li>Send this hash to the electronic signing service.</li>
+<li>Open a popup and let the user authenticate with their credentials (passport, personal ID, etc)
+   using one of the providers (different providers support different countries) and sign the hash.</li>
+<li>Download the signed hash from the service.</li>
+<li>Serialize this signed hash into the local document. This requires producing the local PDF
+   signature once more, but this time using the previous timestamp (instead of the system clock, so
+   the hash is table) and using the downloaded PKCS#7 signature instead of locally signing something.</li>
+</ol>
+<p>At the end we got something that looks like a signature produced externally, but there was no UI for
+this. An initial popup for step 3 looked like this in the test environment (that doesn’t work with
+real passport numbers or anything sensitive):</p>
+<p><a href="https://share.vmiklos.hu/blog/cool-esig/04.png"><figure><img src="https://share.vmiklos.hu/blog/cool-esig/04.png"><figcaption>COOL popup to sign a document hash</figcaption></figure></a></p>
+<h3 id="ui-for-electronic-signing">UI for electronic signing<a class="headerlink" href="#ui-for-electronic-signing" title="Permanent link">&para;</a></h3>
+<p>The next step was to create a user interface for electronic signing. The Insert menu had a new menu
+item to insert electronic signatures and to specify your country, finally choose one of the
+providers available in your country.</p>
+<p>Also support for two types of providers is added: the first is the “in context” one, the other is a
+“redirect based” one. We now support both: all the redirect (should be familiar to you if you ever
+did e.g. online payments) happens in the popup, so the original COOL editor is never closed.</p>
+<p>eID also has the concept of multiple tokens for signing: initiating the signing costs money, so is
+done using a “secret”, which is never sent to the COOL JS code. Then the “client ID” identifies the
+client, but can’t be used to start signing. Finally any single signing transaction has a specific
+“document ID”. We took care to follow the guidelines here, so the sensitive “secret” for signing is
+always kept on the server.</p>
+<p>Similar to the initial document signing, electronic signing settings are also possible to specify
+from an integration, we <a href="https://sdk.collaboraonline.com/docs/advanced_integration.html#electronic-signature-handling">documented this in the
+SDK</a>
+and also created a sample Nextcloud integration for this.</p>
+<p>The Nextcloud integration looks like this:</p>
+<p><a href="https://share.vmiklos.hu/blog/cool-esig/05.png"><figure><img src="https://share.vmiklos.hu/blog/cool-esig/05.png"><figcaption>Nextcloud integration for electronic signing</figcaption></figure></a></p>
+<p>Note that later the API URL was changed to be a <a href="https://github.com/nextcloud/richdocuments/blob/main/docs/app_settings.md#electronic-signature">hidden
+setting</a>,
+as real signing never needs a custom value there, this is just for testing.</p>
+<h3 id="visual-signing">Visual signing<a class="headerlink" href="#visual-signing" title="Permanent link">&para;</a></h3>
+<p>The last part of this electronic signing effort was to expose visual singing in COOL, something that
+was added to LibreOffice Draw back in 2020, see this <a href="https://vmiklos.hu/blog/sd-visible-pdf-sign.html">earlier blog
+post</a>.</p>
+<p>First this was exposed in COOL with digital signing, in a way that the current page gets a signature
+widget inserted at the page center and then the user can move that signature widget to the desired
+location.</p>
+<p>Combining this with electronic signing is a bit more tricky, since we don’t want to select a
+certificate when the signature widget is inserted, we’ll deal with that in the external service, as
+usual.</p>
+<p>Also, there was no real reason to not use visual signing unconditionally, so now the way to initiate
+a signing process is to open your PDF in COOL, use the Insert → Signature line menu item to insert a
+signature widget, move it to the wanted position, click “finish” on the snackbar and that completes
+the process with the usual electronic signing popup.</p>
+<p>The final problem was that our multi-page PDF viewer was not really prepared to deal with changed
+PDF content (assuming your PDF rendering will not change is reasonable), so some last minute work
+had to be done to make sure the signature widget’s graphical selection indicator, its dragging and
+its rendering works fine even on non-first pages of a PDF document.</p>
+<p>At the end, a test signature using the d-trust signature provider’s test environment looks like
+this:</p>
+<p><a href="https://share.vmiklos.hu/blog/cool-esig/06.png"><figure><img src="https://share.vmiklos.hu/blog/cool-esig/06.png"><figcaption>Electronic signature with a signature widget / visual signature on page 2 of a PDF file, using the test environment of the d-trust provider.</figcaption></figure></a></p>
+<p>Or if you prefer watching a demo, a typical electronic signing process session looks like this:</p>
+<p><a href="https://www.youtube.com/watch?v=tWS546R3fwE?&amp;t=1022"><figure><img src="https://share.vmiklos.hu/blog/cool-esig/07.png"><figcaption>Demo of electronic signing with Collabora Online, part of a tea-time training</figcaption></figure></a></p>
+<p>At the end you get an electronic signature that is trusted by the EU trust list and thus e.g.
+Acrobat Reader.</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)
+As usual, the high-level problem was addressed by a series of small changes.</p>
+<p>LibreOffice core commits:</p>
+<ul>
+<li><a href="https://git.libreoffice.org/core/commit/0255283974894f5ad9ba92c3a52912657ed4bdf6">cool#9992 lok doc sign: add SfxObjectShell::AfterSignContent()</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/de0bc0a2c30a76144b47e9abb17770043813133c">cool#9992 lok doc sign: make <code>SfxMedium::SignContents_Impl()</code> async</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/caff013bee53216efeb49db4bcda44b55c223b58">cool#9992 lok doc sign: async DocumentDigitalSignatures::signDocumentContent()</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/07df95e75a728fbbce03f6d6efdf9dbceab6c581">cool#9992 lok doc sign: async DocumentDigitalSignatures::ImplViewSignatures()</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/482c7c585160681b263c6245a745c21df70e7507">cool#9992 lok doc sign: async read-write DigitalSignaturesDialog</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/e5a0209d4b1e1f09191a442e04d626b21c49b9df">cool#9992 lok doc sign: allow sign of macros &amp; the document itself in one step</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/40ba7a5c25f0d2ea90a976d4e7d56b9e61dbedd1">cool#9992 lok doc sign: implement signature removal</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/a95b90bc0cf0f8a58fc20684acc23bb89b827cd1">cool#9992 lok doc sign: fix signature status after load</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/a7830e04f2c33fb8d684d48d00ffc752f7207dea">cool#9992 lok doc sign: add password-less mode to create-certs.sh</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/7bad76c3a5b319f8ede74be8f78e5645f9ffd050">cool#9992 lok doc sign: extract duplicated code to SfxLokHelper</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/90beea9a9a9ab1a5d4a154704acabadfc83870c9">cool#9992 lok doc sign: handle .uno:SignatureCert/Key/Ca view options</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/4787fd4fc86230893a6da309f45964116b3a67df">cool#9992 lok doc sign: store signing cert in the view</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/d95ab8d3a3a102c00b69f0b0b49d7eb49e34051e">cool#9992 lok doc sign: fix import of the private key</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/c57434559cf5ffd82c3c72e8a0884d4874885dca">cool#9992 lok doc sign: conditionally show the add button in the sign dialog</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/a581dbf9829d8407a611907c35c8af632b1397b5">cool#9992 lok doc sign: only take sign cert from the view in the cert chooser</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/ced420ca708eb8df5b20c7d537166bd9ec29a0e5">cool#9992 lok doc sign: convert the certificate chooser dialog to async</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/298c2d5c8a6791aa6e5846b698d521079aaa445d">cool#9992 lok doc sign: update sign status after modify the list of trusted CAs</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/1c7f6188eb5b2a2bbf0cf589843d644306e40d6d">cool#9992 lok doc sign: avoid storing the sign cert in the model after sign</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/47fd29a318513d26b86eb0cfa891969ce6c85879">cool#9992 lok doc sign: allow late-init of the sign cert</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/4aa8d30c095e08825bc983c699e11f2e88182124">cool#9992 lok doc sign: never remember previous .uno:Signature params</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/1e75155c6995e4f1534e2062c64fab35d49ea60b">cool#9992 lok doc sign: allow injecting sign cert/key during pdf export</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/27753561a1899949c5cbd5cc6b72a238769e1eeb">cool#9992 lok doc sign, create-certs.sh password-less mode: still create a .p12</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/12e50825370dae276d44bea84b3eb2941b401220">cool#9992 lok doc sign, hash extract: initial getCommandValues('Signature')</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/0de900cec7b04d75cf9ab0779d7a1ca3c730ae32">cool#9992 lok doc sign, hash extract: time for getCommandValues('Signature')</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/eabda77c9735040dd5bdb1d2ebe0b96ce316561a">cool#9992 lok doc sign, hash extract: digest for getCommandValues('Signature')</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/39bf87f943cce9a0b5a784bc7426b5b98bbc6992">cool#9992 lok doc sign, hash extract: add signatureTime parameter</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/60261557e5311a7b445fb2455aa534697697a9ec">cool#9992 lok doc sign: add initial serialization of external signatures</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/0a535147f9bed7856e7ab3513fe3f6c38549a099">cool#9992 doc electronic sign: make return type for .uno:Signature consistent</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/70111311f39b52858f7de8b5adb764db9d28a46e">cool#10630 lok doc sign: fix Impress sign line when creating directly</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/0cc0896b212b0d1fded8d999b980f18f0379e6e0">cool#10630 lok doc sign: fix Impress sign line when picking a certificate</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/fa5be641bc0ad23ed51fb1702a157878cc3ecb04">cool#10630 doc sign: fix Impress sign line, to be able to finish signing again</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/a10d5191b62822b96b247e0c95d8be735cc4feed">cool#10630 lok doc sign: allow setting the pos of the Impress sign line</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/d925b64ac552348e3862a6b8b61ecd751a8f3a9e">cool#10630 lok doc sign: allow setting the size of the Impress sign line</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/7d4222d0088f22a68941d2e910fe50bd10e8bdfe">cool#10630 doc electronic sign: fix insertion of the signature line</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/9dd225ee8c45d6c944b9ce5578780d89612e9ffb">cool#10630 doc electronic sign: fix no graphic selection for the signature line</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/62dd6274c71bc840f5c5abcd4b1fa536238aa25d">cool#10630 doc electronic sign: move signature line tracking to the view</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/76e0a520d6beb118dd6437889fbe16d2a94c941c">cool#10630 doc electronic sign: unselect &amp; reject reselect</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/819941bf1422f40e9346eba61d75e0fda3d24275">cool#10630 lok doc sign: reduce the default size of the signature line</a></li>
+</ul>
+<p>Collabora Online commits:</p>
+<ul>
+<li><a href="https://github.com/collaboraonline/online/commit/95716823f5a66c18476dd7032a1a1f5fc681f23c">cool#9992 doc sign: fix update of the signature widget in the status bar</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/d5a589e118618e5acaf5a6f381d0f0096da50a39">cool#9992 doc sign: fix missing enable on the cert chooser description entry</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/2a118ab34d57f5e2e4e0bc4d15f9f01c03794943">cool#9992 doc sign: better fix for the cert chooser dialog's disabled description widget</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/e54f2b81158be998f076bdaf310dba826470edf7">cool#9992 doc sign: add sign button to the home tab of the notebookbar</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/497981cd6c7356fc680087997b3217a76a455ac6">cool#9992 doc sign: local file wopi provider: allow setting the sign cert/key/ca</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/0c1cd8c00f88b6cedd8fdb4c4ee15abf16103cd6">cool#9992 doc sign: set the view's sign cert from the WOPI UserPrivateInfo</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/6cdbbe044565b708ef654efc547edd4db5f3b24a">cool#9992 doc sign: add a setting to be able to disable this</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/6de210972ae756a3dad1dbe71ec3a87d5533adf8">cool#10220 doc sign: don't assume that user private data is a dict json</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/89213ce16272579a138c098314b7a96123ffc6c0">cool#9992 doc sign: hide sign button when user pref doesn't provide cert or key</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/925fcd837d0c371f513d70a56ac6c8817b13b271">cool#9992 doc sign: add signature creation cypress test</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/542560f38d09d6d3a03b94822cefba269361eac7">cool#9992 doc sign: move sign key/cert init from doc init to sign dispatch</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/ebc753b7e6d50a861481d0658aeea0fb79c048c5">cool#9992 doc sign: fix handling of saveas options containing spaces</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/d2be47df5fa3593b49057c7a7a2daa8b269d9977">cool#9992 doc sign: add menu item for the compact UI</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/d3806b06157a0de5fa62ad3e292993a3c8590ea7">cool#9992 doc sign: add UI to sign PDF files</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/ab694a028929bad69f2b0761fb291b7acdc34f3d">cool#9992 doc electronic sign: allow passing sign params from JS</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/f6f339088344d2f43facee613ee5c1421a763edc">cool#9992 doc electronic sign: allow more user private info settings with make run</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/da54d2273b82db9664ac7945fd8846b77ad0d3a2">cool#9992 doc electronic sign: add menu item to trigger hash extract</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/b09b20489d9666c107bc0bd332f158d2a9734a77">cool#9992 doc electronic sign: send the hash to be signed</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/a1d81fdd06aa9b313b19e5719ee509270f39de4f">cool#9992 doc electronic sign: actually sign the hash in a popup</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/fb784187b1bc1952c6e0b5f25b208c2439a2e1f3">cool#9992 doc electronic sign: fetch the created signature</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/690fb0413ec4a77a551eba00fbc3d77371a61983">cool#9992 doc electronic sign: serialize the fetched signature</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/cab22ef2cad3727e7731b3e7e7ec8270fd0c07f1">cool#9992 doc electronic sign: add cypress test</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/653107b76e84c7e716a8c3aa71d776c196efca21">cool#9992 doc electronic sign: add a provider selector dialog</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/44ff2a3687dde5a8a9b967be4bc0a50d41612268">cool#9992 doc electronic sign: select the provider interactively</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/63a0d574d523536cd1a51e9847d74972c455fd47">cool#10630 doc electronic sign: improve error handling on bad client ID</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/5e75272cfae784a46dbc068629a30c813ca4e3e3">cool#10630 doc electronic sign: more human-readable names for providers</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/ce7b5bf22f25f4a460ab550bf1d767ed914934fb">cool#10630 doc electronic sign: add /cool/signature endpoint</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/1ffb473e71fa88b882c66c1d7224fe0ffe8969dc">cool#10630 doc electronic sign: implement support for redirect-based providers</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/4a8206bf14d80262c3adf505a14bf51910b5a402">cool#10630 doc electronic sign: expose the name of the document</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/1da7603e641d20fc7ce095ee02d0f34cb4393ed2">cool#10630 doc electronic sign: send the hash on the server</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/8b7fc83546b03b74675077e7999969590f001966">cool#10630 doc electronic sign: get the signature on the server</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/20ac4c2c3c362bb996ad25609be1c8f652254b1d">cool#10630 doc electronic sign: stop sending the secret to the client</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/73ee6c85443eb551b69f4f6f59cd7efd24dfe794">cool#10630 doc electronic sign: remove CSP rules</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/aa6295f3acfad9401769a995807cafc57de2d025">cool#10630 doc electronic sign: configure the language of the popup</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/0e09d9950324997561fcb4e60be5acedcd34592e">cool#10630 doc electronic sign: add a country selector to the dialog</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/bbde01500b559cb402bd19489e3201b582c7f26b">cool#10630 doc electronic sign: add ISO country names</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/830e4608a08050a7593431554ab6113e6283ec20">cool#10630 doc electronic sign: send selected country to the server</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/e1e6a08b15d5a39174c82fa0a4f776d1e7543d2f">cool#10630 doc electronic sign: moved esign settings out of UserPrivateInfo</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/8d043c31b25cd3ab4d8f715650f0610863e3801d">cool#10630 doc electronic sign: support per-server private info during 'make run'</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/5a79a28e5c1952b62ae1e876beb721e11b56d0bf">cool#10630 doc electronic sign: default to a redirect-based provider</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/c8b7cb63fdbb6bb33bb3eebff30eb2bdd65422b6">cool#10630 doc electronic sign: set defaults without an index</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/4d42b1e3e47ad0183649678d2aa931b44c5ffe10">cool#10630 doc electronic sign: return dialog result without an index</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/62aa4d53914421fb4e1cb24ff3787d3d8ad0e038">cool#10630 doc electronic sign: limit the offered providers based on the selected country</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/cb100b9c4a5a8ab93e0edbcbb624b0b68cf2fb23">cool#10630 doc electronic sign: sort the country &amp; provider lists</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/dfa52148c3d0637dc212d69f1f5f42f044dd276a">cool#10630 doc sign: expose visual signing</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/03f9cf4f5749cce8ffeff9ccf44bda5a6fc8f0c4">cool#10630 doc sign: add visual signing testcase</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/bbaa9548a542930747841be0c8cdc3089e6a05d5">cool#10630 doc sign: allow setting the position / size of a visual signature</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/c474a775468b20d7ba31be0d30bd443971276f6b">cool#10630 doc electronic sign: handle visual signatures</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/4c6ce3ad510e98772af6da862ecf7e08c162680a">cool#10630 doc electronic sign: add a snackbar</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/fbb710dd4dc990cb0f5003e78c95b7db008b5cde">cool#10630 doc electronic sign: show the sign view dialog after esign</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/7fbd76027f157b8816af6b5f5643b8d7f747d203">cool#10630 doc electronic sign: remember the provider in localstorage</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/36b509877931c8a0a005f9ed50ada3e7f7d402e2">cool#10630 doc electronic sign: show busy overlay while the popup is open</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/bba469ef8a7a1c6ad5225d554279f3f30c319e31">cool#10630 doc electronic sign: close the popup on tab close</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/2ec5568ef900e309a371758987640eb18f6c52e8">cool#10630 doc electronic sign: avoid unwanted postmessage during sign</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/bbe7badae6bfdc80c8193aa940a78f1af8fc48a9">cool#10630 doc electronic sign: fix no graphic selection on 2nd page</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/e20c1838b3e65900f61ddb2c5f0bb72385577275">cool#11002 kit: fix memory corruption in Document::handleSaveMessage()</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/0ee465340c7a01af4ab2f77930feb642bb0a3558">cool#10630 doc electronic sign: fix no SVG in graphic selection on 2nd page</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/3cf8a2f1f161270fb0a85863bea1d5277e92eed3">cool#10630 doc electronic sign: fix outgoing mouse messages on 2nd page</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/df5c0a672bad3a3e9b1a5a3f792c94a47753ac61">cool#10630 doc electronic sign: fix outgoing transform pos on 2nd page</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/97d166457afeba3654a7c22acc41230a6d13c7c9">cool#10630 doc electronic sign: fix outdated tile for shape move on 2nd page</a></li>
+</ul>
+<p>Nextcloud richdocuments commits:</p>
+<ul>
+<li><a href="https://github.com/nextcloud/richdocuments/commit/20ca5fd77d0753b58c997ad6a7889153d8b2469e">feat: add personal setting to specify the CA chain for document signing</a></li>
+<li><a href="https://github.com/nextcloud/richdocuments/commit/6ca8071c495ebf4cd7797dd44a0700f9970abc31">feat: expose the documentSigningCa personal setting in the WOPI CheckFileInfo</a></li>
+<li><a href="https://github.com/nextcloud/richdocuments/commit/adfb9056d40af3a861463753f47e72ab5f2f905c">feat: document signing, add setting for the signing certificate &amp; key, too (fixes #4123)</a></li>
+<li><a href="https://github.com/nextcloud/richdocuments/commit/a9fa62cc5232a20021f206d34f4d295129c72e2c">feat: electronic signing, add settings for eIDEasy (fixes #4311)</a></li>
+</ul>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a development edition of Collabora Online 24.04 and try it out yourself right now: <a href="https://www.collaboraoffice.com/code/">try
+the development edition</a>.</p>
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/cool-sw-visible-area-perf.html">Improving interactivity: the Writer visible area in Collabora Online</a></h1>
   </div>
   <div class="article_meta">
@@ -544,103 +811,6 @@ body text, while the footnote is at the bottom of the page, as expected. The sec
 the development edition</a>.  Collabora intends to continue
 supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
 available in TDF's next release too (24.8).</p>
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/cool-clipboard-copy.html">Improved copy & paste in Collabora Online: the copy side</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Fri 03 May 2024</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 4 minutes</p>
-  </div>
-  <div class="article_text">
-    <p><a href="https://www.collaboraoffice.com/">Collabora Online</a> now uses the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Clipboard_API">Clipboard
-API</a> if it's available in the used
-browser, getting rid of many annoying dialogs.</p>
-<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
-<p>The <a href="https://vmiklos.hu/blog/sc-clipboard-paste.html">paste side</a> was covered by an earlier post, but in
-short, if you're on Chrome (or Safari), you won't see the "can't paste" dialog:</p>
-<p><a href="https://share.vmiklos.hu/blog/cool-clipboard-copy/2024-05-02-paste-bad.png"><figure><img src="https://share.vmiklos.hu/blog/cool-clipboard-copy/2024-05-02-paste-bad.png"><figcaption>"Can't paste" dialog in COOL 23.05</figcaption></figure></a></p>
-<p>Also you won't see a "Can't paste special" dialog:</p>
-<p><a href="https://share.vmiklos.hu/blog/cool-clipboard-copy/2024-05-02-pastespecial-bad.png"><figure><img src="https://share.vmiklos.hu/blog/cool-clipboard-copy/2024-05-02-pastespecial-bad.png"><figcaption>"Can't paste special" dialog in COOL 23.05</figcaption></figure></a></p>
-<p>Wouldn't it be nice to improve the copy side in a similar way?</p>
-<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
-<p>The primary reason why we needed similar, annoying dialogs for copy in the past is that the
-clipboard API was synchronous but the network API is async. This means that writing to the clipboard
-("copy") is only possible with data that we have in the browser when the copy is executed. This is a
-problem, since in general we don't have data for your selection in the browser.</p>
-<p>With the Clipboard API, the copy side can be improved as well. Instead of always fetching the HTML
-for a simple selection (even if you don't copy) and having a three step copy for complex selections,
-async clipboard write is now possible. This gets us rid of the "You need to download" dialog:</p>
-<p><a href="https://share.vmiklos.hu/blog/cool-clipboard-copy/2024-05-02-copy-bad1.png"><figure><img src="https://share.vmiklos.hu/blog/cool-clipboard-copy/2024-05-02-copy-bad1.png"><figcaption>"You need to download" dialog in COOL 23.05</figcaption></figure></a></p>
-<p>Also it eliminates the "Download completed dialog:</p>
-<p><a href="https://share.vmiklos.hu/blog/cool-clipboard-copy/2024-05-02-copy-bad2.png"><figure><img src="https://share.vmiklos.hu/blog/cool-clipboard-copy/2024-05-02-copy-bad2.png"><figcaption>"Download completed" dialog in COOL 23.05</figcaption></figure></a></p>
-<p>Instead, we still need to nominally write to the clipboard in the special keyboard or click context
-initiating the copy (Chrome doesn't require this, Safari does), but the written object can be a
-callback that will do the network operation for us.</p>
-<p>Unfortunately it's hard to screenshot the new code, since part of the result is that all these
-dialogs are now eliminated, copy &amp; paste just works. :-)</p>
-<p>Note that this can be used also in Firefox, but first you need to set
-<code>dom.events.asyncClipboard.clipboardItem</code> to <code>true</code> in <code>about:config</code>.</p>
-<p>The last part was to adapt tests to this new world, because previously it was handy to just create a
-selection and assert what would be copied to the clipboard as HTML, but now we don't download the
-HTML anymore every time you create a selection.</p>
-<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
-<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
-<p>As usual, the high-level problem was addressed by a series of small changes:</p>
-<ul>
-<li><a href="https://github.com/CollaboraOnline/online/commit/25342ed3172d3689309ed0833bdd2d3248818c56">Related: cool#8648 clipboard: extract parseClipboard() from Control.DownloadProgress.js</a></li>
-<li><a href="https://github.com/CollaboraOnline/online/commit/ea8202268ce4aa772a6e89cb58508d862b5e82d7">Related: cool#8648 clipboard: use JSON when requesting HTML only</a></li>
-<li><a href="https://github.com/CollaboraOnline/online/commit/75251f9496f44f8678e43c1525719e5e4cc3b6ee">cool#8648 clipboard: try to use navigator.clipboard.write()</a></li>
-<li><a href="https://github.com/CollaboraOnline/online/commit/286cd1ccf7f354e212bef4f02f4b51c50e37800c">cool#8648 clipboard: fix <code>desktop/writer/copy_paste_spec.js</code></a></li>
-<li><a href="https://github.com/CollaboraOnline/online/commit/803df018daf8575674ad4483d181f9c65fddd842">cool#8648 clipboard: fix <code>desktop/calc/clipboard_spec.js</code></a></li>
-<li><a href="https://github.com/CollaboraOnline/online/commit/635a45aac07c58a14d4dce38145fd28eea3ae04d">cool#8648 clipboard: fix <code>desktop/writer/undo_redo_spec.js</code></a></li>
-<li><a href="https://github.com/CollaboraOnline/online/commit/b3f2c690d8c610bffd2584b8d02b095bb144ed16">cool#8648 clipboard: fix <code>desktop/writer/track_changes_spec.js</code></a></li>
-<li><a href="https://github.com/CollaboraOnline/online/commit/91c702e42012b59f7747a0cfb1a1394cbcc180ff">cool#8648 clipboard: fix <code>most of desktop/writer/top_toolbar_spec.js</code></a></li>
-<li><a href="https://github.com/CollaboraOnline/online/commit/1f0aec8f19ddb6053f48625fabdf19d8e59049bb">cool#8648 clipboard: fix insert hyperlink dialog</a></li>
-<li><a href="https://github.com/CollaboraOnline/online/commit/56adf9983e60ad6259b28e2a24fa2c1b67209c56">cool#8648 clipboard: fix <code>desktop/writer/table_operation_spec.js</code></a></li>
-<li><a href="https://github.com/CollaboraOnline/online/commit/1e4afce8a193de2d307737f029f5a9096582ec7b">cool#8648 clipboard: fix <code>desktop/writer/searchbar_spec.js</code></a></li>
-<li><a href="https://github.com/CollaboraOnline/online/commit/406dad2128a2a5daa8f24e4728560bbdccbcd1e7">cool#8648 clipboard: fix <code>desktop/writer/notebookbar_spec.js</code></a></li>
-<li><a href="https://github.com/CollaboraOnline/online/commit/359e7eca6772dd0daf6b7dcfb5bc6e9b628510fc">cool#8648 clipboard: fix <code>desktop/writer/editable_area_spec.js</code></a></li>
-<li><a href="https://github.com/CollaboraOnline/online/commit/770feebf1318d8f4ab4bd68d13957cfaf6aee74d">cool#8648 clipboard: fix <code>desktop/impress/undo_redo_spec.js</code></a></li>
-<li><a href="https://github.com/CollaboraOnline/online/commit/c10cc6d8b8b6fb60a3a1248d0f8d73ce37af5a17">cool#8648 clipboard: fix <code>desktop/impress/delete_objects_spec.js</code></a></li>
-<li><a href="https://github.com/CollaboraOnline/online/commit/7f9c80988153b88c3ffb4a490c1f9d2d3da2ed39">cool#8648 clipboard: fix <code>desktop/calc/undo_redo_spec.js</code></a></li>
-<li><a href="https://github.com/CollaboraOnline/online/commit/e396df494cab6f88dfa0d51b91d44a35db8dd7f1">cool#8648 clipboard: fix <code>desktop/calc/top_toolbar_spec.js</code></a></li>
-<li><a href="https://github.com/CollaboraOnline/online/commit/5bf298243f5c1b6621cbb237d40358d5c411ec67">cool#8648 clipboard: fix <code>desktop/calc/searchbar_spec.js</code></a></li>
-<li><a href="https://github.com/CollaboraOnline/online/commit/a8d4a3e8592d3fcdd8a9007b49613a3fa5f58bf3">cool#8648 clipboard: fix <code>desktop/calc/searchbar_spec.js</code></a></li>
-<li><a href="https://github.com/CollaboraOnline/online/commit/67d38b64a4af4fc949ea19388a996f3818a4b03d">cool#8648 clipboard: fix <code>desktop/calc/focus_spec.js</code></a></li>
-<li><a href="https://github.com/CollaboraOnline/online/commit/25b377efb44bcde58df160edabc486eecfc73144">cool#8648 clipboard: fix <code>desktop/calc/delete_objects_spec.js</code></a></li>
-<li><a href="https://github.com/CollaboraOnline/online/commit/3c9272c1bf3b2f6cf14edb8a590d8f3fb7ab7d02">cool#8648 clipboard: fix <code>desktop/calc/autofilter_spec.js</code></a></li>
-<li><a href="https://github.com/CollaboraOnline/online/commit/fdb1f8c7fc101a75a7a90ad6b06cfb3a417ffab4">cool#8648 clipboard: fix <code>desktop/calc/cell_appearance_spec.js</code></a></li>
-<li><a href="https://github.com/CollaboraOnline/online/commit/4c5adb70e6946d8d9e01bf8d7b45744b02f1310b">cool#8648 clipboard: fix <code>mobile/calc/apply_font_spec.js</code></a></li>
-<li><a href="https://github.com/CollaboraOnline/online/commit/0c21b6e833de9aa257313ad3b514564c6209139f">cool#8648 clipboard: fix <code>mobile/calc/autofilter_spec.js</code></a></li>
-<li><a href="https://github.com/CollaboraOnline/online/commit/a5d05f23647df8987f053dd7e7b7d42e9bc15a0c">cool#8648 clipboard: fix <code>mobile/calc/bottom_toolbar_spec.js</code></a></li>
-<li><a href="https://github.com/CollaboraOnline/online/commit/2b37f2113f71d13d8c3bbd29f248713cb88e865d">cool#8648 clipboard: fix <code>mobile/calc/cell_appearance_spec.js</code></a></li>
-<li><a href="https://github.com/CollaboraOnline/online/commit/a12bcd3fb0b990566a8f2be0a4de2c2bff5236a1">cool#8648 clipboard: fix <code>mobile/calc/delete_objects_spec.js</code></a></li>
-<li><a href="https://github.com/CollaboraOnline/online/commit/3a1dd02dd15a184d4a54b28a84bf9079b6934029">cool#8648 clipboard: fix <code>mobile/calc/insertion_wizard_spec.js</code></a></li>
-<li><a href="https://github.com/CollaboraOnline/online/commit/9ea5add21752c234145e6d78c4ceb56c06e1b4e5">cool#8648 clipboard: fix <code>mobile/calc/searchbar_spec.js</code></a></li>
-<li><a href="https://github.com/CollaboraOnline/online/commit/283b5a1637121d00f5d41d2067f2221fde1d14ff">cool#8648 clipboard: fix <code>mobile/calc/spellchecking_spec.js</code></a></li>
-<li><a href="https://github.com/CollaboraOnline/online/commit/027a87157bd723d79ef2329d1cd7e41ade2e01e9">cool#8648 clipboard: fix <code>mobile/impress/delete_objects_spec.js</code></a></li>
-<li><a href="https://github.com/CollaboraOnline/online/commit/ad737657c6c3fe37e703587b869aba100a9228e6">cool#8648 clipboard: fix <code>mobile/impress/impress_focus_spec.js</code></a></li>
-<li><a href="https://github.com/CollaboraOnline/online/commit/1dc4bae0c96462c18a14ce634675b6f898926c8b">cool#8648 clipboard: fix <code>mobile/impress/insertion_wizard_spec.js</code></a></li>
-<li><a href="https://github.com/CollaboraOnline/online/commit/04a6af39cfb6949eab23c041656c05f7dfc026ef">cool#8648 clipboard: fix <code>mobile/impress/spellchecking_spec.js</code></a></li>
-<li><a href="https://github.com/CollaboraOnline/online/commit/a2db31f4378f5561b19afb53150e9ef0871f2e74">cool#8648 clipboard: fix <code>mobile/writer/apply_font_spec.js</code></a></li>
-<li><a href="https://github.com/CollaboraOnline/online/commit/9cca40deda7df20d72d6f96e5b91fa71ced89312">cool#8648 clipboard: fix <code>mobile/writer/delete_objects_spec.js</code></a></li>
-<li><a href="https://github.com/CollaboraOnline/online/commit/ad22a9f017b15658d90a50c011e5bcf8c2c64b87">cool#8648 clipboard: fix <code>mobile/writer/insert_formatting_mark_spec.js</code></a></li>
-<li><a href="https://github.com/CollaboraOnline/online/commit/a91036247b79403a6d8af9fec559de4cbc76045b">cool#8648 clipboard: fix <code>mobile/impress/insertion_wizard_spec.js</code></a></li>
-<li><a href="https://github.com/CollaboraOnline/online/commit/82dc3e1a46908c1306360cd335243d4345e842b0">cool#8648 clipboard: fix <code>mobile/writer/track_changes_spec.js</code></a></li>
-<li><a href="https://github.com/CollaboraOnline/online/commit/9b95bf829fefba288ff296c57e4323356e673ded">cool#8648 clipboard: fix <code>mobile/writer/table_properties_spec.js</code></a></li>
-<li><a href="https://github.com/CollaboraOnline/online/commit/28e51d58f446bb081a9630672f0b410b1e385886">cool#8648 clipboard: stop fetching the clipboard on text selection create in tests</a></li>
-<li><a href="https://github.com/CollaboraOnline/online/commit/24109be2e3889a45cfa90f0fa0cfce827a17f53b">cool#8648 clipboard: fix idle tests</a></li>
-</ul>
-<p>The tracking issue was <a href="https://github.com/CollaboraOnline/online/issues/8648">cool#8648</a>.</p>
-<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
-<p>You can get a development edition of Collabora Online 24.04 and try it out yourself right now: <a href="https://www.collaboraoffice.com/code/">try
-the development edition</a>.</p>
   </div>
 </article>
 

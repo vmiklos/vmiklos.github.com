@@ -58,6 +58,126 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/tiled-editing-part-1.html">Tiled editing: from viewing only to a living document</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Tue 27 January 2015</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 3 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>As it has been announced
+<a href="http://blog.documentfoundation.org/2015/01/21/libreoffice-viewer-for-android/">last
+week</a>, an Android port of LibreOffice in the form of a viewer app is now
+available for download.  What&#8217;s next?
+<a href="http://blog.documentfoundation.org/2015/01/27/the-document-foundation-announces-the-results-of-the-android-tender/">Editing</a>,
+naturally.  First, thanks again to The Document Foundation&#8201;&#8212;&#8201;and all the
+<a href="http://donate.libreoffice.org/">donors</a> who made this (ongoing) work possible.
+In this post I would like to explain what did we do with
+<a href="http://tomazvajngerl.blogspot.com/">Tomaž Vajngerl</a> at Collabora so far in that
+direction.</p></div>
+<div class="paragraph"><p>If you ever touched the Android port of LibreOffice, you probably noticed that
+sadly developing for Android is much harder compared to Linux (desktop). On
+Linux, if you just touch a single module, it&#8217;s possible to rebuild just that
+module in a few seconds, and then you can run soffice again with your
+modifications included. On Android, this is much harder:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+due to a limitation of the Android linker, we link all the native code into
+  a single shared object, that has to be re-linked after each native code
+  modification
+</p>
+</li>
+<li>
+<p>
+the native + the Java code has to be packed into a .apk archive
+</p>
+</li>
+<li>
+<p>
+the .apk archive has to be uploaded to the device (or emulator) and
+  installed there
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>and only then can you test your changes. To partly sidestep from this problem,
+we split the "Android editing" into two:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+tiled editing: this can be tested on Linux using the gtktiledviewer test
+  application (and ideally any core problem can be seen here already)
+</p>
+</li>
+<li>
+<p>
+Android LibreOfficeKit client: replacing gtktiledviewer with the real
+  Android client code, and this time testing it on the device
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>One problem with this approach was that while Android properly rendered small
+tiles of 256x256 pixels, gtktiledviewer rendered a single huge tile. This
+means that in case part of the document changes and we need to re-draw it, we
+always repainted the whole document in gtktiledviewer, while we only repainted
+the necessary parts on Android. Guess what, if the area to be repainted is
+wrong, it&#8217;ll be visible on Android but not on gtktiledviewer. So the first
+task we solved was to let gtktiledviewer also render small tiles. For
+debugging purposes, small red rectangles are painted at the top left corners
+of each rectangle, so the size and position of the tiles can be seen easily:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh5.googleusercontent.com/-VvQFF-Kg270/VMYqe9G76-I/AAAAAAAAFL4/Fnh9_ig03Ww/s0/">
+<img src="https://lh5.googleusercontent.com/-VvQFF-Kg270/VMYqe9G76-I/AAAAAAAAFL4/Fnh9_ig03Ww/s420/" alt="https://lh5.googleusercontent.com/-VvQFF-Kg270/VMYqe9G76-I/AAAAAAAAFL4/Fnh9_ig03Ww/s420/" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>The next step was to somehow start work on real editing&#8201;&#8212;&#8201;but where to start? We identified two critical building blocks:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+there should be some way for the user to provide input (e.g. press a key on
+  the software keyboard)
+</p>
+</li>
+<li>
+<p>
+once the document changed, the application has to redraw the changed part of
+  the view
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>To avoid solving two problems at the same time, we first went after the
+second. One use case that only requires the update of the view is blinking
+text. Even if no touch or key events are available, a blinking text wants to
+update the view using a timer, so it&#8217;s a good testcase. It&#8217;s now possible for
+LibreOfficeKit clients to register a notification callback, and using that,
+LibreOffice can notify clients if part of the view has to be redrawn. Here is
+how it looks using gtktiledviewer:</p></div>
+<center>
+<iframe width="420" height="315" src="http://www.youtube.com/embed/rgv76GPlMRU" frameborder="0" allowfullscreen></iframe>
+</center>
+<div class="paragraph"><p>This demonstrates that the LibreOfficeKit implementation in LibreOffice core
+and also the gtktiledviewer client code handle correctly tile invalidations.
+Once that was done, we could also implement a similar client code in the
+Android app&#8201;&#8212;&#8201;it looks like this:</p></div>
+<center>
+<iframe width="420" height="315" src="http://www.youtube.com/embed/EkGpCrGlhiY" frameborder="0" allowfullscreen></iframe>
+</center>
+<div class="paragraph"><p>That&#8217;s it for now&#8201;&#8212;&#8201;next on our list is adding support for input handling, so
+it&#8217;s possible to type in some text. :-)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/perfect-ww8-comment-import.html">Perfect WW8 comment import</a></h1>
   </div>
   <div class="article_meta">
@@ -647,114 +767,6 @@ picture</a>&#8201;&#8212;&#8201;probably around 300 attendees, counting all days
 <div class="paragraph"><p>My pictures are available
 <a href="https://www.flickr.com/photos/vmiklos/albums/72157674219984366">here</a> (and I
 also made a <a href="/panoramas/bern.html">panorama</a>).</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/ooxmltok.html">Cleanup of ooxmltok in LibreOffice</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Thu 28 August 2014</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 3 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div style="text-align: center; font-size: 0.6em;">
-<img src="https://lh4.googleusercontent.com/-GipHI6c2dSM/U_8TTB9IzUI/AAAAAAAAExA/LVMQpNezkus/s400/"/>
-<p>(via <a href="https://www.flickr.com/photos/aigle_dore/7356881428/">aigle_dore</a>)</p>
-</div>
-<div class="paragraph"><p>In June, we
-<a href="http://article.gmane.org/gmane.comp.documentfoundation.libreoffice.qa/7272">decided</a>
-to get rid of XSLT usage in writerfilter, the module responsible for RTF and
-DOCX import in LibreOffice. As usual with cleaning up mess, this took time
-(about two months), but I&#8217;m now happy to say that I&#8217;m mostly done with this.
-:-)</p></div>
-<div class="paragraph"><p>See <a href="https://vmiklos.hu/blog/doctok.html">the doctok blog post</a> for some
-background, the topic here was to clean up the OOXML tokenizer, that is that
-building block that turns a zipped XML document into a token stream.</p></div>
-<div class="paragraph"><p>The following problems are now solved:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-Part of the module was generated code, the generator was implemented mostly
-  in XSLT, but some bits were written in Perl and sed. About 4200 lines of
-  XSLT code is now rewritten in Python, in about 1300 lines.
-</p>
-</li>
-<li>
-<p>
-Given that we have much more developers who speak Python, compared to XSLT,
-  nontrivial changes are now much easier in the generator: Jan Holesovsky
-  <a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=c74de6c2e29a16fb4a458816cd17fa678edd16e7">cleaned
-  up</a> <code>boost::unordered_map</code> usage at places where we depended on the order of
-  elements. (Yes, you read it correctly, that was the situation up till now!)
-  This also helps reducing the size of the resulting writerfilter shared library.
-</p>
-</li>
-<li>
-<p>
-The input of the code generator was the large <code>model.xml</code> file, and
-  generator scripts only extracted interesting information from it, so if you
-  mistyped something, you got no error messages, just silent failures. I&#8217;ve
-  removed quite some XML elements and attributes from it which were parsed by
-  none of the generator scripts and written a
-  <a href="http://opengrok.libreoffice.org/xref/core/writerfilter/documentation/ooxml/model.rng">relax-ng
-  schema</a> for the remaining markup. Validating against this schema is part of
-  the default build, so no more typos without a build failure. ;-)
-  (The schema also contains quite some documentation, finally.)
-</p>
-</li>
-<li>
-<p>
-A gperf hash of all possible OOXML elements / attribute names were
-  duplicated in writerfilter, even if that information was already available
-  from the oox module. This is now fixed, reducing the size of the shared
-  library even further.
-</p>
-</li>
-<li>
-<p>
-Also, both oox and writerfilter had a list of namespace URL&#8217;s, mapping them
-  to an integer enumeration, and when the two lists didn&#8217;t match, Bad Things
-  happened (read: usually resulted in a crash.) This is the past, I&#8217;ve
-  refactored writerfilter to use the same namespace alias names as oox, and this
-  allowed to get rid of the writerfilter copy of the namespace alias list. So in
-  the future, if new namespaces have to added, only oox has to be extended.
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>Oh and the bonus feature: I&#8217;ve implemented a script called
-<a href="http://opengrok.libreoffice.org/xref/core/writerfilter/qa/ooxml/watch-generated-code.sh">watch-generated-code.sh</a>,
-which can record a good state of the generated code, and then compare later
-generated results against that, so that refactoring of the generator can now be
-performed in a safe way: you can change the generator in any way to make it
-better, and still avoid accidental output changes. :-) This is particularly
-useful, as it only diffs the end result of the whole generation process (cxx
-and hxx files), not temporarily files, which are OK to change, as long as the
-end result is the same.</p></div>
-<div class="paragraph"><p>As a conclusion, here are sizes of a stripped dbgutil version of the
-writerfilter shared library, from the libreoffice-4-3-branch-point and today&#8217;s
-master:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>$ git checkout oldest
-HEAD is now at b3130c8... 2014-05-21
-vmiklos@o9010:~/git/libreoffice/daily$ ls -lh opt/program/libwriterfilterlo.so
--rwxr-xr-x 1 vmiklos users 8,3M aug   28 14:00 opt/program/libwriterfilterlo.so
-$ git checkout master
-Switched to branch 'master'
-vmiklos@o9010:~/git/libreoffice/daily$ ls -lh opt/program/libwriterfilterlo.so
--rwxr-xr-x 1 vmiklos users 6,1M aug   28 14:01 opt/program/libwriterfilterlo.so</code></pre>
-</div></div>
-<div class="paragraph"><p>Again, the 8,3MB &#8594; 6,1MB size reduction is mostly thanks to Kendy&#8217;s map cleanups + the
-duplicated gperf hash going away. :-)</p></div>
 </div>
 </div>
 

@@ -59,6 +59,93 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sd-video-crop.html">Cropped video for media shapes in Impress</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Thu 01 September 2022</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 3 minutes</p>
+  </div>
+  <div class="article_text">
+    <p>Impress now supports cropped videos in slide edit mode and during slideshow for documents imported
+from PowerPoint.</p>
+<p>First, thanks to our partner <a href="https://www.suse.com/">SUSE</a> for working with
+<a href="https://www.collaboraoffice.com/">Collabora</a> to make this possible.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sd-video-crop/new.png"><figcaption>PowerPoint-style cropped video in Impress</figcaption>
+</figure>
+</p>
+<p>PowerPoint handles videos by taking a preview bitmap from the video, and then it allows users to
+apply various effects on that bitmap, like cropping. The complex aspect of this is that such filters
+are also respected while playing the video as well.</p>
+<p>Impress didn't store such properties on the media shape, which lead to distorted aspect ratio when
+playing some cropped videos from PPTX files. This lead to this preview in Impress before the work:</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sd-video-crop/bad.png"><figcaption>Video with lost cropping in Impress</figcaption>
+</figure>
+</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>The first problem was that the Impress preview was picked from the 3rd second of the video
+(presumably to avoid a black preview in many videos that start with a short black fade-in), while
+PowerPoint can store an explicit preview from the video (seems to be the first frame), so no matter
+what effects you apply, the previews were just different as the source bitmap was different. This
+could be fixed by looking for an explicitly provided bitmap for the video first, and only then
+asking the various <code>avmedia/</code> backends to produce a preview.</p>
+<p>Once the preview's initial bitmap was OK, it was necessary to take cropping into account. This was
+first done for the preview bitmap, and then also for the gstreamer backend (the relevant one for
+Linux, as a start) of <code>avmedia/</code>, which is responsible for the actual video playback. The gstreamer
+bits were done by first creating a
+<a href="https://gstreamer.freedesktop.org/documentation/videocrop/videocrop.html">videocrop</a> element and
+then connecting that to the existing
+<a href="https://gstreamer.freedesktop.org/documentation/playback/playbin.html#playbin:video-filter">playbin</a>.</p>
+<p>With these sorted out, we get rendering which matches the reference:</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sd-video-crop/ref.png"><figcaption>Cropped video in PowerPoint</figcaption>
+</figure>
+</p>
+<p>The last step was to load/save the explicit preview and the crop from/to ODF as well, not only PPTX.
+We use a markup like this to store the information:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;style:style</span> <span class="na">style:name=</span><span class="s">&quot;gr1&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;style:graphic-properties</span> <span class="na">fo:clip=</span><span class="s">&quot;rect(0cm, 1.356cm, 0cm, 1.356cm)&quot;</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/style:style&gt;</span>
+</code></pre></div>
+
+<p>And now that the <code>gr1</code> automatic style is defined, we can refer to it from a media shape:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;draw:frame</span> <span class="na">draw:name=</span><span class="s">&quot;test&quot;</span> <span class="na">draw:style-name=</span><span class="s">&quot;gr1&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;draw:plugin</span> <span class="na">xlink:href=</span><span class="s">&quot;...&quot;</span> <span class="na">xlink:type=</span><span class="s">&quot;simple&quot;</span> <span class="na">xlink:show=</span><span class="s">&quot;embed&quot;</span> <span class="na">xlink:actuate=</span><span class="s">&quot;onLoad&quot;</span> <span class="na">draw:mime-type=</span><span class="s">&quot;application/vnd.sun.star.media&quot;</span><span class="nt">&gt;</span>
+    ...
+  <span class="nt">&lt;/draw:plugin&gt;</span>
+  <span class="nt">&lt;draw:image</span> <span class="na">xlink:href=</span><span class="s">&quot;Pictures/MediaPreview1.png&quot;</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/draw:frame&gt;</span>
+</code></pre></div>
+
+<p>The nice property of this markup is that automatic styles are already used for other shapes and
+image previews are also used for e.g. table shapes, so this is just using existing markup in a new
+context, but the ODF spec already allows this markup.</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>As usual, the high-level problem was addressed by a series of small changes:</p>
+<ul>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/138763">Related: tdf#149971 svx: support explicitly provided snapshots for media shapes</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/138808">Related: tdf#149971 avmedia: add doc model and render for crop of media objects</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/138867">tdf#149971 avmedia: implement video crop support in the gsteamer backend</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/138959">avmedia: implement video crop support in the ODP filter</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/138971">xmloff: extract ExportGraphicPreview() from XMLShapeExport::ImpExportTableShape()</a></li>
+</ul>
+<p>User interface to create such a crop, support for other video effects (e.g. black-and-white) and
+other backends (Windows, macOS) could be done, but is future work currently.</p>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a snapshot / demo of Collabora Office and try it out yourself right now: <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable
+snapshot</a>.  Collabora intends to
+continue supporting and contributing to LibreOffice, the code is merged so we expect all of this
+work will be available in TDF's next release too (7.5).</p>
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/sw-content-controls3.html">Content controls in Writer: the plain text type</a></h1>
   </div>
   <div class="article_meta">
@@ -1674,109 +1761,6 @@ Finally notify the OLE node that the preview was updated, so the necessary repai
 <div class="paragraph"><p>Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
 expect all of this work will be available in TDF&#8217;s
 <a href="http://dev-builds.libreoffice.org/daily/master/">next release</a> (7.4).</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/sw-linked-styles.html">Start of linked paragraph and character styles in Writer</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Fri 12 November 2021</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Writer now has the start of linked character and paragraph styles. This improves DOCX compatibility,
-extends ODT and it&#8217;ll improve the style previews and the UI in the future, hopefully.</p></div>
-<div class="paragraph"><p>First, thanks <a href="https://www.docmosis.com/">Docmosis</a> who made this work by
-<a href="https://www.collaboraoffice.com/">Collabora</a> possible.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_motivation">Motivation</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Word allows linking paragraph and character styles together, which means only the paragraph one will
-be present on the UI. Such a split has benefits if you customize the character properties on the UI
-and later you want to update the paragraph properties from a template, for example.</p></div>
-<div class="paragraph"><p>This is frequent markup in DOCX files, because Word defaults to splitting out the character
-properties of a <code>Test</code> paragraph style into a <code>Test Char</code> character style on editing.</p></div>
-<div class="paragraph"><p>Saving the document in Writer and then viewing it in Word lead to loosing these links, so their
-style pickers started to show unwanted <code>Test Char</code> rows.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_results_so_far">Results so far</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>We used to preserve such linking information when doing DOCX &#8594; DOCX conversion for a while, since
-about 2013. But such preservation was in-memory, so if you saved the document to ODT, then such
-information was lost. This approach also lacked a real document model, which is necessary to
-incrementally build this feature into a complete solution.</p></div>
-<div class="paragraph"><p>Here is how the style picker in Word looks like now, after a DOCX &#8594; ODT &#8594; DOCX pipeline:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-linked-styles/new.png" alt="https://share.vmiklos.hu/blog/sw-linked-styles/new.png" />
-</div>
-<div class="title">Figure 1. Word&#8217;s style picker, new output: no unwanted additional character styles</div>
-</div>
-<div class="paragraph"><p>Here is how this used to look like before the new changes (note the <code>Heading 1 Char</code> line between
-<code>Heading</code> and <code>Index</code>):</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-linked-styles/old.png" alt="https://share.vmiklos.hu/blog/sw-linked-styles/old.png" />
-</div>
-<div class="title">Figure 2. Word&#8217;s style picker, old output: unwanted additional character styles</div>
-</div>
-<div class="paragraph"><p>And here is how the input document looks like:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-linked-styles/ref.png" alt="https://share.vmiklos.hu/blog/sw-linked-styles/ref.png" />
-</div>
-<div class="title">Figure 3. Word&#8217;s style picker, reference output: no unwanted additional character styles</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_how_is_this_implemented">How is this implemented?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/122595">sw: paragraph styles: add doc model &amp; UNO
-  API for a linked character style</a> added the document model and API support
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/122681">sw: paragraph styles: add DOCX filter for
-  a linked character style</a> added the DOCX filter
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/122753">sw: paragraph styles: add ODT filter for a
-  linked character style</a> added the ODT filter
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>Just to set expectations, this is currently an invisible feature, but unlike the old approach from 8
-years ago, this one can be extended into a full feature, incrementally. It also survives ODT
-roundtrips.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_want_to_start_using_this">Want to start using this?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
-expect all of this work will be available in TDF&#8217;s
-<a href="http://dev-builds.libreoffice.org/daily/master/">next release</a> (7.3).</p></div>
 </div>
 </div>
 

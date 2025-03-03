@@ -1,5 +1,257 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>What is Miklos hacking - collabora-online</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Fri, 21 Feb 2025 08:21:45 +0100</lastBuildDate><item><title>Improving interactivity: the Writer visible area in Collabora Online</title><link>https://vmiklos.hu/blog/cool-sw-visible-area-perf.html</link><description>&lt;p&gt;&lt;a href="https://www.collaboraoffice.com/"&gt;Collabora Online&lt;/a&gt; now takes the visible area (viewport) of large
+<rss version="2.0"><channel><title>What is Miklos hacking - collabora-online</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Mon, 03 Mar 2025 15:12:54 +0100</lastBuildDate><item><title>Electronic signing in Collabora Online</title><link>https://vmiklos.hu/blog/cool-esign.html</link><description>&lt;p&gt;LibreOffice Technology had the concept of digital signing, but this was not available in &lt;a href="https://www.collaboraonline.com/"&gt;Collabora
+Online&lt;/a&gt;, so it was not possible to combine this with collaborative
+editing. Also, once Collabora Online started to expose digital signing with software certificates
+for ODF files, that also allowed taking a further step and start supporting electronic signing for PDF
+files. Partnering with &lt;a href="https://eideasy.com/"&gt;eID Easy&lt;/a&gt;, you can create strongest of the electronic
+signatures – &lt;a href="https://en.wikipedia.org/wiki/Qualified_electronic_signature"&gt;the mighty QES&lt;/a&gt;. This
+means signing with Collabora Online allows you to:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;create proper electronic signatures&lt;/li&gt;
+&lt;li&gt;not share your document with a 3rd-party, only the
+  &lt;a href="https://docs.eideasy.com/electronic-signatures/api-flow-with-file-hashes-pdf.html"&gt;hash&lt;/a&gt; of your
+  PDF will be sent to the external service&lt;/li&gt;
+&lt;li&gt;integrate with e.g. Nextcloud, use the feature without installing anything other than the
+  &lt;a href="https://hub.docker.com/r/nextcloud/all-in-one"&gt;Nextcloud AIO&lt;/a&gt; image&lt;/li&gt;
+&lt;li&gt;potentially combine signing with other security features like &lt;a href="https://www.collaboraonline.com/blog/collabora-secure-view/"&gt;Secure
+  View&lt;/a&gt; and&lt;/li&gt;
+&lt;li&gt;work with visual signing in a &lt;a href="https://en.wikipedia.org/wiki/WYSIWYG"&gt;WYSIWYG&lt;/a&gt; way, which allows
+  placing a visible signature widget at the specified page, then dragging it to the preferred
+  position.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The sample integration presented here is for Nextcloud, but the feature can be made available in
+other integrations as well.&lt;/p&gt;
+&lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Digital and electronic signing of documents is meant to be based on cryptographic security, and
+traditionally this has been exposed to users in a very complex way. You need to know that first you
+have to sign your macros and only then your document, you need to somehow get PEM files to have a
+signing certificate, you need to somehow get your certificate trusted by some certificate authority
+that is commonly trusted by other people who will verify your signature, and so on.&lt;/p&gt;
+&lt;p&gt;This lead to the need to first support digital signatures in COOL using a single signatures dialog
+for ODF files and then later to provide electronic visual signing for PDF files, while continuing to
+respect your privacy by not sharing your document with a 3rd-party service.&lt;/p&gt;
+&lt;h2 id="results-so-far"&gt;Results so far&lt;a class="headerlink" href="#results-so-far" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;h3 id="a-read-write-signatures-dialog"&gt;A read-write signatures dialog&lt;a class="headerlink" href="#a-read-write-signatures-dialog" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;First the signature viewer dialog was turned into a read-write digital signatures dialog in COOL
+that is still async (compatible with collaborative editing), first for ODF files &amp;amp; using PEM files.&lt;/p&gt;
+&lt;p&gt;Related to this, we automatically sign macros (if the document has macros) when signing the
+document, so you can’t forget about this or get the order wrong (sign macros first, then the
+document).&lt;/p&gt;
+&lt;p&gt;At this stage implementing signature removal was possible, which again needs an async conversion so
+the user can confirm they really want to remove a signature. This also means the signature status of
+the document can change, the COOL UI now supports this.&lt;/p&gt;
+&lt;p&gt;You can now associate a signing certificate / key / CA chain with a COOL editor, so you can sign the
+document, but not an other editor working on the same document.&lt;/p&gt;
+&lt;p&gt;Finally adding a digital signature is now possible, where the certificate chooser just shows your
+signing certificates and hides it from other editors.&lt;/p&gt;
+&lt;p&gt;Here is a screenshot of the early digital signatures dialog at this stage:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/cool-esig/01.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/cool-esig/01.png"&gt;&lt;figcaption&gt;Initial async digital signatures dialog in COOL with sign and remove buttons&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id="automatically-signed-documents"&gt;Automatically signed documents&lt;a class="headerlink" href="#automatically-signed-documents" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;The second half of digital signing support in COOL started with WOPI extensions, so an integrator of
+COOL can specify the signature settings on their user settings page and pass that to COOL when a
+document is edited. We then send this to the document editor process only when needed, i.e. not on
+file open, but when the actual signing process would start.&lt;/p&gt;
+&lt;p&gt;UI is also added on the notebookbar in the form of a new button that allows adding signatures to a
+previously unsigned document – before you could only trigger the signatures dialog if the status bar
+said something about existing signatures, and only then you could add a signature. This button is
+hidden if you don’t have signature settings configured. It looks like this:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/cool-esig/02.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/cool-esig/02.png"&gt;&lt;figcaption&gt;New sign button on the notebookbar&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;When was still missing here is automated Cypress tests to make sure signing e.g. an ODT file keeps
+working and the &lt;a href="https://sdk.collaboraonline.com/docs/advanced_integration.html#document-signing"&gt;SDK
+documentation&lt;/a&gt; now
+also describes what does it take to support digital signatures in your COOL integration. For example
+you can create a Nextcloud integration like this:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/cool-esig/03.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/cool-esig/03.png"&gt;&lt;figcaption&gt;Nextcloud integration for digital signing&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Finally, COOL’s convert-to endpoint is hooked up with signature support, so you can export to a
+signed PDF. Example curl invocation:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;curl&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;k&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;F&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ss"&gt;&amp;quot;data=@in.odt&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;F&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ss"&gt;&amp;quot;format=pdf&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;F&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;options={&amp;quot;SignPDF&amp;quot;:{&amp;quot;type&amp;quot;:&amp;quot;boolean&amp;quot;,&amp;quot;value&amp;quot;:&amp;quot;true&amp;quot;},&amp;quot;SignCertificateCaPem&amp;quot;:{&amp;quot;type&amp;quot;:&amp;quot;string&amp;quot;,&amp;quot;value&amp;quot;:&amp;quot;...&amp;quot;},&amp;quot;SignCertificateCertPem&amp;quot;:{&amp;quot;type&amp;quot;:&amp;quot;string&amp;quot;,&amp;quot;value&amp;quot;:&amp;quot;...&amp;quot;},&amp;quot;SignCertificateKeyPem&amp;quot;:{&amp;quot;type&amp;quot;:&amp;quot;string&amp;quot;,&amp;quot;value&amp;quot;:&amp;quot;...&amp;quot;}}&amp;#39;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nl"&gt;https&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="nl"&gt;localhost&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;9980&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;cool&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nf"&gt;convert&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="k"&gt;to&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;out&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;pdf&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h3 id="plumbing-for-electronic-signing"&gt;Plumbing for electronic signing&lt;a class="headerlink" href="#plumbing-for-electronic-signing" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;Once digital signing of ODF files is handled, let’s switch to PDF signing, which is much more
+interesting: you typically want to sign something final, and we see PDF as a final output of your
+documents. So first support for digital signing of PDFs was added.&lt;/p&gt;
+&lt;p&gt;The next part is to integrate with eID Easy, which can do privacy-friendly electronic signing for
+us. This is a 5 step process:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Extract the hash of the to-be-signed document. This is similar to signing, you start the process
+   but once you have the hash that you would sign locally, you just take that hash and abort the
+   actual signing.&lt;/li&gt;
+&lt;li&gt;Send this hash to the electronic signing service.&lt;/li&gt;
+&lt;li&gt;Open a popup and let the user authenticate with their credentials (passport, personal ID, etc)
+   using one of the providers (different providers support different countries) and sign the hash.&lt;/li&gt;
+&lt;li&gt;Download the signed hash from the service.&lt;/li&gt;
+&lt;li&gt;Serialize this signed hash into the local document. This requires producing the local PDF
+   signature once more, but this time using the previous timestamp (instead of the system clock, so
+   the hash is table) and using the downloaded PKCS#7 signature instead of locally signing something.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;At the end we got something that looks like a signature produced externally, but there was no UI for
+this. An initial popup for step 3 looked like this in the test environment (that doesn’t work with
+real passport numbers or anything sensitive):&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/cool-esig/04.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/cool-esig/04.png"&gt;&lt;figcaption&gt;COOL popup to sign a document hash&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id="ui-for-electronic-signing"&gt;UI for electronic signing&lt;a class="headerlink" href="#ui-for-electronic-signing" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;The next step was to create a user interface for electronic signing. The Insert menu had a new menu
+item to insert electronic signatures and to specify your country, finally choose one of the
+providers available in your country.&lt;/p&gt;
+&lt;p&gt;Also support for two types of providers is added: the first is the “in context” one, the other is a
+“redirect based” one. We now support both: all the redirect (should be familiar to you if you ever
+did e.g. online payments) happens in the popup, so the original COOL editor is never closed.&lt;/p&gt;
+&lt;p&gt;eID also has the concept of multiple tokens for signing: initiating the signing costs money, so is
+done using a “secret”, which is never sent to the COOL JS code. Then the “client ID” identifies the
+client, but can’t be used to start signing. Finally any single signing transaction has a specific
+“document ID”. We took care to follow the guidelines here, so the sensitive “secret” for signing is
+always kept on the server.&lt;/p&gt;
+&lt;p&gt;Similar to the initial document signing, electronic signing settings are also possible to specify
+from an integration, we &lt;a href="https://sdk.collaboraonline.com/docs/advanced_integration.html#electronic-signature-handling"&gt;documented this in the
+SDK&lt;/a&gt;
+and also created a sample Nextcloud integration for this.&lt;/p&gt;
+&lt;p&gt;The Nextcloud integration looks like this:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/cool-esig/05.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/cool-esig/05.png"&gt;&lt;figcaption&gt;Nextcloud integration for electronic signing&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Note that later the API URL was changed to be a &lt;a href="https://github.com/nextcloud/richdocuments/blob/main/docs/app_settings.md#electronic-signature"&gt;hidden
+setting&lt;/a&gt;,
+as real signing never needs a custom value there, this is just for testing.&lt;/p&gt;
+&lt;h3 id="visual-signing"&gt;Visual signing&lt;a class="headerlink" href="#visual-signing" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;The last part of this electronic signing effort was to expose visual singing in COOL, something that
+was added to LibreOffice Draw back in 2020, see this &lt;a href="https://vmiklos.hu/blog/sd-visible-pdf-sign.html"&gt;earlier blog
+post&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;First this was exposed in COOL with digital signing, in a way that the current page gets a signature
+widget inserted at the page center and then the user can move that signature widget to the desired
+location.&lt;/p&gt;
+&lt;p&gt;Combining this with electronic signing is a bit more tricky, since we don’t want to select a
+certificate when the signature widget is inserted, we’ll deal with that in the external service, as
+usual.&lt;/p&gt;
+&lt;p&gt;Also, there was no real reason to not use visual signing unconditionally, so now the way to initiate
+a signing process is to open your PDF in COOL, use the Insert → Signature line menu item to insert a
+signature widget, move it to the wanted position, click “finish” on the snackbar and that completes
+the process with the usual electronic signing popup.&lt;/p&gt;
+&lt;p&gt;The final problem was that our multi-page PDF viewer was not really prepared to deal with changed
+PDF content (assuming your PDF rendering will not change is reasonable), so some last minute work
+had to be done to make sure the signature widget’s graphical selection indicator, its dragging and
+its rendering works fine even on non-first pages of a PDF document.&lt;/p&gt;
+&lt;p&gt;At the end, a test signature using the d-trust signature provider’s test environment looks like
+this:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/cool-esig/06.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/cool-esig/06.png"&gt;&lt;figcaption&gt;Electronic signature with a signature widget / visual signature on page 2 of a PDF file, using the test environment of the d-trust provider.&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Or if you prefer watching a demo, a typical electronic signing process session looks like this:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://www.youtube.com/watch?v=tWS546R3fwE?&amp;amp;t=1022"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/cool-esig/07.png"&gt;&lt;figcaption&gt;Demo of electronic signing with Collabora Online, part of a tea-time training&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;At the end you get an electronic signature that is trusted by the EU trust list and thus e.g.
+Acrobat Reader.&lt;/p&gt;
+&lt;h2 id="how-is-this-implemented"&gt;How is this implemented?&lt;a class="headerlink" href="#how-is-this-implemented" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;If you would like to know a bit more about how this works, continue reading... :-)
+As usual, the high-level problem was addressed by a series of small changes.&lt;/p&gt;
+&lt;p&gt;LibreOffice core commits:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/0255283974894f5ad9ba92c3a52912657ed4bdf6"&gt;cool#9992 lok doc sign: add SfxObjectShell::AfterSignContent()&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/de0bc0a2c30a76144b47e9abb17770043813133c"&gt;cool#9992 lok doc sign: make &lt;code&gt;SfxMedium::SignContents_Impl()&lt;/code&gt; async&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/caff013bee53216efeb49db4bcda44b55c223b58"&gt;cool#9992 lok doc sign: async DocumentDigitalSignatures::signDocumentContent()&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/07df95e75a728fbbce03f6d6efdf9dbceab6c581"&gt;cool#9992 lok doc sign: async DocumentDigitalSignatures::ImplViewSignatures()&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/482c7c585160681b263c6245a745c21df70e7507"&gt;cool#9992 lok doc sign: async read-write DigitalSignaturesDialog&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/e5a0209d4b1e1f09191a442e04d626b21c49b9df"&gt;cool#9992 lok doc sign: allow sign of macros &amp;amp; the document itself in one step&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/40ba7a5c25f0d2ea90a976d4e7d56b9e61dbedd1"&gt;cool#9992 lok doc sign: implement signature removal&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/a95b90bc0cf0f8a58fc20684acc23bb89b827cd1"&gt;cool#9992 lok doc sign: fix signature status after load&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/a7830e04f2c33fb8d684d48d00ffc752f7207dea"&gt;cool#9992 lok doc sign: add password-less mode to create-certs.sh&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/7bad76c3a5b319f8ede74be8f78e5645f9ffd050"&gt;cool#9992 lok doc sign: extract duplicated code to SfxLokHelper&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/90beea9a9a9ab1a5d4a154704acabadfc83870c9"&gt;cool#9992 lok doc sign: handle .uno:SignatureCert/Key/Ca view options&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/4787fd4fc86230893a6da309f45964116b3a67df"&gt;cool#9992 lok doc sign: store signing cert in the view&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/d95ab8d3a3a102c00b69f0b0b49d7eb49e34051e"&gt;cool#9992 lok doc sign: fix import of the private key&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/c57434559cf5ffd82c3c72e8a0884d4874885dca"&gt;cool#9992 lok doc sign: conditionally show the add button in the sign dialog&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/a581dbf9829d8407a611907c35c8af632b1397b5"&gt;cool#9992 lok doc sign: only take sign cert from the view in the cert chooser&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/ced420ca708eb8df5b20c7d537166bd9ec29a0e5"&gt;cool#9992 lok doc sign: convert the certificate chooser dialog to async&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/298c2d5c8a6791aa6e5846b698d521079aaa445d"&gt;cool#9992 lok doc sign: update sign status after modify the list of trusted CAs&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/1c7f6188eb5b2a2bbf0cf589843d644306e40d6d"&gt;cool#9992 lok doc sign: avoid storing the sign cert in the model after sign&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/47fd29a318513d26b86eb0cfa891969ce6c85879"&gt;cool#9992 lok doc sign: allow late-init of the sign cert&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/4aa8d30c095e08825bc983c699e11f2e88182124"&gt;cool#9992 lok doc sign: never remember previous .uno:Signature params&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/1e75155c6995e4f1534e2062c64fab35d49ea60b"&gt;cool#9992 lok doc sign: allow injecting sign cert/key during pdf export&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/27753561a1899949c5cbd5cc6b72a238769e1eeb"&gt;cool#9992 lok doc sign, create-certs.sh password-less mode: still create a .p12&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/12e50825370dae276d44bea84b3eb2941b401220"&gt;cool#9992 lok doc sign, hash extract: initial getCommandValues('Signature')&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/0de900cec7b04d75cf9ab0779d7a1ca3c730ae32"&gt;cool#9992 lok doc sign, hash extract: time for getCommandValues('Signature')&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/eabda77c9735040dd5bdb1d2ebe0b96ce316561a"&gt;cool#9992 lok doc sign, hash extract: digest for getCommandValues('Signature')&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/39bf87f943cce9a0b5a784bc7426b5b98bbc6992"&gt;cool#9992 lok doc sign, hash extract: add signatureTime parameter&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/60261557e5311a7b445fb2455aa534697697a9ec"&gt;cool#9992 lok doc sign: add initial serialization of external signatures&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/0a535147f9bed7856e7ab3513fe3f6c38549a099"&gt;cool#9992 doc electronic sign: make return type for .uno:Signature consistent&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/70111311f39b52858f7de8b5adb764db9d28a46e"&gt;cool#10630 lok doc sign: fix Impress sign line when creating directly&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/0cc0896b212b0d1fded8d999b980f18f0379e6e0"&gt;cool#10630 lok doc sign: fix Impress sign line when picking a certificate&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/fa5be641bc0ad23ed51fb1702a157878cc3ecb04"&gt;cool#10630 doc sign: fix Impress sign line, to be able to finish signing again&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/a10d5191b62822b96b247e0c95d8be735cc4feed"&gt;cool#10630 lok doc sign: allow setting the pos of the Impress sign line&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/d925b64ac552348e3862a6b8b61ecd751a8f3a9e"&gt;cool#10630 lok doc sign: allow setting the size of the Impress sign line&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/7d4222d0088f22a68941d2e910fe50bd10e8bdfe"&gt;cool#10630 doc electronic sign: fix insertion of the signature line&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/9dd225ee8c45d6c944b9ce5578780d89612e9ffb"&gt;cool#10630 doc electronic sign: fix no graphic selection for the signature line&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/62dd6274c71bc840f5c5abcd4b1fa536238aa25d"&gt;cool#10630 doc electronic sign: move signature line tracking to the view&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/76e0a520d6beb118dd6437889fbe16d2a94c941c"&gt;cool#10630 doc electronic sign: unselect &amp;amp; reject reselect&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/819941bf1422f40e9346eba61d75e0fda3d24275"&gt;cool#10630 lok doc sign: reduce the default size of the signature line&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Collabora Online commits:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/95716823f5a66c18476dd7032a1a1f5fc681f23c"&gt;cool#9992 doc sign: fix update of the signature widget in the status bar&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/d5a589e118618e5acaf5a6f381d0f0096da50a39"&gt;cool#9992 doc sign: fix missing enable on the cert chooser description entry&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/2a118ab34d57f5e2e4e0bc4d15f9f01c03794943"&gt;cool#9992 doc sign: better fix for the cert chooser dialog's disabled description widget&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/e54f2b81158be998f076bdaf310dba826470edf7"&gt;cool#9992 doc sign: add sign button to the home tab of the notebookbar&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/497981cd6c7356fc680087997b3217a76a455ac6"&gt;cool#9992 doc sign: local file wopi provider: allow setting the sign cert/key/ca&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/0c1cd8c00f88b6cedd8fdb4c4ee15abf16103cd6"&gt;cool#9992 doc sign: set the view's sign cert from the WOPI UserPrivateInfo&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/6cdbbe044565b708ef654efc547edd4db5f3b24a"&gt;cool#9992 doc sign: add a setting to be able to disable this&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/6de210972ae756a3dad1dbe71ec3a87d5533adf8"&gt;cool#10220 doc sign: don't assume that user private data is a dict json&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/89213ce16272579a138c098314b7a96123ffc6c0"&gt;cool#9992 doc sign: hide sign button when user pref doesn't provide cert or key&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/925fcd837d0c371f513d70a56ac6c8817b13b271"&gt;cool#9992 doc sign: add signature creation cypress test&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/542560f38d09d6d3a03b94822cefba269361eac7"&gt;cool#9992 doc sign: move sign key/cert init from doc init to sign dispatch&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/ebc753b7e6d50a861481d0658aeea0fb79c048c5"&gt;cool#9992 doc sign: fix handling of saveas options containing spaces&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/d2be47df5fa3593b49057c7a7a2daa8b269d9977"&gt;cool#9992 doc sign: add menu item for the compact UI&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/d3806b06157a0de5fa62ad3e292993a3c8590ea7"&gt;cool#9992 doc sign: add UI to sign PDF files&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/ab694a028929bad69f2b0761fb291b7acdc34f3d"&gt;cool#9992 doc electronic sign: allow passing sign params from JS&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/f6f339088344d2f43facee613ee5c1421a763edc"&gt;cool#9992 doc electronic sign: allow more user private info settings with make run&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/da54d2273b82db9664ac7945fd8846b77ad0d3a2"&gt;cool#9992 doc electronic sign: add menu item to trigger hash extract&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/b09b20489d9666c107bc0bd332f158d2a9734a77"&gt;cool#9992 doc electronic sign: send the hash to be signed&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/a1d81fdd06aa9b313b19e5719ee509270f39de4f"&gt;cool#9992 doc electronic sign: actually sign the hash in a popup&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/fb784187b1bc1952c6e0b5f25b208c2439a2e1f3"&gt;cool#9992 doc electronic sign: fetch the created signature&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/690fb0413ec4a77a551eba00fbc3d77371a61983"&gt;cool#9992 doc electronic sign: serialize the fetched signature&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/cab22ef2cad3727e7731b3e7e7ec8270fd0c07f1"&gt;cool#9992 doc electronic sign: add cypress test&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/653107b76e84c7e716a8c3aa71d776c196efca21"&gt;cool#9992 doc electronic sign: add a provider selector dialog&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/44ff2a3687dde5a8a9b967be4bc0a50d41612268"&gt;cool#9992 doc electronic sign: select the provider interactively&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/63a0d574d523536cd1a51e9847d74972c455fd47"&gt;cool#10630 doc electronic sign: improve error handling on bad client ID&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/5e75272cfae784a46dbc068629a30c813ca4e3e3"&gt;cool#10630 doc electronic sign: more human-readable names for providers&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/ce7b5bf22f25f4a460ab550bf1d767ed914934fb"&gt;cool#10630 doc electronic sign: add /cool/signature endpoint&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/1ffb473e71fa88b882c66c1d7224fe0ffe8969dc"&gt;cool#10630 doc electronic sign: implement support for redirect-based providers&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/4a8206bf14d80262c3adf505a14bf51910b5a402"&gt;cool#10630 doc electronic sign: expose the name of the document&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/1da7603e641d20fc7ce095ee02d0f34cb4393ed2"&gt;cool#10630 doc electronic sign: send the hash on the server&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/8b7fc83546b03b74675077e7999969590f001966"&gt;cool#10630 doc electronic sign: get the signature on the server&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/20ac4c2c3c362bb996ad25609be1c8f652254b1d"&gt;cool#10630 doc electronic sign: stop sending the secret to the client&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/73ee6c85443eb551b69f4f6f59cd7efd24dfe794"&gt;cool#10630 doc electronic sign: remove CSP rules&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/aa6295f3acfad9401769a995807cafc57de2d025"&gt;cool#10630 doc electronic sign: configure the language of the popup&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/0e09d9950324997561fcb4e60be5acedcd34592e"&gt;cool#10630 doc electronic sign: add a country selector to the dialog&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/bbde01500b559cb402bd19489e3201b582c7f26b"&gt;cool#10630 doc electronic sign: add ISO country names&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/830e4608a08050a7593431554ab6113e6283ec20"&gt;cool#10630 doc electronic sign: send selected country to the server&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/e1e6a08b15d5a39174c82fa0a4f776d1e7543d2f"&gt;cool#10630 doc electronic sign: moved esign settings out of UserPrivateInfo&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/8d043c31b25cd3ab4d8f715650f0610863e3801d"&gt;cool#10630 doc electronic sign: support per-server private info during 'make run'&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/5a79a28e5c1952b62ae1e876beb721e11b56d0bf"&gt;cool#10630 doc electronic sign: default to a redirect-based provider&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/c8b7cb63fdbb6bb33bb3eebff30eb2bdd65422b6"&gt;cool#10630 doc electronic sign: set defaults without an index&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/4d42b1e3e47ad0183649678d2aa931b44c5ffe10"&gt;cool#10630 doc electronic sign: return dialog result without an index&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/62aa4d53914421fb4e1cb24ff3787d3d8ad0e038"&gt;cool#10630 doc electronic sign: limit the offered providers based on the selected country&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/cb100b9c4a5a8ab93e0edbcbb624b0b68cf2fb23"&gt;cool#10630 doc electronic sign: sort the country &amp;amp; provider lists&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/dfa52148c3d0637dc212d69f1f5f42f044dd276a"&gt;cool#10630 doc sign: expose visual signing&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/03f9cf4f5749cce8ffeff9ccf44bda5a6fc8f0c4"&gt;cool#10630 doc sign: add visual signing testcase&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/bbaa9548a542930747841be0c8cdc3089e6a05d5"&gt;cool#10630 doc sign: allow setting the position / size of a visual signature&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/c474a775468b20d7ba31be0d30bd443971276f6b"&gt;cool#10630 doc electronic sign: handle visual signatures&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/4c6ce3ad510e98772af6da862ecf7e08c162680a"&gt;cool#10630 doc electronic sign: add a snackbar&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/fbb710dd4dc990cb0f5003e78c95b7db008b5cde"&gt;cool#10630 doc electronic sign: show the sign view dialog after esign&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/7fbd76027f157b8816af6b5f5643b8d7f747d203"&gt;cool#10630 doc electronic sign: remember the provider in localstorage&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/36b509877931c8a0a005f9ed50ada3e7f7d402e2"&gt;cool#10630 doc electronic sign: show busy overlay while the popup is open&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/bba469ef8a7a1c6ad5225d554279f3f30c319e31"&gt;cool#10630 doc electronic sign: close the popup on tab close&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/2ec5568ef900e309a371758987640eb18f6c52e8"&gt;cool#10630 doc electronic sign: avoid unwanted postmessage during sign&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/bbe7badae6bfdc80c8193aa940a78f1af8fc48a9"&gt;cool#10630 doc electronic sign: fix no graphic selection on 2nd page&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/e20c1838b3e65900f61ddb2c5f0bb72385577275"&gt;cool#11002 kit: fix memory corruption in Document::handleSaveMessage()&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/0ee465340c7a01af4ab2f77930feb642bb0a3558"&gt;cool#10630 doc electronic sign: fix no SVG in graphic selection on 2nd page&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/3cf8a2f1f161270fb0a85863bea1d5277e92eed3"&gt;cool#10630 doc electronic sign: fix outgoing mouse messages on 2nd page&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/df5c0a672bad3a3e9b1a5a3f792c94a47753ac61"&gt;cool#10630 doc electronic sign: fix outgoing transform pos on 2nd page&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/97d166457afeba3654a7c22acc41230a6d13c7c9"&gt;cool#10630 doc electronic sign: fix outdated tile for shape move on 2nd page&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Nextcloud richdocuments commits:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://github.com/nextcloud/richdocuments/commit/20ca5fd77d0753b58c997ad6a7889153d8b2469e"&gt;feat: add personal setting to specify the CA chain for document signing&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/nextcloud/richdocuments/commit/6ca8071c495ebf4cd7797dd44a0700f9970abc31"&gt;feat: expose the documentSigningCa personal setting in the WOPI CheckFileInfo&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/nextcloud/richdocuments/commit/adfb9056d40af3a861463753f47e72ab5f2f905c"&gt;feat: document signing, add setting for the signing certificate &amp;amp; key, too (fixes #4123)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/nextcloud/richdocuments/commit/a9fa62cc5232a20021f206d34f4d295129c72e2c"&gt;feat: electronic signing, add settings for eIDEasy (fixes #4311)&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="want-to-start-using-this"&gt;Want to start using this?&lt;a class="headerlink" href="#want-to-start-using-this" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;You can get a development edition of Collabora Online 24.04 and try it out yourself right now: &lt;a href="https://www.collaboraoffice.com/code/"&gt;try
+the development edition&lt;/a&gt;.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Mon, 03 Mar 2025 15:12:54 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2025-03-03:/blog/cool-esign.html</guid><category>collabora-online</category><category>en</category></item><item><title>Improving interactivity: the Writer visible area in Collabora Online</title><link>https://vmiklos.hu/blog/cool-sw-visible-area-perf.html</link><description>&lt;p&gt;&lt;a href="https://www.collaboraoffice.com/"&gt;Collabora Online&lt;/a&gt; now takes the visible area (viewport) of large
 Writer documents into account in more cases, leading to better performance &amp;amp; interactivity.&lt;/p&gt;
 &lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;Collabora Online has two kinds of "visible areas" for a document: on one hand, the entire document
