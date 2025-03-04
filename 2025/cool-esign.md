@@ -182,8 +182,15 @@ Or if you prefer watching a demo, a typical electronic signing process session l
 
 [![Demo of electronic signing with Collabora Online, part of a tea-time training](https://share.vmiklos.hu/blog/cool-esig/07.png)](https://www.youtube.com/watch?v=tWS546R3fwE?&t=1022)
 
+There were a few more talks with similar content:
+
+- FOSDEM: [Automatic Documents, packed with content and signed](https://fosdem.org/2025/schedule/event/fosdem-2025-5935-automatic-documents-packed-with-content-and-signed/)
+- [Nextcloud Hub 10 announcement](https://www.youtube.com/watch?v=OkGd_pNuYww&t=4919)
+
 At the end you get an electronic signature that is trusted by the EU trust list and thus e.g.
-Acrobat Reader.
+Acrobat Reader:
+
+[![A real signature, verified in Acrobat](https://share.vmiklos.hu/blog/cool-esig/08.png)](https://share.vmiklos.hu/blog/cool-esig/08.png)
 
 ## How is this implemented?
 
