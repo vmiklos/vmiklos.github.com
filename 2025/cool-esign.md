@@ -27,6 +27,10 @@ means signing with Collabora Online allows you to:
 The sample integration presented here is for Nextcloud, but the feature can be made available in
 other integrations as well.
 
+See [Collabora's blog
+post](https://www.collaboraonline.com/blog/sign-pdfs-from-collabora-online-secure-your-documents-now/)
+if you prefer less technical information about this feature.
+
 ## Motivation
 
 Digital and electronic signing of documents is meant to be based on cryptographic security, and
