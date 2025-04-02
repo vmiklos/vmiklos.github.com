@@ -74,6 +74,7 @@ These are tutorials I found very useful before jumping into an actual spec.
 # libreoffice
 
 - [compat flags](https://people.freedesktop.org/~mst/LibreOffice_settings.xml_config-items.ods)
+- [UI text capitalization guidelines](https://docs.openstack.org/doc-contrib-guide/ux-ui-guidelines/ui-text-guidelines/ui-text-capitalization.html)
 
 # linux
 
