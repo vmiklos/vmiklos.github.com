@@ -59,6 +59,77 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/calc-png-export.html">PNG export in LibreOffice Calc</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Wed 04 November 2015</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh3.googleusercontent.com/-8n61EJB3Xco/VjkUn1JvuqI/AAAAAAAAGOE/0-DCtcNV2RY/s0-Ic42/">
+<img src="https://lh3.googleusercontent.com/-8n61EJB3Xco/VjkUn1JvuqI/AAAAAAAAGOE/0-DCtcNV2RY/s400-Ic42/" alt="https://lh3.googleusercontent.com/-8n61EJB3Xco/VjkUn1JvuqI/AAAAAAAAGOE/0-DCtcNV2RY/s400-Ic42/" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>Both LibreOffice Writer and Impress has the ability to export the document as
+PNG, which is one way to create thumbnails for documents&#8201;&#8212;&#8201;i.e. being able to
+preview them before the real loading of the document happens. It turns out
+Calc did not have this feature, and given that <code>ScModelObj</code> also supports the
+<code>css::view::XRenderable</code> interface (just like Writer), I hoped that it won&#8217;t
+be too complex to add one.</p></div>
+<div class="paragraph"><p>You can refer to
+<a href="http://fridrich.blogspot.com/2013/08/extending-swiss-army-knife-overview.html">Fridrich&#8217;s
+overview blog post</a> for the complete list of steps on how to add a new filter
+to LibreOffice, here the following steps
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=03bb5d52fecd6c613c6cc36508eb44e5e1c3456a">were
+needed</a>:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+improve <code>DocumentToGraphicRenderer</code>, so that it can handle that Calc does
+  not implement the <code>text::XTextViewCursorSupplier</code> interface (Writer uses
+  this one to expose the cursor is on what page)
+</p>
+</li>
+<li>
+<p>
+register <code>png_Portable_Network_Graphic</code> as filter type for Calc
+</p>
+</li>
+<li>
+<p>
+create a new <code>calc_png_Export</code> filter fragment
+</p>
+</li>
+<li>
+<p>
+register a Calc graphic filters configuration type and filter group in
+  <code>Configuration_filter</code> and <code>CustomTarget_registry</code>
+</p>
+</li>
+<li>
+<p>
+testcase
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>If you can&#8217;t wait till LibreOffice 5.1 is released to try out this new
+feature, you can get a <a href="http://dev-builds.libreoffice.org/daily/master/">daily
+build</a>. :-)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/flat-odf-android.html">Flat ODF support in LibreOffice's Android port</a></h1>
   </div>
   <div class="article_meta">
@@ -469,89 +540,6 @@ remaining header into dmapper</a>, the relevant
 can hopefully now describe source contents easier, having just 4 directories:
 the RTF and the DOCX tokenizer, the shared part and the UNO service
 implementations. One less cryptic leftover nobody really knows what it is! ;-)</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/cambridge.html">LibreOffice Cambridge Hackfest</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Tue 26 May 2015</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/-dGY38VD7z0M/VWNqvkXDLwI/AAAAAAAAFlE/8yurKsu0NcA/s400/" alt="https://lh3.googleusercontent.com/-dGY38VD7z0M/VWNqvkXDLwI/AAAAAAAAFlE/8yurKsu0NcA/s400/" />
-</div>
-</div>
-<div class="paragraph"><p>The first ever UK LibreOffice Hackfest took place in the city of Cambridge on
-May 21st to 23rd (Thursday &#8594; Saturday), kindly hosted by
-<a href="https://libreoffice-from-collabora.com/">Collabora</a>.</p></div>
-<div class="paragraph"><p>My starter idea was to fix
-<a href="https://bugs.documentfoundation.org/show_bug.cgi?id=90315">tdf#90315</a>, i.e. to
-support both nested tables and multiple columns with the proper spacing in
-between them in the RTF import. For comparison, here is how this looked in
-LibreOffice 3.4:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/-KX9Z8y1ojYc/VWNzgg1gQeI/AAAAAAAAFlk/TRwfvnklEOI/s400/" alt="https://lh3.googleusercontent.com/-KX9Z8y1ojYc/VWNzgg1gQeI/AAAAAAAAFlk/TRwfvnklEOI/s400/" />
-</div>
-</div>
-<div class="paragraph"><p>The table borders looked OK due to correct column spacing, but the nested
-table is missing. Then here is the LibreOffice 4.4 state:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/-wz4OZdsYf5I/VWNzgu5OhUI/AAAAAAAAFlg/CG37pRlGggY/s400/" alt="https://lh3.googleusercontent.com/-wz4OZdsYf5I/VWNzgu5OhUI/AAAAAAAAFlg/CG37pRlGggY/s400/" />
-</div>
-</div>
-<div class="paragraph"><p>Nested table is OK, but the table borders are strange due to incorrect column
-spacing. Finally here is how it looks like now, when the import result is
-correct:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/-Zul_8xTSOkA/VWNzguGZf-I/AAAAAAAAFlY/L88WkfCpL1E/s400/" alt="https://lh3.googleusercontent.com/-Zul_8xTSOkA/VWNzguGZf-I/AAAAAAAAFlY/L88WkfCpL1E/s400/" />
-</div>
-</div>
-<div class="paragraph"><p>Other than this, here is a list of other topics I hacked on:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/gitweb?p=dev-tools.git;a=commit;h=9107601036fc9af9e67b37f0fc26296dddfd6eb1">clang
-  libtooling-based compiler tools</a> (so far an example analizer and a rewriter)
-</p>
-</li>
-<li>
-<p>
-some
-  <a href="https://gerrit.libreoffice.org/gitweb?p=core.git;a=tree;f=libreofficekit;hb=HEAD">gtktiledviewer</a>
-  tweaks like handling of the "Search key not found" or the "Page count changed"
-  callback event
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/gitweb?p=core.git;a=commitdiff;h=821b72886f1e407a492f881a2efb27ead2c22b5c">o3tl::make_unique</a>,
-  till we can&#8217;t use C++ 14 std::make_unique
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>After fixing two more less interesting regressions, now it seems we&#8217;re down to
-0 for the
-<a href="https://bugs.documentfoundation.org/buglist.cgi?keywords=regression&amp;keywords_type=allwords&amp;product=LibreOffice&amp;query_format=advanced&amp;resolution=---&amp;short_desc=RTF&amp;short_desc_type=allwordssubstr">regressions
-having RTF in their summary</a>, which is promising. :-)</p></div>
-<div class="paragraph"><p>I few
-<a href="https://www.flickr.com/photos/vmiklos/albums/72157673531303691">pictures</a>
-I took while punting and a
-<a href="/panoramas/cambridge.html">panorama</a> is available, too.</p></div>
 </div>
 </div>
 

@@ -61,6 +61,58 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sw-per-view-redline-record.html">Per-user track changes recording in Writer</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Wed 02 April 2025</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <p>Writer has the concept of recording tracked changes or not: if recording, typing into a document or
+deleting content will create tracked changes of type insertion or deletion. So far this was a
+per-document setting, but now individual users can enable or disable this as they wish.</p>
+<p>This work is primarily for <a href="https://www.collaboraonline.com/">Collabora Online</a>, but the feature is
+available in desktop Writer as well.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>When Alice keeps typing and Bob enables change tracking, then surprisingly the typed characters of
+Alice will form a tracked insertion, which is surprising, since that was not the case a second ago
+and Alice didn't do anything other than typing.</p>
+<p>Giving users a choice if they enable recording for just this user or for all users fixes this
+problem.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>Here is how the per-user (technically per-view) tracked changes recording looks like:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-per-view-redline/sw-per-view-redline.png"><figure><img src="https://share.vmiklos.hu/blog/sw-per-view-redline/sw-per-view-redline.png"><figcaption>Per-view tracked changes recording</figcaption></figure></a></p>
+<p>As you can see, the user on the left has recording turned on and this doesn't influence the user on
+the right, while this was not possible before.</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>As usual, the high-level problem was addressed by a series of small changes. Core side:</p>
+<ul>
+<li><a href="https://git.libreoffice.org/core/commit/ab91358566ccf31f7a9ac57f1c32a9c62840f5d5">cool#11226 sw per-view redline on: support this-view &lt;-&gt; all-views transition</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/85fc28a4e55bb8dafd69a19dc5d21a76501446cb">cool#11226 sw per-view redline on: state for the per-view and per-doc commands</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/368e2e445c1941d37697cee05a50a34150d18015">cool#11226 sw per-view redline on: allow both per-view and per-doc</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/745256f37973d89ea068acd831eba8054a81b93b">Related: cool#11226 sw per-view redline on: fix ratio buttons of is-show</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/ae6d396552cd3cebd7fba4942e6ca2fd5de579af">cool#11226 sw per-view redline on: add view-aware getter</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/e36643877e5ddf57a34481f1c46f87cf250caf19">cool#11226 sw per-view redline on: move the setter to the model</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/025a1e4612fecf59f38910fbf52fc63db054ae5f">cool#11226 sw per-view redline on: add new flag in SwViewOption</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/88e12a83aec0ffda82195c8a1e34a255d3cfdfd5">cool#11226 sw layout xml dump: show some more view options</a></li>
+</ul>
+<p>Online side:</p>
+<ul>
+<li><a href="https://github.com/collaboraonline/online/commit/c37904149498658c3fd25f043fc5f34be89fb120">cool#11226 sw per-view redline on: add tri-state UI in the notebookbar</a></li>
+</ul>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a development edition of Collabora Online 25.04 and try it out yourself right now: <a href="https://www.collaboraonline.com/code/">try
+the development edition</a>.  Collabora intends to continue
+supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
+available in TDF's next release too (25.8).</p>
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/sw-ignore-margin-page-top.html">Ignoring the paragraph margin at the top of pages in Writer</a></h1>
   </div>
   <div class="article_meta">
@@ -559,66 +611,6 @@ in Firefox.</p>
 <li><a href="https://git.libreoffice.org/core/commit/2efe362c99a9fa6e9a71b9b675b025c64b6c7f9d">tdf#159483 sc HTML copy: handle data-sheets-formula attribute</a></li>
 </ul>
 <p>The tracking issue on the Online side was <a href="https://github.com/CollaboraOnline/online/issues/8023">cool#8023</a>.</p>
-<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
-<p>You can get a snapshot / demo of Collabora Office 24.04 and try it out yourself right now: <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try the
-unstable snapshot</a>.  Collabora
-intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF's next release too (24.8).</p>
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/sw-legal-numbering.html">Legal numbering in Writer: DOC and RTF support</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Fri 01 March 2024</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 3 minutes</p>
-  </div>
-  <div class="article_text">
-    <p>Writer now supports legal numbering for two more formats: DOC and RTF (ODT and DOCX were working
-already.)</p>
-<p>This work is primarily for <a href="https://www.collaboraoffice.com/">Collabora Online</a>, done as a
-<a href="https://vmiklos.hu/blog/sw-content-controls3.html">HackWeek</a> project, but the feature is fully available in
-desktop Writer as well.</p>
-<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
-<p>Legal numbering is a way to influence the number format of values inherited in a multi-level
-numbering. Say, the outer numbering uses Roman numerals and the inner numbering uses X.Y as the number
-format, but the inner level wants to display the outer values as Arabic numerals. If this is wanted
-(and guessing from the name, sometimes lawyers do want this), then the inner number portion will
-expand to values like "2.01" instead of "II.01", while the outer number portions will remain values
-like "II".</p>
-<p>Mike did <a href="https://bugs.documentfoundation.org/show_bug.cgi?id=150408">80% of the work</a>, what you can
-see here is just the RTF/DOC filters.</p>
-<p>Picking a smaller feature task like this looked like a good idea, since I wanted to spend some of
-the time on regression fixing around last year's multi-page floating table project.</p>
-<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
-<p>For (binary) DOC, the relevant detail is the <code>fLegal</code> bit in the <code>LVLF</code> structure. Here is the
-result:</p>
-<p><a href="https://share.vmiklos.hu/blog/sw-legal-numbering/2024-02-29-writer-legal-numbering-doc.png"><figure><img src="https://share.vmiklos.hu/blog/sw-legal-numbering/2024-02-29-writer-legal-numbering-doc.png"><figcaption>Improved handling of legal numbering from DOC: old, new and reference rendering</figcaption></figure></a></p>
-<p>It shows how the outer "II" gets turned into "2", while it remained "II" in the past. This works for
-both loading and saving.</p>
-<p>The same feature is now handled in the RTF filter as well. There the relevant detail is the
-<code>\levellegal</code> control word, which has an odd 1 default value (the default is usually 0). Here is the
-result:</p>
-<p><a href="https://share.vmiklos.hu/blog/sw-legal-numbering/2024-02-29-writer-legal-numbering-rtf.png"><figure><img src="https://share.vmiklos.hu/blog/sw-legal-numbering/2024-02-29-writer-legal-numbering-rtf.png"><figcaption>Improved handling of legal numbering from RTF: old, new and reference rendering</figcaption></figure></a></p>
-<p>It shows that the RTF filter is up to speed with the DOC one by now.</p>
-<p>As for the multi-page floating tables, I looked at
-<a href="https://bugs.documentfoundation.org/show_bug.cgi?id=158986">tdf#158986</a> and
-<a href="https://bugs.documentfoundation.org/show_bug.cgi?id=158801">tdf#158801</a>.</p>
-<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
-<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
-<p>As usual, the high-level problem was addressed by a series of small changes:</p>
-<ul>
-<li><a href="https://git.libreoffice.org/core/commit/397d72e582c725d162c7e0b819dc6c0bb62e42b0">Related: tdf#158986 sw floattable: fix unexpected page break with sections</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/b7c4c4d45f44a26283678f3dc32982b3a728c614">tdf#158986 sw floattable: fix RTF import of table followed by \sect</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/a73b3994fb6a2cc10b2d65cbaad201762610cecc">Related: tdf#150408 DOC filter: handle legal numbering</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/e8487bedb20a429565b4a0e4bd2d6806cc603b7f">Related: tdf#150408 RTF filter: handle legal numbering</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/c98ff922831f56253af2a050b8e07cfc89b7a387">Related: tdf#158986 sw floattable, RTF import: use more setNeedPar()</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/186de7178c6065e1de13fd216b46ac9b716e44c5">tdf#158801 sw floattable: fix crash with headers and interactive editing</a></li>
-</ul>
 <h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
 <p>You can get a snapshot / demo of Collabora Office 24.04 and try it out yourself right now: <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try the
 unstable snapshot</a>.  Collabora

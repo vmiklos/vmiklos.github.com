@@ -1,5 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>What is Miklos hacking - libreoffice</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Wed, 08 Jan 2025 09:53:05 +0100</lastBuildDate><item><title>Ignoring the paragraph margin at the top of pages in Writer</title><link>https://vmiklos.hu/blog/sw-ignore-margin-page-top.html</link><description>&lt;p&gt;Writer has the concept of paragraph margins and page margins, but what happens when you combine the
+<rss version="2.0"><channel><title>What is Miklos hacking - libreoffice</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Wed, 02 Apr 2025 13:33:03 +0200</lastBuildDate><item><title>Per-user track changes recording in Writer</title><link>https://vmiklos.hu/blog/sw-per-view-redline-record.html</link><description>&lt;p&gt;Writer has the concept of recording tracked changes or not: if recording, typing into a document or
+deleting content will create tracked changes of type insertion or deletion. So far this was a
+per-document setting, but now individual users can enable or disable this as they wish.&lt;/p&gt;
+&lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraonline.com/"&gt;Collabora Online&lt;/a&gt;, but the feature is
+available in desktop Writer as well.&lt;/p&gt;
+&lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;When Alice keeps typing and Bob enables change tracking, then surprisingly the typed characters of
+Alice will form a tracked insertion, which is surprising, since that was not the case a second ago
+and Alice didn't do anything other than typing.&lt;/p&gt;
+&lt;p&gt;Giving users a choice if they enable recording for just this user or for all users fixes this
+problem.&lt;/p&gt;
+&lt;h2 id="results-so-far"&gt;Results so far&lt;a class="headerlink" href="#results-so-far" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Here is how the per-user (technically per-view) tracked changes recording looks like:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-per-view-redline/sw-per-view-redline.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-per-view-redline/sw-per-view-redline.png"&gt;&lt;figcaption&gt;Per-view tracked changes recording&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;As you can see, the user on the left has recording turned on and this doesn't influence the user on
+the right, while this was not possible before.&lt;/p&gt;
+&lt;h2 id="how-is-this-implemented"&gt;How is this implemented?&lt;a class="headerlink" href="#how-is-this-implemented" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;If you would like to know a bit more about how this works, continue reading... :-)&lt;/p&gt;
+&lt;p&gt;As usual, the high-level problem was addressed by a series of small changes. Core side:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/ab91358566ccf31f7a9ac57f1c32a9c62840f5d5"&gt;cool#11226 sw per-view redline on: support this-view &amp;lt;-&amp;gt; all-views transition&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/85fc28a4e55bb8dafd69a19dc5d21a76501446cb"&gt;cool#11226 sw per-view redline on: state for the per-view and per-doc commands&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/368e2e445c1941d37697cee05a50a34150d18015"&gt;cool#11226 sw per-view redline on: allow both per-view and per-doc&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/745256f37973d89ea068acd831eba8054a81b93b"&gt;Related: cool#11226 sw per-view redline on: fix ratio buttons of is-show&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/ae6d396552cd3cebd7fba4942e6ca2fd5de579af"&gt;cool#11226 sw per-view redline on: add view-aware getter&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/e36643877e5ddf57a34481f1c46f87cf250caf19"&gt;cool#11226 sw per-view redline on: move the setter to the model&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/025a1e4612fecf59f38910fbf52fc63db054ae5f"&gt;cool#11226 sw per-view redline on: add new flag in SwViewOption&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/88e12a83aec0ffda82195c8a1e34a255d3cfdfd5"&gt;cool#11226 sw layout xml dump: show some more view options&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Online side:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/c37904149498658c3fd25f043fc5f34be89fb120"&gt;cool#11226 sw per-view redline on: add tri-state UI in the notebookbar&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="want-to-start-using-this"&gt;Want to start using this?&lt;a class="headerlink" href="#want-to-start-using-this" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;You can get a development edition of Collabora Online 25.04 and try it out yourself right now: &lt;a href="https://www.collaboraonline.com/code/"&gt;try
+the development edition&lt;/a&gt;.  Collabora intends to continue
+supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
+available in TDF's next release too (25.8).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Wed, 02 Apr 2025 13:33:03 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2025-04-02:/blog/sw-per-view-redline-record.html</guid><category>libreoffice</category><category>en</category></item><item><title>Ignoring the paragraph margin at the top of pages in Writer</title><link>https://vmiklos.hu/blog/sw-ignore-margin-page-top.html</link><description>&lt;p&gt;Writer has the concept of paragraph margins and page margins, but what happens when you combine the
 two? It turns out the expectation is that sometimes the top paragraph margin is ignored in this
 case. We'll see two cases where the behavior of Writer is now improved to better match Word in this
 regard.&lt;/p&gt;
@@ -372,49 +409,4 @@ in Firefox.&lt;/p&gt;
 &lt;p&gt;You can get a snapshot / demo of Collabora Office 24.04 and try it out yourself right now: &lt;a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/"&gt;try the
 unstable snapshot&lt;/a&gt;.  Collabora
 intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF's next release too (24.8).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Thu, 04 Apr 2024 09:50:39 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2024-04-04:/blog/sc-clipboard-paste.html</guid><category>libreoffice</category><category>en</category></item><item><title>Legal numbering in Writer: DOC and RTF support</title><link>https://vmiklos.hu/blog/sw-legal-numbering.html</link><description>&lt;p&gt;Writer now supports legal numbering for two more formats: DOC and RTF (ODT and DOCX were working
-already.)&lt;/p&gt;
-&lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraoffice.com/"&gt;Collabora Online&lt;/a&gt;, done as a
-&lt;a href="https://vmiklos.hu/blog/sw-content-controls3.html"&gt;HackWeek&lt;/a&gt; project, but the feature is fully available in
-desktop Writer as well.&lt;/p&gt;
-&lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;Legal numbering is a way to influence the number format of values inherited in a multi-level
-numbering. Say, the outer numbering uses Roman numerals and the inner numbering uses X.Y as the number
-format, but the inner level wants to display the outer values as Arabic numerals. If this is wanted
-(and guessing from the name, sometimes lawyers do want this), then the inner number portion will
-expand to values like "2.01" instead of "II.01", while the outer number portions will remain values
-like "II".&lt;/p&gt;
-&lt;p&gt;Mike did &lt;a href="https://bugs.documentfoundation.org/show_bug.cgi?id=150408"&gt;80% of the work&lt;/a&gt;, what you can
-see here is just the RTF/DOC filters.&lt;/p&gt;
-&lt;p&gt;Picking a smaller feature task like this looked like a good idea, since I wanted to spend some of
-the time on regression fixing around last year's multi-page floating table project.&lt;/p&gt;
-&lt;h2 id="results-so-far"&gt;Results so far&lt;a class="headerlink" href="#results-so-far" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;For (binary) DOC, the relevant detail is the &lt;code&gt;fLegal&lt;/code&gt; bit in the &lt;code&gt;LVLF&lt;/code&gt; structure. Here is the
-result:&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-legal-numbering/2024-02-29-writer-legal-numbering-doc.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-legal-numbering/2024-02-29-writer-legal-numbering-doc.png"&gt;&lt;figcaption&gt;Improved handling of legal numbering from DOC: old, new and reference rendering&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;It shows how the outer "II" gets turned into "2", while it remained "II" in the past. This works for
-both loading and saving.&lt;/p&gt;
-&lt;p&gt;The same feature is now handled in the RTF filter as well. There the relevant detail is the
-&lt;code&gt;\levellegal&lt;/code&gt; control word, which has an odd 1 default value (the default is usually 0). Here is the
-result:&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-legal-numbering/2024-02-29-writer-legal-numbering-rtf.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-legal-numbering/2024-02-29-writer-legal-numbering-rtf.png"&gt;&lt;figcaption&gt;Improved handling of legal numbering from RTF: old, new and reference rendering&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;It shows that the RTF filter is up to speed with the DOC one by now.&lt;/p&gt;
-&lt;p&gt;As for the multi-page floating tables, I looked at
-&lt;a href="https://bugs.documentfoundation.org/show_bug.cgi?id=158986"&gt;tdf#158986&lt;/a&gt; and
-&lt;a href="https://bugs.documentfoundation.org/show_bug.cgi?id=158801"&gt;tdf#158801&lt;/a&gt;.&lt;/p&gt;
-&lt;h2 id="how-is-this-implemented"&gt;How is this implemented?&lt;a class="headerlink" href="#how-is-this-implemented" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;If you would like to know a bit more about how this works, continue reading... :-)&lt;/p&gt;
-&lt;p&gt;As usual, the high-level problem was addressed by a series of small changes:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/397d72e582c725d162c7e0b819dc6c0bb62e42b0"&gt;Related: tdf#158986 sw floattable: fix unexpected page break with sections&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/b7c4c4d45f44a26283678f3dc32982b3a728c614"&gt;tdf#158986 sw floattable: fix RTF import of table followed by \sect&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/a73b3994fb6a2cc10b2d65cbaad201762610cecc"&gt;Related: tdf#150408 DOC filter: handle legal numbering&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/e8487bedb20a429565b4a0e4bd2d6806cc603b7f"&gt;Related: tdf#150408 RTF filter: handle legal numbering&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/c98ff922831f56253af2a050b8e07cfc89b7a387"&gt;Related: tdf#158986 sw floattable, RTF import: use more setNeedPar()&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/186de7178c6065e1de13fd216b46ac9b716e44c5"&gt;tdf#158801 sw floattable: fix crash with headers and interactive editing&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id="want-to-start-using-this"&gt;Want to start using this?&lt;a class="headerlink" href="#want-to-start-using-this" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;You can get a snapshot / demo of Collabora Office 24.04 and try it out yourself right now: &lt;a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/"&gt;try the
-unstable snapshot&lt;/a&gt;.  Collabora
-intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF's next release too (24.8).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 01 Mar 2024 08:46:39 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2024-03-01:/blog/sw-legal-numbering.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
+of this work will be available in TDF's next release too (24.8).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Thu, 04 Apr 2024 09:50:39 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2024-04-04:/blog/sc-clipboard-paste.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>

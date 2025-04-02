@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/pygments.css">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Miklos Vajna">
+  <meta name="description" content="Posts and writings by Miklos Vajna">
+
+  <link href="https://vmiklos.hu/blog/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking RSS" />
+
+<meta name="keywords" content="en">
+
+  <title>
+    What is Miklos hacking
+&ndash; Per-user track changes recording in Writer  </title>
+
+<script type="text/javascript">
+  var _paq = window._paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//analytics.vmiklos.hu/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '1']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <h2><a href="https://vmiklos.hu/blog">What is Miklos hacking</a></h2>
+      <p></p>
+      <ul>
+        <li><a href="/" target="_blank">Root</a></li>
+        <li><a href="https://planet.documentfoundation.org/" target="_blank">LibreOffice Blogs</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://vmiklos.hu/blog">Index</a> &brvbar; <a href="https://vmiklos.hu/blog/archives.html">Archives</a>
+      &brvbar; <a href="https://vmiklos.hu/blog/feeds/all.rss.xml">RSS</a>
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sw-per-view-redline-record.html">Per-user track changes recording in Writer</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Wed 02 April 2025</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <p>Writer has the concept of recording tracked changes or not: if recording, typing into a document or
+deleting content will create tracked changes of type insertion or deletion. So far this was a
+per-document setting, but now individual users can enable or disable this as they wish.</p>
+<p>This work is primarily for <a href="https://www.collaboraonline.com/">Collabora Online</a>, but the feature is
+available in desktop Writer as well.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>When Alice keeps typing and Bob enables change tracking, then surprisingly the typed characters of
+Alice will form a tracked insertion, which is surprising, since that was not the case a second ago
+and Alice didn't do anything other than typing.</p>
+<p>Giving users a choice if they enable recording for just this user or for all users fixes this
+problem.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>Here is how the per-user (technically per-view) tracked changes recording looks like:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-per-view-redline/sw-per-view-redline.png"><figure><img src="https://share.vmiklos.hu/blog/sw-per-view-redline/sw-per-view-redline.png"><figcaption>Per-view tracked changes recording</figcaption></figure></a></p>
+<p>As you can see, the user on the left has recording turned on and this doesn't influence the user on
+the right, while this was not possible before.</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>As usual, the high-level problem was addressed by a series of small changes. Core side:</p>
+<ul>
+<li><a href="https://git.libreoffice.org/core/commit/ab91358566ccf31f7a9ac57f1c32a9c62840f5d5">cool#11226 sw per-view redline on: support this-view &lt;-&gt; all-views transition</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/85fc28a4e55bb8dafd69a19dc5d21a76501446cb">cool#11226 sw per-view redline on: state for the per-view and per-doc commands</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/368e2e445c1941d37697cee05a50a34150d18015">cool#11226 sw per-view redline on: allow both per-view and per-doc</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/745256f37973d89ea068acd831eba8054a81b93b">Related: cool#11226 sw per-view redline on: fix ratio buttons of is-show</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/ae6d396552cd3cebd7fba4942e6ca2fd5de579af">cool#11226 sw per-view redline on: add view-aware getter</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/e36643877e5ddf57a34481f1c46f87cf250caf19">cool#11226 sw per-view redline on: move the setter to the model</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/025a1e4612fecf59f38910fbf52fc63db054ae5f">cool#11226 sw per-view redline on: add new flag in SwViewOption</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/88e12a83aec0ffda82195c8a1e34a255d3cfdfd5">cool#11226 sw layout xml dump: show some more view options</a></li>
+</ul>
+<p>Online side:</p>
+<ul>
+<li><a href="https://github.com/collaboraonline/online/commit/c37904149498658c3fd25f043fc5f34be89fb120">cool#11226 sw per-view redline on: add tri-state UI in the notebookbar</a></li>
+</ul>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a development edition of Collabora Online 25.04 and try it out yourself right now: <a href="https://www.collaboraonline.com/code/">try
+the development edition</a>.  Collabora intends to continue
+supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
+available in TDF's next release too (25.8).</p>
+  </div>
+  <div class="article_meta">
+    <p>Category: <a href="https://vmiklos.hu/blog/category/libreoffice.html">libreoffice</a>
+ &ndash; Tags:
+      <a href="https://vmiklos.hu/blog/tag/en.html">en</a>    </p>
+  </div>
+
+
+</article>
+
+
+    <div id="ending_message">
+      <p>&copy; Miklos Vajna. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
+</body>
+</html>
