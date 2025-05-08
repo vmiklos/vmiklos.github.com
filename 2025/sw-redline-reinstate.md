@@ -6,7 +6,10 @@ Date: 2025-05-08T08:44:48+02:00
 
 Writer has the concept of rejecting tracked changes: if a proposed insertion or deletion is not
 wanted, then one can reject it to push back on the proposal. So far such an action left no trace in
-the document, which is sometimes not wanted. Reinstating a change behaves like reject, but with
+the document, which is sometimes not wanted. Calling reinstate on a change behaves like reject, but
+with history: it reinstates the original, with the rejected change preserved as deletion.
+
+Reinstating a change behaves like reject, but with
 history.
 
 This work is primarily for [Collabora Online](https://www.collaboraonline.com/), but the feature is
@@ -24,7 +27,7 @@ is created on top of the insert, so Alice can see that Bob was not happy with th
 case Alice proposed a delete, Bob can reinstate that by adding the same content again to the
 document, without typing the text manually after the delete.
 
-This is a UI feature: the resulting model is still just inserts and deletes, so it works even with
+This is a UI feature: the resulting model still only contains inserts and deletes, so it works even with
 DOCX files.
 
 ## Results so far
@@ -46,7 +49,7 @@ Now you can easily create an insert right after the delete, preserving complex c
 [![Reinstate: a reinstated delete](https://share.vmiklos.hu/blog/sw-redline-reinstate/delete-after.png)](https://share.vmiklos.hu/blog/sw-redline-reinstate/delete-after.png)
 
 As you can see, this creates the opposite of the original change as a new tracked change, so it will
-at the end still reject the change, but without deleting the original change.
+in the end still reject the change, but without deleting the original change.
 
 ## How is this implemented?
 
