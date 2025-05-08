@@ -69,7 +69,9 @@
   <div class="article_text">
     <p>Writer has the concept of rejecting tracked changes: if a proposed insertion or deletion is not
 wanted, then one can reject it to push back on the proposal. So far such an action left no trace in
-the document, which is sometimes not wanted. Reinstating a change behaves like reject, but with
+the document, which is sometimes not wanted. Calling reinstate on a change behaves like reject, but
+with history: it reinstates the original, with the rejected change preserved as deletion.</p>
+<p>Reinstating a change behaves like reject, but with
 history.</p>
 <p>This work is primarily for <a href="https://www.collaboraonline.com/">Collabora Online</a>, but the feature is
 available in desktop Writer as well.</p>
@@ -82,7 +84,7 @@ pushback explicitly in the resulting document, either.</p>
 is created on top of the insert, so Alice can see that Bob was not happy with the proposal. Or in
 case Alice proposed a delete, Bob can reinstate that by adding the same content again to the
 document, without typing the text manually after the delete.</p>
-<p>This is a UI feature: the resulting model is still just inserts and deletes, so it works even with
+<p>This is a UI feature: the resulting model still only contains inserts and deletes, so it works even with
 DOCX files.</p>
 <h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
 <p>Given an insert:</p>
@@ -94,7 +96,7 @@ DOCX files.</p>
 <p>Now you can easily create an insert right after the delete, preserving complex content:</p>
 <p><a href="https://share.vmiklos.hu/blog/sw-redline-reinstate/delete-after.png"><figure><img src="https://share.vmiklos.hu/blog/sw-redline-reinstate/delete-after.png"><figcaption>Reinstate: a reinstated delete</figcaption></figure></a></p>
 <p>As you can see, this creates the opposite of the original change as a new tracked change, so it will
-at the end still reject the change, but without deleting the original change.</p>
+in the end still reject the change, but without deleting the original change.</p>
 <h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
 <p>If you would like to know a bit more about how this works, continue reading... :-)</p>
 <p>As usual, the high-level problem was addressed by a series of small changes. Core side:</p>

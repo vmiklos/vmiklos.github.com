@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <rss version="2.0"><channel><title>What is Miklos hacking - libreoffice</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Thu, 08 May 2025 08:44:48 +0200</lastBuildDate><item><title>Reinstate for tracked changes in Writer</title><link>https://vmiklos.hu/blog/sw-redline-reinstate.html</link><description>&lt;p&gt;Writer has the concept of rejecting tracked changes: if a proposed insertion or deletion is not
 wanted, then one can reject it to push back on the proposal. So far such an action left no trace in
-the document, which is sometimes not wanted. Reinstating a change behaves like reject, but with
+the document, which is sometimes not wanted. Calling reinstate on a change behaves like reject, but
+with history: it reinstates the original, with the rejected change preserved as deletion.&lt;/p&gt;
+&lt;p&gt;Reinstating a change behaves like reject, but with
 history.&lt;/p&gt;
 &lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraonline.com/"&gt;Collabora Online&lt;/a&gt;, but the feature is
 available in desktop Writer as well.&lt;/p&gt;
@@ -14,7 +16,7 @@ pushback explicitly in the resulting document, either.&lt;/p&gt;
 is created on top of the insert, so Alice can see that Bob was not happy with the proposal. Or in
 case Alice proposed a delete, Bob can reinstate that by adding the same content again to the
 document, without typing the text manually after the delete.&lt;/p&gt;
-&lt;p&gt;This is a UI feature: the resulting model is still just inserts and deletes, so it works even with
+&lt;p&gt;This is a UI feature: the resulting model still only contains inserts and deletes, so it works even with
 DOCX files.&lt;/p&gt;
 &lt;h2 id="results-so-far"&gt;Results so far&lt;a class="headerlink" href="#results-so-far" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;Given an insert:&lt;/p&gt;
@@ -26,7 +28,7 @@ DOCX files.&lt;/p&gt;
 &lt;p&gt;Now you can easily create an insert right after the delete, preserving complex content:&lt;/p&gt;
 &lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-redline-reinstate/delete-after.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-redline-reinstate/delete-after.png"&gt;&lt;figcaption&gt;Reinstate: a reinstated delete&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;As you can see, this creates the opposite of the original change as a new tracked change, so it will
-at the end still reject the change, but without deleting the original change.&lt;/p&gt;
+in the end still reject the change, but without deleting the original change.&lt;/p&gt;
 &lt;h2 id="how-is-this-implemented"&gt;How is this implemented?&lt;a class="headerlink" href="#how-is-this-implemented" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;If you would like to know a bit more about how this works, continue reading... :-)&lt;/p&gt;
 &lt;p&gt;As usual, the high-level problem was addressed by a series of small changes. Core side:&lt;/p&gt;
