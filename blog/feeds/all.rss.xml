@@ -1,5 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>What is Miklos hacking</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Wed, 02 Apr 2025 13:33:03 +0200</lastBuildDate><item><title>Per-user track changes recording in Writer</title><link>https://vmiklos.hu/blog/sw-per-view-redline-record.html</link><description>&lt;p&gt;Writer has the concept of recording tracked changes or not: if recording, typing into a document or
+<rss version="2.0"><channel><title>What is Miklos hacking</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Thu, 08 May 2025 08:44:48 +0200</lastBuildDate><item><title>Reinstate for tracked changes in Writer</title><link>https://vmiklos.hu/blog/sw-redline-reinstate.html</link><description>&lt;p&gt;Writer has the concept of rejecting tracked changes: if a proposed insertion or deletion is not
+wanted, then one can reject it to push back on the proposal. So far such an action left no trace in
+the document, which is sometimes not wanted. Reinstating a change behaves like reject, but with
+history.&lt;/p&gt;
+&lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraonline.com/"&gt;Collabora Online&lt;/a&gt;, but the feature is
+available in desktop Writer as well.&lt;/p&gt;
+&lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;When Alice works on a document to insert e.g. new conditions for a contract, then perhaps Bob is not
+happy with the proposal. But just rejecting the change "silently" would not be polite: the tracked
+change then disappears, so possibly Alice thinks it was accepted and Bob didn't communicate the
+pushback explicitly in the resulting document, either.&lt;/p&gt;
+&lt;p&gt;Reinstate is meant to improve this interaction: if an insert is reinstated, then an explicit delete
+is created on top of the insert, so Alice can see that Bob was not happy with the proposal. Or in
+case Alice proposed a delete, Bob can reinstate that by adding the same content again to the
+document, without typing the text manually after the delete.&lt;/p&gt;
+&lt;p&gt;This is a UI feature: the resulting model is still just inserts and deletes, so it works even with
+DOCX files.&lt;/p&gt;
+&lt;h2 id="results-so-far"&gt;Results so far&lt;a class="headerlink" href="#results-so-far" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Given an insert:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-redline-reinstate/insert.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-redline-reinstate/insert.png"&gt;&lt;figcaption&gt;Reinstate: an insert&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Now you can easily create a delete on top of the insert:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-redline-reinstate/insert-after.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-redline-reinstate/insert-after.png"&gt;&lt;figcaption&gt;Reinstate: a reinstated insert&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;And given a delete:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-redline-reinstate/delete.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-redline-reinstate/delete.png"&gt;&lt;figcaption&gt;Reinstate: a delete&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Now you can easily create an insert right after the delete, preserving complex content:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-redline-reinstate/delete-after.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-redline-reinstate/delete-after.png"&gt;&lt;figcaption&gt;Reinstate: a reinstated delete&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;As you can see, this creates the opposite of the original change as a new tracked change, so it will
+at the end still reject the change, but without deleting the original change.&lt;/p&gt;
+&lt;h2 id="how-is-this-implemented"&gt;How is this implemented?&lt;a class="headerlink" href="#how-is-this-implemented" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;If you would like to know a bit more about how this works, continue reading... :-)&lt;/p&gt;
+&lt;p&gt;As usual, the high-level problem was addressed by a series of small changes. Core side:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/7af8b3d3305fe8344cb9339269c5dc3f1cd44650"&gt;cool#11357 sw redline reinstate: implement this for a single insert&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/1df71464588d4cfcba708cf00ef7b6ac94574c8f"&gt;cool#11357 sw redline reinstate: handle inserts in selection&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/e312cf46fe840f04b729600db9efe89d5f58d6fe"&gt;cool#11357 sw redline reinstate: handle a single delete&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/db541619cb1ca83598ec479eb9f52e559a8fe72d"&gt;cool#11357 sw redline reinstate: handle a single rich delete&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/157c00922959adc8fd2e0203ed94dfd847479c54"&gt;cool#11357 sw redline reinstate: handle deletes in selection&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/447935fba57f1b0f88c0b56cccf5bf971fb1e819"&gt;cool#11357 sw redline reinstate: simplify ReinstateRedlinesInSelection()&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/9c2c98ac7668e4a3a2e3a70cc54b632de5f79621"&gt;cool#11357 sw redline reinstate: add command state&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/1926105b47df7b15dd34a8c1135f83b936bf9926"&gt;cool#11357 sw redline reinstate: add a reinstate-and-next command&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/4535698e0b16bf003e8a3705e28f7347f509eb12"&gt;cool#11357 sw redline reinstate: add a reinstate-all command&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/01311bb1e4c2404354cce8934d36991d91d527b2"&gt;cool#11357 sw redline reinstate: avoid unwanted multi- or table selection&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/fbf9465e2bc9f878723674d1eff13e0c69656057"&gt;cool#11357 sw redline reinstate: fix undo string for a single redline&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/7d702ebbfcda41ce2972e30b2a1e493c320df67c"&gt;cool#11357 sw redline reinstate: fix undo count &amp;amp; string for multiple redlines&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/dcd3427149c33852428b4198c22f6f858125c294"&gt;cool#11357 sw redline reinstate: add to the context menu for text&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Online side:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/3d7933974241fe5d015a9d80f2cc8bde1c1d352e"&gt;cool#11357 sw redline reinstate: add UI for this&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="want-to-start-using-this"&gt;Want to start using this?&lt;a class="headerlink" href="#want-to-start-using-this" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;You can get a development edition of Collabora Online 25.04 and try it out yourself right now: &lt;a href="https://www.collaboraonline.com/code/"&gt;try
+the development edition&lt;/a&gt;.  Collabora intends to continue
+supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
+available in TDF's next release too (25.8).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Thu, 08 May 2025 08:44:48 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2025-05-08:/blog/sw-redline-reinstate.html</guid><category>libreoffice</category><category>en</category></item><item><title>Per-user track changes recording in Writer</title><link>https://vmiklos.hu/blog/sw-per-view-redline-record.html</link><description>&lt;p&gt;Writer has the concept of recording tracked changes or not: if recording, typing into a document or
 deleting content will create tracked changes of type insertion or deletion. So far this was a
 per-document setting, but now individual users can enable or disable this as they wish.&lt;/p&gt;
 &lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraonline.com/"&gt;Collabora Online&lt;/a&gt;, but the feature is
@@ -566,42 +620,4 @@ fallback on Linux takes the font type into account while deciding font fallback.
 &lt;p&gt;You can get a development edition of Collabora Online 24.04 and try it out yourself right now: &lt;a href="https://www.collaboraoffice.com/code/"&gt;try
 the development edition&lt;/a&gt;.  Collabora intends to continue
 supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
-available in TDF's next release too (24.8).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Wed, 07 Aug 2024 09:05:24 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2024-08-07:/blog/sw-improved-font-falback.html</guid><category>libreoffice</category><category>en</category></item><item><title>Fixing handling of line object transformations in the DOCX import of Writer</title><link>https://vmiklos.hu/blog/sw-drawingml-line-transform.html</link><description>&lt;p&gt;Writer now has improved support for toplevel line shapes when you import those from DOCX.&lt;/p&gt;
-&lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraoffice.com/"&gt;Collabora Online&lt;/a&gt;, but the feature is
-fully available in desktop Writer as well.&lt;/p&gt;
-&lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;As described in a &lt;a href="https://vmiklos.hu/blog/lo-writer-drawingml-shape-improvements.html"&gt;post from 2014&lt;/a&gt;,
-Writer reads the drawingML markup for shapes in DOCX files, including line shapes. While
-investigating a simple-looking problem around a horizontal vs vertical line, it turns out that there
-is a deeper issue here, and it looks like now have proper fix for this bug.&lt;/p&gt;
-&lt;h2 id="results-so-far"&gt;Results so far&lt;a class="headerlink" href="#results-so-far" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;Imagine that your company template has a nice footer in two columns, and the content in the columns
-are separated by a vertical line shape, but when you open your DOCX in Writer, it crosses the text
-of that footer instead:&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-drawingml-line-transform/diff-old.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-drawingml-line-transform/diff-old.png"&gt;&lt;figcaption&gt;Bugdoc, before: reference is red, Writer result is painted on top of it&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;While researching how line shapes are represented in our document model and how ODT import works, it
-turned out that the proper way to create a line shape is to only consider size / scaling when it
-comes to the individual points of the line, everything else (e.g. position / translation) should go
-to the transform matrix of the shape, then the render result will be as expected:&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-drawingml-line-transform/diff-new.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-drawingml-line-transform/diff-new.png"&gt;&lt;figcaption&gt;Bugdoc, after: reference is red, Writer result is painted on top of it&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;It was also interesting to see that this also improved other, existing test documents, e.g. core.git
-&lt;code&gt;sw/qa/extras/ooxmlimport/data/line-rotation.docx&lt;/code&gt; looked like this before:&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/line-rotation-diff-old.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-drawingml-line-transform/line-rotation-diff-old.png"&gt;&lt;figcaption&gt;3 rotated lines, before: reference is red, Writer result is painted on top of it&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;And the same fix makes it perfect:&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/line-rotation-diff-new.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-drawingml-line-transform/line-rotation-diff-new.png"&gt;&lt;figcaption&gt;3 rotated lines, after: reference is red, Writer result is painted on top of it&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Just stick to the rule: scaling goes to the points -- translation, rotation and horizontal shear
-goes to the shape.&lt;/p&gt;
-&lt;p&gt;For now, this is only there for toplevel Writer lines, but in-groupshape and Calc/Impress lines
-could also follow this technique if there is a practical need.&lt;/p&gt;
-&lt;p&gt;The "after" screenshots show ~no red, which means there is ~no reference output, where the Writer
-output would be missing.&lt;/p&gt;
-&lt;h2 id="how-is-this-implemented"&gt;How is this implemented?&lt;a class="headerlink" href="#how-is-this-implemented" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;If you would like to know a bit more about how this works, continue reading... :-)&lt;/p&gt;
-&lt;p&gt;The bugfix commit was &lt;a href="https://git.libreoffice.org/core/commit/6c09c85ec384e88c89bff0817e7fe9889d7ed68e"&gt;tdf#161779 DOCX import, drawingML: fix handling of translation for
-lines&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;The tracking bug was &lt;a href="https://bugs.documentfoundation.org/show_bug.cgi?id=161779"&gt;tdf#161779&lt;/a&gt;.&lt;/p&gt;
-&lt;h2 id="want-to-start-using-this"&gt;Want to start using this?&lt;a class="headerlink" href="#want-to-start-using-this" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;You can get a development edition of Collabora Online 24.04 and try it out yourself right now: &lt;a href="https://www.collaboraoffice.com/code/"&gt;try
-the development edition&lt;/a&gt;.  Collabora intends to continue
-supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
-available in TDF's next release too (24.8).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Tue, 09 Jul 2024 14:46:01 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2024-07-09:/blog/sw-drawingml-line-transform.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
+available in TDF's next release too (24.8).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Wed, 07 Aug 2024 09:05:24 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2024-08-07:/blog/sw-improved-font-falback.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>

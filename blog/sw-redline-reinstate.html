@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/pygments.css">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Miklos Vajna">
+  <meta name="description" content="Posts and writings by Miklos Vajna">
+
+  <link href="https://vmiklos.hu/blog/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking RSS" />
+
+<meta name="keywords" content="en">
+
+  <title>
+    What is Miklos hacking
+&ndash; Reinstate for tracked changes in Writer  </title>
+
+<script type="text/javascript">
+  var _paq = window._paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//analytics.vmiklos.hu/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '1']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <h2><a href="https://vmiklos.hu/blog">What is Miklos hacking</a></h2>
+      <p></p>
+      <ul>
+        <li><a href="/" target="_blank">Root</a></li>
+        <li><a href="https://planet.documentfoundation.org/" target="_blank">LibreOffice Blogs</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://vmiklos.hu/blog">Index</a> &brvbar; <a href="https://vmiklos.hu/blog/archives.html">Archives</a>
+      &brvbar; <a href="https://vmiklos.hu/blog/feeds/all.rss.xml">RSS</a>
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sw-redline-reinstate.html">Reinstate for tracked changes in Writer</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Thu 08 May 2025</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 3 minutes</p>
+  </div>
+  <div class="article_text">
+    <p>Writer has the concept of rejecting tracked changes: if a proposed insertion or deletion is not
+wanted, then one can reject it to push back on the proposal. So far such an action left no trace in
+the document, which is sometimes not wanted. Reinstating a change behaves like reject, but with
+history.</p>
+<p>This work is primarily for <a href="https://www.collaboraonline.com/">Collabora Online</a>, but the feature is
+available in desktop Writer as well.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>When Alice works on a document to insert e.g. new conditions for a contract, then perhaps Bob is not
+happy with the proposal. But just rejecting the change "silently" would not be polite: the tracked
+change then disappears, so possibly Alice thinks it was accepted and Bob didn't communicate the
+pushback explicitly in the resulting document, either.</p>
+<p>Reinstate is meant to improve this interaction: if an insert is reinstated, then an explicit delete
+is created on top of the insert, so Alice can see that Bob was not happy with the proposal. Or in
+case Alice proposed a delete, Bob can reinstate that by adding the same content again to the
+document, without typing the text manually after the delete.</p>
+<p>This is a UI feature: the resulting model is still just inserts and deletes, so it works even with
+DOCX files.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>Given an insert:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-redline-reinstate/insert.png"><figure><img src="https://share.vmiklos.hu/blog/sw-redline-reinstate/insert.png"><figcaption>Reinstate: an insert</figcaption></figure></a></p>
+<p>Now you can easily create a delete on top of the insert:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-redline-reinstate/insert-after.png"><figure><img src="https://share.vmiklos.hu/blog/sw-redline-reinstate/insert-after.png"><figcaption>Reinstate: a reinstated insert</figcaption></figure></a></p>
+<p>And given a delete:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-redline-reinstate/delete.png"><figure><img src="https://share.vmiklos.hu/blog/sw-redline-reinstate/delete.png"><figcaption>Reinstate: a delete</figcaption></figure></a></p>
+<p>Now you can easily create an insert right after the delete, preserving complex content:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-redline-reinstate/delete-after.png"><figure><img src="https://share.vmiklos.hu/blog/sw-redline-reinstate/delete-after.png"><figcaption>Reinstate: a reinstated delete</figcaption></figure></a></p>
+<p>As you can see, this creates the opposite of the original change as a new tracked change, so it will
+at the end still reject the change, but without deleting the original change.</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>As usual, the high-level problem was addressed by a series of small changes. Core side:</p>
+<ul>
+<li><a href="https://git.libreoffice.org/core/commit/7af8b3d3305fe8344cb9339269c5dc3f1cd44650">cool#11357 sw redline reinstate: implement this for a single insert</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/1df71464588d4cfcba708cf00ef7b6ac94574c8f">cool#11357 sw redline reinstate: handle inserts in selection</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/e312cf46fe840f04b729600db9efe89d5f58d6fe">cool#11357 sw redline reinstate: handle a single delete</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/db541619cb1ca83598ec479eb9f52e559a8fe72d">cool#11357 sw redline reinstate: handle a single rich delete</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/157c00922959adc8fd2e0203ed94dfd847479c54">cool#11357 sw redline reinstate: handle deletes in selection</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/447935fba57f1b0f88c0b56cccf5bf971fb1e819">cool#11357 sw redline reinstate: simplify ReinstateRedlinesInSelection()</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/9c2c98ac7668e4a3a2e3a70cc54b632de5f79621">cool#11357 sw redline reinstate: add command state</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/1926105b47df7b15dd34a8c1135f83b936bf9926">cool#11357 sw redline reinstate: add a reinstate-and-next command</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/4535698e0b16bf003e8a3705e28f7347f509eb12">cool#11357 sw redline reinstate: add a reinstate-all command</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/01311bb1e4c2404354cce8934d36991d91d527b2">cool#11357 sw redline reinstate: avoid unwanted multi- or table selection</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/fbf9465e2bc9f878723674d1eff13e0c69656057">cool#11357 sw redline reinstate: fix undo string for a single redline</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/7d702ebbfcda41ce2972e30b2a1e493c320df67c">cool#11357 sw redline reinstate: fix undo count &amp; string for multiple redlines</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/dcd3427149c33852428b4198c22f6f858125c294">cool#11357 sw redline reinstate: add to the context menu for text</a></li>
+</ul>
+<p>Online side:</p>
+<ul>
+<li><a href="https://github.com/collaboraonline/online/commit/3d7933974241fe5d015a9d80f2cc8bde1c1d352e">cool#11357 sw redline reinstate: add UI for this</a></li>
+</ul>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a development edition of Collabora Online 25.04 and try it out yourself right now: <a href="https://www.collaboraonline.com/code/">try
+the development edition</a>.  Collabora intends to continue
+supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
+available in TDF's next release too (25.8).</p>
+  </div>
+  <div class="article_meta">
+    <p>Category: <a href="https://vmiklos.hu/blog/category/libreoffice.html">libreoffice</a>
+ &ndash; Tags:
+      <a href="https://vmiklos.hu/blog/tag/en.html">en</a>    </p>
+  </div>
+
+
+</article>
+
+
+    <div id="ending_message">
+      <p>&copy; Miklos Vajna. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
+</body>
+</html>

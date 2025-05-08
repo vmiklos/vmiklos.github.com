@@ -61,6 +61,75 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sw-redline-reinstate.html">Reinstate for tracked changes in Writer</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Thu 08 May 2025</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 3 minutes</p>
+  </div>
+  <div class="article_text">
+    <p>Writer has the concept of rejecting tracked changes: if a proposed insertion or deletion is not
+wanted, then one can reject it to push back on the proposal. So far such an action left no trace in
+the document, which is sometimes not wanted. Reinstating a change behaves like reject, but with
+history.</p>
+<p>This work is primarily for <a href="https://www.collaboraonline.com/">Collabora Online</a>, but the feature is
+available in desktop Writer as well.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>When Alice works on a document to insert e.g. new conditions for a contract, then perhaps Bob is not
+happy with the proposal. But just rejecting the change "silently" would not be polite: the tracked
+change then disappears, so possibly Alice thinks it was accepted and Bob didn't communicate the
+pushback explicitly in the resulting document, either.</p>
+<p>Reinstate is meant to improve this interaction: if an insert is reinstated, then an explicit delete
+is created on top of the insert, so Alice can see that Bob was not happy with the proposal. Or in
+case Alice proposed a delete, Bob can reinstate that by adding the same content again to the
+document, without typing the text manually after the delete.</p>
+<p>This is a UI feature: the resulting model is still just inserts and deletes, so it works even with
+DOCX files.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>Given an insert:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-redline-reinstate/insert.png"><figure><img src="https://share.vmiklos.hu/blog/sw-redline-reinstate/insert.png"><figcaption>Reinstate: an insert</figcaption></figure></a></p>
+<p>Now you can easily create a delete on top of the insert:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-redline-reinstate/insert-after.png"><figure><img src="https://share.vmiklos.hu/blog/sw-redline-reinstate/insert-after.png"><figcaption>Reinstate: a reinstated insert</figcaption></figure></a></p>
+<p>And given a delete:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-redline-reinstate/delete.png"><figure><img src="https://share.vmiklos.hu/blog/sw-redline-reinstate/delete.png"><figcaption>Reinstate: a delete</figcaption></figure></a></p>
+<p>Now you can easily create an insert right after the delete, preserving complex content:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-redline-reinstate/delete-after.png"><figure><img src="https://share.vmiklos.hu/blog/sw-redline-reinstate/delete-after.png"><figcaption>Reinstate: a reinstated delete</figcaption></figure></a></p>
+<p>As you can see, this creates the opposite of the original change as a new tracked change, so it will
+at the end still reject the change, but without deleting the original change.</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>As usual, the high-level problem was addressed by a series of small changes. Core side:</p>
+<ul>
+<li><a href="https://git.libreoffice.org/core/commit/7af8b3d3305fe8344cb9339269c5dc3f1cd44650">cool#11357 sw redline reinstate: implement this for a single insert</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/1df71464588d4cfcba708cf00ef7b6ac94574c8f">cool#11357 sw redline reinstate: handle inserts in selection</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/e312cf46fe840f04b729600db9efe89d5f58d6fe">cool#11357 sw redline reinstate: handle a single delete</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/db541619cb1ca83598ec479eb9f52e559a8fe72d">cool#11357 sw redline reinstate: handle a single rich delete</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/157c00922959adc8fd2e0203ed94dfd847479c54">cool#11357 sw redline reinstate: handle deletes in selection</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/447935fba57f1b0f88c0b56cccf5bf971fb1e819">cool#11357 sw redline reinstate: simplify ReinstateRedlinesInSelection()</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/9c2c98ac7668e4a3a2e3a70cc54b632de5f79621">cool#11357 sw redline reinstate: add command state</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/1926105b47df7b15dd34a8c1135f83b936bf9926">cool#11357 sw redline reinstate: add a reinstate-and-next command</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/4535698e0b16bf003e8a3705e28f7347f509eb12">cool#11357 sw redline reinstate: add a reinstate-all command</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/01311bb1e4c2404354cce8934d36991d91d527b2">cool#11357 sw redline reinstate: avoid unwanted multi- or table selection</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/fbf9465e2bc9f878723674d1eff13e0c69656057">cool#11357 sw redline reinstate: fix undo string for a single redline</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/7d702ebbfcda41ce2972e30b2a1e493c320df67c">cool#11357 sw redline reinstate: fix undo count &amp; string for multiple redlines</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/dcd3427149c33852428b4198c22f6f858125c294">cool#11357 sw redline reinstate: add to the context menu for text</a></li>
+</ul>
+<p>Online side:</p>
+<ul>
+<li><a href="https://github.com/collaboraonline/online/commit/3d7933974241fe5d015a9d80f2cc8bde1c1d352e">cool#11357 sw redline reinstate: add UI for this</a></li>
+</ul>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a development edition of Collabora Online 25.04 and try it out yourself right now: <a href="https://www.collaboraonline.com/code/">try
+the development edition</a>.  Collabora intends to continue
+supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
+available in TDF's next release too (25.8).</p>
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/sw-per-view-redline-record.html">Per-user track changes recording in Writer</a></h1>
   </div>
   <div class="article_meta">
@@ -543,79 +612,6 @@ body text, while the footnote is at the bottom of the page, as expected. The sec
 the development edition</a>.  Collabora intends to continue
 supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
 available in TDF's next release too (24.8).</p>
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/sc-clipboard-paste.html">Improve copy&paste in Calc and elsewhere</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Thu 04 April 2024</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 3 minutes</p>
-  </div>
-  <div class="article_text">
-    <p>Calc now supports much better copy&amp;paste when you transfer data between Google Sheets and Calc.</p>
-<p>This work is primarily for <a href="https://www.collaboraoffice.com/">Collabora Online</a>, but the feature is
-fully available in desktop Calc as well.</p>
-<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
-<p>First, Collabora Online was using the
-<a href="https://developer.mozilla.org/en-US/docs/Web/API/Document/execCommand">deprecated</a>
-<code>document.execCommand()</code> API to paste text, which is problematic, as the "paste" button on the
-toolbar can't behave the same way as pressing Ctrl-V on the keyboard.</p>
-<p>Second, it turns out Google Sheets came up with some additional HTML attributes to represent
-spreadsheet data in HTML in a much better way, and Calc HTML import/export had no support for this,
-while this is all fixable.</p>
-<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
-<p>In short, Collabora Online now uses the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Clipboard/read">Clipboard
-API</a> to read from the system
-clipboard -- this has to be supported by the
-<a href="https://sdk.collaboraonline.com/docs/advanced_integration.html#allow-the-clipboard-permission-query">integration</a>,
-and Calc's HTML filter now support the subset of the Google Sheets markup I figured out so far. This
-subset is also
-<a href="https://sdk.collaboraonline.com/docs/advanced_integration.html#spreadsheet-html-extensions">documented</a>.</p>
-<p>Note that the default behavior is that the new Clipboard API is available in Chrome/Safari, but not
-in Firefox.</p>
-<p>For the longer version, here are some screenshots:</p>
-<p><a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-01-15-cool-clipboard-popup.png"><figure><img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-01-15-cool-clipboard-popup.png"><figcaption>We used to show a popup when you clicked on the paste button on the notebookbar</figcaption></figure></a></p>
-<p><a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-01-18-cool-clipboard-image-paste.png"><figure><img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-01-18-cool-clipboard-image-paste.png"><figcaption>The new paste code in action, handling an image</figcaption></figure></a></p>
-<p><a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-01-31-sc-html-import-text-bad.png"><figure><img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-01-31-sc-html-import-text-bad.png"><figcaption>Import from Google Sheets to Calc: text is auto-converted to a number, bad</figcaption></figure></a></p>
-<p><a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-01-sc-html-import-text-good.png"><figure><img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-01-sc-html-import-text-good.png"><figcaption>Import from Google Sheets to Calc: text is no longer auto-converted to a number, good</figcaption></figure></a></p>
-<p><a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-02-sc-html-import-celledit-fix.png"><figure><img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-02-sc-html-import-celledit-fix.png"><figcaption>HTML import into an active cell edit, only RTF was working there previously</figcaption></figure></a></p>
-<p><a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-07-sc-html-paste-text-good.png"><figure><img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-07-sc-html-paste-text-good.png"><figcaption>Paste from Google Sheets to Calc: text is no longer auto-converted to a number, good</figcaption></figure></a></p>
-<p><a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-08-sc-html-paste-boolean-good.png"><figure><img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-08-sc-html-paste-boolean-good.png"><figcaption>Paste from Google Sheets to Calc: booleans are now also preserved</figcaption></figure></a></p>
-<p><a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-09-sc-html-paste-numfmt-good.png"><figure><img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-09-sc-html-paste-numfmt-good.png"><figcaption>Paste from Google Sheets to Calc: number formats are now also preserved</figcaption></figure></a></p>
-<p><a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-12-sc-html-paste-formula-good.png"><figure><img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-12-sc-html-paste-formula-good.png"><figcaption>Paste from Google Sheets to Calc: formulas are now also preserved</figcaption></figure></a></p>
-<p><a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-13-sc-html-paste-singlecell-good.png"><figure><img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-13-sc-html-paste-singlecell-good.png"><figcaption>Paste from Google Sheets to Calc: also handling a single cell</figcaption></figure></a></p>
-<p><a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-14-sc-html-copy-text-good.png"><figure><img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-14-sc-html-copy-text-good.png"><figcaption>Copy from Calc to Google Sheets: text is now handled, no longer auto-converted to a number</figcaption></figure></a></p>
-<p><a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-15-sc-html-copy-bool-good.png"><figure><img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-15-sc-html-copy-bool-good.png"><figcaption>Copy from Calc to Google Sheets: booleans are now handled</figcaption></figure></a></p>
-<p><a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-20-cool-cross-origin-iframe-clipboard-bad.png"><figure><img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-02-20-cool-cross-origin-iframe-clipboard-bad.png"><figcaption>Cross-origin iframes also block clipboard access, now fixed</figcaption></figure></a></p>
-<p><a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-03-01-sc-html-copy-formatted-number-good.png"><figure><img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-03-01-sc-html-copy-formatted-number-good.png"><figcaption>Copy from Calc to Google Sheets: number formats are now also preserved</figcaption></figure></a></p>
-<p><a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-03-04-sc-html-copy-formula-good.png"><figure><img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-03-04-sc-html-copy-formula-good.png"><figcaption>Copy from Calc to Google Sheets: formulas are now also preserved</figcaption></figure></a></p>
-<p><a href="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-03-08-cool-plain-text-copy.png"><figure><img src="https://share.vmiklos.hu/blog/sc-clipboard-paste/2024-03-08-cool-plain-text-copy.png"><figcaption>Copy from COOL Writer to a text editor: much better result, new one on the right hand side</figcaption></figure></a></p>
-<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
-<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
-<p>As usual, the high-level problem was addressed by a series of small changes:</p>
-<ul>
-<li><a href="https://git.libreoffice.org/core/commit/e6e5660b726ecf3b0c39b277568568973b43c9f0">tdf#159483 sc HTML import: handle data-sheets-value attribute for the text case</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/543e52481e764b8e0eea6cf0123a77cf492bdf8e">tdf#159483 sc HTML paste: handle data-sheets-value here, too</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/f8c95cf93ce9ab8b9b78f3af03411d0cc2e195ba">tdf#159483 sc HTML import: handle data-sheets-value attribute for the bool case</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/789964785a61daab5f8065f006dd7aaf843c7236">tdf#159483 sc HTML import: handle data-sheets-value attribute for the num case</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/7812adb2ed11a3e08be24d3f2f94d14bfd740c55">tdf#159483 sc HTML paste: handle data-sheets-formula attribute</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/c0da56cb3e9f9678cae7142dee03fb706a2aebd9">tdf#159483 sc HTML paste: handle data-sheets- attributes on a span</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/4e2a4fbeb7c44cc47b3cf803cbcc6cba63b3d481">tdf#159483 sc HTML export: handle data-sheets-value attribute for the text case</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/411158832462b1077a8f5dc6379f2056f2338249">tdf#159483 sc HTML copy: handle data-sheets-value attribute for the bool case</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/17581e684ca701bfd96ed2bf16aa14c3903b74d4">tdf#159483 sc HTML copy: handle data-sheets-value attribute for the num case</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/2efe362c99a9fa6e9a71b9b675b025c64b6c7f9d">tdf#159483 sc HTML copy: handle data-sheets-formula attribute</a></li>
-</ul>
-<p>The tracking issue on the Online side was <a href="https://github.com/CollaboraOnline/online/issues/8023">cool#8023</a>.</p>
-<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
-<p>You can get a snapshot / demo of Collabora Office 24.04 and try it out yourself right now: <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try the
-unstable snapshot</a>.  Collabora
-intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF's next release too (24.8).</p>
   </div>
 </article>
 

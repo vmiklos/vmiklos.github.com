@@ -58,6 +58,75 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sw-redline-reinstate.html">Reinstate for tracked changes in Writer</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Thu 08 May 2025</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 3 minutes</p>
+  </div>
+  <div class="article_text">
+    <p>Writer has the concept of rejecting tracked changes: if a proposed insertion or deletion is not
+wanted, then one can reject it to push back on the proposal. So far such an action left no trace in
+the document, which is sometimes not wanted. Reinstating a change behaves like reject, but with
+history.</p>
+<p>This work is primarily for <a href="https://www.collaboraonline.com/">Collabora Online</a>, but the feature is
+available in desktop Writer as well.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>When Alice works on a document to insert e.g. new conditions for a contract, then perhaps Bob is not
+happy with the proposal. But just rejecting the change "silently" would not be polite: the tracked
+change then disappears, so possibly Alice thinks it was accepted and Bob didn't communicate the
+pushback explicitly in the resulting document, either.</p>
+<p>Reinstate is meant to improve this interaction: if an insert is reinstated, then an explicit delete
+is created on top of the insert, so Alice can see that Bob was not happy with the proposal. Or in
+case Alice proposed a delete, Bob can reinstate that by adding the same content again to the
+document, without typing the text manually after the delete.</p>
+<p>This is a UI feature: the resulting model is still just inserts and deletes, so it works even with
+DOCX files.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>Given an insert:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-redline-reinstate/insert.png"><figure><img src="https://share.vmiklos.hu/blog/sw-redline-reinstate/insert.png"><figcaption>Reinstate: an insert</figcaption></figure></a></p>
+<p>Now you can easily create a delete on top of the insert:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-redline-reinstate/insert-after.png"><figure><img src="https://share.vmiklos.hu/blog/sw-redline-reinstate/insert-after.png"><figcaption>Reinstate: a reinstated insert</figcaption></figure></a></p>
+<p>And given a delete:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-redline-reinstate/delete.png"><figure><img src="https://share.vmiklos.hu/blog/sw-redline-reinstate/delete.png"><figcaption>Reinstate: a delete</figcaption></figure></a></p>
+<p>Now you can easily create an insert right after the delete, preserving complex content:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-redline-reinstate/delete-after.png"><figure><img src="https://share.vmiklos.hu/blog/sw-redline-reinstate/delete-after.png"><figcaption>Reinstate: a reinstated delete</figcaption></figure></a></p>
+<p>As you can see, this creates the opposite of the original change as a new tracked change, so it will
+at the end still reject the change, but without deleting the original change.</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>As usual, the high-level problem was addressed by a series of small changes. Core side:</p>
+<ul>
+<li><a href="https://git.libreoffice.org/core/commit/7af8b3d3305fe8344cb9339269c5dc3f1cd44650">cool#11357 sw redline reinstate: implement this for a single insert</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/1df71464588d4cfcba708cf00ef7b6ac94574c8f">cool#11357 sw redline reinstate: handle inserts in selection</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/e312cf46fe840f04b729600db9efe89d5f58d6fe">cool#11357 sw redline reinstate: handle a single delete</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/db541619cb1ca83598ec479eb9f52e559a8fe72d">cool#11357 sw redline reinstate: handle a single rich delete</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/157c00922959adc8fd2e0203ed94dfd847479c54">cool#11357 sw redline reinstate: handle deletes in selection</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/447935fba57f1b0f88c0b56cccf5bf971fb1e819">cool#11357 sw redline reinstate: simplify ReinstateRedlinesInSelection()</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/9c2c98ac7668e4a3a2e3a70cc54b632de5f79621">cool#11357 sw redline reinstate: add command state</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/1926105b47df7b15dd34a8c1135f83b936bf9926">cool#11357 sw redline reinstate: add a reinstate-and-next command</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/4535698e0b16bf003e8a3705e28f7347f509eb12">cool#11357 sw redline reinstate: add a reinstate-all command</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/01311bb1e4c2404354cce8934d36991d91d527b2">cool#11357 sw redline reinstate: avoid unwanted multi- or table selection</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/fbf9465e2bc9f878723674d1eff13e0c69656057">cool#11357 sw redline reinstate: fix undo string for a single redline</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/7d702ebbfcda41ce2972e30b2a1e493c320df67c">cool#11357 sw redline reinstate: fix undo count &amp; string for multiple redlines</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/dcd3427149c33852428b4198c22f6f858125c294">cool#11357 sw redline reinstate: add to the context menu for text</a></li>
+</ul>
+<p>Online side:</p>
+<ul>
+<li><a href="https://github.com/collaboraonline/online/commit/3d7933974241fe5d015a9d80f2cc8bde1c1d352e">cool#11357 sw redline reinstate: add UI for this</a></li>
+</ul>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a development edition of Collabora Online 25.04 and try it out yourself right now: <a href="https://www.collaboraonline.com/code/">try
+the development edition</a>.  Collabora intends to continue
+supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
+available in TDF's next release too (25.8).</p>
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/sw-per-view-redline-record.html">Per-user track changes recording in Writer</a></h1>
   </div>
   <div class="article_meta">
@@ -750,59 +819,6 @@ fallback on Linux takes the font type into account while deciding font fallback.
 <li><a href="https://git.libreoffice.org/core/commit/d06de2e049761b7b9e8a95f17557d309812f7acc">Related: tdf#162072 DOCX import: handle font family for characters</a></li>
 <li><a href="https://git.libreoffice.org/core/commit/ef1870810ec8c069e26538fd7626ad0656bed276">tdf#162280 vcl: consider font family type for glyph caching</a></li>
 </ul>
-<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
-<p>You can get a development edition of Collabora Online 24.04 and try it out yourself right now: <a href="https://www.collaboraoffice.com/code/">try
-the development edition</a>.  Collabora intends to continue
-supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
-available in TDF's next release too (24.8).</p>
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/sw-drawingml-line-transform.html">Fixing handling of line object transformations in the DOCX import of Writer</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Tue 09 July 2024</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
-  </div>
-  <div class="article_text">
-    <p>Writer now has improved support for toplevel line shapes when you import those from DOCX.</p>
-<p>This work is primarily for <a href="https://www.collaboraoffice.com/">Collabora Online</a>, but the feature is
-fully available in desktop Writer as well.</p>
-<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
-<p>As described in a <a href="https://vmiklos.hu/blog/lo-writer-drawingml-shape-improvements.html">post from 2014</a>,
-Writer reads the drawingML markup for shapes in DOCX files, including line shapes. While
-investigating a simple-looking problem around a horizontal vs vertical line, it turns out that there
-is a deeper issue here, and it looks like now have proper fix for this bug.</p>
-<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
-<p>Imagine that your company template has a nice footer in two columns, and the content in the columns
-are separated by a vertical line shape, but when you open your DOCX in Writer, it crosses the text
-of that footer instead:</p>
-<p><a href="https://share.vmiklos.hu/blog/sw-drawingml-line-transform/diff-old.png"><figure><img src="https://share.vmiklos.hu/blog/sw-drawingml-line-transform/diff-old.png"><figcaption>Bugdoc, before: reference is red, Writer result is painted on top of it</figcaption></figure></a></p>
-<p>While researching how line shapes are represented in our document model and how ODT import works, it
-turned out that the proper way to create a line shape is to only consider size / scaling when it
-comes to the individual points of the line, everything else (e.g. position / translation) should go
-to the transform matrix of the shape, then the render result will be as expected:</p>
-<p><a href="https://share.vmiklos.hu/blog/sw-drawingml-line-transform/diff-new.png"><figure><img src="https://share.vmiklos.hu/blog/sw-drawingml-line-transform/diff-new.png"><figcaption>Bugdoc, after: reference is red, Writer result is painted on top of it</figcaption></figure></a></p>
-<p>It was also interesting to see that this also improved other, existing test documents, e.g. core.git
-<code>sw/qa/extras/ooxmlimport/data/line-rotation.docx</code> looked like this before:</p>
-<p><a href="https://share.vmiklos.hu/blog/line-rotation-diff-old.png"><figure><img src="https://share.vmiklos.hu/blog/sw-drawingml-line-transform/line-rotation-diff-old.png"><figcaption>3 rotated lines, before: reference is red, Writer result is painted on top of it</figcaption></figure></a></p>
-<p>And the same fix makes it perfect:</p>
-<p><a href="https://share.vmiklos.hu/blog/line-rotation-diff-new.png"><figure><img src="https://share.vmiklos.hu/blog/sw-drawingml-line-transform/line-rotation-diff-new.png"><figcaption>3 rotated lines, after: reference is red, Writer result is painted on top of it</figcaption></figure></a></p>
-<p>Just stick to the rule: scaling goes to the points -- translation, rotation and horizontal shear
-goes to the shape.</p>
-<p>For now, this is only there for toplevel Writer lines, but in-groupshape and Calc/Impress lines
-could also follow this technique if there is a practical need.</p>
-<p>The "after" screenshots show ~no red, which means there is ~no reference output, where the Writer
-output would be missing.</p>
-<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
-<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
-<p>The bugfix commit was <a href="https://git.libreoffice.org/core/commit/6c09c85ec384e88c89bff0817e7fe9889d7ed68e">tdf#161779 DOCX import, drawingML: fix handling of translation for
-lines</a>.</p>
-<p>The tracking bug was <a href="https://bugs.documentfoundation.org/show_bug.cgi?id=161779">tdf#161779</a>.</p>
 <h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
 <p>You can get a development edition of Collabora Online 24.04 and try it out yourself right now: <a href="https://www.collaboraoffice.com/code/">try
 the development edition</a>.  Collabora intends to continue

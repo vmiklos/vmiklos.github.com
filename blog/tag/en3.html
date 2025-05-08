@@ -59,6 +59,90 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sw-floattable7.html">Multi-page floating tables in Writer: overlap control, border and footnotes</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Fri 01 September 2023</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 4 minutes</p>
+  </div>
+  <div class="article_text">
+    <p>This post is part of a series to describe how Writer now gets a feature to handle tables that are
+both floating and span over multiple pages.</p>
+<p>This work is primarily for <a href="https://www.collaboraoffice.com/">Collabora Online</a>, but is useful on
+the desktop as well. See the <a href="https://vmiklos.hu/blog/sw-floattable6.html">sixth post</a> for the previous part.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>The current post features sub-tasks for the multi-page floating table work that is around an
+explicit table overlap control that Word has (and Writer lacked so far), compatible border rendering
+of split tables and having footnotes in floating tables, which was not working previously.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>Regarding testing, the core.git repository has 60 files now which are focusing on correct
+handling of floating tables (filename matching <code>floattable-|floating-table-</code>). This doesn't count
+cases where the document model is built using C++ code in the memory and then we assert the result
+of some operation.</p>
+<p>Here are some screenshots from the fixes this month:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-floattable7/2023-08-02-floattable-edit-dummy-text.png"><figure><img src="https://share.vmiklos.hu/blog/sw-floattable7/2023-08-02-floattable-edit-dummy-text.png"><figcaption>Old, new and reference rendering after expanding an autotext.</figcaption></figure></a></p>
+<p>The first screenshot shows a case where the anchor paragraph of a floating table had some autotext
+(e.g. "dt", which stands for dummy text), and pressing the relevant shortcut (F3) expands that
+autotext with the actual content. This includes changing the anchor position of the floating table,
+which lead to overlapping text. (A multi-page floating table has multiple anchors, we have to make
+sure we don't set all of them to the new value as-is.)</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-floattable7/2023-08-10-floattable-overlap-never.png"><figure><img src="https://share.vmiklos.hu/blog/sw-floattable7/2023-08-10-floattable-overlap-never.png"><figcaption>Old, new and reference rendering of tables with the overlap=never markup.</figcaption></figure></a></p>
+<p>The next screenshot shows a case where two tables are positioned in a way that they would overlap.
+Word has a flag that asks the layout to still re-position the second table so the overlap doesn't
+happen, and now Writer supports this as well.</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-floattable7/2023-08-16-floattable-duplicated.png"><figure><img src="https://share.vmiklos.hu/blog/sw-floattable7/2023-08-16-floattable-duplicated.png"><figcaption>Old, new and reference rendering of duplicated anchor text.</figcaption></figure></a></p>
+<p>This screenshot shows a bug where the anchor text on the first page was also duplicated on the
+second page. Now we properly start the anchor text on the last page of the floating table, like Word
+does.</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-floattable7/2023-08-21-floattable-split-border.png"><figure><img src="https://share.vmiklos.hu/blog/sw-floattable7/2023-08-21-floattable-split-border.png"><figcaption>Old, new and reference rendering of a multi-page floating table with borders.</figcaption></figure></a></p>
+<p>What you can see is a floating table that has 2 pages, but simply a split of the table would result
+in no bottom border on the first page and no top border for the second, like perhaps you would
+expect it, matching Word. This is now fixed, the layout infers the border style in those cases
+correctly.</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-floattable7/2023-08-24-floattable-footnote.png"><figure><img src="https://share.vmiklos.hu/blog/sw-floattable7/2023-08-24-floattable-footnote.png"><figcaption>Old, new and reference rendering of a footnote in a floating table.</figcaption></figure></a></p>
+<p>The last screenshot shows a mini-feature: it was possible to float tables and to have footnotes in
+tables, but not both at the same time. The screenshot shows a case where a floating table is
+needed, so a specific paragraph is <em>above</em> the table. But we couldn't float the table, because
+it had a footnote and that would be lost as-is. Now you can have a correct position for that
+paragraph and the footnote is there as well, at the same time.</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>As usual, the high-level problem was addressed by a series of small changes:</p>
+<ul>
+<li><a href="https://git.libreoffice.org/core/commit/2b401b7c0322d9ff972d252208ebe9a77913778d">tdf#156350 sw floattable: fix bad additional draw:frame in ODT with layout</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/073072f0a3abacfe4f9cc920b8138d7abc84db70">tdf#156260 sw floattable: avoid overlapping flys on anchor change</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/b6a22e2be79cd874c7526107a6793fae692620dc">tdf#156260 sw floattable: avoid moving text from the last anchor to its precede</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/f151ba5ebc8662d5459eacb1c5d6f01a4c826f26">sw floattable: simplify collecting frames at node with layout</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/107de1a2c6882213cf0ef6783417302f43cdada0">tdf#156349 sw floattable: fix caption insert for tables inside split fly frames</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/c545a0729e89ee2e8f14534b77422cc9eb4eb7cf">sw floattable, crashtesting: fix PDF export of tdf73201-1.docx</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/0d571ff8079f858a5650bf6cbb38296d22cc58e1">tdf#156589 sw floattable: fix follow fly moving inside a table on the next page</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/d3a0ff741f5a7ff0dcec301e5b34ee9d638acf98">sw floattable: import w:tblOverlap w:val="never" from DOCX</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/905962db870e9d1cf1dcf3bd1be44c347cddafe1">sw floattable: handle AllowOverlap==false in the layout</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/5af44a176d2a738dd7523713202aeee27c5578b6">sw floattable: export w:tblOverlap w:val=never to DOCX</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/d44af60677740b151305799a4325d0f0699fce66">sw floattable: handle AllowOverlap==false in the DOC filter</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/68c8466dd80e7a964e1377ee3e0308dc449fbf2d">sw floattable: handle AllowOverlap==false in the RTF filter</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/1cf29168840f84c2e946e2678b99988e83503c96">tdf#156682 sw floattable: fix missing del of master anchor para por on split</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/53798fef2cc0b5b0b9706081a4af5ceca964a41b">Related: tdf#156351 sw floattable: fix missing top border in follow table</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/08aea5526c75ff4c5385e960bd940f10ffa19cd5">tdf#156351 sw floattable: fix missing bottom border in master table</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/56da1d30afe48cc4acd79567052a575e81f8c7a0">tdf#77760 sw floattable: add support for footnotes, doc model</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/f8e1a62f944e5358fe498008b4ff8701f1e190a0">tdf#77760 sw floattable: add support for footnotes, layout</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/178421a6c719dac9c16f220b76292fec16a53f60">tdf#77760 sw floattable: add support for footnotes, DOCX import</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/2e1ddc8aeb0a92cc43ef4b7dc4762cd50a6b7fbc">sw floattable: don't split if anchored inside a footnote</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/c7b59c9484ae6ff88cd8d7017aeb83b02e212c9c">tdf#77760 sw floattable: add support for footnotes, DOC import</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/739597df38dcaab0460482e3bc3f18f2471d43ab">tdf#77760 sw floattable: add support for footnotes, UI</a></li>
+</ul>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a snapshot / demo of Collabora Office 23.05 and try it out yourself right now: <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try the
+unstable snapshot</a>.  Collabora
+intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
+of this work will be available in TDF's next release too (24.2).</p>
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/sw-floattable6.html">Multi-page floating tables in Writer: hidden anchors and more</a></h1>
   </div>
   <div class="article_meta">
@@ -1322,70 +1406,6 @@ using:</p>
 <li><a href="https://git.libreoffice.org/core/commit/175e514c93b3696faa8c331c8b8f56e832ceb4c1">Related: tdf#54053 PDF export: add UNO API to customize the watermark font size</a></li>
 <li><a href="https://git.libreoffice.org/core/commit/d1dd9b9733511ff451e264169537c08fa14c574f">Related: tdf#54053 PDF export: add UNO API to customize the watermark font name</a></li>
 <li><a href="https://git.libreoffice.org/core/commit/574db5efa9a2ab6d70faedf538be77a1eb8c597b">Related: tdf#54053 PDF export: add UNO API to customize the watermark rotation</a></li>
-</ul>
-<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
-<p>You can get a snapshot / demo of Collabora Office 22.05 and try it out yourself right now: <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try the
-unstable snapshot</a>.  Collabora
-intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF's next release too (7.5).</p>
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/sw-content-controls5.html">Content controls in Writer: titles and tags</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Thu 03 November 2022</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 3 minutes</p>
-  </div>
-  <div class="article_text">
-    <p>Writer now supports titles and tags for content controls, which helps providing context for the
-filled in text even if the placeholder text is replaced already.</p>
-<p>This work is primarily for <a href="https://www.collaboraoffice.com/">Collabora Online</a>, see <a href="https://vmiklos.hu/blog/sw-content-controls4.html">the previous
-post</a> for background.</p>
-<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
-<p>
-<figure><img src="https://share.vmiklos.hu/blog/sw-content-controls5/content-control-alias.png"><figcaption>Rendering of a title for a content control</figcaption>
-</figure>
-</p>
-<p>Once several content controls are added to a document, it's easy to forget what was the exact
-purpose of what content control. Think of a press release for example – those regularly start with
-a location and a date, but once this information is provided, one no longer knows which content
-control was for which content.</p>
-<p>Titles solve this problem for the user: similar to Writer's header/footer buttons, this button
-appears when you enter the content control and reminds you what content is expected there, even if
-the placeholder is already replaced.</p>
-<p>Tags serve a similar purpose, but they are unique, machine-readable keys or identifiers, so once the
-form is filled in, an external consumer can easily extract the information from the document, given
-a specific tag.</p>
-<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
-<p>Titles (also known as aliases) and tags are now not only preserved, but also we have a UI to create,
-show, edit and delete them. This is available in the desktop rendering and also in the LOK API.</p>
-<p>Somewhat related, in case a content control breaks into multiple lines or has formatting to break
-into multiple text portions, we now only emit one PDF widget for it, taking the description of the
-widget from the content control's title.</p>
-<p>The last related improvement is that now we handle data binding for date content controls, which
-means that you can specify a timestamp, a language and a date format, and we'll format that
-timestamp and update the content control's string value at import time from DOCX.</p>
-<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
-<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
-<p>As usual, the high-level problem was addressed by a series of small changes:</p>
-<!-- s/\([^ ]\+\) \(.*\)/- [\2](https:\/\/git.libreoffice.org\/core\/commit\/\1)/g -->
-
-<ul>
-<li><a href="https://git.libreoffice.org/core/commit/481a082469802ffce08cd8c110e715260015eb97">sw content controls: preserve alias</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/5262aab9d220675f616579720b4bb43ee03cccfb">sw content controls: preserve tag</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/a70f5f141c1e6013abb4c1b3219e017b2eea40a8">sw content controls: emit only one PDF widget for multiple text portions</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/b138d6c12aaeb0b87dce15ea52dd134cf1abf6ac">tdf#151190 sw content controls: make them read-write in protected sections</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/1a94cd8257ef4c462eaaa6d49bf4f26c9ac56a5e">sw content controls: add rendering for the alias</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/888a8c3ca70ed19309c15ff7b9f0968ece337cb5">sw content controls, alias and tag: add ODT filter</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/add110bad816fadeb96e7af0d4689389c04c263e">sw content controls, alias and tag: add UI</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/e368d26a7f24dc25f3d855511baabc128bc151e6">sw content controls, alias: add LOK API</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/122419be4f7bf576f7db5456b8b6b1f6f700487f">sw content controls, alias: add PDF export</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/58002ab85d992c7ac44d8bb4d135246b67aa5cc7">sw content controls: enable data binding for date</a></li>
 </ul>
 <h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
 <p>You can get a snapshot / demo of Collabora Office 22.05 and try it out yourself right now: <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try the
