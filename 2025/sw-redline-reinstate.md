@@ -7,10 +7,7 @@ Date: 2025-05-08T08:44:48+02:00
 Writer has the concept of rejecting tracked changes: if a proposed insertion or deletion is not
 wanted, then one can reject it to push back on the proposal. So far such an action left no trace in
 the document, which is sometimes not wanted. Calling reinstate on a change behaves like reject, but
-with history: it reinstates the original, with the rejected change preserved as deletion.
-
-Reinstating a change behaves like reject, but with
-history.
+with history: it reinstates the original state, with the rejected change preserved in the document.
 
 This work is primarily for [Collabora Online](https://www.collaboraonline.com/), but the feature is
 available in desktop Writer as well.
