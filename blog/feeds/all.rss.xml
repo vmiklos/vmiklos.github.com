@@ -1,5 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>What is Miklos hacking</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Thu, 08 May 2025 08:44:48 +0200</lastBuildDate><item><title>Reinstate for tracked changes in Writer</title><link>https://vmiklos.hu/blog/sw-redline-reinstate.html</link><description>&lt;p&gt;Writer has the concept of rejecting tracked changes: if a proposed insertion or deletion is not
+<rss version="2.0"><channel><title>What is Miklos hacking</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Mon, 02 Jun 2025 13:54:44 +0200</lastBuildDate><item><title>Interdependent tracked changes improvements in Writer</title><link>https://vmiklos.hu/blog/sw-interdependent-redline-improvements.html</link><description>&lt;p&gt;Writer has some support for interdependent (or hierarchical) tracked changes: e.g. the case when you
+have a delete on top of an insert. While there were some working cases, handling of many
+combinations were missing. I started to make systematic improvements in this area in the recent
+past, this post gives you an overview what's done so far.&lt;/p&gt;
+&lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraonline.com/"&gt;Collabora Online&lt;/a&gt;, but the feature is
+available in desktop Writer as well.&lt;/p&gt;
+&lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;DOCX files in Word can often have overlapping tracked changes: Writer tries to split these up to
+make sure there is only one tracked change under the cursor at the same time. Still, it's possible
+that you have a tracked change with multiple types: e.g. a delete on top of an insert.&lt;/p&gt;
+&lt;p&gt;The focus in on 3 combinations which appear in DOCX files a lot: "insert, then delete", "insert,
+then format" and "delete, then format".&lt;/p&gt;
+&lt;p&gt;This mostly affects the UI and import/export filters of ODT and DOCX.&lt;/p&gt;
+&lt;h2 id="results-so-far"&gt;Results so far&lt;a class="headerlink" href="#results-so-far" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Given an insert, then delete:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements/ins-then-del.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements/ins-then-del.png"&gt;&lt;figcaption&gt;Interdependent tracked change: insert, then delete&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Most operations worked nicely here, but in case your cursor was in the middle of AAA and you did a
+reject, followed by an undo, proper handling of that was missing, now implemented.&lt;/p&gt;
+&lt;p&gt;But then given an insert, then a format:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements/ins-then-fmt.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements/ins-then-fmt.png"&gt;&lt;figcaption&gt;Interdependent tracked change: insert, then format&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Then a handling of more actions were missing:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;DOCX import is now implemented.&lt;/li&gt;
+&lt;li&gt;ODT import is now implemented.&lt;/li&gt;
+&lt;li&gt;Accepting when you're inside AAA is now implemented: the insert is accepted for BBB but the
+   format stays unchanged.&lt;/li&gt;
+&lt;li&gt;Rejecting when you're inside AAA is now implemented: the insert is rejected and BBB is also
+   removed, together with the format on top of it.&lt;/li&gt;
+&lt;li&gt;Accepting the BBB now correctly operates on the insert type, so the format type remains after
+   accept.&lt;/li&gt;
+&lt;li&gt;If you accept BBB, now the surrounding AAA and CCC also get accepted as well, as expected.&lt;/li&gt;
+&lt;li&gt;Now if you reject BBB, then it gets removed from the document, since you rejected an insert.&lt;/li&gt;
+&lt;li&gt;When you reject BBB, the surrounding AAA and CCC also get rejected.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;The combined implementation of these should give you a smooth feeling in case you're used to how
+Word works: if there is a format redline combined with an insert, then the operations act on the
+insert type, and format is only accepted/rejected when there is no insert "under" the format.&lt;/p&gt;
+&lt;p&gt;Similarly: it's a bit of an implementation detail that Writer splits redlines on DOCX import: so if
+you e.g. accept AAA then we combine that with BBB and CCC when it makes sense, so you need to click
+a lot less.&lt;/p&gt;
+&lt;p&gt;Finally, given a delete, then a format:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements/del-then-fmt.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements/del-then-fmt.png"&gt;&lt;figcaption&gt;Interdependent tracked change: delete, then format&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Then again handling of some actions were missing:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;DOCX import is now implemented.&lt;/li&gt;
+&lt;li&gt;ODT import is now implemented.&lt;/li&gt;
+&lt;li&gt;ODT export is now implemented.&lt;/li&gt;
+&lt;li&gt;Accepting AAA now correctly operates on the delete type of BBB.&lt;/li&gt;
+&lt;li&gt;Rejecting AAA now correctly operates on the delete type of BBB.&lt;/li&gt;
+&lt;li&gt;Accepting BBB now correctly works with the delete type.&lt;/li&gt;
+&lt;li&gt;Accepting BBB now correctly tries to also accept AAA and CCC, too.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;The current state is not yet complete, but it's a big improvement over what we had in the past,
+which was mostly focusing on just "insert, then delete".&lt;/p&gt;
+&lt;p&gt;You may wonder what about some other cases: if you insert some content with change tracking, that
+always creates a new tracked change, so "insert" is never on top of something else. Similarly,
+format is always on top of something. Finally the same type is never on top of itself.&lt;/p&gt;
+&lt;h2 id="how-is-this-implemented"&gt;How is this implemented?&lt;a class="headerlink" href="#how-is-this-implemented" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;If you would like to know a bit more about how this works, continue reading... :-)&lt;/p&gt;
+&lt;p&gt;As usual, the high-level problem was addressed by a series of small changes. Core side:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/096a40b27d07603880bbf120440ac169a87fe115"&gt;tdf#166319 sw interdependent redlines: fix undo of del on top of ins&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/ca7a6a57ad1e8d7aadffbbf3fe28d9aabed31286"&gt;tdf#166319 sw interdependent redlines: handle format on top of insert&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/8e85d559a68f980d99af4ded6a91b7f0458048b9"&gt;tdf#166319 sw interdependent redlines: handle accept of insert under format&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/3c039cb31239ba01e3d3b56c526bdb7ba6446032"&gt;tdf#166319 sw interdependent redlines: handle reject of insert under format&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/96faaaf83a1c8b897ce675d175b4d8756d0ea0df"&gt;tdf#166319 sw interdependent redlines: handle accept of delete under format&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/97066d4f5a89ad89d81a45c0b20ce404f9712fc7"&gt;tdf#166319 sw interdependent redlines: fix DOCX export of delete under format&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/d659f4b12a24e275e38ec5aa7406c32c9fa08c48"&gt;tdf#166319 sw interdependent redlines: handle reject of delete under format&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/ff110bb17b7e003bd205438af94badabeca007c6"&gt;tdf#166319 sw interdependent redlines: handle ODF import of insert under format&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/1a340196237ed075b337e6a0ac9f8a45132053bb"&gt;tdf#166319 sw interdependent redlines: handle ODF export of delete under format&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/08acfb815745e7f43ca43557feefcb68607d26c1"&gt;tdf#166319 sw interdependent redlines: handle ODF import of delete under format&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/8cabdef0b34210d026ea7a8229f321e272a49109"&gt;tdf#166319 sw interdependent redlines: handle accept of ins-then-fmt's fmt&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/2292bda37378d7f782abbda42c026affd3fa59e5"&gt;tdf#166319 sw interdependent redlines: combine on accept of ins-then-fmt's fmt&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/b6cba0119f8028b426f5eee55be9761971dbfdee"&gt;tdf#166319 sw interdependent redlines: handle reject of ins-then-fmt's fmt&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/15bd73a093f1f944d504cf555918ca9e60d75c03"&gt;tdf#166319 sw interdependent redlines: combine on reject of ins-then-fmt's fmt&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/5fedce78c8d79a3e86307523c3d74c7df98668f7"&gt;tdf#166319 sw interdependent redlines: handle accept of del-then-fmt's fmt&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/98f0b23a48246507ced6de5b54d327d95f1725f9"&gt;tdf#166319 sw interdependent redlines: combine on accept of del-then-fmt's fmt&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/569eb476bbdf83aab0f377da5cb7d2e8c77192b8"&gt;tdf#166319 sw interdependent redlines: handle reject of del-then-fmt's fmt&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="want-to-start-using-this"&gt;Want to start using this?&lt;a class="headerlink" href="#want-to-start-using-this" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;You can get a development edition of Collabora Online 25.04 and try it out yourself right now: &lt;a href="https://www.collaboraonline.com/code/"&gt;try
+the development edition&lt;/a&gt;.  Collabora intends to continue
+supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
+available in TDF's next release too (25.8).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Mon, 02 Jun 2025 13:54:44 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2025-06-02:/blog/sw-interdependent-redline-improvements.html</guid><category>libreoffice</category><category>en</category></item><item><title>Reinstate for tracked changes in Writer</title><link>https://vmiklos.hu/blog/sw-redline-reinstate.html</link><description>&lt;p&gt;Writer has the concept of rejecting tracked changes: if a proposed insertion or deletion is not
 wanted, then one can reject it to push back on the proposal. So far such an action left no trace in
 the document, which is sometimes not wanted. Calling reinstate on a change behaves like reject, but
 with history: it reinstates the original state, with the rejected change preserved in the document.&lt;/p&gt;
@@ -584,40 +667,4 @@ sending the paste command to getting the first updated tile) is a decrease in re
 &lt;p&gt;You can get a development edition of Collabora Online 24.04 and try it out yourself right now: &lt;a href="https://www.collaboraonline.com/code/"&gt;try
 the development edition&lt;/a&gt;.  Collabora intends to continue
 supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
-available in TDF's next release too (25.2).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Tue, 03 Sep 2024 08:08:13 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2024-09-03:/blog/sw-anyinput-lok.html</guid><category>libreoffice</category><category>en</category></item><item><title>Improved font fallback in the DOCX import of Writer</title><link>https://vmiklos.hu/blog/sw-improved-font-falback.html</link><description>&lt;p&gt;Writer now has improved support for font fallback when you open a DOCX file that refers to fonts
-which are not available currently.&lt;/p&gt;
-&lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraoffice.com/"&gt;Collabora Online&lt;/a&gt;, but the feature is
-fully available in desktop Writer as well.&lt;/p&gt;
-&lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;Font embedding is meant to solve the problems around missing fonts, but you can also find documents
-with stub embedded fonts that are to be ignored and our code didn't have any sanity check on such
-fonts, leading to unexpected glyph-level fallbacks. Additionally, once font-level fallback happened,
-we didn't take the font style (e.g. sans vs serif) into account, which is expected to work when
-finding a good replacement for the missing font.&lt;/p&gt;
-&lt;h2 id="results-so-far"&gt;Results so far&lt;a class="headerlink" href="#results-so-far" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;Here is how to the original rendering looked like:&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-improved-font-falback/old.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-improved-font-falback/old.png"&gt;&lt;figcaption&gt;Bugdoc, before: ugly glyph-level fallback&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Once the handler for the embedded fonts in ODT/DOCX was improved to ignore stub fonts where even
-basic glyphs were not available, the result was a bit more consistent, but still bad. Here is a
-different document to show the problem:&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-improved-font-falback/first.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-improved-font-falback/first.png"&gt;&lt;figcaption&gt;Bugdoc, first improvement: no glyph fallback but the result is sans&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Note how now we used the same font, but the glyphs are always sans, not serif. So the final step was
-to import the font type from DOCX and consider that while deciding font fallback:&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-improved-font-falback/second.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-improved-font-falback/second.png"&gt;&lt;figcaption&gt;Bugdoc, second improvement: no glyph fallback and the result is sans / serif&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;With this, we ignore stub embedded fonts from DOCX, we import the font type and in general font
-fallback on Linux takes the font type into account while deciding font fallback.&lt;/p&gt;
-&lt;h2 id="how-is-this-implemented"&gt;How is this implemented?&lt;a class="headerlink" href="#how-is-this-implemented" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;If you would like to know a bit more about how this works, continue reading... :-)&lt;/p&gt;
-&lt;p&gt;As usual, the high-level problem was addressed by a series of small changes:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/a9f3c11375525a7708378dd3648febc40db1ad20"&gt;tdf#162002 DOCX import: ignore subsetted embedded fonts for editing&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/09da7fd9cec9b36f2e09c1105a9263b83e2c66e4"&gt;tdf#162002 DOCX import, font embed: only discard subset fonts with few glyphs&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/6dfac38bacd449c64a13363797b56aff49cf8f52"&gt;tdf#162072 vcl, fontconfig: consider font-family-generic for substitute&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/d06de2e049761b7b9e8a95f17557d309812f7acc"&gt;Related: tdf#162072 DOCX import: handle font family for characters&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/ef1870810ec8c069e26538fd7626ad0656bed276"&gt;tdf#162280 vcl: consider font family type for glyph caching&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id="want-to-start-using-this"&gt;Want to start using this?&lt;a class="headerlink" href="#want-to-start-using-this" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;You can get a development edition of Collabora Online 24.04 and try it out yourself right now: &lt;a href="https://www.collaboraoffice.com/code/"&gt;try
-the development edition&lt;/a&gt;.  Collabora intends to continue
-supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
-available in TDF's next release too (24.8).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Wed, 07 Aug 2024 09:05:24 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2024-08-07:/blog/sw-improved-font-falback.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
+available in TDF's next release too (25.2).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Tue, 03 Sep 2024 08:08:13 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2024-09-03:/blog/sw-anyinput-lok.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>

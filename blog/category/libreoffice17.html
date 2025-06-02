@@ -61,6 +61,114 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/ooxmltok.html">Cleanup of ooxmltok in LibreOffice</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Thu 28 August 2014</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 3 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div style="text-align: center; font-size: 0.6em;">
+<img src="https://lh4.googleusercontent.com/-GipHI6c2dSM/U_8TTB9IzUI/AAAAAAAAExA/LVMQpNezkus/s400/"/>
+<p>(via <a href="https://www.flickr.com/photos/aigle_dore/7356881428/">aigle_dore</a>)</p>
+</div>
+<div class="paragraph"><p>In June, we
+<a href="http://article.gmane.org/gmane.comp.documentfoundation.libreoffice.qa/7272">decided</a>
+to get rid of XSLT usage in writerfilter, the module responsible for RTF and
+DOCX import in LibreOffice. As usual with cleaning up mess, this took time
+(about two months), but I&#8217;m now happy to say that I&#8217;m mostly done with this.
+:-)</p></div>
+<div class="paragraph"><p>See <a href="https://vmiklos.hu/blog/doctok.html">the doctok blog post</a> for some
+background, the topic here was to clean up the OOXML tokenizer, that is that
+building block that turns a zipped XML document into a token stream.</p></div>
+<div class="paragraph"><p>The following problems are now solved:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Part of the module was generated code, the generator was implemented mostly
+  in XSLT, but some bits were written in Perl and sed. About 4200 lines of
+  XSLT code is now rewritten in Python, in about 1300 lines.
+</p>
+</li>
+<li>
+<p>
+Given that we have much more developers who speak Python, compared to XSLT,
+  nontrivial changes are now much easier in the generator: Jan Holesovsky
+  <a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=c74de6c2e29a16fb4a458816cd17fa678edd16e7">cleaned
+  up</a> <code>boost::unordered_map</code> usage at places where we depended on the order of
+  elements. (Yes, you read it correctly, that was the situation up till now!)
+  This also helps reducing the size of the resulting writerfilter shared library.
+</p>
+</li>
+<li>
+<p>
+The input of the code generator was the large <code>model.xml</code> file, and
+  generator scripts only extracted interesting information from it, so if you
+  mistyped something, you got no error messages, just silent failures. I&#8217;ve
+  removed quite some XML elements and attributes from it which were parsed by
+  none of the generator scripts and written a
+  <a href="http://opengrok.libreoffice.org/xref/core/writerfilter/documentation/ooxml/model.rng">relax-ng
+  schema</a> for the remaining markup. Validating against this schema is part of
+  the default build, so no more typos without a build failure. ;-)
+  (The schema also contains quite some documentation, finally.)
+</p>
+</li>
+<li>
+<p>
+A gperf hash of all possible OOXML elements / attribute names were
+  duplicated in writerfilter, even if that information was already available
+  from the oox module. This is now fixed, reducing the size of the shared
+  library even further.
+</p>
+</li>
+<li>
+<p>
+Also, both oox and writerfilter had a list of namespace URL&#8217;s, mapping them
+  to an integer enumeration, and when the two lists didn&#8217;t match, Bad Things
+  happened (read: usually resulted in a crash.) This is the past, I&#8217;ve
+  refactored writerfilter to use the same namespace alias names as oox, and this
+  allowed to get rid of the writerfilter copy of the namespace alias list. So in
+  the future, if new namespaces have to added, only oox has to be extended.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Oh and the bonus feature: I&#8217;ve implemented a script called
+<a href="http://opengrok.libreoffice.org/xref/core/writerfilter/qa/ooxml/watch-generated-code.sh">watch-generated-code.sh</a>,
+which can record a good state of the generated code, and then compare later
+generated results against that, so that refactoring of the generator can now be
+performed in a safe way: you can change the generator in any way to make it
+better, and still avoid accidental output changes. :-) This is particularly
+useful, as it only diffs the end result of the whole generation process (cxx
+and hxx files), not temporarily files, which are OK to change, as long as the
+end result is the same.</p></div>
+<div class="paragraph"><p>As a conclusion, here are sizes of a stripped dbgutil version of the
+writerfilter shared library, from the libreoffice-4-3-branch-point and today&#8217;s
+master:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>$ git checkout oldest
+HEAD is now at b3130c8... 2014-05-21
+vmiklos@o9010:~/git/libreoffice/daily$ ls -lh opt/program/libwriterfilterlo.so
+-rwxr-xr-x 1 vmiklos users 8,3M aug   28 14:00 opt/program/libwriterfilterlo.so
+$ git checkout master
+Switched to branch 'master'
+vmiklos@o9010:~/git/libreoffice/daily$ ls -lh opt/program/libwriterfilterlo.so
+-rwxr-xr-x 1 vmiklos users 6,1M aug   28 14:01 opt/program/libwriterfilterlo.so</code></pre>
+</div></div>
+<div class="paragraph"><p>Again, the 8,3MB &#8594; 6,1MB size reduction is mostly thanks to Kendy&#8217;s map cleanups + the
+duplicated gperf hash going away. :-)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/so-many-bugs.html">So many bugs</a></h1>
   </div>
   <div class="article_meta">
@@ -824,69 +932,6 @@ DOCX export, RTF import/export and binary DOC import/export filters.</p></div>
 and
 <a href="http://cgit.freedesktop.org/libreoffice/core/tree/sw/qa/extras/ww8export/data/comments-nested.doc">DOC</a>
 samples to play with.</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/fosdem2014.html">InteropGrabBag in LibreOffice Writer</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Thu 06 February 2014</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://speakerdeck.com/vmiklos/interopgrabbag-in-libreoffice-writer">
-<img src="https://lh5.googleusercontent.com/-XoQPls8ulH4/UvOP_KUNG8I/AAAAAAAAEA0/BSJLDOfvLUA/s400/interopgrabbag-fosdem-brussels-2k14-0.jpg" alt="https://lh5.googleusercontent.com/-XoQPls8ulH4/UvOP_KUNG8I/AAAAAAAAEA0/BSJLDOfvLUA/s400/interopgrabbag-fosdem-brussels-2k14-0.jpg" />
-</a>
-</div>
-</div>
-<div class="paragraph"><p>I&#8217;ve arrived home yesterday from Brussels where I
-<a href="https://fosdem.org/2014/schedule/event/interopgrabbag_in_libreoffice_writer/">presented</a>
-at FOSDEM 2014, in the
-<a href="https://fosdem.org/2014/schedule/track/open_document_editors/">Open document
-editors devroom</a>.</p></div>
-<div class="paragraph"><p>We also had a
-<a href="https://wiki.documentfoundation.org/Hackfest/FOSDEM2014">Hackfest</a>, kindly
-hosted by <a href="http://www.betacowork.com/">Betacowork</a> on Monday and Tuesday.</p></div>
-<div class="paragraph"><p>Here are a few talks I enjoyed, not counting the LibreOffice ones:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-<a href="https://fosdem.org/2014/schedule/event/simplifying_reuse_with_metadata_support_in_odf_and_plugin_apis/">Simplifying
-  reuse with metadata support in ODF and plugin APIs</a>&#8201;&#8212;&#8201;finally a simple way
-  to copy&amp;paste images from Firefox to LibreOffice with source attribution.
-</p>
-</li>
-<li>
-<p>
-<a href="https://fosdem.org/2014/schedule/event/valgrind_gdb/">Combining the power of
-  Valgrind and GDB</a>&#8201;&#8212;&#8201;useful to know about this possibility
-</p>
-</li>
-<li>
-<p>
-<a href="https://fosdem.org/2014/schedule/event/usecasesclangcppparser/">Two uses
-  cases for the clang C++ parser: Online Code Browser and Qt moc Replacement.</a>
- &#8201;&#8212;&#8201;maybe the first could replace our crappy Java-based opengrok? We&#8217;ll see.
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>I was also happy to meet Jacobo, Matus, Tim and Tomaž finally personally. :-)</p></div>
-<div class="paragraph"><p>Quite some other slides are now available on
-<a href="http://planet.documentfoundation.org/">Planet</a>, don&#8217;t miss them. I also took
-some pictures, available
-<a href="https://www.flickr.com/photos/vmiklos/albums/72157672332838272">here</a>,
-including photos of all speakers in our devroom.</p></div>
 </div>
 </div>
 

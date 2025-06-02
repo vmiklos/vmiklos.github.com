@@ -58,6 +58,32 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/new-in-git-1-5-6-git-cvsexportcommit-w.html">new in git-1.5.6: git cvsexportcommit -W</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Sat 14 June 2008</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>git-1.5.6 will be released soon (probably in a few weeks) and there are some interesting news in it.</p><p>one of them is the new git cvsimport -W switch which makes it easy to do bi-directional changes between git and cvs.</p><p>to set up your local repo:</p><p><pre>$ CVSROOT=$URL cvs co module
+$ cd module
+$ git cvsimport</pre></p><p>this will do a fresh checkout of the cvs module and will import it to git. you will have two interesting git branch: origin is the "reference" one, you should not touch it, and you can work in master.</p><p>you can commit to master, etc.</p><p>then there are two tricky operations:</p><p>first, you may want to commit back your local commits.</p><p>to do this:</p><p><pre>$ for i in $(git rev-list --reverse origin..master)
+do
+        git cvsexportcommit -W -c -p -u $i
+done</pre></p><p>second, you may want to fetch upstream changes and rebase your local changes on top of them:</p><p><pre>$ git cvsimport -i
+$ git rebase origin</pre></p><p>that's all.</p><p>cookies goes to Dscho in commit <a href="http://git.kernel.org/?p=git/git.git;a=commit;h=d775734c40afed216160437c59a45c93bdf28689">d775734</a>. :)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/interesting-git-talk.html">interesting git talk</a></h1>
   </div>
   <div class="article_meta">
@@ -230,26 +256,6 @@ asszem ez az a film aminek a zenejet mindenki ismeri, hiszen Ennio Morricone dal
     <div id="preamble">
 <div class="sectionbody">
 szokasos. a szo legpozitivabb ertelmeben. ebben is van nehany nagyon eredeti poen, a western szokasos elemei, a jokis bunyok, stb. egyszer eztis erdemes.
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/i-m-feeling-lucky.html">i'm feeling lucky</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Thu 22 May 2008</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-ugye ez az az gomb amit google keresesnel magyarra ugy forditottak, hogy "jo napom van". hat asszem most mind a 2 forditas ervenyes. neha van ilyen. mikor az emberre razudul nehany dolog ami mar onmagaban is jo de igy egyutt aztan tenyleg. fizetesemeles. premium. 2 uj tft a regi crt helyebe :)
 </div>
 </div>
 
