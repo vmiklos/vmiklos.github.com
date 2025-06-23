@@ -1,9 +1,0 @@
-= tegnap orakig kerestem vkit aki
-
-:slug: tegnap_orakig_kerestem_vkit_aki
-:category: regi
-:tags: hu
-:date: 2005-08-09T09:07:09Z
-++++
-tegnap orakig kerestem vkit aki 1 nagyobb perl progibol kiszed nekem 1 fv-t amire szuksegem volt. aztan jelentkezo hijan megneztem mit csinal a fv es ujrairtam bashben :)<br> <br> szal annyi az egesz, h megadsz neki mondjuk 3 parametert: foo bar baz. mind3 telepitett csomag. es ha foo depenbel bar-ra akkor bar-t nem irja ki. tehat pacman -S eretedi_paramterek meg pacman -S kiirt_parametereknek u.az lesz az eredmenye, de igy joval atlathatobb az egesz<br> <br> #!/bin/bash<br> <br> for i in $*<br> do<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; depends="$depends `pacman -Qi $i|grep Depends|sed 's/.* : \(.*\)/\1/'`"<br> done<br> for i in $*<br> do<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if echo $depends|grep -q " $i "; then<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; echo $i<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; fi<br> done<br> <br>
-++++
