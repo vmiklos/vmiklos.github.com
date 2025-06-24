@@ -59,10 +59,10 @@
 
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/heh_mplayer_felhasznalokba_mindig_erdeme.html">heh, mplayer-felhasznalokba mindig erdemes beleolvasni,</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/title-23.html">title 23</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Mon 07 November 2005</p>
+    <p>Posted on: Sun 23 October 2005</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -70,7 +70,8 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-heh, mplayer-felhasznalokba mindig erdemes beleolvasni, most epp <a href="http://mplayerhq.hu/pipermail/mplayer-felhasznalok/2005-November/008684.html" target="_self">ezen</a> rohogok :)
+finally we'are upgraded to the new udev (which have to be done since ages) and which means we have to use cdrom_id instead of cdsymlink.sh to create /dev/{cdrom,cdrw,dvd,dvdrw} and such links
+i hope i didn't break anything :)
 </div>
 </div>
 
@@ -79,10 +80,10 @@ heh, mplayer-felhasznalokba mindig erdemes beleolvasni, most epp <a href="http:/
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/title-28.html">title 28</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/title-22.html">title 22</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Fri 04 November 2005</p>
+    <p>Posted on: Fri 21 October 2005</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -90,7 +91,8 @@ heh, mplayer-felhasznalokba mindig erdemes beleolvasni, most epp <a href="http:/
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-krix and me are now working on rewriting the setup script from scratch in c to get a much more robust (plugin based, using a messages bus, etc) installer. you can reach an initial screenshot <a href="http://frugalware.org/~vmiklos/pics/qemu/setup-ng.png">here</a>
+when we build in chroot, we use fakeroot to prevent build() screw up our chroot, so that if we need to install deps, we use sudo to call pacman. also pacman notices that we're in a fakeroot env and will refuse to install pkgs even we're using sudo. so that we should work around this by temporarily unsetting the FAKEROOTKEY env var. also when we restore it, we should <strong>export</strong> it. that's what i've forgot, and that's why currently iputils and samba is broken. it took some time while i've figured out that's why they're broken :)
+but now pacman is fixed and only the broken pkgs should be rebuilt
 </div>
 </div>
 
@@ -99,10 +101,10 @@ krix and me are now working on rewriting the setup script from scratch in c to g
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/title_3.html">title_3</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/title-21.html">title 21</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Wed 02 November 2005</p>
+    <p>Posted on: Wed 19 October 2005</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -110,7 +112,7 @@ krix and me are now working on rewriting the setup script from scratch in c to g
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-grr, megint rossz villamosra szalltam. szal... mit is akartam irni? ja, tom. megkaptuk ama bizonyos kozgaz zt, amihez nemsok remenyt fuztem es nem buktam meg! :) viszont holnap meg bszbol irunk, ez elvileg a legszivatosabb targyunk. jo, mondjuk erre legalabb felkeszultem :)
+<a href="http://factory.frugalware.org/~boobaa/frugalware_kid.jpg">here</a> is one of boobaa's promotion pictures about his child using Frugalware :)
 </div>
 </div>
 
@@ -119,10 +121,10 @@ grr, megint rossz villamosra szalltam. szal... mit is akartam irni? ja, tom. meg
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/title-27.html">title 27</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/title-20.html">title 20</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Mon 31 October 2005</p>
+    <p>Posted on: Sat 15 October 2005</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -130,9 +132,28 @@ grr, megint rossz villamosra szalltam. szal... mit is akartam irni? ja, tom. meg
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-bmh rewrote the checkpkgs script in python and added some new features. for example i wanted to know which pkgs are not available on i686 (excluding the emulation pkgs):
-<pre>$fst_root/tools/checkpkgs -b -n|grep -v "\[X\] i686"|grep -v emul-</pre>
-nice ;)
+<p>mingw packages arrived!
+namely:
+<pre>mingw-binutils
+mingw-gcc
+mingw-runtime
+mingw-runtime-headers
+mingw-w32api
+mingw-w32api-headers</pre>
+arrived to devel-extra. a sample use of it:
+<pre>$ cat Makefile
+CC = i386-mingw32msvc-gcc -O2 -Wall -mms-bitfields -mwindows</p><p>foo.exe: foo.c
+                $(CC) -o $@ $gt;</pre>
+<pre>$ cat foo.c
+#include <stdio.h></p><p>int main(void)
+{
+        printf("hey!\n");
+        return(0);
+}</pre></p><p><pre>$ make
+i386-mingw32msvc-gcc -O2 -Wall -mms-bitfields -mwindows -o foo.exe foo.c
+$ wine foo.exe
+hey!</pre>
+:)</p><p>update: a <a href="http://ricardo.ecn.wfu.edu/~cottrell/cross-gtk/">related</a> article</p>
 </div>
 </div>
 
@@ -141,10 +162,10 @@ nice ;)
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/title-26.html">title 26</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/title-19.html">title 19</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sat 29 October 2005</p>
+    <p>Posted on: Fri 14 October 2005</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -152,7 +173,10 @@ nice ;)
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-got to update to kernel-2.6.14. what's new? relayfs, fuse, ipw2?00. (there is a quite readable changelog <a href="http://wiki.kernelnewbies.org/LinuxChanges">here</a>) of course the usual pacman -Syu will do everything for you :)
+<p>finally i've got enough time to implement using fakeroot when building in chroot. a simple example about why this is good for us:
+select a pkg and put the <pre>touch /etc</pre> command to the end of build(). in chroot, this will run without any warning, and your chroot will be messed up. with the current fakeroot method:
+<pre>touch: cannot touch `/etc/foo': Permission denied
+==> ERROR: Build Failed.  Aborting...</pre></p><p>yes, that's what we wanted! :)</p>
 </div>
 </div>
 
@@ -161,10 +185,10 @@ got to update to kernel-2.6.14. what's new? relayfs, fuse, ipw2?00. (there is a 
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/title-25.html">title 25</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/title-18.html">title 18</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Fri 28 October 2005</p>
+    <p>Posted on: Thu 13 October 2005</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -172,7 +196,10 @@ got to update to kernel-2.6.14. what's new? relayfs, fuse, ipw2?00. (there is a 
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-so finally openoffice.org-2.0 <a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=frugalware-current;a=darcs_commitdiff;h=20051027210905-e2957-d14e856d9d7e90789a19cad8b8c44c4752dc88e1.gz">hit</a> current, but we're still before the hard work of <a href="http://wiki.frugalware.org/Ooo-langpacks">language pack updating</a> ;)
+3 simple commands for vnc'ing in an ssh tunnel
+(on the server) vncserver (i assume the server is running on :1)
+(on the client) sudo ssh -2 -l vmiklos -L5901:localhost:5901 server.domain.org
+and then vncviewer localhost:1
 </div>
 </div>
 
@@ -181,10 +208,10 @@ so finally openoffice.org-2.0 <a href="http://darcs.frugalware.org/darcsweb/darc
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/title_4.html">title_4</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/title-17.html">title 17</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Thu 27 October 2005</p>
+    <p>Posted on: Tue 11 October 2005</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -192,7 +219,7 @@ so finally openoffice.org-2.0 <a href="http://darcs.frugalware.org/darcsweb/darc
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-Huh, ez durva. Az egy dolog, h minenfajta ejszakazasom ellenere apam rendszeresen meg mindig bennt van a melohelyen mikor en lefexem - reggel meg mikor elmegyek o alszik - de ez mara mar olyan rendszeres, h most ejment 3napra es csak az tunt fel, h idoben hazajott ;)
+crazy <a href="http://frugalware.dyn-o-saur.com/~crazy/LOL.txt">produced</a> the longest gcc4 error i've ever seen :)
 </div>
 </div>
 
@@ -201,10 +228,10 @@ Huh, ez durva. Az egy dolog, h minenfajta ejszakazasom ellenere apam rendszerese
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/aquot_amikor_az_ember_dont_arrol.html">&quot;Amikor az ember dont arrol,</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/title-16.html">title 16</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Wed 26 October 2005</p>
+    <p>Posted on: Mon 10 October 2005</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -212,7 +239,7 @@ Huh, ez durva. Az egy dolog, h minenfajta ejszakazasom ellenere apam rendszerese
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-"Amikor az ember dont arrol, hogy kinek/mennyiert dolgozik erdemes a kovetkezoket is beleszamolni:<br>  -ismert ceg-e, tehat "utos"-e a referencia<br>  -kotetlen-e a munka, vagy percre pontosan kell erkezni<br>  -azt csinalja-e az ember amit szeret, tehat a hobbijaert fizetik-e, vagy fogkefevel tisztit-e WC-t:)<br>  -a munka soran tanul/tapasztal-e olyan dolgokat, amiket kesobb hasznalhat<br>  -hozzaferhet/hasznalhatja-e (van-e joga) azokhoz az altala letrehozott "ertekekhez", amik a munkaja nyoman keletkeztek.<br>  -milyen emberekbol all a kolletiva/fonokseg/vevok mennyi faszsagot kell elviselni munka kozben.<br>  -mennyi jarulekos idot vesz el a munkaba jaras (ezt nem fizetik meg, de elveszik)"<br> <br> huh, nem hulye ember ez az <a href="http://andrej.initon.hu/blog/index.html" target="_self">anr</a>
+just finished generating all the <a href="ftp://ftp.frugalware.org/pub/frugalware/frugalware-0.3-iso/">images</a> for the 0.3 release if everything works fine, then those will be the final images
 </div>
 </div>
 
@@ -221,10 +248,10 @@ Huh, ez durva. Az egy dolog, h minenfajta ejszakazasom ellenere apam rendszerese
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/duh_megint_5napja_nemirtam.html">duh, megint 5napja nemirtam</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/title-15.html">title 15</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Wed 26 October 2005</p>
+    <p>Posted on: Sat 08 October 2005</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -232,7 +259,7 @@ Huh, ez durva. Az egy dolog, h minenfajta ejszakazasom ellenere apam rendszerese
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-duh, megint 5napja nemirtam. szal most fogunk kozgaz zht irni, kiv. vok milyen lesz. 1reszt mindenki azt mondja, h nevettseges az egesz, viszont emellett ugye kb kozom sincs a temahoz. szal nem 1ertelmu, h ebbol mi fog kisulni ;)<br>
+ads @ <a href="http://wiki.frugalware.org/">wiki.fw.org</a>. let's try out this, hopefully we can buy more hardware to the project if this thing will be successfull
 </div>
 </div>
 
@@ -241,10 +268,10 @@ duh, megint 5napja nemirtam. szal most fogunk kozgaz zht irni, kiv. vok milyen l
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/title-24.html">title 24</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/title-1.html">title 1</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Wed 26 October 2005</p>
+    <p>Posted on: Fri 07 October 2005</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -252,7 +279,7 @@ duh, megint 5napja nemirtam. szal most fogunk kozgaz zht irni, kiv. vok milyen l
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-krix and janny are doing a great job and so the openoffice.org-2.0 package will hit -current soon. one of the main problems was that (primarily for speed and for being able not to use commercial softwares) we build ooo without java support which means currently that one can't save as .sxw or .odt (.doc works fine :P) it <a href="https://bugzilla.novell.com/show_bug.cgi?id=130220">turned out</a> that it's a known bug and now we have a workaround for it. after some time martink@#<a href="mailto:go-oo@freenode">go-oo@freenode</a> <a href="http://www.openoffice.org/nonav/issues/showattachment.cgi/30826/nojava-fix.diff">prepared</a> a fix. the gentoo m8r suka just started a test build with it, if it will work, we can replace our current workaround with that proper fix
+as ironiq <a href="http://blogs.frugalware.org/ironiq/2005/09/23/p29">mentioned</a> above, the spannish translation has been <a href="http://frugalware.org/~vmiklos/pics/qemu/es.png">merged</a> :)
 </div>
 </div>
 
