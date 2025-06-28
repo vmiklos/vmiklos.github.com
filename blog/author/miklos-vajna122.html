@@ -59,10 +59,10 @@
 
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/hm_hat_nezzuk.html">hm, hat nezzuk</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/siwenna-digg.html">Siwenna @ digg</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Mon 02 October 2006</p>
+    <p>Posted on: Thu 14 September 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -70,7 +70,7 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-hm, hat nezzuk. az utobbi nehany hetben egy tok ertelmes pap volt nalunk vasarnaponkent a misen, most szolt, h megy vissza tanulni romaba szal most egy ideig nemlesz<br>este talalkoztam egy mkks sraccal, siman eldumaltunk masfel orat :)<br>
+Mark Angeli submitted our release notice to digg: <a href="http://digg.com/linux_unix/Frugalware_0_5_i686_DVD_Now_Available_at_LinuxTracker_org">dvd</a>, <a href="http://digg.com/linux_unix/Frugalware_0_5_i686_CDs_Now_Available_at_LinuxTracker_org">cds</a>
 </div>
 </div>
 
@@ -79,10 +79,10 @@ hm, hat nezzuk. az utobbi nehany hetben egy tok ertelmes pap volt nalunk vasarna
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/voltam_kinn_zsofieknal.html">voltam kinn Zsofieknal</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/smartctl-aamp-aamp-hdd-temperature.html">smartctl &amp;&amp; hdd temperature</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sat 30 September 2006</p>
+    <p>Posted on: Sun 03 September 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -90,7 +90,10 @@ hm, hat nezzuk. az utobbi nehany hetben egy tok ertelmes pap volt nalunk vasarna
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-voltam kinn Zsofieknal
+here is a small cmdline to query the temperature of a hdd using smartctl:
+<code>
+smartctl -a /dev/hdc|grep Celsius|sed 's/.* \([0-9]*\)$/\1/'
+</code>
 </div>
 </div>
 
@@ -99,10 +102,10 @@ voltam kinn Zsofieknal
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/php-i18n-documentation-packages.html">php i18n documentation packages</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/pacman-g-libalpm-migration.html">pacman -> libalpm migration</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sat 30 September 2006</p>
+    <p>Posted on: Thu 31 August 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -110,9 +113,24 @@ voltam kinn Zsofieknal
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-as it was <a href="http://bugs.frugalware.org/task/1234">requested</a>, now we have packaged documentation for the following languages: English, Arabic, Portuguese, Chinese (Simplified), Chinese (Hong Kong Cantonese), Chinese (Traditional), Czech, Danish, Dutch, Finnish, French, German, Greek, Hungarian, Italian, Japanese, Korean, Polish, Romanian, Russian, Slovak, Spanish and Swedish. you can install them by
-<code>pacman -S php-docs-XX</code>
-where XX is your language code, like "hu" for Hungarian and so on :)
+<p>till now the download code was in pacman's code which was meant that every frontend had to have its own downlaad code - causing a big code duplication. today i've pushed 15 patches to the pacman darcs repo which moved this functionality finally to the library :)</p><p>the patches:
+<ol>
+<li><a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=pacman;a=commit;h=20060831003435-e2957-9087e58a44e1b57d388092b33d1048a01a84952b.gz">new event: PM_TRANS_EVT_RETRIEVE_LOCAL</a></li>
+<li><a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=pacman;a=commit;h=20060830232018-e2957-6fdf96094e7a892b7b350ff17cdab4396757c454.gz">pm_dlfnm can be a simple char *</a></li>
+<li><a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=pacman;a=commit;h=20060829153431-e2957-aec07faa6c8de0c06cec874557125ac36e7e4cae.gz">pre-register databases to avoid code duplication</a></li>
+<li><a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=pacman;a=commit;h=20060829150722-e2957-f9c7fc0087c15118db9bdc275e70d343ef599b80.gz">pacman: use the libalpm downloader code, drop our own</a></li>
+<li><a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=pacman;a=commit;h=20060829145326-e2957-6ed6a76561b6b1d94735c5c5e5e1c75fa7ead7ec.gz">util: link to libftp, too</a></li>
+<li><a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=pacman;a=commit;h=20060829145135-e2957-9877d1e2818a27cadf0a6971d2d81cc5e5b87491.gz">_alpm_sync_commit(): download the packages, too</a></li>
+<li><a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=pacman;a=commit;h=20060829135753-e2957-e7e07fc2303f37e3e1467d308c15c2d8e5ee08d4.gz">alpm_db_getinfo(): strip the newlines from the end of lines</a></li>
+<li><a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=pacman;a=commit;h=20060829132424-e2957-baf31e12cb1813806d1f08fc4b325508449031f6.gz">alpm_db_getinfo(): added a PM_DB_FIRSTSERVER property</a></li>
+<li><a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=pacman;a=commit;h=20060829130449-e2957-84940fd4d4e3d0b18b90810c3617030362093125.gz">alpm_db_update() now handles downloading, too</a></li>
+<li><a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=pacman;a=commit;h=20060829120958-e2957-69bb48f681f69481df077dddab8cf58737f628f8.gz">libalpm: moved in _alpm_db_setlastupdate() and _alpm_db_getlastupdate()</a></li>
+<li><a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=pacman;a=commit;h=20060829022556-e2957-329ef28d6ab525531488c8d483c4d39ba0a82b49.gz">_alpm_fetch_pkgurl(): added the usual _alpm prefix</a></li>
+<li><a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=pacman;a=commit;h=20060829022523-e2957-4d375d34d5595ac83f3e6c6e60f11b74aa631934.gz">_alpm_handle_set_option() more error handling for proxyhost and xfercommand</a></li>
+<li><a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=pacman;a=commit;h=20060829022424-e2957-e02f59cad4428eb2c92440cc46f7040e0d3c3b84.gz">handle_free() memleak fixes</a></li>
+<li><a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=pacman;a=commit;h=20060829022404-e2957-d9145811a574412ce21fffeac52a6696a7be7b4d.gz">libalpm: new function: alpm_fetch_pkgurl()</a></li>
+<li><a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=pacman;a=commit;h=20060829013742-e2957-cffdc192344c52f0a34e9bdcf4712a12aee8b042.gz">libalpm: moved in the download code</a></li>
+</ol></p>
 </div>
 </div>
 
@@ -121,10 +139,10 @@ where XX is your language code, like "hu" for Hungarian and so on :)
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/usb-stick-installer.html">usb stick installer</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/vpn-mini-howto.html">vpn mini howto</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sat 30 September 2006</p>
+    <p>Posted on: Thu 17 August 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -132,7 +150,7 @@ where XX is your language code, like "hu" for Hungarian and so on :)
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>there was a request for a long time to support installing from an usb stick, now it seems i've had time to implement this feature</p><p>you need <a href="http://ftp.frugalware.org/pub/frugalware/frugalware-0.5-iso/frugalware-0.5-i686-usb.tar.gz">this</a> tarball, then you can unpack it and run ./usb_install.sh as root</p><p>if you hit a bug, then report it to <a href="http://bugs.frugalware.org/">us</a>, as usual ;)</p>
+<p>i was hired to create a vpn between 2 frugal machines, alwas i was asked to share the results. so here they came.</p><p>NOTE: i'm not a vpn genious, nor want to write yet another "the best" howto. just the brief story of the vpn setup under Frugalware</p><p>you can reach it <a href="http://wiki.frugalware.org/VPN_Mini-HOWTO">here</a>, feel free to improve it :)</p>
 </div>
 </div>
 
@@ -141,10 +159,10 @@ where XX is your language code, like "hu" for Hungarian and so on :)
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/nah_voktam_a_gammanal.html">nah, voktam a gammanal</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/yet-another-cheap-bash-trick.html">yet another cheap bash trick</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Fri 29 September 2006</p>
+    <p>Posted on: Tue 15 August 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -152,7 +170,14 @@ where XX is your language code, like "hu" for Hungarian and so on :)
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-nah, voktam a gammanal. nem, nem vallaltam el a melot :)
+<p><pre>#!/bin/bash</p><p>foo()
+{
+        true
+}</p><p>if declare -f foo >/dev/null; then
+        echo "foo() declared"
+else
+        echo "foo() is not declared"
+fi</pre></p>
 </div>
 </div>
 
@@ -161,10 +186,10 @@ nah, voktam a gammanal. nem, nem vallaltam el a melot :)
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/szar_dolog_ha_vki_olyan.html">szar dolog, ha vki olyan</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/reverse-deps-and-browse-by-groups-on-the-packages-page.html">reverse deps and browse by groups on the packages page</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Fri 29 September 2006</p>
+    <p>Posted on: Mon 14 August 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -172,7 +197,7 @@ nah, voktam a gammanal. nem, nem vallaltam el a melot :)
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-szar dolog, ha vki olyan ker kolcson akinek adnal (mert tudod, h visszaadna) csak nemtudsz, mert epp nincs mibol.. ;)
+<p>that's all from the user's point of view, internally the whole package-to-sqldb script is redesigned and the sql db itself, too.</p><p>examples: <a href="http://frugalware.org/packages/186">reverse deps</a>, <a href="http://frugalware.org/packages/?op=groups&id=49&arch=i686&ver=current">browse by group</a></p><p>the new db updater <a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=frugalware-current;a=headblob;f=/tools/fpm2db">here</a></p>
 </div>
 </div>
 
@@ -181,10 +206,10 @@ szar dolog, ha vki olyan ker kolcson akinek adnal (mert tudod, h visszaadna) csa
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/ma_szofttech_ora_eloado.html">ma, szofttech ora, eloado:</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/fwmirror.html">fwmirror</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Wed 27 September 2006</p>
+    <p>Posted on: Thu 10 August 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -192,7 +217,13 @@ szar dolog, ha vki olyan ker kolcson akinek adnal (mert tudod, h visszaadna) csa
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-ma, szofttech ora, eloado: "barmikor tortenhet vmi szerencsetlen dolog a beosztottunkkal, pl sibaleset, v meghazasodik.."<br>:)<br>
+<p>today's project is <a href="http://darcs.frugalware.org/repos/pacman-tools/fwmirror">fwmirror</a>, a handy tool to mirror Frugalware archives. basically it handles the followings:
+<ul>
+  <li>it needs a server, if you want the newest stuff and don't care about being slow, then you need "rsync://rsync.frugalware.org/pub/frugalware/"</li>
+  <li>it handles different Frugalware versions (NOTE: since -current has a new structure, versions other than -current will be supported by fwmirror only after 0.5)</li>
+  <li>it handles different architectures, including the special "source" one</li>
+  <li>it allows you to pass any custom options to rsync</li>
+</ul></p><p>ok, not a big deal, but useful, isn't it? :)</p>
 </div>
 </div>
 
@@ -201,10 +232,10 @@ ma, szofttech ora, eloado: "barmikor tortenhet vmi szerencsetlen dolog a beoszto
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/msd_megemlitette_ma_az_uccso.html">msd megemlitette ma az uccso</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/darcs-mailer-cia-script-improvements.html">darcs mailer/cia script improvements</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Tue 26 September 2006</p>
+    <p>Posted on: Wed 09 August 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -212,7 +243,7 @@ ma, szofttech ora, eloado: "barmikor tortenhet vmi szerencsetlen dolog a beoszto
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-msd megemlitette ma az uccso eloadas utan, h reggel 8ra faradtam es almosan mentem be, most meg (19h korul) frissen es uden tavozok. (ok, akkor meg volt 1 olyan erzesem, h tul is aludtam magam, de ez az elmelet vegul nem igazolodott be) hat nemtom, biztos sok erdekes dologrol lemaradtam, de azert mutassatok mar meg1 ilyen egyetemet, ahova faradtam beesel es kipihenten tavozol! :)
+the xml that is sent to cia now <a href="http://cia.navi.cx/stats/project/Frugalware/.message/85d0a6">contains</a> darcsweb urls for the patches, the messages <a href="http://frugalware.org/pipermail/frugalware-darcs/2006-August/018988.html">sent to frugalware-darcs</a>, too :)
 </div>
 </div>
 
@@ -221,18 +252,21 @@ msd megemlitette ma az uccso eloadas utan, h reggel 8ra faradtam es almosan ment
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/elkestem_fizikarol_jol.html">elkestem fizikarol, jol</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/spam-filter-graph-update.html">spam filter / graph update</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Mon 25 September 2006</p>
+    <p>Posted on: Sun 06 August 2006</p>
   </div>
   <div class="article_readtime">
-    <p>Estimated read time: 3 minutes</p>
+    <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-elkestem fizikarol, jol pedig ez a (dupla)ora volt ma az egyetlen amire bementem. utana allasinterju. hat <a href="http://www.gammatech.hu/" target="_self">ez</a> hihetetlen :) odamegyek a ceg ele, ismerosomre racsorgok, kijon elem. persze a fobejaraton nem lehet bemenni mert a portas kartya nelkul meg allasinterjura se enged be, de sebaj, bejutunk egy masik kapun. ezutan 1 tipikus kutato papa fogad: feher kopeny, stb. elkezdi kerdezni, h milyen nyelveken programoztam idaig, en meg sorolom. aztan kerdezi, h hova jarok egyetemre, mondja, h "bme? hu az akkor jo kemeny". hat biztos, en meg nem vettem eszre :) kis ido elteltevel megkerdezem, h fogunk-e valamit csinalni v csak beszelgetunk itt a folyoson az elet nagy dolgairol. mondja, h jo, h szolok, majdnem elfelejtette, h miert is jottem. irany az igazgato. o kozli, h nemtudja mi lesz a munka, de mondjam meg, h mennyit kerek erte. mondom, h 1x szeretnem latni a kovetelmenyrendszert aztan tudok donteni, h mennyi penz kene hozza. megkerdezi, h mit ertek kovetelmenyrendszer alatt. a mellettem levo kutatora nezek kerdoen, nem lehet-e, h 1x meg kene megis beszelni, h mi lesz a munka, es majd utana visszajonni az igazgatohoz. mind2en bolintanak es kimegyunk a terembol. ezutan bemegyunk a kutato szobajaba, elkezdi olvasgatni az emailjeit, o ul, en mellette allok. ha a plafont nezem akkor nem figyelek oda, ha odanezek akkor beleolvasok a maganlevelezesebe. sikerult tudatositani, h ottvagyok mellette, igy belekezdett, h az utobbi 10 evben milyen munkakat vegzett a cegnel. probaltam arra celozni, h nemertem ennek mikoze a jovobeli munkamhoz, es vette a lapot. felhivta az egyik kollegajat, h jojjon be hozza. kelletlen arccal be is lepett rovidesen majd kozolte, h sokat ne varjak, mert o bizony nem keszult erre a beszelgetesre (miert, a tobbiek igen?) sok melleduma utan kiderult, h sikerult irnia 1 soros port olvasot ami 120sec alatt olvas be a soros portrol 400 byte-ot (lol). persze ez csak kesobb derult ki, elotte elmeselte, h sikerult a soros portrol valo olvasas problemajat felbontania 8db cpp   classra, es azok kommunikalnak egymassal "ami kesobb nagyon jo lesz, bar most picit lassit". vegul kinyogte, h akkor ezt a kodot kene optimalizalni, mert ugye a jelenlegi sebesseg hasznalhatatlan. mondtam neki, h igy elsore akkor ki kene hajitani a cppt es oo nelkul ujrairni mert az ehhez tok felesleges. erre rancolta a homlokat majd megjegyezte, h hat o igazabol nemtudja, h mi lenne az a bizonyos munka de mint ahogy mi most latjuk hat ooo.. szal ez nem. bolintottam, sztem se fogok ilyen munkat vegezni. kiment. kerdon nezek a kutatora, h akkor most mivan. telefonhoz nyul, ujabb kollegat keres. kicseng, majd kozli velem, h ezzel a bizonyos kollegaval kell beszelni mert o tudja, h mi lesz a munka de most nemtudja elerni, majd 10p mulva probalkozik. kb 55 perce vagyok az epuletben, bar h pontosan miert azt meg nemtom. bolintok, majd megy sms Zsofinak, h en tuti kesni fogok, remelhetoleg nem sokat. vegre elokerul a kollega2. roviden felvilagositja kutatonk, h miert harult ra a feladat, h neki kell kitalalni valami munkat nekem. tomoren kozli, h ezen neki meg gondolkodnia kell. megkertem, h legyen szives akkor ha majd mar tuljutott a gondolkodason valami kovetelmenyrendszert irasba adni, h tudjam mirol is szolna a munka. a kutatora neztem, megbeszeltuk, h akkor 4 nap alatt remelhetoleg sikerul atgondolniuk ezt a nehez helyzetet, es majd ujra jovok. amint az ajto fele indulok, mind2 elvigyorodik es megerosit, h sok hasznos informacioval lattam el oket es koszonik szepen. szoval majd penteken megyek es kiderul, h akkor most mi is az a munka ami miatt ma behivtak
+<p>1) managed to prevent mutt from asking for confirmation before passing a mail to bogofilter + now it deletes the message automatically</p><p><code>macro index S "<enter-command>unset wait_key\n\
+<pipe-entry>bogofilter -Ns;date +%y%m%d >>~/public_html/stats/spam_s\n\
+<enter-command>set wait_key\n\
+<delete-message>"</code></p><p>2) improved the generated graph: now there are two ones: <a href="http://frugalware.org/~vmiklos/stats/spam.png">filtered</a> and <a href="http://frugalware.org/~vmiklos/stats/unsure.png">unfiltered</a></p><p>3) added an avarage number to both graph</p><p>darcs repo still available <a href="http://frugalware.org/~vmiklos/spam-graph/">here</a></p>
 </div>
 </div>
 
@@ -241,10 +275,10 @@ elkestem fizikarol, jol pedig ez a (dupla)ora volt ma az egyetlen amire bementem
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/neon-0-26-x-is-in-current.html">Neon-0.26.x is in -current</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/mysql-split.html">mysql split</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Mon 25 September 2006</p>
+    <p>Posted on: Sun 06 August 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -252,7 +286,7 @@ elkestem fizikarol, jol pedig ez a (dupla)ora volt ma az egyetlen amire bementem
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-Neon-0.26.1 has been uploaded to -current and all the necessary packages (ie. openoffice.org :)) have been updated, too. it was a challenge :)
+yesterday i've splitted mysql to mysql and libmysqlclient. hopefully this will mean that several apps that depended till now on the whole (30mb-sized) mysql, now can only depend on libmysqlclient (2mb-sized or so) :)
 </div>
 </div>
 
