@@ -58,10 +58,10 @@
 
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/splashy.html">splashy</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/linux-2-6-17.html">Linux-2.6.17</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Fri 14 July 2006</p>
+    <p>Posted on: Mon 19 June 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -69,7 +69,7 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>in -current we replaced bootsplash with splashy. it's a splash implementation fully in userspace, thus we no longer need any kernel patches</p><p>to support splashy, the kbd, grub, gfxboot and sysvinit packages has been updated, too</p>
+has been uploaded, all the external modules are updates (or where it's broken, the m8rs are working on it). unfortunatelly swsusp has been disabled, but don't worry, it's already fixed in darcs, so if you really need it <em>now</em> and can't wait till 2.6.17.1, then use the usual <code>repoman merge kernel</code>
 </div>
 </div>
 
@@ -78,10 +78,10 @@
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/gnome-scriptlet-cleanup-finished.html">gnome-scriptlet cleanup finished</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/smtp-envelope-aamp-aamp-mutt.html">SMTP envelope &amp;&amp; mutt</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Wed 12 July 2006</p>
+    <p>Posted on: Sun 18 June 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -89,7 +89,15 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-there was an effort about generating the packages' post_install (and other) scriptlet functions dynamically. this is done via using the magic<pre>Finclude gnome-scriptlet</pre> command. the parameters you can includes <code>_F_gnome_schemas()</code>, <code>_F_gnome_scrollkeeper</code>, <code>_F_gnome_desktop</code> and so on. where it was possible the original scriptlet has been removed and now automatically generated. enjoy! :)
+<p>when you send a mail from genesis, sometimes you get the following reply:
+<code>mail@addr.ess
+   Delay reason: SMTP error from remote mailer after RCPT TO:<<a href="mailto:mail@address">mail@address</a>>:
+   host mail.addr.ess [1.2.3.4]: 450 <<a href="mailto:foo@genesis.frugalware.org">foo@genesis.frugalware.org</a>>:
+   Sender address rejected: unverified address: connect to
+genesis.frugalware.org[157.181.177.34]:
+   Connection refused</code></p><p>the solution is simple, but not trivial. it depends on the user-agent you use, in mutt, you should put the following magic line to your muttrc:
+<code>set use_envelope_from</code>
+then i'll be ok again :)</p>
 </div>
 </div>
 
@@ -98,10 +106,10 @@ there was an effort about generating the packages' post_install (and other) scri
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/frugalwareutils-first-complete-release.html">frugalwareutils first complete release</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/mkiso-update.html">mkiso update</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Tue 11 July 2006</p>
+    <p>Posted on: Sat 10 June 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -109,7 +117,10 @@ there was an effort about generating the packages' post_install (and other) scri
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>adslconfig has been merged with netconfig and this point all the old config scripts has been ported to frugalwareutils, namely: grubconfig, mouseconfig, netconfig, raidconfig, timeconfig, xconfig and xwmconfig</p><p>time to remove this very old item from my TODO ;)</p>
+<p>i've worked again a bit on mkiso:<ul>
+  <li>now you can (optionally) define a <lang> tag, so that after the frugalware repo, not all the locale-extra pkgs will have higher priority than the other extra pkgs, just a selected language's locale pkgs</li>
+  <li>it generates a small stat next to the iso, for example the current ones are available for a while <a href="http://frugalware.org/~vmiklos/stats/iso/">here</a></li>
+</ul></p><p>have fun! :)</p>
 </div>
 </div>
 
@@ -118,10 +129,10 @@ there was an effort about generating the packages' post_install (and other) scri
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/spam-stats.html">spam stats</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/wireless-support-in-the-setup.html">wireless support in the setup</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Thu 06 July 2006</p>
+    <p>Posted on: Tue 06 June 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -129,18 +140,7 @@ there was an effort about generating the packages' post_install (and other) scri
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>Donald Bruce Stewart has <a href="http://www.abridgegame.org/pipermail/darcs-users/2006-June/010057.html">created</a> a simple shell script to create darcs graphs, and i've modified it to create a simple spam stat. the <a href="http://frugalware.org/~vmiklos/stats/vmiklos-spams.png">result</a> looks promising ;)</p><p>what do you need?</p><p><ul>
-  <li>with bogofilter, i use the following procmail rule:
-<code>:0:
-* ^X-Bogosity: Spam
-<code>date +%y%m%d &gt;&gt;~/spamstat</code>/dev/null
-</code>
-</li>
-  <li>then do a <code>darcs get <a href="http://frugalware.org/~vmiklos/spam-graph/">http://frugalware.org/~vmiklos/spam-graph/</a></code>
-and run <code>sh spam-graph ~/spamstat</code>
-</li>
-  <li>if you have gnuplot installed the png image should be generated soon :)</li>
-</ul></p>
+<a href="http://bugs.frugalware.org/809">#809</a> was a request for this. the <a href="http://ftp.frugalware.org/pub/frugalware/frugalware-current-iso/frugalware-20060606-i686-net.iso">new snapshot</a> supports using a wireless card to fetch packages. the most common problem (probably) will be that extra modules are not included in the netinstall iso. if a module is requested then we'll put it in. so, please <a href="http://bugs.frugalware.org/">request</a> the modules you find to be missing! thanks
 </div>
 </div>
 
@@ -149,10 +149,10 @@ and run <code>sh spam-graph ~/spamstat</code>
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/using-different-signatures-in-mutt.html">using different signatures in mutt</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/openoffice-org-2-0-3-release-candidate-5-has-been-uploaded.html">OpenOffice.org 2.0.3 Release Candidate 5 has been uploaded</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Wed 05 July 2006</p>
+    <p>Posted on: Sat 03 June 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -160,8 +160,7 @@ and run <code>sh spam-graph ~/spamstat</code>
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>my problem was that (especially on some mailing lists) i use different signatures. with the folder hooks this can be solved in a very nice way. so i have 2 signatures: a default one and a special (for a given mailing list):</p><p><code>folder-hook . set signature=~/.signature
-folder-hook special set signature=~/.signature.special</code></p><p>and now when i write a mail/reply from that folder the special signature is used :)</p>
+<a href="http://development.openoffice.org/releases/2.0.3rc5.html">release notes</a>, <a href="http://frugalware.org/pipermail/frugalware-darcs/2006-June/016253.html">commit</a>, <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/frugalware-x86_64/">x86_64 fpms</a>. enjoy! :)
 </div>
 </div>
 
@@ -170,10 +169,10 @@ folder-hook special set signature=~/.signature.special</code></p><p>and now when
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/a-few-hacks-about-strings-aamp-macros.html">a few hacks about strings &amp; macros</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/new-mkiso.html">new mkiso</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Wed 28 June 2006</p>
+    <p>Posted on: Sat 03 June 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -181,7 +180,12 @@ folder-hook special set signature=~/.signature.special</code></p><p>and now when
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>this post is mainly the result of the cleanup of my firefox tabs :)</p><p><a href="http://developer.apple.com/documentation/DeveloperTools/gcc-4.0.1/cpp/Predefined-Macros.html">predefined macros in gcc</a></p><p><a href="http://www.tldp.org/LDP/abs/html/string-manipulation.html">string manipulation using bash</a></p><p><a href="http://www.gnu.org/software/make/manual/html_node/Text-Functions.html">string functions in make</a></p>
+<p>the current (old) mkiso script worked, but had several limitations:
+<ul>
+  <li>you had to have write access to the repo</li>
+  <li>no dependency checking, you needed to arrange the categories by hand</li>
+  <li>no support for more than one dvd</li>
+</ul></p><p>yes, this all has been gone, there is a new mkiso in the pacman-tools repo (and soon in the next pacman-tools release) which supports all these missing features, basically you need to specify the volume size and the wished volumes in an xml, then mkiso will do everything for you. also it comes with a nice manpage examples :)</p>
 </div>
 </div>
 
@@ -190,10 +194,10 @@ folder-hook special set signature=~/.signature.special</code></p><p>and now when
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/new-mirror-ftp-www10.html">new mirror: ftp/www10</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/xconfig-in-frugalwareutils.html">xconfig in frugalwareutils</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Tue 27 June 2006</p>
+    <p>Posted on: Fri 26 May 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -201,7 +205,7 @@ folder-hook special set signature=~/.signature.special</code></p><p>and now when
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>finally, we have a proper US mirror :)</p><p>many thanks to <a href="mailto:veloct at veloct dot net">Eddie Torres</a> and <a href="http://mirrors.tds.net/">mirrors.tds.net</a>!</p>
+<p>a complete rewrite of the old xconfig script in the frugalware pkg is now included in frugalwareutils. since the code is native, it's much more faster. it should work at least as well as the old script, but who knows - if you find any bug then please report it to <a href="http://bugs.frugalware.org/">us</a></p><p>thanks!</p>
 </div>
 </div>
 
@@ -210,10 +214,10 @@ folder-hook special set signature=~/.signature.special</code></p><p>and now when
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/frugalwareutils-update-xwmconfig.html">frugalwareutils update: xwmconfig</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/rss-support-in-mxw.html">rss support in mxw</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Tue 27 June 2006</p>
+    <p>Posted on: Thu 25 May 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -221,7 +225,7 @@ folder-hook special set signature=~/.signature.special</code></p><p>and now when
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>xwmconfig has been ported to frugalwareutils, for example if you just install base&x11&xlibs in a netinstall then you're asked what wm do you want to start from xdm till you can't edit your own ~/.xinitrc</p><p>new setup isos: <a href="http://ftp.frugalware.org/pub/frugalware/frugalware-current-iso/frugalware-20060626-i686-net.iso">i686</a> | <a href="http://ftp.frugalware.org/pub/frugalware/frugalware-current-iso/frugalware-20060626-x86_64-net.iso">x86_64</a></p>
+<p>mxw is a simple C irc bot. i've start it as a fun project (usually people write irc bots in perl or python), but currently it handles more and more functions. today i've added rss support (using libmrss) so that on the #frugalware channel mxw_ floods the users with package updates and blog posts ;-)</p><p>of course the whole code is still experimental, i hope this post will appear on #frugalware, too :)</p>
 </div>
 </div>
 
@@ -230,10 +234,10 @@ folder-hook special set signature=~/.signature.special</code></p><p>and now when
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/resume-in-nx.html">resume in nx</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/distrowatch-interview.html">distrowatch interview</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sat 24 June 2006</p>
+    <p>Posted on: Mon 22 May 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -241,7 +245,7 @@ folder-hook special set signature=~/.signature.special</code></p><p>and now when
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-after the recent freenx/knx update resume should now work in nx. a cheap trick: if you use kde the window titles may be weird after a resume, a workaround is to run<pre>dcop kwin default reconfigure</pre>after resume. (more info <a href="http://mail.kde.org/pipermail/freenx-knx/2005-September/002148.html">here</a>)
+distrowatch published an <a href="http://distrowatch.com/weekly.php?issue=20060522#interview">interview</a> with me, maybe it's interesting :)
 </div>
 </div>
 
@@ -250,10 +254,10 @@ after the recent freenx/knx update resume should now work in nx. a cheap trick: 
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/xorg-7-1-security-update-in-current.html">xorg-7.1 security update in -current</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/pre-0-5pre1-party.html">pre-0.5pre1 party</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Thu 22 June 2006</p>
+    <p>Posted on: Sat 20 May 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -261,7 +265,7 @@ after the recent freenx/knx update resume should now work in nx. a cheap trick: 
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-the x.org foundation <a href="http://xorg.freedesktop.org/releases/X11R7.1/patches/">pulblished</a> and then we pushed a few patches for the "setuid()return value check problem". packages affected: libX11, xdm, xf86dga, xinit, xload, xorg-server and xtrans. do a pacman -Syu ;)
+yesterday LGee, desco, voroskoi and me met each other. you can reach a few pictures taken by LGee <a href="http://frugalware.org/~vmiklos/pics/photo/beer20060519/">here</a>
 </div>
 </div>
 

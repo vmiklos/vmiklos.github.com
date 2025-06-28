@@ -59,10 +59,10 @@
 
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/elvittek_a_lapkat_csend_van.html">elvittek a lapkat, csend van</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/yet-another-cheap-bash-trick.html">yet another cheap bash trick</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Fri 01 September 2006</p>
+    <p>Posted on: Tue 15 August 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -70,7 +70,14 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-elvittek a <a href="/posts/1474">lapkat</a>, csend van megint :)
+<p><pre>#!/bin/bash</p><p>foo()
+{
+        true
+}</p><p>if declare -f foo >/dev/null; then
+        echo "foo() declared"
+else
+        echo "foo() is not declared"
+fi</pre></p>
 </div>
 </div>
 
@@ -79,10 +86,10 @@ elvittek a <a href="/posts/1474">lapkat</a>, csend van megint :)
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/egy_teljes_nap_nelkule.html">egy teljes nap nelkule</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/reverse-deps-and-browse-by-groups-on-the-packages-page.html">reverse deps and browse by groups on the packages page</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Fri 01 September 2006</p>
+    <p>Posted on: Mon 14 August 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -90,7 +97,7 @@ elvittek a <a href="/posts/1474">lapkat</a>, csend van megint :)
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-egy teljes nap nelkule. mit meg nem kepes szokni az ember egy het alatt
+<p>that's all from the user's point of view, internally the whole package-to-sqldb script is redesigned and the sql db itself, too.</p><p>examples: <a href="http://frugalware.org/packages/186">reverse deps</a>, <a href="http://frugalware.org/packages/?op=groups&id=49&arch=i686&ver=current">browse by group</a></p><p>the new db updater <a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=frugalware-current;a=headblob;f=/tools/fpm2db">here</a></p>
 </div>
 </div>
 
@@ -99,10 +106,10 @@ egy teljes nap nelkule. mit meg nem kepes szokni az ember egy het alatt
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/hideg_van_fuj_a_szel.html">hideg van, fuj a szel,</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/fwmirror.html">fwmirror</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Thu 31 August 2006</p>
+    <p>Posted on: Thu 10 August 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -110,7 +117,13 @@ egy teljes nap nelkule. mit meg nem kepes szokni az ember egy het alatt
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-hideg van, fuj a szel, az eso ahogy latom nem esik, de nem all tole messze. brr..
+<p>today's project is <a href="http://darcs.frugalware.org/repos/pacman-tools/fwmirror">fwmirror</a>, a handy tool to mirror Frugalware archives. basically it handles the followings:
+<ul>
+  <li>it needs a server, if you want the newest stuff and don't care about being slow, then you need "rsync://rsync.frugalware.org/pub/frugalware/"</li>
+  <li>it handles different Frugalware versions (NOTE: since -current has a new structure, versions other than -current will be supported by fwmirror only after 0.5)</li>
+  <li>it handles different architectures, including the special "source" one</li>
+  <li>it allows you to pass any custom options to rsync</li>
+</ul></p><p>ok, not a big deal, but useful, isn't it? :)</p>
 </div>
 </div>
 
@@ -119,10 +132,10 @@ hideg van, fuj a szel, az eso ahogy latom nem esik, de nem all tole messze. brr.
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/pacman-g-libalpm-migration.html">pacman -> libalpm migration</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/darcs-mailer-cia-script-improvements.html">darcs mailer/cia script improvements</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Thu 31 August 2006</p>
+    <p>Posted on: Wed 09 August 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -130,24 +143,7 @@ hideg van, fuj a szel, az eso ahogy latom nem esik, de nem all tole messze. brr.
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>till now the download code was in pacman's code which was meant that every frontend had to have its own downlaad code - causing a big code duplication. today i've pushed 15 patches to the pacman darcs repo which moved this functionality finally to the library :)</p><p>the patches:
-<ol>
-<li><a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=pacman;a=commit;h=20060831003435-e2957-9087e58a44e1b57d388092b33d1048a01a84952b.gz">new event: PM_TRANS_EVT_RETRIEVE_LOCAL</a></li>
-<li><a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=pacman;a=commit;h=20060830232018-e2957-6fdf96094e7a892b7b350ff17cdab4396757c454.gz">pm_dlfnm can be a simple char *</a></li>
-<li><a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=pacman;a=commit;h=20060829153431-e2957-aec07faa6c8de0c06cec874557125ac36e7e4cae.gz">pre-register databases to avoid code duplication</a></li>
-<li><a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=pacman;a=commit;h=20060829150722-e2957-f9c7fc0087c15118db9bdc275e70d343ef599b80.gz">pacman: use the libalpm downloader code, drop our own</a></li>
-<li><a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=pacman;a=commit;h=20060829145326-e2957-6ed6a76561b6b1d94735c5c5e5e1c75fa7ead7ec.gz">util: link to libftp, too</a></li>
-<li><a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=pacman;a=commit;h=20060829145135-e2957-9877d1e2818a27cadf0a6971d2d81cc5e5b87491.gz">_alpm_sync_commit(): download the packages, too</a></li>
-<li><a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=pacman;a=commit;h=20060829135753-e2957-e7e07fc2303f37e3e1467d308c15c2d8e5ee08d4.gz">alpm_db_getinfo(): strip the newlines from the end of lines</a></li>
-<li><a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=pacman;a=commit;h=20060829132424-e2957-baf31e12cb1813806d1f08fc4b325508449031f6.gz">alpm_db_getinfo(): added a PM_DB_FIRSTSERVER property</a></li>
-<li><a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=pacman;a=commit;h=20060829130449-e2957-84940fd4d4e3d0b18b90810c3617030362093125.gz">alpm_db_update() now handles downloading, too</a></li>
-<li><a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=pacman;a=commit;h=20060829120958-e2957-69bb48f681f69481df077dddab8cf58737f628f8.gz">libalpm: moved in _alpm_db_setlastupdate() and _alpm_db_getlastupdate()</a></li>
-<li><a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=pacman;a=commit;h=20060829022556-e2957-329ef28d6ab525531488c8d483c4d39ba0a82b49.gz">_alpm_fetch_pkgurl(): added the usual _alpm prefix</a></li>
-<li><a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=pacman;a=commit;h=20060829022523-e2957-4d375d34d5595ac83f3e6c6e60f11b74aa631934.gz">_alpm_handle_set_option() more error handling for proxyhost and xfercommand</a></li>
-<li><a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=pacman;a=commit;h=20060829022424-e2957-e02f59cad4428eb2c92440cc46f7040e0d3c3b84.gz">handle_free() memleak fixes</a></li>
-<li><a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=pacman;a=commit;h=20060829022404-e2957-d9145811a574412ce21fffeac52a6696a7be7b4d.gz">libalpm: new function: alpm_fetch_pkgurl()</a></li>
-<li><a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=pacman;a=commit;h=20060829013742-e2957-cffdc192344c52f0a34e9bdcf4712a12aee8b042.gz">libalpm: moved in the download code</a></li>
-</ol></p>
+the xml that is sent to cia now <a href="http://cia.navi.cx/stats/project/Frugalware/.message/85d0a6">contains</a> darcsweb urls for the patches, the messages <a href="http://frugalware.org/pipermail/frugalware-darcs/2006-August/018988.html">sent to frugalware-darcs</a>, too :)
 </div>
 </div>
 
@@ -156,10 +152,10 @@ hideg van, fuj a szel, az eso ahogy latom nem esik, de nem all tole messze. brr.
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/fasza_5h_volt_mig_befutott.html">fasza, 5h volt mig befutott</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/spam-filter-graph-update.html">spam filter / graph update</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Wed 30 August 2006</p>
+    <p>Posted on: Sun 06 August 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -167,7 +163,10 @@ hideg van, fuj a szel, az eso ahogy latom nem esik, de nem all tole messze. brr.
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-fasza, 5h volt mig befutott a vonat 2,5h helyett<br><br><a href="http://wap.t-zones.hu/dwap/c/news/news/Hirek_22188.dw" target="_self">tovabb &gt;</a><br>
+<p>1) managed to prevent mutt from asking for confirmation before passing a mail to bogofilter + now it deletes the message automatically</p><p><code>macro index S "<enter-command>unset wait_key\n\
+<pipe-entry>bogofilter -Ns;date +%y%m%d >>~/public_html/stats/spam_s\n\
+<enter-command>set wait_key\n\
+<delete-message>"</code></p><p>2) improved the generated graph: now there are two ones: <a href="http://frugalware.org/~vmiklos/stats/spam.png">filtered</a> and <a href="http://frugalware.org/~vmiklos/stats/unsure.png">unfiltered</a></p><p>3) added an avarage number to both graph</p><p>darcs repo still available <a href="http://frugalware.org/~vmiklos/spam-graph/">here</a></p>
 </div>
 </div>
 
@@ -176,10 +175,10 @@ fasza, 5h volt mig befutott a vonat 2,5h helyett<br><br><a href="http://wap.t-zo
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/voltam_miskolcon.html">voltam miskolcon..</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/mysql-split.html">mysql split</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Wed 30 August 2006</p>
+    <p>Posted on: Sun 06 August 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -187,7 +186,7 @@ fasza, 5h volt mig befutott a vonat 2,5h helyett<br><br><a href="http://wap.t-zo
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-voltam miskolcon..
+yesterday i've splitted mysql to mysql and libmysqlclient. hopefully this will mean that several apps that depended till now on the whole (30mb-sized) mysql, now can only depend on libmysqlclient (2mb-sized or so) :)
 </div>
 </div>
 
@@ -196,10 +195,10 @@ voltam miskolcon..
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/ritaval_most_neztuk_meg_ezt.html">Ritaval most neztuk meg ezt</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/openoffice-org-2-0-3-178-1-x86_64-new-development-snapshot.html">openoffice.org-2.0.3.178-1-x86_64: new development snapshot</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Tue 29 August 2006</p>
+    <p>Posted on: Thu 27 July 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -207,7 +206,7 @@ voltam miskolcon..
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-Ritaval most neztuk meg ezt <a href="http://www.imdb.com/title/tt0386588/" target="_self">a randiguru</a> c. filmet. egesz jo. meg az quote-okat is erdemes vegigolvasni, vannak benne okos dolgok
+<p>...has been uploaded to <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/frugalware-x86_64/">you-know-where</a></p><p>this time the build was even quicker, "only" 582 mins :)</p>
 </div>
 </div>
 
@@ -216,10 +215,10 @@ Ritaval most neztuk meg ezt <a href="http://www.imdb.com/title/tt0386588/" targe
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/ezt_meg_korabban_akartam_irni.html">ezt meg korabban akartam irni</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/small-openoffice-building-speedup.html">small openoffice building speedup</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sat 26 August 2006</p>
+    <p>Posted on: Sun 16 July 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -227,7 +226,11 @@ Ritaval most neztuk meg ezt <a href="http://www.imdb.com/title/tt0386588/" targe
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-ezt meg korabban akartam irni csak vegul elmaradt. szoval aug20, tuzijatek utan, vihar mar abbahagyta magat. le kell szallitani a batyam mikrojat hozza mert epp nalunk volt. termeszetesen pont most. nagy dugo van, minden de ha apam valamit kitalal attol eleg eselytelen eltantoritani. szoval szepen belekeverdunk a dugoba, dudal mindenki, erre megszolal: "minenki ugy hiszi, h neki van igaza. en is"<br>:)<br>
+i've recently added 2 small flags to the newest (m176) OpenOffice.org development snapshot FrugalBuild resulting significant building speedup. in numbers, the build time with 4 languages is 591 mins currently, while before it was 680 minutes (13 percent difference). basically the 2 tricks:
+<ul>
+  <li>--disable-qadevooo: don't build automated testing tools, we don't need them and the build takes a hell of time</li>
+  <li>--enable-gcjaot: the java tools used during the build are now native binaries (compiled using gcj)</li>
+</ul>
 </div>
 </div>
 
@@ -236,10 +239,10 @@ ezt meg korabban akartam irni csak vegul elmaradt. szoval aug20, tuzijatek utan,
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/errol_irni_kell_tegnap.html">errol irni kell :) tegnap</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/splashy.html">splashy</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sat 26 August 2006</p>
+    <p>Posted on: Fri 14 July 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -247,7 +250,7 @@ ezt meg korabban akartam irni csak vegul elmaradt. szoval aug20, tuzijatek utan,
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-errol irni kell :) tegnap elvileg 7tol volt Frugalware-sorozes. kb 3/4 7kor nasan ramprivizett Dia, de igazabol nem beszeltunk semmit, leven en mar rohantam el. igy kb annyit tudtam rola, h miskolci, kicsit fiatalabb nalam, es nincs pasija. kb utolso pillanatban felvetette, h milyen szivesen jonne pestre. mondom hat akkor gyere. omeg tenyleg kepes volt eljonni :) szal telszamcsere, aztan mentem ki 22:07re a keletibe ele. hogy milyen csaj lesz, hogynezki, stb stb semmit nem tudtam. dehat nyar van, ha vmi elviselhetetlen szoke picsa akkor csak azzal lesz szopas, h hogy kerul haza, de akkor ezzel nem akartam foglalkozni. kb 1 ora kesessel megerkeztem a sorozesre, le is ment jol csak a vonat miatt eleg gyorsan leleptem. utana meg kis kavaras mert a keletiben voltak bkv-ellenorok de vegul nem vagtak meg. utana meg jott a pozitiv csalodas, Dia abszolut normalis, ertelmes, csinos kiscsaj. innentol annyira nincs mit reszletezni: eloszor beultunk 1 sorre a moriczon, aztan kimentunk a feneketlen tohoz, csak kisse hideg volt igy (ez ilyen 2 korul lehetett asszem) lementunk a bmehez, vegul&nbsp; (6 korul?) elgyalogoltunk a batthyanyra, mert onnan vmi rokonukhoz ment tovabb hevvel (tessek, ezert nem kell problemazni, h milesz a vegen, neha maguktol megoldodnak a dolgok). hat kb ennyi, semmi extra, nem jottunk ossze v ilyesmi de egyreszt nagy poen volt, masreszt mostmar eztis kiprobaltam :)
+<p>in -current we replaced bootsplash with splashy. it's a splash implementation fully in userspace, thus we no longer need any kernel patches</p><p>to support splashy, the kbd, grub, gfxboot and sysvinit packages has been updated, too</p>
 </div>
 </div>
 
@@ -256,10 +259,10 @@ errol irni kell :) tegnap elvileg 7tol volt Frugalware-sorozes. kb 3/4 7kor nasa
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/aquot_ha_nem_akar_t_bb_e_mail.html">&quot;Ha nem akar t?bb e-mail,</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/gnome-scriptlet-cleanup-finished.html">gnome-scriptlet cleanup finished</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Fri 25 August 2006</p>
+    <p>Posted on: Wed 12 July 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -267,7 +270,7 @@ errol irni kell :) tegnap elvileg 7tol volt Frugalware-sorozes. kb 3/4 7kor nasa
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-"Ha nem akar t?bb e-mail, k?rem k?ldj?n e-mail <a href="mailto:austragen@besserempfangen">austragen@besserempfangen</a>.com<br>c?mre."<br><br>spam vegerol. amilyen szemet a tartalom, olyan szemet a forditas ;)<br>
+there was an effort about generating the packages' post_install (and other) scriptlet functions dynamically. this is done via using the magic<pre>Finclude gnome-scriptlet</pre> command. the parameters you can includes <code>_F_gnome_schemas()</code>, <code>_F_gnome_scrollkeeper</code>, <code>_F_gnome_desktop</code> and so on. where it was possible the original scriptlet has been removed and now automatically generated. enjoy! :)
 </div>
 </div>
 
