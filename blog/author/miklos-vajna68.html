@@ -59,66 +59,6 @@
 
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/mkpasswd.html">mkpasswd</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Tue 30 December 2008</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>I just noticed that I can ask mkpasswd to not include extra signs (so only [A-Za-z0-9]) in the passwd, and also I can ask it to make it longer, for example:</p><p><pre>
-$ mkpasswd -l 18 -s 0
-kweufGtytpIj1ds8bw
-</pre></p><p>Sadly it's quite useful on broken websites where they bail out with an error when my pass contains a ' or a "...</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/scripts-used-in-the-python-2-6-mass-rebu.html">Scripts used in the Python-2.6 mass rebuild</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Mon 29 December 2008</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>So here they go.</p><p>First, I needed a list of packages for rebuild:</p><p><pre>
-wget -O test.html 'http://frugalware.org/packages/?op=file&amp;srch=usr%2Flib%2Fpython2.5&amp;arch=i686&amp;ver=current'
-lynx -dump ./test.html|grep ' [0-9]\+\. \['|sed 's/.*\]\(.*\) .*/\1/' &gt; test.list
-</pre></p><p>Then I used the following cycle:</p><p><pre>
-git checkout -f; for i in $(cat ~/test.list); do echo $i; cd ~/git/python26/source/*/$i || continue; sudo makepkg -t python2
-6,current -C; git clean -x -d -f; sed -i 's|python&gt;=2.5|python&gt;=2.6|g' FrugalBuild; bumppkg -t python26,current --rebuild "-
- rebuilt with python-2.6" || break; repoman -t python26 -k push; done
-</pre></p><p>When a build failed, I fixed it up manually and used the following aliases:</p><p><pre>
-alias pybuild="sudo makepkg -t python26,current -cu"
-alias pypush="repoman -t python26 -k push"
-alias pyrec='repoman rec "- rebuilt with python-2.6"'
-</pre></p><p>then removed the already built pkgs from the top of test.list and started the for cycle again.</p><p>Once this was done, I did a</p><p><pre>
-git grep 'python&gt;=2.5'
-</pre></p><p>to ensure everything has &amp;gt=2.6 now (except a few cases where a rebuild was not necessary).</p><p>Syncing on x86_64 was like this:</p><p>I generated the package order with:</p><p><pre>
-git log --reverse --no-merges --pretty=oneline master ^origin/master|sed 's/.* \(.*\)-[^-]\+-[^-]\+-i686/\1/' > build.list
-</pre></p><p>Then I started a for cycle as well, but now just ignoring the failed builds:</p><p><pre>
-git checkout -f; for i in $(cat ~/build.list); do echo $i; cd ~/git/python26/source/*/$i || continue; sudo makepkg -t python26,current -C; git clean -x -d -f; makepkg -dgu; rm -rf src; if sudo makepkg -t python26,current -cu; then repoman -t python26 -k push; else echo $i >> ~/broken.list; fi; done
-</pre></p><p>fortunately less then 5% of all pkgs failed.</p><p>OK, that's all.</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/fotra-minuszban.html">fotra minuszban</a></h1>
   </div>
   <div class="article_meta">
@@ -299,6 +239,59 @@ el lehessen olvasni. :)</p></div>
     <div id="preamble">
 <div class="sectionbody">
 <p>"big-zoo" is a collection of darcs repos, the darcs developers do benchmarks using this collection from release to release.</p><p>Recently our old Frugalware repo <a href="http://code.haskell.org/darcs/big-zoo/">has been added</a>, which is good, for multiple reasons.</p><p>First, now I can say that the reference for a good darcs exporter is the big-zoo, our old repo contains weird patches which were not yet part of "big-zoo" so far. Not that I'm evil, but I want to show that currently darcs-fast-export is the only exporter that can correctly convert all the repos in "big-zoo".</p><p>Second, it is a huge repo, so developers can how see the corner cases where darcs is really slow for a huge repo - though the GHC one was already included which is almost as big as our one and the most annoying cases are already optimized recently. (No, of course I can't compare it to git, I compare it to darcs-1.x.)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/big-fish.html">big fish</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Tue 23 December 2008</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://lh3.googleusercontent.com/RXnZ7dFNDZnE5tE2HEm8x4aSpJpsnQwXE0nw4iBx34Px4JmewDQBgp1xj1LhJlvIIdbrSzTSxVe6Em4ollolapI4bOcf8CoP0hVdrKhebK_ITcUiLIV7CmngG5f8aB_04KkGXQ6ReA=w640" alt="https://lh3.googleusercontent.com/RXnZ7dFNDZnE5tE2HEm8x4aSpJpsnQwXE0nw4iBx34Px4JmewDQBgp1xj1LhJlvIIdbrSzTSxVe6Em4ollolapI4bOcf8CoP0hVdrKhebK_ITcUiLIV7CmngG5f8aB_04KkGXQ6ReA=w640" />
+</div>
+</div>
+<div class="paragraph"><p>mese a fiurol akinek sajat velemenye van apjarol, es ami a vegere megvaltozik. eleg szaraz, nem? :)
+hat persze, igy aztan a film azzal kezdodik, hogy mi is elhisszuk, hogy a papa csak hablatyol, hogy
+aztan a vegen rajojjunk, hogy annyira nem is. ;)</p></div>
+<div class="paragraph"><p>foszerepben Ewan McGregor (deception, star wars, moulin rouge, stb), Billy Crudup (aki egyebkent
+sztem tokre hasonlit Ashton Kutcher-re), Albert Finney (ocean&#8217;s twelve). meg rajtuk kivul is meg
+nehany ismeros arc: Helena Bonham Carter (fight club), Alison Lohman (beowulf), Steve Buscemi (pulp
+fiction) es meg lehetne sorolni.</p></div>
+<div class="paragraph"><p>talan pont a szineszi jateknak koszonheto a felnottmese jellege. vagy nemtom. 1x erdemes.</p></div>
+<div class="paragraph"><p>(<a href="http://www.imdb.com/title/tt0319061/">imdb</a>, <a href="http://www.youtube.com/watch?v=-d-kjzBmz6I">trailer</a>)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/next-step-in-the-tailor-creates-corrupte.html">Next step in the "tailor creates corrupted repos" story</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Tue 23 December 2008</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>I've just added a <a href="http://progetti.arstecnica.it/tailor/ticket/171#comment:3">new comment</a> to the previously mentioned ticked. In short, it seems that darcs what -s --xml is horribly broken, and tailor heavily relies on this, so darcs-fast-export did.</p><p>I just removed this for now - maybe later I'll write my own patch parser, but that does not have a high priority in my TODO.</p><p>I want to cut a release in case all the test conversions in the "darcs-benchmark" repo passes fine, but that will take 2-3 days, I guess.</p>
 </div>
 </div>
 
