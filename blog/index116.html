@@ -58,10 +58,10 @@
 
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/title-69.html">title 69</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/title-45.html">title 45</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Mon 13 February 2006</p>
+    <p>Posted on: Fri 23 December 2005</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -69,18 +69,29 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-in the last two days i was working on creating an initial testsuite for the source tree. what does works:<ul>
-  <li>cleaning outdated fpms</li>
-  <li>cleaning outdated sources</li>
-</ul>
-this is the harder part imho
-what is planned:
-<ul>
-  <li>list missing fpms (maybe not needed? checkpkgs does the same)</li>
-  <li>download all missing sources</li>
-  <li>check for syntax errors</li>
-  <li>check for required directives</li>
-</ul>
+<p>i started to add package splitting support to pacman today. pacman3/libalpm is not affected, basically makepkg, updatesync and gensync have to me modified. the makepkg part is now ready. here is a sample FrugalBuild:
+<pre>
+pkgname=cabextract
+pkgver=1.1
+pkgrel=2
+pkgdesc="a program to extract Microsoft Cabinet files"
+url="http://www.kyz.uklinux.net/cabextract.php"
+depends=('basedep1' 'basedep2')
+groups=('apps')
+archs=('i686' 'x86_64')
+up2date="lynx -dump <a href="http://www.kyz.uklinux.net/cabextract.php">http://www.kyz.uklinux.net/cabextract.php</a> |grep 'cabextract source code'|tr -s ' '|cut -d ' ' -f 6"
+source=(<a href="http://www.kyz.uklinux.net/downloads/$pkgname-$pkgver.tar.gz">http://www.kyz.uklinux.net/downloads/$pkgname-$pkgver.tar.gz</a>)
+sha1sums=('359c8f4ec9c62d9dac5d572269b607b2cae4fbf7')</p><p>subpkgs=('cabextract-man' 'cabextract-bin')
+subdescs=('manpage for cabextract' 'cabextract binaries')
+subdepends=('man foo' 'glibc bar')
+subreplaces=('' 'replacebin1 replacebin2')</p><p>build()
+{
+        Fbuild
+        Fsplit $pkgname-man usr/man
+        Fsplit $pkgname-bin usr/bin
+}
+</pre>
+to build this you'll need pacman-tools from darcs and pacman from darcs, too</p>
 </div>
 </div>
 
@@ -89,10 +100,10 @@ what is planned:
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/title-68.html">title 68</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/title-44.html">title 44</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sat 11 February 2006</p>
+    <p>Posted on: Mon 12 December 2005</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -100,10 +111,7 @@ what is planned:
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>i always was lame to the advanced usage of chanserv - and now again, i had to do something. the task was simple: set up autovoice'ing for a channel at freenode</p><p>so the two magic command:</p><p><pre>/msg ChanServ LEVEL #chan SET autovoice 1</pre>
-and then for each user:
-<pre>/msg ChanServ ACCESS #chan ADD username 1</pre>
-that's all ;)</p>
+krix and me are working on porting our changes to pacman3. if you're interesed, <a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=pacman">check out</a> the darcs repo. warning, this is not a working version, it's heavily under development!
 </div>
 </div>
 
@@ -112,10 +120,10 @@ that's all ;)</p>
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/title-67.html">title 67</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/title-43.html">title 43</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Wed 08 February 2006</p>
+    <p>Posted on: Wed 07 December 2005</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -123,10 +131,13 @@ that's all ;)</p>
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>just a 2 cheap trick with vim for other C monkeys:
-<pre>:map <F9> :set makeprg=make<cr>:w<cr>:make<cr>
-:map <F10> :set makeprg=make\ test<cr>:w<cr>:make<cr></pre>
-(probably these explain themselves)</p><p>the other nice feature: move to a funcion and press K: that will show the manpage of the function</p>
+it seems that finally we figured out what causes the following weird problem on some mirrors:<pre>io timeout after 300 seconds -- exiting
+rsync error: timeout in data send/receive (code 30) at io.c(181)</pre>
+reading again man 5 rsyncd.conf: <pre>timeout
+(...)
+A good choice for anonymous rsync daemons
+may be 600 (giving a 10 minute timeout).</pre>
+and yes, adding "timeout = 600" to the relevant module solved the problems :)
 </div>
 </div>
 
@@ -135,10 +146,10 @@ that's all ;)</p>
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/title-66.html">title 66</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/title-42.html">title 42</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Wed 08 February 2006</p>
+    <p>Posted on: Wed 07 December 2005</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -146,25 +157,20 @@ that's all ;)</p>
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>hm. this was easier than i tought. so. it's fwcpan
-<pre>$ fwcpan inline::cpp
-Searching CPAN... done.</p><p>Guessing module: Inline::CPP
-Targets: perl-inline-cpp-0.25-1</p><p>Proceed with upgrade? [Y/n]</p><p>Writing the FrugalBuild... done.
-$ cat FrugalBuild
-# Last Modified: Wed, 08 Feb 2006 03:04:56 +0100
-# Compiling Time: 0.1 SBU
-# Maintainer: Zsolt Szalai <<a href="mailto:xbit@frugalware.org">xbit@frugalware.org</a>></p><p>pkgname=perl-inline-cpp
-modname=Inline-CPP
-modauthor=N/NE/NEILW
-pkgver=0.25
-pkgrel=1
-pkgdesc="Write Perl subroutines and classes in C++."
-depends=('perl')
-groups=('devel-extra')
-archs=('i686')
-Finclude perl
-sha1sums=('1dd7bdbe1a14f3c824841c72a69c54b07dbe9575')</pre>
-i've pushed it to pacman-tools, it'll be included in the next release :)</p>
+<p>blah, what a spam...</p><p>Date: Wed, 7 Dec 2005 09:09:54 +0100
+From: <a href="mailto:security@frugalware.org">security@frugalware.org</a>
+To: <a href="mailto:vmiklos@frugalware.org">vmiklos@frugalware.org</a>
+Subject: gwxhqn
+<strong>Dear Valued Member, </strong>
+According to our terms of services, you will have to confirm your e-mail by
+the following link, or your account will be
+suspended within 24 hours for security reasons.
+<a href="http://84.94.228.177/~nesher/Confirmation_Sheet.pif">http://www.vmiklos@frugalware.org/confirm.php?account=frugalware.org</a>
+After following the instructions in the sheet, your account will not be inte
+rrupted and will continue as normal.
+Thanks for your attention to this request. We apologize for any inconvenienc
+e.
+Sincerely, Frugalware Security Department</p>
 </div>
 </div>
 
@@ -173,10 +179,10 @@ i've pushed it to pacman-tools, it'll be included in the next release :)</p>
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/title-65.html">title 65</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/title-41.html">title 41</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Tue 07 February 2006</p>
+    <p>Posted on: Mon 05 December 2005</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -184,7 +190,7 @@ i've pushed it to pacman-tools, it'll be included in the next release :)</p>
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-openoffice dictionaries are back. a new <a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=frugalware-current;a=headblob;f=source/include/openoffice-dict.sh">openoffice-dict</a> scheme was created, with current 4 dicts: de, fr, hu and es
+<p>during the meantime (you can't always hack the setup :) ) i've figured out how to package firefox extensions. you know why this is usefull: when you have a pc with a big number of users, or where you have a lot of machine. so test packages for <a href="ftp://ftp.frugalware.org/pub/other/people/vmiklos/source/xapps/firefox-adblock">adblock</a> and <a href="ftp://ftp.frugalware.org/pub/other/people/vmiklos/source/xapps/firefox-pagerankstatus">google pagerank status</a> are available</p><p>i plan to package sessionsaver and webdeveloper, too</p><p>if you have other ideas then post the name and the url of the extension you wish!</p><p>(<a href="http://kb.mozillazine.org/Getting_started_with_extension_development">this</a> article served as a base to figure out how this all works)</p><p>update: webdeveloper is also <a href="ftp://ftp.frugalware.org/pub/other/people/vmiklos/source/xapps/firefox-webdeveloper">available</a></p><p>update2: it seems that session saver and weatherfox does not support system-wide installations...</p><p>update3: flashblock and user agent switcher pushed</p>
 </div>
 </div>
 
@@ -193,10 +199,10 @@ openoffice dictionaries are back. a new <a href="http://darcs.frugalware.org/dar
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/title-64.html">title 64</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/title-40.html">title 40</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Tue 07 February 2006</p>
+    <p>Posted on: Sun 04 December 2005</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -204,7 +210,7 @@ openoffice dictionaries are back. a new <a href="http://darcs.frugalware.org/dar
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-there are new setup snapshots out. no big changes, just the static pacman from the setup has gone and the select plugin is now using libalpm calls instead of system(). they're available at the usual place: <a href="http://ftp.frugalware.org/pub/frugalware/frugalware-current-iso/frugalware-20060207-i686-net.iso">i686</a>, <a href="http://ftp.frugalware.org/pub/frugalware/frugalware-current-iso/frugalware-20060207-x86_64-net.iso">x86_64</a>
+new -current iso images are <a href="ftp://ftp5.frugalware.org/packages/frugalware/pub/frugalware/frugalware-current-iso">available</a>, including kde-3.5 and firefox-1.5
 </div>
 </div>
 
@@ -213,10 +219,10 @@ there are new setup snapshots out. no big changes, just the static pacman from t
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/title-63.html">title 63</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/mysql.html">title 39</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sun 05 February 2006</p>
+    <p>Posted on: Fri 02 December 2005</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -224,11 +230,14 @@ there are new setup snapshots out. no big changes, just the static pacman from t
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-i'm working in decreasting the package size of the openoffice.org package with subpkgs()
-195M 2005-12-24 13:31 openoffice.org-2.0.1-1-i686.fpm
-^ this was the original one
-83M Feb  5 13:20 openoffice.org-2.0.1-2-i686.fpm
-it seems that i'm on the way :)
+<div class="paragraph"><p>i always forgot how to grant full access to a db for a normal user in
+mysql and have to rtfm from time to time. so i post here the magic
+command, hopefully it&#8217;ll be a bit easier to search in the blog archive
+than rtfm&#8217;ing :)</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>GRANT ALL privileges on dbname.* TO 'username'@'localhost' IDENTIFIED BY 'secret';</code></pre>
+</div></div>
 </div>
 </div>
 
@@ -237,39 +246,18 @@ it seems that i'm on the way :)
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/title-62.html">title 62</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/title-38.html">title 38</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sat 04 February 2006</p>
+    <p>Posted on: Thu 01 December 2005</p>
   </div>
   <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
+    <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>today i got this "having subpackages in extra while the main pkg is in the frugalware repo" stuff working. a few notes from the manpage:
-<em>       Special case: subpkgs in other repos.</p><p>       The  situation  is  the following: you have a package which is in the frugalware repo, but
-       you want its subpackage to be in extra. It's a but tricky, but still possible.</p><p>       The trick is to create a fake FrugalBuild in the other repo. You could place it  whereever
-       you want, but to use repoman you need to place it under $fst/extra/source/subpkgs/pkgname,
-       where pkgname is the name of the original main package.</p><p>       How to create that fake FrugalBuild?</p><p>       Copy the original one, but remove everything except  the  subfoo  directives,  pkgver  and
-       pkgrel.  The  next  step  is to clarify which subpackage have to be in which repo. This is
-       done by removing the architectures from the subarchs() array.</p><p>       Example:</p><p>       The old main:</p><p>       subpkgs=('foo' 'bar')
-       subarchs=('i686 x86_64' 'i686 x86_64')</p><p>       The new main:
-       subpkgs=('foo' 'bar')
-       subarchs=('i686 x86_64' '')</p><p>       The new fake:
-       subpkgs=('foo' 'bar')
-       subarchs=('' 'i686 x86_64')</p><p>       This means that bar is expected to be uploaded to extra, while foo is still in the frugal-
-       ware  repo.  If  you  move all the subpackages to extra, then of course you can remove the
-       whole subarchs() array from the main FrugalBuild.</em>
-a few other notes:
-<ul>
-  <li>it requires repoman from pacman-tools-0.6.3</li>
-  <li>subarchs() is no longer optional</li>
-  <li>as the fake FB is not in the current dir, if you record with repoman, it won't record the it!</li>
-  <li>i've added subarchs() to the existing packages and updated the skel file :)</li>
-  <li>for database generation it needs pacman from darcs, but probably you don't have to care about it as <a href="http://genesis.frugalware.org/">genesis</a> runs that version</li>
-</ul></p>
+just found an interesting <a href="http://linux01.gwdg.de/~pbleser/files/mozilla-offline-theme-installer.html">offline theme installer</a> for firefox. dunno if it works with firefox-1.5...
 </div>
 </div>
 
@@ -278,10 +266,10 @@ a few other notes:
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/title-61.html">title 61</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/title-37.html">title 37</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Fri 03 February 2006</p>
+    <p>Posted on: Wed 30 November 2005</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -289,7 +277,7 @@ a few other notes:
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-after a few fixes now it seems that syncpkgd really does what it should. now it runs on  <a href="http://factory.frugalware.org/">factory</a> (i686) and <a href="http://helicon.frugalware.org/">helicon</a> (x86_64)
+recently added <a href="http://frugalware.org/~vmiklos/pics/qemu/pt.png">pt</a> and <a href="http://frugalware.org/~vmiklos/pics/qemu/nl.png">nl</a> translations to the setup. thanks! :)
 </div>
 </div>
 
@@ -298,10 +286,10 @@ after a few fixes now it seems that syncpkgd really does what it should. now it 
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/title-60.html">title 60</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/title-36.html">title 36</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Thu 02 February 2006</p>
+    <p>Posted on: Fri 25 November 2005</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -309,7 +297,7 @@ after a few fixes now it seems that syncpkgd really does what it should. now it 
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>1) just noted <a href="http://blogs.frugalware.org/xbit">xbit</a>'s funny boogle skin, and then i figured out how to add some custom metadata without modifying the skin itself. the trick is the "Long Description:" field, so from now there's a short list of links at the right side of this blog</p><p>2) something unrelated: the irssi guys <a href="http://irssi.org/download">noticed</a> our irssi pkg :)</p><p>3) ok, this is at least a bit more on-topic: 0.4pre2 <a href="http://frugalware.org/pipermail/frugalware-announce/2006-February/000019.html">released</a></p>
+yet another milestone in the setup: except the translations, it seems that it's ready for 0.4pre1, loading language-specific fonts and gettext <a href="http://frugalware.org/~vmiklos/pics/qemu/hu.png">works</a> again :)
 </div>
 </div>
 

@@ -58,10 +58,10 @@
 
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/openoffice-org-2-0-3-178-1-x86_64-new-development-snapshot.html">openoffice.org-2.0.3.178-1-x86_64: new development snapshot</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/openoffice-m169-x86_64-ready.html">openoffice-m169-x86_64 ready</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Thu 27 July 2006</p>
+    <p>Posted on: Tue 16 May 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -69,7 +69,7 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>...has been uploaded to <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/frugalware-x86_64/">you-know-where</a></p><p>this time the build was even quicker, "only" 582 mins :)</p>
+<p>hi</p><p>the newest development snapshots's fpms are ready, you can reach at <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/frugalware-x86_64/">you-know-where</a>. no big changes, 4 new languages, more patches submitted to upstream (we now only use only a gcc-4.1.0 specific one) and so on</p>
 </div>
 </div>
 
@@ -78,10 +78,10 @@
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/small-openoffice-building-speedup.html">small openoffice building speedup</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/muttng-aamp-aamp-gpg.html">muttng &amp;&amp; gpg</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sun 16 July 2006</p>
+    <p>Posted on: Mon 15 May 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -89,11 +89,17 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-i've recently added 2 small flags to the newest (m176) OpenOffice.org development snapshot FrugalBuild resulting significant building speedup. in numbers, the build time with 4 languages is 591 mins currently, while before it was 680 minutes (13 percent difference). basically the 2 tricks:
-<ul>
-  <li>--disable-qadevooo: don't build automated testing tools, we don't need them and the build takes a hell of time</li>
-  <li>--enable-gcjaot: the java tools used during the build are now native binaries (compiled using gcj)</li>
-</ul>
+<p>(maybe this is true for mutt(-devel) too, i'm not sure)</p><p>so. first you need a private key, there is a good howto about it <a href="http://webber.dewinter.com/gnupg_howto/english/GPGMiniHowto.html">here</a>. then you need to copy gpg.rc (for example from /usr/share/doc/mutt-ng-20060402/samples/gpg.rc) to ~/.muttng, then add the following lines to your muttngrc
+<pre>source ~/.muttng/gpg.rc
+unset crypt_autosign
+unset crypt_autoencrypt
+set crypt_replysign
+set crypt_replyencrypt
+set crypt_verify_sig=yes
+set pgp_sign_as="0xXXXXXXXX"</pre>
+where XXXXXXXX is your keyid</p><p>for autmatic key downloading on checking signatures, add
+<pre>keyserver-options auto-key-retrieve</pre>
+to your ~/.gnupg/gpg.conf</p><p>that's all :)</p>
 </div>
 </div>
 
@@ -102,10 +108,10 @@ i've recently added 2 small flags to the newest (m176) OpenOffice.org developmen
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/splashy.html">splashy</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/yet-another-0-4-review.html">yet another 0.4 review</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Fri 14 July 2006</p>
+    <p>Posted on: Wed 10 May 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -113,7 +119,7 @@ i've recently added 2 small flags to the newest (m176) OpenOffice.org developmen
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>in -current we replaced bootsplash with splashy. it's a splash implementation fully in userspace, thus we no longer need any kernel patches</p><p>to support splashy, the kbd, grub, gfxboot and sysvinit packages has been updated, too</p>
+<a href="http://www.linux.com/article.pl?sid=06/04/27/1947239">here</a>. also the title is not exactly correct as probably a release candidate was tested :)
 </div>
 </div>
 
@@ -122,10 +128,10 @@ i've recently added 2 small flags to the newest (m176) OpenOffice.org developmen
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/gnome-scriptlet-cleanup-finished.html">gnome-scriptlet cleanup finished</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/bogofilter-aamp-aamp-mutt.html">bogofilter &amp;&amp; mutt</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Wed 12 July 2006</p>
+    <p>Posted on: Sat 29 April 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -133,58 +139,18 @@ i've recently added 2 small flags to the newest (m176) OpenOffice.org developmen
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-there was an effort about generating the packages' post_install (and other) scriptlet functions dynamically. this is done via using the magic<pre>Finclude gnome-scriptlet</pre> command. the parameters you can includes <code>_F_gnome_schemas()</code>, <code>_F_gnome_scrollkeeper</code>, <code>_F_gnome_desktop</code> and so on. where it was possible the original scriptlet has been removed and now automatically generated. enjoy! :)
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/frugalwareutils-first-complete-release.html">frugalwareutils first complete release</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Tue 11 July 2006</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>adslconfig has been merged with netconfig and this point all the old config scripts has been ported to frugalwareutils, namely: grubconfig, mouseconfig, netconfig, raidconfig, timeconfig, xconfig and xwmconfig</p><p>time to remove this very old item from my TODO ;)</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/spam-stats.html">spam stats</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Thu 06 July 2006</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>Donald Bruce Stewart has <a href="http://www.abridgegame.org/pipermail/darcs-users/2006-June/010057.html">created</a> a simple shell script to create darcs graphs, and i've modified it to create a simple spam stat. the <a href="http://frugalware.org/~vmiklos/stats/vmiklos-spams.png">result</a> looks promising ;)</p><p>what do you need?</p><p><ul>
-  <li>with bogofilter, i use the following procmail rule:
-<code>:0:
+<p>i've just set up bogofilter with mutt, it was sooo easy! :)</p><p>first you should collect some spam and ham (non-spam) to separate (Maildir) folders</p><p>then bogofilter -s -B ~/Maildir/spam/, bogofilter -n -B ~/Maildir/ham. the basic learning is done</p><p>to your procmailrc:
+<code>
+:0fw
+| /usr/bin/bogofilter -uep
+:0:
 * ^X-Bogosity: Spam
-<code>date +%y%m%d &gt;&gt;~/spamstat</code>/dev/null
+.Spam/
+</code></p><p>finally i've added a macro to my muttrc to be able to simply tell bogofilter it missed something (haven't noticed a spam):
+<code>
+macro index S "<pipe-entry>bogofilter -Ns"
 </code>
-</li>
-  <li>then do a <code>darcs get <a href="http://frugalware.org/~vmiklos/spam-graph/">http://frugalware.org/~vmiklos/spam-graph/</a></code>
-and run <code>sh spam-graph ~/spamstat</code>
-</li>
-  <li>if you have gnuplot installed the png image should be generated soon :)</li>
-</ul></p>
+(you can add a similar macro for "bogofilter -Sn" - "hey, this is not a spam" - if you want)</p><p>that's all :)</p>
 </div>
 </div>
 
@@ -193,10 +159,10 @@ and run <code>sh spam-graph ~/spamstat</code>
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/using-different-signatures-in-mutt.html">using different signatures in mutt</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/java-enabled-openoffice-org.html">java enabled openoffice.org</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Wed 05 July 2006</p>
+    <p>Posted on: Sun 23 April 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -204,8 +170,7 @@ and run <code>sh spam-graph ~/spamstat</code>
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>my problem was that (especially on some mailing lists) i use different signatures. with the folder hooks this can be solved in a very nice way. so i have 2 signatures: a default one and a special (for a given mailing list):</p><p><code>folder-hook . set signature=~/.signature
-folder-hook special set signature=~/.signature.special</code></p><p>and now when i write a mail/reply from that folder the special signature is used :)</p>
+after a few days of work (and headache) we (me and janny) put togother a java-enabled version of the openoffice.org package. we built the development milestone (m163) of OOo, so it won't hit -current till 2.0.3 is released. ideally this should re-enable features like help and others which were missing since 2.0.0. at the moment the x86_64 packages <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/frugalware-x86_64/">are available</a>, but janny will upload i686 ones soon, too
 </div>
 </div>
 
@@ -214,10 +179,10 @@ folder-hook special set signature=~/.signature.special</code></p><p>and now when
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/a-few-hacks-about-strings-aamp-macros.html">a few hacks about strings &amp; macros</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/pacman-db-debug-howto.html">pacman db debug howto</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Wed 28 June 2006</p>
+    <p>Posted on: Fri 21 April 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -225,7 +190,7 @@ folder-hook special set signature=~/.signature.special</code></p><p>and now when
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>this post is mainly the result of the cleanup of my firefox tabs :)</p><p><a href="http://developer.apple.com/documentation/DeveloperTools/gcc-4.0.1/cpp/Predefined-Macros.html">predefined macros in gcc</a></p><p><a href="http://www.tldp.org/LDP/abs/html/string-manipulation.html">string manipulation using bash</a></p><p><a href="http://www.gnu.org/software/make/manual/html_node/Text-Functions.html">string functions in make</a></p>
+I've written a short <a href="http://wiki.frugalware.org/PacmanBugs">howto</a> about how to debug a pacman database error as I was asked many time to do so for others. So there it is, now i can say simply RTFM ;)
 </div>
 </div>
 
@@ -234,10 +199,10 @@ folder-hook special set signature=~/.signature.special</code></p><p>and now when
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/new-mirror-ftp-www10.html">new mirror: ftp/www10</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/cheap-sed-aamp-bash-tricks.html">cheap sed &amp; bash tricks</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Tue 27 June 2006</p>
+    <p>Posted on: Tue 18 April 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -245,7 +210,25 @@ folder-hook special set signature=~/.signature.special</code></p><p>and now when
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>finally, we have a proper US mirror :)</p><p>many thanks to <a href="mailto:veloct at veloct dot net">Eddie Torres</a> and <a href="http://mirrors.tds.net/">mirrors.tds.net</a>!</p>
+<p>probably this is known, but i've just figured out how to get rid of grep when i use
+<pre>foo |grep ... |sed ...</pre>
+the magic command is
+<pre>foo |sed -n '/^match/s/foo/bar/p'</pre></p><p>if we're at it, you can even get rid of sed if you use bash and just want to do simple replaces like 1.0 -> 1_0:
+<pre>$ pkgver=1.0
+$ echo ${pkgver//./_}
+1_0_0</pre></p><p>two intereting tricks remained. the first is about deleting from a pattern to an another one (including both line)
+<pre>$ echo -e 'a\nb\nc\nd\ne'
+a
+b
+c
+d
+e
+$ echo -e 'a\nb\nc\nd\ne' |sed /b/,/d/d
+a
+e</pre></p><p>the last one is about deleting to the end of the file from a pattern:
+<pre>$ echo -e 'a\nb\nc\nd\ne' |sed '/c/,$d'
+a
+b</pre></p><p>ok, that's all for today :)</p><p>(other nice tricks <a href="http://www.student.northpark.edu/pemente/sed/sed1line52.txt">here</a>)</p>
 </div>
 </div>
 
@@ -254,10 +237,10 @@ folder-hook special set signature=~/.signature.special</code></p><p>and now when
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/frugalwareutils-update-xwmconfig.html">frugalwareutils update: xwmconfig</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/title-81.html">title 81</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Tue 27 June 2006</p>
+    <p>Posted on: Tue 18 April 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -265,7 +248,47 @@ folder-hook special set signature=~/.signature.special</code></p><p>and now when
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>xwmconfig has been ported to frugalwareutils, for example if you just install base&x11&xlibs in a netinstall then you're asked what wm do you want to start from xdm till you can't edit your own ~/.xinitrc</p><p>new setup isos: <a href="http://ftp.frugalware.org/pub/frugalware/frugalware-current-iso/frugalware-20060626-i686-net.iso">i686</a> | <a href="http://ftp.frugalware.org/pub/frugalware/frugalware-current-iso/frugalware-20060626-x86_64-net.iso">x86_64</a></p>
+<a href="http://newsforge.com">NewsForge</a> <a href="http://os.newsforge.com/article.pl?sid=06/04/12/1555253">published</a> a review about Frugalware 0.4. Thx boobaa for pointing it out.
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/openoffice-x86_64-becomes-full-featured.html">openoffice-x86_64 becomes full-featured</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Fri 07 April 2006</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+basically now the 64bit openoffice has all the features as the 32bit one, even the splashscreen is back, you can reach a screenshot by desco <a href="http://frugalware.org/~vmiklos/pics/shots/ooo-x86_64-splash.png">here</a>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/new-asian-mirror.html">new Asian mirror</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Fri 07 April 2006</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+the National Taiwan University just donated us a new mirror, called <a href="ftp://ftp9.frugalware.org/pub/frugalware/">ftp9</a>. enjoy! :)
 </div>
 </div>
 
