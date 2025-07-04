@@ -59,10 +59,10 @@
 
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/title-58.html">title 58</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/title-46.html">title 46</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sun 29 January 2006</p>
+    <p>Posted on: Mon 26 December 2005</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -70,11 +70,7 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-probably irssi users know <a href="http://f0rked.com/code/irssi/anames.pl">anames.pl</a>, a clone of /names, with away nicks grayed out. the sympthom is that new away information need to be obtained manually by executing a /who on a channel. the real problem behind that is that if you use redirection, then the away infos aren't updated. so i've made a workaround for that: at least this calls /who automatically. you can reach my patch <a href="http://frugalware.org/~vmiklos/patches/anames.diff">here</a>.
-(the sollution would be to<ul>
-  <li>finding a way to mute /who</li>
-  <li>fixing this redirection stuff in irssi ;)</li>
-</ul>)
+<p>first of all, merry Christmas for every blog reader!</p><p>so. it seems that finally i've <a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=frugalware-current;a=darcs_commitdiff;h=20051226002440-e2957-2221f645d8a92d7b63a6f355551c7d2bbc2154ef.gz">fixed</a> our 'send darcs diffs' script (yay, 59 mails because of this! ;) )</p><p>also <a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=pacman;a=darcs_commitdiff;h=20051225235618-e2957-bb96c23d38a852c3bed7c089ce8b3872399aa51b.gz">fixed</a> a nice double free in pacman. ok, that's all today :)</p>
 </div>
 </div>
 
@@ -83,10 +79,10 @@ probably irssi users know <a href="http://f0rked.com/code/irssi/anames.pl">aname
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/title-57.html">title 57</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/title-45.html">title 45</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sat 28 January 2006</p>
+    <p>Posted on: Fri 23 December 2005</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -94,49 +90,29 @@ probably irssi users know <a href="http://f0rked.com/code/irssi/anames.pl">aname
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>yestreday xorg7 hit -current</p><p>in most cases it should install without any problem, if not
-<ul>
-  <li><pre>pacman -S xorg-fonts xorg-libs --noconfirm</pre> to install all the fonts and libs available</li>
-  <li>if you're using a binary driver (for example nvidia), try <pre>pacman -R nvidia && pacman -S nvidia</pre></li>
-</ul></p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/title-56.html">title 56</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Wed 25 January 2006</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>slowly but xorg7 is being packaged and if everything works well, it'll hit -current before 0.4pre2. currently you can get the buildscripts, and there are two binary repo:
-<pre>[xorg7]
-<a href="http://ftp.frugalware.org/pub/other/people/vmiklos/other/xorg7/frugalware-i686">http://ftp.frugalware.org/pub/other/people/vmiklos/other/xorg7/frugalware-i686</a>
+<p>i started to add package splitting support to pacman today. pacman3/libalpm is not affected, basically makepkg, updatesync and gensync have to me modified. the makepkg part is now ready. here is a sample FrugalBuild:
+<pre>
+pkgname=cabextract
+pkgver=1.1
+pkgrel=2
+pkgdesc="a program to extract Microsoft Cabinet files"
+url="http://www.kyz.uklinux.net/cabextract.php"
+depends=('basedep1' 'basedep2')
+groups=('apps')
+archs=('i686' 'x86_64')
+up2date="lynx -dump <a href="http://www.kyz.uklinux.net/cabextract.php">http://www.kyz.uklinux.net/cabextract.php</a> |grep 'cabextract source code'|tr -s ' '|cut -d ' ' -f 6"
+source=(<a href="http://www.kyz.uklinux.net/downloads/$pkgname-$pkgver.tar.gz">http://www.kyz.uklinux.net/downloads/$pkgname-$pkgver.tar.gz</a>)
+sha1sums=('359c8f4ec9c62d9dac5d572269b607b2cae4fbf7')</p><p>subpkgs=('cabextract-man' 'cabextract-bin')
+subdescs=('manpage for cabextract' 'cabextract binaries')
+subdepends=('man foo' 'glibc bar')
+subreplaces=('' 'replacebin1 replacebin2')</p><p>build()
+{
+        Fbuild
+        Fsplit $pkgname-man usr/man
+        Fsplit $pkgname-bin usr/bin
+}
 </pre>
-and
-<pre>[xorg7]
-<a href="http://ftp.frugalware.org/pub/other/people/vmiklos/other/xorg7/frugalware-x86_64">http://ftp.frugalware.org/pub/other/people/vmiklos/other/xorg7/frugalware-x86_64</a>
-</pre>
-the buildscripts are available in <a href="http://ftp.frugalware.org/pub/other/people/krix/xorg7/">krix's repo</a></p><p>warning: these pkgs are more unstable than the pkgs usually in -current!</p><p><em>but</em> besiedes some upgrade bugs, it works:
-<pre>$ X -version</p><p>X Window System Version 7.0.0
-Release Date: 21 December 2005
-X Protocol Version 11, Revision 0, Release 7.0
-Build Operating System:Linux 2.6.15-fw1 i686Frugalware
-Current Operating System: Linux vmobile 2.6.15-fw1 #1 SMP Tue Jan 3 20:46:58 CET 2006 i686
-Build Date: 25 January 2006
-        Before reporting problems, check <a href="http://www.frugalware.org">http://www.frugalware.org</a>
-        to make sure that you have the latest version.
-Module Loader present</pre>
-:)</p>
+to build this you'll need pacman-tools from darcs and pacman from darcs, too</p>
 </div>
 </div>
 
@@ -145,10 +121,10 @@ Module Loader present</pre>
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/title-55.html">title 55</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/title-44.html">title 44</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Fri 20 January 2006</p>
+    <p>Posted on: Mon 12 December 2005</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -156,7 +132,7 @@ Module Loader present</pre>
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-finally the new netconfig is ready. this is a complete rewrite in C - incuding profiling support, unlimited number of network cards, support for interface names != ethn, multiple ips on a single interface and much more. ah and now the config tool has a manpage: just type<pre>man netconfig</pre> after the usual -Syu. huch, it was about 3 days of work :)
+krix and me are working on porting our changes to pacman3. if you're interesed, <a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=pacman">check out</a> the darcs repo. warning, this is not a working version, it's heavily under development!
 </div>
 </div>
 
@@ -165,10 +141,10 @@ finally the new netconfig is ready. this is a complete rewrite in C - incuding p
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/title-54.html">title 54</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/title-43.html">title 43</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Mon 16 January 2006</p>
+    <p>Posted on: Wed 07 December 2005</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -176,7 +152,13 @@ finally the new netconfig is ready. this is a complete rewrite in C - incuding p
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-it seems that the darcs gateway for <a href="http://cia.navi.cx/">cia</a> is now successfully set up. you can reach the project stats <a href="http://cia.navi.cx/stats/project/Frugalware">here</a>, my personal stat is <a href="http://cia.navi.cx/stats/author/VMiklos%20%3Cvmiklos%40frugalware.org%3E">here</a> :)
+it seems that finally we figured out what causes the following weird problem on some mirrors:<pre>io timeout after 300 seconds -- exiting
+rsync error: timeout in data send/receive (code 30) at io.c(181)</pre>
+reading again man 5 rsyncd.conf: <pre>timeout
+(...)
+A good choice for anonymous rsync daemons
+may be 600 (giving a 10 minute timeout).</pre>
+and yes, adding "timeout = 600" to the relevant module solved the problems :)
 </div>
 </div>
 
@@ -185,10 +167,10 @@ it seems that the darcs gateway for <a href="http://cia.navi.cx/">cia</a> is now
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/title-53.html">title 53</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/title-42.html">title 42</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sun 15 January 2006</p>
+    <p>Posted on: Wed 07 December 2005</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -196,7 +178,20 @@ it seems that the darcs gateway for <a href="http://cia.navi.cx/">cia</a> is now
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-finally i got time to review pete's <a href="http://frugalware.org/~pete/doc-ng/">documentation rework in texinfo</a>. so now it hit -current, and you can reach it at the <a href="http://frugalware.org/docs.php">usual place</a>
+<p>blah, what a spam...</p><p>Date: Wed, 7 Dec 2005 09:09:54 +0100
+From: <a href="mailto:security@frugalware.org">security@frugalware.org</a>
+To: <a href="mailto:vmiklos@frugalware.org">vmiklos@frugalware.org</a>
+Subject: gwxhqn
+<strong>Dear Valued Member, </strong>
+According to our terms of services, you will have to confirm your e-mail by
+the following link, or your account will be
+suspended within 24 hours for security reasons.
+<a href="http://84.94.228.177/~nesher/Confirmation_Sheet.pif">http://www.vmiklos@frugalware.org/confirm.php?account=frugalware.org</a>
+After following the instructions in the sheet, your account will not be inte
+rrupted and will continue as normal.
+Thanks for your attention to this request. We apologize for any inconvenienc
+e.
+Sincerely, Frugalware Security Department</p>
 </div>
 </div>
 
@@ -205,10 +200,10 @@ finally i got time to review pete's <a href="http://frugalware.org/~pete/doc-ng/
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/title-52.html">title 52</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/title-41.html">title 41</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Thu 12 January 2006</p>
+    <p>Posted on: Mon 05 December 2005</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -216,7 +211,7 @@ finally i got time to review pete's <a href="http://frugalware.org/~pete/doc-ng/
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-i've finished updating all the firefox langpacks, so the system should now work again as in the good old 1.0.x times - like gettext. a list of langpacks available <a href="http://frugalware.org/packages.php?op=pkg&srch=firefox-&sub=on&repo=extra&arch=i686&fwver=current">here</a> (ok, mostly langpacks ;) )
+<p>during the meantime (you can't always hack the setup :) ) i've figured out how to package firefox extensions. you know why this is usefull: when you have a pc with a big number of users, or where you have a lot of machine. so test packages for <a href="ftp://ftp.frugalware.org/pub/other/people/vmiklos/source/xapps/firefox-adblock">adblock</a> and <a href="ftp://ftp.frugalware.org/pub/other/people/vmiklos/source/xapps/firefox-pagerankstatus">google pagerank status</a> are available</p><p>i plan to package sessionsaver and webdeveloper, too</p><p>if you have other ideas then post the name and the url of the extension you wish!</p><p>(<a href="http://kb.mozillazine.org/Getting_started_with_extension_development">this</a> article served as a base to figure out how this all works)</p><p>update: webdeveloper is also <a href="ftp://ftp.frugalware.org/pub/other/people/vmiklos/source/xapps/firefox-webdeveloper">available</a></p><p>update2: it seems that session saver and weatherfox does not support system-wide installations...</p><p>update3: flashblock and user agent switcher pushed</p>
 </div>
 </div>
 
@@ -225,10 +220,10 @@ i've finished updating all the firefox langpacks, so the system should now work 
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/title-51.html">title 51</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/title-40.html">title 40</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Wed 11 January 2006</p>
+    <p>Posted on: Sun 04 December 2005</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -236,7 +231,7 @@ i've finished updating all the firefox langpacks, so the system should now work 
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-as of hal-0.5.5-3, automounting usb sticks finally works perfectly (big thanks to crazy :) ). note, that this will require the new udev & kernel, but as usual pacman will solve such problems for you ;)
+new -current iso images are <a href="ftp://ftp5.frugalware.org/packages/frugalware/pub/frugalware/frugalware-current-iso">available</a>, including kde-3.5 and firefox-1.5
 </div>
 </div>
 
@@ -245,10 +240,10 @@ as of hal-0.5.5-3, automounting usb sticks finally works perfectly (big thanks t
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/title-50.html">title 50</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/mysql.html">title 39</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Tue 10 January 2006</p>
+    <p>Posted on: Fri 02 December 2005</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -256,7 +251,14 @@ as of hal-0.5.5-3, automounting usb sticks finally works perfectly (big thanks t
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>as gimb already pointed out, mod_ruby was broken with apache 2.2, but don't worry, we already fixed that. if you're interesed, then you can reach the fix <a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=frugalware-current;a=plainblob;f=extra/source/network/mod_ruby/mod_ruby-1.2.4-apache22.diff">here</a></p><p>update: now posted to <a href="http://comments.gmane.org/gmane.comp.apache.mod-ruby/497">upstream</a></p>
+<div class="paragraph"><p>i always forgot how to grant full access to a db for a normal user in
+mysql and have to rtfm from time to time. so i post here the magic
+command, hopefully it&#8217;ll be a bit easier to search in the blog archive
+than rtfm&#8217;ing :)</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>GRANT ALL privileges on dbname.* TO 'username'@'localhost' IDENTIFIED BY 'secret';</code></pre>
+</div></div>
 </div>
 </div>
 
@@ -265,10 +267,10 @@ as of hal-0.5.5-3, automounting usb sticks finally works perfectly (big thanks t
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/title-49.html">title 49</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/title-38.html">title 38</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sun 08 January 2006</p>
+    <p>Posted on: Thu 01 December 2005</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -276,7 +278,27 @@ as of hal-0.5.5-3, automounting usb sticks finally works perfectly (big thanks t
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-you may notice that pacman-2.9.99.9 is here, within a day after 2.9.99.8. there was a typo in the code which caused -S/-A/-U (almost everything) segfault. hopefully almost nobody upgraded yet, but if you're upgraded to 2.9.99.8, and you now can't upgrade, then download the 2.9.99.9 static binary from <a href="http://frugalware.org/~vmiklos/stuff/pacman.static">here</a>, copy it to /usr/bin/pacman.static, and then pacman.static -Syu should do everything for you
+just found an interesting <a href="http://linux01.gwdg.de/~pbleser/files/mozilla-offline-theme-installer.html">offline theme installer</a> for firefox. dunno if it works with firefox-1.5...
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/title-37.html">title 37</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Wed 30 November 2005</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+recently added <a href="http://frugalware.org/~vmiklos/pics/qemu/pt.png">pt</a> and <a href="http://frugalware.org/~vmiklos/pics/qemu/nl.png">nl</a> translations to the setup. thanks! :)
 </div>
 </div>
 
