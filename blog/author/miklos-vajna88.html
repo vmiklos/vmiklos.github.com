@@ -59,10 +59,10 @@
 
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/mit_ne_tegyel.html">mit ne tegyel</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/using-git-filter-branch.html">using git filter-branch</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Tue 18 December 2007</p>
+    <p>Posted on: Wed 14 November 2007</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -70,7 +70,7 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p><div align="center"><img src="/pic/bor.jpg" alt="next" title="" height="50%" width="50%"/></div></p><p>szoval. ha 2napon belul van 3 pot-pot-zhd akkor elottevalo nap ne menj dolgozni. de ha melozol is, ne borozgass. vagy ha borozgatsz is, elottevalo nap aludj eleget. vagy ha nem alszol eleget akkor ne fekudj le aludni masnap koran azzal, hogy majd utana frissen tanulni fogsz. mert ugyse fogsz ;)</p><p>(based on true story)</p>
+<p>git filter-branch is a new command in git-1.5.3 and today i met a situation where it was really useful. here is the scenario:</p><p>i have a 'vmexam' (like soxexam, "vmiklos' examples") repo, random small code chunks, every commit touches only a given subdir. after some time some projects need an own repo and i do versioned releases. this was the case with <a href="http://vmiklos.hu/project/pyrssi/">pyrssi</a>, too</p><p>so i wanted to have a new repo with only the pyrssi-related commits and without anything else. this is exactly the case git filter-branch's subdirectory filter is for:</p><p><code>git filter-branch --subdirectory-filter python/cgi/pyrssi HEAD</code></p><p>then in the old repo i just rm -rf'd the code and i had it in the root dir of the new repo. yay! :)</p>
 </div>
 </div>
 
@@ -79,10 +79,10 @@
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/valaki_nagyon_szeret.html">valaki nagyon szeret</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/using-xosd-for-irc-notifications-and-other-goodness.html">using xosd for irc notifications and other goodness</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sun 16 December 2007</p>
+    <p>Posted on: Fri 02 November 2007</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -90,7 +90,12 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p><div align="center"><img src="/pic/anyad.jpg" alt="next" title="" height="50%" width="50%"/></div></p><p>igy belegondolva a soszoras valamilyen modon spamszurokent is ertelmezheto. legalabbis ha a kocsikat is szornak akkor a fenti uzenet nem jutott volna el hozzam.</p>
+<p>so, here is the situation:</p><p>you have a machine behind a firewall and you have an ssh session to a server. and you want to send notifications to you machine. here is what i did, maybe useful for others, too</p><p><ul>
+  <li>you'll need the program called osd_cat, provided by osd</li>
+  <li>you'll need to use ssh with the -X option</li>
+  <li>if you run programs inside screen, you still won't know the the right DISPLAY number, so do a trick: add</p><p><code>[ -n "$DISPLAY" ] && echo $DISPLAY > ~/.display</code></p><p>to you ~/.bash_login</li>
+  <li>now you're ready to use osd_cat:</p><p><code>$ echo -e 'foo'|DISPLAY=<code>cat ~/.display</code> osd_cat --color=blue --age=4 --font=-*-helvetica-medium-r-*-*-*-320-*-*-*-*-*-* --offset=100 --align=right --indent=100</code></li>
+</ul></p><p>as an example, irssi has <a href="http://irssi.org/scripts/scripts/osd.pl">osd.pl</a> to use osd_cat for highlight notifications :)</p>
 </div>
 </div>
 
@@ -99,10 +104,10 @@
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/rss_clenaup.html">rss clenaup</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/playing-with-compiz-fusion.html">playing with compiz fusion</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sat 15 December 2007</p>
+    <p>Posted on: Sat 27 October 2007</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -110,10 +115,18 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p><div align="center"><img src="/pic/rss.jpg" alt="next" title="" height="50%" width="50%"/></div></p><p>tartottam egy kis cleanupot az rss feedek kozott. ezek estek ki:</p><p><ul>
-  <li><a href="http://openblog.hu/commentrss/vmiklos">regi openblogos comment rss</a></li>
-  <li><a href="http://mocman.ath.cx/comic/feed.xml">mocman comic rsse</a></li>
-  <li><a href="http://feeds.feedburner.com/Explosm">explosm.net</a> (igazabol ez jo volt csak nagyon beteg ;/)</li></ul></p><p>uj debutalo pedig az <a href="http://xkcd.com/rss.xml">xkcd.com</a>.</p>
+<p>Priyank recently removed Beryl from -current and added Compiz Fusion. so i did a base install then i followed the instructions in xgl's README.Frugalware. a few impressions:</p><p>pros:
+<ul>
+  <li>i have an i810 card, not nvidia, or anything extra, it's a cheap one. the only effect that was slow for me is when i marked the cube 100% transparent. but all the other effect were really fast.</li>
+  <li>compiz initially worked fine only with gnome. i'm a kde fan so i tried compiz with kde and it worked fine. i think this is something new</li>
+  <li>thanks to aiglx, i did not have to - in fact - start xgl, no editing in kdm.conf or anything, just xorg.conf</li>
+</ul></p><p>cons:<ul>
+  <li>i have 4 virtual desktops like:
+<pre>1 | 2
+----
+3 | 4</pre></p><p>compiz translates this to: a simple paper with two side and on each size there is another side on top of the other one. so it says it's not a cube. how crappy</li>
+  <li>i can't select to hide windows from other virtual desktops from the taskbar. a basic feature @ kde</li>
+</ul></p><p>conclusion? it's really nice, well done - but for daily work of course i won't enable it :)</p>
 </div>
 </div>
 
@@ -122,10 +135,10 @@
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/v_for_vendetta.html">v for vendetta</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/removing-uids-in-gpg.html">removing uids in gpg</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Wed 12 December 2007</p>
+    <p>Posted on: Fri 05 October 2007</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -133,7 +146,19 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p><div align="center"><img src="/pic/v_for_vendetta.jpg" alt="next" title="" height="50%" width="50%"/></div></p><p>a maszkos alak mar ismeros: hugo weaving. csak eppen itt tenyleg mindig betolnak valamit az arca ele, igy tuti nem fedezheto fel utanajaras nelkul, hogy a matrixos ugynokkel lenne dolgunk ;)</p><p>elvileg scifi, de ilyen urhajokat meg hasonlokat ne keressunk benne, a film eppenhogy csak a jovoben jatszodik (az egyetlen utalas ha jol emlekszem annyi h multidoben beszelnek egyszer 2015rol).</p><p>erdemes megnezni, stilusos :)</p>
+<p>here is the problem:</p><p>you hava gpg key since 5 years. you had various mail addresses over the time and every mail address is attached to a key. so it'll look ugly, like <a href="http://frugalware.org/~vmiklos/pics/shots/gpg-bloated.png">this</a>.</p><p>the problem is that once you pushed a uid (read: email address, attached to a key) to the keyserver, you can no longer remove it. but here is the solution: you can revoke it! :)</p><p>how to do so?</p><p>it's easy:</p><p><code>$ gpg --edit-key <a href="mailto:john@foo">john@foo</a>.org</code></p><p>a list of your ids with numbers are displayed. select a uid:</p><p><code>Command> uid 2</code></p><p>then you can revoke it:</p><p><code>Command> revuid 3
+Really revoke this user ID? (y/N) y
+Please select the reason for the revocation:
+  0 = No reason specified
+  4 = User ID is no longer valid
+  Q = Cancel
+(Probably you want to select 4 here)
+Your decision? 4
+Enter an optional description; end it with an empty line:
+>
+Reason for revocation: User ID is no longer valid
+(No description given)
+Is this okay? (y/N) y</code></p><p>you can notice that the uid is now listed as "revoked" instead of "ultimate"</p><p>now you can exit using:</p><p><code>Command> save</code></p><p>and send it to the key server:</p><p><code>$ gpg --send-key 03915096</code></p><p>of course the uids will be still there, but that bloated list should be now short and tiny :)</p>
 </div>
 </div>
 
@@ -142,10 +167,10 @@
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/dial_m_for_murder.html">dial m for murder</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/dhcpcd-vs-zeroconf.html">dhcpcd vs zeroconf</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Mon 10 December 2007</p>
+    <p>Posted on: Thu 04 October 2007</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -153,7 +178,7 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p><div align="center"><img src="/pic/dial_m_for_murder.jpg" alt="next" title="" height="50%" width="50%"/></div></p><p>ezt mar nagyon reg ota meg akarom nezni :)</p><p>maga a film meg megregebbi. meglepo modon krimi, es ha az elso fele utan abbahagyjak mar akkor erdemes lett volna megnezni, de termeszetesen egy hitchcocktol az ember tobbet var, es vegulis errol szol a film masodik fele. kotelezo :)</p>
+<p>maybe you know a situation that is regular for me: when testing a new wireless network - if dhcp is misconfigured, dhcpcd would just have to timeout. though - thanks to zeroconf support - it uses to pick up some ip addresses instead, making debugging hard. so here is a trick to disable zeroconf support (so that dhcpcd will just timeout):</p><p>append</p><p><code>dhcp_opts = -L</code></p><p>to your /etc/sysconfig/network/default (or other) profile for the section of the wireless interface</p>
 </div>
 </div>
 
@@ -162,10 +187,10 @@
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/while_you_were_sleeping.html">while you were sleeping</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/rtorrent-with-dht-support.html">rtorrent with dht support</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sun 09 December 2007</p>
+    <p>Posted on: Wed 03 October 2007</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -173,7 +198,10 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p><div align="center"><img src="/pic/while_you_were_sleeping.jpg" alt="next" title="" height="50%" width="50%"/></div></p><p>felelmetes, hogy mennyire felre kepesek forditani egy film cimet. magyarul "aludj csak, en almodom". hat ennek igy semmi ertelme. meg a filmet is megnezve se jottem ra h ez igy hogy lehet ertelmes forditas ;)</p><p>amugy ilyen csajozos film, 1x nezheto.</p>
+<p>dht support means support for trackerless torrents</p><p>currently rtorrent does not support it, but after a bit googling, i've found <a href="http://libtorrent.rakshasa.no/ticket/98">this ticket</a>. it mentions that there is a patch <a href="http://tk.ttdpatch.net/~jdrexler/dht/">here</a>. so i've split up the patch for libtorrent and rtorrent and uploaded these packages to my <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/bmf/">bmf</a> repo.</p><p>you need to add two extra lines to your ~/.rtorrent.rc:</p><p><pre>
+dht = auto
+dht_port = 6986
+</pre></p><p>of course the port can be anything else.</p><p>during testing, i had one "server" - where i had the test file already - and one "client" - where i had only the torrent.</p><p>i opened one port for torrent communication and one port for the dht server on the server, of course no ports were open on the client. and yes, it did work fine! :)</p><p>(<a href="http://frugalware.org/~vmiklos/pics/shots/trackerless.png">screenshot</a>)</p><p>let's hope the patch will be included in the vanilla rtorrent soon!</p>
 </div>
 </div>
 
@@ -182,50 +210,10 @@
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/svn-ggit-conversion-using-git-svn.html">svn->git conversion using git-svn</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/using-git-request-pull.html">using git request-pull</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sun 09 December 2007</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>git-svnimport will be removed in git-1.5.4 and i don't think it's tirival to use git-svn (which is great for bi-directional work) to properly convert an svn repo (with multiple branches) to a git one, so here is a recipe.</p><p>first, just use git-svn to create a git-svn repo. it's a git repo but it's a bit weird, it contains metadata which is necessary for bi-directional operations and you won't see the branches by default when you clone it. ah and it's not a bare repo.</p><p>in this example i'll convert ooo-build's svn repo (it has several branches and tags, so it's a good example).</p><p><code>mkdir -p ~/git/ooo-build
-cd ~/git/ooo-build
-git svn init -s svn+ssh://svn.gnome.org/svn/ooo-build
-git svn fetch</code></p><p>this will take a while. once it's completed, you need to convert this to a bare repo:</p><p><code>mkdir ../ooo-build.git
-cd ../ooo-build.git
-git --bare init
-git config remote.origin.url ~/git/ooo-build
-git config remote.origin.fetch +refs/remotes/tags/*:refs/tags/*
-git config --add remote.origin.fetch +refs/remotes/trunk:refs/heads/master
-git config --add remote.origin.fetch +refs/remotes/*:refs/heads/*
-git fetch
-</code></p><p>and you're done! :)</p><p>of course this is an incremental operation, so all you need is to run git svn fetch and git fetch from cron to keep the mirror up to date.</p><p>update:</p><p>it turns out you can even do this by having only one git repo. it has benefints: you don't have to duplicate the object database. and it has one problem: if you later switch fully to git, then you want to remove the git-svn metadata - doing so is the easiest if you just clone the repo.</p><p>so - in case you want this, you have to:</p><p><code>mkdir -p ~/git/ooo-build.git
-cd ~/git/ooo-build.git
-git --bare init
-git --bare svn init -s svn+ssh://svn.gnome.org/svn/ooo-build
-git --bare svn fetch</code></p><p>and then you can fetch from yourself:</p><p><code>
-git config remote.origin.url .
-git config remote.origin.fetch +refs/remotes/tags/*:refs/tags/*
-git config --add remote.origin.fetch +refs/remotes/*:refs/heads/*
-git fetch
-</code></p><p>note: git config --add remote.origin.fetch +refs/remotes/trunk:refs/heads/master it unnecessary as git svn fetch will update this for you (it is different from git fetch)</p><p>thanks for devurandom from #git for pointing out that this is possible using git --bare init before git svn init and using git --bare svn fetch :)</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/i_unicode.html">i &#0; unicode</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Fri 07 December 2007</p>
+    <p>Posted on: Fri 21 September 2007</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -233,7 +221,21 @@ git fetch
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<div align="center"><img src="/pic/i_unicode.jpg" alt="unicode" title="" /></div>
+<p>it's a nice simple script to generate a message body for you when you have no write access to a repo and you want to request the m8r to pull from you. here is how to use it:</p><p><pre>$ git request-pull origin/master \
+<a href="mailto:vmiklos@vmiklos.dev.frugalware.org">vmiklos@vmiklos.dev.frugalware.org</a>:git/pacman-g2/
+The following changes since commit 52a29e40a52bb09e0db7f167712a9be3ad8d0d3c:
+  Priyank (1):
+        Merge branch 'master' of \
+git.frugalware.org:/home/ftp/pub/other/pacman-g2/pacman-g2</p><p>are available in the git repository at:</p><p>  <a href="mailto:vmiklos@vmiklos.dev.frugalware.org">vmiklos@vmiklos.dev.frugalware.org</a>:git/pacman-g2/ master</p><p>VMiklos (4):
+      new NOARCH trans flag for _pacman_pkg_load()
+      _pacman_pkg_load(): indentation fix
+      parseargs(): new --noarch option
+      tests/upgrade071.py: new test for --noarch</p><p> lib/libpacman/package.c     |   36 +-----------------
+ lib/libpacman/pacman.h      |    1 +
+ pactest/tests/upgrade071.py |   10 +
+ src/pacman-g2/pacman-g2.c   |    3 
+ 4 files changed, 33 insertions(+), 17 deletions(-)
+ create mode 100644 pactest/tests/upgrade071.py</pre></p><p>of course in real life, you want to use http:// or git:// since probably the m8r won't be be able to login to your own machine via ssh :)</p>
 </div>
 </div>
 
@@ -242,30 +244,10 @@ git fetch
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/pannon_vs_ssh.html">pannon vs ssh</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/you-can-test-openoffice-org-2-0-3rc3.html">You can test OpenOffice.org 2.0.3rc3</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Thu 06 December 2007</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p><div align="center"><img src="/pic/midpssh.jpg" alt="midpssh" title="" height="50%" width="50%"/></div></p><p>a kepnek valami ilyesmi cimet lehetne adni, h "midpssh+screen+irssi+bitlbee+skype in action"</p><p>szoval ma melo utan bementem a pannonhoz, mert se az ssh, se az irc, se az email nem ment a telefonomrol. a wap ment jol. illetve ment a net az egyeb javas alkalmazasokbol is (pl google maps) amik httpt hasznaltak.</p><p>tekintve, hogy nem naluk vettem a telot eloadtam, hogy biztos nincs jol beallitva, es.. de itt felbe lettem szakitva, kerem mi nem ertunk hozza faradjon at a masik uzletunkbe, majd ott segitenek. igazabol erre szamitottam, de gondoltam hatha hazafelemenet beugrom oda ami utbaesik es meguszom ennyivel.</p><p>tehat irany a masik uzelet, az orszag 3 uzlete kozul az egyik amelyik valoban pannonos, nem csak franchise. itt sorallas, majd vegre az aranyos kiscsaj belatta h az en problemam nincs azon a 200as listan amire valaszolni tud, igy a pop3 meg imap emlegetese kozben gyorsan felbeszakitott, hogy ez neki kinai, varjak a technikus kollegara. termeszetesen ilyen allatfajbol csak 1db van az egesz uzletben, azis el van foglalva valami szamlak kezzel irasaval, vagy annak latszo lathatolag szellemileg megterhelo es hosszadalmas technikai folyamattal.</p><p>kozben odahivott egy masik kollega es megkerdezte h mibajom, hatha tud segiteni, mert ott alltam a pulttol kb 2mre, ha massal nem hat ezzel erzekeltettem, h en bizony varok :p</p><p>aztan a masik kollega mar egy fokkal okosabb volt, elmagyarazta, hogy mi a problema, de megoldani nemtudta. vegul megjott a technikus kollega. megnyugtatoan hatott ram, hogy lathatolag ot mar nem razta ki a hideg a pop3 v imap szavak hallatan, de gyorsan megkerte, hogy ne menjunk bele a reszletekbe, majd mikor kozoltem, hogy en biztony titkositva szeretnem leszedni a mailjeimet, probalt utalgatni, hogy ez nem igazan erre van kitalalva.</p><p>vegul kb sok szenvedes utan kozolte, hogy lovese sincs, h mi a problema, es ne menjek el vele a nokiahoz, mert nem a telefon problemaja, hanem az ovek. az oszinteseg szep dolog, de a problema termeszetesen tovabbra is ott volt. es persze jol elallitgatta a telefont, igy a vegen mar boldogan jottem ki, mert legalabb a wap ment ujra - majdnem 2 ora szenvedes utan. persze a google mapset hazavagta es az se mukodott amiert bementem, de ezzel mar nem foglalkoztam.</p><p>aztan osszefutottam msdvel, roviden felvazoltam a helyzetet, es kiderult, hogy annyi a baj h az apn erteke nem wap hanem snet kell legyen a gprs beallitasoknal. igen, ezt csak igy siman at lehet allitani. es utana minden fasza. kar, h ezt csak az nem tudja akinek kene ;)</p><p>ha sutni fog a nap es jokedvem lesz akkor majd teszek fel kepet ahogy ssh-zni lehet a telefonrol, de onmagat nemtudom vele lefenykepezni, igy eroforrasok hianyaban ez a subproject alacsonyabb prioritast kapott.</p><p>update: sutott a nap es jokedvem volt igy mint lathatjatok kerult fel kep is</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/we-love-ohloh.html">we love ohloh</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Tue 27 November 2007</p>
+    <p>Posted on: Fri 14 September 2007</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -273,8 +255,47 @@ git fetch
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>it was a while ago when we registered at <a href="http://www.ohloh.net/projects/6659?p=Frugalware+Linux">ohloh.net</a>, but i recently re-visited that page, and i found some nice PR texts there ;)</p><p><blockquote> Over the past twelve months, 18 developers contributed new code to Frugalware Linux.</p><p>This is a relatively large team, putting this project among the top 10% of all project teams on Ohloh.</p><p>For this measurement, Ohloh considered only recent changes to the code. Over the entire history of the project, 36 developers have contributed. </blockquote>
-(<a href="http://www.ohloh.net/projects/6659/factoids/273910">source</a>)</p><p>well, i always considered our team as a nice and good but small team, it turns out that if you count projects, we're not that small! :)</p><p>it also creates nice charts about what programming languages do we use, etc, etc. so it's a different approach, compared to cia, but it's interesting.</p>
+<p>after a long time, openoffice now builds again out of the box without any patches as all our fixes are in ooo-build :)</p><p>also, i recently started to re-use my "bmf" repo for packaging pre/rc versions, so it was logical to get rid of the "ooodev" repo and merge it to bmf. so openoffice.org-2.3oog680_m5-1 (alias 2.3.0rc3) is available for my bmf repo for both i686 and x86_64. compared to 2.2.x, the two notable improvements (imho) are the working mozilla plugin and the ooxml support.</p><p>thanks boobaa for building it for i686! :)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/git-vs-rsync.html">git vs rsync</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Tue 11 September 2007</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>if you use rsync to copy your git repo (i mean a non-bare repo here: a repo with a working dir + a .git one), <code>git diff</code> will show that you touched your files. using <code>git checkout -f</code> can be a workaround to hide those changes, but then when you rsync again, it'll see that git thouched those files, so it'll re-download all the tracked files. infinite loop. so here is a trick from <a href="http://colabti.de/irclogger/irclogger_log/git?date=2007-09-10,Mon&sel=676#l1067">gitte</a>: using</p><p><code>git update-index --refresh</code></p><p>the index itself will be updated, not the tracked files. this was rsync will only re-download the index which is far less time, compared to the original one :)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/mplayer-with-dvdnav-support.html">mplayer with dvdnav support</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Sat 08 September 2007</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>i've uploaded an updated mplayer package to <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/bmf/">my repo</a> which includes dvdnav support to mplayer. at the moment it seems you need to</p><p><code># pacman -R codecs</code></p><p>otherwise mplayer will crash</p><p>many thanks to <a href="http://onebithq.com/root/mplayer/dvdnav">Otvos Attila</a>, the dvdnav patch author for his help (two additional build fixes was needed for our "enable everything what is possible" mplayer configuration)</p><p>hopefully we'll figure out soon how to resolve the conflict with the binary codecs, too :)</p><p>(a <a href="http://frugalware.org/~vmiklos/pics/shots/mplayer-dvdnav.png">screenshot</a>)</p>
 </div>
 </div>
 
