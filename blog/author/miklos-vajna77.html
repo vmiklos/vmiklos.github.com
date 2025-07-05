@@ -59,10 +59,10 @@
 
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/git-podcast.html">git podcast</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/git-vs-rsync.html">git vs rsync</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sun 20 July 2008</p>
+    <p>Posted on: Tue 11 September 2007</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -70,7 +70,7 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>in <a href="http://article.gmane.org/gmane.comp.version-control.git/88784">this</a> mailing list post, the recent gsoc podcast is linked, which is actually about git. two times my project is explained as well, about 11m14s and about 26m09s.</p><p>it's usually hard to describe to people what i'm doing in my project, maybe this'll help a bit? :)</p>
+<p>if you use rsync to copy your git repo (i mean a non-bare repo here: a repo with a working dir + a .git one), <code>git diff</code> will show that you touched your files. using <code>git checkout -f</code> can be a workaround to hide those changes, but then when you rsync again, it'll see that git thouched those files, so it'll re-download all the tracked files. infinite loop. so here is a trick from <a href="http://colabti.de/irclogger/irclogger_log/git?date=2007-09-10,Mon&sel=676#l1067">gitte</a>: using</p><p><code>git update-index --refresh</code></p><p>the index itself will be updated, not the tracked files. this was rsync will only re-download the index which is far less time, compared to the original one :)</p>
 </div>
 </div>
 
@@ -79,10 +79,10 @@
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/asciidoc-vs-dblatex.html">asciidoc vs dblatex</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/mplayer-with-dvdnav-support.html">mplayer with dvdnav support</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Mon 14 July 2008</p>
+    <p>Posted on: Sat 08 September 2007</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -90,19 +90,7 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>so, in the latest stable version of asciidoc, the default pdf backend of a2x is dblatex, not fop.</p><p>given that this way we can avoid Java, that must be a good thing ;) (faster, freeer, etc)</p><p>here are a few tricks:</p><p><ul>
-  <li>if you want to hide the "revision history" page:
-<pre><xsl:param name="latex.output.revhistory">0</xsl:param></pre></li>
-  <li>if you want to avoid the dblatex logo, just comment out the line:
-<pre><xsl:param name="doc.publisher.show">1</xsl:param></pre></li>
-  <li>it seems that atm the $ math expression $ form is not supported, but you can do for example:
-<pre>
-<div class="paragraph"><p>&lt;inlineequation&gt;&lt;alt&gt;
-\[ \$\alpha + \$\beta = \$(\alpha + \beta) \]
-&lt;/alt&gt;&lt;/inlineequation&gt;</p></div>
-</pre>
-AFAIK this was not possible till now, using fop. :)</li>
-</ul></p>
+<p>i've uploaded an updated mplayer package to <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/bmf/">my repo</a> which includes dvdnav support to mplayer. at the moment it seems you need to</p><p><code># pacman -R codecs</code></p><p>otherwise mplayer will crash</p><p>many thanks to <a href="http://onebithq.com/root/mplayer/dvdnav">Otvos Attila</a>, the dvdnav patch author for his help (two additional build fixes was needed for our "enable everything what is possible" mplayer configuration)</p><p>hopefully we'll figure out soon how to resolve the conflict with the binary codecs, too :)</p><p>(a <a href="http://frugalware.org/~vmiklos/pics/shots/mplayer-dvdnav.png">screenshot</a>)</p>
 </div>
 </div>
 
@@ -111,10 +99,10 @@ AFAIK this was not possible till now, using fop. :)</li>
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/taxi4.html">taxi4</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/git-svn-howto.html">git-svn howto</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sun 13 July 2008</p>
+    <p>Posted on: Fri 07 September 2007</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -122,7 +110,8 @@ AFAIK this was not possible till now, using fop. :)</li>
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p><div align="center"><img src="/pic/taxi4.jpg" alt="next" title="" height="75%" width="75%" /></div></p><p>visszaterek a kepekez, ez a flash-mania eleg gay ;)</p><p>szoval a szeria (idaigi) befejezo resze. kicsit gyengebb mint az eddigiek, de a trio (Samy Naceri / Frédéric Diefenthal / Emma Wiklund) azert hozza a formajat. sajna Marion Cotillard ebbol kimaradt ;/</p><p>(<a href="http://www.imdb.com/title/tt0804540/">imdb</a>, <a href="http://www.youtube.com/watch?v=iyug7gbnSAY">trailer</a>)</p>
+<p>i think using git-svn is really easy, once you figured out how to use it. so here is how i use it. no, i'm not a git-svn expert, just a user. and the way i use it - i think it's easy. so here is our situation:</p><p>1) foo project uses svn for managing their code
+2) you wish they would use git</p><p>how to do both:</p><p>1) get the full svn repo:</p><p><code>$ git svn clone --prefix=origin/ url</code></p><p>yes, in my situation this project does not use the trunk/tags/branches structure, see the git-svn manpage if the project you clone does (s/clone/clone -s/ should do the trick)</p><p>the --prefix parameter is needed so that you'll see the svn branches as if they were normal git remote branches</p><p>2) your local repo is a git repo, so you can do whatever you want, commit, revert, bisect, etc</p><p>3) instead of git pull, you need</p><p><code>$ git svn rebase</code></p><p>this does the same as git fetch + git rebase (since you can't merge because of svn)</p><p>4) instead of git push, you need</p><p><code>$ git svn dcommit</code></p><p>and we're ready. 3 and not more command, right? :)</p>
 </div>
 </div>
 
@@ -131,10 +120,10 @@ AFAIK this was not possible till now, using fop. :)</li>
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/rafiki-banza-3.html">rafiki banza 3</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/coloured-manpages.html">coloured manpages</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Fri 11 July 2008</p>
+    <p>Posted on: Fri 07 September 2007</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -142,61 +131,7 @@ AFAIK this was not possible till now, using fop. :)</li>
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/-fUd_gqrVp9U/UfbPcLvMvGI/AAAAAAAADRA/p8w1t0ix-LY/s240/rafiki_banza_3_sator.jpg" alt="https://lh3.googleusercontent.com/-fUd_gqrVp9U/UfbPcLvMvGI/AAAAAAAADRA/p8w1t0ix-LY/s240/rafiki_banza_3_sator.jpg" />
-</div>
-</div>
-<div class="paragraph"><p>nah szoval ilyet vettem. a project mar egy ideje huzodik mert altalaban mindig valakitol kerek kolcson de mostmar szerettem volna, h legyen sajatom, amit max tolem kernek kolcson es nem forditva :)</p></div>
-<div class="paragraph"><p>ilyesmi, hogy</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-ferohely: 3+1 (felallitva a satrat ezt a +1et ugy kepzelem el, hogy a negyedik szemelyt hosszaban v keresztben kettevagjuk es az elso es hatso bejaratnal helyezzuk a test egyik es masik felet, bar lancfureszt nem mellekeltek)
-</p>
-</li>
-<li>
-<p>
-bejarat: 2
-</p>
-</li>
-<li>
-<p>
-eloter: 90 cm
-</p>
-</li>
-<li>
-<p>
-belso sator alapterulete: 205 x 205 cm (megorultem mikor 180x180 volt egy kolcsonkert sator es nem egyedul voltam benne igy aztan nem lehetett nyujtott labbal aludni..)
-</p>
-</li>
-<li>
-<p>
-belmagassag: 130 cm (ez erdekes mert az abran 125 van; felfele szoktak csalni az ilyen marketinganyagokkal pedig ez tenyleg 130 irl)
-</p>
-</li>
-<li>
-<p>
-kulso sator meretei (szel/hossz/magassag): 400 x 210 x 115 cm
-</p>
-</li>
-<li>
-<p>
-vizallosag: 3000 mm, padlon meg 5000 mm (kerek youtube deeplinket ahol ezt kiprobaltak, tuti mokas lehetett)
-</p>
-</li>
-<li>
-<p>
-rudazat: uvegszalas (8,5 mm)
-</p>
-</li>
-<li>
-<p>
-suly: 3,75 kg
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>elsore nem is gondolna az ember, hogy milyen nehez talalni egy ilyen 2x2meteres szabad padlofeluletet a lakasban, ahol legalabb a belso satrat fel lehet allitani probakepp ;)</p></div>
+this is always a subject of flamewars and Frugalware did not have any support for coloured manpages so far. i've now added (in man-1.6e-2) support for it, but it's still disabled. see the <a href="http://frugalware.org/packages/369/documentation">documentation</a> on how to enable it if you like. you can reach a screenshot <a href="http://frugalware.org/~vmiklos/pics/shots/colorman2.png">here</a> if you use the default colors.
 </div>
 </div>
 
@@ -205,10 +140,10 @@ suly: 3,75 kg
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/bloff.html">bloff</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/gitstats.html">gitstats</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Tue 08 July 2008</p>
+    <p>Posted on: Tue 04 September 2007</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -216,7 +151,7 @@ suly: 3,75 kg
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>[video:youtube:Q8jbt0wBkMI]</p><p>az olasz melobol ismeros Jason Statham. Brad Pitt felelmetesen jol kepviseli barnaboru baratainkat. a zenejebol ismeros a scooterek altal is feldolgozott "The Shadows - Apache". az ajanlatert meg koszonet LGeenek :)</p>
+<p>when we switched to git, our <a href="http://frugalware.org/~vmiklos/stats/frugalware-current.html">darcs stat page</a> was no longer updated. now i've created <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/gitstats/">gitstats</a>, which serves the same purpose. it's written in python and it was a few more features compared to darcsstats, ie. alias support, so that the stats for a dev are not lost when he/she changes his/her email addr.</p><p>the new stat page is <a href="http://frugalware.org/~vmiklos/stats/frugalware-current/">here</a>. enjoy! :)</p>
 </div>
 </div>
 
@@ -225,10 +160,10 @@ suly: 3,75 kg
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/taxi3.html">taxi3</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/bitlbee-skype.html">bitlbee-skype</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sat 05 July 2008</p>
+    <p>Posted on: Mon 03 September 2007</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -236,7 +171,7 @@ suly: 3,75 kg
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>[video:youtube:1Ejnib14rMU]</p><p>hasonloan mokas mint a masodik. gorkorcsolyas mikulasok nyaron es tarsaik :P</p>
+<p>well, it truns out what i'm mentioned at <a href="http://www.bitlbee.org">bitlbee.org</a> :)</p><p>the story is about my <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/bitlbee-skype/">skype plugin</a> for bitlbee. google doesn't even find it (mostly because nobody links my page), so i asked the devs to link the page. now they posted a news entry about it ;)</p><p>/me goes to sleep..</p>
 </div>
 </div>
 
@@ -245,10 +180,10 @@ suly: 3,75 kg
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/taxi2.html">taxi2</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/asciidoc-vs-mathml.html">asciidoc vs mathml</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Tue 01 July 2008</p>
+    <p>Posted on: Sun 02 September 2007</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -256,7 +191,7 @@ suly: 3,75 kg
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>[video:youtube:XvGjrOLjG-s]</p><p>altalaban az ilyesmi filmeknek a folytatasa vacakabb mint az eredeti de nekem ez jobban bejott. kicsit igenyesebben ki volt dolgozva, kacagtatobb volt, stb.</p>
+<p>i've recently <a href="http://frugalware.org/pipermail/frugalware-git/2007-September/001862.html">pushed</a> a new asciidoc to my repo. after intalling it, you have to be able to display <a href="http://frugalware.org/~vmiklos/docs/math.html">this</a> example page properly. (<a href="http://frugalware.org/~vmiklos/docs/math.txt">here</a> is the source)</p><p>so now go and tell your latex friends that you can still include your exotic math formulas in asciidoc while you can avoid its usualy difficult syntax! :)</p>
 </div>
 </div>
 
@@ -265,10 +200,10 @@ suly: 3,75 kg
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/santana.html">santana</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/openoffice-firefox-plugin.html">openoffice firefox plugin</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sat 28 June 2008</p>
+    <p>Posted on: Sat 01 September 2007</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -276,7 +211,7 @@ suly: 3,75 kg
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>[video:youtube:gpX97eg-W-k]</p><p>gondoltam <a href="http://kapcsolatkoncert.t-mobile.hu/">kimegyek</a> pannonos poloban de aztan megse trollkodtam, epp eleg bosszantas lehetett mindenkinek h biciklivel mentem. dehat az megis kihagyhatatlan volt, ahogy utana a dugoban lehetett kacsazni a dudalo autok kozott es pikk-pakk itthonlenni ;)</p>
+<p>as of <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/ooodev/frugalware-i686/openoffice.org-2.3oog680_m1-1-i686.fpm">openoffice.org-2.3oog680_m1</a> there is a firefox plugin (for OOo documents) included in our openoffice pkg. at the moment it's not enabled by default, you need an</p><p><code>ln -s /usr/lib/openoffice.org/program/libnpsoplugin.so ~/.mozilla/plugins</code></p><p>to enable it</p>
 </div>
 </div>
 
@@ -285,10 +220,10 @@ suly: 3,75 kg
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/taxi.html">taxi</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/empty-git-commits.html">empty git commits</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Fri 27 June 2008</p>
+    <p>Posted on: Thu 30 August 2007</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -296,7 +231,9 @@ suly: 3,75 kg
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>[video:youtube:3BRlKRkZZAo]</p><p>epp 10 eve jott ki a film, igy gondoltam most aktualis vegignezni szepen az 1-2-3-4et, ha mas nem akkor csak azert h tudjam mirol van szo.</p><p>altalaban az ilyenekbol a folytatasok egyre rosszabbak, de itt azert az 1 is inkabb csak 1xnezos. meglatjuk.</p>
+<p>long time no blog ;)</p><p>in darcs, tags are empty patches which depend on every patch since the previous tag + the previous tag. so tag is shown in the changelog itself</p><p>in git, tags are just pointers to existing commit objects. for example 1c77ec3 already exists, then you say let's call this 1.0</p><p>you may want to create darcs-like tags in git. of course this won't be the git way, but it's nice to see that the git core allows you to do so</p><p>so here is what you need:</p><p><code>
+echo "tagged 0.9.2" |git update-ref HEAD <code>git commit-tree HEAD^{tree} -p HEAD</code>
+</code></p><p>thanks <a href="http://colabti.de/irclogger/irclogger_log/git?date=2007-08-30,Thu&sel=585#l1040">hliusv561</a>! :)</p>
 </div>
 </div>
 
@@ -305,10 +242,10 @@ suly: 3,75 kg
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/security-through-obscurity.html">security through obscurity</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/find-exclude.html">find -exclude</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Fri 27 June 2008</p>
+    <p>Posted on: Fri 06 April 2007</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -316,7 +253,7 @@ suly: 3,75 kg
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>okay, this won't be a happy post either, but i thought i would just share a few links here.</p><p>first, there was <a href="http://www.heise-online.co.uk/security/Ghostly-threat-to-Internet-Explorer-users--/news/111017">this</a> article about some microsoft ie security problem, and the opensource evangelists started to hype again linux about being open, etc, etc. you know the story.</p><p>the sad fact is that, just being opensource, or let's say even having an open scm will not guarantee that all the details are published. i want to pick up a minor issue, so that i can be sure about i don't publish any details here which may not public.</p><p>let's take <a href="http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commit;h=5816339310b2d9623cf413d33e538b45e815da5d">this commit</a>. it's a bugfix, right? umm, if it would be security-related, they would mention it. hm, no.</p><p>to make the long story short, the <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2008-2137">relevant cve</a> is there, even secunia released an <a href="http://secunia.com/advisories/30258/">advisory</a>.</p><p>i could add few more details (no cve on the secunia page, the "from remote" is probably wrong), and finally make some conclustions, but i would avoid that this sime.</p><p>take care.</p>
+<p>ok, there is no such option, but there is an equivalent trick :)</p><p>for example if you want to do exclude the _darcs dir, then you need:</p><p><code>find . -type d -name _darcs -prune -o <filter> -print</code></p><p>where <filter> can be "-name *.c" or so</p><p>thanks crazy for the tip :)</p>
 </div>
 </div>
 
