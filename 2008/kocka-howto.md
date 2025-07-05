@@ -1,10 +1,10 @@
-Title: kocka howto
+Title: Kocka howto
 Slog: kocka-howto
 Category: geek
 Tags: hu
 Date: 2008-01-14T00:36:44Z
 
-Hogyan készült a [kocka]({filename}/2008/kocka.adoc)?
+Hogyan készült a [kocka](http://vmiklos.hu/file/kocka.avi)?
 
 Először is kell 8 db fakocka. A méret tetszőleges, én 25 mm nagyságút használtam. Ezt fogom
 beborítani kívül-belül képekkel. Egész pontosan 3 db nagy kép és 6 db kis kép kell. A nagy képet úgy
@@ -64,3 +64,6 @@ felül, alul-felül összeforgat úgy, hogy kocka legyen újra. Most áthajtjuk 
 szélén pedig a kettészedett pirosat. Elforgatjuk az asztallapon a kockát 90 fokkal. Ugyanúgy ki
 fogjuk nyitni, mint mikor kékből sárgába mentünk át, csak most a sárgából csupasz lap lesz, és erre
 a 8 kockalapra fog kerülni a sötétzöld.
+
+Frissítés: 2025-ben ezt a leírást követve úgy tűnik, hogy az utolsó kettő sorrendje fordított kell,
+hogy legyen, tehát sötétzöld az utolsó előtti és a világossárga az utolsó.
