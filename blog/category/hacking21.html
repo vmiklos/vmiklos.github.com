@@ -61,37 +61,6 @@
 
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/using-git-bzr.html">using git-bzr</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Thu 31 July 2008</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>It seems recently one of my favorite topics is 'how to convert from $random SCM to git' ;)</p><p>So, I already had a configuration using tailor, but that was slow. I know this already. Tailor is good because it always works, it isn't good because it's fast.</p><p>First, you need git-1.6.0rc0 or higher, you can find an fpm in my <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/bmf/frugalware-i686/">bmf repo</a>.</p><p>Second, you need the bzr fastimport plugin:</p><p><code>bzr branch lp:bzr-fastimport</code></p><p>Then enable the plugin:</p><p><code>cd ~/.bzr/plugins; ln -s /path/to/bzr-fastimport fastimport</code></p><p>Now you can clone git-bzr itself:</p><p><code>git clone git://github.com/pieter/git-bzr.git</code></p><p>Put it to your PATH:</p><p><code>cd ~/bin; ln -s /path/to/git-bzr/git-bzr .</code></p><p>NOTE: so you should not symlink the dir, but the script inside the dir.</p><p>Okay, this is done, now clone (branch in bzr terms) the bzr repo you want to convert. For example:</p><p><code>bzr branch <a href="http://code.bitlbee.org/bitlbee/">http://code.bitlbee.org/bitlbee/</a></code></p><p>Finally do the conversion (from the git-bzr README):</p><p><pre>
-git bzr add upstream ../bzr-branch
-git bzr fetch upstream
-git checkout -b local_branch bzr/upstream
-: hack hack hack
-git bzr push upstream
-</pre></p><p>Actually for now I only needed a one-directional convert, so my update-bitlbee.sh now looks like:</p><p><pre>
-cd ~/scm/bzr/bitlbee
-bzr pull
-cd - # so we are again under bitlbee.git, it works in bare repos as well!
-git bzr fetch upstream
-</pre></p><p>And yes, the resulting trees match perfectly! ;)</p><p>(Yes, I plan to package git-bzr and bzr-fastimport but I want to give it a good testing first.)</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/asciidoc-vs-dblatex.html">asciidoc vs dblatex</a></h1>
   </div>
   <div class="article_meta">
@@ -290,6 +259,52 @@ i recently packaged <code>source-highlight</code>, and asciidoc can nicely use i
 ""</pre></p><p>this is greedy. you want to get something like:</p><p><pre>"<p>bar</p>"</pre></p><p>right?</p><p>that would be ungreedy. in some other languages, there is a flag for this (php has 'U'), but in javascript, you need an other trick:</p><p><pre>>>> "<p>foo</p><p>bar</p>".replace(/<p>f.*?<\/p>/, '')
 "<p>bar</p>"</pre></p><p>and yes, that's what we wanted. also it works for .+?, and so on.</p><p>ah and as a side note, it seems '.' does not match newlines, so you'll have to work around it like:</p><p><pre>>>> "<p>foo\nbar</p><p>baz</p>".replace(/<p>f[\s\S]*?<\/p>/, '')
 "<p>baz</p>"</pre></p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/incremental-bzr-g-git-conversion.html">incremental bzr -> git conversion</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Thu 10 January 2008</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>i recently had problems with bzr -> git conversion using tailor and now Lele pulled my patches so here is a mini-howto about how i did the conversion.</p><p>i did all this in a ~/scm/tailor/bitlbee dir (to convert the bitlbee bzr repo), but of course you can do it somewhere else, too.</p><p>create the dir and place there the tailor config. mine is like:</p><p><code>
+$ cat bitlbee.conf
+[DEFAULT]
+verbose = True
+[bitlbee]
+target = git:target
+start-revision = INITIAL
+root-directory = /home/vmiklos/scm/tailor/bitlbee
+state-file = bitlbee.state
+source = bzr:source
+subdir = bitlbee.git
+[bzr:source]
+repository = /home/vmiklos/scm/tailor/bitlbee/bitlbee.bzr
+[git:target]
+repository = /home/vmiklos/scm/tailor/bitlbee/bitlbee.git
+</code></p><p>and here is the update script:
+<code>
+$ cat update.sh
+#!/bin/sh -e
+cd <code>dirname $0</code>
+cd bitlbee.bzr
+bzr pull
+cd ..
+tailor -c bitlbee.conf
+</code></p><p>to update the import daily i added the followings to my crontab:</p><p><code>
+40 4 * * * ~/scm/tailor/bitlbee/update.sh &>/dev/null
+</code></p><p>and we're ready, you'll have a daily updated git import.</p><p>one minor note: the bitlbee.git dir is a non-bare repo and it's also a bzr repo which is not a problem (you can clone it and gitweb handles it) but if you plan to switch to git later, you probably want to clone it once get rid of that junk :)</p>
 </div>
 </div>
 
