@@ -59,10 +59,10 @@
 
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/frugalware-xmas-logo.html">Frugalware Xmas logo</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/remove-items-from-a-python-list.html">Remove items from a python list</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Thu 25 December 2008</p>
+    <p>Posted on: Wed 17 December 2008</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -70,7 +70,12 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>phayz just pushed out a <a href="http://frugalware.org/news/120">special Frugalware logo</a> for Xmas, I like it. :)</p><p>BTW it's interesting, my sister got an English bible and it claims that "to make it easier to read it more fluently and accurately, it's 'anglicised'." Not sure if that's really true, especially that young people like me typically learn a lot of words and expressions from movies and series...</p>
+<p>One item in Python's magic word is that you don't have to really care about memory management. I already know if i want to "strdup" a list, then i need foo[:], but I did not notice that in case I iterate over a list _and_ modify it, then I need such a trick as well.</p><p>Example</p><p><pre>
+l = ['a', 'b']
+for i in l:
+        l.remove(i)
+print l
+</pre></p><p>So we remove each item from the list (an expensive version of "l = []").</p><p>However, the result will be "['b']". Now if you use "for i in l[:]:", everything will be fine, because you can iterate over the original list.</p><p>It's a shame that I do python for more than 2 years, and I did not know such a basic stuff. :(</p><p>(<a href="http://mail.python.org/pipermail/python-list/2004-September/280885.html">original post</a>)</p>
 </div>
 </div>
 
@@ -79,32 +84,31 @@
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/jeff-dunham-s-very-special-christmas-spe.html">Jeff Dunham's Very Special Christmas Special</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/a-few-note-about-rpm.html">a few note about rpm</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Wed 24 December 2008</p>
+    <p>Posted on: Tue 16 December 2008</p>
   </div>
   <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
+    <p>Estimated read time: 3 minutes</p>
   </div>
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/BEAAI2Ier46C6P99TgfOu4njpa833BSKV_35vvH8BHIgWNbV2ZuinJblPPXu5Tb7baH7xSmDrK_oocc-FXBv9P9RyTSCT_VoYc8-L-1mT6jtRc31uMGRVrPK6rBAM82eNNxD9u9rSw=w640" alt="https://lh3.googleusercontent.com/BEAAI2Ier46C6P99TgfOu4njpa833BSKV_35vvH8BHIgWNbV2ZuinJblPPXu5Tb7baH7xSmDrK_oocc-FXBv9P9RyTSCT_VoYc8-L-1mT6jtRc31uMGRVrPK6rBAM82eNNxD9u9rSw=w640" />
-</div>
-</div>
-<div class="paragraph"><p>igaz, hogy ezt meg november kozepen lattam, de most aktualis. idokozben az
-<a href="http://www.youtube.com/watch?v=NDbK2RNCkjk">akkor bookmarkolt videot</a> leszedtek, de nembaj, van
-masik.</p></div>
-<div class="paragraph"><p>a show amugy tenyleg durvan poendus, sztem a poenok fele olyan amit a nem-amerikaban elok nem
-ertenek, es megis a vegen nem tudtam azt mondani, hogy ne erte volna meg megnezni. sot, valszeg meg
-fogom maskor is.</p></div>
-<div class="paragraph"><p>az angolja eleg huzos, eloszor keresni akartam hozza feliratot aztan kiderult, hogy amit nem ertek
-az a feliratban sincs benne, leven ott csak annyit raknak bele, hogy kinnlehessen annyi ideig, hogy
-el lehessen olvasni. :)</p></div>
-<div class="paragraph"><p>(<a href="http://www.imdb.com/title/tt1295909/">imdb</a>, <a href="http://www.youtube.com/watch?v=4u0q03EDrb0">trailer</a>)</p></div>
+<p>I spent some time today to prepare some rpm packages for an RHEL4 box, it was an interesting experience. To preface to this story is that first I had to do the followings on Frugalware:</p><p><ul>
+  <li>Patch mysql 5.0.37 to add support for the sphinx search engine</li>
+  <li>Make sure about sphinx itself works fine with this (though sadly I haven't had time yet to package sphinx as well).</li>
+</ul></p><p>We have a newer (but compatible, since we still ship 5.0.x) mysql, but a simple git checkout gave me the old buildscript and then the patch applied perfectly.</p><p>Then the plan changed, I needed to do this on an RHEL4 box as well.</p><p>Steps:</p><p><ul>
+  <li>Fix broken up2date config, it seems nobody installed any security update on the box for a long time.</li>
+  <li>Notice that RHEL4 has mysql 4.x, so I had to upgrade it to 5.0.x which was not trivial.</li>
+  <li>After adding the patch to the spec file, I saw that there are a bunch of manual autoconf/automake/autoheader/autowhatever calls, so I did not add a call to mysql's own autogen script. It turned out later that this was a fault, the default autofoo calls did not regenerate all the necessary files, basically they just took a lot of time, but did not really do anything useful. Sigh.</li>
+  <li>Once build was done, I had to rebuild perl's mysql driver and the whole php package because of the major mysql upgrade. Did I say I hate to touch php?</li>
+  <li>And finally the worst was to package sphinx. I used some opensuse spec file, but it turned out to be badly broken on RHEL4. Fixing it was not so problematic, but took a lot of time, because debugging a specfile under RH is a PITA.</li>
+  <li>Let me show a few examples. The equivalent of Fdestdir (the directory which will be tared up after the build is done) is not rm -rf'd before the build starts. So if you have some crap there, your final package will have it.</li>
+  <li>OTOH, Fsrcdir (the directory where the build takes place) <em>is</em> deleted, which means you can't do an incremental build.</li>
+  <li>If you break your pre-uninstall script, you can't easily uninstall a package, even with rpm -e --force --nodeps (you need some magic --no-preun switch, which is not implied by --force).</li>
+  <li>If you say rpm -Uvh foo-2.0.rpm, then sometimes it bails out with an error about it has a file conflict because /bar/baz.so is provided by foo-1.0. What? Doesn't -U stand for <em>upgrade</em>?</li>
+</ul></p><p>Okay, this was enough. I finally finished the task, but I again just can make a "this is so much more efficient with Frugalware" note. ;-)</p><p>And no, I don't like to write about why foo sucks, but both this packaging system (or at least the default settings) a docbook sometimes really sucks.</p>
 </div>
 </div>
 
@@ -113,10 +117,10 @@ el lehessen olvasni. :)</p></div>
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/frugalware-darcs-repo-in-the-darcs-big-z.html">Frugalware darcs repo in the darcs "big-zoo"</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/date-of-docbook-manpages.html">date of docbook manpages</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Wed 24 December 2008</p>
+    <p>Posted on: Mon 15 December 2008</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -124,7 +128,7 @@ el lehessen olvasni. :)</p></div>
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>"big-zoo" is a collection of darcs repos, the darcs developers do benchmarks using this collection from release to release.</p><p>Recently our old Frugalware repo <a href="http://code.haskell.org/darcs/big-zoo/">has been added</a>, which is good, for multiple reasons.</p><p>First, now I can say that the reference for a good darcs exporter is the big-zoo, our old repo contains weird patches which were not yet part of "big-zoo" so far. Not that I'm evil, but I want to show that currently darcs-fast-export is the only exporter that can correctly convert all the repos in "big-zoo".</p><p>Second, it is a huge repo, so developers can how see the corner cases where darcs is really slow for a huge repo - though the GHC one was already included which is almost as big as our one and the most annoying cases are already optimized recently. (No, of course I can't compare it to git, I compare it to darcs-1.x.)</p>
+<p>It seems the method we used to have a custom date format (ie.: not the default mmddyy, but the yymmdd one) is no longer supported. I spent about an hour trying to figure out what's wrong with it, but it seems the solution is not so trivial and it just does not worth the effort. So it's dropped for now, sigh.</p><p>And if I'm at blaming docbook, then here it is: The git manpages still have a ".ft C" / ".ft" string pair around code blocks (or whatever they are called, think of the html &lt;pre&gt; tag), probably due to some broken custom asciidoc.conf.</p><p>I like docbook (since generating man/html/pdf is easy from it), but I really hate the fact that they break something with each release. ;-/</p>
 </div>
 </div>
 
@@ -133,10 +137,10 @@ el lehessen olvasni. :)</p></div>
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/big-fish.html">big fish</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/playing-with-metapost.html">Playing with metapost</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Tue 23 December 2008</p>
+    <p>Posted on: Sun 14 December 2008</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -144,20 +148,7 @@ el lehessen olvasni. :)</p></div>
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/RXnZ7dFNDZnE5tE2HEm8x4aSpJpsnQwXE0nw4iBx34Px4JmewDQBgp1xj1LhJlvIIdbrSzTSxVe6Em4ollolapI4bOcf8CoP0hVdrKhebK_ITcUiLIV7CmngG5f8aB_04KkGXQ6ReA=w640" alt="https://lh3.googleusercontent.com/RXnZ7dFNDZnE5tE2HEm8x4aSpJpsnQwXE0nw4iBx34Px4JmewDQBgp1xj1LhJlvIIdbrSzTSxVe6Em4ollolapI4bOcf8CoP0hVdrKhebK_ITcUiLIV7CmngG5f8aB_04KkGXQ6ReA=w640" />
-</div>
-</div>
-<div class="paragraph"><p>mese a fiurol akinek sajat velemenye van apjarol, es ami a vegere megvaltozik. eleg szaraz, nem? :)
-hat persze, igy aztan a film azzal kezdodik, hogy mi is elhisszuk, hogy a papa csak hablatyol, hogy
-aztan a vegen rajojjunk, hogy annyira nem is. ;)</p></div>
-<div class="paragraph"><p>foszerepben Ewan McGregor (deception, star wars, moulin rouge, stb), Billy Crudup (aki egyebkent
-sztem tokre hasonlit Ashton Kutcher-re), Albert Finney (ocean&#8217;s twelve). meg rajtuk kivul is meg
-nehany ismeros arc: Helena Bonham Carter (fight club), Alison Lohman (beowulf), Steve Buscemi (pulp
-fiction) es meg lehetne sorolni.</p></div>
-<div class="paragraph"><p>talan pont a szineszi jateknak koszonheto a felnottmese jellege. vagy nemtom. 1x erdemes.</p></div>
-<div class="paragraph"><p>(<a href="http://www.imdb.com/title/tt0319061/">imdb</a>, <a href="http://www.youtube.com/watch?v=-d-kjzBmz6I">trailer</a>)</p></div>
+The name of the command is mpost(1), and it's part of the tetex package. I read about it in <a href="http://udrepper.livejournal.com/19751.html">udrepper</a>'s blog. The situation for me is true as well: I'm better in programming than doing anything by hand, so it's something for me. Some very initial results <a href="http://groups.google.com/group/asciidoc/msg/242f81d5d33ab04c">here</a>.
 </div>
 </div>
 
@@ -166,10 +157,10 @@ fiction) es meg lehetne sorolni.</p></div>
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/next-step-in-the-tailor-creates-corrupte.html">Next step in the "tailor creates corrupted repos" story</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/ghc-upgrade.html">GHC upgrade</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Tue 23 December 2008</p>
+    <p>Posted on: Sat 13 December 2008</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -177,7 +168,7 @@ fiction) es meg lehetne sorolni.</p></div>
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>I've just added a <a href="http://progetti.arstecnica.it/tailor/ticket/171#comment:3">new comment</a> to the previously mentioned ticked. In short, it seems that darcs what -s --xml is horribly broken, and tailor heavily relies on this, so darcs-fast-export did.</p><p>I just removed this for now - maybe later I'll write my own patch parser, but that does not have a high priority in my TODO.</p><p>I want to cut a release in case all the test conversions in the "darcs-benchmark" repo passes fine, but that will take 2-3 days, I guess.</p>
+<p>I just got some time to upgrade GHC to 6.10.whatever in Frugalware-current, and it seems they managed to create some screwed up bootstrap binaries, linked to lineedit. This is some BSD version of GNU readline, we did not even had it packaged and the docu says it's outdated in most distros. :-P</p><p>However, we still want to bootstrap using upstream binaries, so now we use it. At least I was able to get rid of the ugly LD_LIBRARY_PATH hack, caused by the old readline library they linked the binaries in the previous series.</p>
 </div>
 </div>
 
@@ -186,10 +177,10 @@ fiction) es meg lehetne sorolni.</p></div>
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/persistent-channel-names-in-bitlbee.html">Persistent channel names in BitlBee</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/hacker-purity-test.html">Hacker Purity Test</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Mon 22 December 2008</p>
+    <p>Posted on: Fri 12 December 2008</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -197,18 +188,11 @@ fiction) es meg lehetne sorolni.</p></div>
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>See <a href="http://bugs.bitlbee.org/bitlbee/ticket/469">this ticket</a>. The idea is not to use "chat_randomnumber" as channel name, so that irssi can remember the layout.</p><p>We'll see how wilmer will welcome the idea. ;-)</p><p>OTOH, I still hate bzr:</p><p><pre>
-$ bzr pull
-Using saved location: <a href="http://code.bitlbee.org/bitlbee/">http://code.bitlbee.org/bitlbee/</a>
-Format &lt;RepositoryFormatKnit1&gt; for <a href="http://code.bitlbee.org/.bzr/">http://code.bitlbee.org/.bzr/</a> is deprecated - please use 'bzr upgrade' to get better performance
-No revisions to pull.
-$ bzr upgrade
-bzr: ERROR: The branch format Bazaar-NG meta directory, format 1 is already at the most recent format.
-</pre></p><p>I guess it refers to the server repo, but PLEASE, why should I care about it? It's not my repo!</p><p>And again something else. I just started using tuxguitar. I like it, but having sound in it was not trivial. It turns out that the working setup is to run
-<pre>
-timidity -iA -Os
-</pre>
-and then disable the oss output plugin, enable alsa, and choose the timidity midi output in the sounds settings in tuxguitar.</p>
+<p>I just found <a href="http://www.armory.com/tests/hacker.html">this test</a>, it's an old one, almost 20 years old. It's funny to see what questions became outdated and which didn't.</p><p>Some of my favorite questions:</p><p><ul>
+  <li>Do you complain when a "feature" you use gets fixed?</li>
+  <li>Ever mask an NMI?</li>
+  <li>Do you own more than 16 floppy disks?</li>
+</ul></p><p>Of course the last one is because I still do have more than that - though I no longer have such a reader at home - would have to go to work to read them. ;-)</p>
 </div>
 </div>
 
@@ -217,10 +201,10 @@ and then disable the oss output plugin, enable alsa, and choose the timidity mid
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/bookmarks-in-bitlbee-skype.html">bookmarks in bitlbee-skype</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/git-janitor-cleanup.html">Git Janitor cleanup</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sun 21 December 2008</p>
+    <p>Posted on: Thu 11 December 2008</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -228,7 +212,7 @@ and then disable the oss output plugin, enable alsa, and choose the timidity mid
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>Yesterday macmaN on #bitlbee poked me about how would it be possible to rejoin existing groupchats after connect automatically. It turned out that Skype has support for Jabber-like bookmarks, and it wasn't too hard at all to <a href="http://vmiklos.hu/gitweb/?p=bitlbee-skype.git;a=commitdiff;h=17809b7f0dbf6977544243eb36ed6a3c1caea8c5">implement it</a>.</p><p>I want this to settle down then I'll be ready to release 0.7 next year, I hope.</p>
+<p>Mailed Christian Couder to cleanup up the <a href="http://git.or.cz/gitwiki/Janitor">Janitor page on the wiki</a> a bit, since for example all the git_config_string refactoring is already done.</p><p>It's nice I did not really have to explain I do not want to destroy his work, it's just no longer necessary - he understood it just fine.</p>
 </div>
 </div>
 
@@ -237,10 +221,10 @@ and then disable the oss output plugin, enable alsa, and choose the timidity mid
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/graph2k8-git-repo.html">graph2k8.git repo</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/git-user-manual-in-pdf.html">Git User Manual in PDF</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sat 20 December 2008</p>
+    <p>Posted on: Wed 10 December 2008</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -248,7 +232,7 @@ and then disable the oss output plugin, enable alsa, and choose the timidity mid
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-OK, this is probably not that interesting, but who knows... I just put out some code I did during this semester for this OpenGL course. It's available <a href="http://vmiklos.hu/gitweb/?p=graph2k8.git;a=tree">here</a>.
+<p>I just sent out a <a href="http://article.gmane.org/gmane.comp.version-control.git/102733">patch</a> to add support for generating the pdf version of the git user manual. I (and some of the guys at the uni - just discussed recently) prefer reading long docs in pdf, rather than in the memory leaker firefox.</p><p>We'll see how it'll be accepted.</p>
 </div>
 </div>
 
@@ -257,37 +241,18 @@ OK, this is probably not that interesting, but who knows... I just put out some 
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/star-wars-1-2-3.html">star wars 1 2 3</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/enjoying-search-autosizer.html">Enjoying search autosizer</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Fri 19 December 2008</p>
+    <p>Posted on: Tue 09 December 2008</p>
   </div>
   <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
+    <p>Estimated read time: 2 minutes</p>
   </div>
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<div class="paragraph"><p>bekoszontott a vizsgaidoszak, igy ideje volt valami nagyobb adagnak nekiulni nezni, nehogy tul sok ido maradjon a tanulasra.. :P</p></div>
-<div class="paragraph"><p>a cimben szereplo 3 filmet nyilvan meg annak idejen moziban neztem, csakh meg az utobbi is akkor jott ki amikor igencsak gyakorlatlan voltam ahhoz, hogy eredetiben nezzem. pedig erdemes. peldaul yoda szokatlan szorendjet keptelenseg leforditani, hiszem tukorforditassal a magyar szorend egyaltalan nem lesz szokatlan..</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/Jt3Tlg2KSjOLIy2mabXr7wRFoyPE-ZjlC0MDj1aHtQJVkUkFdlFPnesjq92vCmJpnbyZOUWchx4I-aKQa0YKGlrPrhzenLiMKG7wD_BmiXrYZJAmdN8yoYzAcAZhtq3msODAy9BYwA=w640" alt="https://lh3.googleusercontent.com/Jt3Tlg2KSjOLIy2mabXr7wRFoyPE-ZjlC0MDj1aHtQJVkUkFdlFPnesjq92vCmJpnbyZOUWchx4I-aKQa0YKGlrPrhzenLiMKG7wD_BmiXrYZJAmdN8yoYzAcAZhtq3msODAy9BYwA=w640" />
-</div>
-</div>
-<div class="paragraph"><p>(<a href="http://www.imdb.com/title/tt0120915/">imdb</a>, <a href="http://www.youtube.com/watch?v=6iIzDJ1o0Ow">trailer</a>)</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/veh35O3M7b7bsMBsSZRwd3H1ofOZgFNzQNdMAystgjeoj5_fhlxRtpdpCfdlZVvtZrSzE_N53ONFCnLvqw__Vkyukmq7HxuwSaUum8W_6ve1BGL8Pq2K4K5qkdIgszc5cEy2E3scOA=w640" alt="https://lh3.googleusercontent.com/veh35O3M7b7bsMBsSZRwd3H1ofOZgFNzQNdMAystgjeoj5_fhlxRtpdpCfdlZVvtZrSzE_N53ONFCnLvqw__Vkyukmq7HxuwSaUum8W_6ve1BGL8Pq2K4K5qkdIgszc5cEy2E3scOA=w640" />
-</div>
-</div>
-<div class="paragraph"><p>(<a href="http://www.imdb.com/title/tt0121765/">imdb</a>, <a href="http://www.youtube.com/watch?v=Eea-Ky1a9Bs">trailer</a>)</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/B-sosr8nKC2ekOl0ybwcUmyVNHpyTMo8JN4CJUx4X6X6zJGyjvbmB33QCdnea9E2N1uqO58Kycg3OWWwdweMgGnFrb_TF61qInJigywcWCkRX14zENOszLfENox8jzlGdOUiuizdVQ=w640" alt="https://lh3.googleusercontent.com/B-sosr8nKC2ekOl0ybwcUmyVNHpyTMo8JN4CJUx4X6X6zJGyjvbmB33QCdnea9E2N1uqO58Kycg3OWWwdweMgGnFrb_TF61qInJigywcWCkRX14zENOszLfENox8jzlGdOUiuizdVQ=w640" />
-</div>
-</div>
-<div class="paragraph"><p>(<a href="http://www.imdb.com/title/tt0121766/">imdb</a>, <a href="http://www.youtube.com/watch?v=2AIvwODNB6A">trailer</a>)</p></div>
+<p>This was getting more and more annoying. So my problem was that whenever I searched for something in Firefox, I typed it to the search bar and the query was left visible there. This is just totally idiotic for (at least) two reasons.</p><p>First, those search queries show what you are thinking about. It's normal that you don't always speak about what you are thinking about, so why would it be logical to <em>always</em> show what are you searching for. This is just uncomfortable for other people, they come to your box (somebody from the family, etc), want to search for something and they see what you were searching for, and they will think about "why did he search for this" - not that they care about it, they just don't want to see this info.</p><p>Second, I regularly work in a library and such places where the contents of a query may be just sensitive info and/or NSFW.</p><p>OK, so as the result of the previous problems, I saw myself just hitting enter in the search box to get the normal search form and search there so the original search box remained empty. This was abnormal.</p><p>Today I spent some time searching for a proper solution for this and sort-of found it: the <a href="https://addons.mozilla.org/en-US/firefox/addon/1172">Searchbar Autosizer</a> extension. Actually it's stupid as it re-sizes your search box (so make sure you remember the size of it <strong>before</strong> you install this extension), but you can make it a fixed value again and in the second dialog of the preference wizard you have the option to clear the search box right after you hit enter. Excellent, that's what I was looking for. :)</p>
 </div>
 </div>
 
@@ -296,10 +261,10 @@ OK, this is probably not that interesting, but who knows... I just put out some 
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/tags-without-a-tagger-in-git.html">Tags without a tagger in git</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/fast-distributed-development.html">Fast distributed development</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Fri 19 December 2008</p>
+    <p>Posted on: Mon 08 December 2008</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -307,7 +272,7 @@ OK, this is probably not that interesting, but who knows... I just put out some 
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>So this came up on IRC: ancient tag objects in git have no "tagger" line, and thus converting such a repo with git fast-export is not possible. And the usual way - I just <a href="http://thread.gmane.org/gmane.comp.version-control.git/103470">reported</a> it on the mailing list and Dscho quickly provided the necessary patch.</p><p>I hope the ubuntu guy (who is in CC) will at least give Dscho a "thanks", but who knows if it'll ever happen..</p>
+<p>So when I first sent a kernel patch to the x86 subtree, I had to wait a lot. The patch (commit 273c112 in linux-2.6.git) was created in May and the first release (v2.6.27) was out in October. Then I discovered that critical bugfixes and security fixes are a different matter, getting such a patch in a release takes 1-2 weeks, depending on the priority of the patch.</p><p>Today I noticed that the newest git release (v1.6.0.5) comes with my patch which I just created 1.5 days ago. Yes. that's how does goes if people know you. :) OK, this is not a rule, a release may take more time, but it is really committed in ~2 days in most cases - if the patch itself is correct and you earned some credit already from the maintainer.</p>
 </div>
 </div>
 

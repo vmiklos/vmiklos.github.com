@@ -58,10 +58,10 @@
 
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/git-svn-howto.html">git-svn howto</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/my-name-in-diamanda-wiki.html">my name in diamanda wiki</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Fri 07 September 2007</p>
+    <p>Posted on: Sat 18 November 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -69,8 +69,7 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>i think using git-svn is really easy, once you figured out how to use it. so here is how i use it. no, i'm not a git-svn expert, just a user. and the way i use it - i think it's easy. so here is our situation:</p><p>1) foo project uses svn for managing their code
-2) you wish they would use git</p><p>how to do both:</p><p>1) get the full svn repo:</p><p><code>$ git svn clone --prefix=origin/ url</code></p><p>yes, in my situation this project does not use the trunk/tags/branches structure, see the git-svn manpage if the project you clone does (s/clone/clone -s/ should do the trick)</p><p>the --prefix parameter is needed so that you'll see the svn branches as if they were normal git remote branches</p><p>2) your local repo is a git repo, so you can do whatever you want, commit, revert, bisect, etc</p><p>3) instead of git pull, you need</p><p><code>$ git svn rebase</code></p><p>this does the same as git fetch + git rebase (since you can't merge because of svn)</p><p>4) instead of git push, you need</p><p><code>$ git svn dcommit</code></p><p>and we're ready. 3 and not more command, right? :)</p>
+i've just discovered my name in <a href="http://diamanda.googlecode.com/svn/trunk/install.py">diamanda wiki's install script</a> :) (search for "Miklos")
 </div>
 </div>
 
@@ -79,10 +78,10 @@
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/coloured-manpages.html">coloured manpages</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/first-openoffice-org-2-1-snapshot-uploaded.html">first openoffice.org-2.1 snapshot uploaded</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Fri 07 September 2007</p>
+    <p>Posted on: Fri 17 November 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -90,7 +89,7 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-this is always a subject of flamewars and Frugalware did not have any support for coloured manpages so far. i've now added (in man-1.6e-2) support for it, but it's still disabled. see the <a href="http://frugalware.org/packages/369/documentation">documentation</a> on how to enable it if you like. you can reach a screenshot <a href="http://frugalware.org/~vmiklos/pics/shots/colorman2.png">here</a> if you use the default colors.
+officially called ooe680-m2, the first snapshot of the ooe680 tree which will become openoffice.org-2.1 has been uploaded. as usual you can find the <a href="http://ftp.frugalware.org/pub/frugalware/frugalware-current/source/xapps/openoffice.org/FrugalBuild">buildscript</a> in -current (enable the 'devel' option) and the binary x86_64 fpms <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/frugalware-x86_64/">here</a>
 </div>
 </div>
 
@@ -99,10 +98,10 @@ this is always a subject of flamewars and Frugalware did not have any support fo
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/gitstats.html">gitstats</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/playing-with-darcs-deps.html">playing with darcs-deps</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Tue 04 September 2007</p>
+    <p>Posted on: Tue 14 November 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -110,7 +109,16 @@ this is always a subject of flamewars and Frugalware did not have any support fo
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>when we switched to git, our <a href="http://frugalware.org/~vmiklos/stats/frugalware-current.html">darcs stat page</a> was no longer updated. now i've created <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/gitstats/">gitstats</a>, which serves the same purpose. it's written in python and it was a few more features compared to darcsstats, ie. alias support, so that the stats for a dev are not lost when he/she changes his/her email addr.</p><p>the new stat page is <a href="http://frugalware.org/~vmiklos/stats/frugalware-current/">here</a>. enjoy! :)</p>
+<p><a href="http://scratchbox.org/~ttimonen/repos/darcs-deps/darcs-deps">darcs-deps</a> is a small perl script that displays darcs patch dependencies graphically. i've created a <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/examples/darcs/">test repo</a> with the following changes:
+<ol>
+  <li>a simple shell script with lines foo and bar</li>
+  <li>changed foo to foo2 (this should depend on #1)</li>
+  <li>changed bar to bar2 (same)</li>
+  <li>changed foo2 to foo3 (this should depend on #2 but not on #3)</li>
+  <li>added a new file to the end of the file (should depend on #4)</li>
+</ol></p><p><code>perl darcs-deps | dot -Tps -o deps.eps
+convert deps.eps deps.jpg</code></p><p>here is the result:
+<img src="http://ftp.frugalware.org/pub/other/people/vmiklos/examples/darcs/deps.jpg" alt="darcs graph"/></p><p>nice, isn't it? :)</p>
 </div>
 </div>
 
@@ -119,10 +127,10 @@ this is always a subject of flamewars and Frugalware did not have any support fo
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/bitlbee-skype.html">bitlbee-skype</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/non-interactive-darcs-records.html">non-interactive darcs records</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Mon 03 September 2007</p>
+    <p>Posted on: Thu 26 October 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -130,7 +138,12 @@ this is always a subject of flamewars and Frugalware did not have any support fo
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>well, it truns out what i'm mentioned at <a href="http://www.bitlbee.org">bitlbee.org</a> :)</p><p>the story is about my <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/bitlbee-skype/">skype plugin</a> for bitlbee. google doesn't even find it (mostly because nobody links my page), so i asked the devs to link the page. now they posted a news entry about it ;)</p><p>/me goes to sleep..</p>
+i've just figured out how to append long comments to darcs patches from a script:
+<code>$ echo "<code>date +"%a %b %d %H:%M:%S %Z %Y"</code>
+> VMiklos <<a href="mailto:vmiklos@frugalware.org">vmiklos@frugalware.org</a>>
+> name
+> long
+> comment" | dr rec -a --pipe</code>
 </div>
 </div>
 
@@ -139,10 +152,10 @@ this is always a subject of flamewars and Frugalware did not have any support fo
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/asciidoc-vs-mathml.html">asciidoc vs mathml</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/forums-upgrade.html">forums upgrade</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sun 02 September 2007</p>
+    <p>Posted on: Wed 25 October 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -150,7 +163,7 @@ this is always a subject of flamewars and Frugalware did not have any support fo
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>i've recently <a href="http://frugalware.org/pipermail/frugalware-git/2007-September/001862.html">pushed</a> a new asciidoc to my repo. after intalling it, you have to be able to display <a href="http://frugalware.org/~vmiklos/docs/math.html">this</a> example page properly. (<a href="http://frugalware.org/~vmiklos/docs/math.txt">here</a> is the source)</p><p>so now go and tell your latex friends that you can still include your exotic math formulas in asciidoc while you can avoid its usualy difficult syntax! :)</p>
+finally i got some time to upgrade our forums.frugalware.org to the latest 2.7.6 version. the upgrade went fairly simple, there is an upgrade script that managed the upgrade, then a db integrity check was needed (in fact that repaired/updated the db imho) and finally the small fonts in thm/default/tmpl/forum.css.tmpl has been increased a bit. hopefully everything still works :)
 </div>
 </div>
 
@@ -159,10 +172,10 @@ this is always a subject of flamewars and Frugalware did not have any support fo
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/openoffice-firefox-plugin.html">openoffice firefox plugin</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/testing-firefox-2.html">testing firefox-2.0</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sat 01 September 2007</p>
+    <p>Posted on: Tue 24 October 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -170,7 +183,18 @@ this is always a subject of flamewars and Frugalware did not have any support fo
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>as of <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/ooodev/frugalware-i686/openoffice.org-2.3oog680_m1-1-i686.fpm">openoffice.org-2.3oog680_m1</a> there is a firefox plugin (for OOo documents) included in our openoffice pkg. at the moment it's not enabled by default, you need an</p><p><code>ln -s /usr/lib/openoffice.org/program/libnpsoplugin.so ~/.mozilla/plugins</code></p><p>to enable it</p>
+<p>i'm currently testing firefox-2.0. here are a few issues:
+<ul>
+  <li>dpi is set to -1 by default</li>
+  <li>the "default homepage" setting has changed</li>
+  <li>the backspace button no longer works as it used to be</li>
+</ul></p><p>the first 2 will be fixed in the package, but the last one won't since this is the way the firefox developers decided. in case you want the old way (like me), you'll need the followings:
+<ul>
+  <li>open a new tab and type about:config</li>
+  <li>search for browser.backspace_action</li>
+  <li>set the value from 1 to 0</li>
+</ul>
+and now it'll work like before :)</p>
 </div>
 </div>
 
@@ -179,10 +203,10 @@ this is always a subject of flamewars and Frugalware did not have any support fo
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/empty-git-commits.html">empty git commits</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/python-2-5-merged-to-current.html">python-2.5 merged to -current</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Thu 30 August 2007</p>
+    <p>Posted on: Tue 17 October 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -190,9 +214,7 @@ this is always a subject of flamewars and Frugalware did not have any support fo
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>long time no blog ;)</p><p>in darcs, tags are empty patches which depend on every patch since the previous tag + the previous tag. so tag is shown in the changelog itself</p><p>in git, tags are just pointers to existing commit objects. for example 1c77ec3 already exists, then you say let's call this 1.0</p><p>you may want to create darcs-like tags in git. of course this won't be the git way, but it's nice to see that the git core allows you to do so</p><p>so here is what you need:</p><p><code>
-echo "tagged 0.9.2" |git update-ref HEAD <code>git commit-tree HEAD^{tree} -p HEAD</code>
-</code></p><p>thanks <a href="http://colabti.de/irclogger/irclogger_log/git?date=2007-08-30,Thu&sel=585#l1040">hliusv561</a>! :)</p>
+<p>so the python25 repo has been finally merged to -current</p><p>we have rebuilt ~155 packages, hopefully everything is fine now again :)</p><p>there are 2 kde packages to fix, they will be done by crazy soon</p><p>oh and there is a new test in the testsuite to avoid that big number of hardcoded python versions in the FrugalBuilds :)</p>
 </div>
 </div>
 
@@ -201,10 +223,10 @@ echo "tagged 0.9.2" |git update-ref HEAD <code>git commit-tree HEAD^{tree} -p HE
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/find-exclude.html">find -exclude</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/free-netbeans-not-yet.html">free netbeans? not yet..</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Fri 06 April 2007</p>
+    <p>Posted on: Sun 08 October 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -212,7 +234,9 @@ echo "tagged 0.9.2" |git update-ref HEAD <code>git commit-tree HEAD^{tree} -p HE
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>ok, there is no such option, but there is an equivalent trick :)</p><p>for example if you want to do exclude the _darcs dir, then you need:</p><p><code>find . -type d -name _darcs -prune -o <filter> -print</code></p><p>where <filter> can be "-name *.c" or so</p><p>thanks crazy for the tip :)</p>
+<p>i'm sorry to say, but it seems our free tools are not yet ready to build netbeans. first you need to add the gcj.jar to the classpath (patch <a href="http://frugalware.org/~vmiklos/patches/netbeans-gcj.diff">here</a>), but that's basically usual. then the compilation fails with the following casting error:
+<code>[repeat] java.io.IOException: java.lang.ClassCastException: org.apache.xerces.dom.DocumentImpl cannot be cast to gnu.xml.dom.DomDocument</code>
+(full log <a href="http://frugalware.org/~vmiklos/logs/netbeans-5.0-gcj.log">here</a>)</p><p>that's something i can't fix.</p>
 </div>
 </div>
 
@@ -221,10 +245,10 @@ echo "tagged 0.9.2" |git update-ref HEAD <code>git commit-tree HEAD^{tree} -p HE
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/linuxquestions-org-screenshots.html">linuxquestions.org screenshots</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/netbeans.html">netbeans</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sun 28 January 2007</p>
+    <p>Posted on: Sun 08 October 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -232,7 +256,7 @@ echo "tagged 0.9.2" |git update-ref HEAD <code>git commit-tree HEAD^{tree} -p HE
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-i've recently got a mail about linuxquestions.org now has a separate collection of <a href="http://shots.linuxquestions.org/index.php?os=Frugalware">Frugalware screenshots</a>. so here it is, maybe one find it interesting :)
+<p>after a few days of headache, the brand new netbeans package is <a href="http://frugalware.org/packages/14403">ready</a>!</p><p>at the moment it requires j2sdk, we'll see if i can get it compile using a free compiler or not</p>
 </div>
 </div>
 
@@ -241,33 +265,18 @@ i've recently got a mail about linuxquestions.org now has a separate collection 
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/ten-goals-we-reached-in-2006.html">ten goals we reached in 2006</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/openoffice-org-2-0-4-release-candidate-5-has-been-uploaded.html">OpenOffice.org 2.0.4 Release Candidate 5 has been uploaded</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sun 31 December 2006</p>
+    <p>Posted on: Sat 07 October 2006</p>
   </div>
   <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
+    <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>we're always working on something, sometimes it worth to have a look
-round and see what we've reached. so here is my list, probably
-incomplete :)</p><p>1) syncpkgd</p><p>2) -stable support. if you want to have a secure server you no longer
-have to use -current</p><p>3) OOo for x86_64, also split the language packs</p><p>4) many-many packages. really. sometimes i need a package and i'm
-impressed it's already in fst :)</p><p>5) in connection with the big number of packages: dynamic cds/dvds based
-on dependencies. i remember when we had to move something to extra just
-becase the second cd was too big</p><p>6) rewritten the setup in C. do you remember the sloooow installer
-written in sh? :)</p><p>7) Xorg 7.0. so many hours of sucking when:
-   7.1) do a clean install
-   7.2) add the xorg7 repo and -Syu
-   7.3) write down the occurred errors
-   7.4) fix them
-   7.5) rm -rf /
-   7.6) goto 7.1 :)</p><p>8) pacman-g2. pacman without a lib? brr :)</p><p>9) getting rid of hotplug in favour of udev. maybe you remember how slow
-it was, it took at least 10-12 secs on my pc :)</p><p>10) fw-xgl-control: enabling and disabling it for a normal user without
-reading tons of docs, breaking your system, etc :)</p><p>(yes. the list is unsorted )</p><p>could you imagine living without these? :)</p>
+x86_64 fpms are reachable <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/frugalware-x86_64/">in my repo</a>, as usual :)
 </div>
 </div>
 

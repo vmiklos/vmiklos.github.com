@@ -58,157 +58,6 @@
 
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/the-book-of-eli.html">The Book of Eli</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Mon 13 December 2010</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="/pic/the-book-of-eli.t.jpg" alt="/pic/the-book-of-eli.t.jpg" />
-</div>
-</div>
-<div class="paragraph"><p>Stilusos film a maganyos harcosrol, akirol a film vegen egesz erdekes
-dolog derul ki. ;)</p></div>
-<div class="paragraph"><p>(<a href="http://www.imdb.com/title/tt1037705/">imdb</a>, <a href="http://www.youtube.com/watch?v=2ud4gZQcPac">trailer</a>)</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/amtterm.html">amtterm</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Sat 11 December 2010</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 3 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>So we have two machines next to each other: genesis and helicon. The
-original idea years ago was to put a serial cable between the two so
-that it&#8217;s possible to manage the machines even in case ssh dies for some
-reason. Of course we never did that, because we were lazy - but in the
-meantime both machines were replaced by a newer mainboard, supporting
-<a href="http://www.intel.com/technology/platform-technology/intel-amt/">Intel
-AMT</a>.</p></div>
-<div class="paragraph"><p>In short, this is a poor man&#8217;s IP console, it supports serial-over-lan,
-so with a bit of configuration and a special client tool you can control
-grub, watch the bootup process (will you miss the risky few minutes
-after a reboot till it turned out if a remote machine boots up after a
-kernel upgrade or not?) and finally can even log in when ssh is not
-running.</p></div>
-<div class="paragraph"><p>First you need to set up grub to listen on the serial port as well. To
-do this, you need to know the device name and I/O port of your
-serial-over-lan port. The boxes mentioned above have one physical and
-one virtual serial port, so we need the later - that will be
-<code>/dev/ttyS1</code>. Now let&#8217;s grep in dmesg to get the port:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>$ dmesg|grep 'ttyS1 at'
-0000:00:03.3: ttyS1 at I/O 0xf1c0 (irq = 17) is a 16550A</code></pre>
-</div></div>
-<div class="paragraph"><p>Now we know everything to set up grub. Just prepend the following lines
-to your <code>/boot/grub/menu.lst</code>:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>serial --port=0xf1c0 --speed=115200
-terminal --timeout=30 console serial</code></pre>
-</div></div>
-<div class="paragraph"><p>The speed is AFAIK the same for each SoL port, so you can just
-copy&amp;paste it.</p></div>
-<div class="paragraph"><p>It&#8217;s also recommended to change the timeout line to 30 as well, this way
-you will have half minute to press any key to tell grub you want to
-control is on the serial port and you&#8217;ll again have half minute to hit
-any key to edit the kernel parameters, etc. (The whole grub part is
-useful because this way in case you upgraded the machine and it fails to
-boot up, you can still boot using init=/bin/sh and fix the system.)</p></div>
-<div class="paragraph"><p>Second, you want to see the boot process, this way you can fix the
-system remotely, even if fsck fails and asks for root password, etc.</p></div>
-<div class="paragraph"><p>For this, you need to change your kernel parameters, so that messages
-sent to <code>/dev/console</code> will end up on the serial port.</p></div>
-<div class="paragraph"><p>I changed</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>root=/dev/md0 ro quiet vga=791</code></pre>
-</div></div>
-<div class="paragraph"><p>to</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>root=/dev/md0 ro vga=normal nomodeset console=ttyS1,115200</code></pre>
-</div></div>
-<div class="paragraph"><p>and that achieved this.</p></div>
-<div class="paragraph"><p>Third, you want to start a getty on ttyS1 once the machine booted up, in
-case ssh fails to start up. If you don&#8217;t use systemd yet, add the following
-line to <code>/etc/inittab</code>:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>s1:12345:respawn:/sbin/agetty ttyS1 115200 vt100-nav</code></pre>
-</div></div>
-<div class="paragraph"><p>(Don&#8217;t forget to run <code>init q</code> to reload the config!)</p></div>
-<div class="paragraph"><p>Finally, you need <a href="http://dl.bytesex.org/releases/amtterm/">amtterm</a> on
-the client side - I plan to package it for Frugalware once 1.4pre2 is
-out. Till then you can just download, unpack and build the source
-tarball using <code>make</code> - no installation is necessary, you can run
-<code>amtterm</code> in-place. In my case I can&#8217;t connect directly to the machine
-as (for obvious reasons) the AMT is reachable from the local subnet
-only. So I build an ssh tunnel to the other machine and use <code>socksify</code>
-to pretend I run amtterm on the local subnet. The commandline I use is:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>$ socksify ./amtterm -p &lt;pass&gt; &lt;ip&gt;</code></pre>
-</div></div>
-<div class="paragraph"><p>And that&#8217;s it - enjoy editing your kernel parameters, watching your boot
-process and login to the box even if ssh is not running and you don&#8217;t
-have IP console. :)</p></div>
-<div class="paragraph"><p>If you can&#8217;t try it out right now but you want to see it in action:
-<a href="http://frugalware.org/~vmiklos/pics/shots/helicon-amt-grub.png">grub
-in amtterm</a> and
-<a href="http://frugalware.org/~vmiklos/pics/shots/helicon-amt.png">boot
-in amtterm</a> - without any virtualization! ;)</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/wikipedia-spam.html">How to get rid of Wikipedia spam header</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Fri 10 December 2010</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>You probably already noticed it. I have no major problems with Jimmy
-Wales, but given that this spam header will not be hidden even after you
-donate (since I browse Wikipedia without logging in), this is really
-just spam. <a href="http://userscripts.org/scripts/show/91202">Here</a> is a nice
-greasemonkey script to get rid of it.</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/tdf-interview.html">TDF Interview</a></h1>
   </div>
   <div class="article_meta">
@@ -454,6 +303,127 @@ now converted to
 <div class="paragraph"><p>Long story short, a week ago finally Fridrich
 <a href="http://sourceforge.net/projects/libwpd/files/libwpd-bindings/download">released</a>
 the first version of the code, after about 2.75 years. :)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/osl-trace.html">OSL_TRACE()</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Wed 24 November 2010</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>Background: <code>OSL_TRACE()</code> is an internal LibreOffice macro that is like
+<code>printf()</code>, but it&#8217;s only enabled in debug mode. Without it, you would
+add a debug printf during development:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #000000">printf</span></span><span style="color: #990000">(</span><span style="color: #FF0000">"debug, foo</span><span style="color: #CC33CC">\n</span><span style="color: #FF0000">"</span><span style="color: #990000">);</span></tt></pre></div></div>
+<div class="paragraph"><p>then you would comment it out when the code started working,:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900">//printf("debug, foo\n");</span></span></tt></pre></div></div>
+<div class="paragraph"><p>then remove the comment when it breaks again, etc.</p></div>
+<div class="paragraph"><p>In the past, if you built a LibreOffice module, then you executed:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>build</code></pre>
+</div></div>
+<div class="paragraph"><p>inside a module, and in case you wanted debug symbols and such messages you built using:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>build debug=t</code></pre>
+</div></div>
+<div class="paragraph"><p>which increased the debug level to 2 (from 0), where 1 is required for
+debug symbols, 2 for debug messages. (See the OOo
+<a href="http://wiki.services.openoffice.org/wiki/Debug_Levels">wiki page</a>.)</p></div>
+<div class="paragraph"><p>The recent update, why I&#8217;m writing this post: Now this has been
+<a href="http://cgit.freedesktop.org/libreoffice/bootstrap/commit/?id=47d09469e96485f93623a6fbeb42f709c2ce49bb">changed</a>,
+and <code>debug=t</code> gives you debug symbols only, but no extra debug output.
+While this is
+<a href="http://lists.freedesktop.org/archives/libreoffice/2010-November/002894.html">great
+in most cases</a>, sometimes you still want the old behaviour to get the
+debug messages. In that case the solution (as pointed out in the mailing
+list post) is to use:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>build debug=t dbglevel=2</code></pre>
+</div></div>
+<div class="paragraph"><p>(Hopefully this post will be handy for who missed that post, like I did
+the first time.)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/systemd.html">Systemd</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Tue 23 November 2010</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>I first heard about
+<a href="http://freedesktop.org/wiki/Software/systemd">systemd</a> from
+<a href="http://frugalware.org/~voroskoi/">voroskoi</a>, later
+<a href="http://people.gnome.org/~michael/blog/">Michael</a> pointed it out again
+during the <a href="http://www.ooocon.org/index.php/ooocon/2010">OOoCon 2010</a>,
+finally it somehow came up on <code>#frugalware.dev</code> today.</p></div>
+<div class="paragraph"><p>So I read up some documentation in this area, and I definitely like it.
+(Note: I didn&#8217;t say I&#8217;m willing to do all the work to integrate this
+into Frugalware, but I like the idea.) For me, the killer post is
+<a href="http://0pointer.de/blog/projects/systemd-for-admins-3.html">this one</a>: a
+distro-independent init script in 8 lines is very much like our
+<code>FrugalBuild</code> scripts which are no longer than 11 lines for a project
+with a standard build-system.</p></div>
+<div class="paragraph"><p>I like that minimalism a lot.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/mkk-katalin-bal-2010.html">MKK Katalin bal 2010</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Sun 21 November 2010</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>Visszakeresve ugy tunik, hogy <a href="https://vmiklos.hu/blog/mkk-tavaszi-bal-2009.html">csak
+egyszer</a> irtam az ilyen balokrol, pedig egy evben 3x szokott lenni
+(tavaszi, Katalin, szilveszter) - mindenesetre
+<a href="http://hatos.dsd.sztaki.hu/~mkkweb/index.php?do=sh&amp;pg=programs%3Ekatalin2010%3Ekatalin2010">tegnap
+is volt</a>. Es mint mindig, most is jol ereztuk magunkat, csak ajanlani
+tudom barkinek aki amugy szeret tancolni.</p></div>
 </div>
 </div>
 

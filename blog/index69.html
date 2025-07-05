@@ -58,10 +58,10 @@
 
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/tilde-in-asciidoc-manpages.html">TIlde in asciidoc manpages</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/export-to-c-from-gimp.html">Export to C from Gimp</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Thu 18 December 2008</p>
+    <p>Posted on: Sun 07 December 2008</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -69,6 +69,7 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
+I like this feature. It's pretty useful now when I have a homework at the uni where the whole solution should be a single C file. So I just do a texture in Gimp, export it to C, copy&amp;paste it to "the" file, and stop wasting my time trying to create some texture by hand. Yay! :)
 </div>
 </div>
 
@@ -77,10 +78,10 @@
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/remove-items-from-a-python-list.html">Remove items from a python list</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/having-fun-with-boost-1-37.html">Having fun with boost 1.37.0</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Wed 17 December 2008</p>
+    <p>Posted on: Sat 06 December 2008</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -88,12 +89,7 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>One item in Python's magic word is that you don't have to really care about memory management. I already know if i want to "strdup" a list, then i need foo[:], but I did not notice that in case I iterate over a list _and_ modify it, then I need such a trick as well.</p><p>Example</p><p><pre>
-l = ['a', 'b']
-for i in l:
-        l.remove(i)
-print l
-</pre></p><p>So we remove each item from the list (an expensive version of "l = []").</p><p>However, the result will be "['b']". Now if you use "for i in l[:]:", everything will be fine, because you can iterate over the original list.</p><p>It's a shame that I do python for more than 2 years, and I did not know such a basic stuff. :(</p><p>(<a href="http://mail.python.org/pipermail/python-list/2004-September/280885.html">original post</a>)</p>
+<p>So we decided to upgrade from 1.35.0 to 1.37.0 in Frugalware-current. As usual, there is a <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/boost137/">WIP repo</a> since this won't be finished in one day. Most of the trivial rebuilds are done, but still need to fix up miro, pdfedit and bmpx. Ah and I needed to upgrade libtorrent as well which resulted some problem in btg and qtorrent, though both have some support for the new 0.14.x libtorrent in SVN so most of the work was just to backport those patches.</p><p>A user on #frugalware asks when will we have python-2.6. Not before boost-1.37, I'm sure.</p><p>Side note: It seems I managed not to waste the whole day just because I met and old friend (and drinking beer). It turns out that if I drink 2 beers and sleep 2 hours then I can code without the usual "go to bed early, sleep a lot, then you can work" procedure.</p>
 </div>
 </div>
 
@@ -102,43 +98,10 @@ print l
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/a-few-note-about-rpm.html">a few note about rpm</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/kernel-org-gitweb-fork.html">kernel.org gitweb fork</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Tue 16 December 2008</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 3 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>I spent some time today to prepare some rpm packages for an RHEL4 box, it was an interesting experience. To preface to this story is that first I had to do the followings on Frugalware:</p><p><ul>
-  <li>Patch mysql 5.0.37 to add support for the sphinx search engine</li>
-  <li>Make sure about sphinx itself works fine with this (though sadly I haven't had time yet to package sphinx as well).</li>
-</ul></p><p>We have a newer (but compatible, since we still ship 5.0.x) mysql, but a simple git checkout gave me the old buildscript and then the patch applied perfectly.</p><p>Then the plan changed, I needed to do this on an RHEL4 box as well.</p><p>Steps:</p><p><ul>
-  <li>Fix broken up2date config, it seems nobody installed any security update on the box for a long time.</li>
-  <li>Notice that RHEL4 has mysql 4.x, so I had to upgrade it to 5.0.x which was not trivial.</li>
-  <li>After adding the patch to the spec file, I saw that there are a bunch of manual autoconf/automake/autoheader/autowhatever calls, so I did not add a call to mysql's own autogen script. It turned out later that this was a fault, the default autofoo calls did not regenerate all the necessary files, basically they just took a lot of time, but did not really do anything useful. Sigh.</li>
-  <li>Once build was done, I had to rebuild perl's mysql driver and the whole php package because of the major mysql upgrade. Did I say I hate to touch php?</li>
-  <li>And finally the worst was to package sphinx. I used some opensuse spec file, but it turned out to be badly broken on RHEL4. Fixing it was not so problematic, but took a lot of time, because debugging a specfile under RH is a PITA.</li>
-  <li>Let me show a few examples. The equivalent of Fdestdir (the directory which will be tared up after the build is done) is not rm -rf'd before the build starts. So if you have some crap there, your final package will have it.</li>
-  <li>OTOH, Fsrcdir (the directory where the build takes place) <em>is</em> deleted, which means you can't do an incremental build.</li>
-  <li>If you break your pre-uninstall script, you can't easily uninstall a package, even with rpm -e --force --nodeps (you need some magic --no-preun switch, which is not implied by --force).</li>
-  <li>If you say rpm -Uvh foo-2.0.rpm, then sometimes it bails out with an error about it has a file conflict because /bar/baz.so is provided by foo-1.0. What? Doesn't -U stand for <em>upgrade</em>?</li>
-</ul></p><p>Okay, this was enough. I finally finished the task, but I again just can make a "this is so much more efficient with Frugalware" note. ;-)</p><p>And no, I don't like to write about why foo sucks, but both this packaging system (or at least the default settings) a docbook sometimes really sucks.</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/date-of-docbook-manpages.html">date of docbook manpages</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Mon 15 December 2008</p>
+    <p>Posted on: Fri 05 December 2008</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -146,7 +109,7 @@ print l
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>It seems the method we used to have a custom date format (ie.: not the default mmddyy, but the yymmdd one) is no longer supported. I spent about an hour trying to figure out what's wrong with it, but it seems the solution is not so trivial and it just does not worth the effort. So it's dropped for now, sigh.</p><p>And if I'm at blaming docbook, then here it is: The git manpages still have a ".ft C" / ".ft" string pair around code blocks (or whatever they are called, think of the html &lt;pre&gt; tag), probably due to some broken custom asciidoc.conf.</p><p>I like docbook (since generating man/html/pdf is easy from it), but I really hate the fact that they break something with each release. ;-/</p>
+It has not been updated for a long time, but today a <a href="http://git.kernel.org/?p=git/warthog9/gitweb.git;a=commitdiff;h=2586ea1d3fdce3d27479903a79a6e916b000b640">fix</a> appeared. It seem to be kernel.org-specific though, so don't worry.
 </div>
 </div>
 
@@ -155,10 +118,10 @@ print l
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/playing-with-metapost.html">Playing with metapost</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/gitte-on-tailor.html">gitte on tailor</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sun 14 December 2008</p>
+    <p>Posted on: Thu 04 December 2008</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -166,7 +129,21 @@ print l
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-The name of the command is mpost(1), and it's part of the tetex package. I read about it in <a href="http://udrepper.livejournal.com/19751.html">udrepper</a>'s blog. The situation for me is true as well: I'm better in programming than doing anything by hand, so it's something for me. Some very initial results <a href="http://groups.google.com/group/asciidoc/msg/242f81d5d33ab04c">here</a>.
+<p>Today evening gitte collected a summary of his tailor problems, which I would call a nice collection.</p><p>He says:</p><p><pre>
+01:31 &lt; gitte&gt; vmiklos: tailor was limited in many ways.
+01:31 &lt; gitte&gt; vmiklos: one, basically branch per branch.
+01:32 &lt; gitte&gt; vmiklos: two, it was written in Python
+01:33 &lt; gitte&gt; vmiklos: three, it did not define a language, but a
+                     class interface
+01:33 &lt; gitte&gt; vmiklos: four, it made assumptions about the internal
+                     organization of SCMs
+01:33 &lt; gitte&gt; vmiklos: five, it is maintained in a darcs repository,
+                     which tailor cannot even convert to Git.
+01:35 &lt; gitte&gt; vmiklos: oh, and it did not help that the configuration
+                     is awkward and badly documented, not to mention
+                     inconsistent with regard to the types of input/output
+                     repositories.
+</pre></p>
 </div>
 </div>
 
@@ -175,10 +152,10 @@ The name of the command is mpost(1), and it's part of the tetex package. I read 
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/ghc-upgrade.html">GHC upgrade</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/asciidoc-qa.html">Asciidoc QA</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sat 13 December 2008</p>
+    <p>Posted on: Wed 03 December 2008</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -186,7 +163,7 @@ The name of the command is mpost(1), and it's part of the tetex package. I read 
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>I just got some time to upgrade GHC to 6.10.whatever in Frugalware-current, and it seems they managed to create some screwed up bootstrap binaries, linked to lineedit. This is some BSD version of GNU readline, we did not even had it packaged and the docu says it's outdated in most distros. :-P</p><p>However, we still want to bootstrap using upstream binaries, so now we use it. At least I was able to get rid of the ugly LD_LIBRARY_PATH hack, caused by the old readline library they linked the binaries in the previous series.</p>
+OK, given that I want to build the Git User Manual 1.6.1-rc1 with Asciidoc 8.3.0, I continue the story started yesterday. The <a href="http://groups.google.com/group/asciidoc/msg/e4c4b65a92f7980a">new bug</a> seem to have something with attribute handling, whitespaces in references and quotes, pick your favorite one.
 </div>
 </div>
 
@@ -195,10 +172,10 @@ The name of the command is mpost(1), and it's part of the tetex package. I read 
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/in-bruges.html">in bruges</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/asciidoc-and-tex-math-expressions.html">asciidoc and tex math expressions</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sat 13 December 2008</p>
+    <p>Posted on: Mon 01 December 2008</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -206,17 +183,19 @@ The name of the command is mpost(1), and it's part of the tetex package. I read 
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/lPD-APfMKTHvc5w-xRbFniO6ZFgf75SuH9lmbiDj8u2xO9W1MO0EvNNCr5FYm065LR90AeNUlRwulLT_7y1ATNmls875UwqkqUZ0F9mR5hTV6lD_Ts1gcoFRSgZ9mf4r6tJmWk7Jfg=w640" alt="https://lh3.googleusercontent.com/lPD-APfMKTHvc5w-xRbFniO6ZFgf75SuH9lmbiDj8u2xO9W1MO0EvNNCr5FYm065LR90AeNUlRwulLT_7y1ATNmls875UwqkqUZ0F9mR5hTV6lD_Ts1gcoFRSgZ9mf4r6tJmWk7Jfg=w640" />
-</div>
-</div>
-<div class="paragraph"><p>"in fucking bruges?" - ha valaki latta a filmet, tuti ez az elso ami eszebe fog jutni. ;)</p></div>
-<div class="paragraph"><p>amugy meg televan szep bruges-i kepekkel, persze nem annyival h elmenjen kulturfilm-iranyba a dolog.
-jatszik benne Colin Farrell (minority report), Brendan Gleeson (beowulf), Ralph Fiennes (schindler
-listaja). ja meg Clémence Poésy, akit most lattam eloszor es tokjol vitte a szerepet.</p></div>
-<div class="paragraph"><p>a sztori is jo, van mondanivaloja, szal teljesen elegedett voltam. :)</p></div>
-<div class="paragraph"><p>(<a href="http://www.imdb.com/title/tt0780536/">imdb</a>, <a href="http://www.youtube.com/watch?v=KoE9edjEDCI">trailer</a>)</p></div>
+<p>So today I had a test at the uni with a lot of formula and given that it was boring to learn, I created a cheat sheet using asciidoc. The fun part is that the just released asciidoc 8.3 not only supports inline tex expressions but (using -a latexmath) supports rendering most of them to html as well.</p><p>I bookmarked a few related useful howtos on delicios, and my 14-page-length doc is available <a href="http://vmiklos.hu/doc/asciidoc/math/">here</a> (source, pdf, html).</p><p>I also like the new table format. The only buggy thing seems that I always have to scale images down, 100% results in a size about 200% somehow. Ah and the url escaping stuff I just <a href="http://groups.google.com/group/asciidoc/browse_thread/thread/f78e952e0b8be822">reported</a>, but that's not a problem here.</p><p>I hit it while building Git v1.6.1-rc1, released today. The toplist of that is interesting:</p><p><pre>
+$ git shortlog -s -n v1.6.0..v1.6.1-rc1|head
+   351  Junio C Hamano
+    61  Alexander Gavrilov
+    54  Shawn O. Pearce
+    48  Miklos Vajna
+    43  Jeff King
+    38  Brandon Casey
+    29  Nanako Shiraishi
+    28  Nicolas Pitre
+    25  Alex Riesen
+    24  Petr Baudis
+</pre></p><p>Heh, heh.</p>
 </div>
 </div>
 
@@ -225,10 +204,10 @@ listaja). ja meg Clémence Poésy, akit most lattam eloszor es tokjol vitte a sz
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/hacker-purity-test.html">Hacker Purity Test</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/darcs-fast-export-benchmark-postponed.html">darcs-fast-export benchmark postponed</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Fri 12 December 2008</p>
+    <p>Posted on: Sun 30 November 2008</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -236,11 +215,8 @@ listaja). ja meg Clémence Poésy, akit most lattam eloszor es tokjol vitte a sz
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>I just found <a href="http://www.armory.com/tests/hacker.html">this test</a>, it's an old one, almost 20 years old. It's funny to see what questions became outdated and which didn't.</p><p>Some of my favorite questions:</p><p><ul>
-  <li>Do you complain when a "feature" you use gets fixed?</li>
-  <li>Ever mask an NMI?</li>
-  <li>Do you own more than 16 floppy disks?</li>
-</ul></p><p>Of course the last one is because I still do have more than that - though I no longer have such a reader at home - would have to go to work to read them. ;-)</p>
+<p>OK, I gave up converting darcs' darcs with tailor, opened a <a href="http://progetti.arstecnica.it/tailor/ticket/171">ticket</a> for it. Once that is resolve, I hope I can do a comparision.</p><p>Snip. I like the new asciidoc-8.3.0, now math expressions can be defined using the latexmath :: [] macro inline. ;-)</p><p>Snip. I like how people can say the usual "if you need it, send a patch" sentence. Today's version:</p><p>"It's not very high on my list of priorities,
+but I assume fixing the problem is probably not hard if you decide to get your editor dirty." :-)</p><p>(<a href="http://article.gmane.org/gmane.comp.version-control.git/101924">full message</a>)</p>
 </div>
 </div>
 
@@ -249,30 +225,10 @@ listaja). ja meg Clémence Poésy, akit most lattam eloszor es tokjol vitte a sz
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/git-janitor-cleanup.html">Git Janitor cleanup</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/salomon-elios-xx-black.html">Salomon elios xx black</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Thu 11 December 2008</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>Mailed Christian Couder to cleanup up the <a href="http://git.or.cz/gitwiki/Janitor">Janitor page on the wiki</a> a bit, since for example all the git_config_string refactoring is already done.</p><p>It's nice I did not really have to explain I do not want to destroy his work, it's just no longer necessary - he understood it just fine.</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/batman-begins.html">batman begins</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Thu 11 December 2008</p>
+    <p>Posted on: Sat 29 November 2008</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -282,15 +238,53 @@ listaja). ja meg Clémence Poésy, akit most lattam eloszor es tokjol vitte a sz
 <div class="sectionbody">
 <div class="imageblock" style="text-align:center;">
 <div class="content">
-<img src="https://lh3.googleusercontent.com/jzfNqx_6CymF0c1h3qjMmv2-sATVGgG6VkL8lKf-ieoiM_3hBfyXjC2jZgcnx4ykulhsWltRD5JHWHo3KwIfwfZIRCw3NBLpv7q4ojReAy1jg8tE-uetH0trgTmFgg35zMD0gTGH0Q=w640" alt="https://lh3.googleusercontent.com/jzfNqx_6CymF0c1h3qjMmv2-sATVGgG6VkL8lKf-ieoiM_3hBfyXjC2jZgcnx4ykulhsWltRD5JHWHo3KwIfwfZIRCw3NBLpv7q4ojReAy1jg8tE-uetH0trgTmFgg35zMD0gTGH0Q=w640" />
+<img src="https://lh3.googleusercontent.com/lHMwy6aQQku0P-Gm_TgKzTvePnqJXGTkzBjw9E9Cp9DG0DKrYbpGUIVovdF0AD8j0LNJAFkR9m8V5kHwVxARah47BTHvX91TCtJeEXprAMfCOranew7EpeKsoHupf1oIn3YLNHVlNw=w640" alt="https://lh3.googleusercontent.com/lHMwy6aQQku0P-Gm_TgKzTvePnqJXGTkzBjw9E9Cp9DG0DKrYbpGUIVovdF0AD8j0LNJAFkR9m8V5kHwVxARah47BTHvX91TCtJeEXprAMfCOranew7EpeKsoHupf1oIn3YLNHVlNw=w640" />
 </div>
 </div>
-<div class="paragraph"><p>huh, hat ez szinten tobbszornezos. a masodik resz onmagaban is nyilvan ertheto meg minden, de azert
-igy kerek a sztori. es talan a masodik reszben kicsit jobban fel van porgetve a technika, itt is
-legalabb olyan jo a szineszi jatek, szal ezis ilyen abszolut 10/10pontos alkotas.</p></div>
-<div class="paragraph"><p>Rachelt itt meg Katie Holmes (phone booth) jatsza aztan feltunik Liam Neeson (narnia kronikaiban
-aslan hangja), de amugy nagyjabol minden szereplo ismeros a masodik reszbol.</p></div>
-<div class="paragraph"><p>(<a href="http://www.imdb.com/title/tt0372784/">imdb</a>, <a href="http://www.youtube.com/watch?v=m7dapUWHykw">trailer</a>)</p></div>
+<div class="paragraph"><p>hervisben volt ilyen learazos moka es mar tervben volt, hogy kene egy uj bakancs, ilyen lett.
+legkesobb februarban kiderul, hogy hogy szolgal.</p></div>
+<div class="paragraph"><p>remelhetoleg csak azert volt olcso mert kifuto szeria, legalabbis a salomon sajat honlapjan mar
+nincs rola info, egyeb meg <a href="http://letmegooglethatforyou.com/?q=salomon+elios+xx+black">LMG</a>.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/undocumented-modprobe-switches.html">Undocumented modprobe switches</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Sat 29 November 2008</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>I just sent <a href="http://frugalware.org/~vmiklos/patches/0001-modprobe-document-undocumented-options.patch">this patch</a>, because I hated I had to look up the source about what -b does.</p><p>BTW, I did the d-f-e benchmark for the ghc repo as well, the results are <a href="http://vmiklos.hu/project/darcs-fast-export/t/bench-results/">here</a>. I hope I can get tailor to somehow convert the darcs and ghc darcs repo as well, then I can draw some nice chart about how fast d-f-e is. ;-)</p><p>Currently it can't convert darcs.darcs because I specified latin2 as input/output charset and it considered that as invalid. Given that d-f-e detected ISO-8859-2, I wonder WTF is this, I unspecified the output charset and changed latin2 to ISO-8859-2 on the input side, we'll see if that helps or not.</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/darcs-fast-export-git-dramatic-speedup.html">darcs-fast-export.git: dramatic speedup</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Fri 28 November 2008</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>I got to implement the direct patch technique for darcs2 repos in darcs-fast-export, and it seems to be a dramatic speedup.</p><p>The benchmark was done using darcs' darcs.</p><p><a href="http://vmiklos.hu/project/darcs-fast-export/t/bench-results/darcs-repo_play.tar.gz.d-f-e-0.6.log">Before</a>:</p><p><pre>real    786m16.035s</pre></p><p><a href="http://vmiklos.hu/project/darcs-fast-export/t/bench-results/darcs-repo_play.tar.gz.d-f-e-0.6-21-gb2abee1.log">After</a>:</p><p><pre>real       29m39.458s</pre></p><p>I plan to do a similar benchmark with ghc's darcs repo as well (it contains about 19k patches).</p>
 </div>
 </div>
 

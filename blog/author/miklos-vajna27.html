@@ -59,52 +59,6 @@
 
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/scooter-2012.html">Scooter @ Unique Fesztivál</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Sun 26 August 2012</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Pénteken ismét Magyarországra látogatott a Scooter, pár telefonos kép, ami valószínűleg nem adja vissza a helyszíni hangulatot:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://lh4.googleusercontent.com/-mb44G5JOFHI/UDfxe0f96PI/AAAAAAAABiI/d7S_Qq2wtRQ/s2048/2012-08-24%252021.04.24.jpg">
-<img src="https://lh4.googleusercontent.com/-mb44G5JOFHI/UDfxe0f96PI/AAAAAAAABiI/d7S_Qq2wtRQ/s400/2012-08-24%252021.04.24.jpg" alt="https://lh4.googleusercontent.com/-mb44G5JOFHI/UDfxe0f96PI/AAAAAAAABiI/d7S_Qq2wtRQ/s400/2012-08-24%252021.04.24.jpg" />
-</a>
-</div>
-</div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://lh4.googleusercontent.com/-ME9ru1sf2pM/UDfxitQSLWI/AAAAAAAABiQ/-nvwYjJ2Q18/s2048/2012-08-24%252021.22.59.jpg">
-<img src="https://lh4.googleusercontent.com/-ME9ru1sf2pM/UDfxitQSLWI/AAAAAAAABiQ/-nvwYjJ2Q18/s400/2012-08-24%252021.22.59.jpg" alt="https://lh4.googleusercontent.com/-ME9ru1sf2pM/UDfxitQSLWI/AAAAAAAABiQ/-nvwYjJ2Q18/s400/2012-08-24%252021.22.59.jpg" />
-</a>
-</div>
-</div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://lh5.googleusercontent.com/-k8h_Flklp-U/UDfxlrLT6iI/AAAAAAAABiY/8aSTkkIb_Xo/s2048/2012-08-24%252021.28.13.jpg">
-<img src="https://lh5.googleusercontent.com/-k8h_Flklp-U/UDfxlrLT6iI/AAAAAAAABiY/8aSTkkIb_Xo/s400/2012-08-24%252021.28.13.jpg" alt="https://lh5.googleusercontent.com/-k8h_Flklp-U/UDfxlrLT6iI/AAAAAAAABiY/8aSTkkIb_Xo/s400/2012-08-24%252021.28.13.jpg" />
-</a>
-</div>
-</div>
-<div class="paragraph"><p>Érdemes összehasonlítani a <a href="https://vmiklos.hu/blog/scooter-bme-fesztival.html">3 évvel
-ezelőtti</a> és az
-<a href="http://www.setlist.fm/setlist/scooter/2012/budai-var-budapest-hungary-3dc7977.html">idei</a>
-tracklistát, nem sokat változott&#8230; persze ennek az előnye, hogy így különösebb
-felkészülés nélkül is alig volt ismeretlen dal. ;-)</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/plitvice.html">Plitvice</a></h1>
   </div>
   <div class="article_meta">
@@ -617,6 +571,74 @@ jhead -dsft <span style="color: #990000">*.</span>jpg</tt></pre></div></div>
 <pre><code>c=0; for i in $(ls -lhtr *.jpg|sed 's/.* //'); do c=$((c+1)); cp -a $i new/$(printf "%03d" $c).jpg; done</code></pre>
 </div></div>
 <div class="paragraph"><p>to order filenames based on the file timestamp.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/git-notes-merge.html">Merging git notes</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Thu 07 June 2012</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>The <code>git notes</code> command is really about local annotation of commits&#8201;&#8212;&#8201;nothing
+to share. If you decide to still do so, for example the
+<a href="http://git-scm.com/2010/08/25/notes.html">git-scm.com</a> HOWTO can show you how to
+pull and push them. But what about merging?  There is no UI for that, but&#8201;&#8212;&#8201;given that with git, everything is possible&#8201;&#8212;&#8201;you can still do so manually.</p></div>
+<div class="paragraph"><p>So the problem comes when Alice fetches notes, Bob does so, Alice pushes her
+notes back, Bob annotates a different commit and when Bob wants to push, he
+gets <code>rejected, non-fast-forward</code>. Normally you would merge or rebase in this
+situation, but given that <code>git notes</code> by default updates the
+<code>refs/notes/commits</code> ref and you typically have a different branch checked out,
+you can&#8217;t use <code>git merge</code> or <code>git rebase</code> directly.</p></div>
+<div class="paragraph"><p>What works is:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>git checkout refs/notes/commits
+git fetch origin refs/notes/commits
+git merge FETCH_HEAD
+git update-ref refs/notes/commits HEAD
+git checkout master</code></pre>
+</div></div>
+<div class="colist arabic"><ol>
+<li>
+<p>
+Check out the notes, so if you have conflicts, you can resolve them.
+</p>
+</li>
+<li>
+<p>
+Fetch remote notes to FETCH_HEAD.
+</p>
+</li>
+<li>
+<p>
+Do the merge.
+</p>
+</li>
+<li>
+<p>
+Necessary, as <code>git merge</code> won&#8217;t update the ref automatically, since we&#8217;re not on a branch.
+</p>
+</li>
+<li>
+<p>
+Or whereever you were before.
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p>And now you can push your notes, as detailed in the above referred blog post.
+Yes, rebasing would be possible as well, that&#8217;s left as an exercise for the
+reader. ;-)</p></div>
 </div>
 </div>
 

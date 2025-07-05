@@ -59,10 +59,10 @@
 
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/git-user-manual-in-pdf.html">Git User Manual in PDF</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/sad-story-about-darcs-show.html">Sad story about darcs show</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Wed 10 December 2008</p>
+    <p>Posted on: Thu 27 November 2008</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -70,7 +70,9 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>I just sent out a <a href="http://article.gmane.org/gmane.comp.version-control.git/102733">patch</a> to add support for generating the pdf version of the git user manual. I (and some of the guys at the uni - just discussed recently) prefer reading long docs in pdf, rather than in the memory leaker firefox.</p><p>We'll see how it'll be accepted.</p>
+<p>So today I did what I have in my TODO for some time: make darcs-fast-export produce the fast-import stream on the fly, without a tmp working dir (that's how tailor and darcs2git works, and I think that's just ugly).</p><p>And the result? I thought this will be the trick that makes it a lot faster, compared to tailor and at the end it turns out that it slows it down about 3 times. :-(</p><p>Not counting speed issues, it's a huge cleanup:</p><p><pre> 12 files changed, 34 insertions(+), 106 deletions(-)</pre></p><p>Dunno what to do with it now. I'll try to poke the darcs devs, maybe they can optimize it a bit.</p><p>The sad fact is the comparision to git:</p><p><pre>
+$ time darcs show contents --match "hash 20040523231834-97f81-2bca6242bec169bd01079378524a33e0310e0b65.gz" tailor.py >/dev/null</p><p>real    0m2.780s
+$ time git show 451ae1176d56a579d3d7bd236fe7d7dd9df59326:tailor.py >/dev/null</p><p>real    0m0.004s</pre></p>
 </div>
 </div>
 
@@ -79,10 +81,131 @@
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/enjoying-search-autosizer.html">Enjoying search autosizer</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/benchmarking-darcs-fast-export.html">Benchmarking darcs-fast-export</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Tue 09 December 2008</p>
+    <p>Posted on: Wed 26 November 2008</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>OK, so I got this idea in the darcs-user mailing list that it would be nice to do some benchmarks on how fast and correct darcs-fast-export is. Actually I already have a TODO item about an idea that would make it faster, but doing a benchmark before doing the speedup is required in that case as well, so that I can show "hey, this is cool, it results in foo% speedup!11". ;-)</p><p>And if I'm already there, I plan to do it with tailor as well, I'm just curious about how fast it is. Ideally fast-import is much faster, but I guess the current darcs exporter does not make use of it, so I expect something like 1:1 for now.</p><p>The test repo is darcs' darcs, current status with darcs-fast-export is like:</p><p><pre>progress [2008-11-25 16:02:28] getting list of patches
+progress [2008-11-26 00:53:25] 4000/6548 patches</pre></p><p>Yeah, darcs apply is slow.</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sample-a-implementation-in-java.html">Sample A* implementation in Java</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Tue 25 November 2008</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>I got this exercise at the uni, and I thought it's easier if I split the problem: first the logical one (implement the <a href="http://en.wikipedia.org/wiki/A*#Algorithm_description">pseudocode from Wikipedia</a> in Python) then the RTFM one (figure out the right Java API).</p><p>Of course I wasted the whole evening by not starting working on it, so it was 0:30 when I started. It took about 2 hours to do the <a href="http://vmiklos.hu/gitweb/?p=ai2k8.git;a=blob;f=1/hazi.py;hb=HEAD">Python implementation</a>, and then again two hours to transform it to Java. And of course the code is two times longer. Guess what? One of the guy I talked today was surprised about how short my Java code is. :-P</p><p>BTW, the day before I finally got to write <a href="http://vmiklos.hu/gitweb/?p=darcs-fast-export.git;a=blob;f=git-darcs;hb=HEAD">git-darcs</a>. An old vision that is now reality. :-)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/initial-bidirectional-gateway-between-da.html">Initial bidirectional gateway between darcs and git</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Sun 23 November 2008</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>There is now a <a href="http://vmiklos.hu/project/darcs-fast-export/t/testimport-git-twoway.sh">testcase</a> that checks if the feature mentioned in the post title works.</p><p>Basically I hope I can write - based on this - a git-darcs wrapper that will make it easy to convert a darcs repo to a git one, work in git, then push the result back to the darcs repo, something I wish a long time ago. ;-)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/mutt-upgrade.html">Mutt upgrade</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Sat 22 November 2008</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>I use Frugalware's mutt-ng package for e-mail, which is mutt-devel + a more-or-less small <a href="http://ftp.frugalware.org/pub/other/sources/mutt-ng/">patchset</a>, maintained by voroskoi. Given that he was quite inactive recently, I poked him regularly to update the package (+ the patches, of course) to 1.5.18. I just noticed today that he did so about a month ago. :-)</p><p>Two changes I noticed so far are: 1) when you open a large folder, not only the current/total value is printed for processed mails, but the percentage as well, and 2) the sidebar shows again the number of flagged mails, which feature disappeared IIRC after we switched from "mutt-ng as a fork" to "mutt-ng is mutt-devel + patches".</p><p>Snip. I bumped our kernel to 2.6.27.7 and it seems now I have to update the kernel config even for a new -stable release, which is quite annoying. :-/</p><p>Snip. This evening I got some time to work on this darcs-git stuff again and I tagged darcs-fast-export 0.5 + pushed an initial darcs-fast-import.</p><p>Of course it does not support incremental import, it does not import tags yet and such, but it works! ;-)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/codeswarm.html">Codeswarm</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Fri 21 November 2008</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+The <a href="http://github.com/felipec/codeswarm.rb/tree">project</a> was linked on a news site today, but <a href="http://frugalware.org/~voroskoi/">voroskoi</a> already poked me about "hey, you should try it out with Frugalware", so I was aware of the project already. The reason I point it out is that now they create a <a href="http://www.youtube.com/watch?v=PxjLbj8oT1k">sample</a> for Git as well, and I seem to appear in it at 4m25s, heh.
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/life-without-ipv6-for-a-day.html">Life without IPv6 for a day</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Thu 20 November 2008</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+The IPv6 tunnel I use changed its IPv4 address. This caused some great silence in my IRC client, basically none of the freenode people was able to poke me with random problems. ;-) But the party is over, since the <a href="http://koszik.net/">tunnel guy</a> was kind enough to mail the new IP.
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/teljesitmenytura.html">Teljesitmenytura</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Mon 13 October 2008</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 2 minutes</p>
@@ -90,7 +213,35 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>This was getting more and more annoying. So my problem was that whenever I searched for something in Firefox, I typed it to the search bar and the query was left visible there. This is just totally idiotic for (at least) two reasons.</p><p>First, those search queries show what you are thinking about. It's normal that you don't always speak about what you are thinking about, so why would it be logical to <em>always</em> show what are you searching for. This is just uncomfortable for other people, they come to your box (somebody from the family, etc), want to search for something and they see what you were searching for, and they will think about "why did he search for this" - not that they care about it, they just don't want to see this info.</p><p>Second, I regularly work in a library and such places where the contents of a query may be just sensitive info and/or NSFW.</p><p>OK, so as the result of the previous problems, I saw myself just hitting enter in the search box to get the normal search form and search there so the original search box remained empty. This was abnormal.</p><p>Today I spent some time searching for a proper solution for this and sort-of found it: the <a href="https://addons.mozilla.org/en-US/firefox/addon/1172">Searchbar Autosizer</a> extension. Actually it's stupid as it re-sizes your search box (so make sure you remember the size of it <strong>before</strong> you install this extension), but you can make it a fixed value again and in the second dialog of the preference wizard you have the option to clear the search box right after you hit enter. Excellent, that's what I was looking for. :)</p>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://lh3.googleusercontent.com/kpscW8g1qC3_qU9x3bbzM4_jCp1fZ3r2d0wniRAWqwnlacOh2uVOC6O8FNJy1_081gfDLBEd-VqpF3Qdt7W2YDr_FGJadWt4h8wzZZuO-hEtRdH8EpDLyHAz2TgsogCthb23QLo4ew=w640" alt="https://lh3.googleusercontent.com/kpscW8g1qC3_qU9x3bbzM4_jCp1fZ3r2d0wniRAWqwnlacOh2uVOC6O8FNJy1_081gfDLBEd-VqpF3Qdt7W2YDr_FGJadWt4h8wzZZuO-hEtRdH8EpDLyHAz2TgsogCthb23QLo4ew=w640" />
+</div>
+</div>
+<div class="paragraph"><p>minden evben ketszer szokott lenni ilyen cserkeszek altal szervezett teljesitmenytura, aminek a
+bringas reszlege ugy nez ki, hogy marc15 kornyeken 48/96kmes tav van, okt23 kornyeken meg 56/112.
+ertelemszeruen most mi ez utobbira mentunk.</p></div>
+<div class="paragraph"><p>keles 6korul, arpadhidnal talalkoztunk 7kor, majd ki budakalaszra, ott start. lett volna valami
+reszveteli dij, de azt elfelejtettek elkerni. turautvonalat adtak, terkepet nem. es mi se vittunk.
+pedig kellett volna, dehat utolag mar konnyu okosnak lenni.</p></div>
+<div class="paragraph"><p>reggel ilyen kotszitalos dolog volt, eleg fos mert alig lehetett kilatni a szemuvegbol meg a
+puloverem is tiszta viz lett de aztan elmult, felszallt a kod, kisutott a nap, life is good. ja es
+meg start elott tankolas peksegnel.</p></div>
+<div class="paragraph"><p>maga az utvonal eleg para volt mert kb ilyen 10km/hval kozlekedheto emelkedokbol (kitaposva lehetett
+volna gyorsabb is de az hosszutavon nem megy) es ennek mondjuk negyszeresevel lefele-lejtokbol allt.
+tehat kb teljesen ellentete egy balatoni karikazasnak, de talan nem is baj, igy volt benne ujdonsag.</p></div>
+<div class="paragraph"><p>a pecsetelopontokat eleg jol megtalaltuk, kiveve az utolsot. vegul (mint utobb kiderult) az urak
+asztalanal - ami a gyakorlatban egy elhagyatott katonai objektum - visszafordultunk szentendre fele,
+ott meg betoltunk egy pizzat aztan haza.</p></div>
+<div class="paragraph"><p>illetve nem haza, mert meg hivatalos voltam lagziba, szoval effektive ilyen fel2 korul ertem haza,
+de anelkul azert ilyen este 8-9 lett volna csak.</p></div>
+<div class="paragraph"><p>eredetileg az motivalt h na akkor most letekerunk 100+kmt, es ez vegulis megvalosult, szal attol
+fuggetlenul, hogy nem csinaltuk vegig sztem tokjo program volt, legkozelebb erdemes lenne terkeppel
+megnezni ;)</p></div>
+<div class="paragraph"><p>vmikor a lagziban a zsebemben 0zodott a kmora, szoval pontos adataim nincsenek, de kb: tav 148km,
+netto tekeres 8h, brutto 13h, max 55km/h, atlag 18km/h korul.</p></div>
+<div class="paragraph"><p>ja es az urak asztala elott/utan megalltunk szedrezni, ott keszitette LGee a post teteljen levo
+kepet, meg a tobbit is (marmint a turan).</p></div>
 </div>
 </div>
 
@@ -99,10 +250,10 @@
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/fast-distributed-development.html">Fast distributed development</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/first-public-bitlbee-server-with-the-skype-plugin-installed.html">first public bitlbee server with the skype plugin installed</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Mon 08 December 2008</p>
+    <p>Posted on: Sat 13 September 2008</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -110,7 +261,7 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>So when I first sent a kernel patch to the x86 subtree, I had to wait a lot. The patch (commit 273c112 in linux-2.6.git) was created in May and the first release (v2.6.27) was out in October. Then I discovered that critical bugfixes and security fixes are a different matter, getting such a patch in a release takes 1-2 weeks, depending on the priority of the patch.</p><p>Today I noticed that the newest git release (v1.6.0.5) comes with my patch which I just created 1.5 days ago. Yes. that's how does goes if people know you. :) OK, this is not a rule, a release may take more time, but it is really committed in ~2 days in most cases - if the patch itself is correct and you earned some credit already from the maintainer.</p>
+<p>i just recently got a mail about that 'bitlbee1.asnetinc.net' is a public server with my skype plugin installed. in other words, you no longer are forced to run your own bitlbee server if you want to use skype from bitlbee, yay! :)</p><p>note: actually if you are behind nat, then this is not something useful for you as the public server will want to connect to your skype instance, actually. :/</p>
 </div>
 </div>
 
@@ -119,152 +270,23 @@
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/export-to-c-from-gimp.html">Export to C from Gimp</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/frugalware-0-9-on-an-eee-pc-904.html">frugalware 0.9 on an eee pc 904</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sun 07 December 2008</p>
+    <p>Posted on: Fri 12 September 2008</p>
   </div>
   <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
+    <p>Estimated read time: 2 minutes</p>
   </div>
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-I like this feature. It's pretty useful now when I have a homework at the uni where the whole solution should be a single C file. So I just do a texture in Gimp, export it to C, copy&amp;paste it to "the" file, and stop wasting my time trying to create some texture by hand. Yay! :)
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/gitar-mikulaskor.html">gitar mikulaskor</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Sun 07 December 2008</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<a href="http://www.csorsz.hu/details.php?ido=2008-11-22&amp;idx=1504">ilyen</a>. szeretem csodalni azok jatekat akik jobbak nalam. :)
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/having-fun-with-boost-1-37.html">Having fun with boost 1.37.0</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Sat 06 December 2008</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>So we decided to upgrade from 1.35.0 to 1.37.0 in Frugalware-current. As usual, there is a <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/boost137/">WIP repo</a> since this won't be finished in one day. Most of the trivial rebuilds are done, but still need to fix up miro, pdfedit and bmpx. Ah and I needed to upgrade libtorrent as well which resulted some problem in btg and qtorrent, though both have some support for the new 0.14.x libtorrent in SVN so most of the work was just to backport those patches.</p><p>A user on #frugalware asks when will we have python-2.6. Not before boost-1.37, I'm sure.</p><p>Side note: It seems I managed not to waste the whole day just because I met and old friend (and drinking beer). It turns out that if I drink 2 beers and sleep 2 hours then I can code without the usual "go to bed early, sleep a lot, then you can work" procedure.</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/kernel-org-gitweb-fork.html">kernel.org gitweb fork</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Fri 05 December 2008</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-It has not been updated for a long time, but today a <a href="http://git.kernel.org/?p=git/warthog9/gitweb.git;a=commitdiff;h=2586ea1d3fdce3d27479903a79a6e916b000b640">fix</a> appeared. It seem to be kernel.org-specific though, so don't worry.
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/gitte-on-tailor.html">gitte on tailor</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Thu 04 December 2008</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>Today evening gitte collected a summary of his tailor problems, which I would call a nice collection.</p><p>He says:</p><p><pre>
-01:31 &lt; gitte&gt; vmiklos: tailor was limited in many ways.
-01:31 &lt; gitte&gt; vmiklos: one, basically branch per branch.
-01:32 &lt; gitte&gt; vmiklos: two, it was written in Python
-01:33 &lt; gitte&gt; vmiklos: three, it did not define a language, but a
-                     class interface
-01:33 &lt; gitte&gt; vmiklos: four, it made assumptions about the internal
-                     organization of SCMs
-01:33 &lt; gitte&gt; vmiklos: five, it is maintained in a darcs repository,
-                     which tailor cannot even convert to Git.
-01:35 &lt; gitte&gt; vmiklos: oh, and it did not help that the configuration
-                     is awkward and badly documented, not to mention
-                     inconsistent with regard to the types of input/output
-                     repositories.
-</pre></p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/asciidoc-qa.html">Asciidoc QA</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Wed 03 December 2008</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-OK, given that I want to build the Git User Manual 1.6.1-rc1 with Asciidoc 8.3.0, I continue the story started yesterday. The <a href="http://groups.google.com/group/asciidoc/msg/e4c4b65a92f7980a">new bug</a> seem to have something with attribute handling, whitespaces in references and quotes, pick your favorite one.
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/konyv7-2oo8-1.html">konyv7 2oo8</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Wed 03 December 2008</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<a href="http://rht.bme.hu/mkk/index.php?do=sh&amp;pg=programs%3Ekonyv7/konyv72008">ilyesmi</a>. ma voltam az E-ben egy orat, meglepoen sok ismeros konyv volt (szal amit mar olvastam es sorakozik a polcomon) meg olyan amibe beleolvasva ertelmesnek tunt. meg pentekig lesz, erdemes egy kicsit elidozni, tokjo ajandeknak valo cuccokat lehet osszegyujteni.
+<p>so, one of my friends called me a few days ago, saying 'hi, i got this eee pc, it's shipped with win xp, could you please install frugalware on it, making it dual-bootable?'.</p><p>today i got the gadget, i had about 3 hours to play with it, so i did not have much time.</p><p>first, there was an <a href="http://git.frugalware.org/gitweb/gitweb.cgi?p=setup.git;a=commit;h=6928ab07c4de2797ffb9a7edb6f0da24c80e82e1">installer bug</a>, but fortunately it was trivial to fix it up. second, the internal wifi card is not supported by 2.6.26, so i made a kernel package from <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/bmf/frugalware-i686/kernel-2.6.26-2bmf1-i686.fpm">2.6.27-rc6</a> and made a custom usb installer using that kernel.</p><p>once that was ok, the installation went fairly easy. minor problems were that the netinstall by default wants to use ftp but we were behind a proxy, so we needed http. and other problem was that there were two ntfs partitions, the second was empty, i just formatted it as ext3, using it as /, but i did not set the partition type from ntfs to linux and grub refused to install because of my laziness.</p><p>i did not want to do a full install but i needed network, so i installed base+network. once that was fine, i installed some other packages/groups: acpi, mc, x11 and kdebase.</p><p>so far what i saw working:</p><p><ul>
+  <li>wireless, that was working in the netinstall as well after the kernel update</li>
+  <li>touchpad</li>
+  <li>xorg, using that 1024x600 custom resolution.</li>
+  <li>acpi reported the correct battery status</li>
+</ul></p><p>unfortunately i had no more time to play with it, so i did not check how suspend, 3d acceleration, ethernet card and webcam works.</p><p>in short, i think it's nice it has no major problems, but probably it's hard for non-developers to install it as long as we don't have kernel-2.6.27 in current.</p>
 </div>
 </div>
 
