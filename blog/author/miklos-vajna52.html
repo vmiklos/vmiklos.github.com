@@ -59,10 +59,10 @@
 
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/merging-in-subversion.html">Merging in subversion</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/updated-test_cmp-patches.html">Updated test_cmp patches</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sat 20 June 2009</p>
+    <p>Posted on: Tue 17 March 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -70,14 +70,7 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>I'm just talking about 1.5+, since before that version it's like there would be not git merge, just git cherry-pick. (You had to explicitly specify each revision. That's not merging.)</p><p>A quick howto is <a href="http://blog.red-bean.com/sussman/?p=92">here</a>.</p><p>A command which may be useful but left out is like 'git log master..branch', to see what revisions will be merged:</p><p><pre>
-$ time svn mergeinfo <a href="https://swig.svn.sourceforge.net/svnroot/swig/trunk/">https://swig.svn.sourceforge.net/svnroot/swig/trunk/</a> \
---show-revs eligible
-(...)
-real    0m14.902s
-user    0m0.155s
-sys     0m0.013s
-</pre></p><p>Well, it's getting better, but as the blog post says it's still not git-like.</p><p>Actually it's horribly slow, I'm still waiting for 'svn merge <a href="https://swig.svn.sourceforge.net/svnroot/swig/trunk/">https://swig.svn.sourceforge.net/svnroot/swig/trunk/</a>' to finish. ;-)</p>
+<p>In fact nothing special, I wasted time with viewing <a href="http://www.youtube.com/watch?v=zJOS0sV2a24">this</a> Google Talk. I was not aware that there are other interesting talks outside the Tech Talk ones. ;-)</p><p>And BTW I almost forgot about the recent <a href="http://article.gmane.org/gmane.comp.version-control.git/113288">test_cmp</a> patches, I posted now <a href="http://article.gmane.org/gmane.comp.version-control.git/113376">an update</a>, hopefully that will do it.</p>
 </div>
 </div>
 
@@ -86,10 +79,10 @@ sys     0m0.013s
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/a-hajnal-bolygo-robotjai.html">a hajnal bolygo robotjai</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/nokia-fbus-from-python.html">Nokia fbus from Python</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sun 14 June 2009</p>
+    <p>Posted on: Mon 16 March 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -97,7 +90,13 @@ sys     0m0.013s
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>egyik kedvenc reszletem:</p><p>"Végül valami meleg köntösfélébe bújtatták. Ez aztán a luxus! Baley csecsem?kora óta nem részesült ilyen bánásmódban, és egyszerre sajnálni kezdte a kisbabákat, amiért nincsenek tudatában annak, milyen jó dolguk van. Vagy talán mégis? Talán a csecsem?kori jólét emléke befolyásolja a feln?ttkori viselkedést, és ? is csak azért olyan boldog most, mert újra csecsem?nek érezheti magát? És egy n?i hangot hallott az el?bb. Az anyja hangját? Nem, az lehetetlen. Mama? Baley egy széken ült. Ennyit fel tudott már fogni, és azt is érezte, hogy az újra átélt rövid és boldog csecsem?kor hamarosan véget ér, neki pedig vissza kell térnie a tudat és az önellátás szomorú világába. De mégiscsak hallotta egy n? hangját? Ki lehetett az? Kinyitotta a szemét."</p>
+<p>So yesterday I found <a href="http://www.embedtronics.com/nokia/fbus.html">this</a> article and I wanted to try it out from Python.</p><p>Here is a few lines of code to send that "get hw and firmware version" message to the phone and at least read an ACK:</p><p><code>
+import serial, time</p><p>ser = serial.Serial("/dev/ttyUSB0", 115200)
+ser.setRTS(False)
+ser.write("\x1E\x00\x0C\xD1\x00\x07\x00\x01\x00\x03\x00\x01\x40\x00\x52\xD5")
+print repr(ser.read(1))
+print repr(ser.read(10))
+</code></p><p>Of course this is just a PoC, the first read could be avoided and we could just read one char till we hit the 0x1e one. But that .setRTS() took a few hours to figure out. ;-)</p>
 </div>
 </div>
 
@@ -106,10 +105,10 @@ sys     0m0.013s
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/velence-100.html">velence 100</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/wip-support-in-syncd.html">WIP support in syncd</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sat 13 June 2009</p>
+    <p>Posted on: Sun 15 March 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -117,19 +116,7 @@ sys     0m0.013s
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/8EWjbywG65sYUPzVqALzjImM2fOfdi0vkUHseQvKrrjqq4QEjoWCgNqQMjaQs4WBN0PVxlsVFrIss9iIxWd_YmzmERmu6waWF3-wO7HJVg_IvL52Ylk5Tugi14V1vNh0tvL0tq9p_g=w640" alt="https://lh3.googleusercontent.com/8EWjbywG65sYUPzVqALzjImM2fOfdi0vkUHseQvKrrjqq4QEjoWCgNqQMjaQs4WBN0PVxlsVFrIss9iIxWd_YmzmERmu6waWF3-wO7HJVg_IvL52Ylk5Tugi14V1vNh0tvL0tq9p_g=w640" />
-</div>
-</div>
-<div class="paragraph"><p>hivatalosan asszem 98 lett volna, aztan meg tobb lett mint 100. a futas hianyzott a triatlonbol,
-viszont uszas es bringazas volt boven. tarsasagert koszonet MSD-nek.</p></div>
-<div class="paragraph"><p>pontos tav: 110.25km, atlag: 20.9kmph, max 52.3kmph, netto ido 5:15:17, brutto ido ~10h.</p></div>
-<div class="paragraph"><p>par telefonos kep <a href="https://www.flickr.com/photos/vmiklos/albums/72157668024261544">itt</a>, egy video
-<a href="/video/velence/">itt</a>.</p></div>
-<div class="paragraph"><p>(az milyen mar, h picasara webes uirol nem lehet videot feltolteni? mondjanak le.)</p></div>
-<div class="paragraph"><p>update: msd magassagterkepe <a href="http://www.bikemap.net/route/234554">itt</a>.</p></div>
-<div class="paragraph"><p>update 2: msd interaktiv, fenykepes beszamoloja <a href="http://twitter.com/no1msd/status/2158008908">itt</a>.</p></div>
+<p>We have these WIP repos (stands for Work In Progress), but uploading packages there was always a manual task. This is quite unhandy when the WIP repo is being worked on for multiple months.</p><p>We already had some minimal support for WIP repos in the sync client, but it was not enough, the pacman/repoman configs were no propagated from the server to the build nodes.</p><p>I recently got some time to work on this and now it's there - once all the build nodes will be upgraded to 1.0, we will be able to use this feature without any limits. :)</p>
 </div>
 </div>
 
@@ -138,10 +125,10 @@ viszont uszas es bringazas volt boven. tarsasagert koszonet MSD-nek.</p></div>
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/navigation-in-big-if-then-else-code-chun.html">Navigation in big if-then-else code chunks</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/rms-talk.html">RMS talk</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Fri 12 June 2009</p>
+    <p>Posted on: Sat 14 March 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -149,7 +136,7 @@ viszont uszas es bringazas volt boven. tarsasagert koszonet MSD-nek.</p></div>
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-So when trying to understand others' code, and they use large while/for/if blocks, it's hard to see where one if ends, unless it's on the same page so vim highlights it. I remembered already once that there is a char to jump to the start { of such a block from its end } and vica-versa, but I forgot it, so now I had to look it up again. It's '%'. :-)
+<p>RMS was here in Hungary and he held a session about copyright. The interesting thing was that he talked about copyright of music, books, etc. - not just software.</p><p>There are two videos <a href="http://kobak.org/rms-budapesten">here</a>.</p>
 </div>
 </div>
 
@@ -158,10 +145,10 @@ So when trying to understand others' code, and they use large while/for/if block
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/spider-man-1-2-3.html">spider-man 1-2-3</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/being-an-active-git-contributor.html">Being an active git contributor</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Thu 11 June 2009</p>
+    <p>Posted on: Fri 13 March 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -169,26 +156,7 @@ So when trying to understand others' code, and they use large while/for/if block
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/XbgEcsYx5Gxvk5qI8A4Hi2S-7DHqtlVbOCfe_4eHd3gFQpnTfN-Haecn6DKC5sXTvl-XNR9t4Y4-qRou7DzeNXK7PmjJekWZBREzd2UmrdUgxotthueh4_kFfPSEKG5nVpioW6Hj5w=w640" alt="https://lh3.googleusercontent.com/XbgEcsYx5Gxvk5qI8A4Hi2S-7DHqtlVbOCfe_4eHd3gFQpnTfN-Haecn6DKC5sXTvl-XNR9t4Y4-qRou7DzeNXK7PmjJekWZBREzd2UmrdUgxotthueh4_kFfPSEKG5nVpioW6Hj5w=w640" />
-</div>
-</div>
-<div class="paragraph"><p>(<a href="http://www.imdb.com/title/tt0145487/">imdb</a>, <a href="http://www.youtube.com/watch?v=mFtYmWb9FQA">trailer</a>)</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/ylOO2mjMfVhGaNZsJU1pOxbBBEYu0oXpayuMCRgxOekig81VgmSpp_UjSWunYvLjKmGWpFLcT8dzwhx2arUMjFHApXGe8eXGlpHU16zWPkPod1c8--i0trgKKWicVezI2J2oFUlqNQ=w640" alt="https://lh3.googleusercontent.com/ylOO2mjMfVhGaNZsJU1pOxbBBEYu0oXpayuMCRgxOekig81VgmSpp_UjSWunYvLjKmGWpFLcT8dzwhx2arUMjFHApXGe8eXGlpHU16zWPkPod1c8--i0trgKKWicVezI2J2oFUlqNQ=w640" />
-</div>
-</div>
-<div class="paragraph"><p>(<a href="http://www.imdb.com/title/tt0316654/">imdb</a>, <a href="http://www.youtube.com/watch?v=lxz4n2BxyUo">trailer</a>)</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/QAq08ajeaEoBaqfeRTiCtYEuy7uZDe7bh35WYj-1PVQy4VTqQ1qhtXCCD9ayvHxKEejPqzCBtb1WsHy3Pv1cCCdvX1iUzeedZdf7EWsfEOynSuukVcNrq8_KXvwfK0lBsEIulftH_A=w640" alt="https://lh3.googleusercontent.com/QAq08ajeaEoBaqfeRTiCtYEuy7uZDe7bh35WYj-1PVQy4VTqQ1qhtXCCD9ayvHxKEejPqzCBtb1WsHy3Pv1cCCdvX1iUzeedZdf7EWsfEOynSuukVcNrq8_KXvwfK0lBsEIulftH_A=w640" />
-</div>
-</div>
-<div class="paragraph"><p>(<a href="http://www.imdb.com/title/tt0413300/">imdb</a>, <a href="http://www.youtube.com/watch?v=szh5ZsAcgJU">trailer</a>)</p></div>
-<div class="paragraph"><p>nekem tetszett az egesz trilogia, egyszer erdemes volt. allitolag az elsohoz kepest a masodik ketto
-gagyi, de ezzel a velemennyel nem feltetlenul tudok azonosulni.</p></div>
+<p>I just found this <a href="http://git.or.cz/gitwiki/SoC2009Application">here</a>:</p><p>"The Eclipse plugin and builtin-merge projects were integrated into the mainline source code. The latter student remains a very active contributor to our project."</p><p>Heh, that'd be me. ;-)</p>
 </div>
 </div>
 
@@ -197,10 +165,10 @@ gagyi, de ezzel a velemennyel nem feltetlenul tudok azonosulni.</p></div>
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/margita-30ej.html">margita 30ej</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/lesscharset-vs-special-chars.html">LESSCHARSET vs special chars</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sun 07 June 2009</p>
+    <p>Posted on: Thu 12 March 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -208,7 +176,7 @@ gagyi, de ezzel a velemennyel nem feltetlenul tudok azonosulni.</p></div>
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-igazabol ez nem is bringas volt, de mivel a masik 3 bringas turahoz kapcsolodoan csinaltuk, maradt az a kategoria. reszletes infok <a href="http://www.freeweb.hu/margita/tt/gyalog/30ej/index.html">itt</a>. kisse elkavartunk de vegul a celban lepecseteltek, hogy teljesitettuk, igy aggodalomra semmi ok, amugy meg szep es jo volt, nem bantuk meg.
+<p>So we got <a href="http://bugs.frugalware.org/3678">this</a> bugreport yesterday, and I wasn't able to reproduce it on my x86 box, but I saw it on my iBook. It turns out that LESSCHARSET, which I set just for git, handles this case for me as well. At least after setting it, the manpage is correct on my iBook as well.</p><p>The weird thing is that it's still wrong for crazy@ - though I don't know if this will solve the problem of the reporter or not.</p><p>I started working on a new song in lilypond, I still like it, though no idea so far how to display a simple "A^4", it seems "a:4" does something much more complicated. ;)</p>
 </div>
 </div>
 
@@ -217,10 +185,10 @@ igazabol ez nem is bringas volt, de mivel a masik 3 bringas turahoz kapcsolodoan
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/read-only-s-mime-support-in-mutt.html">read-only s/mime support in mutt</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/patch-for-picu.html">Patch for picu</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Tue 02 June 2009</p>
+    <p>Posted on: Wed 11 March 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -228,11 +196,7 @@ igazabol ez nem is bringas volt, de mivel a masik 3 bringas turahoz kapcsolodoan
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>So my problem was that I already set up PGP, and I use it for sending / receiving signed (and sometimes crypted) messages. Today I received an S/MIME signed message and I had to verify it.</p><p>First mutt just bailed out with "Can't verify S/MIME signature", but that was because S/MIME was not configured. Here is what I did:</p><p><pre>
-cd ~/.mutt
-cp /usr/share/doc/mutt-ng/samples/smime.rc .
-# edit muttrc to source it
-</pre></p><p>I thought that will be enough, but that was too aggressive.</p><p>First, it disabled my PGP support. I had to put 'unset smime_is_default' to the top of smime.rc.</p><p>Second, it tried to verify the whole damn cert chain, which is simply something I can't really care, as the cert is a self-signed cert anyway. To do this, I had to uncomment the last two lines in smime.rc (set smime_verify_command/smime_verify_opaque_command).</p><p>So far it works just like I wanted it! :)</p>
+<p>I recently started using <a href="http://picasup.googlecode.com/svn/trunk/picUp/src/picup/picu.py">picu</a>, which is a nice tool (I just mirror pictures at Picasa as I like the comment/notify/label features of it.), but it had two annoying bugs (no proper header and too gmail-centric), so I sent <a href="http://frugalware.org/~vmiklos/patches/picu-nogmail.patch">this patch</a> upstream today.</p><p>Heh, and this is the 100th hacking post. So far it seems it was not a bad idea, I can search back "what did I hack on 22th", and sometimes I can link posts from here as a HOWTO, so writing it in English was a good decision.</p>
 </div>
 </div>
 
@@ -241,10 +205,10 @@ cp /usr/share/doc/mutt-ng/samples/smime.rc .
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/freenx-server-fontpath.html">freenx server fontpath</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/perfect-localized-fonts-in-the-setup-aga.html">Perfect localized fonts in the setup again</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sun 31 May 2009</p>
+    <p>Posted on: Tue 10 March 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -252,11 +216,7 @@ cp /usr/share/doc/mutt-ng/samples/smime.rc .
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>I wasted some hours debugging till I found out how to set the fontpath of a freenx-server if not using XFS.</p><p>Basically just need to fine-tune /etc/nxserver/node.conf:</p><p><pre>
-DEFAULT_FONT_PATH=$(echo $(grep -v '^ *#' /etc/X11/xorg.conf | grep FontPath | awk \
-'{print $2}' | sed -r "s/^[\"']|[\"']$//g") | sed 's/ /,/g')
-AGENT_EXTRA_OPTIONS_X="-fp $DEFAULT_FONT_PATH"
-</pre></p><p>Based on <a href="http://lists.kde.org/?l=freenx-knx&amp;m=113735435205146&amp;w=2">this post</a>.</p>
+<p>We had this problem recently that on the console the fonts were not entirely correct, for example lat2-16.psfu.gz was replaced by lat2a-16.psfu.gz. I finally found why it was still broken in the setup: I forgot to update the Makefile to include the new font in the initrd. ;-)</p><p>Now the fonts are perfect again.</p>
 </div>
 </div>
 
@@ -265,10 +225,10 @@ AGENT_EXTRA_OPTIONS_X="-fp $DEFAULT_FONT_PATH"
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/valami-amerika-2.html">valami amerika 2</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/serial-driver-for-erlang.html">Serial driver for erlang</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Thu 28 May 2009</p>
+    <p>Posted on: Mon 09 March 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -276,15 +236,7 @@ AGENT_EXTRA_OPTIONS_X="-fp $DEFAULT_FONT_PATH"
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/WFx0DB6b5WSFJXxQK0H-X_NcJOHY4V2jCzpSL4bhHvrzjr4HTOrNeEG1UvL6YdL5E7MADplhx70NaInNyNCN_XozuGA_45C9Or2U-Lk4gipUAEMFuKfB1K8JtDYHRBde8Bw5hVBk1w=w2400" alt="https://lh3.googleusercontent.com/WFx0DB6b5WSFJXxQK0H-X_NcJOHY4V2jCzpSL4bhHvrzjr4HTOrNeEG1UvL6YdL5E7MADplhx70NaInNyNCN_XozuGA_45C9Or2U-Lk4gipUAEMFuKfB1K8JtDYHRBde8Bw5hVBk1w=w2400" />
-</div>
-</div>
-<div class="paragraph"><p>meglepo modon az elozo folytatasa. leginkabb azert kulonleges, mert magyar filmek kozott barmi ami
-nem "tipikus gagyi magyar film" az szerintem kulonleges. ;) (es orulnek neki ha nem kene lefikazni a
-magyar filmek nagyreszet, dehat ez van.)</p></div>
-<div class="paragraph"><p>(<a href="http://www.imdb.com/title/tt1235075/">imdb</a>, <a href="http://www.youtube.com/watch?v=Hj5ioLjEofE">trailer</a>)</p></div>
+<p>I just started searching for an alternate serial driver for Erlang as the semi-official one has zero documentation, and found what?</p><p>There is a gen_serial module by spearce, we know each other since last year's GSoC. ;)</p><p>Sadly the driver seem to be Windows-only so it's not that interesting, but the world is small.</p>
 </div>
 </div>
 
@@ -293,10 +245,10 @@ magyar filmek nagyreszet, dehat ez van.)</p></div>
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/scooter-rss.html">scooter rss</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/fighting-with-forums.html">Fighting with forums</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Mon 25 May 2009</p>
+    <p>Posted on: Sun 08 March 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -304,7 +256,7 @@ magyar filmek nagyreszet, dehat ez van.)</p></div>
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-I just noticed that scootertechno.com has no RSS, so I wrote one. Available <a href="http://git.frugalware.org/gitweb/gitweb.cgi?p=vmexam.git;a=tree;f=python/mod_python/rss/scooter;hb=HEAD">here</a>, or in "binary form", <a href="http://frugalware.org/~vmiklos/rss/scooter/scooter.py">here</a>.
+<p>We recently had to move forums.fw.o to a new machine and first boobaa offered a hosting. I had only ftp access, but that isn't a big problem - the bigger one is that we have this mailing list - forums two-way gateway and we failed to configure it. They have virtual domains / mailboxes on the machine (using SQL) and the machine kept rejecting mails sent to the forums by the mailing list. After debugging for about a day, we decied to just move it an other box where there are no virtual announts, and I just had to add some trivial aliases to /etc/postfix/aliases.</p><p>Sigh.</p><p>OTOH, Frugalware 1.0rc2 is out, and now we can continue bugfixing. :-)</p>
 </div>
 </div>
 

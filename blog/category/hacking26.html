@@ -61,26 +61,6 @@
 
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/netbeans.html">netbeans</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Sun 08 October 2006</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>after a few days of headache, the brand new netbeans package is <a href="http://frugalware.org/packages/14403">ready</a>!</p><p>at the moment it requires j2sdk, we'll see if i can get it compile using a free compiler or not</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/openoffice-org-2-0-4-release-candidate-5-has-been-uploaded.html">OpenOffice.org 2.0.4 Release Candidate 5 has been uploaded</a></h1>
   </div>
   <div class="article_meta">
@@ -258,6 +238,43 @@ here is a small cmdline to query the temperature of a hdd using smartctl:
 <code>
 smartctl -a /dev/hdc|grep Celsius|sed 's/.* \([0-9]*\)$/\1/'
 </code>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/pacman-g-libalpm-migration.html">pacman -> libalpm migration</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Thu 31 August 2006</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>till now the download code was in pacman's code which was meant that every frontend had to have its own downlaad code - causing a big code duplication. today i've pushed 15 patches to the pacman darcs repo which moved this functionality finally to the library :)</p><p>the patches:
+<ol>
+<li><a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=pacman;a=commit;h=20060831003435-e2957-9087e58a44e1b57d388092b33d1048a01a84952b.gz">new event: PM_TRANS_EVT_RETRIEVE_LOCAL</a></li>
+<li><a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=pacman;a=commit;h=20060830232018-e2957-6fdf96094e7a892b7b350ff17cdab4396757c454.gz">pm_dlfnm can be a simple char *</a></li>
+<li><a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=pacman;a=commit;h=20060829153431-e2957-aec07faa6c8de0c06cec874557125ac36e7e4cae.gz">pre-register databases to avoid code duplication</a></li>
+<li><a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=pacman;a=commit;h=20060829150722-e2957-f9c7fc0087c15118db9bdc275e70d343ef599b80.gz">pacman: use the libalpm downloader code, drop our own</a></li>
+<li><a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=pacman;a=commit;h=20060829145326-e2957-6ed6a76561b6b1d94735c5c5e5e1c75fa7ead7ec.gz">util: link to libftp, too</a></li>
+<li><a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=pacman;a=commit;h=20060829145135-e2957-9877d1e2818a27cadf0a6971d2d81cc5e5b87491.gz">_alpm_sync_commit(): download the packages, too</a></li>
+<li><a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=pacman;a=commit;h=20060829135753-e2957-e7e07fc2303f37e3e1467d308c15c2d8e5ee08d4.gz">alpm_db_getinfo(): strip the newlines from the end of lines</a></li>
+<li><a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=pacman;a=commit;h=20060829132424-e2957-baf31e12cb1813806d1f08fc4b325508449031f6.gz">alpm_db_getinfo(): added a PM_DB_FIRSTSERVER property</a></li>
+<li><a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=pacman;a=commit;h=20060829130449-e2957-84940fd4d4e3d0b18b90810c3617030362093125.gz">alpm_db_update() now handles downloading, too</a></li>
+<li><a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=pacman;a=commit;h=20060829120958-e2957-69bb48f681f69481df077dddab8cf58737f628f8.gz">libalpm: moved in _alpm_db_setlastupdate() and _alpm_db_getlastupdate()</a></li>
+<li><a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=pacman;a=commit;h=20060829022556-e2957-329ef28d6ab525531488c8d483c4d39ba0a82b49.gz">_alpm_fetch_pkgurl(): added the usual _alpm prefix</a></li>
+<li><a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=pacman;a=commit;h=20060829022523-e2957-4d375d34d5595ac83f3e6c6e60f11b74aa631934.gz">_alpm_handle_set_option() more error handling for proxyhost and xfercommand</a></li>
+<li><a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=pacman;a=commit;h=20060829022424-e2957-e02f59cad4428eb2c92440cc46f7040e0d3c3b84.gz">handle_free() memleak fixes</a></li>
+<li><a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=pacman;a=commit;h=20060829022404-e2957-d9145811a574412ce21fffeac52a6696a7be7b4d.gz">libalpm: new function: alpm_fetch_pkgurl()</a></li>
+<li><a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=pacman;a=commit;h=20060829013742-e2957-cffdc192344c52f0a34e9bdcf4712a12aee8b042.gz">libalpm: moved in the download code</a></li>
+</ol></p>
 </div>
 </div>
 

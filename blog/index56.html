@@ -58,10 +58,10 @@
 
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/playing-with-openjdk-on-ppc.html">Playing with openjdk on ppc</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/libarchive-vs-lzma.html">libarchive vs lzma</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Wed 01 April 2009</p>
+    <p>Posted on: Mon 26 January 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -69,7 +69,7 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>So we just got a Java task at the uni and I wanted to see what can I do on Frugalware-ppc about it, in case I build openjdk from hg.</p><p>The result is quite surprising, it works very well.</p><p>My only big problem is that it has a totally different build number, currently they are at 1.6.0b14, while the binary version is at '6 update 13', and till the source versioning schema does not match the binary one, I would not use it in a production environment.</p><p>It also seems that packaging this would take a hell of time (and even after it's done, maintaining it would be time-consuming as well), so in case they would publish prebuilt binaries, I could live with that. I just found some bin tarballs on the archlinuxppc ftp site - mailed them about them (if they just mirror it or where is the build script), but no response so far.</p>
+So I wanted to see how is the lzma support in libarchive, since there is now a stable release having my lzma patch, but pacman-g2's make check fails with the new version, sigh.. It looks like some file descriptor leak, it does not like when we try to install 1000 packages with pacman at once.
 </div>
 </div>
 
@@ -78,10 +78,10 @@
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/pointers-to-member-functions-in-c.html">Pointers to member functions in C++</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/miro-vs-py26.html">miro vs py26</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Tue 31 March 2009</p>
+    <p>Posted on: Sun 25 January 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -89,7 +89,7 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>Okay, I learned something new, you can have a special pointer type in C++ which is not really a pointer at all.</p><p>So let's say you have a Foo class with a lot of void foo(int param); methods. Then you can have a "pointer" type 'int (Foo::*)(int)' which is in fact a pointer to Foo and it has an offset about what function does it point to.</p><p>And given that it contains an address and an offset as well, you can't cast it to void*, like you can do so with real pointers.</p><p>I had to look up the Bjarne book since I didn't really know about this at all... ;-)</p>
+<p>So we had <a href="http://bugs.frugalware.org/3549">this</a> bugreport, just building miro against python 2.6 did not work out very well. Then I pushed a python-2.5 package, before I would realise all the miro deps would have to built against py25 as well, if I want to achieve this approach. OK, that's a no-go. Then I found the right few-liner solution in the #<a href="mailto:python@freenode">python@freenode</a> logs. :)</p><p>I sent it to upstream, we'll see how will they handle it.</p><p>Oh, and I got a <a href="http://vmiklos.hu/gitweb/?p=darcs-fast-export.git;a=commit;h=66fd4e73c87a85516bb4651c5e90209e2320f706">new patch</a> to darcs-fast-export. A second contributor, yay! :)</p>
 </div>
 </div>
 
@@ -98,10 +98,10 @@
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/first-swig-patch.html">first swig patch!</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/irssiscripts.html">irssiscripts</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Mon 30 March 2009</p>
+    <p>Posted on: Sat 24 January 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -109,7 +109,7 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p><a href="http://swig.svn.sourceforge.net/viewvc/swig?view=rev&amp;revision=11174">Here</a>. :-)</p><p>I have an <a href="http://frugalware.org/~vmiklos/patches/swig-Fix-the-arrays_global_runme.php-test.patch">other one</a> as well, but that's not yet commited (and it may be even wrong).</p>
+<p>I got a reply to patches I sent one and a half year ago. ;)</p><p>My patches to anames.pl and sockter-interface.pl are now applied in f0rked's <a href="http://github.com/msparks/irssiscripts">irssiscripts</a> repo.</p>
 </div>
 </div>
 
@@ -118,10 +118,10 @@
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/tegnapi-fege-zeneles.html">tegnapi fege zeneles</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/clock-runs-way-faster-than-necessary-bug.html">"clock runs way faster than necessary" bug solved</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sun 29 March 2009</p>
+    <p>Posted on: Fri 23 January 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -129,15 +129,7 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/JW6bgF_zs1Basp1izuItRGPWooXG_0h-FhUghFTzzbDxGVeDIn7vv43pfDWTzXJKBoEwFsFQ3loEixjE397OzkZl2Oi941Fzs9CpUskUxf1upgRg9PZeKo1vbBzXSn9ggNAXc2gz-g=w640" alt="https://lh3.googleusercontent.com/JW6bgF_zs1Basp1izuItRGPWooXG_0h-FhUghFTzzbDxGVeDIn7vv43pfDWTzXJKBoEwFsFQ3loEixjE397OzkZl2Oi941Fzs9CpUskUxf1upgRg9PZeKo1vbBzXSn9ggNAXc2gz-g=w640" />
-</div>
-</div>
-<div class="paragraph"><p>ilyen volt tegnap. jo volt, csak kicsit faraszto 4 es fel oran keresztul gitarozni. :) (proba+maga
-az ahitat.)</p></div>
-<div class="paragraph"><p>update: egy diktafonos felvetel <a href="http://vmiklos.hu/file/nagybojti-ahitat.zip">itt</a>. (bar sztem ez nem
-az a kategoria amit otthon erdemes felvetelrol hallgatni.)</p></div>
+<p>Heh, it took my whole day. So the <a href="http://thread.gmane.org/gmane.linux.kernel/784192">solution</a> was that I needed to disable two CONFIG setting Crazy enabled (+ I enabled KVM again, not sure if that is related or not).</p><p>And of course bisecting was totally damn unnecessary, since the bug is triggered by a given config line, not by a bad commit.</p><p>Life is good.</p>
 </div>
 </div>
 
@@ -146,18 +138,18 @@ az a kategoria amit otthon erdemes felvetelrol hallgatni.)</p></div>
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/google-translate-fun.html">google translate fun</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/linux-bisecting.html">Linux bisecting</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sun 29 March 2009</p>
+    <p>Posted on: Thu 22 January 2009</p>
   </div>
   <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
+    <p>Estimated read time: 2 minutes</p>
   </div>
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>I never imagined that google translate could be useful for any situation when English is not the source language (I use it when English is the target language when I find some Chinese or Japanese blog posts), but now I see where it can be useful.</p><p>Yesterday I just wanted to link a timeline to someone who does not speak English at all, and google translate did its jobs - at least when the user knew what does she search for, she was able to find the date in the timeline. :)</p>
+<p>So I reported this "timer runs too fast" bug to LKML and they asked me to bisect it. I know bisect already, but I only bisected userspace software which is easy. Basically you write a script that reproduces the issue, then git bisect will find the first bad commit automatically.</p><p>With the kernel, this is much slower, because you must manually test each step.</p><p>Of course I wanted to speed things up, so I wrote a small testcase and run it right after init=/bin/sh. This is bad. I haven't noticed until almost the end of the bisect that the bug occurs only after udev is loaded. Now that I'm sure the corrected test script really reports GOOD for 2.6.27 and BAD for 2.6.28, I can do the real bisect...</p><p>As a side note, doing this with 1 machine would be really annoying. Luckily I can do whatever I want on my iBook, the build is done one of our fast Frugalware servers (dream) and I just download and test the bzImage on my notebook. I guess network booting would make it a bit faster (because currently I boot the test kernel, boot back the working one, download the next test one, goto 1), but I won't set up a whole tftp server on my iBook just for this. ;)</p><p>So hopefully tomorrow we'll know what is the real first bad commit.</p>
 </div>
 </div>
 
@@ -166,10 +158,10 @@ az a kategoria amit otthon erdemes felvetelrol hallgatni.)</p></div>
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/rss2email-breakage.html">rss2email breakage</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/done-and-need-to-be-done-kernel-updates.html">Done and need-to-be-done kernel updates</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sat 28 March 2009</p>
+    <p>Posted on: Wed 21 January 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -177,7 +169,7 @@ az a kategoria amit otthon erdemes felvetelrol hallgatni.)</p></div>
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-I just noticed that I don't have any new mails in my rss notification folder - it turns out that it's because my rss2email fork is broken. Yeah, I remember, I just created a small patch, sent it upstream, then stopped updating rss2email till I get a response from the maintainer. No response so far but now I rebased it, as it seems the latest upstream release works fine with python-2.6.
+<p>I finished the update to 2.6.28 (I mean fixing external modules) in a WIP repo, will merge it tonight, if everything goes fine.</p><p>OTOH it turns out that the net in qemu-ppc is disabled because the driver is disabled in the ppc config. So I'll have to enable those drivers when I sync.</p><p>Oh and a trick. mplayer -vo null -vc null will stop playing audio if video finishes earlier. mplayer -novideo won't. So that'll be the solution for my "sample music gets truncated in an flv-wav-mp3 conversion" problem. ;)</p><p>Finally the W3C css validator guys are nice, see <a href="http://thread.gmane.org/gmane.org.w3c.validator.css/2346">this thread</a>, basically it works fine now! :)</p>
 </div>
 </div>
 
@@ -186,10 +178,10 @@ I just noticed that I don't have any new mails in my rss notification folder - i
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/dokuwiki.html">Dokuwiki</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/fast-clock.html">Fast clock</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Fri 27 March 2009</p>
+    <p>Posted on: Tue 20 January 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -197,7 +189,7 @@ I just noticed that I don't have any new mails in my rss notification folder - i
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>It has been proposed on the list that we switch from medawiki to dokuwiki.</p><p>Pros: an active developer would maintain it, dokuwiki is maybe a bit less bloated</p><p>Cons: obscure syntax, for example the title '=' syntax (= is big, == is smaller) is the opposite of what we use in asciidoc.</p><p>So far dokuwiki is packaged in current, so we'll see...</p>
+<p>After upgrading kernel to 2.6.28 my clock measures about 70 mins in an hour, sigh. We are debugging the issue with crazy, but probably it's not a user error, so we'll need to mail the lkml.</p><p>I just tried qemu svn, and it's amazing.</p><p>qemu-system-ppc -prom-env 'boot-device=cd:,\boot\yaboot\yaboot' -prom-env 'boot-args=conf=cd:,\boot\yaboot\yaboot.conf' -cdrom frugalware-1.0pre2-ppc-net.iso -hda ~/documents/qemu/hda.img</p><p>can boot the 1.0pre2 ppc netinstall iso! :)</p><p>The current problem is that the network card the machine emulates is not supported by the installer, but that'll be tomorrow's problem.</p>
 </div>
 </div>
 
@@ -206,10 +198,10 @@ I just noticed that I don't have any new mails in my rss notification folder - i
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/frugalware-homepage-activity-stats.html">Frugalware homepage activity stats</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/ppc-entry.html">PPC entry</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Thu 26 March 2009</p>
+    <p>Posted on: Mon 19 January 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -217,12 +209,7 @@ I just noticed that I don't have any new mails in my rss notification folder - i
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>That's interesting. My feeling was that recently the popularity of Frugalware was not increasing but staging, but then I had a look at the apache logs and checked the number of hits one days after the release of 0.9 and 1.0:</p><p><pre>
-$ grep -c '10/Sep/2008' www.frugalware.org-access_log
-88223
-$ grep -c '23/Mar/2009' www.frugalware.org-access_log
-216817
-</pre></p><p>So it seems we recently get way much more hits than previously. Interesting.</p>
+<p>I recently ported our Qemu package to PPC, and just tested that it really works. We have a Linux binary (compiled for i386) for some 'plan making' exercise (inside the AI course at the uni), and of course I wanted to run it on my iBook. And yes, just wrapping the command with qemu-i386 made it work! :)</p><p>The other problem I noticed is that building external modules on PPC does not work. It seem to be a <a href="http://bugzilla.kernel.org/show_bug.cgi?id=11143">known bug</a>. PLD has a patch that changes the error message - to a permission problem. Given that on x86 building a kernel module is possible as a user - the goal would be the same on PPC as well. Not yet resolved...</p>
 </div>
 </div>
 
@@ -231,10 +218,10 @@ $ grep -c '23/Mar/2009' www.frugalware.org-access_log
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/git-error-warning-cleanup-is-in.html">Git error/warning cleanup is in</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/sudo-segfault.html">sudo segfault</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Wed 25 March 2009</p>
+    <p>Posted on: Sat 17 January 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -242,7 +229,13 @@ $ grep -c '23/Mar/2009' www.frugalware.org-access_log
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-See <a href="http://git.kernel.org/?p=git/git.git;a=shortlog;h=edbc25c5b377d6fe768cefcc8614cd254a9fc4ff">here</a>. All 9 patches, yay. :)
+<p>Quoting a mail I just sent to Miller:</p><p>,,It seems I hit a bug in sudo-1.7.0 (at least I can't reproduce it with
+1.6.9p17):</p><p>$ sudo chown vmiklos /etc/sudoers
+$ sudo false
+sudo: /etc/sudoers is owned by uid 1003, should be 0
+Segmentation fault</p><p>According to gdb, it seem to be a nullpointer-dereference bug, and given
+that it is reproducible only in case the permission and/or owner is
+wrong, I don't think it has a security impact. But who knows. ;)''</p><p>We'll see how does he handle the problem.</p>
 </div>
 </div>
 
@@ -251,10 +244,10 @@ See <a href="http://git.kernel.org/?p=git/git.git;a=shortlog;h=edbc25c5b377d6fe7
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/gsoc-2oo9-proposal.html">GSoC 2oo9 proposal</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/less-1-tweaks.html">less(1) tweaks</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Tue 24 March 2009</p>
+    <p>Posted on: Fri 16 January 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -262,7 +255,21 @@ See <a href="http://git.kernel.org/?p=git/git.git;a=shortlog;h=edbc25c5b377d6fe7
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>I just finished writing up <a href="http://vmiklos.hu/doc/gsoc-2k9.html">this</a>. It seems it's long - it took a lot of time to write it as well. And probably this is not the final version, either...</p><p>And I resend my earlier <a href="http://thread.gmane.org/gmane.comp.version-control.git/110639/focus=114135">cosmetics series</a> to the git list.</p><p>Sleeping time.</p>
+<p>First, to allow latin{1,2,whatever} accents in the pager to be non-escaped:</p><p><pre>
+export LESSCHARSET="iso8859"
+</pre></p><p>Second, I use:</p><p><pre>
+# F: quit if input is less then one page
+# M: no more-like short prompt
+# R: accept colors
+# X: don't throw away the output after quit under x
+export LESS="FMRX"
+</pre></p><p>Finally to send utf8 and other exotic chars in latin2 to stdout in git (OK, this is not strictly related):</p><p><pre>
+git config i18n.logOutputEncoding latin2
+</pre></p><p>Done!</p><p>Old:</p><p><pre>
+Author: Andr??s V??r??sk?&lt;91&gt;i &lt;<a href="mailto:voroskoi@frugalware.org">voroskoi@frugalware.org</a>&gt;
+</pre></p><p>New:</p><p><pre>
+Author: András Vörösk?i &lt;<a href="mailto:voroskoi@frugalware.org">voroskoi@frugalware.org</a>&gt;
+</pre></p><p>You can choose... ;-)</p>
 </div>
 </div>
 

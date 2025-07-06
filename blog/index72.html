@@ -58,10 +58,10 @@
 
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/git-cvsimport-mini-howto.html">git-cvsimport mini howto</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/new-mkiso.html">new mkiso</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Fri 23 November 2007</p>
+    <p>Posted on: Sat 03 June 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -69,103 +69,12 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>recently i needed to convert a cvs repo to git, in fact i'm providing a git mirror, so i need incremental updates.</p><p>here is the command i needed:</p><p><code>$ git cvsimport -d :pserver:anonymous@tcpflow.cvs.sourceforge.net:/cvsroot/tcpflow -C tcpflow tcpflow</code></p><p>yes, this will do the initial conversion and the incremental one, too. :)</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/playing-with-tcpflow.html">playing with tcpflow</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Mon 19 November 2007</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>tcpflow is a nice small console application to debug your network data. the usage is simple. just something like</p><p><code># tcpflow -i eth0</code></p><p>is enough. you're recommended to start it in an empty directory :)</p><p>don't be surprised, the incoming and the outgoing connection to a server's given port will be logged to 2 different files ;)</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/using-git-filter-branch.html">using git filter-branch</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Wed 14 November 2007</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>git filter-branch is a new command in git-1.5.3 and today i met a situation where it was really useful. here is the scenario:</p><p>i have a 'vmexam' (like soxexam, "vmiklos' examples") repo, random small code chunks, every commit touches only a given subdir. after some time some projects need an own repo and i do versioned releases. this was the case with <a href="http://vmiklos.hu/project/pyrssi/">pyrssi</a>, too</p><p>so i wanted to have a new repo with only the pyrssi-related commits and without anything else. this is exactly the case git filter-branch's subdirectory filter is for:</p><p><code>git filter-branch --subdirectory-filter python/cgi/pyrssi HEAD</code></p><p>then in the old repo i just rm -rf'd the code and i had it in the root dir of the new repo. yay! :)</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/using-xosd-for-irc-notifications-and-other-goodness.html">using xosd for irc notifications and other goodness</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Fri 02 November 2007</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>so, here is the situation:</p><p>you have a machine behind a firewall and you have an ssh session to a server. and you want to send notifications to you machine. here is what i did, maybe useful for others, too</p><p><ul>
-  <li>you'll need the program called osd_cat, provided by osd</li>
-  <li>you'll need to use ssh with the -X option</li>
-  <li>if you run programs inside screen, you still won't know the the right DISPLAY number, so do a trick: add</p><p><code>[ -n "$DISPLAY" ] && echo $DISPLAY > ~/.display</code></p><p>to you ~/.bash_login</li>
-  <li>now you're ready to use osd_cat:</p><p><code>$ echo -e 'foo'|DISPLAY=<code>cat ~/.display</code> osd_cat --color=blue --age=4 --font=-*-helvetica-medium-r-*-*-*-320-*-*-*-*-*-* --offset=100 --align=right --indent=100</code></li>
-</ul></p><p>as an example, irssi has <a href="http://irssi.org/scripts/scripts/osd.pl">osd.pl</a> to use osd_cat for highlight notifications :)</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/playing-with-compiz-fusion.html">playing with compiz fusion</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Sat 27 October 2007</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>Priyank recently removed Beryl from -current and added Compiz Fusion. so i did a base install then i followed the instructions in xgl's README.Frugalware. a few impressions:</p><p>pros:
+<p>the current (old) mkiso script worked, but had several limitations:
 <ul>
-  <li>i have an i810 card, not nvidia, or anything extra, it's a cheap one. the only effect that was slow for me is when i marked the cube 100% transparent. but all the other effect were really fast.</li>
-  <li>compiz initially worked fine only with gnome. i'm a kde fan so i tried compiz with kde and it worked fine. i think this is something new</li>
-  <li>thanks to aiglx, i did not have to - in fact - start xgl, no editing in kdm.conf or anything, just xorg.conf</li>
-</ul></p><p>cons:<ul>
-  <li>i have 4 virtual desktops like:
-<pre>1 | 2
-----
-3 | 4</pre></p><p>compiz translates this to: a simple paper with two side and on each size there is another side on top of the other one. so it says it's not a cube. how crappy</li>
-  <li>i can't select to hide windows from other virtual desktops from the taskbar. a basic feature @ kde</li>
-</ul></p><p>conclusion? it's really nice, well done - but for daily work of course i won't enable it :)</p>
+  <li>you had to have write access to the repo</li>
+  <li>no dependency checking, you needed to arrange the categories by hand</li>
+  <li>no support for more than one dvd</li>
+</ul></p><p>yes, this all has been gone, there is a new mkiso in the pacman-tools repo (and soon in the next pacman-tools release) which supports all these missing features, basically you need to specify the volume size and the wished volumes in an xml, then mkiso will do everything for you. also it comes with a nice manpage examples :)</p>
 </div>
 </div>
 
@@ -174,10 +83,10 @@
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/removing-uids-in-gpg.html">removing uids in gpg</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/xconfig-in-frugalwareutils.html">xconfig in frugalwareutils</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Fri 05 October 2007</p>
+    <p>Posted on: Fri 26 May 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -185,19 +94,7 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>here is the problem:</p><p>you hava gpg key since 5 years. you had various mail addresses over the time and every mail address is attached to a key. so it'll look ugly, like <a href="http://frugalware.org/~vmiklos/pics/shots/gpg-bloated.png">this</a>.</p><p>the problem is that once you pushed a uid (read: email address, attached to a key) to the keyserver, you can no longer remove it. but here is the solution: you can revoke it! :)</p><p>how to do so?</p><p>it's easy:</p><p><code>$ gpg --edit-key <a href="mailto:john@foo">john@foo</a>.org</code></p><p>a list of your ids with numbers are displayed. select a uid:</p><p><code>Command> uid 2</code></p><p>then you can revoke it:</p><p><code>Command> revuid 3
-Really revoke this user ID? (y/N) y
-Please select the reason for the revocation:
-  0 = No reason specified
-  4 = User ID is no longer valid
-  Q = Cancel
-(Probably you want to select 4 here)
-Your decision? 4
-Enter an optional description; end it with an empty line:
->
-Reason for revocation: User ID is no longer valid
-(No description given)
-Is this okay? (y/N) y</code></p><p>you can notice that the uid is now listed as "revoked" instead of "ultimate"</p><p>now you can exit using:</p><p><code>Command> save</code></p><p>and send it to the key server:</p><p><code>$ gpg --send-key 03915096</code></p><p>of course the uids will be still there, but that bloated list should be now short and tiny :)</p>
+<p>a complete rewrite of the old xconfig script in the frugalware pkg is now included in frugalwareutils. since the code is native, it's much more faster. it should work at least as well as the old script, but who knows - if you find any bug then please report it to <a href="http://bugs.frugalware.org/">us</a></p><p>thanks!</p>
 </div>
 </div>
 
@@ -206,10 +103,10 @@ Is this okay? (y/N) y</code></p><p>you can notice that the uid is now listed as 
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/dhcpcd-vs-zeroconf.html">dhcpcd vs zeroconf</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/rss-support-in-mxw.html">rss support in mxw</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Thu 04 October 2007</p>
+    <p>Posted on: Thu 25 May 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -217,7 +114,7 @@ Is this okay? (y/N) y</code></p><p>you can notice that the uid is now listed as 
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>maybe you know a situation that is regular for me: when testing a new wireless network - if dhcp is misconfigured, dhcpcd would just have to timeout. though - thanks to zeroconf support - it uses to pick up some ip addresses instead, making debugging hard. so here is a trick to disable zeroconf support (so that dhcpcd will just timeout):</p><p>append</p><p><code>dhcp_opts = -L</code></p><p>to your /etc/sysconfig/network/default (or other) profile for the section of the wireless interface</p>
+<p>mxw is a simple C irc bot. i've start it as a fun project (usually people write irc bots in perl or python), but currently it handles more and more functions. today i've added rss support (using libmrss) so that on the #frugalware channel mxw_ floods the users with package updates and blog posts ;-)</p><p>of course the whole code is still experimental, i hope this post will appear on #frugalware, too :)</p>
 </div>
 </div>
 
@@ -226,10 +123,10 @@ Is this okay? (y/N) y</code></p><p>you can notice that the uid is now listed as 
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/rtorrent-with-dht-support.html">rtorrent with dht support</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/distrowatch-interview.html">distrowatch interview</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Wed 03 October 2007</p>
+    <p>Posted on: Mon 22 May 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -237,10 +134,7 @@ Is this okay? (y/N) y</code></p><p>you can notice that the uid is now listed as 
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>dht support means support for trackerless torrents</p><p>currently rtorrent does not support it, but after a bit googling, i've found <a href="http://libtorrent.rakshasa.no/ticket/98">this ticket</a>. it mentions that there is a patch <a href="http://tk.ttdpatch.net/~jdrexler/dht/">here</a>. so i've split up the patch for libtorrent and rtorrent and uploaded these packages to my <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/bmf/">bmf</a> repo.</p><p>you need to add two extra lines to your ~/.rtorrent.rc:</p><p><pre>
-dht = auto
-dht_port = 6986
-</pre></p><p>of course the port can be anything else.</p><p>during testing, i had one "server" - where i had the test file already - and one "client" - where i had only the torrent.</p><p>i opened one port for torrent communication and one port for the dht server on the server, of course no ports were open on the client. and yes, it did work fine! :)</p><p>(<a href="http://frugalware.org/~vmiklos/pics/shots/trackerless.png">screenshot</a>)</p><p>let's hope the patch will be included in the vanilla rtorrent soon!</p>
+distrowatch published an <a href="http://distrowatch.com/weekly.php?issue=20060522#interview">interview</a> with me, maybe it's interesting :)
 </div>
 </div>
 
@@ -249,10 +143,10 @@ dht_port = 6986
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/using-git-request-pull.html">using git request-pull</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/pre-0-5pre1-party.html">pre-0.5pre1 party</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Fri 21 September 2007</p>
+    <p>Posted on: Sat 20 May 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -260,21 +154,7 @@ dht_port = 6986
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>it's a nice simple script to generate a message body for you when you have no write access to a repo and you want to request the m8r to pull from you. here is how to use it:</p><p><pre>$ git request-pull origin/master \
-<a href="mailto:vmiklos@vmiklos.dev.frugalware.org">vmiklos@vmiklos.dev.frugalware.org</a>:git/pacman-g2/
-The following changes since commit 52a29e40a52bb09e0db7f167712a9be3ad8d0d3c:
-  Priyank (1):
-        Merge branch 'master' of \
-git.frugalware.org:/home/ftp/pub/other/pacman-g2/pacman-g2</p><p>are available in the git repository at:</p><p>  <a href="mailto:vmiklos@vmiklos.dev.frugalware.org">vmiklos@vmiklos.dev.frugalware.org</a>:git/pacman-g2/ master</p><p>VMiklos (4):
-      new NOARCH trans flag for _pacman_pkg_load()
-      _pacman_pkg_load(): indentation fix
-      parseargs(): new --noarch option
-      tests/upgrade071.py: new test for --noarch</p><p> lib/libpacman/package.c     |   36 +-----------------
- lib/libpacman/pacman.h      |    1 +
- pactest/tests/upgrade071.py |   10 +
- src/pacman-g2/pacman-g2.c   |    3 
- 4 files changed, 33 insertions(+), 17 deletions(-)
- create mode 100644 pactest/tests/upgrade071.py</pre></p><p>of course in real life, you want to use http:// or git:// since probably the m8r won't be be able to login to your own machine via ssh :)</p>
+yesterday LGee, desco, voroskoi and me met each other. you can reach a few pictures taken by LGee <a href="http://frugalware.org/~vmiklos/pics/photo/beer20060519/">here</a>
 </div>
 </div>
 
@@ -283,10 +163,10 @@ git.frugalware.org:/home/ftp/pub/other/pacman-g2/pacman-g2</p><p>are available i
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/you-can-test-openoffice-org-2-0-3rc3.html">You can test OpenOffice.org 2.0.3rc3</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/openoffice-m169-x86_64-ready.html">openoffice-m169-x86_64 ready</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Fri 14 September 2007</p>
+    <p>Posted on: Tue 16 May 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -294,7 +174,108 @@ git.frugalware.org:/home/ftp/pub/other/pacman-g2/pacman-g2</p><p>are available i
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>after a long time, openoffice now builds again out of the box without any patches as all our fixes are in ooo-build :)</p><p>also, i recently started to re-use my "bmf" repo for packaging pre/rc versions, so it was logical to get rid of the "ooodev" repo and merge it to bmf. so openoffice.org-2.3oog680_m5-1 (alias 2.3.0rc3) is available for my bmf repo for both i686 and x86_64. compared to 2.2.x, the two notable improvements (imho) are the working mozilla plugin and the ooxml support.</p><p>thanks boobaa for building it for i686! :)</p>
+<p>hi</p><p>the newest development snapshots's fpms are ready, you can reach at <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/frugalware-x86_64/">you-know-where</a>. no big changes, 4 new languages, more patches submitted to upstream (we now only use only a gcc-4.1.0 specific one) and so on</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/muttng-aamp-aamp-gpg.html">muttng &amp;&amp; gpg</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Mon 15 May 2006</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>(maybe this is true for mutt(-devel) too, i'm not sure)</p><p>so. first you need a private key, there is a good howto about it <a href="http://webber.dewinter.com/gnupg_howto/english/GPGMiniHowto.html">here</a>. then you need to copy gpg.rc (for example from /usr/share/doc/mutt-ng-20060402/samples/gpg.rc) to ~/.muttng, then add the following lines to your muttngrc
+<pre>source ~/.muttng/gpg.rc
+unset crypt_autosign
+unset crypt_autoencrypt
+set crypt_replysign
+set crypt_replyencrypt
+set crypt_verify_sig=yes
+set pgp_sign_as="0xXXXXXXXX"</pre>
+where XXXXXXXX is your keyid</p><p>for autmatic key downloading on checking signatures, add
+<pre>keyserver-options auto-key-retrieve</pre>
+to your ~/.gnupg/gpg.conf</p><p>that's all :)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/yet-another-0-4-review.html">yet another 0.4 review</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Wed 10 May 2006</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<a href="http://www.linux.com/article.pl?sid=06/04/27/1947239">here</a>. also the title is not exactly correct as probably a release candidate was tested :)
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/bogofilter-aamp-aamp-mutt.html">bogofilter &amp;&amp; mutt</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Sat 29 April 2006</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>i've just set up bogofilter with mutt, it was sooo easy! :)</p><p>first you should collect some spam and ham (non-spam) to separate (Maildir) folders</p><p>then bogofilter -s -B ~/Maildir/spam/, bogofilter -n -B ~/Maildir/ham. the basic learning is done</p><p>to your procmailrc:
+<code>
+:0fw
+| /usr/bin/bogofilter -uep
+:0:
+* ^X-Bogosity: Spam
+.Spam/
+</code></p><p>finally i've added a macro to my muttrc to be able to simply tell bogofilter it missed something (haven't noticed a spam):
+<code>
+macro index S "<pipe-entry>bogofilter -Ns"
+</code>
+(you can add a similar macro for "bogofilter -Sn" - "hey, this is not a spam" - if you want)</p><p>that's all :)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/java-enabled-openoffice-org.html">java enabled openoffice.org</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Sun 23 April 2006</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+after a few days of work (and headache) we (me and janny) put togother a java-enabled version of the openoffice.org package. we built the development milestone (m163) of OOo, so it won't hit -current till 2.0.3 is released. ideally this should re-enable features like help and others which were missing since 2.0.0. at the moment the x86_64 packages <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/frugalware-x86_64/">are available</a>, but janny will upload i686 ones soon, too
 </div>
 </div>
 

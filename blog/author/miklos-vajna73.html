@@ -59,10 +59,10 @@
 
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/git-vs-rsync.html">git vs rsync</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/pacman-db-debug-howto.html">pacman db debug howto</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Tue 11 September 2007</p>
+    <p>Posted on: Fri 21 April 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -70,7 +70,7 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>if you use rsync to copy your git repo (i mean a non-bare repo here: a repo with a working dir + a .git one), <code>git diff</code> will show that you touched your files. using <code>git checkout -f</code> can be a workaround to hide those changes, but then when you rsync again, it'll see that git thouched those files, so it'll re-download all the tracked files. infinite loop. so here is a trick from <a href="http://colabti.de/irclogger/irclogger_log/git?date=2007-09-10,Mon&sel=676#l1067">gitte</a>: using</p><p><code>git update-index --refresh</code></p><p>the index itself will be updated, not the tracked files. this was rsync will only re-download the index which is far less time, compared to the original one :)</p>
+I've written a short <a href="http://wiki.frugalware.org/PacmanBugs">howto</a> about how to debug a pacman database error as I was asked many time to do so for others. So there it is, now i can say simply RTFM ;)
 </div>
 </div>
 
@@ -79,10 +79,10 @@
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/mplayer-with-dvdnav-support.html">mplayer with dvdnav support</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/cheap-sed-aamp-bash-tricks.html">cheap sed &amp; bash tricks</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sat 08 September 2007</p>
+    <p>Posted on: Tue 18 April 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -90,7 +90,25 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>i've uploaded an updated mplayer package to <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/bmf/">my repo</a> which includes dvdnav support to mplayer. at the moment it seems you need to</p><p><code># pacman -R codecs</code></p><p>otherwise mplayer will crash</p><p>many thanks to <a href="http://onebithq.com/root/mplayer/dvdnav">Otvos Attila</a>, the dvdnav patch author for his help (two additional build fixes was needed for our "enable everything what is possible" mplayer configuration)</p><p>hopefully we'll figure out soon how to resolve the conflict with the binary codecs, too :)</p><p>(a <a href="http://frugalware.org/~vmiklos/pics/shots/mplayer-dvdnav.png">screenshot</a>)</p>
+<p>probably this is known, but i've just figured out how to get rid of grep when i use
+<pre>foo |grep ... |sed ...</pre>
+the magic command is
+<pre>foo |sed -n '/^match/s/foo/bar/p'</pre></p><p>if we're at it, you can even get rid of sed if you use bash and just want to do simple replaces like 1.0 -> 1_0:
+<pre>$ pkgver=1.0
+$ echo ${pkgver//./_}
+1_0_0</pre></p><p>two intereting tricks remained. the first is about deleting from a pattern to an another one (including both line)
+<pre>$ echo -e 'a\nb\nc\nd\ne'
+a
+b
+c
+d
+e
+$ echo -e 'a\nb\nc\nd\ne' |sed /b/,/d/d
+a
+e</pre></p><p>the last one is about deleting to the end of the file from a pattern:
+<pre>$ echo -e 'a\nb\nc\nd\ne' |sed '/c/,$d'
+a
+b</pre></p><p>ok, that's all for today :)</p><p>(other nice tricks <a href="http://www.student.northpark.edu/pemente/sed/sed1line52.txt">here</a>)</p>
 </div>
 </div>
 
@@ -99,10 +117,10 @@
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/git-svn-howto.html">git-svn howto</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/title-81.html">title 81</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Fri 07 September 2007</p>
+    <p>Posted on: Tue 18 April 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -110,8 +128,7 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>i think using git-svn is really easy, once you figured out how to use it. so here is how i use it. no, i'm not a git-svn expert, just a user. and the way i use it - i think it's easy. so here is our situation:</p><p>1) foo project uses svn for managing their code
-2) you wish they would use git</p><p>how to do both:</p><p>1) get the full svn repo:</p><p><code>$ git svn clone --prefix=origin/ url</code></p><p>yes, in my situation this project does not use the trunk/tags/branches structure, see the git-svn manpage if the project you clone does (s/clone/clone -s/ should do the trick)</p><p>the --prefix parameter is needed so that you'll see the svn branches as if they were normal git remote branches</p><p>2) your local repo is a git repo, so you can do whatever you want, commit, revert, bisect, etc</p><p>3) instead of git pull, you need</p><p><code>$ git svn rebase</code></p><p>this does the same as git fetch + git rebase (since you can't merge because of svn)</p><p>4) instead of git push, you need</p><p><code>$ git svn dcommit</code></p><p>and we're ready. 3 and not more command, right? :)</p>
+<a href="http://newsforge.com">NewsForge</a> <a href="http://os.newsforge.com/article.pl?sid=06/04/12/1555253">published</a> a review about Frugalware 0.4. Thx boobaa for pointing it out.
 </div>
 </div>
 
@@ -120,10 +137,10 @@
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/coloured-manpages.html">coloured manpages</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/openoffice-x86_64-becomes-full-featured.html">openoffice-x86_64 becomes full-featured</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Fri 07 September 2007</p>
+    <p>Posted on: Fri 07 April 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -131,7 +148,7 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-this is always a subject of flamewars and Frugalware did not have any support for coloured manpages so far. i've now added (in man-1.6e-2) support for it, but it's still disabled. see the <a href="http://frugalware.org/packages/369/documentation">documentation</a> on how to enable it if you like. you can reach a screenshot <a href="http://frugalware.org/~vmiklos/pics/shots/colorman2.png">here</a> if you use the default colors.
+basically now the 64bit openoffice has all the features as the 32bit one, even the splashscreen is back, you can reach a screenshot by desco <a href="http://frugalware.org/~vmiklos/pics/shots/ooo-x86_64-splash.png">here</a>
 </div>
 </div>
 
@@ -140,10 +157,10 @@ this is always a subject of flamewars and Frugalware did not have any support fo
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/gitstats.html">gitstats</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/new-asian-mirror.html">new Asian mirror</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Tue 04 September 2007</p>
+    <p>Posted on: Fri 07 April 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -151,7 +168,7 @@ this is always a subject of flamewars and Frugalware did not have any support fo
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>when we switched to git, our <a href="http://frugalware.org/~vmiklos/stats/frugalware-current.html">darcs stat page</a> was no longer updated. now i've created <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/gitstats/">gitstats</a>, which serves the same purpose. it's written in python and it was a few more features compared to darcsstats, ie. alias support, so that the stats for a dev are not lost when he/she changes his/her email addr.</p><p>the new stat page is <a href="http://frugalware.org/~vmiklos/stats/frugalware-current/">here</a>. enjoy! :)</p>
+the National Taiwan University just donated us a new mirror, called <a href="ftp://ftp9.frugalware.org/pub/frugalware/">ftp9</a>. enjoy! :)
 </div>
 </div>
 
@@ -160,10 +177,10 @@ this is always a subject of flamewars and Frugalware did not have any support fo
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/bitlbee-skype.html">bitlbee-skype</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/openoffice-upstream-fix.html">openoffice upstream fix</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Mon 03 September 2007</p>
+    <p>Posted on: Thu 06 April 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -171,7 +188,7 @@ this is always a subject of flamewars and Frugalware did not have any support fo
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>well, it truns out what i'm mentioned at <a href="http://www.bitlbee.org">bitlbee.org</a> :)</p><p>the story is about my <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/bitlbee-skype/">skype plugin</a> for bitlbee. google doesn't even find it (mostly because nobody links my page), so i asked the devs to link the page. now they posted a news entry about it ;)</p><p>/me goes to sleep..</p>
+upstream at Novell is very fast, they've already <a href="http://cvs.gnome.org/viewcvs/ooo-build/download.in?r1=1.81&r2=1.82&makepatch=1&diff_format=u">fixed</a> the problem mentioned yesterday. so one should be really able to build OOo on x86_64 with the usual simple <code>sudo makepkg -R</code> :)
 </div>
 </div>
 
@@ -180,10 +197,10 @@ this is always a subject of flamewars and Frugalware did not have any support fo
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/asciidoc-vs-mathml.html">asciidoc vs mathml</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/openoffice-x86_64-first-complete-native-build.html">openoffice-x86_64 first complete native build</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sun 02 September 2007</p>
+    <p>Posted on: Wed 05 April 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -191,7 +208,7 @@ this is always a subject of flamewars and Frugalware did not have any support fo
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>i've recently <a href="http://frugalware.org/pipermail/frugalware-git/2007-September/001862.html">pushed</a> a new asciidoc to my repo. after intalling it, you have to be able to display <a href="http://frugalware.org/~vmiklos/docs/math.html">this</a> example page properly. (<a href="http://frugalware.org/~vmiklos/docs/math.txt">here</a> is the source)</p><p>so now go and tell your latex friends that you can still include your exotic math formulas in asciidoc while you can avoid its usualy difficult syntax! :)</p>
+<p>desco's shot: <a href="http://www.bluelion.hu/stuff/ooo-x86_64.png">http://www.bluelion.hu/stuff/ooo-x86_64.png</a></p><p>download: <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/frugalware-x86_64/">http://ftp.frugalware.org/pub/other/people/vmiklos/frugalware-x86_64/</a></p><p>source: <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/source/openoffice.org-devel/">http://ftp.frugalware.org/pub/other/people/vmiklos/source/openoffice.org-devel/</a></p><p>also there is a little problem with make install in the FB, more details <a href="http://thread.gmane.org/gmane.comp.gnome.ximian.openoffice/1463">here</a></p><p>note: yes, you have to install the langpacks with pacman -d, this will be fixed later</p>
 </div>
 </div>
 
@@ -200,10 +217,10 @@ this is always a subject of flamewars and Frugalware did not have any support fo
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/openoffice-firefox-plugin.html">openoffice firefox plugin</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/openoffice-x86-64.html">openoffice-x86_64</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sat 01 September 2007</p>
+    <p>Posted on: Mon 03 April 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -211,7 +228,15 @@ this is always a subject of flamewars and Frugalware did not have any support fo
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>as of <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/ooodev/frugalware-i686/openoffice.org-2.3oog680_m1-1-i686.fpm">openoffice.org-2.3oog680_m1</a> there is a firefox plugin (for OOo documents) included in our openoffice pkg. at the moment it's not enabled by default, you need an</p><p><code>ln -s /usr/lib/openoffice.org/program/libnpsoplugin.so ~/.mozilla/plugins</code></p><p>to enable it</p>
+no, don't except anything, just started to work on it. a few infos:
+<ul>
+  <li>you need m162 to apply the ooo-build patches, but in that milestone the <a href="http://www.openoffice.org/issues/show_bug.cgi?id=63816">"fpicker module dependency" is missing</a>, but it is already fixed in upstream. so let's start to make a patch</li>
+  <li>you need to download the cvs:
+<code>cvs -d:pserver:anoncvs@anoncvs.services.openoffice.org:/cvs co -r SRC680_m162 OpenOffice</code></li>
+  <li>then find the last change to the critical file:
+<code>cvs diff -r 1.6 -u automation/prj/build.lst</code></li>
+  <li>using this patch, the build is still running atm :)</li>
+</ul>
 </div>
 </div>
 
@@ -220,10 +245,10 @@ this is always a subject of flamewars and Frugalware did not have any support fo
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/empty-git-commits.html">empty git commits</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/0-4-in-the-news.html">0.4 in the news</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Thu 30 August 2007</p>
+    <p>Posted on: Sun 02 April 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -231,9 +256,7 @@ this is always a subject of flamewars and Frugalware did not have any support fo
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>long time no blog ;)</p><p>in darcs, tags are empty patches which depend on every patch since the previous tag + the previous tag. so tag is shown in the changelog itself</p><p>in git, tags are just pointers to existing commit objects. for example 1c77ec3 already exists, then you say let's call this 1.0</p><p>you may want to create darcs-like tags in git. of course this won't be the git way, but it's nice to see that the git core allows you to do so</p><p>so here is what you need:</p><p><code>
-echo "tagged 0.9.2" |git update-ref HEAD <code>git commit-tree HEAD^{tree} -p HEAD</code>
-</code></p><p>thanks <a href="http://colabti.de/irclogger/irclogger_log/git?date=2007-08-30,Thu&sel=585#l1040">hliusv561</a>! :)</p>
+<p>OSDir <a href="http://www.osdir.com/Article8370.phtml">made</a> a screenshot tour using 0.4rc1.</p><p>Slack Addict <a href="http://www.slackaddict.com/modules.php?name=News&file=article&sid=158">published</a> an interview before releasing 0.4.</p><p>Finally Wikinews <a href="http://en.wikinews.org/wiki/Frugalware_Linux_Pushes_Forward">published</a> a short interview right after 0.4 had been released.</p><p>That's all :)</p>
 </div>
 </div>
 
@@ -242,10 +265,10 @@ echo "tagged 0.9.2" |git update-ref HEAD <code>git commit-tree HEAD^{tree} -p HE
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/find-exclude.html">find -exclude</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/0-4-announcement-party.html">0.4 announcement party</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Fri 06 April 2007</p>
+    <p>Posted on: Sat 01 April 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -253,7 +276,7 @@ echo "tagged 0.9.2" |git update-ref HEAD <code>git commit-tree HEAD^{tree} -p HE
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>ok, there is no such option, but there is an equivalent trick :)</p><p>for example if you want to do exclude the _darcs dir, then you need:</p><p><code>find . -type d -name _darcs -prune -o <filter> -print</code></p><p>where <filter> can be "-name *.c" or so</p><p>thanks crazy for the tip :)</p>
+<p><a href="http://forums.frugalware.org/index.php?t=usrinfo&id=62">lgee</a> <a href="http://forums.frugalware.org/index.php?t=msg&th=459">proposed</a> to hold a small "real life" announcement party for developers after 0.4 is released. so yesterday, one day after the release, five of the Hungarian devs met each other :)</p><p>janny made some shots, you can look at them <a href="http://frugalware.org/~janny/">here</a>.</p><p>who is who: <a href="http://frugalware.org/~janny/img002.jpeg.html">ironiq</a> (on the right side), <a href="http://frugalware.org/~janny/img003.jpeg.html">janny</a> (on the left side), <a href="http://frugalware.org/~janny/img009.jpeg.html">vmiklos, voroskoi</a> and <a href="http://frugalware.org/~janny/img010.jpeg.html">lgee</a>.</p>
 </div>
 </div>
 
