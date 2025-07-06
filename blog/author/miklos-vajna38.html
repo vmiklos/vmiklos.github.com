@@ -59,298 +59,6 @@
 
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/pdf-duplex-printing.html">Poor man's PDF duplex printing</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Sat 27 November 2010</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Yesterday I wanted to print a PDF document: two pages per sheet, and of
-course I wanted duplex printing as well (on the short side).</p></div>
-<div class="paragraph"><p>Given that the hardware (the printer) was not capable of duplex
-printing, I needed some software workaround. If you want one page per
-sheet, this is trivial, as the print dialog of any PDF reader will let
-you select "odd pages", then you re-feed the printer with the output
-paper and you select "even pages" and that&#8217;s it.</p></div>
-<div class="paragraph"><p>OTOH, if you want 2 pages per sheet, then first you need some trick
-first to create two PDF from the original: the first containing the
-pages 1, 2, 5, 6, etc. - and the other containing 3, 4, 7, 8, etc.</p></div>
-<div class="paragraph"><p>After all this isn&#8217;t really hard using <code>pdftk</code>. First, the input PDF was
-around 150 pages, so I wanted to split the input to one file / page:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>pdftk in.pdf burst output out/%03d.pdf</code></pre>
-</div></div>
-<div class="paragraph"><p>Then let&#8217;s move the pages to the subdirs <code>a</code> or <code>b</code>, based on the above
-pattern:</p></div>
-<div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight
-by Lorenzo Bettini
-http://www.lorenzobettini.it
-http://www.gnu.org/software/src-highlite -->
-<pre><tt>cd out
-mkdir a b
-<span style="font-weight: bold"><span style="color: #0000FF">for</span></span> i <span style="font-weight: bold"><span style="color: #0000FF">in</span></span> <span style="color: #990000">*.</span>pdf
-<span style="font-weight: bold"><span style="color: #0000FF">do</span></span>
-        <span style="color: #009900">base</span><span style="color: #990000">=</span><span style="color: #009900">$(</span>basename <span style="color: #009900">$i</span> <span style="color: #990000">.</span>pdf<span style="color: #990000">)</span>
-        <span style="font-weight: bold"><span style="color: #0000FF">if</span></span> <span style="color: #990000">[</span> <span style="color: #009900">$base</span> -lt <span style="color: #993399">100</span> <span style="color: #990000">];</span> <span style="font-weight: bold"><span style="color: #0000FF">then</span></span>
-                <span style="color: #009900">rem</span><span style="color: #990000">=</span><span style="color: #009900">$(</span><span style="color: #990000">(</span><span style="color: #009900">$(</span>echo <span style="color: #009900">$i</span><span style="color: #990000">|</span>sed <span style="color: #FF0000">'s/^0</span><span style="color: #CC33CC">\+\(</span><span style="color: #FF0000">.*</span><span style="color: #CC33CC">\)\.</span><span style="color: #FF0000">pdf/</span><span style="color: #CC33CC">\1</span><span style="color: #FF0000">/'</span><span style="color: #990000">)%</span><span style="color: #993399">4</span><span style="color: #990000">))</span>
-        <span style="font-weight: bold"><span style="color: #0000FF">else</span></span>
-                <span style="color: #009900">rem</span><span style="color: #990000">=</span><span style="color: #009900">$(($base%4))</span>
-        <span style="font-weight: bold"><span style="color: #0000FF">fi</span></span>
-        <span style="font-weight: bold"><span style="color: #0000FF">if</span></span> <span style="color: #990000">[</span> <span style="color: #FF0000">"$rem"</span> <span style="color: #990000">=</span> <span style="color: #993399">1</span> -o <span style="color: #FF0000">"$rem"</span> <span style="color: #990000">=</span> <span style="color: #993399">2</span> <span style="color: #990000">];</span> <span style="font-weight: bold"><span style="color: #0000FF">then</span></span>
-                mv <span style="color: #009900">$i</span> a
-        <span style="font-weight: bold"><span style="color: #0000FF">else</span></span>
-                mv <span style="color: #009900">$i</span> b
-        <span style="font-weight: bold"><span style="color: #0000FF">fi</span></span>
-<span style="font-weight: bold"><span style="color: #0000FF">done</span></span></tt></pre></div></div>
-<div class="paragraph"><p>Finally concat the files from the <code>a</code> and the <code>b</code> dir to a single file:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>cd a
-pdftk *.pdf cat output ../a.pdf
-cd ../b
-pdftk *.pdf cat output ../b.pdf</code></pre>
-</div></div>
-<div class="paragraph"><p>That&#8217;s it!</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/libwpd-bindings.html">libwpd-bindings-0.1.0</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Fri 26 November 2010</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>I tried to search back when did I create Java bindings for libwpd - it
-seems
-<a href="http://vmiklos.hu/gitweb/?p=libwpd-old.git;a=commit;h=2ee19c1e5e3b5cc28db8c9dc9aa7e6116e62b730">this</a>
-was the first commit.</p></div>
-<div class="paragraph"><p>First I kept back the source code to get some money for it (there were a
-customer who seemed to be willing to pay, but then disappeared), then I
-just abandoned the idea and pushed it to
-<a href="http://libwpd.sourceforge.net/">SourceForge.net</a> to some
-<a href="http://libwpd.cvs.sourceforge.net/viewvc/libwpd/libwpd2-bindings/">CVS
-repo</a>, (I even mentioned it in a
-<a href="https://vmiklos.hu/blog/preparing-frugalware-1-0pre2.html">blog post</a>), which is finally
-now converted to
-<a href="http://libwpd.git.sourceforge.net/git/gitweb.cgi?p=libwpd/libwpd-bindings;a=summary">git</a>.</p></div>
-<div class="paragraph"><p>Long story short, a week ago finally Fridrich
-<a href="http://sourceforge.net/projects/libwpd/files/libwpd-bindings/download">released</a>
-the first version of the code, after about 2.75 years. :)</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/osl-trace.html">OSL_TRACE()</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Wed 24 November 2010</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Background: <code>OSL_TRACE()</code> is an internal LibreOffice macro that is like
-<code>printf()</code>, but it&#8217;s only enabled in debug mode. Without it, you would
-add a debug printf during development:</p></div>
-<div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight
-by Lorenzo Bettini
-http://www.lorenzobettini.it
-http://www.gnu.org/software/src-highlite -->
-<pre><tt><span style="font-weight: bold"><span style="color: #000000">printf</span></span><span style="color: #990000">(</span><span style="color: #FF0000">"debug, foo</span><span style="color: #CC33CC">\n</span><span style="color: #FF0000">"</span><span style="color: #990000">);</span></tt></pre></div></div>
-<div class="paragraph"><p>then you would comment it out when the code started working,:</p></div>
-<div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight
-by Lorenzo Bettini
-http://www.lorenzobettini.it
-http://www.gnu.org/software/src-highlite -->
-<pre><tt><span style="font-style: italic"><span style="color: #9A1900">//printf("debug, foo\n");</span></span></tt></pre></div></div>
-<div class="paragraph"><p>then remove the comment when it breaks again, etc.</p></div>
-<div class="paragraph"><p>In the past, if you built a LibreOffice module, then you executed:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>build</code></pre>
-</div></div>
-<div class="paragraph"><p>inside a module, and in case you wanted debug symbols and such messages you built using:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>build debug=t</code></pre>
-</div></div>
-<div class="paragraph"><p>which increased the debug level to 2 (from 0), where 1 is required for
-debug symbols, 2 for debug messages. (See the OOo
-<a href="http://wiki.services.openoffice.org/wiki/Debug_Levels">wiki page</a>.)</p></div>
-<div class="paragraph"><p>The recent update, why I&#8217;m writing this post: Now this has been
-<a href="http://cgit.freedesktop.org/libreoffice/bootstrap/commit/?id=47d09469e96485f93623a6fbeb42f709c2ce49bb">changed</a>,
-and <code>debug=t</code> gives you debug symbols only, but no extra debug output.
-While this is
-<a href="http://lists.freedesktop.org/archives/libreoffice/2010-November/002894.html">great
-in most cases</a>, sometimes you still want the old behaviour to get the
-debug messages. In that case the solution (as pointed out in the mailing
-list post) is to use:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>build debug=t dbglevel=2</code></pre>
-</div></div>
-<div class="paragraph"><p>(Hopefully this post will be handy for who missed that post, like I did
-the first time.)</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/systemd.html">Systemd</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Tue 23 November 2010</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>I first heard about
-<a href="http://freedesktop.org/wiki/Software/systemd">systemd</a> from
-<a href="http://frugalware.org/~voroskoi/">voroskoi</a>, later
-<a href="http://people.gnome.org/~michael/blog/">Michael</a> pointed it out again
-during the <a href="http://www.ooocon.org/index.php/ooocon/2010">OOoCon 2010</a>,
-finally it somehow came up on <code>#frugalware.dev</code> today.</p></div>
-<div class="paragraph"><p>So I read up some documentation in this area, and I definitely like it.
-(Note: I didn&#8217;t say I&#8217;m willing to do all the work to integrate this
-into Frugalware, but I like the idea.) For me, the killer post is
-<a href="http://0pointer.de/blog/projects/systemd-for-admins-3.html">this one</a>: a
-distro-independent init script in 8 lines is very much like our
-<code>FrugalBuild</code> scripts which are no longer than 11 lines for a project
-with a standard build-system.</p></div>
-<div class="paragraph"><p>I like that minimalism a lot.</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/rejourn-vanilla.html">Rejourn: Using an unpatched version</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Thu 18 November 2010</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>One may have noticed that right now my
-<a href="http://vmiklos.hu/gitweb/?p=rejourn.git;a=summary">rejourn tree</a> is
-empty. That&#8217;s not an accident, after Ram accepted my 15th patch, finally
-the site runs an unpatched version of <a href="https://vmiklos.hu/blog/rejourn.html">rejourn</a> - of
-course with a custom config and design.</p></div>
-<div class="paragraph"><p>Of course I still have a few ideas on what to improve, so this is not
-the end of the story, but still - I&#8217;m happy he was so open for changes
-and new features that we reached this post. :)</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/gpsbabel-split.html">How to split gpx files using gpsbabel</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Wed 17 November 2010</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>I usually just download the gpx track from my GPS and delete the track
-from device each time I arrive home and I was at some interesting place
-before. Last week this was not the case, I was at
-<a href="http://maps.google.com/?q=Gy%FAr%F3,+Hungary">Gyúró</a> two weeks ago, then
-I borrowed by device, without clearing the log from it.</p></div>
-<div class="paragraph"><p>So the task was easy: I had a timestamp and I had the full log from the
-device, and I want to split it: before and after a given timestamp. It
-turned out that I had some log from Oct 28th as well, so I wanted:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-The log till Oct 28th
-</p>
-</li>
-<li>
-<p>
-The log between Nov 5th and 8th
-</p>
-</li>
-<li>
-<p>
-The log after 10th.
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>Luckily the
-<a href="http://www.gpsbabel.org/htmldoc-1.3.0/filter_track.html">gpsbabel
-documentation</a> is quite clear in this area (see Example 4.8), I just
-needed the following commands:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>$ gpsbabel -t -i gpx -f in.gpx -x track,stop=20101028 -o gpx -F out1.gpx
-$ gpsbabel -t -i gpx -f in.gpx -x track,start=20101105,stop=20101108 -o gpx -F out2.gpx
-$ gpsbabel -t -i gpx -f in.gpx -x track,start=20101110 -o gpx -F out3.gpx</code></pre>
-</div></div>
-<div class="paragraph"><p>Update: two more notes:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-the stop is exclusive, start is inclusive
-</p>
-</li>
-<li>
-<p>
-when using the result in digikam, the camera time zone has to be set to "manual: gmt+0", even if both the gpx result and the camera time is in local time
-</p>
-</li>
-</ul></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/ooo-vmiklos01-merged.html">OpenOffice.org: vmiklos01 CWS integrated</a></h1>
   </div>
   <div class="article_meta">
@@ -369,98 +77,6 @@ as well, I&#8217;ll finish it. About 6 weeks later they now
 <a href="http://hg.services.openoffice.org/DEV300/rev/5a2d87e7a414">integrated</a>
 (merged) the <code>vmiklos01</code> CWS (the branch containing my GSoC work) to
 DEV300, what will became OpenOffice.org 3.4 later.</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/the-social-network.html">The Social Network</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Sat 13 November 2010</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="/pic/thesocialnetwork.t.jpg" alt="/pic/thesocialnetwork.t.jpg" />
-</div>
-</div>
-<div class="paragraph"><p>Tegnap lattuk a cimben szereplo filmet. Egy tipikus <em>valos tortenet
-alapjan</em> jellegu film, szoval nyilvan van alapja, de azert nem kell
-szoszerint venni mindent:</p></div>
-<div class="quoteblock">
-<div class="content">
-<div class="paragraph"><p>In real life, he (Mark Zuckerberg) was just sitting around with his
-friends in front of his computer, ordering pizza &#8230; Who wants to go see
-that for two hours?</p></div>
-</div>
-<div class="attribution">
-&#8212; Sheryl Sandberg
-</div></div>
-<div class="paragraph"><p>Az mindenesetre tetszik, hogy Mark Zuckerberg nem feher vagy fekete
-embernek van beallitva.</p></div>
-<div class="paragraph"><p>Pozitivan allitja be (szakmai reszletek):</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-LAMP mania (meg akkor is, ha nem vagyok LAMP fanatikus, meg mindig
-    jobb, mint valami Java vagy Microsoft technologia ;) )
-</p>
-</li>
-<li>
-<p>
-tul nagy baromsag nem hangzik el, leszamitva a film vegen levo <code>ping
-    localhost</code> es egyebeket. :)
-</p>
-</li>
-<li>
-<p>
-vegre egy film ahol nem mindenki Mac-ezik, hanem KDE-t tol. ;)
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>Ezen kivul az is elhangzott, hogy nem az egoja miatt keszult a film:</p></div>
-<div class="quoteblock">
-<div class="content">
-<div class="paragraph"><p>I just wished that nobody made a movie of me while I was still alive.</p></div>
-</div>
-<div class="attribution">
-&#8212; Mark Zuckerberg
-</div></div>
-<div class="paragraph"><p>Meg talan ehhez hozzaadodik meg a Wikipedian olvashato egyeb pozitiv
-sztorik, mint pl a donation-ok, stb.</p></div>
-<div class="paragraph"><p>Es szerencsere nem feledkezik meg a negativumokrol se:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-a nem tul legalis kezdes ;)
-</p>
-</li>
-<li>
-<p>
-a kezdeti penzugyi segito kikozositese
-</p>
-</li>
-<li>
-<p>
-az otlet lopas (bar az is egy erdekes gondolat, ami elhangzik a
-  filmben, hogyha valakinek jo otletei vannak, akkor nem gaz ha ellopnak
-  egyet, majd kitalal masikat)
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>Ezen kivul amugy vannak a filmben jo poenok, az evezos jelenet filmes
-szemponbol is jol meg van csinalva, szoval elgondolkodtato film sztem,
-csak ajanlani tudom.</p></div>
-<div class="paragraph"><p>(<a href="http://www.imdb.com/title/tt1285016/">imdb</a>, <a href="http://www.youtube.com/watch?v=9bzpS239Gas">trailer</a>)</p></div>
 </div>
 </div>
 
@@ -534,6 +150,296 @@ part of the spelling checker.</p></div>
 &#8212; LPC: Michael Meeks on LibreOffice and code ownership
 </div></div>
 <div class="paragraph"><p>Nice! :)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/bitlbee-3.0.html">BitlBee 3.0</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Fri 05 November 2010</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>Even if I gave it a quick testing about two weeks ago, now I tried the
+new Twitter / identi.ca support and I like it a lot. Now messages are
+not coming from a single user by default, but a separate channel is
+created, nicks are appearing there, and I can just highlight people to
+reply to their last tweet or simply type to submit a new one.</p></div>
+<div class="paragraph"><p>And of course my Skype module still works, as Wilmer fixed it up. :)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/iscsi-target.html">tgt is now available as a package</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Thu 04 November 2010</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>Today I packaged <a href="http://frugalware.org/packages/103291">tgt</a> an iSCSI
+target (server). The upstream package provides a large number of
+examples, though I thought it&#8217;s a good idea to note what I used for
+testing:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code># egrep -v '#|^$' /etc/tgt/targets.conf
+default-driver iscsi
+&lt;target iqn.2010-11.local.test:storage&gt;
+    backing-store /dev/sdb
+&lt;/target&gt;</code></pre>
+</div></div>
+<div class="paragraph"><p>Something offtopic: a
+<a href="https://github.com/artagnon/rejourn/commit/3b87aab385647ea8e5dd8844aec913ab3c02252f">rejourn</a>
+patch accepted and a
+<a href="https://bugs.freedesktop.org/show_bug.cgi?id=31362">LibreOffice</a> bug
+fixed today.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/latex-sources.html">Handy Latex bookmarks</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Wed 03 November 2010</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>Today I had some Hungarian mathematical logic notes to type in Latex,
+and again I had to dig up the various references to get the proper
+symbols I needed.</p></div>
+<div class="paragraph"><p>I used the following pages:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="ftp://ftp.ams.org/pub/tex/doc/amsmath/amsldoc.pdf">amsmath</a> is unique
+  in that for example it explains how to use <code>\begin{cases}</code>
+</p>
+</li>
+<li>
+<p>
+<a href="http://amath.colorado.edu/documentation/LaTeX/Symbols.pdf">this one</a> is
+  a collection of lot of symbols, I found <code>\mathcal</code> here
+</p>
+</li>
+<li>
+<p>
+An <a href="http://en.wikipedia.org/wiki/List_of_logic_symbols">article from
+  Wikipedia</a> about logic symbols
+</p>
+</li>
+<li>
+<p>
+<a href="http://en.wikibooks.org/wiki/LaTeX/Mathematics">The Math chapter</a> of
+  the well-known LaTeX wikibook
+</p>
+</li>
+<li>
+<p>
+<a href="http://www.maths.tcd.ie/~dwilkins/LaTeXPrimer/Theorems.html">A set of
+  macros</a> making easy to declare lemmas, definitions, proofs.
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/qtsql-sqlite.html">QtSql vs. SQLite</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Tue 02 November 2010</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>The problem was the following: I had <a href="http://pastebin.com/Gh66XZxw">this</a>
+example code and the <code>size()</code> method just gave me insane result all the
+time, while just changing the driver to <code>QMYSQL</code> made the code work
+properly. After asking on <code>#qt</code>, I have been
+<a href="http://pastebin.com/1HExkgiw">pointed out</a> that the SQLite backend of
+QtSql does not support the <code>size()</code> method. :/</p></div>
+<div class="paragraph"><p>So - for now - I&#8217;ll just use MySql for my unit tests, even if that means
+I have to manually truncate the contents of each table. Worths checking
+a bit later again, though - since I already used in-memory SQLite for my
+unit tests when I had a project in PHP with Doctrine, and it was working
+just fine.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/frugalware-song.html">A song mentioning Frugalware!</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Mon 01 November 2010</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p><code>chee</code> on <code>#frugalware</code> linked a <a href="http://ompldr.org/vNXhlMw">song</a> and its
+<a href="http://ompldr.org/vNXhlZQ">lyrics</a>, mentioning Frugalware. Please don&#8217;t
+compare it to an OpenBSD professional release song, then you&#8217;ll like it!
+:)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/rejourn.html">Rejourn</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Sun 31 October 2010</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>The story is old, it was exactly 3 years ago when last time I switched
+the engine under my blog. That time I switched from my custom php/mysql
+blog to b2evolution, and I hoped that using that engine it&#8217;ll require
+less time to manage it. Actually this wasn&#8217;t true:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+When the php-5.3 upgrade came, I had to manually fix stuff.
+</p>
+</li>
+<li>
+<p>
+I got a lot of spam, even if the captcha provided by the ready-to-use
+  b2evo plugin was enabled.
+</p>
+</li>
+<li>
+<p>
+The last thing: It turned out that it created the SQL schema in
+  latin2, so utf8 comments had problems.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>At that point I had enough trouble to think about migrating away from
+b2evo. And then I found <a href="http://artagnon.com/rejourn">rejourn</a>, which is
+quite close to what I think is ideal to me. I just changed it a bit:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Added asciidoc support next to markdown.
+</p>
+</li>
+<li>
+<p>
+Added RSS support, as my blog is part of the Frugalware and the
+  LibreOffice planet, and I didn&#8217;t want to lose those readers.
+</p>
+</li>
+<li>
+<p>
+Added support for tags, so that I can have a feed with a given tag
+  only (to avoid OT posts on planets).
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Before you ask: yes, I plan to submit back these feature to rejourn, if
+Ram accepts them. ;)</p></div>
+<div class="paragraph"><p>And finally, some more benefits:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+the whole blog is now static HTML, generated by a single Makefile (so
+  it&#8217;s faster + the server load is lower)
+</p>
+</li>
+<li>
+<p>
+I can blog while I&#8217;m offline then later just <code>git push</code> the result.
+</p>
+</li>
+<li>
+<p>
+I no longer have to use WYSIWYG editors or write HTML manually, I can
+  use asciidoc. :)
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p><strong>Update:</strong> I forgot to mention:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+I <a href="http://vmiklos.hu/file/rejourn-import-b2evo.py">put up</a> a simple
+  b2evo &#8594; rejourn conversion script.
+</p>
+</li>
+<li>
+<p>
+I just discovered that when I get email about new comments, I can
+  reply via email as well - that&#8217;s really cool! :)
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/slides-of-my-gsoc-2010-presentation.html">Slides of my GSoC 2010 Presentation</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Mon 25 October 2010</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+As requested, the slides of my presentation, titled "GSoC project: Improving RTF Export - Presentation of a Go-OO student" are available <a href="http://people.freedesktop.org/~vmiklos/lo-opensuse-nurnberg-2010.pdf">here</a>.
 </div>
 </div>
 

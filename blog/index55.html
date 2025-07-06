@@ -58,10 +58,10 @@
 
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/lilypond-and-guitar-chord-arpeggios.html">Lilypond and guitar chord arpeggios</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/a-goal-list-for-2oo7.html">A goal list for 2oo7</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Mon 12 January 2009</p>
+    <p>Posted on: Wed 31 December 2008</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -69,7 +69,7 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>Of course I have no idea if this is the right name of this stuff, to make long story short, I finally found a <a href="http://article.gmane.org/gmane.comp.gnu.lilypond.general/44348">workaround</a> to display this beast in lilypond. Yay!</p><p>This project is really addictive, you can spend a whole day reading its documentation and you still just say "wow, this and even that is possible with this stufff". ;-)</p>
+<p>I did it in <a href="http://blogs.frugalware.org/vmiklos/2007/12/31/ten_goals_we_reached_in_2007">2oo7</a> and <a href="http://blogs.frugalware.org/vmiklos/2006/12/31/p276">2oo6</a>, so I did it <a href="http://article.gmane.org/gmane.linux.frugalware.devel/5129">this year</a> as well.</p><p>Writing such a list takes a lot of time, but I think it worth the effort.</p>
 </div>
 </div>
 
@@ -78,10 +78,33 @@
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/oprofile.html">oprofile</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/mkpasswd.html">mkpasswd</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sun 11 January 2009</p>
+    <p>Posted on: Tue 30 December 2008</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>I just noticed that I can ask mkpasswd to not include extra signs (so only [A-Za-z0-9]) in the passwd, and also I can ask it to make it longer, for example:</p><p><pre>
+$ mkpasswd -l 18 -s 0
+kweufGtytpIj1ds8bw
+</pre></p><p>Sadly it's quite useful on broken websites where they bail out with an error when my pass contains a ' or a "...</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/scripts-used-in-the-python-2-6-mass-rebu.html">Scripts used in the Python-2.6 mass rebuild</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Mon 29 December 2008</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 2 minutes</p>
@@ -89,19 +112,24 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>I did not have to work with a profiling tool for C so far, so here is my first experience.</p><p>The kernel has to have oprofile support (the kernel in Frugalware-current does not have it, I'll add it after 1.0pre2). You'll need a kernel vmlinux file if you want to benchmark the syscalls as well (I did not need this one).</p><p>Then there are 3 levels of starting: opcontrol --init/--deinit, --start-daemon/--shutdown and --start/--stop. The first one prepares /dev/profile, the second one starts the deamon, finally the third one start profiling. Obviously the second part does the opposite.</p><p>Once you did a --stop, you can get the results. Example output:</p><p><pre>
-$ opreport -l /home/vmiklos/git/git/git /usr/lib/libz.so.1|head
-CPU: CPU with timer interrupt, speed 0 MHz (estimated)
-Profiling through timer interrupt
-samples  %        app name                 symbol name
-22823    56.4898  libz.so.1.2.3            inflate_fast
-6019     14.8978  libz.so.1.2.3            adler32
-5975     14.7889  libz.so.1.2.3            inflate
-4233     10.4772  libz.so.1.2.3            inflate_table
-456       1.1287  libz.so.1.2.3            crc32
-252       0.6237  git                      patch_delta
-55        0.1361  git                      use_pack
-</pre></p><p>which is pretty much what I expected - I did a 'git verify-pack' between --start/--stop, so the time spent with reading the compressed git object database.</p><p>TBH I miss a strace/sudo-like simple wrapper as well...</p>
+<p>So here they go.</p><p>First, I needed a list of packages for rebuild:</p><p><pre>
+wget -O test.html 'http://frugalware.org/packages/?op=file&amp;srch=usr%2Flib%2Fpython2.5&amp;arch=i686&amp;ver=current'
+lynx -dump ./test.html|grep ' [0-9]\+\. \['|sed 's/.*\]\(.*\) .*/\1/' &gt; test.list
+</pre></p><p>Then I used the following cycle:</p><p><pre>
+git checkout -f; for i in $(cat ~/test.list); do echo $i; cd ~/git/python26/source/*/$i || continue; sudo makepkg -t python2
+6,current -C; git clean -x -d -f; sed -i 's|python&gt;=2.5|python&gt;=2.6|g' FrugalBuild; bumppkg -t python26,current --rebuild "-
+ rebuilt with python-2.6" || break; repoman -t python26 -k push; done
+</pre></p><p>When a build failed, I fixed it up manually and used the following aliases:</p><p><pre>
+alias pybuild="sudo makepkg -t python26,current -cu"
+alias pypush="repoman -t python26 -k push"
+alias pyrec='repoman rec "- rebuilt with python-2.6"'
+</pre></p><p>then removed the already built pkgs from the top of test.list and started the for cycle again.</p><p>Once this was done, I did a</p><p><pre>
+git grep 'python&gt;=2.5'
+</pre></p><p>to ensure everything has &amp;gt=2.6 now (except a few cases where a rebuild was not necessary).</p><p>Syncing on x86_64 was like this:</p><p>I generated the package order with:</p><p><pre>
+git log --reverse --no-merges --pretty=oneline master ^origin/master|sed 's/.* \(.*\)-[^-]\+-[^-]\+-i686/\1/' > build.list
+</pre></p><p>Then I started a for cycle as well, but now just ignoring the failed builds:</p><p><pre>
+git checkout -f; for i in $(cat ~/build.list); do echo $i; cd ~/git/python26/source/*/$i || continue; sudo makepkg -t python26,current -C; git clean -x -d -f; makepkg -dgu; rm -rf src; if sudo makepkg -t python26,current -cu; then repoman -t python26 -k push; else echo $i >> ~/broken.list; fi; done
+</pre></p><p>fortunately less then 5% of all pkgs failed.</p><p>OK, that's all.</p>
 </div>
 </div>
 
@@ -110,10 +138,10 @@ samples  %        app name                 symbol name
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/preparing-frugalware-1-0pre2.html">Preparing Frugalware 1.0pre2</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/python-2-6.html">Python 2.6</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sat 10 January 2009</p>
+    <p>Posted on: Sat 27 December 2008</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -121,7 +149,7 @@ samples  %        app name                 symbol name
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>From today it's "freeze" till 13th. Pootle is funny again, it forces converting the po files to UTF-8, while _not_ converting the headers, so they still say latin2 in case of Hungarian translations, grr.</p><p>A guy mailed me for help with my libwpd bindings, but it turned out he wants to use the C# part, so Fridrich just solved his problem <a href="http://cia.vc/stats/author/strbafridrich/.message/128fd3">in CVS</a>.</p>
+<p>Started to work on a python26 WIP repo. About 400 packages will need a rebuild, so it'll be fun. I'll publish all the needed scripts here when I'm done - though most of them is in a "use once, then trow away" style.</p><p>While waiting for the above scripts, I also started to work on converting git's builtin-apply to parseopt. Ideally it would be trivial, but it really have a lot of options, so probably I won't finish that today, either.</p>
 </div>
 </div>
 
@@ -130,50 +158,10 @@ samples  %        app name                 symbol name
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/working-on-merge_trees_simple.html">Working on merge_trees_simple()</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/darcs-fast-export-0-8.html">darcs-fast-export 0.8</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Fri 09 January 2009</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>I just pushed out these <a href="http://repo.or.cz/w/git/vmiklos.git?a=shortlog;h=refs/heads/merge-tree">four commits</a>. Basically they let a libgit user use the functionality which was hardwired to git-merge-tree till now. The idea is from Dscho, so I hope the patches will be welcomed. ;-)</p><p>(I did not sent out any patches for now, since my ls-files parseopt patch isn't in yet, either.)</p><p>Ah and we talked about (in case I'll be home during the summer) if I should re-apply for git in GSoC. Basically I don't want to do it, but I'm very happy that my ex-mentor even recommends me not doing so. Here are his lines:</p><p><blockquote>
-> About reapplying for Git... I would _love_ to have you again, since I know
-> you will get stuff done, and in a very nice way.
->
-> There is always a but.
->
-> But.  Realistically, I think that you learnt so many things in the GSoC
-> project last year, that you do not really have all that much left which
-> you could learn in the Git community.  You really just would be a work
-> horse.
->
-> There are other projects out there who do fantastic and exciting things,
-> and have completely different personal (and political!) environments.
->
-> So while the Git community member says "keep him!", the mentor in me says
-> "let him go!" albeit with half a sad eye.
->
-> Therefore I am strong and point you to <a href="http://code.google.com/soc/2008">http://code.google.com/soc/2008</a>; I
-> even met some of the guys at the mentor summit, and they are all pretty
-> cool.
-</blockquote></p><p>These lines made me happy, really. :-)</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/playing-with-lilypond.html">Playing with lilypond</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Thu 08 January 2009</p>
+    <p>Posted on: Fri 26 December 2008</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -181,7 +169,9 @@ samples  %        app name                 symbol name
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>So lilypond is a really geek-friendly project to produce music notation from text-based files. It has its own cryptic language. I spent a half day playing with it, so I'm not an expert at all, but I achieved something. ;-)</p><p>The example song I wanted to describe is the <a href="http://www.youtube.com/watch?v=-hLarHt6wi8">cantina band</a> from starwars.</p><p>To make the long story short, here is the <a href="http://vmiklos.hu/music/cantina-band/cantina-band.txt">asciidoc source</a>, the <a href="http://vmiklos.hu/music/cantina-band/Makefile">Makefile</a>, and the <a href="http://vmiklos.hu/music/cantina-band">result</a>.</p>
+<p>Whoa, lots of stuff happened.</p><p>darcs-fast-export 0.8 is out and it passes the big-zoo test. (In short AFAIK darcs2git goes to an infinite loop for big repos, the others just produce corrupted results, and d-f-e is the first that can pass that test.)</p><p>I just noticed a bit expensive (since you'll be billed an international fee), but useful sms2irc method, by using <a href="http://www.sms4skype.net/skype/smstoskypeen.asp">sms4skype</a> + bitlbee-skype. :)</p><p>Oh and a trick. We at Frugalware use a hook to update the working dir after every push, so that the new (in git 1.6.1) warning when pushing to a non-bare repo is bogus. The way to disable it is in git-config, manpage, but here it is:</p><p><pre>
+git config receive.denycurrentbranch ignore
+</pre></p>
 </div>
 </div>
 
@@ -190,10 +180,10 @@ samples  %        app name                 symbol name
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/bitlbee-skype-0-7.html">bitlbee-skype 0.7.0</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/frugalware-xmas-logo.html">Frugalware Xmas logo</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Wed 07 January 2009</p>
+    <p>Posted on: Thu 25 December 2008</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -201,11 +191,7 @@ samples  %        app name                 symbol name
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>It's out, the only recent change is that I added a new setting to be able to see what is the raw stream BitlBee received. The other interesting part is that after the release I finally decided to split up that huge read callback and now each part is handled by a separate function, and I have a nice array of function pointers. BTW, this also made checkpatch happy about skype.c without doing hacks like:</p><p><pre>
-printf("%s %s",
-        foo,
-        bar);
-</pre></p><p>Which would really just make the code ugly.</p><p>Yay! :)</p>
+<p>phayz just pushed out a <a href="http://frugalware.org/news/120">special Frugalware logo</a> for Xmas, I like it. :)</p><p>BTW it's interesting, my sister got an English bible and it claims that "to make it easier to read it more fluently and accurately, it's 'anglicised'." Not sure if that's really true, especially that young people like me typically learn a lot of words and expressions from movies and series...</p>
 </div>
 </div>
 
@@ -214,10 +200,10 @@ printf("%s %s",
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/migrating-git-ls-files-to-use-parseopt.html">Migrating git-ls-files to use parseopt</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/frugalware-darcs-repo-in-the-darcs-big-z.html">Frugalware darcs repo in the darcs "big-zoo"</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Tue 06 January 2009</p>
+    <p>Posted on: Wed 24 December 2008</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -225,7 +211,7 @@ printf("%s %s",
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>People say that using bitfields in structs is slow. Of course it reduces memory usage, but the aritmetic is slower than just using pointers.</p><p>But my real problem is that if a struct uses bitfields, I can't just pass foo-&gt;bar as a pointer. And I hate that. When migrating ls-files to parseopt, I needed to write 3 extra callback functions just because of this.</p><p>Grr.</p>
+<p>"big-zoo" is a collection of darcs repos, the darcs developers do benchmarks using this collection from release to release.</p><p>Recently our old Frugalware repo <a href="http://code.haskell.org/darcs/big-zoo/">has been added</a>, which is good, for multiple reasons.</p><p>First, now I can say that the reference for a good darcs exporter is the big-zoo, our old repo contains weird patches which were not yet part of "big-zoo" so far. Not that I'm evil, but I want to show that currently darcs-fast-export is the only exporter that can correctly convert all the repos in "big-zoo".</p><p>Second, it is a huge repo, so developers can how see the corner cases where darcs is really slow for a huge repo - though the GHC one was already included which is almost as big as our one and the most annoying cases are already optimized recently. (No, of course I can't compare it to git, I compare it to darcs-1.x.)</p>
 </div>
 </div>
 
@@ -234,10 +220,10 @@ printf("%s %s",
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/non-optional-kbd.html">Non-optional kbd</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/next-step-in-the-tailor-creates-corrupte.html">Next step in the "tailor creates corrupted repos" story</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Mon 05 January 2009</p>
+    <p>Posted on: Tue 23 December 2008</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -245,7 +231,7 @@ printf("%s %s",
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>Still preparing for my 'Computer Networks' exam, so I did not do much coding.</p><p>LGee just uploaded a few new pictures about his servers, and there are two interesting ones. ;-)</p><p>First is this one. And then yes, I must agree that some mainboards are really can't be used a server.</p><p>This other one is just interesting - first we though that's a bug in the Frugalware ppc installer, then later it turned out to be a generic Linux-ppc issue.</p>
+<p>I've just added a <a href="http://progetti.arstecnica.it/tailor/ticket/171#comment:3">new comment</a> to the previously mentioned ticked. In short, it seems that darcs what -s --xml is horribly broken, and tailor heavily relies on this, so darcs-fast-export did.</p><p>I just removed this for now - maybe later I'll write my own patch parser, but that does not have a high priority in my TODO.</p><p>I want to cut a release in case all the test conversions in the "darcs-benchmark" repo passes fine, but that will take 2-3 days, I guess.</p>
 </div>
 </div>
 
@@ -254,10 +240,10 @@ printf("%s %s",
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/gmane-export.html">gmane export</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/persistent-channel-names-in-bitlbee.html">Persistent channel names in BitlBee</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sun 04 January 2009</p>
+    <p>Posted on: Mon 22 December 2008</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -265,7 +251,18 @@ printf("%s %s",
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>OK, this was silly.</p><p>Yesterday I wanted to reply to a post on the swig mailing list. I found the post on nabble.com, which is way worse than gmane.org, but - I guess - due to SEO black magic Google prefers the previous. So I searched for the mail on gmane.org, appended the usual /raw to the mail, but I still did not get a mbox, to feed it to mutt. Given that I had no idea what do to, I just simply wrote an mbox header, then mutt was able to open it.</p><p>And finally it turns out that gmane <a href="http://gmane.org/export.php">has a nice export feature</a>. Duh! ;-)</p>
+<p>See <a href="http://bugs.bitlbee.org/bitlbee/ticket/469">this ticket</a>. The idea is not to use "chat_randomnumber" as channel name, so that irssi can remember the layout.</p><p>We'll see how wilmer will welcome the idea. ;-)</p><p>OTOH, I still hate bzr:</p><p><pre>
+$ bzr pull
+Using saved location: <a href="http://code.bitlbee.org/bitlbee/">http://code.bitlbee.org/bitlbee/</a>
+Format &lt;RepositoryFormatKnit1&gt; for <a href="http://code.bitlbee.org/.bzr/">http://code.bitlbee.org/.bzr/</a> is deprecated - please use 'bzr upgrade' to get better performance
+No revisions to pull.
+$ bzr upgrade
+bzr: ERROR: The branch format Bazaar-NG meta directory, format 1 is already at the most recent format.
+</pre></p><p>I guess it refers to the server repo, but PLEASE, why should I care about it? It's not my repo!</p><p>And again something else. I just started using tuxguitar. I like it, but having sound in it was not trivial. It turns out that the working setup is to run
+<pre>
+timidity -iA -Os
+</pre>
+and then disable the oss output plugin, enable alsa, and choose the timidity midi output in the sounds settings in tuxguitar.</p>
 </div>
 </div>
 
@@ -274,10 +271,10 @@ printf("%s %s",
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/pacman-g2-qt-bug.html">pacman-g2 -Qt bug</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/bookmarks-in-bitlbee-skype.html">bookmarks in bitlbee-skype</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sat 03 January 2009</p>
+    <p>Posted on: Sun 21 December 2008</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -285,7 +282,7 @@ printf("%s %s",
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>BMH still feeds me with info, he just found a -Qt bug - fortunately the fix was rather trivial.</p><p>The nontrivial stuff is that he wants callbacks in the Python bindings and it seems that won't be easy. The reason is that - it seems, I don't have a working implementation yet - we'll need the traditional 'void *data' extra parameters in each callback to support that, since we need to store the Python context pointer somewhere.</p><p>Of course first I want to have the whole thing working, before breaking the API with no good reason.</p><p>The whole idea is based on <a href="http://www.nabble.com/Automatically-generated-callbacks-using-directors-(python)-td19239301.html">this</a> post. The provided examples work fine, at least.</p><p>Snip. Dscho mailed me today with a project list about what could I do in Git - the two items are a major merge-recursive rework, the other is about packv4. I could learn a lot with both, my interest is in this order. But that's not yet in coding status, we're just discussing the details ATM.</p>
+<p>Yesterday macmaN on #bitlbee poked me about how would it be possible to rejoin existing groupchats after connect automatically. It turned out that Skype has support for Jabber-like bookmarks, and it wasn't too hard at all to <a href="http://vmiklos.hu/gitweb/?p=bitlbee-skype.git;a=commitdiff;h=17809b7f0dbf6977544243eb36ed6a3c1caea8c5">implement it</a>.</p><p>I want this to settle down then I'll be ready to release 0.7 next year, I hope.</p>
 </div>
 </div>
 

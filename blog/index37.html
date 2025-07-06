@@ -58,321 +58,6 @@
 
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/systemd-2.html">Systemd Podcast</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Mon 20 December 2010</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>I just found
-<a href="http://media.libsyn.com/media/linuxoutlaws/linuxoutlaws160.ogg">this</a>
-podcast, it&#8217;s a bit dated since it happened in August and things have
-been improved a bit since then, but still I was happy to listen it. (The
-interesting part starts at 1:10:50; 17 minutes.)</p></div>
-<div class="paragraph"><p>I already had a short <a href="https://vmiklos.hu/blog/systemd.html">post</a> about systemd, and I
-mentioned the killer feature for me is the compact distro-independent
-service file (initscript for sysvinit) format it uses, since even if the
-initscript format we use in Frugalware right now is mostly
-bullshit-free, it&#8217;s still more bloated than the systemd service files.</p></div>
-<div class="paragraph"><p>Now back to why I began writing this post. :) So there is
-<a href="http://0pointer.de/blog/projects/systemd.html">the post</a> about systemd,
-but it&#8217;s rather long, and it&#8217;s easy to miss the point. Since the
-previous post, I think there are a few more killer features in systemd:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-Every service is started in a separate control group (cgroup). Do you
-  remember the situation when you wanted to know who the hell started a
-  given particular process? This is typically a problem if the process is
-  running as root. Now this is no longer a problem, systemd-cgls will show
-  you if it was started by a user or a given service, etc. (Yes, I
-  consider this a security feature.)
-</p>
-</li>
-<li>
-<p>
-Upstart already had this "restart if it crashed" feature, but systemd
-  does it better: if the daemon supports socket activation, then
-  messages sent to the socket are buffered by the kernel, and no message
-  will be lost during the restart.
-</p>
-</li>
-<li>
-<p>
-systemd provides this on-demand feature, which is pretty much like
-  inetd, so hopefully we can get rid of inetd, which was a constant
-  problem previously. (We inherited a fork of the OpenBSD inetd from
-  Slackware, and being a fork it did not improve since years, causing a
-  constant problem.)
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>Why writing this post today? Because this morning systemd
-<a href="http://frugalware.org/packages/103609">appeared</a> in -current, so you can
-even <a href="http://wiki.frugalware.org/index.php/Systemd#Installation">try it
-out</a> without installing any unofficial package.</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/splashy-vs-systemd.html">Splashy vs. systemd</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Wed 15 December 2010</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>So we have this <a href="http://wiki.frugalware.org/index.php/Systemd">systemd wip
-repo</a> and one of the remaining todo items was to fix up splashy to work
-with systemd.</p></div>
-<div class="paragraph"><p>First, why doesn&#8217;t it out of the box of systemd is a drop-in
-replacement? Because splashy is not a simple init script, it hooks
-itself to <code>rc.sysvinit</code>, so it was specific to sysvinit.</p></div>
-<div class="paragraph"><p>Now given that plymouth was already ported to systemd, it served as a
-good example. You may also ask: why don&#8217;t we just switch to plymouth?
-Because:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-we don&#8217;t want to introduce multiple changes at the same time
-</p>
-</li>
-<li>
-<p>
-it
-  <a href="http://fedoraproject.org/wiki/Releases/FeatureBetterStartup#User_Documentation">requires
-  kms</a>, while Splashy did not require it - so as long as it&#8217;s not true
-  that most video cards support kms (think of via or anything else which
-  supports vesafb, but not kms), such a switch would be a regression
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>Okay, enough anti-Plymouth rant. As you can see, right now the task is to fix Splashy.</p></div>
-<div class="paragraph"><p>The steps I did were:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-updated the Splashy theme to remove the progressbar: given that now we
-  start services parallel and on-demand, it does not really make too
-  much sense
-</p>
-</li>
-<li>
-<p>
-introduced unit files: to start on boot, to stop before getty/xorg, to
-  start before kexec/reboot/halt/poweroff
-</p>
-</li>
-<li>
-<p>
-added the usual compatibility symlinks to avoid starting the old
-  rc.splash (which would happen anyway)
-</p>
-</li>
-<li>
-<p>
-added a simple wrapper that fires up splashy and once it&#8217;s ready it
-  sends the Booting&#8230;/Rebooting&#8230;/etc text to it
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>The last problem is a bit more complex: now that xorg startup wants to
-stop splashy, a dependency has to be declared. xorg startup is handled
-by <code>prefdm.service</code>, but in case it depends on <code>splashy-quit.service</code>,
-what will happen if you don&#8217;t have or don&#8217;t want a splash?</p></div>
-<div class="paragraph"><p>The solution for now is to declare an <code>After=</code> relation: that means xorg
-startup will happen after the quit of splashy, if it happens at all.</p></div>
-<div class="paragraph"><p>This way:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-you can disable the splash, it won&#8217;t cause any dependency errors
-</p>
-</li>
-<li>
-<p>
-if you don&#8217;t have <code>prefdm.service</code> enabled, you can even have splashy
-  uninstalled
-</p>
-</li>
-<li>
-<p>
-(this one is a bit ugly) you can disable the splash, but if you
-  uninstall it and have <code>prefdm.service</code> enabled, you&#8217;ll get a
-  dependency error, as systemd will have no idea what
-  <code>splashy-quit.service</code> is.
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>To test the above:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-you need to enable the systemd wip repo (see the link above)
-</p>
-</li>
-<li>
-<p>
-run <code>pacman-g2 -Sy systemd</code>
-</p>
-</li>
-<li>
-<p>
-boot with <code>init=/bin/systemd</code>
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>Stay tuned, we still have a few blocker issues before merging the
-(disabled by default, as you need that kernel parameter) systemd support
-to current.</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/the-book-of-eli.html">The Book of Eli</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Mon 13 December 2010</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="/pic/the-book-of-eli.t.jpg" alt="/pic/the-book-of-eli.t.jpg" />
-</div>
-</div>
-<div class="paragraph"><p>Stilusos film a maganyos harcosrol, akirol a film vegen egesz erdekes
-dolog derul ki. ;)</p></div>
-<div class="paragraph"><p>(<a href="http://www.imdb.com/title/tt1037705/">imdb</a>, <a href="http://www.youtube.com/watch?v=2ud4gZQcPac">trailer</a>)</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/amtterm.html">amtterm</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Sat 11 December 2010</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 3 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>So we have two machines next to each other: genesis and helicon. The
-original idea years ago was to put a serial cable between the two so
-that it&#8217;s possible to manage the machines even in case ssh dies for some
-reason. Of course we never did that, because we were lazy - but in the
-meantime both machines were replaced by a newer mainboard, supporting
-<a href="http://www.intel.com/technology/platform-technology/intel-amt/">Intel
-AMT</a>.</p></div>
-<div class="paragraph"><p>In short, this is a poor man&#8217;s IP console, it supports serial-over-lan,
-so with a bit of configuration and a special client tool you can control
-grub, watch the bootup process (will you miss the risky few minutes
-after a reboot till it turned out if a remote machine boots up after a
-kernel upgrade or not?) and finally can even log in when ssh is not
-running.</p></div>
-<div class="paragraph"><p>First you need to set up grub to listen on the serial port as well. To
-do this, you need to know the device name and I/O port of your
-serial-over-lan port. The boxes mentioned above have one physical and
-one virtual serial port, so we need the later - that will be
-<code>/dev/ttyS1</code>. Now let&#8217;s grep in dmesg to get the port:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>$ dmesg|grep 'ttyS1 at'
-0000:00:03.3: ttyS1 at I/O 0xf1c0 (irq = 17) is a 16550A</code></pre>
-</div></div>
-<div class="paragraph"><p>Now we know everything to set up grub. Just prepend the following lines
-to your <code>/boot/grub/menu.lst</code>:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>serial --port=0xf1c0 --speed=115200
-terminal --timeout=30 console serial</code></pre>
-</div></div>
-<div class="paragraph"><p>The speed is AFAIK the same for each SoL port, so you can just
-copy&amp;paste it.</p></div>
-<div class="paragraph"><p>It&#8217;s also recommended to change the timeout line to 30 as well, this way
-you will have half minute to press any key to tell grub you want to
-control is on the serial port and you&#8217;ll again have half minute to hit
-any key to edit the kernel parameters, etc. (The whole grub part is
-useful because this way in case you upgraded the machine and it fails to
-boot up, you can still boot using init=/bin/sh and fix the system.)</p></div>
-<div class="paragraph"><p>Second, you want to see the boot process, this way you can fix the
-system remotely, even if fsck fails and asks for root password, etc.</p></div>
-<div class="paragraph"><p>For this, you need to change your kernel parameters, so that messages
-sent to <code>/dev/console</code> will end up on the serial port.</p></div>
-<div class="paragraph"><p>I changed</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>root=/dev/md0 ro quiet vga=791</code></pre>
-</div></div>
-<div class="paragraph"><p>to</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>root=/dev/md0 ro vga=normal nomodeset console=ttyS1,115200</code></pre>
-</div></div>
-<div class="paragraph"><p>and that achieved this.</p></div>
-<div class="paragraph"><p>Third, you want to start a getty on ttyS1 once the machine booted up, in
-case ssh fails to start up. If you don&#8217;t use systemd yet, add the following
-line to <code>/etc/inittab</code>:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>s1:12345:respawn:/sbin/agetty ttyS1 115200 vt100-nav</code></pre>
-</div></div>
-<div class="paragraph"><p>(Don&#8217;t forget to run <code>init q</code> to reload the config!)</p></div>
-<div class="paragraph"><p>Finally, you need <a href="http://dl.bytesex.org/releases/amtterm/">amtterm</a> on
-the client side - I plan to package it for Frugalware once 1.4pre2 is
-out. Till then you can just download, unpack and build the source
-tarball using <code>make</code> - no installation is necessary, you can run
-<code>amtterm</code> in-place. In my case I can&#8217;t connect directly to the machine
-as (for obvious reasons) the AMT is reachable from the local subnet
-only. So I build an ssh tunnel to the other machine and use <code>socksify</code>
-to pretend I run amtterm on the local subnet. The commandline I use is:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>$ socksify ./amtterm -p &lt;pass&gt; &lt;ip&gt;</code></pre>
-</div></div>
-<div class="paragraph"><p>And that&#8217;s it - enjoy editing your kernel parameters, watching your boot
-process and login to the box even if ssh is not running and you don&#8217;t
-have IP console. :)</p></div>
-<div class="paragraph"><p>If you can&#8217;t try it out right now but you want to see it in action:
-<a href="http://frugalware.org/~vmiklos/pics/shots/helicon-amt-grub.png">grub
-in amtterm</a> and
-<a href="http://frugalware.org/~vmiklos/pics/shots/helicon-amt.png">boot
-in amtterm</a> - without any virtualization! ;)</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/wikipedia-spam.html">How to get rid of Wikipedia spam header</a></h1>
   </div>
   <div class="article_meta">
@@ -496,23 +181,65 @@ have self-documenting function names, etc.</p></div>
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/jgit-ea.html">JGit eloadas</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/pdf-duplex-printing.html">Poor man's PDF duplex printing</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Wed 01 December 2010</p>
+    <p>Posted on: Sat 27 November 2010</p>
   </div>
   <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
+    <p>Estimated read time: 2 minutes</p>
   </div>
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<div class="paragraph"><p>Holnap lesz 5 hete, hogy eloadtam JGit / EGit / Gerrit temaban a BME-n,
-<a href="https://www.vik.bme.hu/kepzes/targyak/VIIIAV51">e targy</a> kereteben. Az
-elaodas eleje gyakorlatilag copy&amp;paste a korabbi Git eloadasombol, de
-mivel a targy kifejezetten Javaval foglalkozik, igy az elobb emlitett
-harom temat is feloleli. A slide-ok megtalalhatoak a
-<a href="http://vmiklos.hu/odp/">szokasos helyen</a>.</p></div>
+<div class="paragraph"><p>Yesterday I wanted to print a PDF document: two pages per sheet, and of
+course I wanted duplex printing as well (on the short side).</p></div>
+<div class="paragraph"><p>Given that the hardware (the printer) was not capable of duplex
+printing, I needed some software workaround. If you want one page per
+sheet, this is trivial, as the print dialog of any PDF reader will let
+you select "odd pages", then you re-feed the printer with the output
+paper and you select "even pages" and that&#8217;s it.</p></div>
+<div class="paragraph"><p>OTOH, if you want 2 pages per sheet, then first you need some trick
+first to create two PDF from the original: the first containing the
+pages 1, 2, 5, 6, etc. - and the other containing 3, 4, 7, 8, etc.</p></div>
+<div class="paragraph"><p>After all this isn&#8217;t really hard using <code>pdftk</code>. First, the input PDF was
+around 150 pages, so I wanted to split the input to one file / page:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>pdftk in.pdf burst output out/%03d.pdf</code></pre>
+</div></div>
+<div class="paragraph"><p>Then let&#8217;s move the pages to the subdirs <code>a</code> or <code>b</code>, based on the above
+pattern:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>cd out
+mkdir a b
+<span style="font-weight: bold"><span style="color: #0000FF">for</span></span> i <span style="font-weight: bold"><span style="color: #0000FF">in</span></span> <span style="color: #990000">*.</span>pdf
+<span style="font-weight: bold"><span style="color: #0000FF">do</span></span>
+        <span style="color: #009900">base</span><span style="color: #990000">=</span><span style="color: #009900">$(</span>basename <span style="color: #009900">$i</span> <span style="color: #990000">.</span>pdf<span style="color: #990000">)</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">if</span></span> <span style="color: #990000">[</span> <span style="color: #009900">$base</span> -lt <span style="color: #993399">100</span> <span style="color: #990000">];</span> <span style="font-weight: bold"><span style="color: #0000FF">then</span></span>
+                <span style="color: #009900">rem</span><span style="color: #990000">=</span><span style="color: #009900">$(</span><span style="color: #990000">(</span><span style="color: #009900">$(</span>echo <span style="color: #009900">$i</span><span style="color: #990000">|</span>sed <span style="color: #FF0000">'s/^0</span><span style="color: #CC33CC">\+\(</span><span style="color: #FF0000">.*</span><span style="color: #CC33CC">\)\.</span><span style="color: #FF0000">pdf/</span><span style="color: #CC33CC">\1</span><span style="color: #FF0000">/'</span><span style="color: #990000">)%</span><span style="color: #993399">4</span><span style="color: #990000">))</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">else</span></span>
+                <span style="color: #009900">rem</span><span style="color: #990000">=</span><span style="color: #009900">$(($base%4))</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">fi</span></span>
+        <span style="font-weight: bold"><span style="color: #0000FF">if</span></span> <span style="color: #990000">[</span> <span style="color: #FF0000">"$rem"</span> <span style="color: #990000">=</span> <span style="color: #993399">1</span> -o <span style="color: #FF0000">"$rem"</span> <span style="color: #990000">=</span> <span style="color: #993399">2</span> <span style="color: #990000">];</span> <span style="font-weight: bold"><span style="color: #0000FF">then</span></span>
+                mv <span style="color: #009900">$i</span> a
+        <span style="font-weight: bold"><span style="color: #0000FF">else</span></span>
+                mv <span style="color: #009900">$i</span> b
+        <span style="font-weight: bold"><span style="color: #0000FF">fi</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">done</span></span></tt></pre></div></div>
+<div class="paragraph"><p>Finally concat the files from the <code>a</code> and the <code>b</code> dir to a single file:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>cd a
+pdftk *.pdf cat output ../a.pdf
+cd ../b
+pdftk *.pdf cat output ../b.pdf</code></pre>
+</div></div>
+<div class="paragraph"><p>That&#8217;s it!</p></div>
 </div>
 </div>
 
@@ -521,10 +248,10 @@ harom temat is feloleli. A slide-ok megtalalhatoak a
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/inception.html">Inception</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/libwpd-bindings.html">libwpd-bindings-0.1.0</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Tue 30 November 2010</p>
+    <p>Posted on: Fri 26 November 2010</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -532,14 +259,212 @@ harom temat is feloleli. A slide-ok megtalalhatoak a
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
+<div class="paragraph"><p>I tried to search back when did I create Java bindings for libwpd - it
+seems
+<a href="http://vmiklos.hu/gitweb/?p=libwpd-old.git;a=commit;h=2ee19c1e5e3b5cc28db8c9dc9aa7e6116e62b730">this</a>
+was the first commit.</p></div>
+<div class="paragraph"><p>First I kept back the source code to get some money for it (there were a
+customer who seemed to be willing to pay, but then disappeared), then I
+just abandoned the idea and pushed it to
+<a href="http://libwpd.sourceforge.net/">SourceForge.net</a> to some
+<a href="http://libwpd.cvs.sourceforge.net/viewvc/libwpd/libwpd2-bindings/">CVS
+repo</a>, (I even mentioned it in a
+<a href="https://vmiklos.hu/blog/preparing-frugalware-1-0pre2.html">blog post</a>), which is finally
+now converted to
+<a href="http://libwpd.git.sourceforge.net/git/gitweb.cgi?p=libwpd/libwpd-bindings;a=summary">git</a>.</p></div>
+<div class="paragraph"><p>Long story short, a week ago finally Fridrich
+<a href="http://sourceforge.net/projects/libwpd/files/libwpd-bindings/download">released</a>
+the first version of the code, after about 2.75 years. :)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/osl-trace.html">OSL_TRACE()</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Wed 24 November 2010</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>Background: <code>OSL_TRACE()</code> is an internal LibreOffice macro that is like
+<code>printf()</code>, but it&#8217;s only enabled in debug mode. Without it, you would
+add a debug printf during development:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #000000">printf</span></span><span style="color: #990000">(</span><span style="color: #FF0000">"debug, foo</span><span style="color: #CC33CC">\n</span><span style="color: #FF0000">"</span><span style="color: #990000">);</span></tt></pre></div></div>
+<div class="paragraph"><p>then you would comment it out when the code started working,:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900">//printf("debug, foo\n");</span></span></tt></pre></div></div>
+<div class="paragraph"><p>then remove the comment when it breaks again, etc.</p></div>
+<div class="paragraph"><p>In the past, if you built a LibreOffice module, then you executed:</p></div>
+<div class="listingblock">
 <div class="content">
-<img src="/pic/inception.t.jpg" alt="/pic/inception.t.jpg" />
+<pre><code>build</code></pre>
+</div></div>
+<div class="paragraph"><p>inside a module, and in case you wanted debug symbols and such messages you built using:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>build debug=t</code></pre>
+</div></div>
+<div class="paragraph"><p>which increased the debug level to 2 (from 0), where 1 is required for
+debug symbols, 2 for debug messages. (See the OOo
+<a href="http://wiki.services.openoffice.org/wiki/Debug_Levels">wiki page</a>.)</p></div>
+<div class="paragraph"><p>The recent update, why I&#8217;m writing this post: Now this has been
+<a href="http://cgit.freedesktop.org/libreoffice/bootstrap/commit/?id=47d09469e96485f93623a6fbeb42f709c2ce49bb">changed</a>,
+and <code>debug=t</code> gives you debug symbols only, but no extra debug output.
+While this is
+<a href="http://lists.freedesktop.org/archives/libreoffice/2010-November/002894.html">great
+in most cases</a>, sometimes you still want the old behaviour to get the
+debug messages. In that case the solution (as pointed out in the mailing
+list post) is to use:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>build debug=t dbglevel=2</code></pre>
+</div></div>
+<div class="paragraph"><p>(Hopefully this post will be handy for who missed that post, like I did
+the first time.)</p></div>
 </div>
 </div>
-<div class="paragraph"><p>Zsenialis film a repulon, kocsiban, hotelban, hoban es tengerparon
-tengerparton jatszodo almokrol. ;)</p></div>
-<div class="paragraph"><p>(<a href="http://www.imdb.com/title/tt1375666/">imdb</a>, <a href="http://www.youtube.com/watch?v=mmkQ7fw-l0g">trailer</a>)</p></div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/systemd.html">Systemd</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Tue 23 November 2010</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>I first heard about
+<a href="http://freedesktop.org/wiki/Software/systemd">systemd</a> from
+<a href="http://frugalware.org/~voroskoi/">voroskoi</a>, later
+<a href="http://people.gnome.org/~michael/blog/">Michael</a> pointed it out again
+during the <a href="http://www.ooocon.org/index.php/ooocon/2010">OOoCon 2010</a>,
+finally it somehow came up on <code>#frugalware.dev</code> today.</p></div>
+<div class="paragraph"><p>So I read up some documentation in this area, and I definitely like it.
+(Note: I didn&#8217;t say I&#8217;m willing to do all the work to integrate this
+into Frugalware, but I like the idea.) For me, the killer post is
+<a href="http://0pointer.de/blog/projects/systemd-for-admins-3.html">this one</a>: a
+distro-independent init script in 8 lines is very much like our
+<code>FrugalBuild</code> scripts which are no longer than 11 lines for a project
+with a standard build-system.</p></div>
+<div class="paragraph"><p>I like that minimalism a lot.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/rejourn-vanilla.html">Rejourn: Using an unpatched version</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Thu 18 November 2010</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>One may have noticed that right now my
+<a href="http://vmiklos.hu/gitweb/?p=rejourn.git;a=summary">rejourn tree</a> is
+empty. That&#8217;s not an accident, after Ram accepted my 15th patch, finally
+the site runs an unpatched version of <a href="https://vmiklos.hu/blog/rejourn.html">rejourn</a> - of
+course with a custom config and design.</p></div>
+<div class="paragraph"><p>Of course I still have a few ideas on what to improve, so this is not
+the end of the story, but still - I&#8217;m happy he was so open for changes
+and new features that we reached this post. :)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/gpsbabel-split.html">How to split gpx files using gpsbabel</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Wed 17 November 2010</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>I usually just download the gpx track from my GPS and delete the track
+from device each time I arrive home and I was at some interesting place
+before. Last week this was not the case, I was at
+<a href="http://maps.google.com/?q=Gy%FAr%F3,+Hungary">Gyúró</a> two weeks ago, then
+I borrowed by device, without clearing the log from it.</p></div>
+<div class="paragraph"><p>So the task was easy: I had a timestamp and I had the full log from the
+device, and I want to split it: before and after a given timestamp. It
+turned out that I had some log from Oct 28th as well, so I wanted:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+The log till Oct 28th
+</p>
+</li>
+<li>
+<p>
+The log between Nov 5th and 8th
+</p>
+</li>
+<li>
+<p>
+The log after 10th.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Luckily the
+<a href="http://www.gpsbabel.org/htmldoc-1.3.0/filter_track.html">gpsbabel
+documentation</a> is quite clear in this area (see Example 4.8), I just
+needed the following commands:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>$ gpsbabel -t -i gpx -f in.gpx -x track,stop=20101028 -o gpx -F out1.gpx
+$ gpsbabel -t -i gpx -f in.gpx -x track,start=20101105,stop=20101108 -o gpx -F out2.gpx
+$ gpsbabel -t -i gpx -f in.gpx -x track,start=20101110 -o gpx -F out3.gpx</code></pre>
+</div></div>
+<div class="paragraph"><p>Update: two more notes:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+the stop is exclusive, start is inclusive
+</p>
+</li>
+<li>
+<p>
+when using the result in digikam, the camera time zone has to be set to "manual: gmt+0", even if both the gpx result and the camera time is in local time
+</p>
+</li>
+</ul></div>
 </div>
 </div>
 
