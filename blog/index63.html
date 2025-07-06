@@ -58,10 +58,10 @@
 
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/incremental-bzr-g-git-conversion.html">incremental bzr -> git conversion</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/dhcpcd-vs-zeroconf.html">dhcpcd vs zeroconf</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Thu 10 January 2008</p>
+    <p>Posted on: Thu 04 October 2007</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -69,33 +69,7 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>i recently had problems with bzr -> git conversion using tailor and now Lele pulled my patches so here is a mini-howto about how i did the conversion.</p><p>i did all this in a ~/scm/tailor/bitlbee dir (to convert the bitlbee bzr repo), but of course you can do it somewhere else, too.</p><p>create the dir and place there the tailor config. mine is like:</p><p><code>
-$ cat bitlbee.conf
-[DEFAULT]
-verbose = True
-[bitlbee]
-target = git:target
-start-revision = INITIAL
-root-directory = /home/vmiklos/scm/tailor/bitlbee
-state-file = bitlbee.state
-source = bzr:source
-subdir = bitlbee.git
-[bzr:source]
-repository = /home/vmiklos/scm/tailor/bitlbee/bitlbee.bzr
-[git:target]
-repository = /home/vmiklos/scm/tailor/bitlbee/bitlbee.git
-</code></p><p>and here is the update script:
-<code>
-$ cat update.sh
-#!/bin/sh -e
-cd <code>dirname $0</code>
-cd bitlbee.bzr
-bzr pull
-cd ..
-tailor -c bitlbee.conf
-</code></p><p>to update the import daily i added the followings to my crontab:</p><p><code>
-40 4 * * * ~/scm/tailor/bitlbee/update.sh &>/dev/null
-</code></p><p>and we're ready, you'll have a daily updated git import.</p><p>one minor note: the bitlbee.git dir is a non-bare repo and it's also a bzr repo which is not a problem (you can clone it and gitweb handles it) but if you plan to switch to git later, you probably want to clone it once get rid of that junk :)</p>
+<p>maybe you know a situation that is regular for me: when testing a new wireless network - if dhcp is misconfigured, dhcpcd would just have to timeout. though - thanks to zeroconf support - it uses to pick up some ip addresses instead, making debugging hard. so here is a trick to disable zeroconf support (so that dhcpcd will just timeout):</p><p>append</p><p><code>dhcp_opts = -L</code></p><p>to your /etc/sysconfig/network/default (or other) profile for the section of the wireless interface</p>
 </div>
 </div>
 
@@ -104,30 +78,10 @@ tailor -c bitlbee.conf
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/ten-goals-we-reached-in-2007.html">ten goals we reached in 2007</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/rtorrent-with-dht-support.html">rtorrent with dht support</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Mon 31 December 2007</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>..continuing <a href="http://blogs.frugalware.org/vmiklos/2006/12/31/p276">last year's article</a>. so another year passed by and it's time to look back and see what we did during 2007. probably i miss a lot of stuff but here is my list:</p><p>1) ability to go back in the installer to a previous point if you missed something. do you remember the days when one had to reboot if he/she wanted to do so? :)</p><p>2) compiz improvements. this is now settled down in current and it's pretty sane. we cleaned up the old compiz and beryl, we have a single compiz-fusion, it has a nice step by step documentation and it works fine both for kde and gnome.</p><p>3) asciidoc. i think we highly improved our documentation since we switched from latex to asciidoc. a user manual of 98 pages in a nice pdf format is cute, isn't it? :)</p><p>4) newsletters. Alex started to issue newsletters and recently phayz helped out us, so it's alive again. i think it's something great.</p><p>5) yugo. 'factory' was our previous i686 build server, it was a very old machine with a cpu of 300mhz and so on. it was time to replace it and now yugo does the job.</p><p>6) fwlive. this was an old project but only test versions were available, based on old frugalware versions. now there is a live version of every released version of frugalware, thanks to janny, boobaa and ironiq. great!</p><p>7) gnetconfig. the first graphical config tool from priyank. i'm really bad at any graphical programming, so i'm glad to see finally we started to work on guis.</p><p>8) gfpm. something users always wanted and now it's here. a true graphical package manager, which is not just a wrapper but properly uses libpacman. awesome.</p><p>9) fun. this is our update manager which can sit on the system tray (or whatever i should call kicker not to be kde specific ;) ) and notifies you if there is something to update. i'm sure this is more comfortable compared to watching the -security mailing list for updates or doing a -Syu daily :)</p><p>10) syncpkgd2. if you remember, the old method was that there were only clients and they tried to figure out what to build, they built and uploaded the packages. this was very suboptimal: it allowed only one buildserver / arch and it was slow. okay, being slow is the smaller problem, but every buildserver was a single point of failure. nowadays we have two i686 buildservers (thanks to boobaa) and it's theoretically it's possible to have two x86_64 buildservers, too. so even if one i686 buildserver is down, i can be at the beach, sipping a mojito :)</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/using-reverse-ssh-tunnels.html">using reverse ssh tunnels</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Wed 19 December 2007</p>
+    <p>Posted on: Wed 03 October 2007</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -135,12 +89,10 @@ tailor -c bitlbee.conf
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>okay, i learned something today :)</p><p>you have a client behind a firewall and you have a server somewhere. and you want to ssh from the server to the client. that's exactly why ssh has a magic -R option!</p><p>if you do an</p><p><code>$ ssh -R 19022:localhost:22 server</code></p><p>that will mean that you can ssh to client:22 on the server by sshing to localhost:19022 on the server. yes, and it works even if the client is behind a firewall, yay! :)</p><p>update:</p><p>you probably want to add this to your ~/.ssh/config on the server as well:</p><p><pre>
-Host client
-        NoHostAuthenticationForLocalhost yes
-        HostName localhost
-        Port 19022
-</pre></p><p>so that you can easily just type</p><p><code>$ ssh client</code></p><p>on the server</p>
+<p>dht support means support for trackerless torrents</p><p>currently rtorrent does not support it, but after a bit googling, i've found <a href="http://libtorrent.rakshasa.no/ticket/98">this ticket</a>. it mentions that there is a patch <a href="http://tk.ttdpatch.net/~jdrexler/dht/">here</a>. so i've split up the patch for libtorrent and rtorrent and uploaded these packages to my <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/bmf/">bmf</a> repo.</p><p>you need to add two extra lines to your ~/.rtorrent.rc:</p><p><pre>
+dht = auto
+dht_port = 6986
+</pre></p><p>of course the port can be anything else.</p><p>during testing, i had one "server" - where i had the test file already - and one "client" - where i had only the torrent.</p><p>i opened one port for torrent communication and one port for the dht server on the server, of course no ports were open on the client. and yes, it did work fine! :)</p><p>(<a href="http://frugalware.org/~vmiklos/pics/shots/trackerless.png">screenshot</a>)</p><p>let's hope the patch will be included in the vanilla rtorrent soon!</p>
 </div>
 </div>
 
@@ -149,50 +101,10 @@ Host client
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/svn-ggit-conversion-using-git-svn.html">svn->git conversion using git-svn</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/using-git-request-pull.html">using git request-pull</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sun 09 December 2007</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>git-svnimport will be removed in git-1.5.4 and i don't think it's tirival to use git-svn (which is great for bi-directional work) to properly convert an svn repo (with multiple branches) to a git one, so here is a recipe.</p><p>first, just use git-svn to create a git-svn repo. it's a git repo but it's a bit weird, it contains metadata which is necessary for bi-directional operations and you won't see the branches by default when you clone it. ah and it's not a bare repo.</p><p>in this example i'll convert ooo-build's svn repo (it has several branches and tags, so it's a good example).</p><p><code>mkdir -p ~/git/ooo-build
-cd ~/git/ooo-build
-git svn init -s svn+ssh://svn.gnome.org/svn/ooo-build
-git svn fetch</code></p><p>this will take a while. once it's completed, you need to convert this to a bare repo:</p><p><code>mkdir ../ooo-build.git
-cd ../ooo-build.git
-git --bare init
-git config remote.origin.url ~/git/ooo-build
-git config remote.origin.fetch +refs/remotes/tags/*:refs/tags/*
-git config --add remote.origin.fetch +refs/remotes/trunk:refs/heads/master
-git config --add remote.origin.fetch +refs/remotes/*:refs/heads/*
-git fetch
-</code></p><p>and you're done! :)</p><p>of course this is an incremental operation, so all you need is to run git svn fetch and git fetch from cron to keep the mirror up to date.</p><p>update:</p><p>it turns out you can even do this by having only one git repo. it has benefints: you don't have to duplicate the object database. and it has one problem: if you later switch fully to git, then you want to remove the git-svn metadata - doing so is the easiest if you just clone the repo.</p><p>so - in case you want this, you have to:</p><p><code>mkdir -p ~/git/ooo-build.git
-cd ~/git/ooo-build.git
-git --bare init
-git --bare svn init -s svn+ssh://svn.gnome.org/svn/ooo-build
-git --bare svn fetch</code></p><p>and then you can fetch from yourself:</p><p><code>
-git config remote.origin.url .
-git config remote.origin.fetch +refs/remotes/tags/*:refs/tags/*
-git config --add remote.origin.fetch +refs/remotes/*:refs/heads/*
-git fetch
-</code></p><p>note: git config --add remote.origin.fetch +refs/remotes/trunk:refs/heads/master it unnecessary as git svn fetch will update this for you (it is different from git fetch)</p><p>thanks for devurandom from #git for pointing out that this is possible using git --bare init before git svn init and using git --bare svn fetch :)</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/we-love-ohloh.html">we love ohloh</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Tue 27 November 2007</p>
+    <p>Posted on: Fri 21 September 2007</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -200,8 +112,21 @@ git fetch
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>it was a while ago when we registered at <a href="http://www.ohloh.net/projects/6659?p=Frugalware+Linux">ohloh.net</a>, but i recently re-visited that page, and i found some nice PR texts there ;)</p><p><blockquote> Over the past twelve months, 18 developers contributed new code to Frugalware Linux.</p><p>This is a relatively large team, putting this project among the top 10% of all project teams on Ohloh.</p><p>For this measurement, Ohloh considered only recent changes to the code. Over the entire history of the project, 36 developers have contributed. </blockquote>
-(<a href="http://www.ohloh.net/projects/6659/factoids/273910">source</a>)</p><p>well, i always considered our team as a nice and good but small team, it turns out that if you count projects, we're not that small! :)</p><p>it also creates nice charts about what programming languages do we use, etc, etc. so it's a different approach, compared to cia, but it's interesting.</p>
+<p>it's a nice simple script to generate a message body for you when you have no write access to a repo and you want to request the m8r to pull from you. here is how to use it:</p><p><pre>$ git request-pull origin/master \
+<a href="mailto:vmiklos@vmiklos.dev.frugalware.org">vmiklos@vmiklos.dev.frugalware.org</a>:git/pacman-g2/
+The following changes since commit 52a29e40a52bb09e0db7f167712a9be3ad8d0d3c:
+  Priyank (1):
+        Merge branch 'master' of \
+git.frugalware.org:/home/ftp/pub/other/pacman-g2/pacman-g2</p><p>are available in the git repository at:</p><p>  <a href="mailto:vmiklos@vmiklos.dev.frugalware.org">vmiklos@vmiklos.dev.frugalware.org</a>:git/pacman-g2/ master</p><p>VMiklos (4):
+      new NOARCH trans flag for _pacman_pkg_load()
+      _pacman_pkg_load(): indentation fix
+      parseargs(): new --noarch option
+      tests/upgrade071.py: new test for --noarch</p><p> lib/libpacman/package.c     |   36 +-----------------
+ lib/libpacman/pacman.h      |    1 +
+ pactest/tests/upgrade071.py |   10 +
+ src/pacman-g2/pacman-g2.c   |    3 
+ 4 files changed, 33 insertions(+), 17 deletions(-)
+ create mode 100644 pactest/tests/upgrade071.py</pre></p><p>of course in real life, you want to use http:// or git:// since probably the m8r won't be be able to login to your own machine via ssh :)</p>
 </div>
 </div>
 
@@ -210,10 +135,10 @@ git fetch
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/git-cvsimport-mini-howto.html">git-cvsimport mini howto</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/you-can-test-openoffice-org-2-0-3rc3.html">You can test OpenOffice.org 2.0.3rc3</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Fri 23 November 2007</p>
+    <p>Posted on: Fri 14 September 2007</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -221,7 +146,7 @@ git fetch
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>recently i needed to convert a cvs repo to git, in fact i'm providing a git mirror, so i need incremental updates.</p><p>here is the command i needed:</p><p><code>$ git cvsimport -d :pserver:anonymous@tcpflow.cvs.sourceforge.net:/cvsroot/tcpflow -C tcpflow tcpflow</code></p><p>yes, this will do the initial conversion and the incremental one, too. :)</p>
+<p>after a long time, openoffice now builds again out of the box without any patches as all our fixes are in ooo-build :)</p><p>also, i recently started to re-use my "bmf" repo for packaging pre/rc versions, so it was logical to get rid of the "ooodev" repo and merge it to bmf. so openoffice.org-2.3oog680_m5-1 (alias 2.3.0rc3) is available for my bmf repo for both i686 and x86_64. compared to 2.2.x, the two notable improvements (imho) are the working mozilla plugin and the ooxml support.</p><p>thanks boobaa for building it for i686! :)</p>
 </div>
 </div>
 
@@ -230,10 +155,10 @@ git fetch
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/playing-with-tcpflow.html">playing with tcpflow</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/git-vs-rsync.html">git vs rsync</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Mon 19 November 2007</p>
+    <p>Posted on: Tue 11 September 2007</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -241,7 +166,7 @@ git fetch
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>tcpflow is a nice small console application to debug your network data. the usage is simple. just something like</p><p><code># tcpflow -i eth0</code></p><p>is enough. you're recommended to start it in an empty directory :)</p><p>don't be surprised, the incoming and the outgoing connection to a server's given port will be logged to 2 different files ;)</p>
+<p>if you use rsync to copy your git repo (i mean a non-bare repo here: a repo with a working dir + a .git one), <code>git diff</code> will show that you touched your files. using <code>git checkout -f</code> can be a workaround to hide those changes, but then when you rsync again, it'll see that git thouched those files, so it'll re-download all the tracked files. infinite loop. so here is a trick from <a href="http://colabti.de/irclogger/irclogger_log/git?date=2007-09-10,Mon&sel=676#l1067">gitte</a>: using</p><p><code>git update-index --refresh</code></p><p>the index itself will be updated, not the tracked files. this was rsync will only re-download the index which is far less time, compared to the original one :)</p>
 </div>
 </div>
 
@@ -250,10 +175,10 @@ git fetch
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/using-git-filter-branch.html">using git filter-branch</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/mplayer-with-dvdnav-support.html">mplayer with dvdnav support</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Wed 14 November 2007</p>
+    <p>Posted on: Sat 08 September 2007</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -261,7 +186,7 @@ git fetch
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>git filter-branch is a new command in git-1.5.3 and today i met a situation where it was really useful. here is the scenario:</p><p>i have a 'vmexam' (like soxexam, "vmiklos' examples") repo, random small code chunks, every commit touches only a given subdir. after some time some projects need an own repo and i do versioned releases. this was the case with <a href="http://vmiklos.hu/project/pyrssi/">pyrssi</a>, too</p><p>so i wanted to have a new repo with only the pyrssi-related commits and without anything else. this is exactly the case git filter-branch's subdirectory filter is for:</p><p><code>git filter-branch --subdirectory-filter python/cgi/pyrssi HEAD</code></p><p>then in the old repo i just rm -rf'd the code and i had it in the root dir of the new repo. yay! :)</p>
+<p>i've uploaded an updated mplayer package to <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/bmf/">my repo</a> which includes dvdnav support to mplayer. at the moment it seems you need to</p><p><code># pacman -R codecs</code></p><p>otherwise mplayer will crash</p><p>many thanks to <a href="http://onebithq.com/root/mplayer/dvdnav">Otvos Attila</a>, the dvdnav patch author for his help (two additional build fixes was needed for our "enable everything what is possible" mplayer configuration)</p><p>hopefully we'll figure out soon how to resolve the conflict with the binary codecs, too :)</p><p>(a <a href="http://frugalware.org/~vmiklos/pics/shots/mplayer-dvdnav.png">screenshot</a>)</p>
 </div>
 </div>
 
@@ -270,10 +195,10 @@ git fetch
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/using-xosd-for-irc-notifications-and-other-goodness.html">using xosd for irc notifications and other goodness</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/git-svn-howto.html">git-svn howto</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Fri 02 November 2007</p>
+    <p>Posted on: Fri 07 September 2007</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -281,12 +206,8 @@ git fetch
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>so, here is the situation:</p><p>you have a machine behind a firewall and you have an ssh session to a server. and you want to send notifications to you machine. here is what i did, maybe useful for others, too</p><p><ul>
-  <li>you'll need the program called osd_cat, provided by osd</li>
-  <li>you'll need to use ssh with the -X option</li>
-  <li>if you run programs inside screen, you still won't know the the right DISPLAY number, so do a trick: add</p><p><code>[ -n "$DISPLAY" ] && echo $DISPLAY > ~/.display</code></p><p>to you ~/.bash_login</li>
-  <li>now you're ready to use osd_cat:</p><p><code>$ echo -e 'foo'|DISPLAY=<code>cat ~/.display</code> osd_cat --color=blue --age=4 --font=-*-helvetica-medium-r-*-*-*-320-*-*-*-*-*-* --offset=100 --align=right --indent=100</code></li>
-</ul></p><p>as an example, irssi has <a href="http://irssi.org/scripts/scripts/osd.pl">osd.pl</a> to use osd_cat for highlight notifications :)</p>
+<p>i think using git-svn is really easy, once you figured out how to use it. so here is how i use it. no, i'm not a git-svn expert, just a user. and the way i use it - i think it's easy. so here is our situation:</p><p>1) foo project uses svn for managing their code
+2) you wish they would use git</p><p>how to do both:</p><p>1) get the full svn repo:</p><p><code>$ git svn clone --prefix=origin/ url</code></p><p>yes, in my situation this project does not use the trunk/tags/branches structure, see the git-svn manpage if the project you clone does (s/clone/clone -s/ should do the trick)</p><p>the --prefix parameter is needed so that you'll see the svn branches as if they were normal git remote branches</p><p>2) your local repo is a git repo, so you can do whatever you want, commit, revert, bisect, etc</p><p>3) instead of git pull, you need</p><p><code>$ git svn rebase</code></p><p>this does the same as git fetch + git rebase (since you can't merge because of svn)</p><p>4) instead of git push, you need</p><p><code>$ git svn dcommit</code></p><p>and we're ready. 3 and not more command, right? :)</p>
 </div>
 </div>
 
@@ -295,10 +216,10 @@ git fetch
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/playing-with-compiz-fusion.html">playing with compiz fusion</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/coloured-manpages.html">coloured manpages</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sat 27 October 2007</p>
+    <p>Posted on: Fri 07 September 2007</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -306,18 +227,47 @@ git fetch
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>Priyank recently removed Beryl from -current and added Compiz Fusion. so i did a base install then i followed the instructions in xgl's README.Frugalware. a few impressions:</p><p>pros:
-<ul>
-  <li>i have an i810 card, not nvidia, or anything extra, it's a cheap one. the only effect that was slow for me is when i marked the cube 100% transparent. but all the other effect were really fast.</li>
-  <li>compiz initially worked fine only with gnome. i'm a kde fan so i tried compiz with kde and it worked fine. i think this is something new</li>
-  <li>thanks to aiglx, i did not have to - in fact - start xgl, no editing in kdm.conf or anything, just xorg.conf</li>
-</ul></p><p>cons:<ul>
-  <li>i have 4 virtual desktops like:
-<pre>1 | 2
-----
-3 | 4</pre></p><p>compiz translates this to: a simple paper with two side and on each size there is another side on top of the other one. so it says it's not a cube. how crappy</li>
-  <li>i can't select to hide windows from other virtual desktops from the taskbar. a basic feature @ kde</li>
-</ul></p><p>conclusion? it's really nice, well done - but for daily work of course i won't enable it :)</p>
+this is always a subject of flamewars and Frugalware did not have any support for coloured manpages so far. i've now added (in man-1.6e-2) support for it, but it's still disabled. see the <a href="http://frugalware.org/packages/369/documentation">documentation</a> on how to enable it if you like. you can reach a screenshot <a href="http://frugalware.org/~vmiklos/pics/shots/colorman2.png">here</a> if you use the default colors.
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/gitstats.html">gitstats</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Tue 04 September 2007</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>when we switched to git, our <a href="http://frugalware.org/~vmiklos/stats/frugalware-current.html">darcs stat page</a> was no longer updated. now i've created <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/gitstats/">gitstats</a>, which serves the same purpose. it's written in python and it was a few more features compared to darcsstats, ie. alias support, so that the stats for a dev are not lost when he/she changes his/her email addr.</p><p>the new stat page is <a href="http://frugalware.org/~vmiklos/stats/frugalware-current/">here</a>. enjoy! :)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/bitlbee-skype.html">bitlbee-skype</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Mon 03 September 2007</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>well, it truns out what i'm mentioned at <a href="http://www.bitlbee.org">bitlbee.org</a> :)</p><p>the story is about my <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/bitlbee-skype/">skype plugin</a> for bitlbee. google doesn't even find it (mostly because nobody links my page), so i asked the devs to link the page. now they posted a news entry about it ;)</p><p>/me goes to sleep..</p>
 </div>
 </div>
 

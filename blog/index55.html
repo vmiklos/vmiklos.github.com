@@ -58,10 +58,10 @@
 
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/irssiscripts.html">irssiscripts</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/lilypond-and-guitar-chord-arpeggios.html">Lilypond and guitar chord arpeggios</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sat 24 January 2009</p>
+    <p>Posted on: Mon 12 January 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -69,7 +69,7 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>I got a reply to patches I sent one and a half year ago. ;)</p><p>My patches to anames.pl and sockter-interface.pl are now applied in f0rked's <a href="http://github.com/msparks/irssiscripts">irssiscripts</a> repo.</p>
+<p>Of course I have no idea if this is the right name of this stuff, to make long story short, I finally found a <a href="http://article.gmane.org/gmane.comp.gnu.lilypond.general/44348">workaround</a> to display this beast in lilypond. Yay!</p><p>This project is really addictive, you can spend a whole day reading its documentation and you still just say "wow, this and even that is possible with this stufff". ;-)</p>
 </div>
 </div>
 
@@ -78,30 +78,10 @@
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/clock-runs-way-faster-than-necessary-bug.html">"clock runs way faster than necessary" bug solved</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/oprofile.html">oprofile</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Fri 23 January 2009</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>Heh, it took my whole day. So the <a href="http://thread.gmane.org/gmane.linux.kernel/784192">solution</a> was that I needed to disable two CONFIG setting Crazy enabled (+ I enabled KVM again, not sure if that is related or not).</p><p>And of course bisecting was totally damn unnecessary, since the bug is triggered by a given config line, not by a bad commit.</p><p>Life is good.</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/linux-bisecting.html">Linux bisecting</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Thu 22 January 2009</p>
+    <p>Posted on: Sun 11 January 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 2 minutes</p>
@@ -109,7 +89,19 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>So I reported this "timer runs too fast" bug to LKML and they asked me to bisect it. I know bisect already, but I only bisected userspace software which is easy. Basically you write a script that reproduces the issue, then git bisect will find the first bad commit automatically.</p><p>With the kernel, this is much slower, because you must manually test each step.</p><p>Of course I wanted to speed things up, so I wrote a small testcase and run it right after init=/bin/sh. This is bad. I haven't noticed until almost the end of the bisect that the bug occurs only after udev is loaded. Now that I'm sure the corrected test script really reports GOOD for 2.6.27 and BAD for 2.6.28, I can do the real bisect...</p><p>As a side note, doing this with 1 machine would be really annoying. Luckily I can do whatever I want on my iBook, the build is done one of our fast Frugalware servers (dream) and I just download and test the bzImage on my notebook. I guess network booting would make it a bit faster (because currently I boot the test kernel, boot back the working one, download the next test one, goto 1), but I won't set up a whole tftp server on my iBook just for this. ;)</p><p>So hopefully tomorrow we'll know what is the real first bad commit.</p>
+<p>I did not have to work with a profiling tool for C so far, so here is my first experience.</p><p>The kernel has to have oprofile support (the kernel in Frugalware-current does not have it, I'll add it after 1.0pre2). You'll need a kernel vmlinux file if you want to benchmark the syscalls as well (I did not need this one).</p><p>Then there are 3 levels of starting: opcontrol --init/--deinit, --start-daemon/--shutdown and --start/--stop. The first one prepares /dev/profile, the second one starts the deamon, finally the third one start profiling. Obviously the second part does the opposite.</p><p>Once you did a --stop, you can get the results. Example output:</p><p><pre>
+$ opreport -l /home/vmiklos/git/git/git /usr/lib/libz.so.1|head
+CPU: CPU with timer interrupt, speed 0 MHz (estimated)
+Profiling through timer interrupt
+samples  %        app name                 symbol name
+22823    56.4898  libz.so.1.2.3            inflate_fast
+6019     14.8978  libz.so.1.2.3            adler32
+5975     14.7889  libz.so.1.2.3            inflate
+4233     10.4772  libz.so.1.2.3            inflate_table
+456       1.1287  libz.so.1.2.3            crc32
+252       0.6237  git                      patch_delta
+55        0.1361  git                      use_pack
+</pre></p><p>which is pretty much what I expected - I did a 'git verify-pack' between --start/--stop, so the time spent with reading the compressed git object database.</p><p>TBH I miss a strace/sudo-like simple wrapper as well...</p>
 </div>
 </div>
 
@@ -118,10 +110,10 @@
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/done-and-need-to-be-done-kernel-updates.html">Done and need-to-be-done kernel updates</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/preparing-frugalware-1-0pre2.html">Preparing Frugalware 1.0pre2</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Wed 21 January 2009</p>
+    <p>Posted on: Sat 10 January 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -129,7 +121,7 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>I finished the update to 2.6.28 (I mean fixing external modules) in a WIP repo, will merge it tonight, if everything goes fine.</p><p>OTOH it turns out that the net in qemu-ppc is disabled because the driver is disabled in the ppc config. So I'll have to enable those drivers when I sync.</p><p>Oh and a trick. mplayer -vo null -vc null will stop playing audio if video finishes earlier. mplayer -novideo won't. So that'll be the solution for my "sample music gets truncated in an flv-wav-mp3 conversion" problem. ;)</p><p>Finally the W3C css validator guys are nice, see <a href="http://thread.gmane.org/gmane.org.w3c.validator.css/2346">this thread</a>, basically it works fine now! :)</p>
+<p>From today it's "freeze" till 13th. Pootle is funny again, it forces converting the po files to UTF-8, while _not_ converting the headers, so they still say latin2 in case of Hungarian translations, grr.</p><p>A guy mailed me for help with my libwpd bindings, but it turned out he wants to use the C# part, so Fridrich just solved his problem <a href="http://cia.vc/stats/author/strbafridrich/.message/128fd3">in CVS</a>.</p>
 </div>
 </div>
 
@@ -138,18 +130,38 @@
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/fast-clock.html">Fast clock</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/working-on-merge_trees_simple.html">Working on merge_trees_simple()</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Tue 20 January 2009</p>
+    <p>Posted on: Fri 09 January 2009</p>
   </div>
   <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
+    <p>Estimated read time: 2 minutes</p>
   </div>
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>After upgrading kernel to 2.6.28 my clock measures about 70 mins in an hour, sigh. We are debugging the issue with crazy, but probably it's not a user error, so we'll need to mail the lkml.</p><p>I just tried qemu svn, and it's amazing.</p><p>qemu-system-ppc -prom-env 'boot-device=cd:,\boot\yaboot\yaboot' -prom-env 'boot-args=conf=cd:,\boot\yaboot\yaboot.conf' -cdrom frugalware-1.0pre2-ppc-net.iso -hda ~/documents/qemu/hda.img</p><p>can boot the 1.0pre2 ppc netinstall iso! :)</p><p>The current problem is that the network card the machine emulates is not supported by the installer, but that'll be tomorrow's problem.</p>
+<p>I just pushed out these <a href="http://repo.or.cz/w/git/vmiklos.git?a=shortlog;h=refs/heads/merge-tree">four commits</a>. Basically they let a libgit user use the functionality which was hardwired to git-merge-tree till now. The idea is from Dscho, so I hope the patches will be welcomed. ;-)</p><p>(I did not sent out any patches for now, since my ls-files parseopt patch isn't in yet, either.)</p><p>Ah and we talked about (in case I'll be home during the summer) if I should re-apply for git in GSoC. Basically I don't want to do it, but I'm very happy that my ex-mentor even recommends me not doing so. Here are his lines:</p><p><blockquote>
+> About reapplying for Git... I would _love_ to have you again, since I know
+> you will get stuff done, and in a very nice way.
+>
+> There is always a but.
+>
+> But.  Realistically, I think that you learnt so many things in the GSoC
+> project last year, that you do not really have all that much left which
+> you could learn in the Git community.  You really just would be a work
+> horse.
+>
+> There are other projects out there who do fantastic and exciting things,
+> and have completely different personal (and political!) environments.
+>
+> So while the Git community member says "keep him!", the mentor in me says
+> "let him go!" albeit with half a sad eye.
+>
+> Therefore I am strong and point you to <a href="http://code.google.com/soc/2008">http://code.google.com/soc/2008</a>; I
+> even met some of the guys at the mentor summit, and they are all pretty
+> cool.
+</blockquote></p><p>These lines made me happy, really. :-)</p>
 </div>
 </div>
 
@@ -158,10 +170,10 @@
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/ppc-entry.html">PPC entry</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/playing-with-lilypond.html">Playing with lilypond</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Mon 19 January 2009</p>
+    <p>Posted on: Thu 08 January 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -169,7 +181,7 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>I recently ported our Qemu package to PPC, and just tested that it really works. We have a Linux binary (compiled for i386) for some 'plan making' exercise (inside the AI course at the uni), and of course I wanted to run it on my iBook. And yes, just wrapping the command with qemu-i386 made it work! :)</p><p>The other problem I noticed is that building external modules on PPC does not work. It seem to be a <a href="http://bugzilla.kernel.org/show_bug.cgi?id=11143">known bug</a>. PLD has a patch that changes the error message - to a permission problem. Given that on x86 building a kernel module is possible as a user - the goal would be the same on PPC as well. Not yet resolved...</p>
+<p>So lilypond is a really geek-friendly project to produce music notation from text-based files. It has its own cryptic language. I spent a half day playing with it, so I'm not an expert at all, but I achieved something. ;-)</p><p>The example song I wanted to describe is the <a href="http://www.youtube.com/watch?v=-hLarHt6wi8">cantina band</a> from starwars.</p><p>To make the long story short, here is the <a href="http://vmiklos.hu/music/cantina-band/cantina-band.txt">asciidoc source</a>, the <a href="http://vmiklos.hu/music/cantina-band/Makefile">Makefile</a>, and the <a href="http://vmiklos.hu/music/cantina-band">result</a>.</p>
 </div>
 </div>
 
@@ -178,10 +190,10 @@
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/sudo-segfault.html">sudo segfault</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/bitlbee-skype-0-7.html">bitlbee-skype 0.7.0</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sat 17 January 2009</p>
+    <p>Posted on: Wed 07 January 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -189,13 +201,11 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>Quoting a mail I just sent to Miller:</p><p>,,It seems I hit a bug in sudo-1.7.0 (at least I can't reproduce it with
-1.6.9p17):</p><p>$ sudo chown vmiklos /etc/sudoers
-$ sudo false
-sudo: /etc/sudoers is owned by uid 1003, should be 0
-Segmentation fault</p><p>According to gdb, it seem to be a nullpointer-dereference bug, and given
-that it is reproducible only in case the permission and/or owner is
-wrong, I don't think it has a security impact. But who knows. ;)''</p><p>We'll see how does he handle the problem.</p>
+<p>It's out, the only recent change is that I added a new setting to be able to see what is the raw stream BitlBee received. The other interesting part is that after the release I finally decided to split up that huge read callback and now each part is handled by a separate function, and I have a nice array of function pointers. BTW, this also made checkpatch happy about skype.c without doing hacks like:</p><p><pre>
+printf("%s %s",
+        foo,
+        bar);
+</pre></p><p>Which would really just make the code ugly.</p><p>Yay! :)</p>
 </div>
 </div>
 
@@ -204,10 +214,10 @@ wrong, I don't think it has a security impact. But who knows. ;)''</p><p>We'll s
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/less-1-tweaks.html">less(1) tweaks</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/migrating-git-ls-files-to-use-parseopt.html">Migrating git-ls-files to use parseopt</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Fri 16 January 2009</p>
+    <p>Posted on: Tue 06 January 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -215,21 +225,7 @@ wrong, I don't think it has a security impact. But who knows. ;)''</p><p>We'll s
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>First, to allow latin{1,2,whatever} accents in the pager to be non-escaped:</p><p><pre>
-export LESSCHARSET="iso8859"
-</pre></p><p>Second, I use:</p><p><pre>
-# F: quit if input is less then one page
-# M: no more-like short prompt
-# R: accept colors
-# X: don't throw away the output after quit under x
-export LESS="FMRX"
-</pre></p><p>Finally to send utf8 and other exotic chars in latin2 to stdout in git (OK, this is not strictly related):</p><p><pre>
-git config i18n.logOutputEncoding latin2
-</pre></p><p>Done!</p><p>Old:</p><p><pre>
-Author: Andr??s V??r??sk?&lt;91&gt;i &lt;<a href="mailto:voroskoi@frugalware.org">voroskoi@frugalware.org</a>&gt;
-</pre></p><p>New:</p><p><pre>
-Author: András Vörösk?i &lt;<a href="mailto:voroskoi@frugalware.org">voroskoi@frugalware.org</a>&gt;
-</pre></p><p>You can choose... ;-)</p>
+<p>People say that using bitfields in structs is slow. Of course it reduces memory usage, but the aritmetic is slower than just using pointers.</p><p>But my real problem is that if a struct uses bitfields, I can't just pass foo-&gt;bar as a pointer. And I hate that. When migrating ls-files to parseopt, I needed to write 3 extra callback functions just because of this.</p><p>Grr.</p>
 </div>
 </div>
 
@@ -238,10 +234,10 @@ Author: András Vörösk?i &lt;<a href="mailto:voroskoi@frugalware.org">voroskoi
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/ideal-git-cflags-for-development.html">Ideal Git CFLAGS for development</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/non-optional-kbd.html">Non-optional kbd</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Thu 15 January 2009</p>
+    <p>Posted on: Mon 05 January 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -249,10 +245,7 @@ Author: András Vörösk?i &lt;<a href="mailto:voroskoi@frugalware.org">voroskoi
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>This is always an interesting area. The avarage user needs a whole day to test a oneliner patch, just because she never built the software in question, etc. The other end of the line is a regular developer, she modifies the source and she is able to test in seconds.</p><p>Regarding git, the testing part is not that hard: I usually work on builtins, so I edit the source code, then type 'make git-foo', and run ./tnumber-desc.sh from the testsuite.</p><p>The other part is that you need special compiler flags, since you are interested in extra warnings, debug symbols and such.</p><p>The default CFLAGS is defined in the Makefile, which is a tracked file, so modifying that is a no-go. You need 'make configure', then ./configure, and then you can edit config.mak.autogen.</p><p>Junio a few days ago <a href="http://article.gmane.org/gmane.comp.version-control.git/105297">mentioned</a> the CFLAGS he uses.</p><p>Here comes the interesting part:</p><p><pre>
-CC = ccache cc
-CFLAGS = -g -O2 -Wall -Werror -fno-inline -Wold-style-definition -Wdeclaration-after-statement
-</pre></p><p>-Werror so that I'm forced not to ignore warnings, -fno-inline to be able to debug inline functions, and I just stole the two others from Junio.</p>
+<p>Still preparing for my 'Computer Networks' exam, so I did not do much coding.</p><p>LGee just uploaded a few new pictures about his servers, and there are two interesting ones. ;-)</p><p>First is this one. And then yes, I must agree that some mainboards are really can't be used a server.</p><p>This other one is just interesting - first we though that's a bug in the Frugalware ppc installer, then later it turned out to be a generic Linux-ppc issue.</p>
 </div>
 </div>
 
@@ -261,10 +254,10 @@ CFLAGS = -g -O2 -Wall -Werror -fno-inline -Wold-style-definition -Wdeclaration-a
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/more-lilypond-adventures.html">More lilypond adventures</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/gmane-export.html">gmane export</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Wed 14 January 2009</p>
+    <p>Posted on: Sun 04 January 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -272,7 +265,27 @@ CFLAGS = -g -O2 -Wall -Werror -fno-inline -Wold-style-definition -Wdeclaration-a
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>To expand my little lilypond knowledge, I just took an old song and tried to re-create in lilypond. Mostly finished, available <a href="http://vmiklos.hu/ly/lemon-tree/lemon-tree.html">here</a>.</p><p>Now time to find a working printer to see how does it look like on a real paper. :)</p>
+<p>OK, this was silly.</p><p>Yesterday I wanted to reply to a post on the swig mailing list. I found the post on nabble.com, which is way worse than gmane.org, but - I guess - due to SEO black magic Google prefers the previous. So I searched for the mail on gmane.org, appended the usual /raw to the mail, but I still did not get a mbox, to feed it to mutt. Given that I had no idea what do to, I just simply wrote an mbox header, then mutt was able to open it.</p><p>And finally it turns out that gmane <a href="http://gmane.org/export.php">has a nice export feature</a>. Duh! ;-)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/pacman-g2-qt-bug.html">pacman-g2 -Qt bug</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Sat 03 January 2009</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>BMH still feeds me with info, he just found a -Qt bug - fortunately the fix was rather trivial.</p><p>The nontrivial stuff is that he wants callbacks in the Python bindings and it seems that won't be easy. The reason is that - it seems, I don't have a working implementation yet - we'll need the traditional 'void *data' extra parameters in each callback to support that, since we need to store the Python context pointer somewhere.</p><p>Of course first I want to have the whole thing working, before breaking the API with no good reason.</p><p>The whole idea is based on <a href="http://www.nabble.com/Automatically-generated-callbacks-using-directors-(python)-td19239301.html">this</a> post. The provided examples work fine, at least.</p><p>Snip. Dscho mailed me today with a project list about what could I do in Git - the two items are a major merge-recursive rework, the other is about packv4. I could learn a lot with both, my interest is in this order. But that's not yet in coding status, we're just discussing the details ATM.</p>
 </div>
 </div>
 

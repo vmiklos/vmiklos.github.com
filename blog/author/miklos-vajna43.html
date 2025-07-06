@@ -59,18 +59,59 @@
 
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/vdsl.html">vDSL</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/lenovo-ideapad-s12.html">Lenovo Ideapad S12</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Fri 23 April 2010</p>
+    <p>Posted on: Sun 17 January 2010</p>
   </div>
   <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
+    <p>Estimated read time: 3 minutes</p>
   </div>
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>Time to say bye-bye to adsl!</p><p>The optical fiber is now only <a href="http://maps.google.com/maps?f=d&amp;source=s_d&amp;saddr=1124+Budapest,+N%C3%A9metv%C3%B6lgyi+Way+55,+Hungary&amp;daddr=1124+Budapest,+Kiss+J%C3%A1nos+Alt%C3%A1bornagy+Way+57,+Hungary&amp;hl=en&amp;geocode=Feau1AIdfhkiASkV2naYg95BRzG9tgLExaGY7Q%3B&amp;mra=ls&amp;sll=47.492935,19.01343&amp;sspn=0.001783,0.004823&amp;ie=UTF8&amp;z=18">260 meters</a> away and that means it's possible to order vDSL here.</p><p>That means that means that the average download speed is now about 14MBit/s while it was about 5MBit/s with adsl. :)</p><p>Completely unrelated: if you use ps2pdf and the margins a screwed up, don't forget to give <a href="http://www-h.eng.cam.ac.uk/help/tpl/textprocessing/latex2pdfprint.html">-sPAPERSIZE=a4</a> a try.</p>
+<p>I bought <a href="http://shop.lenovo.com/us/notebooks/ideapad/s-series/s12">this netbook</a> about a week ago (the one with the Via card).</p><p>Actually it costed 106 kHUF (~$550) instead of the advertised $400, but that probably due shipment costs, etc.</p><p>Here are what requirements I had:</p><p><ul>
+  <li>I wanted a simple video card, it's much more important for me that I don't have to use external kernel modules than the actualy 3D performance. So NVidia is clearly an overkill for me. I wanted Intel or similar.</li>
+  <li>12"-sized LCD - my iBook had it and I loved it. I agree that it's too small when we're watching films with 5 other friends or playing games, but I don't do either regularly.</li>
+  <li>Touchpad. I don't like trackpoint.</li>
+</ul></p><p>Here is what I got:</p><p><ul>
+  <li>The Via card is so far OK, the openchrome driver has a nice community and at least 2D acceleration works fine, and they are working on the 3D one as well. (Other card types have 3D support, too - This type is just too new ATM.)</li>
+  <li>The LCD size is what I want - looks like you can't easily buy a 12" notebook, but a 12" netbook counts as a high-end one.</li>
+  <li>Of course it has touchpad.</li></ul></p><p>Let's see what extra does it have:</p><p><ul>
+  <li>VGA output (iBook had some custom output and I never got a VGA converter cable.)</li>
+  <li>Bluetooth</li>
+  <li>SD-Card reader</li>
+  <li>Webcam</li>
+  <li>KVM support</li>
+  <li>HW mpeg2/4 and dm-crypt support</li>
+</ul></p><p>What's wrong with it:</p><p><ul>
+  <li>The cover is shiny, the mark of the fingers are left there when you grab it.</li>
+  <li>No optical driver, but hey, it's a netbook!</li>
+</ul></p><p>Let's see Linux support: First, the machine is shipped with Windows XP. The bios updater is windows-only, so I updated the bios before I rm -rfed the whole preinstalled contents.</p><p>What works:</p><p><ul>
+  <li>Via Nano CPU: works fine.</li>
+  <li>Via card: after installing the opencrome driver a simple 'xconfig' from frugalwareutils did its job, no other tricks were necessary.</li>
+  <li>SATA controller works fine.</li>
+  <li>Wired ethernet works fine.</li>
+  <li>Wireless: the in-tree b43 works for WPA APs <a href="http://www.mail-archive.com/bcm43xx-dev@lists.berlios.de/msg09481.html">but not with unsecure ones</a>. The binary bcmwl driver works in the later case as well.</li>
+  <li>SD-Card reader works out of the box.</li>
+  <li>Sound is fine.</li>
+  <li>The webcam works with mplayer using the "mplayer -tv driver=v4l2:device=/dev/video0 tv://" command.</li>
+  <li>Bluetooth is fine.</li>
+  <li>KVM support (vmx flag) is there in the CPU.</li>
+  <li>dm-crypt has HW support, so copying to a truecrypt volue isn't slower (~40mb/s) than copying to an unencrypted one.</li>
+</ul></p><p>What does not work with Linux:</p><p><ul>
+  <li>There is no <a href="http://forums.lenovo.com/t5/IdeaPad-Y-and-U-series-Laptops/How-to-turn-on-bluetooth-on-ubuntu-08-10/m-p/179414">ideapad-acpi</a> module to turn on or off wifi/bluetooth in the Embedded Controller (EC) of the ideapad. In my case I enabled wifi only when I updated the settings of the EC back in Windows, so Bluetooth is disabled. Feel free to post in commends if you have ideas how to set the EC from Linux. ;)</li>
+  <li>The 3d and mpeg2/4 decoding HW support of the graphics card doesn't work.</li>
+  <li>Hibernation is broken due to the weakness of the openchrome driver.</li>
+</ul></p><p>I think that's all. As always, it's possible that these limitations can be avoided in the future, who knows. ;)</p><p>Ah and the battery works for 5 hours with wifi enabled, I think that's nice. (And probably it's due to the LED-powered LCD.)</p><p>In case of questions, please post them in the comments and I'll try to reply.</p><p>PS: It doesn't really belong here, but if I was at it, I also switched (compared to iBook):</p><p><ul>
+  <li>to x86_64 from ppc</li>
+  <li>to ext4 from ext3</li>
+  <li>to kde4 from kde3</li>
+</ul></p><p>Update: I did a backup about the config files, reinstalled Windows XP, enabled the bluetooth in EC, and installed i686 for now. So the changes are:</p><p><ul>
+  <li>Bluetooth is now working perfectly</li>
+  <li>2D acceleration is stable (ie. if you start mplayer -vo xv the second time, it won't freeze)</li>
+  <li>Suspend to disk works fine, <a href="http://openchrome.org/trac/ticket/321#comment:25">as it was expected</a>.</li>
+</ul></p><p>\o/</p>
 </div>
 </div>
 
@@ -79,10 +120,10 @@
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/solving-kernel-bugs-without-bisecting.html">Solving kernel bugs without bisecting</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/mails.html">mails</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Tue 13 April 2010</p>
+    <p>Posted on: Mon 11 January 2010</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -90,7 +131,10 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>So after I upgraded to Linux-2.6.33 my wifi card stopped working after resume. I way lazy and I had no time to <a href="http://en.wikipedia.org/wiki/Bisection_method">bisect</a> it, so I just ignored the problem for a while, then today I looked up the lkml thread and bingo, an <a href="http://groups.google.com/group/linux.kernel/msg/a3b71c903e3c7bc9">easy workaround</a> is there. ;)</p><p>\o/</p>
+<p>Say you have two servers, the first is just a mail proxy, the second is a real mail server. So the MX record points to the first box and you usually just read your mail on the second one.</p><p>We use this system at frugalware.org as well to make the service a bit more robust: if genesis (the "second" box) goes down, the proxy machine(s) can just queue up the input and in case one of the proxy machines go down, then the sender will just try an other proxy.</p><p>The problem occurs when the "second" box goes down and you need to read your mail ASAP. Let's say you have access to the first box. You see in the output of 'mailq' that there are messages in the queue but how to read those mails?</p><p>'mailq' gives the ID of each message, and then the following script (I call it 'mails' - s for show) can generate mbox format from it, which means you can read it with for example 'mutt -f foo.mbox'.</p><p>The script itself is fairly easy:</p><p><pre>
+#!/bin/sh</p><p>echo 'From <a href="mailto:news@gmane.org">news@gmane.org</a> Tue Mar 04 03:33:20 2003'
+        |sed '1,/^\*\*\* MESSAGE CONTENTS/d;/^\*\*\* HEADER EXTRACTED/,$ d'
+</pre></p><p>(And of course it's possible there is a better tool to do the job, but I use this for months now.)</p>
 </div>
 </div>
 
@@ -99,84 +143,10 @@
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/recent-hacks-upgrade.html">Recent hacks, upgrade</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/new-firefox-profile.html">New firefox profile</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Thu 01 April 2010</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p><ul>
-  <li>ooo-build: <a href="http://cgit.freedesktop.org/ooo-build/ooo-build/commit/?id=5692b89ec72d22e43580c54a01131c7b4cc5c5c6">two</a> <a href="http://cgit.freedesktop.org/ooo-build/ooo-build/commit/?id=d29f754f0dd89399c1e885071c3712ea6fe500fa">fixes</a> for the configure script (perl, rsync)</li>
-  <li>the irssi script that renames facebook "u$bigint" nicks to real names based on whois info stripped chars with accents. a <a href="http://frugalware.org/~vmiklos/patches/bitlbee-facebook-accents.patch">oneliner patch</a> makes it possible not to drop chars with accents, just convert them to ascii.</li>
-<li>The dazuko m8r <a href="http://www.mail-archive.com/dazuko-devel@nongnu.org/msg00469.html">merged</a> my Linux-2.6.33 patch. \o/</li>
-</ul></p><p>The rest of this entry is not about programming in fact - I upgraded a machine at work from Frugalware-1.1 to 1.2 and I though it may worth noting a few interesting facts:</p><p><ul>
-  <li>The attitude of <a href="https://bugs.kde.org/show_bug.cgi?id=167558">this bug</a> is like the famous <a href="http://sourceware.org/bugzilla/show_bug.cgi?id=4980">glibc one</a>. In short: kde3 supported having the same wallpaper on two screens by automatically splitting it up - now looks like kde4 does not. I ended up splitting the wall up using GIMP as well. :P</li>
-  <li>kookaa is <a href="http://techbase.kde.org/Projects/Kooka#KDE4_Porting">not really ported</a>
- yet to kde4 so I needed to switch to kolourpaint.</li>
-  <li>While upgrading cups, I hit <a href="https://answers.launchpad.net/hplip/+question/89196">this bug</a> as well. (Notice how Ubuntu calls bugs "answers". ;) )</li>
-</ul></p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/running-the-right-command-at-the-right-time.html">Running the right command at the right time</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Sun 28 March 2010</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<code>
-$ while :; do date -R; sleep 1; done
-Sun, 28 Mar 2010 01:59:59 +0100
-Sun, 28 Mar 2010 03:00:00 +0200
-^C
-</code>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/edited-skype-messages-in-bitlbee.html">Edited skype messages in BitlBee</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Sun 07 March 2010</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-A user reported on #bitlbee that in case someone edits an already sent message using the Skype GUI client, BitlBee does not report the change. This used to work for about 2,5 years ago, but now I checked and true, it was broken. When I fixed it I realised that it would be nice to prefix the updated message with something to be aware that it's an edited message, not a new one. The result is pushed out to the git repo and a <a href="http://vmiklos.hu/project/bitlbee-skype/shot/011-edit-prefix.png">screenshot</a> is available as well. ;)
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/samba-gentoo.html">samba, gentoo</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Sat 06 March 2010</p>
+    <p>Posted on: Tue 05 January 2010</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 2 minutes</p>
@@ -184,11 +154,50 @@ A user reported on #bitlbee that in case someone edits an already sent message u
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>Sorry, I'm continuing the story of uninteresting challenges I had in the last two days. Or if they look like interesting ones, please continue. ;)</p><p>Two days ago we (at work) had to repair a samba installation after a 3.0.x -> 3.2.x upgrade. There were 3 problems:</p><p><ul>
-  <li>the firewall config had to be updated, to allow incoming tcp connections on port 445</li>
-  <li>somehow smbd was listening on ipv6 only, just listing all network interfaces in the config was enough to make it listen on ipv4 as well</li>
-  <li>for another strange reason it no longer accepted hostnames on its whitelist, using ip addresses directly did the trick</li>
-</ul></p><p>The other story from yesterday was fix up the firewall configuration at a small office. The problem was that till now they had a PPPoE connection and the firewall used NAT to share the internet access to the desktop machines, but now they switched to a radio-based access, they got a new modem which did not support PPPoE. Of course in short I just got the usual "the internet does not work!" bugreport. ;)</p><p>I must note that I'm not a sysadmin at this office, I just stepped in as the local sysadmin was a SPoF in the system and he (temporally?) disappeared and they asked me beause of "the hours is burning" effect. :)</p><p>So all I had to do is to alter the server configuration, which was running Gentoo. I never touched such a machine before, and it's configuration is (of course, since I'm used to our netconfig) weird, but at least the off-line documentation was enough. So after RTFM, I just had to turn off pppoe, set the dns and the default gateway to the address of the new router and all was fine. One notable interesting fact was that there was no damn vi on the server. Given that emerge takes a lot of time, I had to suck with mcedit. :P</p><p>Conclusion: yet another example why offline documentation is important, even in case nowadays "there is internet everywhere". ;)</p>
+<div class="paragraph"><p>I&#8217;m continously upgrading my Frugalware installation, IIRC I installed 0.2 on this Clevo machine and
+I never saw any reason to reinstall. Sadly the situation is not that easy with applications, for
+example firefox&#8217;s profile tends to grow from 20M over 100M and the only way to really get rid of all
+the junk it has is to start over.</p></div>
+<div class="paragraph"><p>Given that in the last month I did not really have time for such minor problems, now I decided to
+solve this by doing an <code>mv ~/.mozilla{,.orig}</code>.</p></div>
+<div class="paragraph"><p>I must note that I&#8217;m not a typical firefox user, given that I store my passwords in cpm, bookmarks
+in git (as I use multiple machines and I trust those applications more than firefox), and finally
+all the extensions I use are installed via Frugalware firefox-$extname packages.</p></div>
+<div class="paragraph"><p>Now I thought that this way the new profile usage will be easy enough, though there are still a few
+things to note:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+The bookmarklets (allowing fast search in various bugtrackers) should be installed again.
+</p>
+</li>
+<li>
+<p>
+The <a href="https://vmiklos.hu/blog/enjoying-search-autosizer.html">searchbar autosizer</a> addon has bad
+  defaults, I like to have the search bar with a fixed 203px size (355px on 1280x800)&#8201;&#8212;&#8201;though
+  nowadays this regressed, see <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=253331">moz#253331</a>.
+</p>
+</li>
+<li>
+<p>
+Finally I forgot I have a custom userChrome.css (also obsolete nowadays):
+</p>
+</li>
+</ul></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="color: #993399">.tabs</span><span style="color: #990000">-</span>newtab<span style="color: #990000">-</span>button <span style="color: #FF0000">{</span> <span style="color: #0000FF">display:</span> <span style="font-style: italic"><span style="color: #009900">none</span></span>; <span style="color: #FF0000">}</span> <span style="font-style: italic"><span style="color: #9A1900">/* remove New Tab button */</span></span></tt></pre></div></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Change browser.backspace_action to 0 to make backspace to a back (as on Windows).
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Other than that, no changes were necessary.</p></div>
 </div>
 </div>
 
@@ -197,59 +206,10 @@ A user reported on #bitlbee that in case someone edits an already sent message u
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/gcalsync-3-vmware-xrandr.html">gcalsync #3, vmware, xrandr</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/source-highlight-with-erlang-support.html">source-highlight with Erlang support</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Thu 04 March 2010</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>First, I wasted a few more hours with my never-ending "sync events form my Nokia S40 phone to Google Calendar" project. The result: it's not a daemon, it checks if the last sync was more than a day ago, if it can ping google.com, and if both, but it can't reach the phone via bluetooth, then it raises a kde4 notification, and it also notifies me when (and how) the sync was done, so that I switch bluetooth off on the phone after the sync. As usual, available <a href="http://git.frugalware.org/repos/vmexam/bash/gcalsync">here</a>.</p><p>Second, I managed to fix two annoying bugs when installing Frugalware under VMware: dhcpcd did not update /etc/resolv.conf in the installer properly, now that I changed from dhcpcd to busybox's udhcpc, it seems to be fine. (And udhcpc still works fine in qemu as well.). The other vmware-related improvement is that the newport xorg driver somehow locked up the whole virtual machine, now it's moved to extra, so xconfig does not freeze the VM on a default install.</p><p>Third, today finally I managed to figure out how to enable the external output on my netbook, using the openchrome driver. It's just about a single line in xorg.conf:</p><p><pre>
-Option     "ActiveDevice"               "LCD,CRT"
-</pre></p><p>This won't do more than just cloning the output, but it's far enough for me, who just uses the external output for presentation only.</p><p>(There is a binary driver which locks up the whole machine about 5-8 times a day, which has a bit better external video support, but stability is far more important for me, and the openchrome driver _is_ stable.)</p><p>Partly related, when I connected the external output to a projector, I had to set the screen resolution to 1024x768, and later back to 1280x800. 5 years earlier you had to edit xorg.conf and restart X to do this, now you can do this with xrandr:</p><p><pre>
-$ xrandr --output default --mode 1024x768
-</pre></p><p>and then to switch back:</p><p><pre>
-$ xrandr --output default --mode 1280x800
-</pre></p><p>OK, enough entries for today. :)</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/memory-upgrade-to-3g.html">Memory upgrade to 3G</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Fri 26 February 2010</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>So my netbook had 1G of ram so far and I was happy with it. Then I started to play with virtual machines and it turned out that the bottleneck of it is the small memory I have. So I just bought a 2G ram module, and at this point things started to be weird. Given that the system booted up and <em>almost</em> everything worked properly, I did not really had an idea. I thought it's a SW problem, so I did a clean Frugalware install on a separate partition as well, and there bash segfaulted in konsole as well sometimes. This ringed a bell, memtest!</p><p>After about 15 mins, memtest found numerous errors, then I rode back to the shop where I bought it and I asked for an other module. The interesting points were:</p><p><ul>
-  <li>Actually the good ram was cheaper than the bad one they gave me the first time.</li>
-  <li>When I inserted the 2G module, the original 1G ram wasn't anymore used as the 0-1G range, but it shown up as 2G-3G.</li>
-</ul></p><p>Now I hope next time I have to increase my ram amount, x86_64 will be mainstream so that I won't have to suck again with a 'custom' architecture. ;)</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/sparse-checkout-example-in-git-1-7.html">Sparse checkout example in git 1.7.0</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Sun 14 February 2010</p>
+    <p>Posted on: Sat 26 December 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -257,18 +217,7 @@ $ xrandr --output default --mode 1280x800
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>Sparse checkout is now part of git-1.7.0. See <a href="http://www.kernel.org/pub/software/scm/git/docs/git-read-tree.html#_sparse_checkout">here</a> on what it is in general. Basically something what svn already knew for years and git did not. And of course git now does it better, since this way it's possible to checkout multiple sub-directories, not just a single one, what svn allows.</p><p>Here is a short example:</p><p><pre>
-$ git clone ~/git/git
-$ cd git
-$ ls|wc -l
-361
-$ git config core.sparsecheckout true
-$ echo ppc/ > .git/info/sparse-checkout
-$ echo perl/ >> .git/info/sparse-checkout
-$ git read-tree -m -u HEAD
-$ ls
-perl/  ppc/
-</pre></p><p>Enjoy! :)</p><p>Update: see the comments, as it has been pointed out the "And of course git now does it better, since this way it's possible to checkout multiple sub-directories, not just a single one, what svn allows." sentence is incorrect; but of course having a similar feature in a distributed VCS is still an improvement. ;)</p>
+<p>I wanted Erlang support in the syntax highlighter used by asciidoc. Currently the filter uses source-highlight as its backend, so I checked and unfortunately it had no Erlang support. A quick google found that there is a good <a href="http://caolanmcmahon.com/erlang_syntax_highlighting">shjs support</a> which would ideally work out of the box with source-highlight. Of course it did not, but it wasn't hard to fix it up. Then I sent it to upstream. This was about a month ago.</p><p>Then I just noticed it was <a href="http://git.savannah.gnu.org/cgit/src-highlite.git/diff/?id=ed7a5b7bb495c8d460013454558fe687ba6a975c">accepted</a> a few days ago, and now source-highlight-3.1.2 is out, so it's back in Frugalware-current \o/</p>
 </div>
 </div>
 
@@ -277,10 +226,10 @@ perl/  ppc/
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/pptp-client-howto-on-linux-on-console.html">pptp client howto on linux on console</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/kde3-apps-i-use.html">KDE3 apps I use</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Tue 09 February 2010</p>
+    <p>Posted on: Sun 13 December 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -288,38 +237,123 @@ perl/  ppc/
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>So I saw a few howtos on how to set up ms pptp client on linux, but they're mostly about how to click on networkmanager or other guis, so basically they hide the real detail, IOW what config files are actually used.</p><p>First install the necessary packages:</p><p><code>
-# pacman-g2 -S ppp pptp
-</code></p><p>Here is what I have under /etc/ppp:</p><p><code>
-# cat chap-secrets
-# Secrets for authentication using CHAP
-# client        server  secret                  IP addresses
-$user           PPTP    $secret                 *
-</code></p><p><code>
-# cat options
-lock
-</code></p><p><code>
-# cat options.pptp
-lock
-noauth
-nobsdcomp
-nodeflate
-</code></p><p><code>
-# cat peers/$network
-pty "/usr/sbin/pptp $server --nolaunchpppd"
-name "$user"
-file /etc/ppp/options.pptp
-remotename PPTP
-require-mppe-128
-refuse-eap
-ipparam $network
-</code></p><p>And to bring up ppp0:</p><p><code>
-# pon $network debug dump logfd 2 nodetach
-</code></p><p>If it works fine, you can just use:</p><p><code>
-# pon $network
-</code></p><p>(Obviously replace $user, $secret, $server and $network with real values.)</p><p>One thing I did not figure out is how to configure it to set the default gateway as well. Right now I use the debug mode, then in the output I see the remote address, finally:</p><p><code>
-# route add default gw $remoteaddr
-</code></p><p>Other than that, it works fine - without any damn gui! :)</p>
+<p>Given that a lot of KDE3 apps are not just ported to KDE4 but replacement projects have been created, the upgrade is not trivial. I always declare myself as somebody who is a minimal KDE user saying I mostly just use konsole, but that's not really correct. From time to time I use the following apps as well:</p><p><ul>
+  <li>kmix (systray icon)</li>
+  <li>klaptop (systray icon)</li>
+  <li>kxkb (systray icon)</li>
+  <li>krdc</li>
+  <li>kaudiocreator</li>
+  <li>k3b</li>
+  <li>ksnapshot</li>
+  <li>kpdf</li>
+  <li>konqueror (for GUI mounting of USB sticks, when I don't use pmount)</li>
+</ul></p><p>And that really doesn't belong to here, but I still use gtk-based apps for browsing and picture viewing (firefox and gqview).</p><p>I hope this post will be able to serve as a good personal checklist when we merge kde4 to current. ;)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/2-6-32-kms-vs-intel-8xx-cards.html">2.6.32 kms vs intel 8xx cards</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Wed 09 December 2009</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>This story is a couple of days old, but in case you don't use Frugalware, and have such an Intel card, it may be interesting...</p><p>Here is the <a href="http://bugs.freedesktop.org/show_bug.cgi?id=25417">bugreport</a>, it took me about 1,5 days to bisect it, but at the end at least I have a workaround for the issue.</p><p>Given that now Gordon Jin from Intel set its priority to high, I'm curious how long will it take for them to provide a solution.</p><p>The sad part of it is that mplayer -vo xv still does not work, but the gl output is not so terrible, after all.</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/mplayer-vs-kms.html">mplayer vs kms</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Thu 19 November 2009</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+mplayer -vo xv is broken for intel 8xx cards in Frugalware-current since we enabled KMS. They are <a href="http://bugs.freedesktop.org/show_bug.cgi?id=20901">working on it</a>, but till 2.6.32 is stable, I needed an interim solution. The problem is that now the default is -vo x11 which does not scale the movie at all when I enable fullscreen. So -vo gl works fine, and making this default is easy: just add 'vo=gl' to ~/.mplayer/config.
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/erlang-sudo-solver.html">Erlang sudo solver</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Tue 17 November 2009</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>First, sorry I'm not yet publishing any code. It's about there is a race at the uni where the fastest implementation wins, so I don't want to share anything before that ends. It'll end in a month, actually. ;)</p><p>Other than that, it's a generic sudoku solver, it can solve NxN sodukus, not only 9x9 and it handles extra rules. A detailed description is <a href="http://dp.iit.bme.hu/dp09a/dp09a-nhf.html">here</a> (<a href="http://translate.google.com/translate?u=http%3A%2F%2Fdp.iit.bme.hu%2Fdp09a%2Fdp09a-nhf.html&amp;sl=hu&amp;tl=en">gt</a>).</p><p>But of course the purpose of this post is to bookmark a few useful page I found while working on my implementation:</p><p><ul>
+  <li><a href="http://en.wikipedia.org/wiki/Backtracking#Pseudocode">Backtracking pseudocode</a></li>
+  <li><a href="http://en.wikipedia.org/wiki/Algorithmics_of_sudoku#Solving_sudokus_by_backtracking">Solving sudokus by backtracking</a></li>
+  <li><a href="http://www3.erlang.org/documentation/doc-5.5.5/lib/tools-2.5.5/doc/html/fprof.html">Erlang fprof module documentation</a></li>
+</ul></p><p>The important part of the later links is three lines:</p><p><pre>1> fprof:apply(foo, create_file_slow, [junk, 1024]).
+2> fprof:profile().
+3> fprof:analyse().</pre></p><p>That makes profiling Erlang programs really easy, once you get used to the output, which is a bit weird for the first time. :)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/http-head-support-in-darcs-fast-export.html">HTTP head support in darcs-fast-export</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Tue 27 October 2009</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>Ian <a href="http://bazaar.launchpad.net/~bzr/bzr-fastimport/fastimport.dev/revision/259">merged</a> my work today, so bzr-fastimport (which contains darcs-fast-export) from bzr now has it out of the box.</p><p>This feature is about the following use-case: if you wanted to import a darcs repo to (for example) git, then you had to 'darcs get' the darcs repo first, then import it to git. Now darcs-fast-export can do this without a 'darcs get' if the repo is available via http, reading much less files, resulting less data transfer. :)</p><p>(The trick behind it is that darcs-fast-export reads only the patches, while darcs get reads boths snapshots of the repo and the patches, so a darcs get takes much more time than a darcs-fast-export.)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/pairing-with-kbluetooth.html">Pairing with kbluetooth</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Sun 25 October 2009</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>Here is the use case I saw: I try to run 'gammu identify' from commandline, it finds my phone, the phone asks if I want to pair with my notebook, I say yes, it asks for a pin code, and whatever I answer, the pairing fails.</p><p>Looks like the way it works is the other direction: start kbluetooth, choose settings, devices, then set the mode to discoverable (for 3 mins, that should be enough). Then go to paired devices on the phone, choose delete pairing, then add the notebook again, it will ask for a pin and pairing will succeed.</p><p>A bit weird, but it works at least.</p>
 </div>
 </div>
 
