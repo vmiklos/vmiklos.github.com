@@ -59,10 +59,10 @@
 
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/darcs-import-on-repo-or-cz.html">darcs import on repo.or.cz</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/pairing-with-kbluetooth.html">Pairing with kbluetooth</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Mon 25 January 2010</p>
+    <p>Posted on: Sun 25 October 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -70,7 +70,7 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>I've contributed a patch to repo.or.cz to allow darcs imports, but and I recently got a reply for it from the maintainer. So we worked together a bit more and now the patches <a href="http://repo.or.cz/w/girocco.git?a=search&amp;st=author&amp;s=vmiklos">are in</a>, repo.or.cz just imported the source of <a href="http://repo.or.cz/w/darcsweb.git">darcsweb</a>.</p><p>I also created a test project and tested that incremental imports work properly as well. \o/</p><p>NB: It uses my darcs-fast-export tool, that's why I started to work on this. ;)</p>
+<p>Here is the use case I saw: I try to run 'gammu identify' from commandline, it finds my phone, the phone asks if I want to pair with my notebook, I say yes, it asks for a pin code, and whatever I answer, the pairing fails.</p><p>Looks like the way it works is the other direction: start kbluetooth, choose settings, devices, then set the mode to discoverable (for 3 mins, that should be enough). Then go to paired devices on the phone, choose delete pairing, then add the notebook again, it will ask for a pin and pairing will succeed.</p><p>A bit weird, but it works at least.</p>
 </div>
 </div>
 
@@ -79,71 +79,10 @@
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/lenovo-ideapad-s12.html">Lenovo Ideapad S12</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/gammu2gcal.html">gammu2gcal</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sun 17 January 2010</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 3 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>I bought <a href="http://shop.lenovo.com/us/notebooks/ideapad/s-series/s12">this netbook</a> about a week ago (the one with the Via card).</p><p>Actually it costed 106 kHUF (~$550) instead of the advertised $400, but that probably due shipment costs, etc.</p><p>Here are what requirements I had:</p><p><ul>
-  <li>I wanted a simple video card, it's much more important for me that I don't have to use external kernel modules than the actualy 3D performance. So NVidia is clearly an overkill for me. I wanted Intel or similar.</li>
-  <li>12"-sized LCD - my iBook had it and I loved it. I agree that it's too small when we're watching films with 5 other friends or playing games, but I don't do either regularly.</li>
-  <li>Touchpad. I don't like trackpoint.</li>
-</ul></p><p>Here is what I got:</p><p><ul>
-  <li>The Via card is so far OK, the openchrome driver has a nice community and at least 2D acceleration works fine, and they are working on the 3D one as well. (Other card types have 3D support, too - This type is just too new ATM.)</li>
-  <li>The LCD size is what I want - looks like you can't easily buy a 12" notebook, but a 12" netbook counts as a high-end one.</li>
-  <li>Of course it has touchpad.</li></ul></p><p>Let's see what extra does it have:</p><p><ul>
-  <li>VGA output (iBook had some custom output and I never got a VGA converter cable.)</li>
-  <li>Bluetooth</li>
-  <li>SD-Card reader</li>
-  <li>Webcam</li>
-  <li>KVM support</li>
-  <li>HW mpeg2/4 and dm-crypt support</li>
-</ul></p><p>What's wrong with it:</p><p><ul>
-  <li>The cover is shiny, the mark of the fingers are left there when you grab it.</li>
-  <li>No optical driver, but hey, it's a netbook!</li>
-</ul></p><p>Let's see Linux support: First, the machine is shipped with Windows XP. The bios updater is windows-only, so I updated the bios before I rm -rfed the whole preinstalled contents.</p><p>What works:</p><p><ul>
-  <li>Via Nano CPU: works fine.</li>
-  <li>Via card: after installing the opencrome driver a simple 'xconfig' from frugalwareutils did its job, no other tricks were necessary.</li>
-  <li>SATA controller works fine.</li>
-  <li>Wired ethernet works fine.</li>
-  <li>Wireless: the in-tree b43 works for WPA APs <a href="http://www.mail-archive.com/bcm43xx-dev@lists.berlios.de/msg09481.html">but not with unsecure ones</a>. The binary bcmwl driver works in the later case as well.</li>
-  <li>SD-Card reader works out of the box.</li>
-  <li>Sound is fine.</li>
-  <li>The webcam works with mplayer using the "mplayer -tv driver=v4l2:device=/dev/video0 tv://" command.</li>
-  <li>Bluetooth is fine.</li>
-  <li>KVM support (vmx flag) is there in the CPU.</li>
-  <li>dm-crypt has HW support, so copying to a truecrypt volue isn't slower (~40mb/s) than copying to an unencrypted one.</li>
-</ul></p><p>What does not work with Linux:</p><p><ul>
-  <li>There is no <a href="http://forums.lenovo.com/t5/IdeaPad-Y-and-U-series-Laptops/How-to-turn-on-bluetooth-on-ubuntu-08-10/m-p/179414">ideapad-acpi</a> module to turn on or off wifi/bluetooth in the Embedded Controller (EC) of the ideapad. In my case I enabled wifi only when I updated the settings of the EC back in Windows, so Bluetooth is disabled. Feel free to post in commends if you have ideas how to set the EC from Linux. ;)</li>
-  <li>The 3d and mpeg2/4 decoding HW support of the graphics card doesn't work.</li>
-  <li>Hibernation is broken due to the weakness of the openchrome driver.</li>
-</ul></p><p>I think that's all. As always, it's possible that these limitations can be avoided in the future, who knows. ;)</p><p>Ah and the battery works for 5 hours with wifi enabled, I think that's nice. (And probably it's due to the LED-powered LCD.)</p><p>In case of questions, please post them in the comments and I'll try to reply.</p><p>PS: It doesn't really belong here, but if I was at it, I also switched (compared to iBook):</p><p><ul>
-  <li>to x86_64 from ppc</li>
-  <li>to ext4 from ext3</li>
-  <li>to kde4 from kde3</li>
-</ul></p><p>Update: I did a backup about the config files, reinstalled Windows XP, enabled the bluetooth in EC, and installed i686 for now. So the changes are:</p><p><ul>
-  <li>Bluetooth is now working perfectly</li>
-  <li>2D acceleration is stable (ie. if you start mplayer -vo xv the second time, it won't freeze)</li>
-  <li>Suspend to disk works fine, <a href="http://openchrome.org/trac/ticket/321#comment:25">as it was expected</a>.</li>
-</ul></p><p>\o/</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/msc-fp-g-atkp-g-f-true.html">MSc: FP >= ATKP -> F = true</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Fri 15 January 2010</p>
+    <p>Posted on: Sun 18 October 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -151,7 +90,7 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-Gyengebbek kedveert: "Felvételi döntés: Felvételi pontszáma elérte az államilag támogatott képzés ponthatárát"
+<p><a href="http://git.frugalware.org/repos/vmexam/bash/gammu2gcal">Here</a> it is.</p><p>A simple script to first convert your phone's calendar entries to the ICS format, then to synchronize it with Google Calendar.</p><p>The first part is pretty trivial, the second isn't. The main problem is that <a href="http://code.google.com/p/gdata-issues/issues/detail?id=212">there is no standard API</a> for doing so. At the end I ended up using the web UI from curl, which is pretty hackish, but at least works. :)</p><p>Update: there is a new version <a href="http://git.frugalware.org/repos/vmexam/bash/gcalsync">here</a>. I moved all cookie/form stuff to the curl config, so probably it'll be usable after 2 days as well... :P</p>
 </div>
 </div>
 
@@ -160,10 +99,10 @@ Gyengebbek kedveert: "Felvételi döntés: Felvételi pontszáma elérte az áll
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/mails.html">mails</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/best-first-patch-ever.html">Best "first patch", ever</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Mon 11 January 2010</p>
+    <p>Posted on: Wed 14 October 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -171,10 +110,7 @@ Gyengebbek kedveert: "Felvételi döntés: Felvételi pontszáma elérte az áll
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>Say you have two servers, the first is just a mail proxy, the second is a real mail server. So the MX record points to the first box and you usually just read your mail on the second one.</p><p>We use this system at frugalware.org as well to make the service a bit more robust: if genesis (the "second" box) goes down, the proxy machine(s) can just queue up the input and in case one of the proxy machines go down, then the sender will just try an other proxy.</p><p>The problem occurs when the "second" box goes down and you need to read your mail ASAP. Let's say you have access to the first box. You see in the output of 'mailq' that there are messages in the queue but how to read those mails?</p><p>'mailq' gives the ID of each message, and then the following script (I call it 'mails' - s for show) can generate mbox format from it, which means you can read it with for example 'mutt -f foo.mbox'.</p><p>The script itself is fairly easy:</p><p><pre>
-#!/bin/sh</p><p>echo 'From <a href="mailto:news@gmane.org">news@gmane.org</a> Tue Mar 04 03:33:20 2003'
-        |sed '1,/^\*\*\* MESSAGE CONTENTS/d;/^\*\*\* HEADER EXTRACTED/,$ d'
-</pre></p><p>(And of course it's possible there is a better tool to do the job, but I use this for months now.)</p>
+<p>If someone is a major contributor in a project, it's always funny to search back the VCS logs to see what was the first contribution. Usually a typo fix or a oneliner patch.</p><p>Partly related, cleanups are usually done by major contributors, so a cleanup is typically not e "first patch". Unless we are talking about me and <a href="http://repo.or.cz/w/gitmagic.git?a=commitdiff;h=abd5709ce87737e37de8edaf39b1cb2bda520a0b">gitmagic</a>.</p><p>The funny story is that my first patch is really just about removing two parts of the book. Both were listed as "known git bugs", one was solved a long time ago, and I just fixed the other one a few days ago.</p>
 </div>
 </div>
 
@@ -183,10 +119,10 @@ Gyengebbek kedveert: "Felvételi döntés: Felvételi pontszáma elérte az áll
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/surrogates.html">surrogates</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/free-beer-for-a-git-patch.html">Free beer for a git patch</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sun 10 January 2010</p>
+    <p>Posted on: Fri 02 October 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -194,14 +130,7 @@ Gyengebbek kedveert: "Felvételi döntés: Felvételi pontszáma elérte az áll
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/hyzXMB9rLYd4HudHMYCVmPrr11WEIaF-F1bROtO3NA0MIyTrH6Va-Nh38pzhT8j8ur3QZGuCXu8_XvZmZfyrvPeDuxFcBSFCH0meluxdp4U-_ARZbhGVkpdCd7x4f9kltiMJpvfDUw=w640" alt="https://lh3.googleusercontent.com/hyzXMB9rLYd4HudHMYCVmPrr11WEIaF-F1bROtO3NA0MIyTrH6Va-Nh38pzhT8j8ur3QZGuCXu8_XvZmZfyrvPeDuxFcBSFCH0meluxdp4U-_ARZbhGVkpdCd7x4f9kltiMJpvfDUw=w640" />
-</div>
-</div>
-<div class="paragraph"><p>2009-es film, elegge scifi jellegu ezzel a robotos temaval. Egy egyszeru alapotlet, es megis vegig
-fenntartja a figyelmet. Nekem tetszett.</p></div>
-<div class="paragraph"><p>(<a href="http://www.imdb.com/title/tt0986263/">imdb</a>, <a href="http://www.youtube.com/watch?v=jwTJ7mCcFoY">trailer</a>)</p></div>
+<p>I just received today a free beer, just because I contributed a patch to git. See <a href="http://www.pronovix.com/blog/free-beer-open-source-contributors#comment-112">here</a>.</p><p>Hacking is fun! :)</p>
 </div>
 </div>
 
@@ -210,73 +139,10 @@ fenntartja a figyelmet. Nekem tetszett.</p></div>
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/new-firefox-profile.html">New firefox profile</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/iwiw-net-vs-firefox.html">iwiw.net vs firefox</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Tue 05 January 2010</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>I&#8217;m continously upgrading my Frugalware installation, IIRC I installed 0.2 on this Clevo machine and
-I never saw any reason to reinstall. Sadly the situation is not that easy with applications, for
-example firefox&#8217;s profile tends to grow from 20M over 100M and the only way to really get rid of all
-the junk it has is to start over.</p></div>
-<div class="paragraph"><p>Given that in the last month I did not really have time for such minor problems, now I decided to
-solve this by doing an <code>mv ~/.mozilla{,.orig}</code>.</p></div>
-<div class="paragraph"><p>I must note that I&#8217;m not a typical firefox user, given that I store my passwords in cpm, bookmarks
-in git (as I use multiple machines and I trust those applications more than firefox), and finally
-all the extensions I use are installed via Frugalware firefox-$extname packages.</p></div>
-<div class="paragraph"><p>Now I thought that this way the new profile usage will be easy enough, though there are still a few
-things to note:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-The bookmarklets (allowing fast search in various bugtrackers) should be installed again.
-</p>
-</li>
-<li>
-<p>
-The <a href="https://vmiklos.hu/blog/enjoying-search-autosizer.html">searchbar autosizer</a> addon has bad
-  defaults, I like to have the search bar with a fixed 203px size (355px on 1280x800)&#8201;&#8212;&#8201;though
-  nowadays this regressed, see <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=253331">moz#253331</a>.
-</p>
-</li>
-<li>
-<p>
-Finally I forgot I have a custom userChrome.css (also obsolete nowadays):
-</p>
-</li>
-</ul></div>
-<div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight
-by Lorenzo Bettini
-http://www.lorenzobettini.it
-http://www.gnu.org/software/src-highlite -->
-<pre><tt><span style="color: #993399">.tabs</span><span style="color: #990000">-</span>newtab<span style="color: #990000">-</span>button <span style="color: #FF0000">{</span> <span style="color: #0000FF">display:</span> <span style="font-style: italic"><span style="color: #009900">none</span></span>; <span style="color: #FF0000">}</span> <span style="font-style: italic"><span style="color: #9A1900">/* remove New Tab button */</span></span></tt></pre></div></div>
-<div class="ulist"><ul>
-<li>
-<p>
-Change browser.backspace_action to 0 to make backspace to a back (as on Windows).
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>Other than that, no changes were necessary.</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/source-highlight-with-erlang-support.html">source-highlight with Erlang support</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Sat 26 December 2009</p>
+    <p>Posted on: Tue 29 September 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -284,7 +150,7 @@ Change browser.backspace_action to 0 to make backspace to a back (as on Windows)
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>I wanted Erlang support in the syntax highlighter used by asciidoc. Currently the filter uses source-highlight as its backend, so I checked and unfortunately it had no Erlang support. A quick google found that there is a good <a href="http://caolanmcmahon.com/erlang_syntax_highlighting">shjs support</a> which would ideally work out of the box with source-highlight. Of course it did not, but it wasn't hard to fix it up. Then I sent it to upstream. This was about a month ago.</p><p>Then I just noticed it was <a href="http://git.savannah.gnu.org/cgit/src-highlite.git/diff/?id=ed7a5b7bb495c8d460013454558fe687ba6a975c">accepted</a> a few days ago, and now source-highlight-3.1.2 is out, so it's back in Frugalware-current \o/</p>
+<p>So iwiw.net has some flash + js interface to upload photos, but it seems firefox just segfaults here when I want to upload ones. Good idea, I should not bother with doing so.</p><p>I've wrote a <a href="http://vmiklos.hu/ly/pdfgen.sh">small script</a> to merge all the lilypond PDFs I have to a single one. Far from perfect, but it's a start.</p><p>I've just found <a href="http://marginalhacks.com/Hacks/album/">album</a>. It's an HTML index + thumbnail generator, it's a bit bloated, but it's not hard to tell it you don't want any extra features. Just downloading the script to $HOME/bin is enough and it can live without downloading any bloated themes.</p><p>Ah and the <a href="http://thread.gmane.org/gmane.linux.frugalware.devel/6530/focus=6531">thread</a> on fw-dev about the intel driver vs kms just sucks. I don't have time to build 2.6.32rc1 right now...</p>
 </div>
 </div>
 
@@ -293,10 +159,10 @@ Change browser.backspace_action to 0 to make backspace to a back (as on Windows)
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/kde3-apps-i-use.html">KDE3 apps I use</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/launchpad-brute-force-maintenance.html">launchpad brute-force maintenance</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sun 13 December 2009</p>
+    <p>Posted on: Thu 24 September 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -304,17 +170,7 @@ Change browser.backspace_action to 0 to make backspace to a back (as on Windows)
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>Given that a lot of KDE3 apps are not just ported to KDE4 but replacement projects have been created, the upgrade is not trivial. I always declare myself as somebody who is a minimal KDE user saying I mostly just use konsole, but that's not really correct. From time to time I use the following apps as well:</p><p><ul>
-  <li>kmix (systray icon)</li>
-  <li>klaptop (systray icon)</li>
-  <li>kxkb (systray icon)</li>
-  <li>krdc</li>
-  <li>kaudiocreator</li>
-  <li>k3b</li>
-  <li>ksnapshot</li>
-  <li>kpdf</li>
-  <li>konqueror (for GUI mounting of USB sticks, when I don't use pmount)</li>
-</ul></p><p>And that really doesn't belong to here, but I still use gtk-based apps for browsing and picture viewing (firefox and gqview).</p><p>I hope this post will be able to serve as a good personal checklist when we merge kde4 to current. ;)</p>
+<p>Funny, when there is a maintenance on launchpad, they just filter the ssh port on the server, so you get:</p><p><pre>ssh: connect to host bazaar.launchpad.net port 22: Connection timed out</pre></p><p>Snip. I spent my time earlier today to make package moves in FST easier. Finally I modified the checkout plugin of our git hook framework so that if a FrugalBuild is moved from one dir to another, then the other files from the old dir are moved to the new dir as well.</p>
 </div>
 </div>
 
@@ -323,10 +179,10 @@ Change browser.backspace_action to 0 to make backspace to a back (as on Windows)
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/2-6-32-kms-vs-intel-8xx-cards.html">2.6.32 kms vs intel 8xx cards</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/interactive-revert-in-git.html">Interactive revert in git</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Wed 09 December 2009</p>
+    <p>Posted on: Tue 22 September 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -334,7 +190,7 @@ Change browser.backspace_action to 0 to make backspace to a back (as on Windows)
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>This story is a couple of days old, but in case you don't use Frugalware, and have such an Intel card, it may be interesting...</p><p>Here is the <a href="http://bugs.freedesktop.org/show_bug.cgi?id=25417">bugreport</a>, it took me about 1,5 days to bisect it, but at the end at least I have a workaround for the issue.</p><p>Given that now Gordon Jin from Intel set its priority to high, I'm curious how long will it take for them to provide a solution.</p><p>The sad part of it is that mplayer -vo xv still does not work, but the gl output is not so terrible, after all.</p>
+<p>It's a long time since 'dg rev' could be replaced by 'git checkout -p', but that feature was missing from git.git. In the near past it <a href="http://git.kernel.org/?p=git/git.git;a=commit;h=54f0bdc81103f45f12978b385a9519a235b03cc2">got implemented</a> and you can even avoid hitting enter after every y/n by saying:</p><p><pre>git config interactive.singlekey true</pre></p><p>One less feature which is unique to dg! (In the long run it would be nice if I could stop recommending its usage to users.)</p>
 </div>
 </div>
 
@@ -343,10 +199,10 @@ Change browser.backspace_action to 0 to make backspace to a back (as on Windows)
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/mplayer-vs-kms.html">mplayer vs kms</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/a2beamer-and-scalable-graphics.html">a2beamer and scalable graphics</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Thu 19 November 2009</p>
+    <p>Posted on: Thu 17 September 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -354,7 +210,49 @@ Change browser.backspace_action to 0 to make backspace to a back (as on Windows)
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-mplayer -vo xv is broken for intel 8xx cards in Frugalware-current since we enabled KMS. They are <a href="http://bugs.freedesktop.org/show_bug.cgi?id=20901">working on it</a>, but till 2.6.32 is stable, I needed an interim solution. The problem is that now the default is -vo x11 which does not scale the movie at all when I enable fullscreen. So -vo gl works fine, and making this default is easy: just add 'vo=gl' to ~/.mplayer/config.
+<p>I spent some time with figuring out how to include <a href="http://git.frugalware.org/repos/vmexam/piechart/test.pdf">piecharts</a> and <a href="http://git.frugalware.org/repos/vmexam/graphviz/test.pdf">graphs</a> in presentations.</p><p>The nice fact is that both metapost and graphviz output eps, so the result is totally scalable. ;)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/a2beamer.html">a2beamer</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Sat 12 September 2009</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>I just wrote a <a href="http://git.frugalware.org/repos/vmexam/bash/a2beamer">little script</a> to allow generating beamer slides from asciidoc source.</p><p>Snip. Vim tip of the day: you can do a word count on the current selected range if you press 'g' then ^G. (<a href="http://vim.wikia.com/wiki/Word_count">source</a>)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/kms.html">KMS</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Fri 11 September 2009</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>I gave kernel-mode setting a try today with xorg-server 1.6.1, xf86-video-intel 2.8.1 and kernel 2.6.31.</p><p>From the NEWS file:</p><p><blockquote>
+The driver certainly will work best with an i915 module from a recent kernel (2.6.31) and with kernel-modesetting (KMS, specified by loading i915 with the option "modeset=1").
+</blockquote></p><p><a href="http://frugalware.org/~vmiklos/pics/bug/kms.png">Here</a> is the result I got.</p><p>Given that the Fedora people enabled KMS in 2.6.28, and now the kernel guys say that it's really fine in 2.6.31, I should probably give it a try next time around 2.6.34. ;)</p>
 </div>
 </div>
 

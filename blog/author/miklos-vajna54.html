@@ -59,10 +59,10 @@
 
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/ping-on-windows-and-relative-host-names.html">Ping on windows and relative host names in DNS</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/overwriting-the-from-header-in-rss2email.html">Overwriting the From header in rss2email</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Wed 25 February 2009</p>
+    <p>Posted on: Fri 13 February 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -70,15 +70,11 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>So I got the followings today at the uni on a Windows box:</p><p><pre>
-    ping alaplab.</p><p>    Pinging alaplab.mit.bme.hu [152.66.252.18] with 32 bytes of data:</p><p>    Reply from 152.66.252.18: bytes=32 time&lt;1ms TTL=127
-    Reply from 152.66.252.18: bytes=32 time&lt;1ms TTL=127
-    Reply from 152.66.252.18: bytes=32 time&lt;1ms TTL=127
-    Reply from 152.66.252.18: bytes=32 time&lt;1ms TTL=127</p><p>    Ping statistics for 152.66.252.18:
-        Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
-    Approximate round trip times in milli-seconds:
-        Minimum = 0ms, Maximum = 0ms, Average = 0ms
-</pre></p><p>Now I wonder if they just ignore the dot at the end of the hostname or WTF.</p>
+<p>So here is the <a href="http://frugalware.org/~vmiklos/patches/rss2email-reply.patch">patch</a> that allows you to do it.</p><p>Basically it is useful when the blog has no comment functionality, as in this case you can just specify an address in config.py, like:</p><p><pre>
+OVERRIDE_FROM = {
+                'http://landley.net/rss.xml': '''"Rob Landley's blog thing." &lt;<a href="mailto:rob@landley.net">rob@landley.net</a>&gt;'''
+                }
+</pre></p><p>Without the patch you can just overwrite the name, not the address as well.</p>
 </div>
 </div>
 
@@ -87,10 +83,10 @@
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/old-bc-bug.html">Old bc bug</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/ext4-support-in-the-installer.html">Ext4 support in the installer</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Tue 24 February 2009</p>
+    <p>Posted on: Thu 12 February 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -98,25 +94,7 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>We had this old #3331 bug, and it turns out that Fedora had an s390 patch that fixed it. Of course the patch name is misleading since it fixed something on x86 as well, so it was the last thing I thought to try... :-)</p><p>I got a reply reply to my libbtctl patch I sent back in last year:</p><p><blockquote>
-On Sat, 2008-12-27 at 18:32 +0100, Miklos Vajna wrote:
-> Hi,
->
-> I recently tried to build libbtctl with mono-2.0 and the build fails
-> because the .pub signatures are no longer supported.
->
-> A similar commit in evolution-sharp's svn:
->
-> <a href="http://svn.gnome.org/viewvc/evolution-sharp?view=revision&amp;revision=191">http://svn.gnome.org/viewvc/evolution-sharp?view=revision&amp;revision=191</a>
->
-> Here is a patch to do the same for libbtctl:
->
-> <a href="http://ftp.frugalware.org/pub/frugalware/frugalware-current/source/gnome-extra/libbtctl/mono2.patch">http://ftp.frugalware.org/pub/frugalware/frugalware-current/source/gnome-extra/libbtctl/mono2.patch</a>
->
-> Of course you can generate your own new key with 'sn -k 1024
-> libbtctl.snk' if you don't want to take the one I use right now.</p><p>Because the patch wasn't in bugzilla, I missed it for the last ever
-release of libbtctl.</p><p>Use bugzilla in the future.</p><p>Cheers
-</blockquote></p><p>Needless to say, there is no libbtctl component in the GNOME bugzilla.</p><p>Yay for bureaucracy!</p>
+<p>So first I had to patch our grub, then adding ext4 support to the installer was more or less trivial.</p><p>The default is still ext3, though.</p>
 </div>
 </div>
 
@@ -125,10 +103,10 @@ release of libbtctl.</p><p>Use bugzilla in the future.</p><p>Cheers
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/google-earth-bug.html">Google earth bug</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/java-plugin-for-x86-64.html">Java plugin for x86_64</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Mon 23 February 2009</p>
+    <p>Posted on: Wed 11 February 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -136,7 +114,7 @@ release of libbtctl.</p><p>Use bugzilla in the future.</p><p>Cheers
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>So we <a href="http://bugs.frugalware.org/3628">got a bugreport</a> - it seems the <a href="http://www.google.com/support/forum/p/earth/thread?tid=0d0f5abd12716b7e&amp;hl=en">solution</a> is just about getting rid of the bundled libcrypto, as it's incopatible with the not-bundled libssl.</p><p>Ported erlang and postfix to ppc, the later because I wanted to use git-send-email, and I like to config postfix once, then point all the apps at postfix and then I have to change my pass only at once place when I do so.</p><p>I got an i586 machine yesterday with the "please install Linux on it for me" slogan. Sadly we at Frugalware do not support i586. First I wanted to install Slackware, but it turned out that the machine does not read DVDs and I did not wanted to download all the CDs of Slack and it turns out that Slack has no netinstall I ended up installing Fedora. Well, I tried to. The HDD is only 1.2G, and they wanted X on it, so disabled almost everything, except X and blackbox. ;)</p><p>But honestly it just does not worth the time, people should just bin such a machine and get a life. :P</p>
+<p>Tthe i686 java plugin is at /usr/lib/java/jre/plugin/i386/ns7/libjavaplugin_oji.so. Guess where is the x86_64 one.. /usr/lib/java/jre/lib/amd64/libnpjp2.so.</p><p>Logical - dear Sun -, eh?</p>
 </div>
 </div>
 
@@ -145,10 +123,10 @@ release of libbtctl.</p><p>Use bugzilla in the future.</p><p>Cheers
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/docx2txt.html">docx2txt</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/suspend-to-ram-for-more-than-a-week.html">Suspend to RAM for more than a week</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sun 22 February 2009</p>
+    <p>Posted on: Tue 10 February 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -156,11 +134,7 @@ release of libbtctl.</p><p>Use bugzilla in the future.</p><p>Cheers
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>So there is <a href="http://docx2txt.sourceforge.net/">such a project</a>, and my relevant ~/.mailcap entry is:</p><p><pre>
-$ grep docx ~/.mailcap
-application/vnd.openxmlformats-officedocument.wordprocessingml.document; docx2txt.pl %s -|iconv -c -f utf8 -t latin2; copiousoutput;
-application/vnd.openxmlformats-officedocument.wordprocessingml.documen; docx2txt.pl %s - |iconv -c -f utf8 -t latin2; copiousoutput;
-</pre></p><p>I don't exactly know why the later is needed. I haven't checked the RFC. The fact is that sqmail sends the content-type header using format=flowed (no indication about using this format, it just uses it), and mutt doesn't like it. So it's an sqmail or mutt bug. But the workaround is the second entry above.</p><p>BTW I started to learn Erlang yesterday, there is a good "Programming Erlang" book, it's more than 500 pages, I managed to read the first ~50 pages.</p><p>OTOH Fruglware 1.0rc1 is out. Laying in the bed and releasing from my iBook is fun. :)</p>
+<p>So I went offline for skiing for about 11 days (Jan 30 06:24:13-Feb 10 00:48:09 to be exact), and I forgot that suspend to RAM works only for a few days. My normal notebook of course switched off. But interesting enough, the iBook still did not switch off, it said the battery even had 5%! :)</p><p>Yeah, I still love this HW.</p>
 </div>
 </div>
 
@@ -169,10 +143,10 @@ application/vnd.openxmlformats-officedocument.wordprocessingml.documen; docx2txt
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/double-negations.html">Double negations</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/recording-the-audio-output-of-flash-vide.html">Recording the audio output of flash videos</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sat 21 February 2009</p>
+    <p>Posted on: Fri 30 January 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -180,7 +154,13 @@ application/vnd.openxmlformats-officedocument.wordprocessingml.documen; docx2txt
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>Referring to <a href="http://article.gmane.org/gmane.comp.version-control.git/110850">this post</a>, if "diff.denyNonIndexExclude = false" then is IndexInclude true or false?</p><p>This is like the recent <a href="http://www.computerworld.com/action/article.do?command=viewArticleBasic&amp;taxonomyName=Security&amp;articleId=9128119&amp;taxonomyId=17&amp;pageNumber=1">Mozilla action</a>, I never really figured out if they now like or hate Apple. (OK, other users already told me that the later is the true version.)</p><p>It seems I'm too bad in Boolean algebra. ;-)</p>
+<p>This is useful if you really want to record the audio of a clip, which is not on youtube (you can use youtube-dl there).</p><p>The <a href="http://carthick.wordpress.com/2007/11/26/linux-recording-soundcard-output-using-arecord/">howto</a> explains pretty much everything.</p><p>Here are the amixer parameters I needed:</p><p>amixer cset numid=24,iface=MIXER,name='Capture Source' 5</p><p>~/.asoundrc:</p><p>pcm.copy {
+type plug
+slave {
+pcm hw
+}
+route_policy copy
+}</p><p>record commandline:</p><p>arecord -f cd -t wav -D copy foo.wav</p>
 </div>
 </div>
 
@@ -189,10 +169,10 @@ application/vnd.openxmlformats-officedocument.wordprocessingml.documen; docx2txt
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/b2evo-2-4-6.html">b2evo 2.4.6</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/twitter.html">twitter</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Fri 20 February 2009</p>
+    <p>Posted on: Thu 29 January 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -200,7 +180,7 @@ application/vnd.openxmlformats-officedocument.wordprocessingml.documen; docx2txt
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>This was on my TODO for a long time, so I upgraded from 2.4.2 to 2.4.6. Should be non-visible, since this is a minor upgrade.</p><p>Oh and I posted a few cosmetic git patches to <a href="http://thread.gmane.org/gmane.comp.version-control.git/110639">this thread</a>.</p>
+<p>Not that I'm a web2.0 maniac, but I <a href="https://twitter.com/vmiklos">registered</a> on twitter.</p><p>I think the only purpose I will use it - for now - is to microblog when I'm offline for multiple days, since blogging in that case is expenseve. We'll see.</p>
 </div>
 </div>
 
@@ -209,10 +189,10 @@ application/vnd.openxmlformats-officedocument.wordprocessingml.documen; docx2txt
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/preparing-frugalware-1-0rc1.html">Preparing Frugalware 1.0rc1</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/openoffice-org-3-0-1-vs-boost-1-37.html">OpenOffice.org 3.0.1 vs Boost 1.37</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Thu 19 February 2009</p>
+    <p>Posted on: Wed 28 January 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -220,7 +200,7 @@ application/vnd.openxmlformats-officedocument.wordprocessingml.documen; docx2txt
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>Usually there are 1-2 nasty bugs in each release - after all that's the only eason I push for having at least a pre-release every 2 months.</p><p>So today's one was a nasty double free bug in xconfig, so after the install there were no xorg.conf. The fix is now in git, so it should be over, but I was a bit disappointed, as so far Priyank's file descriptor / memory leak fixes were all carefully tested, however this one was obviously bogus, so probably it was not tested at all. OK, hopefully such stuff won't really happen again.</p><p>Snip. In VIM, I wanted to do a "Pj" 1000 times. 1000Pj will do "1000P and [one] j", so that's not the right way. <a href="mailto:qaPjq1000@a">qaPjq1000@a</a> will do it: qafooq records foo to the "a" macro, then <a href="mailto:1000@a">1000@a</a> calls it 1000 times. Good to know. ;-)</p>
+<p>So it seems OOo 3.0.1 triggers a bug in boost 1.37, hopefully <a href="http://git.frugalware.org/gitweb/gitweb.cgi?p=frugalware-current.git;a=commitdiff;h=ee5fe05c559eeec21cfa94c4860e68a04c56e931">this commit</a> will fix the issue. At least the OOo build did not stop so far..</p><p>But my "law" is still true: every openoffice upgrade shows at least one problem in some other package. ;)</p>
 </div>
 </div>
 
@@ -229,10 +209,10 @@ application/vnd.openxmlformats-officedocument.wordprocessingml.documen; docx2txt
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/bitlbee-skype-testsuite.html">bitlbee-skype testsuite</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/successful-qemu-ppc-install-with-frugalw.html">Successful qemu-ppc install with frugalware-current</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Wed 18 February 2009</p>
+    <p>Posted on: Tue 27 January 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -240,7 +220,24 @@ application/vnd.openxmlformats-officedocument.wordprocessingml.documen; docx2txt
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>An old dream is now a reality, bitlbee-skype got a <a href="http://vmiklos.hu/gitweb/?p=bitlbee-skype.git;a=tree;f=t/irssi;hb=HEAD">testsuite</a>! :)</p><p>If I were at it, I also added a new skyped option to be able to log traffic when the deamon forks into background.</p>
+<div class="paragraph"><p>Tonight I synced the 2.6.28 kernel on PPC, enabled the Realtek driver
+needed by Qemu and tried again: the whole installation procedure goes
+fine.</p></div>
+<div class="paragraph"><p>Of course (it couldn&#8217;t be true ;) ) the boot after the install fails,
+which is interesting - if boot from CD works fine, I don&#8217;t see why can&#8217;t
+it work from a HDD, but oh well.</p></div>
+<div class="paragraph"><p>I just saw a recent commit in Qemu SVN about fixing qemu-system-ppc
+-kernel, so I&#8217;ll give it a try later.</p></div>
+<div class="paragraph"><p>Ah, and the speed is really promising. I did the installation on my
+laptop, not on a fast machine, and a base install really completed not
+so slow. ;)</p></div>
+<div class="paragraph"><p>Update: After upgrading to svn6463, it boots with:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>qemu-system-ppc -kernel boot/vmlinux-2.6.28-fw1-ppc -append "ro root=/dev/hda3" -hda ~/documents/qemu/hda.img</code></pre>
+</div></div>
+<div class="paragraph"><p>\o/</p></div>
+<div class="paragraph"><p>Update 2: Up to date install/run ppc scripts <a href="http://git.frugalware.org/repos/vmexam/virt/">here</a>.</p></div>
 </div>
 </div>
 
@@ -249,10 +246,10 @@ application/vnd.openxmlformats-officedocument.wordprocessingml.documen; docx2txt
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/python3.html">Python3</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/libarchive-vs-lzma.html">libarchive vs lzma</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Tue 17 February 2009</p>
+    <p>Posted on: Mon 26 January 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -260,7 +257,7 @@ application/vnd.openxmlformats-officedocument.wordprocessingml.documen; docx2txt
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>Finally python 3.0 (or python3k) arrived to -current. Of course the external modules are still for 2.6, but that's not something we want to change before 1.0</p><p>OTOH, they screwed up something at the uni, the dhcp servers were not functional on the wireless network, so I had time to read my current book, and did not read email till 22h. :-)</p>
+So I wanted to see how is the lzma support in libarchive, since there is now a stable release having my lzma patch, but pacman-g2's make check fails with the new version, sigh.. It looks like some file descriptor leak, it does not like when we try to install 1000 packages with pacman at once.
 </div>
 </div>
 
@@ -269,10 +266,10 @@ application/vnd.openxmlformats-officedocument.wordprocessingml.documen; docx2txt
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/udev-doc-update.html">Udev doc update</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/miro-vs-py26.html">miro vs py26</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Mon 16 February 2009</p>
+    <p>Posted on: Sun 25 January 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -280,7 +277,7 @@ application/vnd.openxmlformats-officedocument.wordprocessingml.documen; docx2txt
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>While I was away, I totally forgot about a patch they recently <a href="http://git.kernel.org/?p=linux/hotplug/udev.git;a=commitdiff;h=04f2a4fb6eded359cc8be1ba4ce33d7f7db6919f">applied</a>.</p><p>I also reworked my git ls-files parseopt patch today, based on Dscho's comments.</p>
+<p>So we had <a href="http://bugs.frugalware.org/3549">this</a> bugreport, just building miro against python 2.6 did not work out very well. Then I pushed a python-2.5 package, before I would realise all the miro deps would have to built against py25 as well, if I want to achieve this approach. OK, that's a no-go. Then I found the right few-liner solution in the #<a href="mailto:python@freenode">python@freenode</a> logs. :)</p><p>I sent it to upstream, we'll see how will they handle it.</p><p>Oh, and I got a <a href="http://vmiklos.hu/gitweb/?p=darcs-fast-export.git;a=commit;h=66fd4e73c87a85516bb4651c5e90209e2320f706">new patch</a> to darcs-fast-export. A second contributor, yay! :)</p>
 </div>
 </div>
 
