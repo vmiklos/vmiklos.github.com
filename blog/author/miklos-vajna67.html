@@ -59,10 +59,10 @@
 
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/frugalwareutils-first-complete-release.html">frugalwareutils first complete release</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/title-45.html">title 45</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Tue 11 July 2006</p>
+    <p>Posted on: Fri 23 December 2005</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -70,7 +70,29 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>adslconfig has been merged with netconfig and this point all the old config scripts has been ported to frugalwareutils, namely: grubconfig, mouseconfig, netconfig, raidconfig, timeconfig, xconfig and xwmconfig</p><p>time to remove this very old item from my TODO ;)</p>
+<p>i started to add package splitting support to pacman today. pacman3/libalpm is not affected, basically makepkg, updatesync and gensync have to me modified. the makepkg part is now ready. here is a sample FrugalBuild:
+<pre>
+pkgname=cabextract
+pkgver=1.1
+pkgrel=2
+pkgdesc="a program to extract Microsoft Cabinet files"
+url="http://www.kyz.uklinux.net/cabextract.php"
+depends=('basedep1' 'basedep2')
+groups=('apps')
+archs=('i686' 'x86_64')
+up2date="lynx -dump <a href="http://www.kyz.uklinux.net/cabextract.php">http://www.kyz.uklinux.net/cabextract.php</a> |grep 'cabextract source code'|tr -s ' '|cut -d ' ' -f 6"
+source=(<a href="http://www.kyz.uklinux.net/downloads/$pkgname-$pkgver.tar.gz">http://www.kyz.uklinux.net/downloads/$pkgname-$pkgver.tar.gz</a>)
+sha1sums=('359c8f4ec9c62d9dac5d572269b607b2cae4fbf7')</p><p>subpkgs=('cabextract-man' 'cabextract-bin')
+subdescs=('manpage for cabextract' 'cabextract binaries')
+subdepends=('man foo' 'glibc bar')
+subreplaces=('' 'replacebin1 replacebin2')</p><p>build()
+{
+        Fbuild
+        Fsplit $pkgname-man usr/man
+        Fsplit $pkgname-bin usr/bin
+}
+</pre>
+to build this you'll need pacman-tools from darcs and pacman from darcs, too</p>
 </div>
 </div>
 
@@ -79,10 +101,10 @@
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/spam-stats.html">spam stats</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/title-44.html">title 44</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Thu 06 July 2006</p>
+    <p>Posted on: Mon 12 December 2005</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -90,18 +112,7 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>Donald Bruce Stewart has <a href="http://www.abridgegame.org/pipermail/darcs-users/2006-June/010057.html">created</a> a simple shell script to create darcs graphs, and i've modified it to create a simple spam stat. the <a href="http://frugalware.org/~vmiklos/stats/vmiklos-spams.png">result</a> looks promising ;)</p><p>what do you need?</p><p><ul>
-  <li>with bogofilter, i use the following procmail rule:
-<code>:0:
-* ^X-Bogosity: Spam
-<code>date +%y%m%d &gt;&gt;~/spamstat</code>/dev/null
-</code>
-</li>
-  <li>then do a <code>darcs get <a href="http://frugalware.org/~vmiklos/spam-graph/">http://frugalware.org/~vmiklos/spam-graph/</a></code>
-and run <code>sh spam-graph ~/spamstat</code>
-</li>
-  <li>if you have gnuplot installed the png image should be generated soon :)</li>
-</ul></p>
+krix and me are working on porting our changes to pacman3. if you're interesed, <a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=pacman">check out</a> the darcs repo. warning, this is not a working version, it's heavily under development!
 </div>
 </div>
 
@@ -110,10 +121,10 @@ and run <code>sh spam-graph ~/spamstat</code>
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/using-different-signatures-in-mutt.html">using different signatures in mutt</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/title-43.html">title 43</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Wed 05 July 2006</p>
+    <p>Posted on: Wed 07 December 2005</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -121,8 +132,13 @@ and run <code>sh spam-graph ~/spamstat</code>
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>my problem was that (especially on some mailing lists) i use different signatures. with the folder hooks this can be solved in a very nice way. so i have 2 signatures: a default one and a special (for a given mailing list):</p><p><code>folder-hook . set signature=~/.signature
-folder-hook special set signature=~/.signature.special</code></p><p>and now when i write a mail/reply from that folder the special signature is used :)</p>
+it seems that finally we figured out what causes the following weird problem on some mirrors:<pre>io timeout after 300 seconds -- exiting
+rsync error: timeout in data send/receive (code 30) at io.c(181)</pre>
+reading again man 5 rsyncd.conf: <pre>timeout
+(...)
+A good choice for anonymous rsync daemons
+may be 600 (giving a 10 minute timeout).</pre>
+and yes, adding "timeout = 600" to the relevant module solved the problems :)
 </div>
 </div>
 
@@ -131,10 +147,10 @@ folder-hook special set signature=~/.signature.special</code></p><p>and now when
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/a-few-hacks-about-strings-aamp-macros.html">a few hacks about strings &amp; macros</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/title-42.html">title 42</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Wed 28 June 2006</p>
+    <p>Posted on: Wed 07 December 2005</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -142,7 +158,20 @@ folder-hook special set signature=~/.signature.special</code></p><p>and now when
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>this post is mainly the result of the cleanup of my firefox tabs :)</p><p><a href="http://developer.apple.com/documentation/DeveloperTools/gcc-4.0.1/cpp/Predefined-Macros.html">predefined macros in gcc</a></p><p><a href="http://www.tldp.org/LDP/abs/html/string-manipulation.html">string manipulation using bash</a></p><p><a href="http://www.gnu.org/software/make/manual/html_node/Text-Functions.html">string functions in make</a></p>
+<p>blah, what a spam...</p><p>Date: Wed, 7 Dec 2005 09:09:54 +0100
+From: <a href="mailto:security@frugalware.org">security@frugalware.org</a>
+To: <a href="mailto:vmiklos@frugalware.org">vmiklos@frugalware.org</a>
+Subject: gwxhqn
+<strong>Dear Valued Member, </strong>
+According to our terms of services, you will have to confirm your e-mail by
+the following link, or your account will be
+suspended within 24 hours for security reasons.
+<a href="http://84.94.228.177/~nesher/Confirmation_Sheet.pif">http://www.vmiklos@frugalware.org/confirm.php?account=frugalware.org</a>
+After following the instructions in the sheet, your account will not be inte
+rrupted and will continue as normal.
+Thanks for your attention to this request. We apologize for any inconvenienc
+e.
+Sincerely, Frugalware Security Department</p>
 </div>
 </div>
 
@@ -151,10 +180,10 @@ folder-hook special set signature=~/.signature.special</code></p><p>and now when
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/new-mirror-ftp-www10.html">new mirror: ftp/www10</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/title-41.html">title 41</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Tue 27 June 2006</p>
+    <p>Posted on: Mon 05 December 2005</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -162,7 +191,7 @@ folder-hook special set signature=~/.signature.special</code></p><p>and now when
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>finally, we have a proper US mirror :)</p><p>many thanks to <a href="mailto:veloct at veloct dot net">Eddie Torres</a> and <a href="http://mirrors.tds.net/">mirrors.tds.net</a>!</p>
+<p>during the meantime (you can't always hack the setup :) ) i've figured out how to package firefox extensions. you know why this is usefull: when you have a pc with a big number of users, or where you have a lot of machine. so test packages for <a href="ftp://ftp.frugalware.org/pub/other/people/vmiklos/source/xapps/firefox-adblock">adblock</a> and <a href="ftp://ftp.frugalware.org/pub/other/people/vmiklos/source/xapps/firefox-pagerankstatus">google pagerank status</a> are available</p><p>i plan to package sessionsaver and webdeveloper, too</p><p>if you have other ideas then post the name and the url of the extension you wish!</p><p>(<a href="http://kb.mozillazine.org/Getting_started_with_extension_development">this</a> article served as a base to figure out how this all works)</p><p>update: webdeveloper is also <a href="ftp://ftp.frugalware.org/pub/other/people/vmiklos/source/xapps/firefox-webdeveloper">available</a></p><p>update2: it seems that session saver and weatherfox does not support system-wide installations...</p><p>update3: flashblock and user agent switcher pushed</p>
 </div>
 </div>
 
@@ -171,10 +200,10 @@ folder-hook special set signature=~/.signature.special</code></p><p>and now when
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/frugalwareutils-update-xwmconfig.html">frugalwareutils update: xwmconfig</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/title-40.html">title 40</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Tue 27 June 2006</p>
+    <p>Posted on: Sun 04 December 2005</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -182,7 +211,7 @@ folder-hook special set signature=~/.signature.special</code></p><p>and now when
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>xwmconfig has been ported to frugalwareutils, for example if you just install base&x11&xlibs in a netinstall then you're asked what wm do you want to start from xdm till you can't edit your own ~/.xinitrc</p><p>new setup isos: <a href="http://ftp.frugalware.org/pub/frugalware/frugalware-current-iso/frugalware-20060626-i686-net.iso">i686</a> | <a href="http://ftp.frugalware.org/pub/frugalware/frugalware-current-iso/frugalware-20060626-x86_64-net.iso">x86_64</a></p>
+new -current iso images are <a href="ftp://ftp5.frugalware.org/packages/frugalware/pub/frugalware/frugalware-current-iso">available</a>, including kde-3.5 and firefox-1.5
 </div>
 </div>
 
@@ -191,10 +220,10 @@ folder-hook special set signature=~/.signature.special</code></p><p>and now when
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/resume-in-nx.html">resume in nx</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/mysql.html">title 39</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sat 24 June 2006</p>
+    <p>Posted on: Fri 02 December 2005</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -202,7 +231,14 @@ folder-hook special set signature=~/.signature.special</code></p><p>and now when
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-after the recent freenx/knx update resume should now work in nx. a cheap trick: if you use kde the window titles may be weird after a resume, a workaround is to run<pre>dcop kwin default reconfigure</pre>after resume. (more info <a href="http://mail.kde.org/pipermail/freenx-knx/2005-September/002148.html">here</a>)
+<div class="paragraph"><p>i always forgot how to grant full access to a db for a normal user in
+mysql and have to rtfm from time to time. so i post here the magic
+command, hopefully it&#8217;ll be a bit easier to search in the blog archive
+than rtfm&#8217;ing :)</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>GRANT ALL privileges on dbname.* TO 'username'@'localhost' IDENTIFIED BY 'secret';</code></pre>
+</div></div>
 </div>
 </div>
 
@@ -211,10 +247,10 @@ after the recent freenx/knx update resume should now work in nx. a cheap trick: 
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/xorg-7-1-security-update-in-current.html">xorg-7.1 security update in -current</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/title-38.html">title 38</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Thu 22 June 2006</p>
+    <p>Posted on: Thu 01 December 2005</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -222,7 +258,7 @@ after the recent freenx/knx update resume should now work in nx. a cheap trick: 
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-the x.org foundation <a href="http://xorg.freedesktop.org/releases/X11R7.1/patches/">pulblished</a> and then we pushed a few patches for the "setuid()return value check problem". packages affected: libX11, xdm, xf86dga, xinit, xload, xorg-server and xtrans. do a pacman -Syu ;)
+just found an interesting <a href="http://linux01.gwdg.de/~pbleser/files/mozilla-offline-theme-installer.html">offline theme installer</a> for firefox. dunno if it works with firefox-1.5...
 </div>
 </div>
 
@@ -231,10 +267,10 @@ the x.org foundation <a href="http://xorg.freedesktop.org/releases/X11R7.1/patch
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/www2-becomes-www.html">www2 becomes www</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/title-37.html">title 37</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Tue 20 June 2006</p>
+    <p>Posted on: Wed 30 November 2005</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -242,7 +278,7 @@ the x.org foundation <a href="http://xorg.freedesktop.org/releases/X11R7.1/patch
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-www2.frugalware.org is now equal to {www.,}frugalware.org, hopefully we broke nothing, if yes then just file the usual bugreports. probably IroNiQ or Alex will post a news entry about this soon :)
+recently added <a href="http://frugalware.org/~vmiklos/pics/qemu/pt.png">pt</a> and <a href="http://frugalware.org/~vmiklos/pics/qemu/nl.png">nl</a> translations to the setup. thanks! :)
 </div>
 </div>
 
@@ -251,10 +287,10 @@ www2.frugalware.org is now equal to {www.,}frugalware.org, hopefully we broke no
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/setup-progress.html">setup progress</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/title-36.html">title 36</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Mon 19 June 2006</p>
+    <p>Posted on: Fri 25 November 2005</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -262,18 +298,7 @@ www2.frugalware.org is now equal to {www.,}frugalware.org, hopefully we broke no
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p><ul>
-  <li>grubconfig now uses os-prober to detect other operating systems, this means for example the boot parameters of an other existing installation are detected, or the proper title is set if you have a Microsoft installation</li>
-  <li>kernel bumped to 2.6.17</li>
-  <li>parted is now available - you can resize your fat/ext3 partitions on the fly from the setup</li>
-  <li>ssh is available on the setupcd</li>
-  <li>on tty5 there is a small nice tetris in case the installation would be boring - thanks slin for this :)</li>
-</ul>
-atm i've tested the 20060619 <a href="http://ftp.frugalware.org/pub/frugalware/frugalware-current-iso/">images</a> with a simple base-only installation</p><p>ah, and if we're at it (just because it's a frequently asked question):
-<ul>
-  <li>i've installed base to a 500mb-sized partition (no, not bigger!)</li>
-  <li>booting up the system took 20 secs</li>
-</ul></p>
+yet another milestone in the setup: except the translations, it seems that it's ready for 0.4pre1, loading language-specific fonts and gettext <a href="http://frugalware.org/~vmiklos/pics/qemu/hu.png">works</a> again :)
 </div>
 </div>
 

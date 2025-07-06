@@ -59,10 +59,10 @@
 
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/ooo-vmiklos01-merged.html">OpenOffice.org: vmiklos01 CWS integrated</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/freenx-server-fontpath.html">freenx server fontpath</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sun 14 November 2010</p>
+    <p>Posted on: Sun 31 May 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -70,13 +70,11 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<div class="paragraph"><p>Once I was ready with this year&#8217;s GSoC work I started to submit it back
-to OpenOffice.org. Before that was completed, LibreOffice was launched,
-though I thought if I started working on submitting it to OpenOffice.org
-as well, I&#8217;ll finish it. About 6 weeks later they now
-<a href="http://hg.services.openoffice.org/DEV300/rev/5a2d87e7a414">integrated</a>
-(merged) the <code>vmiklos01</code> CWS (the branch containing my GSoC work) to
-DEV300, what will became OpenOffice.org 3.4 later.</p></div>
+<p>I wasted some hours debugging till I found out how to set the fontpath of a freenx-server if not using XFS.</p><p>Basically just need to fine-tune /etc/nxserver/node.conf:</p><p><pre>
+DEFAULT_FONT_PATH=$(echo $(grep -v '^ *#' /etc/X11/xorg.conf | grep FontPath | awk \
+'{print $2}' | sed -r "s/^[\"']|[\"']$//g") | sed 's/ /,/g')
+AGENT_EXTRA_OPTIONS_X="-fp $DEFAULT_FONT_PATH"
+</pre></p><p>Based on <a href="http://lists.kde.org/?l=freenx-knx&amp;m=113735435205146&amp;w=2">this post</a>.</p>
 </div>
 </div>
 
@@ -85,10 +83,10 @@ DEV300, what will became OpenOffice.org 3.4 later.</p></div>
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/google-account-migration.html">Google account migration</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/scooter-rss.html">scooter rss</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Fri 12 November 2010</p>
+    <p>Posted on: Mon 25 May 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -96,25 +94,7 @@ DEV300, what will became OpenOffice.org 3.4 later.</p></div>
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<div class="paragraph"><p>The whole story starts
-<a href="http://www.google.com/support/a/bin/answer.py?hl=en&amp;answer=182075">here</a>.
-The whole conflict is about I had a google account with my vmiklos.hu
-domain already, but now the google apps account took it over and they
-asked me to rename the old account to something else.</p></div>
-<div class="paragraph"><p>I joined the early adopter program and I was happy about it, finally I
-could access Picasa with my google apps account, though I could not make
-it to picasa.vmiklos.hu or something. But at least I could use it.</p></div>
-<div class="paragraph"><p>Why I&#8217;m writing is that now they changed something regarding google
-groups as well, since I just noticed I can no longer post to the
-invite-only lists hosted on google groups where I use my personal
-address&#8230; It turns out the trick is to get the old (renamed) address
-unsubscribed and get the new one subscribed.</p></div>
-<div class="paragraph"><p>I&#8217;m not really claiming, since the new state is much more clear, but
-this unsubscribe + subscribe dance is rather uncomfortable&#8230;</p></div>
-<div class="paragraph"><p>Oh, and a related
-<a href="http://www.google.com/support/a/bin/answer.py?hl=en&amp;answer=60227">doc
-link</a> in case you want to use gtalk on your domain as well (for now I
-decided not to use it).</p></div>
+I just noticed that scootertechno.com has no RSS, so I wrote one. Available <a href="http://git.frugalware.org/gitweb/gitweb.cgi?p=vmexam.git;a=tree;f=python/mod_python/rss/scooter;hb=HEAD">here</a>, or in "binary form", <a href="http://frugalware.org/~vmiklos/rss/scooter/scooter.py">here</a>.
 </div>
 </div>
 
@@ -123,10 +103,10 @@ decided not to use it).</p></div>
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/german-comment-finder-mentioned.html">German comment finder mentioned on LWN</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/project-specific-vim-settings.html">Project-specific vim settings</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Wed 10 November 2010</p>
+    <p>Posted on: Tue 19 May 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -134,22 +114,12 @@ decided not to use it).</p></div>
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<div class="paragraph"><p>So we had
-<a href="http://thread.gmane.org/gmane.comp.documentfoundation.libreoffice.devel/844">this
-script</a> with Jonas, and the current news about it is that it&#8217;s mentioned
-by in <a href="https://lwn.net/Articles/414051/">this LWN article</a>. I just
-innocently read the article and noticed:</p></div>
-<div class="quoteblock">
-<div class="content">
-<div class="paragraph"><p>After ten years, the code still has over 100,000 lines of
-German-language comments; those are now being targeted with the help of
-a script which repurposes the built-in language-guessing code which is
-part of the spelling checker.</p></div>
-</div>
-<div class="attribution">
-&#8212; LPC: Michael Meeks on LibreOffice and code ownership
-</div></div>
-<div class="paragraph"><p>Nice! :)</p></div>
+<p>So swig uses two spaces instead of tabs, horrible. But I'll get used to it - just I don't want to fuck up my vimrc just because of their idiotic settings.</p><p>Here is the trick:</p><p><pre>
+au BufRead */swig*/* set tabstop=8 | set shiftwidth=2 | set softtabstop=2 | set expandtab " SWIG
+au BufRead */swig*/Source/* set tabstop=8 | set shiftwidth=2 | set softtabstop=2 | set noexpandtab " SWIG Source
+au BufNewFile,BufRead *.i set filetype=swig
+au BufNewFile,BufRead *.swg set filetype=swig
+</pre></p><p>The swig syntax file is <a href="http://www.vim.org/scripts/script.php?script_id=1615">here</a>.</p>
 </div>
 </div>
 
@@ -158,10 +128,10 @@ part of the spelling checker.</p></div>
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/bitlbee-3.0.html">BitlBee 3.0</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/libblkid-meets-hal-0-5-11.html">libblkid meets hal 0.5.11</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Fri 05 November 2010</p>
+    <p>Posted on: Mon 18 May 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -169,12 +139,7 @@ part of the spelling checker.</p></div>
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<div class="paragraph"><p>Even if I gave it a quick testing about two weeks ago, now I tried the
-new Twitter / identi.ca support and I like it a lot. Now messages are
-not coming from a single user by default, but a separate channel is
-created, nicks are appearing there, and I can just highlight people to
-reply to their last tweet or simply type to submit a new one.</p></div>
-<div class="paragraph"><p>And of course my Skype module still works, as Wilmer fixed it up. :)</p></div>
+<p>So upstream recently released hal 0.5.12 and it's maintained by crazy who seem to be a bit busy currently, and I don't really wanted to bump his pkg (actually I tried and I failed), but I bumped our udev pkg yesterday so we no longer has libvolume_id. So I <a href="http://ftp.frugalware.org/pub/frugalware/frugalware-current/source/apps/hal/move-from-libvolume_id-to-libblkid.patch">backported</a> the relevant patch from git and it seems to work. ;)</p><p>(Actually the header is informative, but fake as I created the patch from scratch, based on the one which was in git.)</p>
 </div>
 </div>
 
@@ -183,10 +148,10 @@ reply to their last tweet or simply type to submit a new one.</p></div>
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/iscsi-target.html">tgt is now available as a package</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/writing-ppt-presentations-from-asciidoc.html">Writing ppt presentations from asciidoc</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Thu 04 November 2010</p>
+    <p>Posted on: Thu 14 May 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -194,23 +159,7 @@ reply to their last tweet or simply type to submit a new one.</p></div>
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<div class="paragraph"><p>Today I packaged <a href="http://frugalware.org/packages/103291">tgt</a> an iSCSI
-target (server). The upstream package provides a large number of
-examples, though I thought it&#8217;s a good idea to note what I used for
-testing:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code># egrep -v '#|^$' /etc/tgt/targets.conf
-default-driver iscsi
-&lt;target iqn.2010-11.local.test:storage&gt;
-    backing-store /dev/sdb
-&lt;/target&gt;</code></pre>
-</div></div>
-<div class="paragraph"><p>Something offtopic: a
-<a href="https://github.com/artagnon/rejourn/commit/3b87aab385647ea8e5dd8844aec913ab3c02252f">rejourn</a>
-patch accepted and a
-<a href="https://bugs.freedesktop.org/show_bug.cgi?id=31362">LibreOffice</a> bug
-fixed today.</p></div>
+<p>Okay, this is a crazy idea, but I love asciidoc. So the pipeline is the following: asciidoc -&gt; docbook -&gt; latex -&gt; pdf -&gt; odp -&gt; ppt.</p><p>The fun part is that docbook is XML and then later I convert the stuff back to XML again (odp), but that's necessary as latex adds the nice themes and layout to the text.</p><p>Also the method is semi-automated as I generate latex from asciidoc, then copy&amp;paste it to a latex-beamer document with some manual fixup, then I can convert the rest in a more or less automated way. Time to package odfpy and other affected, but not yet packaged components. ;-)</p>
 </div>
 </div>
 
@@ -219,10 +168,10 @@ fixed today.</p></div>
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/latex-sources.html">Handy Latex bookmarks</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/godollo-170.html">Godollo 170</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Wed 03 November 2010</p>
+    <p>Posted on: Sun 10 May 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -230,42 +179,7 @@ fixed today.</p></div>
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<div class="paragraph"><p>Today I had some Hungarian mathematical logic notes to type in Latex,
-and again I had to dig up the various references to get the proper
-symbols I needed.</p></div>
-<div class="paragraph"><p>I used the following pages:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-<a href="ftp://ftp.ams.org/pub/tex/doc/amsmath/amsldoc.pdf">amsmath</a> is unique
-  in that for example it explains how to use <code>\begin{cases}</code>
-</p>
-</li>
-<li>
-<p>
-<a href="http://amath.colorado.edu/documentation/LaTeX/Symbols.pdf">this one</a> is
-  a collection of lot of symbols, I found <code>\mathcal</code> here
-</p>
-</li>
-<li>
-<p>
-An <a href="http://en.wikipedia.org/wiki/List_of_logic_symbols">article from
-  Wikipedia</a> about logic symbols
-</p>
-</li>
-<li>
-<p>
-<a href="http://en.wikibooks.org/wiki/LaTeX/Mathematics">The Math chapter</a> of
-  the well-known LaTeX wikibook
-</p>
-</li>
-<li>
-<p>
-<a href="http://www.maths.tcd.ie/~dwilkins/LaTeXPrimer/Theorems.html">A set of
-  macros</a> making easy to declare lemmas, definitions, proofs.
-</p>
-</li>
-</ul></div>
+<p>utvonal:</p><p>bp - godollo &#8211; szada &#8211; veresegyhaz  - orbottyan &#8211; vacratot &#8211; vacduka &#8211; rad &#8211; penc &#8211; csovar &#8211; acsa &#8211; erdokurt &#8211; kallo &#8211; verseg &#8211; kartal &#8211; aszod - iklad &#8211; galgamacsa &#8211; vacegres - erdokertes &#8211; veresegyhaz &#8211; szada - godollo - bp</p><p>ebbol a godollo-godollo volt <a href="http://www.freeweb.hu/margita/tt/bringa/k10050/index.html">hivatalos</a> 100km-es tura, ehhez jott meg a haztol hazig mert tav miatt egy nagyobb adag.</p><p>indulas 5:45 korul, hazaerkezes 16:50 korul.</p><p>netto ido 8:18:57, pontos tav 175.31km, atlag 21.2 km/h, max 49.8 km/h, szint 1200m.</p><p>koszonet Friczynek meg LGeenek a tarsasagert.</p>
 </div>
 </div>
 
@@ -274,10 +188,10 @@ An <a href="http://en.wikipedia.org/wiki/List_of_logic_symbols">article from
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/qtsql-sqlite.html">QtSql vs. SQLite</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/bitlbee-segfault-fix.html">bitlbee segfault fix</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Tue 02 November 2010</p>
+    <p>Posted on: Mon 27 April 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -285,17 +199,7 @@ An <a href="http://en.wikipedia.org/wiki/List_of_logic_symbols">article from
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<div class="paragraph"><p>The problem was the following: I had <a href="http://pastebin.com/Gh66XZxw">this</a>
-example code and the <code>size()</code> method just gave me insane result all the
-time, while just changing the driver to <code>QMYSQL</code> made the code work
-properly. After asking on <code>#qt</code>, I have been
-<a href="http://pastebin.com/1HExkgiw">pointed out</a> that the SQLite backend of
-QtSql does not support the <code>size()</code> method. :/</p></div>
-<div class="paragraph"><p>So - for now - I&#8217;ll just use MySql for my unit tests, even if that means
-I have to manually truncate the contents of each table. Worths checking
-a bit later again, though - since I already used in-memory SQLite for my
-unit tests when I had a project in PHP with Doctrine, and it was working
-just fine.</p></div>
+<a href="http://bugs.bitlbee.org/bitlbee/ticket/492">Here</a>. I have no idea if this one will be ignored as well - since two of my reports (<a href="http://bugs.bitlbee.org/bitlbee/ticket/479">here</a> and <a href="http://bugs.bitlbee.org/bitlbee/ticket/480">there</a>) are already ignored.. :/
 </div>
 </div>
 
@@ -304,10 +208,10 @@ just fine.</p></div>
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/frugalware-song.html">A song mentioning Frugalware!</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/nokia-free-space-trick.html">nokia free space trick</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Mon 01 November 2010</p>
+    <p>Posted on: Sat 25 April 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -315,10 +219,10 @@ just fine.</p></div>
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<div class="paragraph"><p><code>chee</code> on <code>#frugalware</code> linked a <a href="http://ompldr.org/vNXhlMw">song</a> and its
-<a href="http://ompldr.org/vNXhlZQ">lyrics</a>, mentioning Frugalware. Please don&#8217;t
-compare it to an OpenBSD professional release song, then you&#8217;ll like it!
-:)</p></div>
+<p>I hit this issue a few times, but now I took the time to Google it out. So when I download lots of music to my Nokia 3110c phone, I keeps restarting because the Nokia version of OOM killer terminates the music indexer process. Given that it's a vital process (I don't know the proper term for this), the phone is restarted. It does this sequence about 5 times, then it just switches off.</p><p>The trick is to delay indexing, if it does so a bit later after the phone boot is already done, it can succeed properly. The hack is to <a href="http://discussions.europe.nokia.com/discussions/board/message?board.id=hardware&amp;thread.id=6149">limit the internal memory free space</a>, that will trigger this delay:</p><p><blockquote>
+Now Keep ur free Phone memory space [Not the memory card's free space]
+between 470kb - 499kb
+</blockquote></p><p>The style is horrible, but the info is useful, after setting free space like this, it can really handled large amount of music fine. ;)</p>
 </div>
 </div>
 
@@ -327,99 +231,31 @@ compare it to an OpenBSD professional release song, then you&#8217;ll like it!
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/rejourn.html">Rejourn</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/being-accepted-to-gsoc-2k9.html">being accepted to gsoc 2k9</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sun 31 October 2010</p>
+    <p>Posted on: Mon 20 April 2009</p>
   </div>
   <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
+    <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<div class="paragraph"><p>The story is old, it was exactly 3 years ago when last time I switched
-the engine under my blog. That time I switched from my custom php/mysql
-blog to b2evolution, and I hoped that using that engine it&#8217;ll require
-less time to manage it. Actually this wasn&#8217;t true:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-When the php-5.3 upgrade came, I had to manually fix stuff.
-</p>
-</li>
-<li>
-<p>
-I got a lot of spam, even if the captcha provided by the ready-to-use
-  b2evo plugin was enabled.
-</p>
-</li>
-<li>
-<p>
-The last thing: It turned out that it created the SQL schema in
-  latin2, so utf8 comments had problems.
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>At that point I had enough trouble to think about migrating away from
-b2evo. And then I found <a href="http://artagnon.com/rejourn">rejourn</a>, which is
-quite close to what I think is ideal to me. I just changed it a bit:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-Added asciidoc support next to markdown.
-</p>
-</li>
-<li>
-<p>
-Added RSS support, as my blog is part of the Frugalware and the
-  LibreOffice planet, and I didn&#8217;t want to lose those readers.
-</p>
-</li>
-<li>
-<p>
-Added support for tags, so that I can have a feed with a given tag
-  only (to avoid OT posts on planets).
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>Before you ask: yes, I plan to submit back these feature to rejourn, if
-Ram accepts them. ;)</p></div>
-<div class="paragraph"><p>And finally, some more benefits:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-the whole blog is now static HTML, generated by a single Makefile (so
-  it&#8217;s faster + the server load is lower)
-</p>
-</li>
-<li>
-<p>
-I can blog while I&#8217;m offline then later just <code>git push</code> the result.
-</p>
-</li>
-<li>
-<p>
-I no longer have to use WYSIWYG editors or write HTML manually, I can
-  use asciidoc. :)
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p><strong>Update:</strong> I forgot to mention:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-I <a href="http://vmiklos.hu/file/rejourn-import-b2evo.py">put up</a> a simple
-  b2evo &#8594; rejourn conversion script.
-</p>
-</li>
-<li>
-<p>
-I just discovered that when I get email about new comments, I can
-  reply via email as well - that&#8217;s really cool! :)
-</p>
-</li>
-</ul></div>
+<p><a href="http://socghop.appspot.com/org/home/google/gsoc2009/swig">They say so</a>. :)</p><p>Time to unsubscribe from the git list and append #git to activity_hide_targets. ;/</p><p>A list of (AFAIK) all Hungarian students:</p><p><a href="http://socghop.appspot.com/student_project/show/google/gsoc2009/bzflag/t124022105839">Istvan Szakats</a>
+<a href="http://socghop.appspot.com/student_project/show/google/gsoc2009/drupal/t124022213361">Kornél Lugosi</a>
+<a href="http://socghop.appspot.com/student_project/show/google/gsoc2009/drupal/t124022214906">Balazs Dianiska</a>
+<a href="http://socghop.appspot.com/student_project/show/google/gsoc2009/ffmpeg/t124022266833">Geza Kovacs</a>
+<a href="http://socghop.appspot.com/student_project/show/google/gsoc2009/freebsd/t124022318947">Gabor Kovesdan</a>
+<a href="http://socghop.appspot.com/student_project/show/google/gsoc2009/freebsd/t124022319751">gabor janos pali</a>
+<a href="http://socghop.appspot.com/student_project/show/google/gsoc2009/freenet/t124022327615">Tamás Sallai</a>
+<a href="http://socghop.appspot.com/student_project/show/google/gsoc2009/haskell/t124022468245">Gergely Patai</a>
+<a href="http://socghop.appspot.com/student_project/show/google/gsoc2009/mono/t124022707838">Kornél Pál</a>
+<a href="http://socghop.appspot.com/student_project/show/google/gsoc2009/omii_uk/t124022911687">Miklos Erdelyi</a>
+<a href="http://socghop.appspot.com/student_project/show/google/gsoc2009/opensuse/t124023151411">Peter Somlo</a>
+<a href="http://socghop.appspot.com/student_project/show/google/gsoc2009/swig/t124025043950">Miklos Vajna</a>
+<a href="http://socghop.appspot.com/student_project/show/google/gsoc2009/xiph/t124025001154">Viktor Gal</a>.</p><p>So now we are 13, it's interesting because AFAIK we were only 6 last year, when more students were accepted in general. ;)</p><p>Update:</p><p>I missed two of them:</p><p><a href="http://socghop.appspot.com/student_project/show/google/gsoc2009/typo3/t124024994753">tom ilsinszki</a>
+<a href="http://socghop.appspot.com/student_project/show/google/gsoc2009/joomla/t124022510065">gergo erdosi</a></p>
 </div>
 </div>
 
@@ -428,10 +264,10 @@ I just discovered that when I get email about new comments, I can
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/slides-of-my-gsoc-2010-presentation.html">Slides of my GSoC 2010 Presentation</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/rotating-pdf-pages.html">Rotating pdf pages</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Mon 25 October 2010</p>
+    <p>Posted on: Sun 19 April 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -439,7 +275,9 @@ I just discovered that when I get email about new comments, I can
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-As requested, the slides of my presentation, titled "GSoC project: Improving RTF Export - Presentation of a Go-OO student" are available <a href="http://people.freedesktop.org/~vmiklos/lo-opensuse-nurnberg-2010.pdf">here</a>.
+<p>So I wanted to rotate each page in a pdf file clockwise using pdf2ps, pstops and ps2pdf. Actually I haven't figured out how to do so, even if I already used pstops (which is cryptic for the first time) multiple times so far.</p><p>Sure, I know ideally how to do it, but then I just got blank pages.</p><p>But pdftk seem to do it properly:</p><p><pre>
+pdftk in.pdf cat 1-endE output out.pdf
+</pre></p>
 </div>
 </div>
 

@@ -58,47 +58,32 @@
 
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/mso-dumper.html">DOC support in mso-dumper</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/dunatv.html">Duna TV stream lementés</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sun 26 May 2013</p>
+    <p>Posted on: Sat 29 September 2012</p>
   </div>
   <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
+    <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<div class="paragraph"><p><a href="http://cgit.freedesktop.org/libreoffice/contrib/mso-dumper/">mso-dumper</a> is a
-project that creates some&#8201;&#8212;&#8201;more or less human-readable&#8201;&#8212;&#8201;dump from binary
-files. Initially Kohei Yoshida developed it to dump XLS, then Thorsten Behrens
-added support for PPT files, finally during last November I started to add DOC
-support.</p></div>
-<div class="paragraph"><p>You may ask: why that is useful? My answer is that I spend quite some time on
-the import/export filters of LibreOffice Writer, and to be able to improve or
-fix such filters, some knowledge of the file format in question and Writer
-internals is needed. Regarding the file format knowledge, I find it much easier
-to read the specification once and implement some simple dumper based on that&#8201;&#8212;&#8201;than reading the specification again and again, and just trying to
-understand what&#8217;s going on inside a binary file using a hex editor.</p></div>
-<div class="paragraph"><p>To my knowledge, such a dumper for the DOC format (in particular the WW8
-version of it) did not exist previously.
-<a href="http://gitorious.org/ww8dumper">WW8Dumper</a> was the closest match, but that was
-far from complete and I found extending mso-dumper easier.</p></div>
-<div class="paragraph"><p>To stress-test the parser, I used
-<a href="http://cgit.freedesktop.org/libreoffice/core/tree/bin/get-bugzilla-attachments-by-mimetype">get-bugzilla-attachments-by-mimetype</a>
-to get all DOC attachements from the Freedesktop bugzilla, and during the last
-days I fixed the remaining crashes (actually this is why I write this post now
-;-) ). If you want to try it out you can do so by:</p></div>
+<div class="paragraph"><p>Pl. itt <a href="http://www.dunatv.hu/musor/videotar?vid=738656">egy műsor</a>, a cél ezt
+valahogy offline nézhetővé varázsolni. Alapból a Firefox valami plugint
+igényelne a lejátszáshoz, persze ez a legtöbb felhasználónak nincs telepítve,
+nálam se. De firebuggal megnézve az iframe címe
+<a href="http://www.dunatv.hu/video/videoplayer?vid=738656">kideríthető</a>. Annak a
+forrását megnézve megkaphatjuk a
+<a href="http://80.249.172.27/video/2012_35/10010028614509.wmv">stream címét</a>. Sajnos úgy
+tűnik az MPlayer ezt képtelen lejátszani, de a VLC viszi. Az utolsó trükk, hogy
+ezt hogyan mentsük le, pl. így:</p></div>
 <div class="listingblock">
 <div class="content">
-<pre><code>git clone git://anongit.freedesktop.org/libreoffice/contrib/mso-dumper
-cd mso-dumper
-./doc-dump.py /path/to/doc/file.doc</code></pre>
+<pre><code>vlc http://80.249.172.27/video/2012_35/10010028614509.wmv --sout=file/wmv:test.wmv</code></pre>
 </div></div>
-<div class="paragraph"><p>The idea is that on any input the dumper should not crash: instead either it
-should give you usable result, or in case some unhandled structure is reached,
-it should print a <code>&lt;todo&gt;</code> XML tag. Other than that, of course patches welcome&#8201;&#8212;&#8201;that said, Maxime de Roucy already contributed a patch to the DOC part of
-mso-dumper, thanks! :-)</p></div>
+<div class="paragraph"><p>Egyébként konkrétan ezt a műsort érdemes is megnézni, de az már csak hab a
+tortán. :-)</p></div>
 </div>
 </div>
 
@@ -107,101 +92,248 @@ mso-dumper, thanks! :-)</p></div>
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/pecs.html">Pécs</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/cyanogenmod.html">CyanogenMod</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Wed 22 May 2013</p>
+    <p>Posted on: Thu 27 September 2012</p>
   </div>
   <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>So even if I <a href="https://vmiklos.hu/blog/galaxy-s.html">bookmarked</a> a thread to have a
+look at the CyanogenMod install on my phone last year, I didn&#8217;t have a look at
+that till yesterday. The final motivation was that I thought that CM 9.1 (not
+containing any Samsung code) will not be vulnerable wrt.
+<a href="http://www.h-online.com/security/news/item/Remote-resetting-a-Samsung-phone-made-easy-1717115.html">the
+issue reported 2 days ago</a>. Later turned out that installing
+<a href="https://play.google.com/store/apps/details?id=com.voss.notelurl">this app</a> is
+enough, even if you stick to the older firmware supplied by Samsung, but once
+CM was installed, I haven&#8217;t looked back.</p></div>
+<div class="paragraph"><p>The
+<a href="http://wiki.cyanogenmod.com/wiki/Samsung_Galaxy_S:_Full_Update_Guide">install
+guide</a> was easy to follow, it seems that newer Samsung devices have download
+mode enabled by default, so you need no cracking, the ClockworkMod Recovery and
+then CyanogenMod can be installed without any problems. Probably the only
+nontrivial part is that you do want Google Apps, even if you disable most of
+that stuff later, as the Play Store is part of that collection as well.  As the
+guide suggests, I made a full backup, then after the install I restored the
+important part of my settings.</p></div>
+<div class="paragraph"><p>For the reference, here is how my home screen looked before and after the
+reinstall:</p></div>
+<div align="center">
+<div class="paragraph"><p><span class="image">
+<a class="image" href="https://lh3.googleusercontent.com/-3yK5eWM3LRc/UBj7btQMSEI/AAAAAAAABd0/Ap4_8iyBUhY/s800/SC20120323-153702.png">
+<img src="https://lh3.googleusercontent.com/-3yK5eWM3LRc/UBj7btQMSEI/AAAAAAAABd0/Ap4_8iyBUhY/s400/SC20120323-153702.png" alt="https://lh3.googleusercontent.com/-3yK5eWM3LRc/UBj7btQMSEI/AAAAAAAABd0/Ap4_8iyBUhY/s400/SC20120323-153702.png" />
+</a>
+</span>
+<span class="image">
+<a class="image" href="https://lh4.googleusercontent.com/-gNy49Bf251w/UGP7Fb1PrII/AAAAAAAABmg/v6GUhZaDluw/s800/Screenshot_2012-09-27-08-53-23.png">
+<img src="https://lh4.googleusercontent.com/-gNy49Bf251w/UGP7Fb1PrII/AAAAAAAABmg/v6GUhZaDluw/s400/Screenshot_2012-09-27-08-53-23.png" alt="https://lh4.googleusercontent.com/-gNy49Bf251w/UGP7Fb1PrII/AAAAAAAABmg/v6GUhZaDluw/s400/Screenshot_2012-09-27-08-53-23.png" />
+</a>
+</span></p></div>
+</div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/frugalware-history.html">Frugalware history</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Sun 16 September 2012</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 8 minutes</p>
   </div>
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
 <div class="imageblock" style="text-align:center;">
 <div class="content">
-<a class="image" href="https://www.flickr.com/photos/vmiklos/28434582253/in/album-72157671417750470/">
-<img src="https://farm8.staticflickr.com/7748/28434582253_11f5c7bc37_z.jpg" alt="https://farm8.staticflickr.com/7748/28434582253_11f5c7bc37_z.jpg" />
-</a>
+<img src="https://lh5.googleusercontent.com/-72B3Mo4hOQs/UeegcVH4YZI/AAAAAAAADNU/IwX2_lLQt5k/s128/logo-new-big.png" alt="https://lh5.googleusercontent.com/-72B3Mo4hOQs/UeegcVH4YZI/AAAAAAAADNU/IwX2_lLQt5k/s128/logo-new-big.png" />
 </div>
 </div>
-<div class="paragraph"><p>A hétvégen Pécsett jártunk. Javában zajlott a
-<a href="http://zsolnayfesztival.hu/">Zsolnay Fesztivál</a>, így talán az átlagosnál több
-ember hemzsegett az utcákon, de nem volt nyomasztó tömeg így sem. A következő
-helyeket érintettük:</p></div>
-<div class="paragraph"><p>Szombat:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-<a href="http://www.museum.hu/museum/index_hu.php?ID=152">Victor Vasarely Múzeum</a>
-</p>
-</li>
-<li>
-<p>
-<a href="http://pecs.varosom.hu/latnivalok/muzeum/Dommuzeum.html">Dómmúzeum</a> (kőtár):
-  itt amúgy majdnem belesétáltunk egy pánsípos koncertbe, de aztán csak nem
-  akarta elkezdeni az ürge, úgyhogy továbbálltunk
-</p>
-</li>
-<li>
-<p>
-<a href="http://www.ddnp.hu/pinter-kert">Pintér-kert Arborétum</a>
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>Vasárnap:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-<a href="http://www.pecs.hu/cikk/0829/886151/20080716_pecs_templom_7.htm">Lyceum templom</a>
-</p>
-</li>
-<li>
-<p>
-<a href="http://www.zskn.hu/mauzoleum">Zsolnay-mauzóleum</a>
-</p>
-</li>
-<li>
-<p>
-<a href="http://www.zskn.hu/csaladtortenet">Zsolnay család- és gyártörténeti
-  kiállítás</a>: itt rengeteg időt töltöttünk azzal, hogy megpróbáljuk a
-családfát rekonstruálni, a sok ismétlődő Zsolnay &lt;keresztév&gt; miatt, persze nem
-tudtuk, hogy a <em>legutolsó</em> teremben lesz egy kiosk ahol végig lehet követni
-interaktívan mindazt amit magunk próbáltunk összerakni ;-) (TL;DR: a család
-nagyrésze külföldön él, aki itt, az is inkább Budapesten&#8201;&#8212;&#8201;a gyárhoz pedig
-végképp nincs sok közük, mivel még '89 előtt gyakorlatilag mindegyiküket
-kirakta állambácsi a saját gyárukból)
-</p>
-</li>
-<li>
-<p>
-<a href="http://www.pmh.hu/pmh_program/Trio_A/2013-05-19/15:00">Trio Á</a> fellépés: szegények kellemes háttérzenét játszottak a tűző napon, a közönség a közelben lévő árnyékot adó fák alatt helyezkedett el, és kellemesen diskurált, mivel ugye annyira nem volt izgalmas, hogy csak a zenére figyeljenek :-)
-</p>
-</li>
-<li>
-<p>
-<a href="http://www.wssz.hu/tartalom/cikk/szellel-szembe-poenok-es-poemak-jordan-tamas-stand-up-estje">Széllel szembe - poénok és poémák - Jordán Tamás stand up estje</a>: talán ez volt a legtartalmasabb programpont; ezt persze biztos itthon is meghallgathattuk volna, de itt "ingyen" volt, és kifejezetten tetszett
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>Hétfő:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-<a href="http://pecs.varosom.hu/latnivalok/muemlekek/Memi-Pasa-furdoje.html">Memi Pasa fürdője</a>
-</p>
-</li>
-<li>
-<p>
-<a href="http://www.pecsipuspokseg.hu/pecsi_bazilika">Szent Péter és Szent Pál Székesegyház</a>
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>Szállásunk a <a href="http://corsohotel.hu/">Corso Hotel</a> volt, akik egyből adtak egy
-<a href="http://www.iranypecs.hu/">Irány Pécs!</a> kártyát, valamint náluk vettük meg a
-fenti fesztiválra is a napi belépőt, ezek után már a legtöbb helyre ingyenesen
-bejuthattunk.</p></div>
-<div class="paragraph"><p>Képek <a href="https://www.flickr.com/photos/vmiklos/albums/72157671417750470">erre</a>.</p></div>
+<div class="paragraph"><p>Given that Frugalware was founded by me, and recently James recently took over
+the project leadership, I think it makes sense to look back and summarize the
+past 6 years.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_the_beginning">The beginning</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>It all started with
+<a href="http://frugalware.org/pipermail/frugalware-announce/2004-September/000001.html">this
+announcement</a> about 6 years ago. It was a one-man show before, there was a
+<a href="http://ftp.frugalware.org/pub/archive/frugalware-0.1/ChangeLog.txt">manually
+written ChangeLog</a> but even then there were already quite a few packages, so
+don&#8217;t ask me when I started hacking on this. Yes, normally there would be a
+first commit in git, but remember this was before git existed, and I hated
+centralized CVS so much that we didn&#8217;t use anything.</p></div>
+<div class="paragraph"><p>Looking back, it was all quite lame. :-) I used a mail address called "mamajom"
+(English translation could be "momonkey"), tied to an ISP, with a lengthy
+signature at the end of every mail I sent and was using my IRC nick instead of
+my real one everywhere&#8230; OTOH, I made some decisions I&#8217;m happy about even
+today. The first four developers (Ádám Zlehovszky, Krisztián Vasas, Zsolt
+Szalai and me) were all Hungarian and despite of this, I forced every code,
+test and documentation to be in English, to possibly turn the project into an
+international one in the future. And that proved to very, very useful.</p></div>
+<div class="paragraph"><p>It was between 0.1 and 0.2 that we (Krisztián, Zsolt and me) showed up in a
+Hungarian TV (<a href="http://ftp.frugalware.org/pub/other/videos/hu/">video record</a>)
+explaining Frugalware. This is something never happened later for some reason.</p></div>
+<div class="paragraph"><p>The way we found a free hosting at a university I never attended may be also
+interesting. In the grammar school, our IT teacher found my Linux distribution
+idea interesting enough to support, and his friend was a teacher at the Eötvös
+Loránd University, which is at the same Budapest city where I live. So, with my
+friend Botond Balázs (who later was my witness at our wedding) we bought an
+ultra-slow old PC (some Pentium 1 with a single HDD) and we were extremely
+happy, as the uni offered to host it for free. I remember it ran some Slackware
+version, as Frugalware didn&#8217;t support i586&#8230; ;-)</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_early_days">Early days</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Then some more developers joined and we started to package all the usual free
+software which is available in other distributions but I personally didn&#8217;t use.
+Think of GNOME, Xfce, OpenOffice.org and so on.</p></div>
+<div class="paragraph"><p>Of course we were still lame, the announcements still were not spellchecked by
+someone native and knowledgeable enough, ending up in words like "splitted" or
+"optimalization". However, we started to use an SCM (Darcs, which was horribly
+slow, but at least not the centralized CVS crap). Another developer I should
+mention was Bence Nagy, he came up with the idea of how we should avoid
+duplication in FrugalBuilds, leading to the various package templates under
+<code>source/include/</code> in the source tree.</p></div>
+<div class="paragraph"><p>Then we went multiarch, Krisztián Hamar contributed the x86_64 port to the 0.3
+release. At the same time, I invented <code>syncpkg</code>, which avoided having to build
+the same package on multiple architectures manually.</p></div>
+<div class="paragraph"><p>We also got Gábor Lőcsei (later we met IRL and completed several bike marathons
+together, resulting in a great friendship) who helped users in general on IRC,
+but more importantly, for some time he did quite some bug triaging, leading to
+a much better bugzilla (actually it was running Flyspray at that time) state.</p></div>
+<div class="paragraph"><p>The constant questions of László Csécsy (who nowadays mostly hacks
+Drupal core and its modules) generated more and more improving documentation.
+We first started with a LaTeX documentation, then later turned it to an
+asciidoc one, in the hope of attracting more non-math contributors. ;-)</p></div>
+<div class="paragraph"><p>Then we started to have some beautiful artwork, Viktor Gondor contributed some
+really cool wallpapers.</p></div>
+<div class="paragraph"><p>Finally, I think the last two Hungarian guys who spent a hell of a time on the
+project was András Vöröskői (we still link his
+<a href="http://frugalware.org/docs/getting-involved/en">getting started HOWTO</a> for new
+contributors) and János Kovács. I remember for a long time I used the
+home-hosted server of János when we didn&#8217;t have a fast dedicated i686 build
+server and my desktop was still 32bit.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_going_international">Going international</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Then things started to happen fast. Developers outside Hungary showed up:
+Gabriel Craciunescu from Germany and Michel Hermier from France worked a lot on
+KDE, Gabriel also hacked a lot of the core OS, like kernel, glibc, etc.</p></div>
+<div class="paragraph"><p>Priyank Gosalia from India started to work on GTK tools like a package manager
+frontend. David Kimpe contributed a PPC port years before I got my iBook (which
+I used as my primary box for a few years).</p></div>
+<div class="paragraph"><p>And needless to say, we still made mistakes. We thought that the development of
+the original Pacman package manager slowed down, its rewrite (providing a
+separate library and a console frontend, instead of one monolithic binary)
+seemed to never complete, and given that we were not Archlinux developers, we
+never got access to its CVS. We started to use that library API in the
+installer, testcases, GUI tools, while changing the API for them wasn&#8217;t an
+issue, since officially it was still unreleased. All this frustration (and
+underestimating the cost of maintaining a fork) resulted in our Pacman-G2
+project. First it appeared to be shiny, but once Krisztián Hamar left
+Frugalware, we constantly lacked manpower and today the consensus is that with
+git, maintaining a patchset over pacman.git would be far better, just nobody
+did the work of merging the two projects. Pacman-G2 is in maintenance mode
+today, and it still well serves its purpose, but it didn&#8217;t see any new major
+feature in years.</p></div>
+<div class="paragraph"><p>We also saw a rewrite of the installer. The original one was written in bash,
+then the second was written in C, using libdialog. And currently James works on
+a third one, hopefully fixing lots of instability, resulting from the design
+errors of the current one. ;-)</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_more_and_more_developers">More and more developers</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>And then somehow more and more developers came. Gourdin Gaetan (bouleetbil) and
+Sébastien Vincent (Baste) worked a lot on the GNOME support, James Buren took
+over the base system from me. Paolo Cretaro (Melko) does KDE bumps nowadays and
+Marius Cirsta (mcirsta) did heroic work of including OpenJDK 7 into Frugalware.</p></div>
+<div class="paragraph"><p>Abdelmoumene Hamza (Slown) is a guy who volunteered to do a log of boring work.
+When you can install a random Perl on Python module from a package, chances
+that it was packaged by Slown are high. ;-)</p></div>
+<div class="paragraph"><p>Regarding infrastructure, Benjamin Nolmans (Xarkam) stepped up, and finally
+converted the data from our Flyspray instance to the more mainstream and
+maintained Trac format. Regarding architectures Boris Albar (Elentir)
+contributed an ARM port. Our press noise was generated by Russell Dickenson
+(phayz) for a long time: he wrote newsletters regularly, and these days he
+works as a documentation writer for Red Hat.</p></div>
+<div class="paragraph"><p>For a long time, no more Hungarians joined the project. Then Bagdán Róbert
+(kikadf) came, and even if he&#8217;s rarely present on IRC, he still contributes
+from time to time, and these small, but valuable contributions are what keep
+Frugalware alive. :-)</p></div>
+<div class="paragraph"><p>Regarding other big upgrades, Daniel Exner (dex) was the guy who stepped up and
+finally packaged KDE4 for Frugalware. All KDE4 users meeting him should buy a
+beer for him. ;-) Anthony Jorion (pingax) joined in 2010, and since then he
+does XFCE updates.</p></div>
+<div class="paragraph"><p>Finally, I should not forget about Daniel Eledut (Devil505), who probably
+helped me the most with my "the rest" task: he really helped out in various
+areas, and he was a major Frugalware contributor for a long time.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_the_end_of_my_leadership">The end of my leadership</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Contributing to other projects is something I did regularly, since every time I
+got a bugreport for a package, first I created a patch to fix the problem (in
+case it could not be worked around in the buildscript), and then of course
+tried to upstream it, knowing the maintenance cost of non-upstreamed patches.
+Still, these were minor and my main project was Frugalware for years.</p></div>
+<div class="paragraph"><p>The bigger contributions came when I started to complete Google Summer of Code
+projects, first SWIG, then git, finally OpenOffice.org&#8201;&#8212;&#8201;which turned into
+LibreOffice. The motivation is easy: these were still Free Software hacking,
+but given that they are not bash hacking (like most packaging work for
+Frugalware), more interesting problem had to be solved, GSoC also provided nice
+payments, and needless to say: was useful to many people not using Frugalware.</p></div>
+<div class="paragraph"><p>The idea of passing over my leadership to someone else first came when I
+looked back, and I saw that I spend more time on LibreOffice than on
+Frugalware, even after the paid GSoC ended (later resulting in joining SUSE to
+work on LibreOffice fulltime). My focus somehow just shifted from hacking a
+distribution to hacking something that is directly useful for average users as
+well. It&#8217;s not worse or better, it&#8217;s just different, and after lots of years, I
+wanted to do something different.</p></div>
+<div class="paragraph"><p>To sum up, I did not reach my expectations as a project leader and I waited for
+a candidate I could teach and finally who could become as good as I was in
+earlier years, or hopefully even better. And then James came, who first took
+over the base system, and we agreed that after 1.7, he&#8217;ll do releases. So it
+was not unexpected, but still I was a bit surprised when I saw his
+role-changing
+<a href="http://git.frugalware.org/gitweb/gitweb.cgi?p=frugalware-current.git;a=commitdiff;h=979ada221b2f822f88f4468e6aefc2487fe87e48">commit</a>.
+But needless to say, when thinking a bit more, it was completely logical, all I
+really do these days is fixing things left and right regarding my arm port
+needs, and maintaining the LibreOffice package.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_summary">Summary</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>The idea of writing this post is not mine. However, when I thought about how
+many individuals helped this project so far, I realized I really need to create
+a summary, thanking their work. Reading the above, I hope that in the past
+years my leadership to Frugalware were useful and I realize that these days I
+have to step back, given a better leader appeared. I honestly wish the project
+to see at least as many releases as we already have, now that fresh energy
+leads it. :-)</p></div>
+<div class="paragraph"><p>I tried to point out all our heroes during the last years, but it&#8217;s possible I
+forgot someone. If you think you&#8217;re missing from this post, please leave a
+comment. Thanks.</p></div>
 </div>
 </div>
 
@@ -210,10 +342,10 @@ bejuthattunk.</p></div>
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/az-elveszett-boldogsag-nyomaban.html">Az elveszett boldogság nyomában</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/rodosz.html">Ρόδος</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Mon 22 April 2013</p>
+    <p>Posted on: Tue 11 September 2012</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -223,30 +355,42 @@ bejuthattunk.</p></div>
 <div class="sectionbody">
 <div class="imageblock" style="text-align:center;">
 <div class="content">
-<a class="image" href="https://lh3.googleusercontent.com/-CaHNvjuHKzc/UXWaIcgYB5I/AAAAAAAACiw/cdaMwxUEaJo/s500/boldosag.jpg">
-<img src="https://lh3.googleusercontent.com/-CaHNvjuHKzc/UXWaIcgYB5I/AAAAAAAACiw/cdaMwxUEaJo/s400/boldosag.jpg" alt="https://lh3.googleusercontent.com/-CaHNvjuHKzc/UXWaIcgYB5I/AAAAAAAACiw/cdaMwxUEaJo/s400/boldosag.jpg" />
+<a class="image" href="https://lh3.googleusercontent.com/-1Fi7Fdst-CE/UE2CJ_menUI/AAAAAAAAAf8/XiAABPrIbTY/s2048/DSC_8275.JPG">
+<img src="https://lh3.googleusercontent.com/-1Fi7Fdst-CE/UE2CJ_menUI/AAAAAAAAAf8/XiAABPrIbTY/s400/DSC_8275.JPG" alt="https://lh3.googleusercontent.com/-1Fi7Fdst-CE/UE2CJ_menUI/AAAAAAAAAf8/XiAABPrIbTY/s400/DSC_8275.JPG" />
 </a>
 </div>
 </div>
-<div class="paragraph"><p>Egyik ismerősünk említette ezt a könyvet, a következő idézetet ragadva ki belőle:</p></div>
-<div class="quoteblock">
-<div class="content">
-<div class="paragraph"><p>Az egyik ilyen meglátás az volt, hogy a jekána indiánok szókincsében nem létezik kifejezés a
-„munká"-ra. Egyedül a tarabaho kifejezést használják a nem indiánokkal való ügyletek
-megnevezésére, akiket - rajtunk kívül - gyakorlatilag csak hallomásból ismertek. Ez a spanyol
-trabajo szó pontatlan kiejtése volt, de elég pontosan arra utalt, amit a konkvisztádorok és
-utódaik értettek rajta. Érdekes módon ez volt az egyetlen spanyol eredetű szó, amit tanultam
-tőlük. A jekánáknak nem volt a mienkhez hasonló munka-fogalmuk. Voltak szavaik minden
-olyan tevékenységre, amely beletartozhat a munka fogalmába, de nem volt rá egy általános
-összefoglaló kifejezésük.</p></div>
-</div>
-<div class="attribution">
-</div></div>
-<div class="paragraph"><p>Később derült ki, hogy amúgy Jean Liedloff 1975-ös könyve gyereknevelésről szól, és megvannak a maga
-ellentmondásai: érdekes dolog például szidni az olyan embereket akik „könyvből
-tanulják" a gyereknevelést mikor a könyv maga is e témában íródott, de ettől
-függetlenül nem bántam meg, hogy elolvastam.</p></div>
-<div class="paragraph"><p>(<a href="http://bookline.hu/product/home.action?id=75878&amp;type=22">bookline</a>)</p></div>
+<div class="paragraph"><p>Múlt héten Ρόδος (Rodosz) szigetén jártunk, az
+<a href="http://www.unitravel.hu/korutazas/az_egei_tenger_csodai_semiramis/282">Unitravel</a>
+szervezésében. Röviden a következő helyeket érintettük:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Φαληράκι (Faliraki): itt laktunk a <a href="http://www.matinahotel.com/">Matina Hotelben</a>
+</p>
+</li>
+<li>
+<p>
+Anthony Quinn öböl, majd Ρόδος városnézés: Μανδράκι (Mandraki) kikötő, Apollón templom, akropolisz, óváros
+</p>
+</li>
+<li>
+<p>
+Marmaris (Törökország): katamaránnal keltünk át a tengeren, és İçmeler érintésével töltöttünk egy napot a török városban
+</p>
+</li>
+<li>
+<p>
+Σύμη (Symi) szigete, ami a szivacs halászatáról, fűszereiről, mindenféle tengeri herkentyűiről híres
+</p>
+</li>
+<li>
+<p>
+Végül hazautazás előtti nap a sziget 2/3-át bejártuk Αρχάγγελος (Archangelos), Λίνδος (Lindos), Μονόλιθος (Monolithos), Σιάνα (Siana) és végül a pillangók völgyének érintésével.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Pár kép <a href="https://www.flickr.com/photos/vmiklos/albums/72157671918663205">erre</a>.</p></div>
 </div>
 </div>
 
@@ -255,717 +399,406 @@ függetlenül nem bántam meg, hogy elolvastam.</p></div>
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/hackweek-9.html">Hackweek 9</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/plitvice.html">Plitvice</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Mon 15 April 2013</p>
+    <p>Posted on: Mon 20 August 2012</p>
   </div>
   <div class="article_readtime">
-    <p>Estimated read time: 6 minutes</p>
+    <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
 <div class="imageblock" style="text-align:center;">
 <div class="content">
-<a class="image" href="https://lh6.googleusercontent.com/-o4L02197n38/UW-lp9UHX2I/AAAAAAAACiU/XetdnZpBpp4/s700/hackweek.jpg">
-<img src="https://lh6.googleusercontent.com/-o4L02197n38/UW-lp9UHX2I/AAAAAAAACiU/XetdnZpBpp4/s400/hackweek.jpg" alt="https://lh6.googleusercontent.com/-o4L02197n38/UW-lp9UHX2I/AAAAAAAACiU/XetdnZpBpp4/s400/hackweek.jpg" />
+<a class="image" href="https://www.flickr.com/photos/vmiklos/28089823873/in/album-72157668872709644/">
+<img src="https://farm9.staticflickr.com/8597/28089823873_b8cc0e34f7_z.jpg" alt="https://farm9.staticflickr.com/8597/28089823873_b8cc0e34f7_z.jpg" />
 </a>
 </div>
 </div>
-<div class="paragraph"><p>Last week was <a href="http://hackweek.suse.com/">Hackweek</a> at SUSE&#8201;&#8212;&#8201;below is a quick
-summary on what experiments did I do during that timeframe.</p></div>
+<div class="paragraph"><p>Tegnap-tegnapelőtt Horvátországba utaztunk, a következő célpontokkal:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+szombaton le a Plitvicei tavakig, majd este <a href="https://maps.google.com/?q=http://vmiklos.hu/gps/2012-08-18.kml">egészen Abbáziáig</a>
+</p>
+</li>
+<li>
+<p>
+vasárnap délelőtt körbenéztünk a szállás környékén, majd délután Zágráb <a href="https://maps.google.com/?q=http://vmiklos.hu/gps/2012-08-19.kml">érintésével</a> haza.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Pár kép <a href="https://www.flickr.com/photos/vmiklos/albums/72157668872709644">erre</a>.</p></div>
 </div>
 </div>
-<div class="sect1">
-<h2 id="_lcov">lcov</h2>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/lo-sw-comment-range.html">LibreOffice Writer can now attach comments to text ranges</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Fri 10 August 2012</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
 <div class="sectionbody">
-<div class="paragraph"><p>I did some experiments with using lcov on the LibreOffice codebase. The goal is
-to have a quick iteration, so you can see the current coverage of a file or a
-directory, select a method that is not yet tested, add a test for it, and
-"test" the test by checking if the coverage indeed got improved. As a first
-step, I tried this out on the Writer RTF import:</p></div>
+<div class="paragraph"><p>More than 10 years ago, a <a href="https://issues.apache.org/ooo/show_bug.cgi?id=5487">bug</a> was
+opened in the OpenOffice.org bugzilla to support this feature. Later this got
+<a href="https://bugs.freedesktop.org/show_bug.cgi?id=38244">imported</a> to LibreOffice&#8217;s
+bugtracker. Now that LibreOffice 3.6 is out, time to talk more about what
+features will show up in 3.7, and this will be one of them:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://wiki.documentfoundation.org/File:Comment-text-range.png">
+<img src="https://wiki.documentfoundation.org/images/thumb/5/5e/Comment-text-range.png/400px-Comment-text-range.png" alt="https://wiki.documentfoundation.org/images/thumb/5/5e/Comment-text-range.png/400px-Comment-text-range.png" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>Now that it&#8217;s there, let&#8217;s have a look at the details:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+ODF 1.2 already
+  <a href="http://docs.oasis-open.org/office/v1.2/cs01/OpenDocument-v1.2-cs01-part1.html#__RefHeading__1416196_253892949">supports</a>
+  commenting text ranges, but LibreOffice support was missing.
+</p>
+</li>
+<li>
+<p>
+Word already supported it as well, and now LibreOffice RTF/DOCX import/export filters are updated to take care of the new feature.
+</p>
+</li>
+<li>
+<p>
+If I was already messing with comments, I also implemented roundtrip of
+  <a href="http://msdn.microsoft.com/en-us/library/documentformat.openxml.wordprocessing.comment.initials">comment author initials</a> to ODF (see
+  <a href="https://tools.oasis-open.org/issues/browse/OFFICE-3776">proposal</a>), so now if
+  you open a DOCX/RTF file in LibreOffice, save it as ODF, and later save it back
+  to DOCX/RTF, this information won&#8217;t be lost.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Finally, one known limitation is that the text range currently can&#8217;t include
+multiple paragraphs&#8201;&#8212;&#8201;something to improve later if necessary.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/lo-rtf-math-native.html">LibreOffice can now import/export native RTF math expressions in Writer</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Wed 01 August 2012</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>You may remember that LibreOffice 3.5 learned to
+<a href="http://wiki.documentfoundation.org/ReleaseNotes/3.5#Filters">import
+RTF OLE objects</a> (including math expressions) in Writer. In LibreOffice 3.7, the same is now true for math expressions expressed using <a href="http://blogs.msdn.com/b/murrays/archive/2006/10/25/mathematical-rtf.aspx">native RTF math markup</a>:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://wiki.documentfoundation.org/File:Rtf-math-native.png">
+<img src="https://wiki.documentfoundation.org/images/thumb/1/1e/Rtf-math-native.png/400px-Rtf-math-native.png" alt="https://wiki.documentfoundation.org/images/thumb/1/1e/Rtf-math-native.png/400px-Rtf-math-native.png" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>If you are interested in the details, then the nice thing about this
+implementation is that:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+The importer internally turns RTF markup to OOXML tokens, and that does the hard job.
+</p>
+</li>
+<li>
+<p>
+The non-XML-specific part of the existing OOXML export was abstracted to a
+  base class, and that&#8217;s the driver of the RTF exporter.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>So if you like this new feature, don&#8217;t forget to thank Luboš Luňák, who is the
+author of the OOXML math import/export. :-) In case you way to play with this
+feature, test documents are
+<a href="http://cgit.freedesktop.org/libreoffice/core/tree/sw/qa/extras/rtfexport/data">available</a>.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/grub2.html">GRUB2 vs. RAID1, cfdisk and serial console</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Sun 29 July 2012</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>Since the Frugalware 1.7 release is near, and it uses GRUB2 by default, I
+created a virtual machine, that is similar to the one we use under
+<code>genesis.frugalware.org</code>, which hosts this blog as well.</p></div>
+<div class="paragraph"><p>The relevant details:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+it has two RAID1 arrays with ext3:
+</p>
+</li>
+</ul></div>
 <div class="listingblock">
 <div class="content">
-<pre><code>cd writerfilter
-touch source/rtftok/*
-make -sr -j8 gb_GCOV=YES <b>&lt;1&gt;</b>
-cd ../sw; make -sr -j8 CppunitTest_sw_rtfexport CppunitTest_sw_rtfimport <b>&lt;2&gt;</b>
-lcov --directory workdir/unxlngx6/CxxObject/writerfilter/source/rtftok/ --capture --output-file libreoffice.info <b>&lt;3&gt;</b>
-genhtml -o coverage libreoffice.info <b>&lt;4&gt;</b></code></pre>
+<pre><code>$ mount|grep /md
+/dev/md126 on / type ext3 (rw,relatime,errors=continue,barrier=1,data=ordered)
+/dev/md127 on /home/ftp/pub type ext3 (rw,relatime,errors=continue,barrier=1,data=ordered)</code></pre>
+</div></div>
+<div class="ulist"><ul>
+<li>
+<p>
+the partition tables are created by cfdisk:
+</p>
+</li>
+</ul></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>   Device Boot      Start         End      Blocks   Id  System
+/dev/sda1              63  1465144064   732572001   fd  Linux raid autodetect</code></pre>
+</div></div>
+<div class="ulist"><ul>
+<li>
+<p>
+the machine has a serial console configured:
+</p>
+</li>
+</ul></div>
+<div class="listingblock">
+<div class="content">
+<pre><code># cat /proc/cmdline
+root=/dev/disk/by-uuid/7e41c95d-cd73-4043-b0ba-4797af6ddeff ro vga=normal nomodeset console=ttyS1,115200</code></pre>
+</div></div>
+<div class="paragraph"><p>Now the question is how does this config deal with the GRUB2 upgrade. First,
+don&#8217;t miss the official <a href="http://frugalware.org/docs/upgrade">upgrade howto</a>, it
+covers most cases. What I want to detail here is how did I avoid starting from
+scratch and creating a proper partition table using fdisk.</p></div>
+<div class="paragraph"><p>Here are the steps I needed:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Backup. Yes, I did screw up for the first time, so it&#8217;s really needed.
+</p>
+</li>
+<li>
+<p>
+Resize parts of the / RAID1 (/dev/sda1 and /dev/sdb1) with gparted livecd (resizing ext3 from cmdline parted didn&#8217;t work for me).
+</p>
+</li>
+<li>
+<p>
+mdadm re-creation as described in the upgrade howto, from fw install cd, so you&#8217;ll have the required 1.0 metadata.
+</p>
+</li>
+<li>
+<p>
+Reinstall GRUB1 to sda and sdb, since the physical location of GRUB1&#8217;s stage* changed.
+</p>
+</li>
+<li>
+<p>
+Boot back to 1.6, run <code>pacman-g2 -Syu</code>, and <code>grub-install</code>&#8201;&#8212;&#8201;again, see the upgrade howto for details.
+</p>
+</li>
+<li>
+<p>
+Now given that serial console needs a custom GRUB config and kernel parameters, you need to modify GRUB2&#8217;s <code>/etc/default/grub</code>. Here is my diff:
+</p>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>/etc/default# diff -u grub.orig grub
+<span style="color: #FF6600">--- grub.orig   2012-07-19 01:57:20.000000000 +0200</span>
+<span style="color: #009900">+++ grub        2012-07-29 14:45:50.000000000 +0200</span>
+<span style="color: #0000FF">@@ -1,11 +1,12 @@</span>
+ GRUB_DEFAULT=0
+ GRUB_TIMEOUT=5
+ GRUB_DISTRIBUTOR="Frugalware 1.6"
+<span style="color: #FF6600">-GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"</span>
+<span style="color: #009900">+GRUB_CMDLINE_LINUX_DEFAULT="vga=normal nomodeset plymouth.enable=0 console=ttyS0,115200"</span>
+ GRUB_CMDLINE_LINUX=""
+ GRUB_PRELOAD_MODULES=""
+<span style="color: #FF6600">-GRUB_TERMINAL_INPUT=console</span>
+<span style="color: #FF6600">-GRUB_TERMINAL_OUTPUT=gfxterm</span>
+<span style="color: #009900">+GRUB_TERMINAL_INPUT=serial</span>
+<span style="color: #009900">+GRUB_SERIAL_COMMAND="serial --speed=115200 --port=0x3f8"</span>
+<span style="color: #009900">+GRUB_TERMINAL_OUTPUT=serial</span>
+ #GRUB_GFXPAYLOAD_LINUX=keep
+ GRUB_GFXMODE=auto
+ #GRUB_DISABLE_LINUX_UUID=true</tt></pre></div></div>
+<div class="paragraph"><p>(Refer to <a href="https://vmiklos.hu/blog/amtterm.html">this post</a> if you don&#8217;t know the needed port number.)</p></div>
+</li>
+<li>
+<p>
+Finally run <code>grub-mkconfig</code> to create the real config from the just modified default settings.
+</p>
+</li>
+<li>
+<p>
+Reboot, and GRUB2, the boot process and the login prompt should be accessible over the serial console again.
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/exif-date-sort.html">Sorting photos by date using exif date info</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Mon 11 June 2012</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>For a family event I received photos from about 6 persons, and wanted to view
+all of them, sorted by date. The problem was that the timestamps of the files
+were sometimes incorrect, and also in all but one cases the exif timestamp was
+incorrect as well (but at least that was consistently incorrect, e.g. all
+behind of time by 20 mins, etc.)</p></div>
+<div class="paragraph"><p>So first I searched for a photo where a clock is shown, then matched photos by
+different authors showing the same action to know the time delta of each
+camera. The rest can be scripted: just read the exif info, apply the necessary
+time correction based on the camera model, and touch the file with the correct
+date. Then any image viewer can show the photos, sorted by date.</p></div>
+<div class="paragraph"><p>Here is the script I came up with:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">for</span></span> i <span style="font-weight: bold"><span style="color: #0000FF">in</span></span> <span style="color: #990000">*.</span>jpg
+<span style="font-weight: bold"><span style="color: #0000FF">do</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># 2012:01:01 01:01:01 -&gt; 2012-01-01 01:01:01</span></span>
+    <span style="color: #009900">date</span><span style="color: #990000">=</span><span style="color: #009900">$(</span>exiv2 <span style="color: #009900">$i</span> <span style="color: #990000">|</span>grep timestamp<span style="color: #990000">|</span>sed <span style="color: #FF0000">'s/.* : //'</span><span style="color: #990000">|</span>sed <span style="color: #FF0000">'s/^</span><span style="color: #CC33CC">\(</span><span style="color: #FF0000">[0-9][0-9][0-9][0-9]</span><span style="color: #CC33CC">\)</span><span style="color: #FF0000">:</span><span style="color: #CC33CC">\(</span><span style="color: #FF0000">[0-9][0-9]</span><span style="color: #CC33CC">\)</span><span style="color: #FF0000">:</span><span style="color: #CC33CC">\(</span><span style="color: #FF0000">[0-9][0-9]</span><span style="color: #CC33CC">\)</span><span style="color: #FF0000">/</span><span style="color: #CC33CC">\1</span><span style="color: #FF0000">-</span><span style="color: #CC33CC">\2</span><span style="color: #FF0000">-</span><span style="color: #CC33CC">\3</span><span style="color: #FF0000">/'</span><span style="color: #990000">)</span>
+    <span style="font-style: italic"><span style="color: #9A1900"># date string -&gt; epoch</span></span>
+    <span style="color: #009900">unix</span><span style="color: #990000">=</span><span style="color: #009900">$(</span>date --date<span style="color: #990000">=</span><span style="color: #FF0000">"$date"</span> <span style="color: #990000">+%</span>s<span style="color: #990000">)</span>
+
+    <span style="color: #009900">model</span><span style="color: #990000">=</span><span style="color: #009900">$(</span>exiv2 <span style="color: #009900">$i</span> <span style="color: #990000">|</span>grep model<span style="color: #990000">|</span>sed <span style="color: #FF0000">'s/.*: //'</span><span style="color: #990000">)</span>
+
+    <span style="font-weight: bold"><span style="color: #0000FF">if</span></span> <span style="color: #990000">[</span> <span style="color: #FF0000">"$model"</span> <span style="color: #990000">==</span> <span style="color: #FF0000">"NIKON D40"</span> <span style="color: #990000">];</span> <span style="font-weight: bold"><span style="color: #0000FF">then</span></span>
+        <span style="color: #009900">unix</span><span style="color: #990000">=</span><span style="color: #009900">$(($unix-1320))</span> <span style="font-style: italic"><span style="color: #9A1900"># Alice</span></span>
+    <span style="font-weight: bold"><span style="color: #0000FF">else</span></span>
+        <span style="color: #009900">unix</span><span style="color: #990000">=</span><span style="color: #009900">$(($unix+3600))</span> <span style="font-style: italic"><span style="color: #9A1900"># Bob</span></span>
+    <span style="font-weight: bold"><span style="color: #0000FF">fi</span></span>
+
+    <span style="font-style: italic"><span style="color: #9A1900"># epoch -&gt; date string</span></span>
+    <span style="color: #009900">date</span><span style="color: #990000">=</span><span style="color: #009900">$(</span>python -c <span style="color: #FF0000">"import time; print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime($unix))"</span><span style="color: #990000">)</span>
+    <span style="font-style: italic"><span style="color: #9A1900"># profit!</span></span>
+    touch --date<span style="color: #990000">=</span><span style="color: #FF0000">"$date"</span> <span style="color: #009900">$i</span>
+<span style="font-weight: bold"><span style="color: #0000FF">done</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># write back the timestamps to the exif info (thx boobaa)</span></span>
+jhead -dsft <span style="color: #990000">*.</span>jpg</tt></pre></div></div>
+<div class="paragraph"><p>And additionally if you don&#8217;t want to mess up the settings of the image viewer, you can use:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>c=0; for i in $(ls -lhtr *.jpg|sed 's/.* //'); do c=$((c+1)); cp -a $i new/$(printf "%03d" $c).jpg; done</code></pre>
+</div></div>
+<div class="paragraph"><p>to order filenames based on the file timestamp.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/git-notes-merge.html">Merging git notes</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Thu 07 June 2012</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>The <code>git notes</code> command is really about local annotation of commits&#8201;&#8212;&#8201;nothing
+to share. If you decide to still do so, for example the
+<a href="http://git-scm.com/2010/08/25/notes.html">git-scm.com</a> HOWTO can show you how to
+pull and push them. But what about merging?  There is no UI for that, but&#8201;&#8212;&#8201;given that with git, everything is possible&#8201;&#8212;&#8201;you can still do so manually.</p></div>
+<div class="paragraph"><p>So the problem comes when Alice fetches notes, Bob does so, Alice pushes her
+notes back, Bob annotates a different commit and when Bob wants to push, he
+gets <code>rejected, non-fast-forward</code>. Normally you would merge or rebase in this
+situation, but given that <code>git notes</code> by default updates the
+<code>refs/notes/commits</code> ref and you typically have a different branch checked out,
+you can&#8217;t use <code>git merge</code> or <code>git rebase</code> directly.</p></div>
+<div class="paragraph"><p>What works is:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>git checkout refs/notes/commits
+git fetch origin refs/notes/commits
+git merge FETCH_HEAD
+git update-ref refs/notes/commits HEAD
+git checkout master</code></pre>
 </div></div>
 <div class="colist arabic"><ol>
 <li>
 <p>
-rebuild selected files with lcov options
+Check out the notes, so if you have conflicts, you can resolve them.
 </p>
 </li>
 <li>
 <p>
-run the tests
+Fetch remote notes to FETCH_HEAD.
 </p>
 </li>
 <li>
 <p>
-extract coverage information to a single .info file
+Do the merge.
 </p>
 </li>
 <li>
 <p>
-generate some nice HTML output from the .info file
+Necessary, as <code>git merge</code> won&#8217;t update the ref automatically, since we&#8217;re not on a branch.
+</p>
+</li>
+<li>
+<p>
+Or whereever you were before.
 </p>
 </li>
 </ol></div>
-<div class="admonitionblock">
-<table><tr>
-<td class="icon">
-<div class="title">Note</div>
-</td>
-<td class="content">lcov
-<a href="https://build.opensuse.org/project/show?project=openSUSE%3AMaintenance%3A1336">had
-problems</a> with gcc-4.7, fully updated openSUSE 12.2 or 12.3 is known to work.</td>
-</tr></table>
-</div>
-<div class="paragraph"><p>There is a
-<a href="http://cgit.freedesktop.org/libreoffice/contrib/dev-tools/plain/lcov/coverage.sh">script</a>
-available to make the above a bit more automated.</p></div>
-<div class="paragraph"><p>The speed of the above depends on the amount of code needing a rebuild + the
-number of tests, but it should not take more than a minute.</p></div>
-<div class="paragraph"><p>E.g. I noticed the bookmark import code isn&#8217;t tested, added a
-<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=7b515a57eb6a644860715018656ac0b843b62baf">test
-for it</a>, and that indeed improved the line coverage of rtfdocumentimpl.cxx:
-84.1% &#8594; 85.0%.</p></div>
-<div class="paragraph"><p>A next area I wanted to test is the Writer RTF export. Let&#8217;s pick something in
-rtfattributeoutput.cxx&#8230; StartURL() is not tested, so a
-<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=85c8252e13e9234253494f96ffd70df35be056dc">hyperlink
-testcase</a> should help. Indeed it did: 50.2% &#8594; 52.0%.</p></div>
-<div class="paragraph"><p>Last, but not at least, thanks to Norbert Thiebaud, who added <code>gb_GCOV</code> to
-gbuild.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_gdb_pretty_printers">gdb pretty-printers</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Then I experimented with improving our Writer gdb Python pretty-printers. One
-annoying shortcoming was the lack of handling uno::Reference&lt;text::XTextRange&gt;.
-Imagine one searches for a bug related to table import for DOCX or RTF. One
-idea is to check the arguments of the convertToTable() method call. The first
-argument is a 2D array of XTextRange pairs, that describe what will be the
-input for cell contents. So if you want to check the first cell, you do
-something like this:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>(gdb) b DomainMapperTableHandler.cxx:798
-(gdb) r
-(gdb) print (*m_pTableSeq)[0][0]
-$1 = uno::Sequence of length 2 = {uno::Reference to (XInterface) 0x1a73648, uno::Reference to (XInterface) 0x1a77f68}
-(gdb) print (*m_pTableSeq)[0][0][0]
-$2 = uno::Reference to (XInterface) 0x1a73648
-(gdb) print (*m_pTableSeq)[0][0][1]
-$3 = uno::Reference to (XInterface) 0x1a77f68</code></pre>
-</div></div>
-<div class="paragraph"><p>Not that helpful. Here is how one could work it around:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>(gdb) print (*m_pTableSeq)[0][0][0]._pInterface-&gt;m_pImpl-&gt;m_pMark-&gt;m_pPos1
-$4 = boost::scoped_ptr SwPosition (node 10, offset 0)
-(gdb) print (*m_pTableSeq)[0][0][1]._pInterface-&gt;m_pImpl-&gt;m_pMark-&gt;m_pPos1
-$5 = boost::scoped_ptr SwPosition (node 10, offset 20)</code></pre>
-</div></div>
-<div class="paragraph"><p>But this is not something anyone will remember. After adding a few new
-pretty-printers, now it&#8217;s like this:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>(gdb) print (*m_pTableSeq)[0][0]
-$1 = uno::Sequence of length 2 = {uno::Reference to (SwXTextRange *) 0x1a72b98, uno::Reference to (SwXTextRange *) 0x1a773b8}
-(gdb) print *(*m_pTableSeq)[0][0][0]._pInterface
-$2 = (SwXTextRange) SwXTextRange sw::UnoImplPtr SwXTextRange::Impl = {mark = sw::mark::IMark = {pos1 = boost::scoped_ptr SwPosition (node 10, offset 0), pos2 = empty boost::scoped_ptr}}
-(gdb) print *(*m_pTableSeq)[0][0][1]._pInterface
-$3 = (SwXTextRange) SwXTextRange sw::UnoImplPtr SwXTextRange::Impl = {mark = sw::mark::IMark = {pos1 = boost::scoped_ptr SwPosition (node 10, offset 20), pos2 = empty boost::scoped_ptr}}</code></pre>
-</div></div>
-<div class="paragraph"><p>Technically, it would be possible to make <code>print (*m_pTableSeq)[0][0][0]</code> work
-as well, but for a larger class without a pretty-printer that would result in
-multiple pages of output. Anyway, <code>_pInterface</code> is the same for all UNO
-objects, so something that is not too hard to remember.</p></div>
-<div class="paragraph"><p>An other improvement is the XTextCursor pretty-printer. Example usage:
-debugging of the commented text range ODF import. Before:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>(gdb) b txtfldi.cxx:559
-(gdb) print *rHlp.GetCursor()._pInterface-&gt;m_pImpl-&gt;pRegisteredIn-&gt;m_pMark
-$1 = SwPosition (node 9, offset 4)</code></pre>
-</div></div>
-<div class="paragraph"><p>After the new pretty-printers one doesn&#8217;t have to type that much:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>(gdb) print *rHlp.GetCursor()._pInterface
-$1 = (SwXTextCursor)
-    SwXTextCursor sw::UnoImplPtr SwXTextCursor::Impl = {registeredIn = SwModify = {point = SwPosition (node 9, offset 4), mark = SwPosition (node 9, offset 4), next = 0x1a28b88, prev = 0x1a28b88}}</code></pre>
-</div></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_rtf_filter_text_frame_rework">RTF filter text frame rework</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Finally, I experimented with reworking the textframe code in the RTF filter. In
-short, the motivation is to bring the RTF filter in sync with the OOXML one,
-which can nicely import and export text box gradients. To get there, there are
-3 different problems to solve:</p></div>
-<div class="olist arabic"><ol class="arabic">
-<li>
-<p>
-The RTF import filter currently imports rectangle and textbox shapes as
-  drawinglayer rectangles, even if they have some text inside. Just like the
-  OOXML import filter, we would better import these shapes as Writer textframes,
-  as long as they contain some text.
-</p>
-</li>
-<li>
-<p>
-The RTF export writes Writer textframes as old-style Word frames, not as text
-  box shapes. This should be changed, as the old syntax doesn&#8217;t support
-  gradients, and in general both the DOC and DOCX export filters already export
-  new-style Word frames, so there is no reason why the RTF filter would not do
-  the same.
-</p>
-</li>
-<li>
-<p>
-Once all the above is done, add support for gradients in the RTF filter, in a
-  similar way OOXML filters were already improved to handle gradients.
-</p>
-</li>
-<li>
-<p>
-Once this all is done, add new testcases to cover the new code.
-</p>
-</li>
-</ol></div>
-<div class="paragraph"><p>First I had hacked on #1, sadly Writer textframes and drawinglayer rectangles
-don&#8217;t share the exactly same UNO API, like drawinglayer has <code>TextWritingMode</code>
-and a <code>Name</code> property, Writer textframes have a <code>WritingMode</code> property instead,
-and additionally they implement the <code>XNamed</code> UNO interface, etc.</p></div>
-<div class="paragraph"><p>Then I switched to #3&#8201;&#8212;&#8201;there I managed to reuse our existing VML import to do
-the hard work: the RTF tokenizer reads the RTF shape properties, then
-constructs the same VML model what is normally built from v:fill and v:shadow
-XML elements inside DOCX files, finally the VML import does the mapping of
-Word&#8217;s gradient concept to the Writer gradient concept.</p></div>
-<div class="paragraph"><p>At the end of the week I also hacked on #2 and #4&#8201;&#8212;&#8201;and while I did so, I
-noticed two more interesting details of Word&#8217;s new-style RTF textframe markup:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-The bad news: Writer supports having different top/left/bottom/right borders,
-  RTF still just supports the concept of a single line around the textframe.
-</p>
-</li>
-<li>
-<p>
-The good news: old-style RTF frames didn&#8217;t support different left/right or
-  top/bottom external margins, but Writer does&#8201;&#8212;&#8201;so now using the new syntax,
-  this is exported properly.
-</p>
-</li>
-</ul></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_git">git</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Unrelated to the above, I
-<a href="http://git.kernel.org/cgit/git/git.git/commit/?id=21246dbb9e0af278bc671e32e45a6cae4ad38b6f">fixed</a>
-an annoying git bug, when one tried to cherry-pick multiple commits at the same
-time, and copy&amp;paste went wrong, the "unrecognized" arguments were just
-silently ignored. Now one gets an error instead.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_docs_libreoffice_org">docs.libreoffice.org</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>In parallel to the above, Thorsten was kind enough to explain how to update
-<a href="http://docs.libreoffice.org/">docs.libreoffice.org</a>: The new output is generated
-using doxygen 1.8, it contains a bit more eye-candy. E.g. notice the new
-foldable subsections
-<a href="http://docs.libreoffice.org/sw/html/classSwUnoCrsr.html">here</a>. ;-)</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/fehervasarnap.html">Fehérvasárnap</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Sat 13 April 2013</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Múlt vasárnap
-(<a href="http://hu.wikipedia.org/wiki/Feh%C3%A9rvas%C3%A1rnap">fehérvasárnap</a>) bringázni
-voltunk a Pilisben. Nem mondom, hogy a végére nem fáradtam el, ez volt idén az
-első alkalom, hogy 100km feletti túrára mentem&#8201;&#8212;&#8201;de már bőven ideje volt.</p></div>
-<div class="paragraph"><p>A <a href="https://maps.google.com/?q=http://vmiklos.hu/gps/2013-04-07.kml">GPS track</a>
-mutatja, hogy mi Budapestről mentünk, a társaság másik fele pedig Szentendréig
-HÉV-vel, és ott csatlakoztak hozzánk. Onnantól pedig a Dömör-kapu, Pilismarót,
-Két-bükkfa-nyereg, Dobogókő útvonalat követtük.</p></div>
-<div class="paragraph"><p>A kmóra a következőket mérte:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-nettó idő 6h38m32s
-</p>
-</li>
-<li>
-<p>
-táv 125.91km
-</p>
-</li>
-<li>
-<p>
-max 51.6km/h
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>A túrán használtam először hosszútávon a nyári (nem havas, stb) időkre szánt
-Schwalbe Silento külsőket, egyelőre meg vagyok velük elégedve.</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/graphic-bullets.html">LibreOffice Writer now supports graphic bullets in its DOCX/RTF filters</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Sun 07 April 2013</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://lh5.googleusercontent.com/-fhN5_7nf5A8/UWG83Z5qLqI/AAAAAAAAChY/cehOqHVomas/s628/ooxml-graphic-bullet.png">
-<img src="https://lh5.googleusercontent.com/-fhN5_7nf5A8/UWG83Z5qLqI/AAAAAAAAChY/cehOqHVomas/s400/ooxml-graphic-bullet.png" alt="https://lh5.googleusercontent.com/-fhN5_7nf5A8/UWG83Z5qLqI/AAAAAAAAChY/cehOqHVomas/s400/ooxml-graphic-bullet.png" />
-</a>
-</div>
-</div>
-<div class="paragraph"><p>If you ever tried to use graphical bullets in Writer (Format &#8594; Bullets and
-Numbering &#8594; Graphics), you may have noticed that only the ODF filter can load
-and save such a numbering. This is now improved a lot. Motivated by seeing this
-is now handled in the binary DOC filter, I now added support for this also to
-the DOCX and RTF import and export filters. If you want to play with this
-feature, core.git also contains a
-<a href="http://cgit.freedesktop.org/libreoffice/core/plain/sw/qa/extras/ooxmlexport/data/i120928.docx">DOCX</a>
-and an
-<a href="http://cgit.freedesktop.org/libreoffice/core/plain/sw/qa/extras/rtfexport/data/i120928.rtf">RTF</a>
-sample as well.</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/jahorina.html">Jahorina</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Sat 16 March 2013</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 10 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://lh5.googleusercontent.com/-Y8pHKGqxWhU/UURLBkOm_rI/AAAAAAAACQQ/S_c0EPVTqyo/s2560/IMG_20130316_113531.jpg">
-<img src="https://lh5.googleusercontent.com/-Y8pHKGqxWhU/UURLBkOm_rI/AAAAAAAACQQ/S_c0EPVTqyo/s400/IMG_20130316_113531.jpg" alt="https://lh5.googleusercontent.com/-Y8pHKGqxWhU/UURLBkOm_rI/AAAAAAAACQQ/S_c0EPVTqyo/s400/IMG_20130316_113531.jpg" />
-</a>
-</div>
-</div>
-<div class="paragraph"><p>Az elmúlt hat napban a Bosznia-Hercegovinában található Jahorinán voltunk
-síelni. Mivel aránylag kevés információt találtam a neten, igyekszem
-összefoglalni tapasztalatainkat.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_0_nap">0. nap</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Az utazást a szigoru.hu baráti társaság szervezte (itt nem utazási irodára kell
-gondolni, tényleg csak a buszt, szállást, síbérletet intézték&#8201;&#8212;&#8201;kb. a Ryanair
-sielős megfelelői lehetnének&#8230; :-P), Facebookos továbbküldős
-üzenetből értesültünk a lehetőségről. A magyar határtól kb. 500 km-re lévő
-síterepre busszal utaztunk az <a href="http://www.sch.bme.hu">SCH</a> elől. Hivatalosan 7:00-kor volt gyülekező, és
-7:15-kor indulás, már itt csúszott a program. Az odautazás amúgy eseménytelenül
-telt, nem számolva a szokásosan 10 percesnek kikiáltott 3-4 óránkénti
-megállásokat, amik rendszerint 2 óránként és jó fél órasak voltak, elsősorban a
-cigizők igényeit kiszolgálva.</p></div>
-<div class="paragraph"><p>Ennek eredményeképpen 17:30 helyett inkább 20:30 körül érkeztünk meg a
-szállásunkra (Pahuljica panzió), amiben viszont sok kivetnivalót nem találtunk:
-az igényelt kétágyas szobában történetesen egy franciaágy, egy sima ágy és egy
-kihúzható heverő is volt, saját fürdőszoba, általunk megszokott (és nem a
-bosnyák közvécék kategóriájába eső) mellékhelység. Wifi csak a földszinten, de
-ott ingyen.</p></div>
-<div class="paragraph"><p>Az árak első hallásra valóban a hazainak feleltethetők meg, kettőnknek egy
-vacsora (főétel, köret, ital) 15 euróból kijött (a helyi konvertibilis márkát a
-legtöbb helyen 1:2 arányban simán váltják, mi nem is vettünk otthon külön
-márkát).</p></div>
-<div class="paragraph"><p>Este még gyorsan körbejártuk a környéket: a panziótól pár perc sétára közért is
-található, mely persze vacsora után már zárva volt.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_1_nap">1. nap</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Reggel 9-kor megkaptunk mindenféle mizéria nélkül a heti síbérletet (vö.
-Franciaország, ahol a fényképes bérletekkel állandó gond van csoportok esetén:
-fényképet kell vinni, majd a helyi serpák ragasztgatják be a bérletre a
-fényképeket, így tipikusan órák mennek el a drága síidőből az első nap), és
-miután szert tettünk egy ingyenes sítérképre, nekikezdtünk a pályák
-felderítésének.</p></div>
-<div class="paragraph"><p>Sajnos még délután is erős köd volt, így egész nap nem járt több felvonó. A
-síterep keleti oldalán található szállásunkról először egy tányéros (ez u.úgy
-nagyot ránt mint a szlovák társai, némi nosztalgikus érzést kiváltva azokból
-akik már nem először találkoznak a jelenséggel) és egy 6 fős üllős liftet
-próbáltunk ki. A helyi nevezéktan érdekessége, hogy a felvonókat ékes szerb
-nyelven&#8201;&#8212;&#8201;de (a turisták kedvéért) legalább nem cirill betűkkel&#8201;&#8212;&#8201;azonosítják, a sítérkép pedig egyszerű betűkkel azonosítja őket. A
-megfeleltetésre a sítérkép alján lévő apróbetűs táblázat ad lehetőséget.</p></div>
-<div class="paragraph"><p>A pályákat szerencsére mind a térképen, mint a valóságban számokkal
-azonosítják, bár a kijelzés meglehetősen visszafogott: a pálya száma csak
-hébe-hóba van kijelezve. Az esetek többségében egyszerű kék/piros/stb (a pálya
-nehézségére utalva) színű póznák jelölik a pálya határát. Ez alól is vannak
-kivételek, ott egyszerűen abból lehet tájékozódni, hogy merre nincs (vagy
-kevesebb) a szűzhó.</p></div>
-<div class="paragraph"><p>Délután aztán a szomszédos völgybe is ellátogattam (az "mi" völgyünk aljából
-induló felvonó tetejéről kényelmesen át lehet csúszni), ahol modernebb,
-plexiüveggel fedett felvonóval szállítják fel a sportolókat. A kijelzést itt se
-vitték túlzásba, harmadik nekifutásra sikerült úgy letalálni a pályán, hogy
-sehol se kellett visszagyalogolni. Úgy tűnik helyi marketing-trükknek számít,
-hogy a pálya elkanyarodik, de az egyenesen továbbsíelőket is várja egy étterem,
-ahonnan viszont vissza kell gyalogolni egy keveset. A liftek nyitvatartását úgy
-tűnik sehol se rögzítik írásban, de egy angolul beszélő szerb szerint az
-íratlan szabály a 16:00-s zárás (hétvégén 12:30). Szerencsére mi hetfőtől
-péntekig síelünk, így a szokatlanul rövid hétvégi nyitvatartás minket nem
-érint. A nap végén felkerestük a már említett boltot: 8:00-21:30 a
-nyitvatartása, így a 9 órás felvonó-nyitás előtt, vagy azok zárása után is
-kényelmesen lehet vásárolni. A mai kedvenc a 2l-es helyi sör, amiért kb.
-u.annyi eurót kellett kifizetni, mint Brüsszelben egy 3decis testvéréért. :-)</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_2_nap">2. nap</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Reggel megvaxoltattam a lécemet, meglepő módon a szervízben csak egyszer
-kellett mutogatás nélkül elmondani, hogy mit akarok, egyből értették. Délelőtt
-a már tegnap megismert pályákon síeltünk, sajnos egyelőre úgy tűnik, hogy a
-szállásunkhoz vezető völgybe visszajutni a nyugatibb völgyekből továbbra se
-lehetséges rendes pályán: a nap folyamán 2 megoldást is kipróbáltam, de
-mindkettő szűzhavas síelésbe torkollott.</p></div>
-<div class="paragraph"><p>Ebédre újfent valami egyszerűt akartunk enni, de kezd körvonalazódni a helyi
-szabály: minden étel 5 euró körül van, ennyi pénzből viszont bőven jól lehet
-lakni. Jelen esetben két kolbászt kértünk (gondolva, hogy elég kenyérrel egy
-könnyű ebédre jó lesz), mire kihoztak 2 tálat, a tálakon 4 kolbásszal,
-hasábburgonyával, salátával, hagymával, pitával&#8230;</p></div>
-<div class="paragraph"><p>Délután sikerült felfedezni a tegnap még nem érintett pályákat: mint kiderült a
-felvonók aljában itt nincs információ arról, hogy milyen felvonók üzemelnek, de
-interneten meg lehet nézni, és az az információ tényleg naprakész. Kipróbáltam
-egyet az olimpiai pályák közül is&#8201;&#8212;&#8201;nem lepett meg, hogy ezek normális
-fekete/piros pályák, ha nem lenne kiírva, hogy olimpiai, észre se venné az
-ember.</p></div>
-<div class="paragraph"><p>Valamint tanultunk 2 új hasznos szerb szót: konobar = pincér, és naziv = név.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_3_nap">3. nap</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Délelőtt a hozzánk legközelebb eső, majd a tőle nyugatabbra lévő völgyben
-síeltünk: az idő kifejezetten szeles volt, így az üllő felvonókon a kilengés
-jól érezhető volt. Annyira, hogy miközben beültünk "ebédelni" egy forró csokira,
-le is állították a két völgy üllő felvonóit, ezáltal gyakorlatilag egyetlen
-tárcsás használatára kötelezve mindazokat, akik még időben nem startolak el a
-síterep nyugati felén fekvő olimpiainak titulált pályákra.</p></div>
-<div class="paragraph"><p>Pánikra persze semmi ok, így esett meg, hogy e tárcsás felvonó mellett
-kipróbáltam egy sífutó utat is, ami végül lesikló léccel is síelhető volt:
-tehát ma is találtunk új pályát.</p></div>
-<div class="paragraph"><p>Amúgy ez a lezárás kellemes nosztalgikus hangulatba sodorta a társaság jelentős
-részét: a folyamatos tárcsás felvonó-használat, a többperces várakozási idők
-érdekes módon mindenkiben a régi szlovák síterepek hangulatát idézte fel.</p></div>
-<div class="paragraph"><p>Azokat, akik a szomszéd völgyben rekedtek volna, állítólag kisbuszokkal hozták
-át hozzánk&#8201;&#8212;&#8201;úgy tűnik nagyon sürgősnek tartották a szeles időben az
-üllőliftek leállítását. Ennek ellenére azért az alsóbb szakaszokon ma is volt
-csendes, napsütéses idő, így volt lehetőség fotózkodásra. A szervezők az utolsó
-utáni pillanatban értesítettek SMS-ben, hogy 2 euróért bevisznek "bulizni"
-Szarajevóba: ezt mi kihagytuk, mivel inkább pihenésre vágytunk az egész napos
-síelés után; illetve várost nézni önállóan csak úgy lett volna értelme, ha
-előbb utána olvasunk, hogy mit lenne érdemes megnézni.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_4_nap">4. nap</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Ma kifejezetten zord időjárást kaptunk, egy fél órát leszámítva egész nap esett
-a hó (és így nem sütött a nap). Ami viszont pozitívum, hogy alig volt szél, így
-újra járt az összes felvonó.</p></div>
-<div class="paragraph"><p>A mai síelésre vittem GPS-t is: az 1916 méteres csúcsot sikerült 1904 méterre
-megközelíteni, valamint a teljes nap folyamán 54.6 km-t síelni, amivel teljes
-mértékben meg lehetek elégedve, ha belevesszük, hogy ebben volt egy egy órás
-ebédszünet is.</p></div>
-<div class="paragraph"><p>A hóesés amúgy egész előző nap is folytatódott, és ez rámutatott a bosnyák
-pályakarbantartás egy gyengéjére is: a pályákat délután/este ratrakolják, így
-az egész éjszakás hóesés után vagy 10 centi szűzhó borította az amúgy
-ledolgozott pályákat. Persze a népszerű szakaszokon a síelők ezt gyorsan
-ledolgozták.</p></div>
-<div class="paragraph"><p>Ezen kívül megjött a magyarok következő turnusa, akik csütörtök estétől
-vasárnapig maradnak, az egyik felvonón pl. szarvasi pálinkával kínáltak.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_5_nap">5. nap</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>És egyben az utolsó. A terv az volt, hogy reggel síelés előtt becuccolunk a
-buszba, síelünk amíg járnak a felvonók, majd 4 után indulunk haza. Hogy ez jó
-ötlet volt-e vagy nem, az kérdéses: jó volt kihasználni a lehetőségeket, de a
--tizenvalamennyi °C, az erős szél és a köd (röviden: a helyhez képest is
-ridegnek számító időjárás) azért kissé rossz szájízt adott az utolsó napra.</p></div>
-<div class="paragraph"><p>Ennek ellenére sikerült betartani a régi szabályt, hogy utolsó nap óvatosan:
-senki nem sérült meg, és aránylag időben el is tudtunk indulni hazafelé.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_konklúzió">Konklúzió</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>A nagy kérdés adott: jó ötlet-e Jahorinára menni egy jól bejáratott
-osztrák/francia/stb síterep helyett?</p></div>
-<div class="paragraph"><p>Én a következő előnyöket láttam:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-évek óta osztrák/francia terepeken síelve végre valami változatosság
-</p>
-</li>
-<li>
-<p>
-nagyjából egy megszokott minőségű síterepre jut az ember, a nyugati árak
-  töredékéért (u.úgy jelezve vannak színekkel a pályák, van sítérkép, ratrak,
-  stb.)
-</p>
-</li>
-<li>
-<p>
-hétköznap a pályákon minimális a terheltség
-</p>
-</li>
-<li>
-<p>
-az utazás csak 8 óra Bp-ről (Franciaországnál 1-1 teljes nap elment csak az utazással)
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>Persze vannak hátrányok is, amit érdemes figyelbe venni, ha az ember kompromisszumképtelen:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-a pályák kijelzettsége rosszabb: többen kérdezték, hogy itt a fekete
-  pályáknál alap feltétel, hogy ne legyenek kijelezve? ;-) (vagy például nincs
-  led-panel a kasszánál, hogy mely felvonók járnak, csak
-  <a href="http://oc-jahorina.com/en/">neten</a> lehet megnézni)
-</p>
-</li>
-<li>
-<p>
-az angol nyelvtudása a helyieknek csapnivaló, bár erőltetve a tőmondatok
-  használatát minden felmerülő problémát megoldottak, így sok paraszra nem
-  lehetett okunk
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>Pár ár-referencia (TL;DR: 2 KM kb. = 1 EUR):</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-forró-csoki a <a href="http://www.peggy-jahorina.ba/">Peggy</a> "hüttében": 4,5 KM
-</p>
-</li>
-<li>
-<p>
-<a href="https://lh4.googleusercontent.com/-0ME8NW6pVpc/UUMETp0uVEI/AAAAAAAACPE/7hxNbbrgGE4/s2560/IMG_20130315_084607.jpg">2l-es LAV sör</a> a helyi boltban: 3,3 KM
-</p>
-</li>
-<li>
-<p>
-szállás a <a href="http://www.pahuljica-jahorina.com/pahuljica_eng/">Pahuljica</a> panzióban félpanzióval: 50 KM
-</p>
-</li>
-<li>
-<p>
-nagy (32cm) pizza a <a href="https://www.facebook.com/Vatra.Jahorina">VATRA</a> étteremben: 10KM
-</p>
-</li>
-</ul></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/git-review.html">git-review</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Thu 28 February 2013</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>LibreOffice started to use <a href="https://gerrit.libreoffice.org/">Gerrit</a> for code
-review, and while occasional contributors
-<a href="https://wiki.documentfoundation.org/Development/gerrit/SubmitPatch">can submit
-patches manually</a>, in case one does many reviews, it&#8217;s handy to use a dedicated
-tool. In core.git, we have
-<a href="http://cgit.freedesktop.org/libreoffice/core/tree/logerrit">logerrit</a>, but
-that&#8217;s not advised for regular reviewers, either,
-<a href="https://github.com/openstack-infra/git-review">git-review</a> is recommended
-instead.</p></div>
-<div class="paragraph"><p>So I looked into git-review. The good news is that it&#8217;s packaged already for most distributions, e.g. a simple</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>zypper in python-git-review</code></pre>
-</div></div>
-<div class="paragraph"><p>on openSUSE installs it.</p></div>
-<div class="paragraph"><p>I wanted to use this tool for two tasks:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-Submitting changes to Gerrit: <code>git review -R</code> could do that. <code>-R</code> prevents
-  automatic rebase, so a test build won&#8217;t fail because your patch is based on
-  an already broken commit. The other good thing is that you don&#8217;t have to
-  remember where to submit: both the master and libreoffice-4-0 branches contain
-  a <code>.gitreview</code> file that contains the necessary server / branch information.
-</p>
-</li>
-<li>
-<p>
-Cherry-picking changes from Gerrit: I found no option for this. A cherry-pick
-  command is generated on the web interface, but it&#8217;s more complicated than a
-  simple <code>&lt;some command&gt; &lt;number of the change&gt;</code>. So I submitted
-  <a href="https://review.openstack.org/17290">this change</a> to git-review itself, the next
-  release will be able to do <code>git review -x &lt;number of the change&gt;</code>.
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>Probably the browser interface is still the best to comment (especially inline
-comment) and approve changes, though David even submitted a
-<a href="https://review.openstack.org/17423">proof of concept patch</a> for that as well.</p></div>
-<div class="paragraph"><p>Finally, let me just clear two myths:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-If you use Google for OpenID login, you can have multiple OpenID accounts
-  associated with your Gerrit login, so it&#8217;s not a problem (first I thought it
-  is) if you use one email for Gerrit and an other one for accessing other
-  Google services.
-</p>
-</li>
-<li>
-<p>
-Somewhere I read that the stock LibreOffice hooks conflict with git-review:
-  nope, git-review didn&#8217;t touch the hooks, you can use the tool without
-  corrupting them in any way.
-</p>
-</li>
-</ul></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/mary-poppins.html">Mary Poppins</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Sat 23 February 2013</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://lh5.googleusercontent.com/-Smw0lwaHHuQ/USjCtM8YV1I/AAAAAAAACJc/FbzO5lqZ4LQ/s570/mad_114_20120312155531.jpg">
-<img src="https://lh5.googleusercontent.com/-Smw0lwaHHuQ/USjCtM8YV1I/AAAAAAAACJc/FbzO5lqZ4LQ/s400/mad_114_20120312155531.jpg" alt="https://lh5.googleusercontent.com/-Smw0lwaHHuQ/USjCtM8YV1I/AAAAAAAACJc/FbzO5lqZ4LQ/s400/mad_114_20120312155531.jpg" />
-</a>
-</div>
-</div>
-<div class="paragraph"><p>Pár hete láttuk ezt a musicalt: kifejezetten látványos, nem kifejezetten
-gyerek-közönséget megcélzó előadás, tetszett. A végén konkrétan Mary "átrepült"
-esernyőjével a nézőtér felett&#8230; ;-)</p></div>
-<div class="paragraph"><p>Úgy tűnik elég népszerű előadás, a Madách
-<a href="http://www.madachszinhaz.hu/showtickets.php?id=114">honlapján</a> nincs meghirdetve
-olyan előadás, amire lenne még jegy is.</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/swtextframe-gradientbackground.html">LibreOffice Writer now supports gradients in text frame backgrounds</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Mon 18 February 2013</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>When you create a rectangle or text frame in Writer, you have two choices. You
-can use the draw toolbar to create a drawinglayer rectangle, and you can also
-insert a text frame. The drawinglayer shapes are shared between the LibreOffice
-applications, and already supported having not only a bitmap or a color but a
-gradient or a hatch as a background.  The benefit of Writer text frames is that
-they can contain anything a normal Writer document can&#8201;&#8212;&#8201;think of columns,
-tables, etc. These features are not supported by drawinglayer rectangles.</p></div>
-<div class="paragraph"><p>So till now you had to decide what to pick, but it wasn&#8217;t possible to have
-both. LibreOffice 4.1 makes this situation better. Now it&#8217;s possible to have
-gradient backgrounds in Writer text frames as well:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://wiki.documentfoundation.org/File:Swxtextframe-gradient-ui.png">
-<img src="https://wiki.documentfoundation.org/images/thumb/e/e6/Swxtextframe-gradient-ui.png/400px-Swxtextframe-gradient-ui.png" alt="https://wiki.documentfoundation.org/images/thumb/e/e6/Swxtextframe-gradient-ui.png/400px-Swxtextframe-gradient-ui.png" />
-</a>
-</div>
-</div>
-<div class="paragraph"><p>The nice thing is that this feature was already supported by ODF, just not by
-Writer, so no such paperwork was needed this time. Also the OOXML filters are
-updated. As I already stated in
-<a href="https://bugs.freedesktop.org/show_bug.cgi?id=46029#c5">this comment</a>, the binary
-DOC and RTF filters are not yet touched regarding this feature&#8201;&#8212;&#8201;though I
-already looked into the RTF one, and have some idea what rework is needed there
-first.</p></div>
+<div class="paragraph"><p>And now you can push your notes, as detailed in the above referred blog post.
+Yes, rebasing would be possible as well, that&#8217;s left as an exercise for the
+reader. ;-)</p></div>
 </div>
 </div>
 

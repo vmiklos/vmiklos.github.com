@@ -59,30 +59,51 @@
 
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/iskola-a-hataron.html">Iskola a határon</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/mdadm-upgrade.html">mdadm upgrade</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sun 11 August 2013</p>
+    <p>Posted on: Wed 02 January 2013</p>
   </div>
   <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
+    <p>Estimated read time: 2 minutes</p>
   </div>
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
+<div class="paragraph"><p>Even though I spend little of my free time with sysadmin stuff these days, this
+came up recently. A few years ago I hit an issue about <code>mdadm</code> creating too new
+metadata that wasn&#8217;t handled by the installed kernel, so I remembered to use
+<code>--metadata 0.90</code> when creating a new array. Additionally, I preferred using
+<code>cfdisk</code> for partitioning.</p></div>
+<div class="paragraph"><p>It turns out this caused quite some grief when it came to <code>grub2</code>, I wrote about
+this <a href="https://vmiklos.hu/blog/grub2.html">earlier</a>&#8201;&#8212;&#8201;that was about the theory, in a VM. This is
+about the practice. In practice, <code>gparted</code> turned out to be too risky, and I
+choose the following approach to repartition the hard drives (so there is
+enough space for <code>grub2</code>) and upgrade the <code>mdadm</code> metadata.</p></div>
+<div class="paragraph"><p>First, I broke the mirror by removing one leg of the RAID1 array:</p></div>
+<div class="listingblock">
 <div class="content">
-<a class="image" href="http://mek.oszk.hu/02200/02285/">
-<img src="https://lh6.googleusercontent.com/-nda22wUG9pY/UgfviyAfK9I/AAAAAAAADS4/fmqExpGAWfQ/s350/2000000354440.JPG" alt="https://lh6.googleusercontent.com/-nda22wUG9pY/UgfviyAfK9I/AAAAAAAADS4/fmqExpGAWfQ/s350/2000000354440.JPG" />
-</a>
-</div>
-</div>
-<div class="paragraph"><p>Ez még gimiben lett volna kötelező olvasmány, és rémlik, hogy akkor azt
-sulykolták belénk, hogy az a mű mondanivalója, hogy egy megtörtént esetet még
-ugyanaz az ember se tud pontosan ugyanúgy elmondani kétszer, hát még ha több
-ember máshogy éli meg. Van ebben valami. ;-)</p></div>
-<div class="paragraph"><p>A <a href="http://hu.wikipedia.org/wiki/Iskola_a_hat%C3%A1ron">Wikipédia ide vonatkozó szócikke</a> mondjuk mást emel ki&#8230; Mindenesetre örülök, hogy sikerült végre időt szakítani erre a könyvre, tetszett.</p></div>
-<div class="paragraph"><p>(<a href="http://bookline.hu/product/home.action?id=6313&amp;type=22">bookline</a>, <a href="http://mek.oszk.hu/02200/02285/">mek</a>)</p></div>
+<pre><code>mdadm --manage /dev/md126 --fail /dev/sdd1
+mdadm --manage /dev/md126 --remove /dev/sdd1</code></pre>
+</div></div>
+<div class="paragraph"><p>Then I created a new array (with a single leg) with the new metadata and formatted it:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>fdisk /dev/sdd
+mdadm --create /dev/md125 --metadata=1.0 --level=1 --assume-clean --raid-devices=2 missing /dev/sdd1
+mkfs.ext4 /dev/md125</code></pre>
+</div></div>
+<div class="paragraph"><p>Finally I copied over the live system:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>mkdir /mnt/md125
+mount /dev/md125 /mnt/md125
+rsync --delete -avxP / /mnt/md125
+umount /mnt/md125</code></pre>
+</div></div>
+<div class="paragraph"><p>The rest was easy: I booted a livecd to do the <code>rsync</code> once again (taking a few
+minutes only), and once the system was running from the new array, added the
+leg of the old array to the new one as well&#8201;&#8212;&#8201;and that&#8217;s it.</p></div>
 </div>
 </div>
 
@@ -91,10 +112,10 @@ ember máshogy éli meg. Van ebben valami. ;-)</p></div>
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/badacsonytomaj.html">Badacsonytomaj</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/recent-contributions-2012.html">Recent contributions</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Tue 06 August 2013</p>
+    <p>Posted on: Sun 30 December 2012</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -102,39 +123,29 @@ ember máshogy éli meg. Van ebben valami. ;-)</p></div>
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://lh5.googleusercontent.com/-aDeLnzqO8JI/Uf__V91ypaI/AAAAAAAAB4g/3IT8k3aQTHk/s3000/DSC_9514.JPG">
-<img src="https://lh5.googleusercontent.com/-aDeLnzqO8JI/Uf__V91ypaI/AAAAAAAAB4g/3IT8k3aQTHk/s400/DSC_9514.JPG" alt="https://lh5.googleusercontent.com/-aDeLnzqO8JI/Uf__V91ypaI/AAAAAAAAB4g/3IT8k3aQTHk/s400/DSC_9514.JPG" />
-</a>
-</div>
-</div>
-<div class="paragraph"><p>Múlt héten Badacsonytomajban jártunk, szállásadónk a
-<a href="http://www.borbelypince.hu/">Borbély családi pincészet</a> volt.</p></div>
-<div class="paragraph"><p>A helyi strandokon kívül azért körbejártuk a környéket is:</p></div>
+<div class="paragraph"><p>Here are a few contributions I made recently:</p></div>
 <div class="ulist"><ul>
 <li>
 <p>
-volt egy gyalogtúránk magán a Badacsony-hegyen
+Git: <a href="http://git.kernel.org/?p=git/git.git;a=commit;h=5ed75e2a3fb30f93fea7772e481ec6091e9a2c5f">cherry-pick: don&#8217;t forget -s on failure</a>
 </p>
 </li>
 <li>
 <p>
-ellátogattunk Szigligetre
+openSUSE / mutt package: <a href="https://build.opensuse.org/request/show/134918">add back lost sidebar color patch</a>
 </p>
 </li>
 <li>
 <p>
-Badacsonyörsön megnéztük (és kóstoltuk, ld. lenn) a <a href="http://www.follyarboretum.hu/">Folly arborétumot</a>
+irker-cia-proxy: <a href="https://github.com/nenolod/irker-cia-proxy/commit/60a7f36a4285eeff21533549a6361b3a3e1ab796">make it possible to read input from stdin</a>, <a href="https://github.com/nenolod/irker-cia-proxy/commit/7ca987f7deae17f8a7170e0b0f292dc1f1aebbeb">add support for branch-specific templates</a>
 </p>
 </li>
 <li>
 <p>
-utolsó nap Fonyódra is elkatamaránoztunk
+BitlBee: <a href="http://code.bitlbee.org/lh/bitlbee/revision/960">skype: make it not hang with &gt;=2.2.0.35</a>
 </p>
 </li>
 </ul></div>
-<div class="paragraph"><p>Néhány kép&#8201;&#8212;&#8201;és a <a href="http://hugin.sourceforge.net/">huginnak</a> köszönhetően panoráma&#8201;&#8212;&#8201;<a href="https://www.flickr.com/photos/vmiklos/albums/72157669953279354">erre</a>.</p></div>
 </div>
 </div>
 
@@ -143,10 +154,10 @@ utolsó nap Fonyódra is elkatamaránoztunk
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/tpb-afk.html">TPB AFK: The Pirate Bay Away from Keyboard</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/lo-zero-rtf-regressions.html">Zero RTF Regressions?</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sun 28 July 2013</p>
+    <p>Posted on: Fri 28 December 2012</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -156,16 +167,34 @@ utolsó nap Fonyódra is elkatamaránoztunk
 <div class="sectionbody">
 <div class="imageblock" style="text-align:center;">
 <div class="content">
-<a class="image" href="https://lh6.googleusercontent.com/-Bj-2y47jVIc/UfWFlozGD1I/AAAAAAAADQw/E_lDnXjpHr0/s1000/tpb.png">
-<img src="https://lh6.googleusercontent.com/-Bj-2y47jVIc/UfWFlozGD1I/AAAAAAAADQw/E_lDnXjpHr0/s400/tpb.png" alt="https://lh6.googleusercontent.com/-Bj-2y47jVIc/UfWFlozGD1I/AAAAAAAADQw/E_lDnXjpHr0/s400/tpb.png" />
+<a class="image" href="https://lh4.googleusercontent.com/-VpSgFTUoC7o/UN26BTFBz_I/AAAAAAAAB9U/rFoWruRijss/s739/0regressions.png">
+<img src="https://lh4.googleusercontent.com/-VpSgFTUoC7o/UN26BTFBz_I/AAAAAAAAB9U/rFoWruRijss/s400/0regressions.png" alt="https://lh4.googleusercontent.com/-VpSgFTUoC7o/UN26BTFBz_I/AAAAAAAAB9U/rFoWruRijss/s400/0regressions.png" />
 </a>
 </div>
 </div>
-<div class="paragraph"><p>Nehéz megmondani, hogy ez akkor most egy olyan film amit a svéd állam
-szponzorált, hogy népszerűsítse a mások bűnözéséből vagyont szerző
-állampolgárait&#8201;&#8212;&#8201;vagy éppen napjaink három hőséről szól. ;-)</p></div>
-<div class="paragraph"><p>Minden esetre izgalmas dokumentumfilm, csak ajánlani tudom mindenkinek.</p></div>
-<div class="paragraph"><p>(<a href="http://www.imdb.com/title/tt2608732/">imdb</a>, <a href="http://www.youtube.com/watch?v=NkjfNARgPuk">trailer</a>)</p></div>
+<div class="paragraph"><p>I think the first attempt to track LibreOffice RTF Writer regressions (bugs not
+presenting in some earlier versions) was in
+<a href="http://article.gmane.org/gmane.comp.documentfoundation.libreoffice.devel/27680">this</a>
+mail. That started with 14 bugs, and of course while I fixed a few, new ones
+were added as well. I guess this is mostly due to testing work, since new fixes
+are usually covered by unit tests, so re-introducing the same problems
+nowadays is a bit more work.</p></div>
+<div class="paragraph"><p>I remember I was down to one regression a few months ago, but we still had
+performance problems, which
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=a48e2fd9049797110b3b2505c363557284987ca8">got
+solved</a> a few weeks ago, so I had the idea that I want to go down to zero
+during the holidays. It seems today I finally managed to do so&#8201;&#8212;&#8201;bugs tagged
+as <code>rtf_filter</code> and <code>regression</code> are gone, thanks everyone who helped! :-)</p></div>
+<div class="paragraph"><p>For the reference here are the queries:
+<a href="https://bugs.freedesktop.org/buglist.cgi?keywords=regression&amp;keywords_type=allwords&amp;status_whiteboard_type=allwordssubstr&amp;query_format=advanced&amp;status_whiteboard=rtf_filter&amp;bug_status=NEW&amp;bug_status=ASSIGNED&amp;bug_status=REOPENED&amp;bug_status=UNCONFIRMED&amp;bug_status=NEEDINFO">RTF
+regressions</a>,
+<a href="https://bugs.freedesktop.org/buglist.cgi?keywords=regression&amp;keywords_type=allwords&amp;status_whiteboard_type=allwordssubstr&amp;query_format=advanced&amp;status_whiteboard=rtf_filter&amp;bug_status=RESOLVED&amp;list_id=196270">fixed
+RTF regressions</a>,
+<a href="https://bugs.freedesktop.org/buglist.cgi?cmdtype=dorem&amp;remaction=run&amp;namedcmd=Writer%20regressions&amp;sharer_id=14344">Writer
+regressions</a>.</p></div>
+<div class="paragraph"><p>Now that the list is empty, feel free to tag more bugs as <code>rtf_filter</code> from the
+long Writer list when needed.</p></div>
+<div class="paragraph"><p>Update: the list is now empty again, as of 2014-11-24, for the 4.4 release. ;-)</p></div>
 </div>
 </div>
 
@@ -174,10 +203,10 @@ szponzorált, hogy népszerűsítse a mások bűnözéséből vagyont szerző
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/lo-41-ooxml-improvements.html">OOXML improvements in LibreOffice Writer 4.1</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/szszk-2012.html">Free Software Conference 2012</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Mon 22 July 2013</p>
+    <p>Posted on: Sat 08 December 2012</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -185,114 +214,72 @@ szponzorált, hogy népszerűsítse a mások bűnözéséből vagyont szerző
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<div class="paragraph"><p>See <a href="https://vmiklos.hu/blog/lo-ooxml-improvements.html">here</a> for a 3.6/4.0
-version of this post.</p></div>
-<div class="paragraph"><p>I&#8217;m posting here a few screenshots showing improvements in our DOCX filter,
-done in the 4.1 development cycle. In each case I&#8217;m providing a link to the
-test document, a screenshot showing how it looked before and how it now looks
-on 4.1. Click on the images to get a larger image:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-document with a complex groupshape: multiple shapes had text (<a href="http://cgit.freedesktop.org/libreoffice/core/tree/sw/qa/extras/ooxmlimport/data/n792778.docx">test doc</a>):
-</p>
-</li>
-</ul></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="http://konf.fsf.hu/cgis/ossc/2012/">
+<img src="https://lh5.googleusercontent.com/-KTXNNYP-bfg/UMOeX9xea7I/AAAAAAAAB38/lwc27RrjUNg/s400/konf2012_logo_web.png" alt="https://lh5.googleusercontent.com/-KTXNNYP-bfg/UMOeX9xea7I/AAAAAAAAB38/lwc27RrjUNg/s400/konf2012_logo_web.png" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>The Free Software Conference 2012&#8201;&#8212;&#8201;orginized by FSF.hu&#8201;&#8212;&#8201;was held today @
+Budapest. I gave a talk about hacking on new Writer features
+(<a href="https://speakerdeck.com/vmiklos/hogyan-keszitsunk-uj-writer-funkciokat">slides</a>).</p></div>
+<div class="paragraph"><p>We (with Andras) also ran the LibreOffice booth, and in idle cycles I also had
+time to kill
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=257a4090af068085143d71d60e6032ba0b998804">this
+annoying bug</a>. This year speakers got a t-shirt and a fine lunch, thanks for
+the organizers! :)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/polok.html">Pólók</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Mon 03 December 2012</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>Valamelyik hétvégén átnéztem a pólóimat, a rég nem hordottakat eljuttatandó a
+Máltai Szeretetszolgálatnak. Persze a többség valamilyen szabad szoftveres
+eseményről származott, így biztos ami biztos lefotóztam őket. Itt van például
+egy 5 elemű GSoC sorozat:</p></div>
 <div align="center">
 <div class="paragraph"><p><span class="image">
-<a class="image" href="https://lh4.googleusercontent.com/-sYXxjhypoQ8/Uez38Xv2tmI/AAAAAAAADPI/u5Dzu0pTTXc/s912/groupshape-lo40.png">
-<img src="https://lh4.googleusercontent.com/-sYXxjhypoQ8/Uez38Xv2tmI/AAAAAAAADPI/u5Dzu0pTTXc/s400/groupshape-lo40.png" alt="https://lh4.googleusercontent.com/-sYXxjhypoQ8/Uez38Xv2tmI/AAAAAAAADPI/u5Dzu0pTTXc/s400/groupshape-lo40.png" />
+<a class="image" href="https://www.flickr.com/photos/vmiklos/28665378382/in/album-72157669002649523/">
+<img src="https://farm9.staticflickr.com/8614/28665378382_4dd56fbe82_z.jpg" alt="https://farm9.staticflickr.com/8614/28665378382_4dd56fbe82_z.jpg" />
 </a>
 </span>
 <span class="image">
-<a class="image" href="https://lh3.googleusercontent.com/-SOZjbpmdvXw/Uez38brF6bI/AAAAAAAADOM/KSsbMkgSQlg/s912/groupshape-lo41.png">
-<img src="https://lh3.googleusercontent.com/-SOZjbpmdvXw/Uez38brF6bI/AAAAAAAADOM/KSsbMkgSQlg/s400/groupshape-lo41.png" alt="https://lh3.googleusercontent.com/-SOZjbpmdvXw/Uez38brF6bI/AAAAAAAADOM/KSsbMkgSQlg/s400/groupshape-lo41.png" />
-</a>
-</span></p></div>
-</div>
-<div class="ulist"><ul>
-<li>
-<p>
-document with tabs over the margin (<a href="http://cgit.freedesktop.org/libreoffice/core/tree/sw/qa/extras/ooxmlimport/data/n793998.docx">test doc</a>):
-</p>
-</li>
-</ul></div>
-<div align="center">
-<div class="paragraph"><p><span class="image">
-<a class="image" href="https://lh6.googleusercontent.com/-56Vj5pUGX-I/Uez38_AGTRI/AAAAAAAADOs/aVKQ_qPbMdg/s800/tabovermargin-lo40.png">
-<img src="https://lh6.googleusercontent.com/-56Vj5pUGX-I/Uez38_AGTRI/AAAAAAAADOs/aVKQ_qPbMdg/s400/tabovermargin-lo40.png" alt="https://lh6.googleusercontent.com/-56Vj5pUGX-I/Uez38_AGTRI/AAAAAAAADOs/aVKQ_qPbMdg/s400/tabovermargin-lo40.png" />
+<a class="image" href="https://www.flickr.com/photos/vmiklos/28153087194/in/album-72157669002649523/">
+<img src="https://farm9.staticflickr.com/8616/28153087194_a314120f40_z.jpg" alt="https://farm9.staticflickr.com/8616/28153087194_a314120f40_z.jpg" />
 </a>
 </span>
 <span class="image">
-<a class="image" href="https://lh5.googleusercontent.com/-vLbiQ55TWtQ/Uez39MNwS2I/AAAAAAAADOY/AtIVReP1_LI/s800/tabovermargin-lo41.png">
-<img src="https://lh5.googleusercontent.com/-vLbiQ55TWtQ/Uez39MNwS2I/AAAAAAAADOY/AtIVReP1_LI/s400/tabovermargin-lo41.png" alt="https://lh5.googleusercontent.com/-vLbiQ55TWtQ/Uez39MNwS2I/AAAAAAAADOY/AtIVReP1_LI/s400/tabovermargin-lo41.png" />
-</a>
-</span></p></div>
-</div>
-<div class="ulist"><ul>
-<li>
-<p>
-document with rotated text: content should not fit the cell size (<a href="http://cgit.freedesktop.org/libreoffice/core/tree/sw/qa/extras/ooxmlimport/data/tblr-height.docx">test doc</a>):
-</p>
-</li>
-</ul></div>
-<div align="center">
-<div class="paragraph"><p><span class="image">
-<a class="image" href="https://lh6.googleusercontent.com/-QfKy9rLa1oU/Uez39sijDtI/AAAAAAAADOk/ptcg831fH34/s700/tblr-cell-overflow-lo40.png">
-<img src="https://lh6.googleusercontent.com/-QfKy9rLa1oU/Uez39sijDtI/AAAAAAAADOk/ptcg831fH34/s400/tblr-cell-overflow-lo40.png" alt="https://lh6.googleusercontent.com/-QfKy9rLa1oU/Uez39sijDtI/AAAAAAAADOk/ptcg831fH34/s400/tblr-cell-overflow-lo40.png" />
+<a class="image" href="https://www.flickr.com/photos/vmiklos/28693602061/in/album-72157669002649523/">
+<img src="https://farm8.staticflickr.com/7697/28693602061_a4ebf5e8fe_z.jpg" alt="https://farm8.staticflickr.com/7697/28693602061_a4ebf5e8fe_z.jpg" />
 </a>
 </span>
 <span class="image">
-<a class="image" href="https://lh4.googleusercontent.com/-zsjH1yutGBU/Uez39yHwi8I/AAAAAAAADOw/FtXf_8CUeRg/s700/tblr-cell-overflow-lo41.png">
-<img src="https://lh4.googleusercontent.com/-zsjH1yutGBU/Uez39yHwi8I/AAAAAAAADOw/FtXf_8CUeRg/s400/tblr-cell-overflow-lo41.png" alt="https://lh4.googleusercontent.com/-zsjH1yutGBU/Uez39yHwi8I/AAAAAAAADOw/FtXf_8CUeRg/s400/tblr-cell-overflow-lo41.png" />
-</a>
-</span></p></div>
-</div>
-<div class="ulist"><ul>
-<li>
-<p>
-document with numbering, where bullets are pictures (<a href="http://cgit.freedesktop.org/libreoffice/core/tree/sw/qa/extras/ooxmlexport/data/i120928.docx">test doc</a>):
-</p>
-</li>
-</ul></div>
-<div align="center">
-<div class="paragraph"><p><span class="image">
-<a class="image" href="https://lh3.googleusercontent.com/-fuMz-_o3h9Y/Uez38WN94YI/AAAAAAAADOE/4m2KvenRodM/s200/numpic-lo40.png">
-<img src="https://lh3.googleusercontent.com/-fuMz-_o3h9Y/Uez38WN94YI/AAAAAAAADOE/4m2KvenRodM/s200/numpic-lo40.png" alt="https://lh3.googleusercontent.com/-fuMz-_o3h9Y/Uez38WN94YI/AAAAAAAADOE/4m2KvenRodM/s200/numpic-lo40.png" />
+<a class="image" href="https://www.flickr.com/photos/vmiklos/28153088604/in/album-72157669002649523/">
+<img src="https://farm9.staticflickr.com/8832/28153088604_05aa51d631_z.jpg" alt="https://farm9.staticflickr.com/8832/28153088604_05aa51d631_z.jpg" />
 </a>
 </span>
 <span class="image">
-<a class="image" href="https://lh6.googleusercontent.com/-MG9E8l0FVWI/Uez382lWcHI/AAAAAAAADOU/aLNZI8GoEBI/s200/numpic-lo41.png">
-<img src="https://lh6.googleusercontent.com/-MG9E8l0FVWI/Uez382lWcHI/AAAAAAAADOU/aLNZI8GoEBI/s200/numpic-lo41.png" alt="https://lh6.googleusercontent.com/-MG9E8l0FVWI/Uez382lWcHI/AAAAAAAADOU/aLNZI8GoEBI/s200/numpic-lo41.png" />
+<a class="image" href="https://www.flickr.com/photos/vmiklos/28155556233/in/album-72157669002649523/">
+<img src="https://farm9.staticflickr.com/8612/28155556233_c05dbab885_z.jpg" alt="https://farm9.staticflickr.com/8612/28155556233_c05dbab885_z.jpg" />
 </a>
 </span></p></div>
 </div>
-<div class="ulist"><ul>
-<li>
-<p>
-document with watermark (<a href="http://cgit.freedesktop.org/libreoffice/core/tree/sw/qa/extras/ooxmlimport/data/watermark.docx">test doc</a>):
-</p>
-</li>
-</ul></div>
-<div align="center">
-<div class="paragraph"><p><span class="image">
-<a class="image" href="https://lh5.googleusercontent.com/-mM-RGgEX2M8/Uez3-Gh8CMI/AAAAAAAADPA/1QqJeg4atiM/s600/watermark-lo40.png">
-<img src="https://lh5.googleusercontent.com/-mM-RGgEX2M8/Uez3-Gh8CMI/AAAAAAAADPA/1QqJeg4atiM/s400/watermark-lo40.png" alt="https://lh5.googleusercontent.com/-mM-RGgEX2M8/Uez3-Gh8CMI/AAAAAAAADPA/1QqJeg4atiM/s400/watermark-lo40.png" />
-</a>
-</span>
-<span class="image">
-<a class="image" href="https://lh3.googleusercontent.com/-zaW8P_cvMQM/Uez3-el1Z8I/AAAAAAAADO8/yz-boOrYMLo/s600/watermark-lo41.png">
-<img src="https://lh3.googleusercontent.com/-zaW8P_cvMQM/Uez3-el1Z8I/AAAAAAAADO8/yz-boOrYMLo/s400/watermark-lo41.png" alt="https://lh3.googleusercontent.com/-zaW8P_cvMQM/Uez3-el1Z8I/AAAAAAAADO8/yz-boOrYMLo/s400/watermark-lo41.png" />
-</a>
-</span></p></div>
-</div>
-<div class="paragraph"><p>If you want to try these out yourself, get a
-<a href="http://dev-builds.libreoffice.org/daily/">daily build</a> and play with it! :) If
-something goes wrong, report it to us in the
-<a href="https://www.libreoffice.org/get-help/bug/">Bugzilla</a>, so we can try fix it in
-the next 4.1 bugfix release. And remember, there are lots more improvements
-<a href="http://wiki.documentfoundation.org/ReleaseNotes/4.1">coming</a> in LibreOffice 4.1,
-stay tuned!</p></div>
+<div class="paragraph"><p>További fótók <a href="https://www.flickr.com/photos/vmiklos/albums/72157669002649523">erre</a>.</p></div>
 </div>
 </div>
 
@@ -301,127 +288,10 @@ stay tuned!</p></div>
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/az-elveszett-cirkalo.html">Az elveszett cirkáló</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/lo-hackfest-munich-2012.html">LibreOffice Hackfest in Munich, 2012</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sat 13 July 2013</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://lh3.googleusercontent.com/-BdBuwPzlkZg/UeFVrUMAutI/AAAAAAAADNA/gdbxMY5yA0o/s500/B991858.JPG">
-<img src="https://lh3.googleusercontent.com/-BdBuwPzlkZg/UeFVrUMAutI/AAAAAAAADNA/gdbxMY5yA0o/s400/B991858.JPG" alt="https://lh3.googleusercontent.com/-BdBuwPzlkZg/UeFVrUMAutI/AAAAAAAADNA/gdbxMY5yA0o/s400/B991858.JPG" />
-</a>
-</div>
-</div>
-<div class="paragraph"><p>Ezt még a hamburgi utazás alatt olvastam, azon prózai okból, hogy itt
-árválkodott a könyvespolcon, és emlékeztem, hogy repülőn sokkal egyszerűbb
-papír könyvet olvasni, mint hallgatni, hogy fel- és leszállás alatt még ebookot
-se szabad olvasni. ;-)</p></div>
-<div class="paragraph"><p>(<a href="http://bookline.hu/product/home.action?id=110938&amp;type=22">bookline</a>)</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/suse-hu-conf-2013.html">SUSE Conference 2013 @ Budapest</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Fri 28 June 2013</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://lh5.googleusercontent.com/-hCCgdACtL7Y/Ucw5OlY2yhI/AAAAAAAADIc/3oCgDUxEZWc/s2560/IMG_20130627_125531.jpg">
-<img src="https://lh5.googleusercontent.com/-hCCgdACtL7Y/Ucw5OlY2yhI/AAAAAAAADIc/3oCgDUxEZWc/s400/IMG_20130627_125531.jpg" alt="https://lh5.googleusercontent.com/-hCCgdACtL7Y/Ucw5OlY2yhI/AAAAAAAADIc/3oCgDUxEZWc/s400/IMG_20130627_125531.jpg" />
-</a>
-</div>
-</div>
-<div class="paragraph"><p>Yesterday Novell Hungary organized
-<a href="https://www.suse.com/hu-hu/events/suseconf2013/">SUSE Conference 2013</a> here at
-Budapest. As you can see above Andras held a LibreOffice-related presentation
-there&#8201;&#8212;&#8201;and we also ran a LibreOffice booth. As it was requested, we set up
-quite some
-(<a href="http://dev-builds.libreoffice.org/daily/master/Android-ARM@24-Bytemark-Hosting/current/">publicly
-available</a>) Android demos:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-Impress remote
-</p>
-</li>
-<li>
-<p>
-LibreOffice4Android (document viewer) on my phone (I needed a
-  <a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=015e1b84446077df9c226cf87c19bef056dcf3b7">fix</a>
-to get it running on a non-tablet, though)
-</p>
-</li>
-<li>
-<p>
-The desktop app on a tablet&#8201;&#8212;&#8201;thanks goes to the organizers who provided that for us!
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>About 200 visitors attended the conference, which counts as a great success in
-this category. :-)</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/az-antarktisz-meghoditasa.html">Az Antarktisz meghódítása</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Thu 20 June 2013</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh4.googleusercontent.com/-ztEsY37L07k/UcNaffE_IkI/AAAAAAAAC1Y/BQWzwjnFt7s/s350/1111001088412.JPG" alt="https://lh4.googleusercontent.com/-ztEsY37L07k/UcNaffE_IkI/AAAAAAAAC1Y/BQWzwjnFt7s/s350/1111001088412.JPG" />
-</div>
-</div>
-<div class="paragraph"><p>Ugyan ez konkrétan nem egymászó könyv, azért majdnem. Az egyik szerző
-<a href="http://en.wikipedia.org/wiki/Edmund_Hillary">Edmund Hillary</a>, a Mount Everest
-egyik első megmászója. A félreértések elkerülése végett, ez a könyv nem a
-Déli-sark meghódításáról szól, azt már megtették a Norvégok korábban. A könyv
-azt a brit expedíciót írja le, akik először keltek át a kontinensen&#8201;&#8212;&#8201;erős
-technikai háttérrel. Elsőre ez talán nem is tűnik olyan nagy teljesítménynek,
-de a könyv során kiderül, hogy azért ez koránt sem volt triviális&#8230;</p></div>
-<div class="paragraph"><p>(<a href="http://bookline.hu/product/home!execute.action?&amp;id=2101107487&amp;type=10">bookline</a>)</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/lo-hamburg-hackfest-2013.html">LibreOffice Hamburg Hackfest 2013</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Tue 18 June 2013</p>
+    <p>Posted on: Mon 26 November 2012</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 2 minutes</p>
@@ -431,91 +301,83 @@ de a könyv során kiderül, hogy azért ez koránt sem volt triviális&#8230;</
 <div class="sectionbody">
 <div class="imageblock" style="text-align:center;">
 <div class="content">
-<a class="image" href="https://lh6.googleusercontent.com/-VWFdyXddsj4/UcAmItG7LdI/AAAAAAAAC0M/aduHC_-oanA/s714/HHHackfest2013.png">
-<img src="https://lh6.googleusercontent.com/-VWFdyXddsj4/UcAmItG7LdI/AAAAAAAAC0M/aduHC_-oanA/s400/HHHackfest2013.png" alt="https://lh6.googleusercontent.com/-VWFdyXddsj4/UcAmItG7LdI/AAAAAAAAC0M/aduHC_-oanA/s400/HHHackfest2013.png" />
+<a class="image" href="https://lh3.googleusercontent.com/-oCxvARAY6aQ/ULNRD3q8ZTI/AAAAAAAAB3s/wIFkr3bjDZA/s600/MucHackfest2012.png">
+<img src="https://lh3.googleusercontent.com/-oCxvARAY6aQ/ULNRD3q8ZTI/AAAAAAAAB3s/wIFkr3bjDZA/s400/MucHackfest2012.png" alt="https://lh3.googleusercontent.com/-oCxvARAY6aQ/ULNRD3q8ZTI/AAAAAAAAB3s/wIFkr3bjDZA/s400/MucHackfest2012.png" />
 </a>
 </div>
 </div>
-<div class="paragraph"><p>This year, LibreOffice&#8217;s Hamburg hackfest happened last weekend, with more than
-20 attendees. Thanks to the
-<a href="https://wiki.documentfoundation.org/Hackfest/Hamburg2013#Sponsors">sponsors</a>, we
-had free drink and food during the whole hackfest. ;-)</p></div>
-<div class="paragraph"><p>My original plan was to add support for tables inside text frames
-in Writer, when importing from RTF. At the end I managed to do that, though not
-the way I originally wanted to implement that feature. :-)</p></div>
-<div class="paragraph"><p>Here is how this looked with the RTF importer we inherited from OpenOffice.org (LO 3.4),
-and then with the new RTF import filter (LO 3.6):</p></div>
-<div align="center">
-<div class="paragraph"><p><span class="image">
-<a class="image" href="https://lh6.googleusercontent.com/-8ltBBFaWW8E/UcAmQvIrchI/AAAAAAAAC0c/B6-aazoJpm0/s514/rtf-textframe-table-lo34.png">
-<img src="https://lh6.googleusercontent.com/-8ltBBFaWW8E/UcAmQvIrchI/AAAAAAAAC0c/B6-aazoJpm0/s400/rtf-textframe-table-lo34.png" alt="https://lh6.googleusercontent.com/-8ltBBFaWW8E/UcAmQvIrchI/AAAAAAAAC0c/B6-aazoJpm0/s400/rtf-textframe-table-lo34.png" />
-</a>
-</span>
-<span class="image">
-<a class="image" href="https://lh5.googleusercontent.com/-wcelxQuT94k/UcAmQ2uBEHI/AAAAAAAAC0o/wOgnKwhFGJI/s659/rtf-textframe-table-lo36.png">
-<img src="https://lh5.googleusercontent.com/-wcelxQuT94k/UcAmQ2uBEHI/AAAAAAAAC0o/wOgnKwhFGJI/s400/rtf-textframe-table-lo36.png" alt="https://lh5.googleusercontent.com/-wcelxQuT94k/UcAmQ2uBEHI/AAAAAAAAC0o/wOgnKwhFGJI/s400/rtf-textframe-table-lo36.png" />
-</a>
-</span></p></div>
-</div>
-<div class="paragraph"><p>Here is how this looks like in latest master, and how it should look like:</p></div>
-<div align="center">
-<div class="paragraph"><p><span class="image">
-<a class="image" href="https://lh4.googleusercontent.com/-NpZdA5p2ZVI/UcAmQ1cIC8I/AAAAAAAAC0k/fvKJRMvlRFI/s900/rtf-textframe-table-lo42.png">
-<img src="https://lh4.googleusercontent.com/-NpZdA5p2ZVI/UcAmQ1cIC8I/AAAAAAAAC0k/fvKJRMvlRFI/s400/rtf-textframe-table-lo42.png" alt="https://lh4.googleusercontent.com/-NpZdA5p2ZVI/UcAmQ1cIC8I/AAAAAAAAC0k/fvKJRMvlRFI/s400/rtf-textframe-table-lo42.png" />
-</a>
-</span>
-<span class="image">
-<a class="image" href="https://lh6.googleusercontent.com/-5s9O3RJD0MI/UcAmRfFQBMI/AAAAAAAAC0s/uS47fqc-QZU/s687/rtf-textframe-table-word2007.png">
-<img src="https://lh6.googleusercontent.com/-5s9O3RJD0MI/UcAmRfFQBMI/AAAAAAAAC0s/uS47fqc-QZU/s400/rtf-textframe-table-word2007.png" alt="https://lh6.googleusercontent.com/-5s9O3RJD0MI/UcAmRfFQBMI/AAAAAAAAC0s/uS47fqc-QZU/s400/rtf-textframe-table-word2007.png" />
-</a>
-</span></p></div>
-</div>
-<div class="paragraph"><p>Other than that, there were a few other topics I hacked on:</p></div>
+<div class="paragraph"><p>During the weekend I was in Munich to visit our second LibreOffice hackfest
+this year. The archivements are detailed
+<a href="http://wiki.documentfoundation.org/Hackfest/Munich2012#Achievements">here</a>. Here
+are a few interestings details I learned during this event:</p></div>
 <div class="ulist"><ul>
 <li>
 <p>
-various additional fixes for
-  <a href="https://bugs.freedesktop.org/show_bug.cgi?id=58819">fdo#58819</a>, so watermark
-  is exported (with correct size, position, rotation, opacity, etc.), and
-  reasonably imported
+Laszlo explained on the train to Munich that single line spacing is 15% of
+  the font size, by definition. That finally explains why it is that the height
+  of a 12pt single-line paragraph in Writer is not 240 but 276 twips.
 </p>
 </li>
 <li>
 <p>
-the last character of the git hash is no longer missing from the about dialog
-  (<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=216fe5cf3c41713fa2a11731e4c3d514236b2480">commit</a>)
+Finally Michael motivated (and also helped!) me to improve the copy&amp;paste in
+  the new RTF filter, so it seems that removing the old filter completely is
+  near.
 </p>
 </li>
 <li>
 <p>
-number of leaking files when running the writer filter tests is now down to 2
-  from 527
-  (<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=c03a1e46460e4255d7709df9ba8147947f66acfb">commit</a>)
+The ability to sign each other&#8217;s gpg key was a great idea. I didn&#8217;t know too
+  much about this topic, so I read up on this
+  <a href="http://www.phillylinux.org/keys/terminal.html">here</a>. (Additionally, the
+  <code>gpg-key2ps</code> command from <code>signing-party</code>&#8201;&#8212;&#8201;yes, there is such a package!&#8201;&#8212;&#8201;  is useful.)
 </p>
 </li>
 <li>
 <p>
-RTF import of text frame&#8217;s AutoSize property
-  (<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=aa0f3ca1cd285e8ffbc10de5510d447a72de980a">commit</a>)
-</p>
-</li>
-<li>
-<p>
-File &#8594; Properties &#8594; Security &#8594; Record Changes is now imported and exported
-  in the RTF filter
-  (<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=ae85b56a9a18657a57fd5033faff34e7ee4ff2f8">commit</a>)
-</p>
-</li>
-<li>
-<p>
-finally added UI for fine dashing&#8201;&#8212;&#8201;so not only existing documents are
-  rendered correctly, but you can create such documents as well
-  (<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=4c3d2dcdadbcb8f2ffc2caab07d50a286341df96">commit</a>)
+We set up a nice icecream farm from the laptops, one more aspect that boosted
+  our productivity.
 </p>
 </li>
 </ul></div>
-<div class="paragraph"><p>You can see some photos <a href="https://www.flickr.com/photos/vmiklos/albums/72157669575452373">here</a>.</p></div>
-<div class="paragraph"><p>Last, but not at least, thank you Eike and Bjoern for organizing this event! :-)</p></div>
+<div class="paragraph"><p>Speaking about icecream&#8201;&#8212;&#8201;there were two reasons why I didn&#8217;t really use it:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+it required re-configuring your build tree (<code>--enable-icecream</code>)
+</p>
+</li>
+<li>
+<p>
+it required shutting down your firewall
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>It turns out none of this is really needed, so let me share the way to avoid
+these problems:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+look into the
+  <a href="https://en.opensuse.org/index.php?title=Icecream&amp;oldid=53112#Firewall">wiki</a>, you only need to open a few ports, even broadcasting/auto-discovery works with a started firewall
+</p>
+</li>
+<li>
+<p>
+use <code>CCACHE_PREFIX="icecc" make build-nocheck PARALLELISM=30</code> to enable icecream for a single make run
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Additionally, if you run openSUSE 12.2, by default the daemon reports that the
+box can&#8217;t compile x86_64 binaries (probably it hasn&#8217;t been updated to deal with
+the 3.0 kernel or something), a quick workaround is to install Lubos' updated
+package:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>zypper -p http://download.opensuse.org/repositories/home:/llunak:/clang/openSUSE_12.2/ in icecream-0.9.7-64.1s.x86_64</code></pre>
+</div></div>
+<div class="paragraph"><p>Thanks for the organizers, once again this hackfest turned out to be really useful! :)</p></div>
+<div class="paragraph"><p>As usual, some pictures are <a href="https://www.flickr.com/photos/vmiklos/albums/72157670949585810">available</a>.</p></div>
 </div>
 </div>
 
@@ -524,10 +386,254 @@ finally added UI for fine dashing&#8201;&#8212;&#8201;so not only existing docum
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/szszk-2013.html">Free Software Conference and Exhibition 2013</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/lo-ooxml-improvements.html">LibreOffice OOXML improvements in Writer</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sun 09 June 2013</p>
+    <p>Posted on: Fri 16 November 2012</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>It&#8217;s possible you noticed that in each LibreOffice release notes, we have a
+line saying something like "improved DOCX support", but is rarely explained in
+detail. I&#8217;m posting here a few screenshots to correct this. The first series is
+a list of import fixes which are already available in our shipping 3.6 release.
+In each case I provide a test document, and a screenshot how it looked like
+with LibreOffice 3.3 and how it looks like with LibreOffice 3.6 today. Click on
+the images to get a larger image:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+document with a checked checkbox (<a href="http://people.freedesktop.org/~vmiklos/2012/docx-demo/3.6/checkbox.docx">test doc</a>):
+</p>
+</li>
+</ul></div>
+<div align="center">
+<div class="paragraph"><p><span class="image">
+<a class="image" href="http://people.freedesktop.org/~vmiklos/2012/docx-demo/3.6/checkbox-lo33.png">
+<img src="http://people.freedesktop.org/~vmiklos/2012/docx-demo/3.6/checkbox-lo33.t.png" alt="http://people.freedesktop.org/~vmiklos/2012/docx-demo/3.6/checkbox-lo33.t.png" />
+</a>
+</span>
+<span class="image">
+<a class="image" href="http://people.freedesktop.org/~vmiklos/2012/docx-demo/3.6/checkbox-lo36.png">
+<img src="http://people.freedesktop.org/~vmiklos/2012/docx-demo/3.6/checkbox-lo36.t.png" alt="http://people.freedesktop.org/~vmiklos/2012/docx-demo/3.6/checkbox-lo36.t.png" />
+</a>
+</span></p></div>
+</div>
+<div class="ulist"><ul>
+<li>
+<p>
+document with contextual spacing enabled for the numbering (<a href="http://people.freedesktop.org/~vmiklos/2012/docx-demo/3.6/contextual-spacing.docx">test doc</a>):
+</p>
+</li>
+</ul></div>
+<div align="center">
+<div class="paragraph"><p><span class="image">
+<a class="image" href="http://people.freedesktop.org/~vmiklos/2012/docx-demo/3.6/contextual-spacing-lo33.png">
+<img src="http://people.freedesktop.org/~vmiklos/2012/docx-demo/3.6/contextual-spacing-lo33.t.png" alt="http://people.freedesktop.org/~vmiklos/2012/docx-demo/3.6/contextual-spacing-lo33.t.png" />
+</a>
+</span>
+<span class="image">
+<a class="image" href="http://people.freedesktop.org/~vmiklos/2012/docx-demo/3.6/contextual-spacing-lo36.png">
+<img src="http://people.freedesktop.org/~vmiklos/2012/docx-demo/3.6/contextual-spacing-lo36.t.png" alt="http://people.freedesktop.org/~vmiklos/2012/docx-demo/3.6/contextual-spacing-lo36.t.png" />
+</a>
+</span></p></div>
+</div>
+<div class="ulist"><ul>
+<li>
+<p>
+document with a field that has a custom font size (<a href="http://people.freedesktop.org/~vmiklos/2012/docx-demo/3.6/field-fsize.docx">test doc</a>):
+</p>
+</li>
+</ul></div>
+<div align="center">
+<div class="paragraph"><p><span class="image">
+<a class="image" href="http://people.freedesktop.org/~vmiklos/2012/docx-demo/3.6/field-fsize-lo33.png">
+<img src="http://people.freedesktop.org/~vmiklos/2012/docx-demo/3.6/field-fsize-lo33.t.png" alt="http://people.freedesktop.org/~vmiklos/2012/docx-demo/3.6/field-fsize-lo33.t.png" />
+</a>
+</span>
+<span class="image">
+<a class="image" href="http://people.freedesktop.org/~vmiklos/2012/docx-demo/3.6/field-fsize-lo36.png">
+<img src="http://people.freedesktop.org/~vmiklos/2012/docx-demo/3.6/field-fsize-lo36.t.png" alt="http://people.freedesktop.org/~vmiklos/2012/docx-demo/3.6/field-fsize-lo36.t.png" />
+</a>
+</span></p></div>
+</div>
+<div class="ulist"><ul>
+<li>
+<p>
+document with a SmartArt inside (<a href="http://people.freedesktop.org/~vmiklos/2012/docx-demo/3.6/smartart.docx">test doc</a>):
+</p>
+</li>
+</ul></div>
+<div align="center">
+<div class="paragraph"><p><span class="image">
+<a class="image" href="http://people.freedesktop.org/~vmiklos/2012/docx-demo/3.6/smartart-lo33.png">
+<img src="http://people.freedesktop.org/~vmiklos/2012/docx-demo/3.6/smartart-lo33.t.png" alt="http://people.freedesktop.org/~vmiklos/2012/docx-demo/3.6/smartart-lo33.t.png" />
+</a>
+</span>
+<span class="image">
+<a class="image" href="http://people.freedesktop.org/~vmiklos/2012/docx-demo/3.6/smartart-lo36.png">
+<img src="http://people.freedesktop.org/~vmiklos/2012/docx-demo/3.6/smartart-lo36.t.png" alt="http://people.freedesktop.org/~vmiklos/2012/docx-demo/3.6/smartart-lo36.t.png" />
+</a>
+</span></p></div>
+</div>
+<div class="ulist"><ul>
+<li>
+<p>
+document with lots of VML shapes (<a href="http://people.freedesktop.org/~vmiklos/2012/docx-demo/3.6/vml.docx">test doc</a>):
+</p>
+</li>
+</ul></div>
+<div align="center">
+<div class="paragraph"><p><span class="image">
+<a class="image" href="http://people.freedesktop.org/~vmiklos/2012/docx-demo/3.6/vml-lo33.png">
+<img src="http://people.freedesktop.org/~vmiklos/2012/docx-demo/3.6/vml-lo33.t.png" alt="http://people.freedesktop.org/~vmiklos/2012/docx-demo/3.6/vml-lo33.t.png" />
+</a>
+</span>
+<span class="image">
+<a class="image" href="http://people.freedesktop.org/~vmiklos/2012/docx-demo/3.6/vml-lo36.png">
+<img src="http://people.freedesktop.org/~vmiklos/2012/docx-demo/3.6/vml-lo36.t.png" alt="http://people.freedesktop.org/~vmiklos/2012/docx-demo/3.6/vml-lo36.t.png" />
+</a>
+</span></p></div>
+</div>
+<div class="ulist"><ul>
+<li>
+<p>
+document produced by Microsoft Office 2010 (<a href="http://people.freedesktop.org/~vmiklos/2012/docx-demo/3.6/mso-2010.docx">test doc</a>, thanks Fridrich!):
+</p>
+</li>
+</ul></div>
+<div align="center">
+<div class="paragraph"><p><span class="image">
+<a class="image" href="http://people.freedesktop.org/~vmiklos/2012/docx-demo/3.6/mso-2010-lo33.png">
+<img src="http://people.freedesktop.org/~vmiklos/2012/docx-demo/3.6/mso-2010-lo33.t.png" alt="http://people.freedesktop.org/~vmiklos/2012/docx-demo/3.6/mso-2010-lo33.t.png" />
+</a>
+</span>
+<span class="image">
+<a class="image" href="http://people.freedesktop.org/~vmiklos/2012/docx-demo/3.6/mso-2010-lo36.png">
+<img src="http://people.freedesktop.org/~vmiklos/2012/docx-demo/3.6/mso-2010-lo36.t.png" alt="http://people.freedesktop.org/~vmiklos/2012/docx-demo/3.6/mso-2010-lo36.t.png" />
+</a>
+</span></p></div>
+</div>
+<div class="paragraph"><p>Now let&#8217;s also have a look at some OOXML features which will be imported
+correctly in our upcoming 4.0 release:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+document with commented text ranges (<a href="http://people.freedesktop.org/~vmiklos/2012/docx-demo/4.0/comment-textrange.docx">test doc</a>):
+</p>
+</li>
+</ul></div>
+<div align="center">
+<div class="paragraph"><p><span class="image">
+<a class="image" href="http://people.freedesktop.org/~vmiklos/2012/docx-demo/4.0/comment-textrange-lo33.png">
+<img src="http://people.freedesktop.org/~vmiklos/2012/docx-demo/4.0/comment-textrange-lo33.t.png" alt="http://people.freedesktop.org/~vmiklos/2012/docx-demo/4.0/comment-textrange-lo33.t.png" />
+</a>
+</span>
+<span class="image">
+<a class="image" href="http://people.freedesktop.org/~vmiklos/2012/docx-demo/4.0/comment-textrange-lo4.png">
+<img src="http://people.freedesktop.org/~vmiklos/2012/docx-demo/4.0/comment-textrange-lo4.t.png" alt="http://people.freedesktop.org/~vmiklos/2012/docx-demo/4.0/comment-textrange-lo4.t.png" />
+</a>
+</span></p></div>
+</div>
+<div class="ulist"><ul>
+<li>
+<p>
+document with a floating table (<a href="http://people.freedesktop.org/~vmiklos/2012/docx-demo/4.0/floating-table.docx">test doc</a>):
+</p>
+</li>
+</ul></div>
+<div align="center">
+<div class="paragraph"><p><span class="image">
+<a class="image" href="http://people.freedesktop.org/~vmiklos/2012/docx-demo/4.0/floating-table-lo33.png">
+<img src="http://people.freedesktop.org/~vmiklos/2012/docx-demo/4.0/floating-table-lo33.t.png" alt="http://people.freedesktop.org/~vmiklos/2012/docx-demo/4.0/floating-table-lo33.t.png" />
+</a>
+</span>
+<span class="image">
+<a class="image" href="http://people.freedesktop.org/~vmiklos/2012/docx-demo/4.0/floating-table-lo4.png">
+<img src="http://people.freedesktop.org/~vmiklos/2012/docx-demo/4.0/floating-table-lo4.t.png" alt="http://people.freedesktop.org/~vmiklos/2012/docx-demo/4.0/floating-table-lo4.t.png" />
+</a>
+</span></p></div>
+</div>
+<div class="ulist"><ul>
+<li>
+<p>
+document with ink annotations (<a href="http://people.freedesktop.org/~vmiklos/2012/docx-demo/4.0/ink.docx">test doc</a>, thanks Eilidh!):
+</p>
+</li>
+</ul></div>
+<div align="center">
+<div class="paragraph"><p><span class="image">
+<a class="image" href="http://people.freedesktop.org/~vmiklos/2012/docx-demo/4.0/ink-lo33.png">
+<img src="http://people.freedesktop.org/~vmiklos/2012/docx-demo/4.0/ink-lo33.t.png" alt="http://people.freedesktop.org/~vmiklos/2012/docx-demo/4.0/ink-lo33.t.png" />
+</a>
+</span>
+<span class="image">
+<a class="image" href="http://people.freedesktop.org/~vmiklos/2012/docx-demo/4.0/ink-lo4.png">
+<img src="http://people.freedesktop.org/~vmiklos/2012/docx-demo/4.0/ink-lo4.t.png" alt="http://people.freedesktop.org/~vmiklos/2012/docx-demo/4.0/ink-lo4.t.png" />
+</a>
+</span></p></div>
+</div>
+<div class="ulist"><ul>
+<li>
+<p>
+document with an OLE object inside a rectangle (<a href="http://people.freedesktop.org/~vmiklos/2012/docx-demo/4.0/ole-in-rectangle.docx">test doc</a>):
+</p>
+</li>
+</ul></div>
+<div align="center">
+<div class="paragraph"><p><span class="image">
+<a class="image" href="http://people.freedesktop.org/~vmiklos/2012/docx-demo/4.0/ole-in-rectangle-lo33.png">
+<img src="http://people.freedesktop.org/~vmiklos/2012/docx-demo/4.0/ole-in-rectangle-lo33.t.png" alt="http://people.freedesktop.org/~vmiklos/2012/docx-demo/4.0/ole-in-rectangle-lo33.t.png" />
+</a>
+</span>
+<span class="image">
+<a class="image" href="http://people.freedesktop.org/~vmiklos/2012/docx-demo/4.0/ole-in-rectangle-lo4.png">
+<img src="http://people.freedesktop.org/~vmiklos/2012/docx-demo/4.0/ole-in-rectangle-lo4.t.png" alt="http://people.freedesktop.org/~vmiklos/2012/docx-demo/4.0/ole-in-rectangle-lo4.t.png" />
+</a>
+</span></p></div>
+</div>
+<div class="ulist"><ul>
+<li>
+<p>
+document with an inline image with custom margins (<a href="http://people.freedesktop.org/~vmiklos/2012/docx-demo/4.0/wp-inline-margins.docx">test doc</a>):
+</p>
+</li>
+</ul></div>
+<div align="center">
+<div class="paragraph"><p><span class="image">
+<a class="image" href="http://people.freedesktop.org/~vmiklos/2012/docx-demo/4.0/wp-inline-margins-lo33.png">
+<img src="http://people.freedesktop.org/~vmiklos/2012/docx-demo/4.0/wp-inline-margins-lo33.t.png" alt="http://people.freedesktop.org/~vmiklos/2012/docx-demo/4.0/wp-inline-margins-lo33.t.png" />
+</a>
+</span>
+<span class="image">
+<a class="image" href="http://people.freedesktop.org/~vmiklos/2012/docx-demo/4.0/wp-inline-margins-lo4.png">
+<img src="http://people.freedesktop.org/~vmiklos/2012/docx-demo/4.0/wp-inline-margins-lo4.t.png" alt="http://people.freedesktop.org/~vmiklos/2012/docx-demo/4.0/wp-inline-margins-lo4.t.png" />
+</a>
+</span></p></div>
+</div>
+<div class="paragraph"><p>If you want to try these out yourself, get a
+<a href="http://dev-builds.libreoffice.org/daily/">daily build</a> and play with it! :) If
+something goes wrong, report it to us in the
+<a href="https://www.libreoffice.org/get-help/bug/">Bugzilla</a>, so we can try fix it
+before 4.0 is released. And remember, there are lots more improvements
+<a href="http://wiki.documentfoundation.org/ReleaseNotes/4.0">coming</a> in LibreOffice 4.0,
+stay tuned!</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/lo-rtfimport-drawingobjects.html">LibreOffice RTF import Drawing Objects improvements</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Sat 10 November 2012</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -535,36 +641,29 @@ finally added UI for fine dashing&#8201;&#8212;&#8201;so not only existing docum
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="http://konf.fsf.hu/cgis/ossc/2013/">
-<img src="https://lh6.googleusercontent.com/-uoQeGkRqjrA/UbRVYVbk25I/AAAAAAAACzE/sOVvcUNZpc4/s400/konf2013_logo_web.png" alt="https://lh6.googleusercontent.com/-uoQeGkRqjrA/UbRVYVbk25I/AAAAAAAACzE/sOVvcUNZpc4/s400/konf2013_logo_web.png" />
+<div align="center">
+<div class="paragraph"><p><span class="image">
+<a class="image" href="https://lh6.googleusercontent.com/-mckhq4D5DG8/UJ4m54N4GoI/AAAAAAAAB1k/QwaK6eXTFBo/s800/fdo42407-lo34.png">
+<img src="https://lh6.googleusercontent.com/-mckhq4D5DG8/UJ4m54N4GoI/AAAAAAAAB1k/QwaK6eXTFBo/s400/fdo42407-lo34.png" alt="https://lh6.googleusercontent.com/-mckhq4D5DG8/UJ4m54N4GoI/AAAAAAAAB1k/QwaK6eXTFBo/s400/fdo42407-lo34.png" />
 </a>
+</span>
+<span class="image">
+<a class="image" href="https://lh6.googleusercontent.com/-_9nMd0soa8E/UJ4m9vQhMiI/AAAAAAAAB1s/kc7I5YUbGnc/s800/fdo42407-master.png">
+<img src="https://lh6.googleusercontent.com/-_9nMd0soa8E/UJ4m9vQhMiI/AAAAAAAAB1s/kc7I5YUbGnc/s400/fdo42407-master.png" alt="https://lh6.googleusercontent.com/-_9nMd0soa8E/UJ4m9vQhMiI/AAAAAAAAB1s/kc7I5YUbGnc/s400/fdo42407-master.png" />
+</a>
+</span></p></div>
 </div>
-</div>
-<div class="paragraph"><p>The Free Software Conference and Exhibition 2013&#8201;&#8212;&#8201;organized by FSF.hu&#8201;&#8212;&#8201;was held yesterday @
-Budapest. I gave a talk about hacking on Writer file format problems
-(<a href="https://speakerdeck.com/vmiklos/libreoffice-writer-fajlformatum-problemak-es-megoldasuk">slides</a>), this time in Hungarian.</p></div>
-<div class="paragraph"><p>After the talk I also held a one-hour workshop, showing how to start hacking on LO in practice:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-first we did a build (using package manager to install dependencies, git clone, autogen, make, make dev-install)
-</p>
-</li>
-<li>
-<p>
-then we did the <a href="http://wiki.openoffice.org/wiki/Hacking#My_first_hack">vcl Menu::SetItemText() hack</a>&#8201;&#8212;&#8201;actually using <code>comphelper::string::reverseString()</code>
-</p>
-</li>
-<li>
-<p>
-finally I spent some time explaining a few bugfixes from the recent past: I explained a <a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=a22ef599bd3fdcf0bd5c3616aa566a5922624ff3">VML import problem</a>, an <a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=3d4fef85d05269e613316a7af6245f05d207d76e">RTF import problem</a>, a <a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=4144cd5a851466778004af9de98dbcfb019067bb">WW8 export mismerge</a>, finally a <a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=f06cc552a0699f7c2c34db981e77d4c8efe5e9e7">WW8 import issue</a>
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>We (with Andras Timar and Tamas Zolnai) also ran the LibreOffice booth. This
-year speakers got a free t-shirt and lunch, thanks for the organizers! :)</p></div>
+<div class="paragraph"><p>It all started with <a href="https://bugs.freedesktop.org/show_bug.cgi?id=42407">this
+bugreport</a> about a year ago. RTF has two different markups to describe shapes.
+The old one (used till Word 6.0) is called Drawing Objects, the new one talks
+about Shapes. The first picture shows the "support" for this syntax in
+LibreOffice 3.4, and the situation did not change with my RTF import rework, as
+I wasn&#8217;t aware of any document still using this old syntax. So when I got this
+bugreport, I knew it&#8217;ll take some time to produce the correct layout, but now
+during the LibreOffice conference I spent quite some time on this, and at the
+end even the Hebrew text is imported correctly. ;-)</p></div>
+<div class="paragraph"><p>Thanks to Lior who politely nagged me from time to time, this is now available
+on master (see the second picture), which will become LibreOffice 4.0.</p></div>
 </div>
 </div>
 
@@ -573,134 +672,121 @@ year speakers got a free t-shirt and lunch, thanks for the organizers! :)</p></d
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/balaton-maraton-2013.html">Balaton Maraton 2013</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/lo-suselabs-conf.html">LibreOffice / openSUSE Conference 2012 in Berlin / Prague</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Mon 03 June 2013</p>
+    <p>Posted on: Sat 27 October 2012</p>
   </div>
   <div class="article_readtime">
-    <p>Estimated read time: 3 minutes</p>
+    <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<div class="paragraph"><p>Idén is volt Balaton Maraton (a tizenhatodik, nekem a negyedik), sikerült idén
-is teljesíteni a szintidőt, sőt&#8230;  de ne szaladjunk ennyire előre.</p></div>
+<div align="center">
+<div class="paragraph"><p><span class="image">
+<a class="image" href="https://www.flickr.com/photos/vmiklos/28465865080/in/album-72157671111229062/">
+<img src="https://farm9.staticflickr.com/8575/28465865080_80cb41ed48_z.jpg" alt="https://farm9.staticflickr.com/8575/28465865080_80cb41ed48_z.jpg" />
+</a>
+</span>
+<span class="image">
+<a class="image" href="https://www.flickr.com/photos/vmiklos/28718259736/in/album-72157671111229062/">
+<img src="https://farm9.staticflickr.com/8712/28718259736_633bbdebda_z.jpg" alt="https://farm9.staticflickr.com/8712/28718259736_633bbdebda_z.jpg" />
+</a>
+</span></p></div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_felkészülés">Felkészülés</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Idén igyekeztem a korábbi évek gyakorlatával ellentétben egy kicsit
-tudatosabban készülni. Így került sor a következő túrákra:</p></div>
+<div class="paragraph"><p>I spent the last two weeks on two conferences:</p></div>
 <div class="ulist"><ul>
 <li>
 <p>
-április 7: Pilis, 126 km (<a href="https://vmiklos.hu/blog/fehervasarnap.html">erről már írtam</a>)
-</p>
-</li>
-<li>
-<p>
-április 14: <a href="https://vmiklos.hu/blog/godollo-30.html">Gödöllő K30</a>, 102 km
-  (<a href="https://maps.google.com/maps?q=http://vmiklos.hu/gps/2013-04-14.kml">GPS
-  track</a>, a kmóra ezeket mérte: idő 4h27m11s, átlag 22.8 km/h, max 45.7 km/h)
-</p>
-</li>
-<li>
-<p>
-április 27: <a href="https://vmiklos.hu/blog/visegrad.html">Dunakanyar</a>, 125 km
-  (<a href="https://maps.google.com/maps?q=http://vmiklos.hu/gps/2013-04-27.kml">GPS
-  track</a>, a kmóra ezeket mérte: idő 5h33m29s, átlag 22.4 km/h, max 37.0 km/h)
-</p>
-</li>
-<li>
-<p>
-május 4: Ráckeve, 105 km
-  (<a href="https://maps.google.com/maps?q=http://vmiklos.hu/gps/2013-05-04.kml">GPS
-track</a>, a kmóra ezeket mérte: idő 4h31m31s, átlag 23.1 km/h, max 31.8 km/h)
-</p>
-</li>
-<li>
-<p>
-május 27: <a href="https://vmiklos.hu/blog/godollo-170.html">Gödöllő K100</a>, 168 km
-  (<a href="https://maps.google.com/maps?q=http://vmiklos.hu/gps/2013-05-25.kml">GPS
-  track</a>, a kmóra ezeket mérte: idő 7h35m3s, átlag 22.0 km/h, max 51.4 km/h)
+LibreOffice Conference in Berlin, where I <a href="https://speakerdeck.com/vmiklos/how-to-add-a-new-writer-feature">gave a talk</a>
 </p>
 </li>
 </ul></div>
-<div class="paragraph"><p>Ez utóbbi 4 túra valahogy majdnem mindig az utolsó pillanatban dőlt el, így
-végül egyedül mentem. A K30/K100 útvonalakon szoktak szervezett versenyt is
-csapni, korábban így jártam ezeken a helyeken, de most nem akartam
-alkalmazkodni az általuk kitalált időpontokhoz. Sőt, a K100 útvonalán jól
-látható, hogy Vácduka és Rád között van egy gyalog (meg persze MTB-vel :-) )
-járható út, amit ki is használtam, egy felesleges kerülőt így megspórolva.</p></div>
-<div class="paragraph"><p>Lényeg a lényeg, abban a reményben indultam el az idei maratonra, hogy
-reméltem, sikerül javítani a korábbi időkön.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_a_maraton">A maraton</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Innentől felpörögtek az események: szokás szerint a rajtnál a depóból nem
-indulhattunk el pontban 9:00-kor, mivel akkor még csak a verseny indul.
-Valahogy így festett:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://lh3.googleusercontent.com/-DDoU9LpoyBg/UapBaIw0CEI/AAAAAAAACx4/DBz665H7_Gs/s2560/IMG_20130601_091219.jpg">
-<img src="https://lh3.googleusercontent.com/-DDoU9LpoyBg/UapBaIw0CEI/AAAAAAAACx4/DBz665H7_Gs/s400/IMG_20130601_091219.jpg" alt="https://lh3.googleusercontent.com/-DDoU9LpoyBg/UapBaIw0CEI/AAAAAAAACx4/DBz665H7_Gs/s400/IMG_20130601_091219.jpg" />
-</a>
-</div>
-</div>
-<div class="paragraph"><p>Aztán 9:15-kor lassan elindult a maraton eleje is, az a rész ahol én álltam a
-kmóra szerint 9:22-kor. Mint mindig, most is lassú rajt kellett volna legyen
-Zamárdiig (tilos előzni), de azért ezt nem sokan tartották be. Ugyanezen a
-szakaszon szoktak jönni a sajtófotósok és végigvillantanak sok-sok embert; LGee
-ki is keresett engem:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="http://www.velo.hu/kepek/galeria/1046/xvi_balaton_maraton_tour_de_pelso_2013__78_.jpg">
-<img src="https://lh5.googleusercontent.com/-thkcz7RN0Rw/UazIC-zN35I/AAAAAAAACy0/LKJjZlkmj9Y/s400/xvi_balaton_maraton_tour_de_pelso_2013__78_.jpg" alt="https://lh5.googleusercontent.com/-thkcz7RN0Rw/UazIC-zN35I/AAAAAAAACy0/LKJjZlkmj9Y/s400/xvi_balaton_maraton_tour_de_pelso_2013__78_.jpg" />
-</a>
-</div>
-</div>
-<div class="paragraph"><p>Idén 5 frissítőpont volt:</p></div>
 <div class="ulist"><ul>
 <li>
 <p>
-Fonyód
-</p>
-</li>
-<li>
-<p>
-Keszthely
-</p>
-</li>
-<li>
-<p>
-Badacsony
-</p>
-</li>
-<li>
-<p>
-Balatonfüred
-</p>
-</li>
-<li>
-<p>
-Balatonalmádi
+openSUSE conference in Prague, where I just attended.
 </p>
 </li>
 </ul></div>
-<div class="paragraph"><p>Nagyjából Balatonfürednél (160. km környéke) kezdett el jobban esni az eső, és ennek
-hatására konzekvensen le is állt a kmóra. ;-) Aztán már újra a hetesen
-karikázva a cél előtt kb. 8 km-rel újra bekapcsolt. Így a következőket mérte:
-idő 6h24m42s, táv 168 km, átlag 26.1 km/h, max 49.8 km/h.</p></div>
-<div class="paragraph"><p>Szervezett versenyről lévén szó, a tényleges táv változatlanul 209 km volt, és
-a célba 18h előtt sikerült beérni, ami azt jelenti, hogy sikerült megjárni az
-egészet 8h29m alatt! :-) Összehasonlításképpen, a korábbi években az idők így
-alakultak: 2012-ben 9h45m, 2011-ben 9h51m, 2010 9h29m.</p></div>
-<div class="paragraph"><p>Hivatalos eredmények
-<a href="http://balaton-team.com/images/2013_eredmenyek/maraton13_1.xls">erre</a>.</p></div>
+<div class="paragraph"><p>In general, thanks for the organizers for these fantastic events!</p></div>
+<div class="paragraph"><p>A few fun facts I discovered during the conference:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Armin is referred in the source tree as AW due to&#8230; well, it&#8217;s easy to find out once you heard about OD&#8217;s ORW reincarnation. :-)
+</p>
+</li>
+<li>
+<p>
+<code>solver</code> stands for "solar version", it does not solve anything (read Michael Stahl&#8217;s talk for details)
+</p>
+</li>
+<li>
+<p>
+I just discovered <a href="http://www.openoffice.org/marketing/ooocon2006/presentations/wednesday_d12.odp">this</a> presentation of Thorsten, slide 15 mentions a bug on x86, which is still the case on Android, 6 years later.. (even mentioned in Tor&#8217;s talk)
+</p>
+</li>
+<li>
+<p>
+"Java? I hope that language dies" (Jan Engelhardt, openSUSE Sparc guy)
+</p>
+</li>
+<li>
+<p>
+"Browser: we&#8217;re there; Office: with LibreOffice&#8201;&#8212;&#8201;even if it&#8217;s not perfect, we&#8217;re getting there. Groupware: we&#8217;re weak here" (Georg Greve, Kolab guy)
+</p>
+</li>
+<li>
+<p>
+Don&#8217;t try to change EUR to CZK in the Prague main station, they have ridiculously bad rates
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>A few pictures <a href="https://www.flickr.com/photos/vmiklos/albums/72157671111229062">here</a>.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/lo-firstpage-headerfooter.html">LibreOffice Writer now supports first page header/footer</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Wed 10 October 2012</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>When you want to have pages with different properties in Writer, you use page
+styles. If you want to do something similar in Word, you have to use sections.
+One of the benefits of page styles is that you can use them multiple times, and&#8201;&#8212;&#8201;as usual with styles&#8201;&#8212;&#8201;whenever you change your mind, you can edit just the
+style, and all its uses will be updated consistently. There is, however, one
+feature that Word sections have and we lacked so far: sections can have
+different headers and footers on first, left and right pages. In Writer, you
+had to use two different page styles if you wanted to achieve the same:
+typically named "First page", then a "Default". This was because Writer could
+differentiate only between right and left pages, not first ones.</p></div>
+<div class="paragraph"><p>In LibreOffice 3.7, there will be a new checkbox to "unshare" the header and
+footer of the first page with right/left pages:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="http://wiki.documentfoundation.org/File:Sw-firstpage-headerfooter.png">
+<img src="http://wiki.documentfoundation.org/images/thumb/f/f2/Sw-firstpage-headerfooter.png/400px-Sw-firstpage-headerfooter.png" alt="http://wiki.documentfoundation.org/images/thumb/f/f2/Sw-firstpage-headerfooter.png/400px-Sw-firstpage-headerfooter.png" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>Right now, only ODF filters are updated to open / save this feature (as
+suggested by <a href="https://wiki.oasis-open.org/office/HeaderFooterFirst">this</a> old
+proposal)&#8201;&#8212;&#8201;in later versions it&#8217;s planned to update the DOCX, DOC and RTF
+filters as well, removing quite some code from import filters working around
+this limitation of Writer core.</p></div>
 </div>
 </div>
 

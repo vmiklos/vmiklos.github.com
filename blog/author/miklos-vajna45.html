@@ -59,10 +59,10 @@
 
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/freenx-server-fontpath.html">freenx server fontpath</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/suspend-to-ram-for-more-than-a-week.html">Suspend to RAM for more than a week</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sun 31 May 2009</p>
+    <p>Posted on: Tue 10 February 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -70,11 +70,7 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>I wasted some hours debugging till I found out how to set the fontpath of a freenx-server if not using XFS.</p><p>Basically just need to fine-tune /etc/nxserver/node.conf:</p><p><pre>
-DEFAULT_FONT_PATH=$(echo $(grep -v '^ *#' /etc/X11/xorg.conf | grep FontPath | awk \
-'{print $2}' | sed -r "s/^[\"']|[\"']$//g") | sed 's/ /,/g')
-AGENT_EXTRA_OPTIONS_X="-fp $DEFAULT_FONT_PATH"
-</pre></p><p>Based on <a href="http://lists.kde.org/?l=freenx-knx&amp;m=113735435205146&amp;w=2">this post</a>.</p>
+<p>So I went offline for skiing for about 11 days (Jan 30 06:24:13-Feb 10 00:48:09 to be exact), and I forgot that suspend to RAM works only for a few days. My normal notebook of course switched off. But interesting enough, the iBook still did not switch off, it said the battery even had 5%! :)</p><p>Yeah, I still love this HW.</p>
 </div>
 </div>
 
@@ -83,10 +79,10 @@ AGENT_EXTRA_OPTIONS_X="-fp $DEFAULT_FONT_PATH"
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/scooter-rss.html">scooter rss</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/recording-the-audio-output-of-flash-vide.html">Recording the audio output of flash videos</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Mon 25 May 2009</p>
+    <p>Posted on: Fri 30 January 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -94,7 +90,13 @@ AGENT_EXTRA_OPTIONS_X="-fp $DEFAULT_FONT_PATH"
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-I just noticed that scootertechno.com has no RSS, so I wrote one. Available <a href="http://git.frugalware.org/gitweb/gitweb.cgi?p=vmexam.git;a=tree;f=python/mod_python/rss/scooter;hb=HEAD">here</a>, or in "binary form", <a href="http://frugalware.org/~vmiklos/rss/scooter/scooter.py">here</a>.
+<p>This is useful if you really want to record the audio of a clip, which is not on youtube (you can use youtube-dl there).</p><p>The <a href="http://carthick.wordpress.com/2007/11/26/linux-recording-soundcard-output-using-arecord/">howto</a> explains pretty much everything.</p><p>Here are the amixer parameters I needed:</p><p>amixer cset numid=24,iface=MIXER,name='Capture Source' 5</p><p>~/.asoundrc:</p><p>pcm.copy {
+type plug
+slave {
+pcm hw
+}
+route_policy copy
+}</p><p>record commandline:</p><p>arecord -f cd -t wav -D copy foo.wav</p>
 </div>
 </div>
 
@@ -103,10 +105,10 @@ I just noticed that scootertechno.com has no RSS, so I wrote one. Available <a h
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/project-specific-vim-settings.html">Project-specific vim settings</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/twitter.html">twitter</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Tue 19 May 2009</p>
+    <p>Posted on: Thu 29 January 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -114,12 +116,7 @@ I just noticed that scootertechno.com has no RSS, so I wrote one. Available <a h
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>So swig uses two spaces instead of tabs, horrible. But I'll get used to it - just I don't want to fuck up my vimrc just because of their idiotic settings.</p><p>Here is the trick:</p><p><pre>
-au BufRead */swig*/* set tabstop=8 | set shiftwidth=2 | set softtabstop=2 | set expandtab " SWIG
-au BufRead */swig*/Source/* set tabstop=8 | set shiftwidth=2 | set softtabstop=2 | set noexpandtab " SWIG Source
-au BufNewFile,BufRead *.i set filetype=swig
-au BufNewFile,BufRead *.swg set filetype=swig
-</pre></p><p>The swig syntax file is <a href="http://www.vim.org/scripts/script.php?script_id=1615">here</a>.</p>
+<p>Not that I'm a web2.0 maniac, but I <a href="https://twitter.com/vmiklos">registered</a> on twitter.</p><p>I think the only purpose I will use it - for now - is to microblog when I'm offline for multiple days, since blogging in that case is expenseve. We'll see.</p>
 </div>
 </div>
 
@@ -128,10 +125,10 @@ au BufNewFile,BufRead *.swg set filetype=swig
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/libblkid-meets-hal-0-5-11.html">libblkid meets hal 0.5.11</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/openoffice-org-3-0-1-vs-boost-1-37.html">OpenOffice.org 3.0.1 vs Boost 1.37</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Mon 18 May 2009</p>
+    <p>Posted on: Wed 28 January 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -139,7 +136,7 @@ au BufNewFile,BufRead *.swg set filetype=swig
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>So upstream recently released hal 0.5.12 and it's maintained by crazy who seem to be a bit busy currently, and I don't really wanted to bump his pkg (actually I tried and I failed), but I bumped our udev pkg yesterday so we no longer has libvolume_id. So I <a href="http://ftp.frugalware.org/pub/frugalware/frugalware-current/source/apps/hal/move-from-libvolume_id-to-libblkid.patch">backported</a> the relevant patch from git and it seems to work. ;)</p><p>(Actually the header is informative, but fake as I created the patch from scratch, based on the one which was in git.)</p>
+<p>So it seems OOo 3.0.1 triggers a bug in boost 1.37, hopefully <a href="http://git.frugalware.org/gitweb/gitweb.cgi?p=frugalware-current.git;a=commitdiff;h=ee5fe05c559eeec21cfa94c4860e68a04c56e931">this commit</a> will fix the issue. At least the OOo build did not stop so far..</p><p>But my "law" is still true: every openoffice upgrade shows at least one problem in some other package. ;)</p>
 </div>
 </div>
 
@@ -148,10 +145,10 @@ au BufNewFile,BufRead *.swg set filetype=swig
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/writing-ppt-presentations-from-asciidoc.html">Writing ppt presentations from asciidoc</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/successful-qemu-ppc-install-with-frugalw.html">Successful qemu-ppc install with frugalware-current</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Thu 14 May 2009</p>
+    <p>Posted on: Tue 27 January 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -159,7 +156,24 @@ au BufNewFile,BufRead *.swg set filetype=swig
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>Okay, this is a crazy idea, but I love asciidoc. So the pipeline is the following: asciidoc -&gt; docbook -&gt; latex -&gt; pdf -&gt; odp -&gt; ppt.</p><p>The fun part is that docbook is XML and then later I convert the stuff back to XML again (odp), but that's necessary as latex adds the nice themes and layout to the text.</p><p>Also the method is semi-automated as I generate latex from asciidoc, then copy&amp;paste it to a latex-beamer document with some manual fixup, then I can convert the rest in a more or less automated way. Time to package odfpy and other affected, but not yet packaged components. ;-)</p>
+<div class="paragraph"><p>Tonight I synced the 2.6.28 kernel on PPC, enabled the Realtek driver
+needed by Qemu and tried again: the whole installation procedure goes
+fine.</p></div>
+<div class="paragraph"><p>Of course (it couldn&#8217;t be true ;) ) the boot after the install fails,
+which is interesting - if boot from CD works fine, I don&#8217;t see why can&#8217;t
+it work from a HDD, but oh well.</p></div>
+<div class="paragraph"><p>I just saw a recent commit in Qemu SVN about fixing qemu-system-ppc
+-kernel, so I&#8217;ll give it a try later.</p></div>
+<div class="paragraph"><p>Ah, and the speed is really promising. I did the installation on my
+laptop, not on a fast machine, and a base install really completed not
+so slow. ;)</p></div>
+<div class="paragraph"><p>Update: After upgrading to svn6463, it boots with:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>qemu-system-ppc -kernel boot/vmlinux-2.6.28-fw1-ppc -append "ro root=/dev/hda3" -hda ~/documents/qemu/hda.img</code></pre>
+</div></div>
+<div class="paragraph"><p>\o/</p></div>
+<div class="paragraph"><p>Update 2: Up to date install/run ppc scripts <a href="http://git.frugalware.org/repos/vmexam/virt/">here</a>.</p></div>
 </div>
 </div>
 
@@ -168,10 +182,10 @@ au BufNewFile,BufRead *.swg set filetype=swig
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/godollo-170.html">Godollo 170</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/libarchive-vs-lzma.html">libarchive vs lzma</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sun 10 May 2009</p>
+    <p>Posted on: Mon 26 January 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -179,7 +193,7 @@ au BufNewFile,BufRead *.swg set filetype=swig
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>utvonal:</p><p>bp - godollo &#8211; szada &#8211; veresegyhaz  - orbottyan &#8211; vacratot &#8211; vacduka &#8211; rad &#8211; penc &#8211; csovar &#8211; acsa &#8211; erdokurt &#8211; kallo &#8211; verseg &#8211; kartal &#8211; aszod - iklad &#8211; galgamacsa &#8211; vacegres - erdokertes &#8211; veresegyhaz &#8211; szada - godollo - bp</p><p>ebbol a godollo-godollo volt <a href="http://www.freeweb.hu/margita/tt/bringa/k10050/index.html">hivatalos</a> 100km-es tura, ehhez jott meg a haztol hazig mert tav miatt egy nagyobb adag.</p><p>indulas 5:45 korul, hazaerkezes 16:50 korul.</p><p>netto ido 8:18:57, pontos tav 175.31km, atlag 21.2 km/h, max 49.8 km/h, szint 1200m.</p><p>koszonet Friczynek meg LGeenek a tarsasagert.</p>
+So I wanted to see how is the lzma support in libarchive, since there is now a stable release having my lzma patch, but pacman-g2's make check fails with the new version, sigh.. It looks like some file descriptor leak, it does not like when we try to install 1000 packages with pacman at once.
 </div>
 </div>
 
@@ -188,10 +202,10 @@ au BufNewFile,BufRead *.swg set filetype=swig
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/bitlbee-segfault-fix.html">bitlbee segfault fix</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/miro-vs-py26.html">miro vs py26</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Mon 27 April 2009</p>
+    <p>Posted on: Sun 25 January 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -199,7 +213,7 @@ au BufNewFile,BufRead *.swg set filetype=swig
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<a href="http://bugs.bitlbee.org/bitlbee/ticket/492">Here</a>. I have no idea if this one will be ignored as well - since two of my reports (<a href="http://bugs.bitlbee.org/bitlbee/ticket/479">here</a> and <a href="http://bugs.bitlbee.org/bitlbee/ticket/480">there</a>) are already ignored.. :/
+<p>So we had <a href="http://bugs.frugalware.org/3549">this</a> bugreport, just building miro against python 2.6 did not work out very well. Then I pushed a python-2.5 package, before I would realise all the miro deps would have to built against py25 as well, if I want to achieve this approach. OK, that's a no-go. Then I found the right few-liner solution in the #<a href="mailto:python@freenode">python@freenode</a> logs. :)</p><p>I sent it to upstream, we'll see how will they handle it.</p><p>Oh, and I got a <a href="http://vmiklos.hu/gitweb/?p=darcs-fast-export.git;a=commit;h=66fd4e73c87a85516bb4651c5e90209e2320f706">new patch</a> to darcs-fast-export. A second contributor, yay! :)</p>
 </div>
 </div>
 
@@ -208,10 +222,10 @@ au BufNewFile,BufRead *.swg set filetype=swig
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/nokia-free-space-trick.html">nokia free space trick</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/irssiscripts.html">irssiscripts</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sat 25 April 2009</p>
+    <p>Posted on: Sat 24 January 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -219,10 +233,7 @@ au BufNewFile,BufRead *.swg set filetype=swig
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>I hit this issue a few times, but now I took the time to Google it out. So when I download lots of music to my Nokia 3110c phone, I keeps restarting because the Nokia version of OOM killer terminates the music indexer process. Given that it's a vital process (I don't know the proper term for this), the phone is restarted. It does this sequence about 5 times, then it just switches off.</p><p>The trick is to delay indexing, if it does so a bit later after the phone boot is already done, it can succeed properly. The hack is to <a href="http://discussions.europe.nokia.com/discussions/board/message?board.id=hardware&amp;thread.id=6149">limit the internal memory free space</a>, that will trigger this delay:</p><p><blockquote>
-Now Keep ur free Phone memory space [Not the memory card's free space]
-between 470kb - 499kb
-</blockquote></p><p>The style is horrible, but the info is useful, after setting free space like this, it can really handled large amount of music fine. ;)</p>
+<p>I got a reply to patches I sent one and a half year ago. ;)</p><p>My patches to anames.pl and sockter-interface.pl are now applied in f0rked's <a href="http://github.com/msparks/irssiscripts">irssiscripts</a> repo.</p>
 </div>
 </div>
 
@@ -231,10 +242,10 @@ between 470kb - 499kb
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/being-accepted-to-gsoc-2k9.html">being accepted to gsoc 2k9</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/clock-runs-way-faster-than-necessary-bug.html">"clock runs way faster than necessary" bug solved</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Mon 20 April 2009</p>
+    <p>Posted on: Fri 23 January 2009</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -242,20 +253,7 @@ between 470kb - 499kb
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p><a href="http://socghop.appspot.com/org/home/google/gsoc2009/swig">They say so</a>. :)</p><p>Time to unsubscribe from the git list and append #git to activity_hide_targets. ;/</p><p>A list of (AFAIK) all Hungarian students:</p><p><a href="http://socghop.appspot.com/student_project/show/google/gsoc2009/bzflag/t124022105839">Istvan Szakats</a>
-<a href="http://socghop.appspot.com/student_project/show/google/gsoc2009/drupal/t124022213361">Kornél Lugosi</a>
-<a href="http://socghop.appspot.com/student_project/show/google/gsoc2009/drupal/t124022214906">Balazs Dianiska</a>
-<a href="http://socghop.appspot.com/student_project/show/google/gsoc2009/ffmpeg/t124022266833">Geza Kovacs</a>
-<a href="http://socghop.appspot.com/student_project/show/google/gsoc2009/freebsd/t124022318947">Gabor Kovesdan</a>
-<a href="http://socghop.appspot.com/student_project/show/google/gsoc2009/freebsd/t124022319751">gabor janos pali</a>
-<a href="http://socghop.appspot.com/student_project/show/google/gsoc2009/freenet/t124022327615">Tamás Sallai</a>
-<a href="http://socghop.appspot.com/student_project/show/google/gsoc2009/haskell/t124022468245">Gergely Patai</a>
-<a href="http://socghop.appspot.com/student_project/show/google/gsoc2009/mono/t124022707838">Kornél Pál</a>
-<a href="http://socghop.appspot.com/student_project/show/google/gsoc2009/omii_uk/t124022911687">Miklos Erdelyi</a>
-<a href="http://socghop.appspot.com/student_project/show/google/gsoc2009/opensuse/t124023151411">Peter Somlo</a>
-<a href="http://socghop.appspot.com/student_project/show/google/gsoc2009/swig/t124025043950">Miklos Vajna</a>
-<a href="http://socghop.appspot.com/student_project/show/google/gsoc2009/xiph/t124025001154">Viktor Gal</a>.</p><p>So now we are 13, it's interesting because AFAIK we were only 6 last year, when more students were accepted in general. ;)</p><p>Update:</p><p>I missed two of them:</p><p><a href="http://socghop.appspot.com/student_project/show/google/gsoc2009/typo3/t124024994753">tom ilsinszki</a>
-<a href="http://socghop.appspot.com/student_project/show/google/gsoc2009/joomla/t124022510065">gergo erdosi</a></p>
+<p>Heh, it took my whole day. So the <a href="http://thread.gmane.org/gmane.linux.kernel/784192">solution</a> was that I needed to disable two CONFIG setting Crazy enabled (+ I enabled KVM again, not sure if that is related or not).</p><p>And of course bisecting was totally damn unnecessary, since the bug is triggered by a given config line, not by a bad commit.</p><p>Life is good.</p>
 </div>
 </div>
 
@@ -264,20 +262,18 @@ between 470kb - 499kb
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/rotating-pdf-pages.html">Rotating pdf pages</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/linux-bisecting.html">Linux bisecting</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sun 19 April 2009</p>
+    <p>Posted on: Thu 22 January 2009</p>
   </div>
   <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
+    <p>Estimated read time: 2 minutes</p>
   </div>
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>So I wanted to rotate each page in a pdf file clockwise using pdf2ps, pstops and ps2pdf. Actually I haven't figured out how to do so, even if I already used pstops (which is cryptic for the first time) multiple times so far.</p><p>Sure, I know ideally how to do it, but then I just got blank pages.</p><p>But pdftk seem to do it properly:</p><p><pre>
-pdftk in.pdf cat 1-endE output out.pdf
-</pre></p>
+<p>So I reported this "timer runs too fast" bug to LKML and they asked me to bisect it. I know bisect already, but I only bisected userspace software which is easy. Basically you write a script that reproduces the issue, then git bisect will find the first bad commit automatically.</p><p>With the kernel, this is much slower, because you must manually test each step.</p><p>Of course I wanted to speed things up, so I wrote a small testcase and run it right after init=/bin/sh. This is bad. I haven't noticed until almost the end of the bisect that the bug occurs only after udev is loaded. Now that I'm sure the corrected test script really reports GOOD for 2.6.27 and BAD for 2.6.28, I can do the real bisect...</p><p>As a side note, doing this with 1 machine would be really annoying. Luckily I can do whatever I want on my iBook, the build is done one of our fast Frugalware servers (dream) and I just download and test the bzImage on my notebook. I guess network booting would make it a bit faster (because currently I boot the test kernel, boot back the working one, download the next test one, goto 1), but I won't set up a whole tftp server on my iBook just for this. ;)</p><p>So hopefully tomorrow we'll know what is the real first bad commit.</p>
 </div>
 </div>
 

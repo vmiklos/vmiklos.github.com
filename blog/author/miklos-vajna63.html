@@ -59,10 +59,10 @@
 
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/empty-git-commits.html">empty git commits</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/openoffice-upstream-fix.html">openoffice upstream fix</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Thu 30 August 2007</p>
+    <p>Posted on: Thu 06 April 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -70,9 +70,7 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>long time no blog ;)</p><p>in darcs, tags are empty patches which depend on every patch since the previous tag + the previous tag. so tag is shown in the changelog itself</p><p>in git, tags are just pointers to existing commit objects. for example 1c77ec3 already exists, then you say let's call this 1.0</p><p>you may want to create darcs-like tags in git. of course this won't be the git way, but it's nice to see that the git core allows you to do so</p><p>so here is what you need:</p><p><code>
-echo "tagged 0.9.2" |git update-ref HEAD <code>git commit-tree HEAD^{tree} -p HEAD</code>
-</code></p><p>thanks <a href="http://colabti.de/irclogger/irclogger_log/git?date=2007-08-30,Thu&sel=585#l1040">hliusv561</a>! :)</p>
+upstream at Novell is very fast, they've already <a href="http://cvs.gnome.org/viewcvs/ooo-build/download.in?r1=1.81&r2=1.82&makepatch=1&diff_format=u">fixed</a> the problem mentioned yesterday. so one should be really able to build OOo on x86_64 with the usual simple <code>sudo makepkg -R</code> :)
 </div>
 </div>
 
@@ -81,10 +79,10 @@ echo "tagged 0.9.2" |git update-ref HEAD <code>git commit-tree HEAD^{tree} -p HE
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/find-exclude.html">find -exclude</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/openoffice-x86_64-first-complete-native-build.html">openoffice-x86_64 first complete native build</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Fri 06 April 2007</p>
+    <p>Posted on: Wed 05 April 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -92,7 +90,7 @@ echo "tagged 0.9.2" |git update-ref HEAD <code>git commit-tree HEAD^{tree} -p HE
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>ok, there is no such option, but there is an equivalent trick :)</p><p>for example if you want to do exclude the _darcs dir, then you need:</p><p><code>find . -type d -name _darcs -prune -o <filter> -print</code></p><p>where <filter> can be "-name *.c" or so</p><p>thanks crazy for the tip :)</p>
+<p>desco's shot: <a href="http://www.bluelion.hu/stuff/ooo-x86_64.png">http://www.bluelion.hu/stuff/ooo-x86_64.png</a></p><p>download: <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/frugalware-x86_64/">http://ftp.frugalware.org/pub/other/people/vmiklos/frugalware-x86_64/</a></p><p>source: <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/source/openoffice.org-devel/">http://ftp.frugalware.org/pub/other/people/vmiklos/source/openoffice.org-devel/</a></p><p>also there is a little problem with make install in the FB, more details <a href="http://thread.gmane.org/gmane.comp.gnome.ximian.openoffice/1463">here</a></p><p>note: yes, you have to install the langpacks with pacman -d, this will be fixed later</p>
 </div>
 </div>
 
@@ -101,10 +99,10 @@ echo "tagged 0.9.2" |git update-ref HEAD <code>git commit-tree HEAD^{tree} -p HE
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/linuxquestions-org-screenshots.html">linuxquestions.org screenshots</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/openoffice-x86-64.html">openoffice-x86_64</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sun 28 January 2007</p>
+    <p>Posted on: Mon 03 April 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -112,7 +110,15 @@ echo "tagged 0.9.2" |git update-ref HEAD <code>git commit-tree HEAD^{tree} -p HE
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-i've recently got a mail about linuxquestions.org now has a separate collection of <a href="http://shots.linuxquestions.org/index.php?os=Frugalware">Frugalware screenshots</a>. so here it is, maybe one find it interesting :)
+no, don't except anything, just started to work on it. a few infos:
+<ul>
+  <li>you need m162 to apply the ooo-build patches, but in that milestone the <a href="http://www.openoffice.org/issues/show_bug.cgi?id=63816">"fpicker module dependency" is missing</a>, but it is already fixed in upstream. so let's start to make a patch</li>
+  <li>you need to download the cvs:
+<code>cvs -d:pserver:anoncvs@anoncvs.services.openoffice.org:/cvs co -r SRC680_m162 OpenOffice</code></li>
+  <li>then find the last change to the critical file:
+<code>cvs diff -r 1.6 -u automation/prj/build.lst</code></li>
+  <li>using this patch, the build is still running atm :)</li>
+</ul>
 </div>
 </div>
 
@@ -121,33 +127,18 @@ i've recently got a mail about linuxquestions.org now has a separate collection 
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/ten-goals-we-reached-in-2006.html">ten goals we reached in 2006</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/0-4-in-the-news.html">0.4 in the news</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sun 31 December 2006</p>
+    <p>Posted on: Sun 02 April 2006</p>
   </div>
   <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
+    <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>we're always working on something, sometimes it worth to have a look
-round and see what we've reached. so here is my list, probably
-incomplete :)</p><p>1) syncpkgd</p><p>2) -stable support. if you want to have a secure server you no longer
-have to use -current</p><p>3) OOo for x86_64, also split the language packs</p><p>4) many-many packages. really. sometimes i need a package and i'm
-impressed it's already in fst :)</p><p>5) in connection with the big number of packages: dynamic cds/dvds based
-on dependencies. i remember when we had to move something to extra just
-becase the second cd was too big</p><p>6) rewritten the setup in C. do you remember the sloooow installer
-written in sh? :)</p><p>7) Xorg 7.0. so many hours of sucking when:
-   7.1) do a clean install
-   7.2) add the xorg7 repo and -Syu
-   7.3) write down the occurred errors
-   7.4) fix them
-   7.5) rm -rf /
-   7.6) goto 7.1 :)</p><p>8) pacman-g2. pacman without a lib? brr :)</p><p>9) getting rid of hotplug in favour of udev. maybe you remember how slow
-it was, it took at least 10-12 secs on my pc :)</p><p>10) fw-xgl-control: enabling and disabling it for a normal user without
-reading tons of docs, breaking your system, etc :)</p><p>(yes. the list is unsorted )</p><p>could you imagine living without these? :)</p>
+<p>OSDir <a href="http://www.osdir.com/Article8370.phtml">made</a> a screenshot tour using 0.4rc1.</p><p>Slack Addict <a href="http://www.slackaddict.com/modules.php?name=News&file=article&sid=158">published</a> an interview before releasing 0.4.</p><p>Finally Wikinews <a href="http://en.wikinews.org/wiki/Frugalware_Linux_Pushes_Forward">published</a> a short interview right after 0.4 had been released.</p><p>That's all :)</p>
 </div>
 </div>
 
@@ -156,10 +147,10 @@ reading tons of docs, breaking your system, etc :)</p><p>(yes. the list is unsor
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/new-mirror-ftp12.html">new mirror: ftp12</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/0-4-announcement-party.html">0.4 announcement party</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sat 30 December 2006</p>
+    <p>Posted on: Sat 01 April 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -167,7 +158,7 @@ reading tons of docs, breaking your system, etc :)</p><p>(yes. the list is unsor
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>i've just noticed that finally ftp.heanet.ie <a href="http://ftp.heanet.ie/pub/heanet/log/frugalware/">has no more</a> "connection timed out" errors, so we have a new fast full mirror :)</p><p>it suppors ftp, http and rsync. it has been added to the homepage and to pacman-g2's darcs</p>
+<p><a href="http://forums.frugalware.org/index.php?t=usrinfo&id=62">lgee</a> <a href="http://forums.frugalware.org/index.php?t=msg&th=459">proposed</a> to hold a small "real life" announcement party for developers after 0.4 is released. so yesterday, one day after the release, five of the Hungarian devs met each other :)</p><p>janny made some shots, you can look at them <a href="http://frugalware.org/~janny/">here</a>.</p><p>who is who: <a href="http://frugalware.org/~janny/img002.jpeg.html">ironiq</a> (on the right side), <a href="http://frugalware.org/~janny/img003.jpeg.html">janny</a> (on the left side), <a href="http://frugalware.org/~janny/img009.jpeg.html">vmiklos, voroskoi</a> and <a href="http://frugalware.org/~janny/img010.jpeg.html">lgee</a>.</p>
 </div>
 </div>
 
@@ -176,10 +167,10 @@ reading tons of docs, breaking your system, etc :)</p><p>(yes. the list is unsor
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/howto-about-xilinx.html">howto about xilinx</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/title-80.html">title 80</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sun 03 December 2006</p>
+    <p>Posted on: Tue 28 March 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -187,7 +178,7 @@ reading tons of docs, breaking your system, etc :)</p><p>(yes. the list is unsor
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>another howto, i needed to install it as we use it at the university. it's a binary application, but at least i'm not foced to use it with wine :)</p><p>the howto is <a href="http://wiki.frugalware.org/Xilinx">here</a></p>
+making a stable release of Frugalware is getting more and more complex, so i've started to documente it. you can find the first draft <a href="http://wiki.frugalware.org/Release_howto">here</a>
 </div>
 </div>
 
@@ -196,10 +187,10 @@ reading tons of docs, breaking your system, etc :)</p><p>(yes. the list is unsor
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/multiple-imap-servers-with-mutt.html">multiple imap servers with mutt</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/title-79.html">title 79</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sun 03 December 2006</p>
+    <p>Posted on: Sat 25 March 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -207,7 +198,7 @@ reading tons of docs, breaking your system, etc :)</p><p>(yes. the list is unsor
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>i've written a small howto about $subject ;)</p><p>you can reach it <a href="http://wiki.frugalware.org/Mutt-ng">here</a></p>
+it took a few (2-3 days?) but i've now finished the <a href="http://wiki.frugalware.org/Upgrade-0.3-0.4">Upgrade: 0.3->0.4</a> howto. DNAku was so kind that he has written a script to automate the procedure. you can find it at the bottom of the wiki page :)
 </div>
 </div>
 
@@ -216,10 +207,10 @@ reading tons of docs, breaking your system, etc :)</p><p>(yes. the list is unsor
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/r-i-p-im-rootdir-de.html">r.i.p. im.rootdir.de</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/title-78.html">title 78</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Tue 28 November 2006</p>
+    <p>Posted on: Fri 24 March 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -227,7 +218,7 @@ reading tons of docs, breaking your system, etc :)</p><p>(yes. the list is unsor
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-the bitlbee server @ im.rootdir.de seems to be down for several days, so finally i've decided to switch to testing.bitlbee.org. luckily the buddy list was not lost, just the <icq number> -> nick anjd <jabber id> -> nick bindings and the bitlbee settings
+maybe others are interested in <a href="http://bugs.frugalware.org/240">#240</a>, too, now we have a Firefox search plugin for packages, you can install it from the <a href="http://frugalware.org/packages.php">packages page</a>.
 </div>
 </div>
 
@@ -236,10 +227,10 @@ the bitlbee server @ im.rootdir.de seems to be down for several days, so finally
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/opendns.html">opendns</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/title-77.html">title 77</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Mon 20 November 2006</p>
+    <p>Posted on: Sat 11 March 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -247,7 +238,7 @@ the bitlbee server @ im.rootdir.de seems to be down for several days, so finally
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-we have some problem using the normal dns at the university so we finally decided to use <a href="http://www.opendns.com/start/unix.php">opendns</a>. it seems to be working fine so far :)
+<p>we were <a href="http://bugs.frugalware.org/408">requested</a> to provide a <a href="http://freenx.berlios.de/">freenx</a> package. in fact, this was not too easy. after ~3 days of work, now <a href="http://frugalware.org/packages.php?id=5388">nx-x11</a>, <a href="http://frugalware.org/packages.php?id=5390">nxproxy</a> and <a href="http://frugalware.org/packages.php?id=5393">freenx</a> has been uploaded. finding a working opensource client was a bit difficult and 90% of the howtos recommend the binary crap, but finally <a href="http://frugalware.org/packages.php?id=5394">knx</a> has been uploaded. thanks crazy for the hint about the knx package</p><p>ps: yes, i plan to write a howto on this topic, hopefully i'll have time to do so on the next week. till now here is a <a href="http://frugalware.org/~vmiklos/pics/shots/nx.png">screenshot</a> :)</p>
 </div>
 </div>
 
@@ -256,10 +247,10 @@ we have some problem using the normal dns at the university so we finally decide
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/indenting-with-vim.html">indenting with vim</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/title-76.html">title 76</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sun 19 November 2006</p>
+    <p>Posted on: Sun 05 March 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -267,11 +258,7 @@ we have some problem using the normal dns at the university so we finally decide
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-probably you already faced with the following problem: if you past a shellscript to vim, then it's indented, so the last line of the script will have tons of whitespaces at the start of the line. there are two problems here:
-<ol>
-  <li>how to disable indenting temporarily? use :paste and :nopaste</li>
-  <li>how to indent the text after the paste? mark the lines you want to indent in visual mode (use V) then == will indent them :)</li>
-</ol>
+since we include ada/gnat in our gcc package, it's a bit tricky to build it for the first time, so i've <a href="http://wiki.frugalware.org/Gcc_building">written</a> a wiki page about this. also the x86_64 packages for gcc-4.1 are ready, too.
 </div>
 </div>
 

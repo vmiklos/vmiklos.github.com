@@ -58,10 +58,10 @@
 
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/graph2k8-git-repo.html">graph2k8.git repo</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/empty-git-commits.html">empty git commits</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sat 20 December 2008</p>
+    <p>Posted on: Thu 30 August 2007</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -69,7 +69,9 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-OK, this is probably not that interesting, but who knows... I just put out some code I did during this semester for this OpenGL course. It's available <a href="http://vmiklos.hu/gitweb/?p=graph2k8.git;a=tree">here</a>.
+<p>long time no blog ;)</p><p>in darcs, tags are empty patches which depend on every patch since the previous tag + the previous tag. so tag is shown in the changelog itself</p><p>in git, tags are just pointers to existing commit objects. for example 1c77ec3 already exists, then you say let's call this 1.0</p><p>you may want to create darcs-like tags in git. of course this won't be the git way, but it's nice to see that the git core allows you to do so</p><p>so here is what you need:</p><p><code>
+echo "tagged 0.9.2" |git update-ref HEAD <code>git commit-tree HEAD^{tree} -p HEAD</code>
+</code></p><p>thanks <a href="http://colabti.de/irclogger/irclogger_log/git?date=2007-08-30,Thu&sel=585#l1040">hliusv561</a>! :)</p>
 </div>
 </div>
 
@@ -78,10 +80,10 @@ OK, this is probably not that interesting, but who knows... I just put out some 
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/tags-without-a-tagger-in-git.html">Tags without a tagger in git</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/find-exclude.html">find -exclude</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Fri 19 December 2008</p>
+    <p>Posted on: Fri 06 April 2007</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -89,7 +91,7 @@ OK, this is probably not that interesting, but who knows... I just put out some 
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>So this came up on IRC: ancient tag objects in git have no "tagger" line, and thus converting such a repo with git fast-export is not possible. And the usual way - I just <a href="http://thread.gmane.org/gmane.comp.version-control.git/103470">reported</a> it on the mailing list and Dscho quickly provided the necessary patch.</p><p>I hope the ubuntu guy (who is in CC) will at least give Dscho a "thanks", but who knows if it'll ever happen..</p>
+<p>ok, there is no such option, but there is an equivalent trick :)</p><p>for example if you want to do exclude the _darcs dir, then you need:</p><p><code>find . -type d -name _darcs -prune -o <filter> -print</code></p><p>where <filter> can be "-name *.c" or so</p><p>thanks crazy for the tip :)</p>
 </div>
 </div>
 
@@ -98,10 +100,10 @@ OK, this is probably not that interesting, but who knows... I just put out some 
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/tilde-in-asciidoc-manpages.html">TIlde in asciidoc manpages</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/linuxquestions-org-screenshots.html">linuxquestions.org screenshots</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Thu 18 December 2008</p>
+    <p>Posted on: Sun 28 January 2007</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -109,6 +111,7 @@ OK, this is probably not that interesting, but who knows... I just put out some 
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
+i've recently got a mail about linuxquestions.org now has a separate collection of <a href="http://shots.linuxquestions.org/index.php?os=Frugalware">Frugalware screenshots</a>. so here it is, maybe one find it interesting :)
 </div>
 </div>
 
@@ -117,23 +120,33 @@ OK, this is probably not that interesting, but who knows... I just put out some 
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/remove-items-from-a-python-list.html">Remove items from a python list</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/ten-goals-we-reached-in-2006.html">ten goals we reached in 2006</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Wed 17 December 2008</p>
+    <p>Posted on: Sun 31 December 2006</p>
   </div>
   <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
+    <p>Estimated read time: 2 minutes</p>
   </div>
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>One item in Python's magic word is that you don't have to really care about memory management. I already know if i want to "strdup" a list, then i need foo[:], but I did not notice that in case I iterate over a list _and_ modify it, then I need such a trick as well.</p><p>Example</p><p><pre>
-l = ['a', 'b']
-for i in l:
-        l.remove(i)
-print l
-</pre></p><p>So we remove each item from the list (an expensive version of "l = []").</p><p>However, the result will be "['b']". Now if you use "for i in l[:]:", everything will be fine, because you can iterate over the original list.</p><p>It's a shame that I do python for more than 2 years, and I did not know such a basic stuff. :(</p><p>(<a href="http://mail.python.org/pipermail/python-list/2004-September/280885.html">original post</a>)</p>
+<p>we're always working on something, sometimes it worth to have a look
+round and see what we've reached. so here is my list, probably
+incomplete :)</p><p>1) syncpkgd</p><p>2) -stable support. if you want to have a secure server you no longer
+have to use -current</p><p>3) OOo for x86_64, also split the language packs</p><p>4) many-many packages. really. sometimes i need a package and i'm
+impressed it's already in fst :)</p><p>5) in connection with the big number of packages: dynamic cds/dvds based
+on dependencies. i remember when we had to move something to extra just
+becase the second cd was too big</p><p>6) rewritten the setup in C. do you remember the sloooow installer
+written in sh? :)</p><p>7) Xorg 7.0. so many hours of sucking when:
+   7.1) do a clean install
+   7.2) add the xorg7 repo and -Syu
+   7.3) write down the occurred errors
+   7.4) fix them
+   7.5) rm -rf /
+   7.6) goto 7.1 :)</p><p>8) pacman-g2. pacman without a lib? brr :)</p><p>9) getting rid of hotplug in favour of udev. maybe you remember how slow
+it was, it took at least 10-12 secs on my pc :)</p><p>10) fw-xgl-control: enabling and disabling it for a normal user without
+reading tons of docs, breaking your system, etc :)</p><p>(yes. the list is unsorted )</p><p>could you imagine living without these? :)</p>
 </div>
 </div>
 
@@ -142,31 +155,18 @@ print l
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/a-few-note-about-rpm.html">a few note about rpm</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/new-mirror-ftp12.html">new mirror: ftp12</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Tue 16 December 2008</p>
+    <p>Posted on: Sat 30 December 2006</p>
   </div>
   <div class="article_readtime">
-    <p>Estimated read time: 3 minutes</p>
+    <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>I spent some time today to prepare some rpm packages for an RHEL4 box, it was an interesting experience. To preface to this story is that first I had to do the followings on Frugalware:</p><p><ul>
-  <li>Patch mysql 5.0.37 to add support for the sphinx search engine</li>
-  <li>Make sure about sphinx itself works fine with this (though sadly I haven't had time yet to package sphinx as well).</li>
-</ul></p><p>We have a newer (but compatible, since we still ship 5.0.x) mysql, but a simple git checkout gave me the old buildscript and then the patch applied perfectly.</p><p>Then the plan changed, I needed to do this on an RHEL4 box as well.</p><p>Steps:</p><p><ul>
-  <li>Fix broken up2date config, it seems nobody installed any security update on the box for a long time.</li>
-  <li>Notice that RHEL4 has mysql 4.x, so I had to upgrade it to 5.0.x which was not trivial.</li>
-  <li>After adding the patch to the spec file, I saw that there are a bunch of manual autoconf/automake/autoheader/autowhatever calls, so I did not add a call to mysql's own autogen script. It turned out later that this was a fault, the default autofoo calls did not regenerate all the necessary files, basically they just took a lot of time, but did not really do anything useful. Sigh.</li>
-  <li>Once build was done, I had to rebuild perl's mysql driver and the whole php package because of the major mysql upgrade. Did I say I hate to touch php?</li>
-  <li>And finally the worst was to package sphinx. I used some opensuse spec file, but it turned out to be badly broken on RHEL4. Fixing it was not so problematic, but took a lot of time, because debugging a specfile under RH is a PITA.</li>
-  <li>Let me show a few examples. The equivalent of Fdestdir (the directory which will be tared up after the build is done) is not rm -rf'd before the build starts. So if you have some crap there, your final package will have it.</li>
-  <li>OTOH, Fsrcdir (the directory where the build takes place) <em>is</em> deleted, which means you can't do an incremental build.</li>
-  <li>If you break your pre-uninstall script, you can't easily uninstall a package, even with rpm -e --force --nodeps (you need some magic --no-preun switch, which is not implied by --force).</li>
-  <li>If you say rpm -Uvh foo-2.0.rpm, then sometimes it bails out with an error about it has a file conflict because /bar/baz.so is provided by foo-1.0. What? Doesn't -U stand for <em>upgrade</em>?</li>
-</ul></p><p>Okay, this was enough. I finally finished the task, but I again just can make a "this is so much more efficient with Frugalware" note. ;-)</p><p>And no, I don't like to write about why foo sucks, but both this packaging system (or at least the default settings) a docbook sometimes really sucks.</p>
+<p>i've just noticed that finally ftp.heanet.ie <a href="http://ftp.heanet.ie/pub/heanet/log/frugalware/">has no more</a> "connection timed out" errors, so we have a new fast full mirror :)</p><p>it suppors ftp, http and rsync. it has been added to the homepage and to pacman-g2's darcs</p>
 </div>
 </div>
 
@@ -175,10 +175,10 @@ print l
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/date-of-docbook-manpages.html">date of docbook manpages</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/howto-about-xilinx.html">howto about xilinx</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Mon 15 December 2008</p>
+    <p>Posted on: Sun 03 December 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -186,7 +186,7 @@ print l
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>It seems the method we used to have a custom date format (ie.: not the default mmddyy, but the yymmdd one) is no longer supported. I spent about an hour trying to figure out what's wrong with it, but it seems the solution is not so trivial and it just does not worth the effort. So it's dropped for now, sigh.</p><p>And if I'm at blaming docbook, then here it is: The git manpages still have a ".ft C" / ".ft" string pair around code blocks (or whatever they are called, think of the html &lt;pre&gt; tag), probably due to some broken custom asciidoc.conf.</p><p>I like docbook (since generating man/html/pdf is easy from it), but I really hate the fact that they break something with each release. ;-/</p>
+<p>another howto, i needed to install it as we use it at the university. it's a binary application, but at least i'm not foced to use it with wine :)</p><p>the howto is <a href="http://wiki.frugalware.org/Xilinx">here</a></p>
 </div>
 </div>
 
@@ -195,10 +195,10 @@ print l
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/playing-with-metapost.html">Playing with metapost</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/multiple-imap-servers-with-mutt.html">multiple imap servers with mutt</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sun 14 December 2008</p>
+    <p>Posted on: Sun 03 December 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -206,7 +206,7 @@ print l
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-The name of the command is mpost(1), and it's part of the tetex package. I read about it in <a href="http://udrepper.livejournal.com/19751.html">udrepper</a>'s blog. The situation for me is true as well: I'm better in programming than doing anything by hand, so it's something for me. Some very initial results <a href="http://groups.google.com/group/asciidoc/msg/242f81d5d33ab04c">here</a>.
+<p>i've written a small howto about $subject ;)</p><p>you can reach it <a href="http://wiki.frugalware.org/Mutt-ng">here</a></p>
 </div>
 </div>
 
@@ -215,10 +215,10 @@ The name of the command is mpost(1), and it's part of the tetex package. I read 
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/ghc-upgrade.html">GHC upgrade</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/r-i-p-im-rootdir-de.html">r.i.p. im.rootdir.de</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sat 13 December 2008</p>
+    <p>Posted on: Tue 28 November 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -226,7 +226,7 @@ The name of the command is mpost(1), and it's part of the tetex package. I read 
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>I just got some time to upgrade GHC to 6.10.whatever in Frugalware-current, and it seems they managed to create some screwed up bootstrap binaries, linked to lineedit. This is some BSD version of GNU readline, we did not even had it packaged and the docu says it's outdated in most distros. :-P</p><p>However, we still want to bootstrap using upstream binaries, so now we use it. At least I was able to get rid of the ugly LD_LIBRARY_PATH hack, caused by the old readline library they linked the binaries in the previous series.</p>
+the bitlbee server @ im.rootdir.de seems to be down for several days, so finally i've decided to switch to testing.bitlbee.org. luckily the buddy list was not lost, just the <icq number> -> nick anjd <jabber id> -> nick bindings and the bitlbee settings
 </div>
 </div>
 
@@ -235,10 +235,10 @@ The name of the command is mpost(1), and it's part of the tetex package. I read 
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/hacker-purity-test.html">Hacker Purity Test</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/opendns.html">opendns</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Fri 12 December 2008</p>
+    <p>Posted on: Mon 20 November 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -246,11 +246,7 @@ The name of the command is mpost(1), and it's part of the tetex package. I read 
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>I just found <a href="http://www.armory.com/tests/hacker.html">this test</a>, it's an old one, almost 20 years old. It's funny to see what questions became outdated and which didn't.</p><p>Some of my favorite questions:</p><p><ul>
-  <li>Do you complain when a "feature" you use gets fixed?</li>
-  <li>Ever mask an NMI?</li>
-  <li>Do you own more than 16 floppy disks?</li>
-</ul></p><p>Of course the last one is because I still do have more than that - though I no longer have such a reader at home - would have to go to work to read them. ;-)</p>
+we have some problem using the normal dns at the university so we finally decided to use <a href="http://www.opendns.com/start/unix.php">opendns</a>. it seems to be working fine so far :)
 </div>
 </div>
 
@@ -259,10 +255,10 @@ The name of the command is mpost(1), and it's part of the tetex package. I read 
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/git-janitor-cleanup.html">Git Janitor cleanup</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/indenting-with-vim.html">indenting with vim</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Thu 11 December 2008</p>
+    <p>Posted on: Sun 19 November 2006</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -270,7 +266,11 @@ The name of the command is mpost(1), and it's part of the tetex package. I read 
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>Mailed Christian Couder to cleanup up the <a href="http://git.or.cz/gitwiki/Janitor">Janitor page on the wiki</a> a bit, since for example all the git_config_string refactoring is already done.</p><p>It's nice I did not really have to explain I do not want to destroy his work, it's just no longer necessary - he understood it just fine.</p>
+probably you already faced with the following problem: if you past a shellscript to vim, then it's indented, so the last line of the script will have tons of whitespaces at the start of the line. there are two problems here:
+<ol>
+  <li>how to disable indenting temporarily? use :paste and :nopaste</li>
+  <li>how to indent the text after the paste? mark the lines you want to indent in visual mode (use V) then == will indent them :)</li>
+</ol>
 </div>
 </div>
 

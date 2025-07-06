@@ -59,10 +59,10 @@
 
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/done-and-need-to-be-done-kernel-updates.html">Done and need-to-be-done kernel updates</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/interesting-git-talk.html">interesting git talk</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Wed 21 January 2009</p>
+    <p>Posted on: Thu 12 June 2008</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -70,7 +70,7 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>I finished the update to 2.6.28 (I mean fixing external modules) in a WIP repo, will merge it tonight, if everything goes fine.</p><p>OTOH it turns out that the net in qemu-ppc is disabled because the driver is disabled in the ppc config. So I'll have to enable those drivers when I sync.</p><p>Oh and a trick. mplayer -vo null -vc null will stop playing audio if video finishes earlier. mplayer -novideo won't. So that'll be the solution for my "sample music gets truncated in an flv-wav-mp3 conversion" problem. ;)</p><p>Finally the W3C css validator guys are nice, see <a href="http://thread.gmane.org/gmane.org.w3c.validator.css/2346">this thread</a>, basically it works fine now! :)</p>
+<p>yesterday somebody mentioned on #git <a href="http://www.gitcasts.com/posts/railsconf-git-talk">this talk</a>. it's not a real video, just audio + slides but it's really nice. i would say if the "Linus one" made you say "heh, this may worth to check out" then this one will be the "hey, this one prevented me from learning things the hard way".</p><p>it's just one hour and it describes so many important tricks that i haven't encountered elsewhere yet.</p><p>just watch it.</p>
 </div>
 </div>
 
@@ -79,193 +79,10 @@
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/fast-clock.html">Fast clock</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/fop-0-9x.html">fop 0.9x</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Tue 20 January 2009</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>After upgrading kernel to 2.6.28 my clock measures about 70 mins in an hour, sigh. We are debugging the issue with crazy, but probably it's not a user error, so we'll need to mail the lkml.</p><p>I just tried qemu svn, and it's amazing.</p><p>qemu-system-ppc -prom-env 'boot-device=cd:,\boot\yaboot\yaboot' -prom-env 'boot-args=conf=cd:,\boot\yaboot\yaboot.conf' -cdrom frugalware-1.0pre2-ppc-net.iso -hda ~/documents/qemu/hda.img</p><p>can boot the 1.0pre2 ppc netinstall iso! :)</p><p>The current problem is that the network card the machine emulates is not supported by the installer, but that'll be tomorrow's problem.</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/ppc-entry.html">PPC entry</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Mon 19 January 2009</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>I recently ported our Qemu package to PPC, and just tested that it really works. We have a Linux binary (compiled for i386) for some 'plan making' exercise (inside the AI course at the uni), and of course I wanted to run it on my iBook. And yes, just wrapping the command with qemu-i386 made it work! :)</p><p>The other problem I noticed is that building external modules on PPC does not work. It seem to be a <a href="http://bugzilla.kernel.org/show_bug.cgi?id=11143">known bug</a>. PLD has a patch that changes the error message - to a permission problem. Given that on x86 building a kernel module is possible as a user - the goal would be the same on PPC as well. Not yet resolved...</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/sudo-segfault.html">sudo segfault</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Sat 17 January 2009</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>Quoting a mail I just sent to Miller:</p><p>,,It seems I hit a bug in sudo-1.7.0 (at least I can't reproduce it with
-1.6.9p17):</p><p>$ sudo chown vmiklos /etc/sudoers
-$ sudo false
-sudo: /etc/sudoers is owned by uid 1003, should be 0
-Segmentation fault</p><p>According to gdb, it seem to be a nullpointer-dereference bug, and given
-that it is reproducible only in case the permission and/or owner is
-wrong, I don't think it has a security impact. But who knows. ;)''</p><p>We'll see how does he handle the problem.</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/less-1-tweaks.html">less(1) tweaks</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Fri 16 January 2009</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>First, to allow latin{1,2,whatever} accents in the pager to be non-escaped:</p><p><pre>
-export LESSCHARSET="iso8859"
-</pre></p><p>Second, I use:</p><p><pre>
-# F: quit if input is less then one page
-# M: no more-like short prompt
-# R: accept colors
-# X: don't throw away the output after quit under x
-export LESS="FMRX"
-</pre></p><p>Finally to send utf8 and other exotic chars in latin2 to stdout in git (OK, this is not strictly related):</p><p><pre>
-git config i18n.logOutputEncoding latin2
-</pre></p><p>Done!</p><p>Old:</p><p><pre>
-Author: Andr??s V??r??sk?&lt;91&gt;i &lt;<a href="mailto:voroskoi@frugalware.org">voroskoi@frugalware.org</a>&gt;
-</pre></p><p>New:</p><p><pre>
-Author: András Vörösk?i &lt;<a href="mailto:voroskoi@frugalware.org">voroskoi@frugalware.org</a>&gt;
-</pre></p><p>You can choose... ;-)</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/ideal-git-cflags-for-development.html">Ideal Git CFLAGS for development</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Thu 15 January 2009</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>This is always an interesting area. The avarage user needs a whole day to test a oneliner patch, just because she never built the software in question, etc. The other end of the line is a regular developer, she modifies the source and she is able to test in seconds.</p><p>Regarding git, the testing part is not that hard: I usually work on builtins, so I edit the source code, then type 'make git-foo', and run ./tnumber-desc.sh from the testsuite.</p><p>The other part is that you need special compiler flags, since you are interested in extra warnings, debug symbols and such.</p><p>The default CFLAGS is defined in the Makefile, which is a tracked file, so modifying that is a no-go. You need 'make configure', then ./configure, and then you can edit config.mak.autogen.</p><p>Junio a few days ago <a href="http://article.gmane.org/gmane.comp.version-control.git/105297">mentioned</a> the CFLAGS he uses.</p><p>Here comes the interesting part:</p><p><pre>
-CC = ccache cc
-CFLAGS = -g -O2 -Wall -Werror -fno-inline -Wold-style-definition -Wdeclaration-after-statement
-</pre></p><p>-Werror so that I'm forced not to ignore warnings, -fno-inline to be able to debug inline functions, and I just stole the two others from Junio.</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/more-lilypond-adventures.html">More lilypond adventures</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Wed 14 January 2009</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>To expand my little lilypond knowledge, I just took an old song and tried to re-create in lilypond. Mostly finished, available <a href="http://vmiklos.hu/ly/lemon-tree/lemon-tree.html">here</a>.</p><p>Now time to find a working printer to see how does it look like on a real paper. :)</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/w3c-s-css-validator.html">W3C's css validator</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Tue 13 January 2009</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>I wasted almost 8 hours with trying to get it working from CVS, no luck so far.</p><p>OK, I'm not a Java wizard, but.. most buildtime and runtime errors can be solved by scanning the list archives, but finally the Apache template engine it uses really can't initialize itself.</p><p>I started to debug it, but working with CVS is really a pain, so I want to set up a git mirror first, then hopefully I can send my results till now to the w3c css list, and ask for help.</p><p>Sigh. Java is still a pain.</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/lilypond-and-guitar-chord-arpeggios.html">Lilypond and guitar chord arpeggios</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Mon 12 January 2009</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>Of course I have no idea if this is the right name of this stuff, to make long story short, I finally found a <a href="http://article.gmane.org/gmane.comp.gnu.lilypond.general/44348">workaround</a> to display this beast in lilypond. Yay!</p><p>This project is really addictive, you can spend a whole day reading its documentation and you still just say "wow, this and even that is possible with this stufff". ;-)</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/oprofile.html">oprofile</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Sun 11 January 2009</p>
+    <p>Posted on: Sun 04 May 2008</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 2 minutes</p>
@@ -273,19 +90,257 @@ CFLAGS = -g -O2 -Wall -Werror -fno-inline -Wold-style-definition -Wdeclaration-a
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>I did not have to work with a profiling tool for C so far, so here is my first experience.</p><p>The kernel has to have oprofile support (the kernel in Frugalware-current does not have it, I'll add it after 1.0pre2). You'll need a kernel vmlinux file if you want to benchmark the syscalls as well (I did not need this one).</p><p>Then there are 3 levels of starting: opcontrol --init/--deinit, --start-daemon/--shutdown and --start/--stop. The first one prepares /dev/profile, the second one starts the deamon, finally the third one start profiling. Obviously the second part does the opposite.</p><p>Once you did a --stop, you can get the results. Example output:</p><p><pre>
-$ opreport -l /home/vmiklos/git/git/git /usr/lib/libz.so.1|head
-CPU: CPU with timer interrupt, speed 0 MHz (estimated)
-Profiling through timer interrupt
-samples  %        app name                 symbol name
-22823    56.4898  libz.so.1.2.3            inflate_fast
-6019     14.8978  libz.so.1.2.3            adler32
-5975     14.7889  libz.so.1.2.3            inflate
-4233     10.4772  libz.so.1.2.3            inflate_table
-456       1.1287  libz.so.1.2.3            crc32
-252       0.6237  git                      patch_delta
-55        0.1361  git                      use_pack
-</pre></p><p>which is pretty much what I expected - I did a 'git verify-pack' between --start/--stop, so the time spent with reading the compressed git object database.</p><p>TBH I miss a strace/sudo-like simple wrapper as well...</p>
+<p>uhm, this will be a long post, but i'll try to keep it short :)</p><p>a few words about fop. we write our documentation in asciidoc. asciidoc is plain text with a very simple markup, asciidoc can convert this to docbook. then docbook-xsl can convert this to .fo, finally fop can convert .fo to .pdf.</p><p>my problem with fop is that it's written in java and we just used the upstream binary. this is primarily a security problem.</p><p>so, about one and a half months ago got the crazy idea to compile fop from source. of course the correct way to do this is to package first the depends. this is really a avalanche, becase we didn't have too much generic java libs packaged, so i had to package many. namely:</p><p>jflex, piccolo, gnu.regexp, jarjar, jmock, qdox, easymock, hamcrest, iso-relax, relaxngdatatype, xsdlib, msv, xpp3, xpp2, gnu-crypto, apache-log4j, xmldb-api, ws-jaxme, dom4j, jdom, icu4j, jaxp, jaxp, xom, jaxen, rhino, batik, servletapi, jaf, gnuinetlib, gnumail, avalon-logkit, avalon-framework, commons-logging, commons-io and xmlgraphics-commons.</p><p>hm. that's 36. horrible ;)</p><p>the nice thing is that all these (except xmlgraphics-commons because classpath still lacks jpeg support) are compiled with the ecj/gcj toolchain, without any sun blob.</p><p>the other benefits are:
+<ul>
+  <li>a native fop binary:<pre>$ file /usr/bin/fop
+/usr/bin/fop: ELF 32-bit LSB executable, Intel 80386, version 1 (SYSV), for GNU/Linux 2.6.0, dynamically linked (uses shared libs), stripped</pre></li>
+  <li>now we got rid of fop-devel, since this version can both convert ttf fonts to xml ones (needed if you want to embed custom fonts into pdf) and convert fo documents to pdf ones.</li>
+</ul></p><p>yay!</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/message-ids.html">message-ids</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Tue 29 April 2008</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>ok, this post will be a big generic, but it seems this is still totally new to some people. so, the Message-ID header in an email is ideally unique and you can easily use it to refer to an email in an other discussion.</p><p>in this post i want to deal with 3 issues:</p><p>first, how to display it in your mail client. ok, this depends on your mue, in mutt, you need to add <pre>unignore message-id</pre> to your muttrc.</p><p>second, if you want to search for a message-id in a folder, that's your mua's task as well. in mutt, you can do it by for example <pre>~i <a href="mailto:200804281829.11866.henrikau@orakel.ntnu">200804281829.11866.henrikau@orakel.ntnu</a>.no</pre></p><p>the third trick isn't mua-specific. if you want to link the message, and the list is indexed by gmane, then you can just type <pre>http://mid.gmane.org/200804281829.11866.henrikau@orakel.ntnu.no</pre> and it'll redirect to <pre>http://article.gmane.org/gmane.comp.version-control.git/80566</pre></p><p>ok, that's all for today :)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/source-highlight-in-asciidoc.html">source highlight in asciidoc</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Mon 28 April 2008</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+i recently packaged <code>source-highlight</code>, and asciidoc can nicely use it. an example page (example codes using pacman-g2 bindings in 4 different languages) available <a href="http://frugalware.org/~vmiklos/docs/asciidoc/hightlight.html">here</a>. yay! :)
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/ungreedy-regex-in-javascript.html">ungreedy regex in javascript</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Sat 26 April 2008</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>a few days ago i wanted to use ungreedy regexs in javascript. first, let's see what an ungreedy regex is. look at the following example:</p><p><pre>>>> "<p>foo</p><p>bar</p>".replace(/<p>f.*<\/p>/, '')
+""</pre></p><p>this is greedy. you want to get something like:</p><p><pre>"<p>bar</p>"</pre></p><p>right?</p><p>that would be ungreedy. in some other languages, there is a flag for this (php has 'U'), but in javascript, you need an other trick:</p><p><pre>>>> "<p>foo</p><p>bar</p>".replace(/<p>f.*?<\/p>/, '')
+"<p>bar</p>"</pre></p><p>and yes, that's what we wanted. also it works for .+?, and so on.</p><p>ah and as a side note, it seems '.' does not match newlines, so you'll have to work around it like:</p><p><pre>>>> "<p>foo\nbar</p><p>baz</p>".replace(/<p>f[\s\S]*?<\/p>/, '')
+"<p>baz</p>"</pre></p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/being-accepted-in-gsoc-2k8.html">being accepted in gsoc 2k8</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Tue 22 April 2008</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>ok, this is now <a href="http://code.google.com/soc/2008/git/appinfo.html?csaid=C6691859F6E209E8">official</a>, i got paid for working on the C rewrite of git-merge during the summer ;)</p><p>just for fun, i collected some other projects with Hungarian students: <a href="http://code.google.com/soc/2008/samba/appinfo.html?csaid=E7ACDBF0DA56C6E1">samba</a>, <a href="http://code.google.com/soc/2008/enlightenment/appinfo.html?csaid=271D5022FCC7BFB6">e17</a>, <a href="http://code.google.com/soc/2008/freebsd/appinfo.html?csaid=E0ECEBA4354BBB7E">freebsd</a>, <a href="http://code.google.com/soc/2008/genmapp/appinfo.html?csaid=1242BDDE402945A7">genmapp</a>, <a href="http://code.google.com/soc/2008/xorg/appinfo.html?csaid=663004BBF9DE45A1">xorg</a>, <a href="http://code.google.com/soc/2008/drupal/appinfo.html?csaid=1222E090E875B36D">drupal</a>.</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/kocka-howto.html">Kocka howto</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Mon 14 January 2008</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 4 minutes</p>
+  </div>
+  <div class="article_text">
+    <p>Hogyan készült a <a href="http://vmiklos.hu/file/kocka.avi">kocka</a>?</p>
+<p>Először is kell 8 db fakocka. A méret tetszőleges, én 25 mm nagyságút használtam. Ezt fogom
+beborítani kívül-belül képekkel. Egész pontosan 3 db nagy kép és 6 db kis kép kell. A nagy képet úgy
+kell elképzelni, hogy 4 x 2 kocka (ill. kockának egy lapja) nagyságú, a kicsi meg 2 x 2. Ez azért
+praktikus így, mert 1 kockára való képet össze lehet tenni pont egy A4-es lapra amit ki lehet
+nyomtatni fóliára. A módszer nem tökéletes, mivel erről a fóliáról könnyen kopik a festék, így
+papír-írószer boltban kapható szeles celluxszal (az a nagy, 5 cm szeles) le kell ragasztani a fóliát
+felülről is. A Copy General 500 DPI-s nyomtatót használ, tehát egy kockalapra való képet 1100 px
+szélesre érdemes készíteni.</p>
+<p>Az A4-es képet kézzel is el lehet készíteni, meg egy scripttel is -- de ez utóbbiról később. Ha
+kézzel akarjuk akkor így érdemes elrendezni:</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/kocka-howto/kocka1.jpg"><figcaption>1</figcaption>
+</figure>
+</p>
+<p>Ha scripttel, akkor egy <code>enkockam</code> könyvtárban lesz <code>4es</code> meg <code>8as</code> nevű alkönyvtár és abba kerül a
+3 db 8-as és 6 db 4-es kép. ezután kell a <a href="https://share.vmiklos.hu/blog/kocka-howto/kocka.py">kocka.py</a>:</p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./kocka.py<span class="w"> </span>enkockam
+</code></pre></div>
+
+<p>Ez elkészíti az <code>enkockam.jpg</code> file-t.</p>
+<p>A következő kérdés, hogy ezeket a nagy és kis képeket hogyan érdemes felvágni. Ha túl sok vagy kevés
+vágás lesz, akkor vagy nem lehet körbeforgatni a kockát, vagy szétesik a kocka. Színezem a képeket,
+hogy ne kavarodjanak össze.</p>
+<p>Nézzük először a nagyobb képeket, sötétkék, világossárga és sötétzöld:</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/kocka-howto/kocka2.jpg"><figcaption>2</figcaption>
+</figure>
+</p>
+<p>A kis képek vágása: piros, narancs, sárga, világoszöld, világoskék, krémsárga:</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/kocka-howto/kocka3.jpg"><figcaption>3</figcaption>
+</figure>
+</p>
+<p>A kocka 6 lépésben körbeforog. Felragasztás: A 8 db kis kockát négyzetekbe rendezzük, és egymásra
+helyezzük. Tegyük fel a tetejére a narancsot, úgy felvágva, ahogy a rajzon látható. Húzzuk le a
+hátáról a fóliának a külső rétegét és ragasszuk is rá. Előttünk lesz a krémsárga oldal (szintén a
+rajzon látható módon, tehát a vágás vízszintesen van), balra a piros, jobbra a sárga (a vágás
+függőlegesen legyen, a rajzhoz képest 90 fok forgatással),  hátul a kék (a vágás vízszintesen
+legyen), alul pedig a világoszöld (rajzhoz képest 180 fok forgatás, ugyanúgy jobbra lesz a kis rövid
+vágás mint a tetején a narancsnál).</p>
+<p>Ha idáig eljutottunk, akkor (felülnézetből) a jobb alsó és a jobb felső hasábját ki lehet hajtogatni
+a kockának. (felülnézetből egy 4 kocka magas narancssárga csíkot kapunk). Jobboldalt az egész nagy
+felületet elfoglalja a sötétkék. Már csak a sötétzöld és a krémsarga maradt. Forgassuk el balra
+hossztengely szerint a nagy kockát, Tehát felfele fog nézni a nagy kék felület. Most nyissuk szét a
+nagy kockát úgy, hogy hosszába a bal felét balra, jobb felét jobbra forgatjuk 90 fokkal. Továbbra is
+téglatest lesz előttünk, de most már a kék rész jobb és baloldalon függőlegesen lesz, és nem
+borított rész tárul elénk. Ide kell a világossárga.</p>
+<p>Már csak a sötétzöld maradt. A cél, hogy ez kívülre kerüljön. Menjünk vissza két lépést, amikor a
+kocka még egyben volt: összecsuk, újra kék lesz felül, forgat jobbra 90 fokot, narancs csík lesz
+felül, alul-felül összeforgat úgy, hogy kocka legyen újra. Most áthajtjuk a kocka felső felét jobbra
+úgy, hogy újra téglatestet kapjunk. A világossárgát fogjuk látni megint, és bal- meg jobboldalt a
+szélén pedig a kettészedett pirosat. Elforgatjuk az asztallapon a kockát 90 fokkal. Ugyanúgy ki
+fogjuk nyitni, mint mikor kékből sárgába mentünk át, csak most a sárgából csupasz lap lesz, és erre
+a 8 kockalapra fog kerülni a sötétzöld.</p>
+<p>Frissítés: 2025-ben ezt a leírást követve úgy tűnik, hogy az utolsó kettő sorrendje fordított kell,
+hogy legyen, tehát sötétzöld az utolsó előtti és a világossárga az utolsó.</p>
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/incremental-bzr-g-git-conversion.html">incremental bzr -> git conversion</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Thu 10 January 2008</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>i recently had problems with bzr -> git conversion using tailor and now Lele pulled my patches so here is a mini-howto about how i did the conversion.</p><p>i did all this in a ~/scm/tailor/bitlbee dir (to convert the bitlbee bzr repo), but of course you can do it somewhere else, too.</p><p>create the dir and place there the tailor config. mine is like:</p><p><code>
+$ cat bitlbee.conf
+[DEFAULT]
+verbose = True
+[bitlbee]
+target = git:target
+start-revision = INITIAL
+root-directory = /home/vmiklos/scm/tailor/bitlbee
+state-file = bitlbee.state
+source = bzr:source
+subdir = bitlbee.git
+[bzr:source]
+repository = /home/vmiklos/scm/tailor/bitlbee/bitlbee.bzr
+[git:target]
+repository = /home/vmiklos/scm/tailor/bitlbee/bitlbee.git
+</code></p><p>and here is the update script:
+<code>
+$ cat update.sh
+#!/bin/sh -e
+cd <code>dirname $0</code>
+cd bitlbee.bzr
+bzr pull
+cd ..
+tailor -c bitlbee.conf
+</code></p><p>to update the import daily i added the followings to my crontab:</p><p><code>
+40 4 * * * ~/scm/tailor/bitlbee/update.sh &>/dev/null
+</code></p><p>and we're ready, you'll have a daily updated git import.</p><p>one minor note: the bitlbee.git dir is a non-bare repo and it's also a bzr repo which is not a problem (you can clone it and gitweb handles it) but if you plan to switch to git later, you probably want to clone it once get rid of that junk :)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/ten-goals-we-reached-in-2007.html">ten goals we reached in 2007</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Mon 31 December 2007</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>..continuing <a href="http://blogs.frugalware.org/vmiklos/2006/12/31/p276">last year's article</a>. so another year passed by and it's time to look back and see what we did during 2007. probably i miss a lot of stuff but here is my list:</p><p>1) ability to go back in the installer to a previous point if you missed something. do you remember the days when one had to reboot if he/she wanted to do so? :)</p><p>2) compiz improvements. this is now settled down in current and it's pretty sane. we cleaned up the old compiz and beryl, we have a single compiz-fusion, it has a nice step by step documentation and it works fine both for kde and gnome.</p><p>3) asciidoc. i think we highly improved our documentation since we switched from latex to asciidoc. a user manual of 98 pages in a nice pdf format is cute, isn't it? :)</p><p>4) newsletters. Alex started to issue newsletters and recently phayz helped out us, so it's alive again. i think it's something great.</p><p>5) yugo. 'factory' was our previous i686 build server, it was a very old machine with a cpu of 300mhz and so on. it was time to replace it and now yugo does the job.</p><p>6) fwlive. this was an old project but only test versions were available, based on old frugalware versions. now there is a live version of every released version of frugalware, thanks to janny, boobaa and ironiq. great!</p><p>7) gnetconfig. the first graphical config tool from priyank. i'm really bad at any graphical programming, so i'm glad to see finally we started to work on guis.</p><p>8) gfpm. something users always wanted and now it's here. a true graphical package manager, which is not just a wrapper but properly uses libpacman. awesome.</p><p>9) fun. this is our update manager which can sit on the system tray (or whatever i should call kicker not to be kde specific ;) ) and notifies you if there is something to update. i'm sure this is more comfortable compared to watching the -security mailing list for updates or doing a -Syu daily :)</p><p>10) syncpkgd2. if you remember, the old method was that there were only clients and they tried to figure out what to build, they built and uploaded the packages. this was very suboptimal: it allowed only one buildserver / arch and it was slow. okay, being slow is the smaller problem, but every buildserver was a single point of failure. nowadays we have two i686 buildservers (thanks to boobaa) and it's theoretically it's possible to have two x86_64 buildservers, too. so even if one i686 buildserver is down, i can be at the beach, sipping a mojito :)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/using-reverse-ssh-tunnels.html">using reverse ssh tunnels</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Wed 19 December 2007</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>okay, i learned something today :)</p><p>you have a client behind a firewall and you have a server somewhere. and you want to ssh from the server to the client. that's exactly why ssh has a magic -R option!</p><p>if you do an</p><p><code>$ ssh -R 19022:localhost:22 server</code></p><p>that will mean that you can ssh to client:22 on the server by sshing to localhost:19022 on the server. yes, and it works even if the client is behind a firewall, yay! :)</p><p>update:</p><p>you probably want to add this to your ~/.ssh/config on the server as well:</p><p><pre>
+Host client
+        NoHostAuthenticationForLocalhost yes
+        HostName localhost
+        Port 19022
+</pre></p><p>so that you can easily just type</p><p><code>$ ssh client</code></p><p>on the server</p>
 </div>
 </div>
 

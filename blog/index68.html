@@ -58,10 +58,10 @@
 
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/linux-2-6-17.html">Linux-2.6.17</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/title-35.html">title 35</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Mon 19 June 2006</p>
+    <p>Posted on: Fri 18 November 2005</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -69,7 +69,17 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-has been uploaded, all the external modules are updates (or where it's broken, the m8rs are working on it). unfortunatelly swsusp has been disabled, but don't worry, it's already fixed in darcs, so if you really need it <em>now</em> and can't wait till 2.6.17.1, then use the usual <code>repoman merge kernel</code>
+<p>just a draft about how to re-call a plugin from an other plugin in the setup:
+<pre>
+        extern GList *plugin_list;</p><p>        int i;
+        plugin_t *plugin;</p><p>        for (i=0; i<g_list_length(plugin_list); i++)
+        {
+                plugin = g_list_nth_data(plugin_list, i);
+                if(!strcmp(plugin->name, "loadsource"))
+                        plugin->run(config);
+        }
+</pre>
+here we call the loadsource plugin from an another plugin</p>
 </div>
 </div>
 
@@ -78,10 +88,10 @@ has been uploaded, all the external modules are updates (or where it's broken, t
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/smtp-envelope-aamp-aamp-mutt.html">SMTP envelope &amp;&amp; mutt</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/title-34.html">title 34</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sun 18 June 2006</p>
+    <p>Posted on: Fri 18 November 2005</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -89,15 +99,9 @@ has been uploaded, all the external modules are updates (or where it's broken, t
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>when you send a mail from genesis, sometimes you get the following reply:
-<code>mail@addr.ess
-   Delay reason: SMTP error from remote mailer after RCPT TO:<<a href="mailto:mail@address">mail@address</a>>:
-   host mail.addr.ess [1.2.3.4]: 450 <<a href="mailto:foo@genesis.frugalware.org">foo@genesis.frugalware.org</a>>:
-   Sender address rejected: unverified address: connect to
-genesis.frugalware.org[157.181.177.34]:
-   Connection refused</code></p><p>the solution is simple, but not trivial. it depends on the user-agent you use, in mutt, you should put the following magic line to your muttrc:
-<code>set use_envelope_from</code>
-then i'll be ok again :)</p>
+now we have git support in darcs (it does not causes any extra dep ;) ), here is a short demo, how does it works:
+<pre>$ cg-clone <a href="http://www.kernel.org/pub/scm/git/git.git">http://www.kernel.org/pub/scm/git/git.git</a></pre>
+this will fetch a git repo for you, as dr get does not works yet (i <a href="http://darcs.net/DarcsWiki/DarcsGit">don't see</a> if this is planned or not), but then do a <pre>cd git; dr changes --last=5</pre> and it really works fine :)
 </div>
 </div>
 
@@ -106,10 +110,10 @@ then i'll be ok again :)</p>
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/mkiso-update.html">mkiso update</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/title-33.html">title 33</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sat 10 June 2006</p>
+    <p>Posted on: Thu 17 November 2005</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -117,75 +121,14 @@ then i'll be ok again :)</p>
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>i've worked again a bit on mkiso:<ul>
-  <li>now you can (optionally) define a <lang> tag, so that after the frugalware repo, not all the locale-extra pkgs will have higher priority than the other extra pkgs, just a selected language's locale pkgs</li>
-  <li>it generates a small stat next to the iso, for example the current ones are available for a while <a href="http://frugalware.org/~vmiklos/stats/iso/">here</a></li>
-</ul></p><p>have fun! :)</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/wireless-support-in-the-setup.html">wireless support in the setup</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Tue 06 June 2006</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<a href="http://bugs.frugalware.org/809">#809</a> was a request for this. the <a href="http://ftp.frugalware.org/pub/frugalware/frugalware-current-iso/frugalware-20060606-i686-net.iso">new snapshot</a> supports using a wireless card to fetch packages. the most common problem (probably) will be that extra modules are not included in the netinstall iso. if a module is requested then we'll put it in. so, please <a href="http://bugs.frugalware.org/">request</a> the modules you find to be missing! thanks
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/openoffice-org-2-0-3-release-candidate-5-has-been-uploaded.html">OpenOffice.org 2.0.3 Release Candidate 5 has been uploaded</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Sat 03 June 2006</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<a href="http://development.openoffice.org/releases/2.0.3rc5.html">release notes</a>, <a href="http://frugalware.org/pipermail/frugalware-darcs/2006-June/016253.html">commit</a>, <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/frugalware-x86_64/">x86_64 fpms</a>. enjoy! :)
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/new-mkiso.html">new mkiso</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Sat 03 June 2006</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>the current (old) mkiso script worked, but had several limitations:
+<p>during coding the setup, i noticed some strange behaviours, i debugged then for a long time ;)</p><p>so to learn from my faults:<ul>
+  <li>strcat does not accepts a NULL pointer as a dest char*</li>
+  <li>getenv() just gives you a pointer, you have to strdup() it if you want to modify the value</li>
+</ul></p><p>an other thing: i forgot again and again what's the difference between <pre>step</pre> and <pre>next</pre> in gdb:
 <ul>
-  <li>you had to have write access to the repo</li>
-  <li>no dependency checking, you needed to arrange the categories by hand</li>
-  <li>no support for more than one dvd</li>
-</ul></p><p>yes, this all has been gone, there is a new mkiso in the pacman-tools repo (and soon in the next pacman-tools release) which supports all these missing features, basically you need to specify the volume size and the wished volumes in an xml, then mkiso will do everything for you. also it comes with a nice manpage examples :)</p>
+  <li>setp executes the current line of the program and stops on the next statement to be executed</li>
+  <li>next is like step, however, if the current line of the program contains a function call, it executes the function and stops at the next line</li>
+</ul></p><p>ah, and if you want to execute the whole code line by line from the begining, you'll need <pre>break 1</pre> and then the usual <pre>run</pre></p>
 </div>
 </div>
 
@@ -194,10 +137,10 @@ then i'll be ok again :)</p>
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/xconfig-in-frugalwareutils.html">xconfig in frugalwareutils</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/title-32.html">title 32</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Fri 26 May 2006</p>
+    <p>Posted on: Thu 17 November 2005</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -205,7 +148,13 @@ then i'll be ok again :)</p>
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>a complete rewrite of the old xconfig script in the frugalware pkg is now included in frugalwareutils. since the code is native, it's much more faster. it should work at least as well as the old script, but who knows - if you find any bug then please report it to <a href="http://bugs.frugalware.org/">us</a></p><p>thanks!</p>
+<p>yet another setup update :)</p><p>a short TODOlist what have to be done:
+<ul>
+  <li>handling package installation errors</li>
+  <li>handling category order</li>
+  <li>handling possibly required cd changes</li>
+  <li>postconf: calling the unchanged *config stuff</li>
+</ul></p><p>everything else seems to be completed! :)</p>
 </div>
 </div>
 
@@ -214,10 +163,10 @@ then i'll be ok again :)</p>
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/rss-support-in-mxw.html">rss support in mxw</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/title-31.html">title 31</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Thu 25 May 2006</p>
+    <p>Posted on: Sun 13 November 2005</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -225,7 +174,7 @@ then i'll be ok again :)</p>
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>mxw is a simple C irc bot. i've start it as a fun project (usually people write irc bots in perl or python), but currently it handles more and more functions. today i've added rss support (using libmrss) so that on the #frugalware channel mxw_ floods the users with package updates and blog posts ;-)</p><p>of course the whole code is still experimental, i hope this post will appear on #frugalware, too :)</p>
+yet another milestone in the setup. the code is ready till the end of partitioning. reach a screenshot <a href="http://frugalware.org/~vmiklos/pics/qemu/setup-ng2.png">here</a>
 </div>
 </div>
 
@@ -234,10 +183,10 @@ then i'll be ok again :)</p>
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/distrowatch-interview.html">distrowatch interview</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/title-30.html">title 30</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Mon 22 May 2006</p>
+    <p>Posted on: Fri 11 November 2005</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -245,7 +194,7 @@ then i'll be ok again :)</p>
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-distrowatch published an <a href="http://distrowatch.com/weekly.php?issue=20060522#interview">interview</a> with me, maybe it's interesting :)
+<p>darcs is not too funny, it's well documented so if you once read the documentation, almost nothing unexpected will happen. but today... i've found a very nice new feature :)</p><p>you have a repo. inside the repo there are dirs. some of them are not "dr add"ed. if you run dr rec/what/etc in that dirs, it will find the "partent" repo, and runs the command on it. but you can create a new repo in that not-added dir, and then dr will work on this new repo. nice, eh? :)</p>
 </div>
 </div>
 
@@ -254,10 +203,10 @@ distrowatch published an <a href="http://distrowatch.com/weekly.php?issue=200605
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/pre-0-5pre1-party.html">pre-0.5pre1 party</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/title-29.html">title 29</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sat 20 May 2006</p>
+    <p>Posted on: Tue 08 November 2005</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -265,7 +214,69 @@ distrowatch published an <a href="http://distrowatch.com/weekly.php?issue=200605
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-yesterday LGee, desco, voroskoi and me met each other. you can reach a few pictures taken by LGee <a href="http://frugalware.org/~vmiklos/pics/photo/beer20060519/">here</a>
+what's new in the setup in the last 4 days? see the changes <a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=setup-current;a=shortlog">here</a>, basically we ported all the functionality till the end of partitioning. ah, and krix started to work on the (experimental) graphical one :)
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/title-28.html">title 28</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Fri 04 November 2005</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+krix and me are now working on rewriting the setup script from scratch in c to get a much more robust (plugin based, using a messages bus, etc) installer. you can reach an initial screenshot <a href="http://frugalware.org/~vmiklos/pics/qemu/setup-ng.png">here</a>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/title-27.html">title 27</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Mon 31 October 2005</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+bmh rewrote the checkpkgs script in python and added some new features. for example i wanted to know which pkgs are not available on i686 (excluding the emulation pkgs):
+<pre>$fst_root/tools/checkpkgs -b -n|grep -v "\[X\] i686"|grep -v emul-</pre>
+nice ;)
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/title-26.html">title 26</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Sat 29 October 2005</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+got to update to kernel-2.6.14. what's new? relayfs, fuse, ipw2?00. (there is a quite readable changelog <a href="http://wiki.kernelnewbies.org/LinuxChanges">here</a>) of course the usual pacman -Syu will do everything for you :)
 </div>
 </div>
 

@@ -58,30 +58,10 @@
 
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/preparing-frugalware-1-0pre2.html">Preparing Frugalware 1.0pre2</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/svn-ggit-conversion-using-git-svn.html">svn->git conversion using git-svn</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sat 10 January 2009</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>From today it's "freeze" till 13th. Pootle is funny again, it forces converting the po files to UTF-8, while _not_ converting the headers, so they still say latin2 in case of Hungarian translations, grr.</p><p>A guy mailed me for help with my libwpd bindings, but it turned out he wants to use the C# part, so Fridrich just solved his problem <a href="http://cia.vc/stats/author/strbafridrich/.message/128fd3">in CVS</a>.</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/working-on-merge_trees_simple.html">Working on merge_trees_simple()</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Fri 09 January 2009</p>
+    <p>Posted on: Sun 09 December 2007</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 2 minutes</p>
@@ -89,27 +69,196 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>I just pushed out these <a href="http://repo.or.cz/w/git/vmiklos.git?a=shortlog;h=refs/heads/merge-tree">four commits</a>. Basically they let a libgit user use the functionality which was hardwired to git-merge-tree till now. The idea is from Dscho, so I hope the patches will be welcomed. ;-)</p><p>(I did not sent out any patches for now, since my ls-files parseopt patch isn't in yet, either.)</p><p>Ah and we talked about (in case I'll be home during the summer) if I should re-apply for git in GSoC. Basically I don't want to do it, but I'm very happy that my ex-mentor even recommends me not doing so. Here are his lines:</p><p><blockquote>
-> About reapplying for Git... I would _love_ to have you again, since I know
-> you will get stuff done, and in a very nice way.
+<p>git-svnimport will be removed in git-1.5.4 and i don't think it's tirival to use git-svn (which is great for bi-directional work) to properly convert an svn repo (with multiple branches) to a git one, so here is a recipe.</p><p>first, just use git-svn to create a git-svn repo. it's a git repo but it's a bit weird, it contains metadata which is necessary for bi-directional operations and you won't see the branches by default when you clone it. ah and it's not a bare repo.</p><p>in this example i'll convert ooo-build's svn repo (it has several branches and tags, so it's a good example).</p><p><code>mkdir -p ~/git/ooo-build
+cd ~/git/ooo-build
+git svn init -s svn+ssh://svn.gnome.org/svn/ooo-build
+git svn fetch</code></p><p>this will take a while. once it's completed, you need to convert this to a bare repo:</p><p><code>mkdir ../ooo-build.git
+cd ../ooo-build.git
+git --bare init
+git config remote.origin.url ~/git/ooo-build
+git config remote.origin.fetch +refs/remotes/tags/*:refs/tags/*
+git config --add remote.origin.fetch +refs/remotes/trunk:refs/heads/master
+git config --add remote.origin.fetch +refs/remotes/*:refs/heads/*
+git fetch
+</code></p><p>and you're done! :)</p><p>of course this is an incremental operation, so all you need is to run git svn fetch and git fetch from cron to keep the mirror up to date.</p><p>update:</p><p>it turns out you can even do this by having only one git repo. it has benefints: you don't have to duplicate the object database. and it has one problem: if you later switch fully to git, then you want to remove the git-svn metadata - doing so is the easiest if you just clone the repo.</p><p>so - in case you want this, you have to:</p><p><code>mkdir -p ~/git/ooo-build.git
+cd ~/git/ooo-build.git
+git --bare init
+git --bare svn init -s svn+ssh://svn.gnome.org/svn/ooo-build
+git --bare svn fetch</code></p><p>and then you can fetch from yourself:</p><p><code>
+git config remote.origin.url .
+git config remote.origin.fetch +refs/remotes/tags/*:refs/tags/*
+git config --add remote.origin.fetch +refs/remotes/*:refs/heads/*
+git fetch
+</code></p><p>note: git config --add remote.origin.fetch +refs/remotes/trunk:refs/heads/master it unnecessary as git svn fetch will update this for you (it is different from git fetch)</p><p>thanks for devurandom from #git for pointing out that this is possible using git --bare init before git svn init and using git --bare svn fetch :)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/we-love-ohloh.html">we love ohloh</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Tue 27 November 2007</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>it was a while ago when we registered at <a href="http://www.ohloh.net/projects/6659?p=Frugalware+Linux">ohloh.net</a>, but i recently re-visited that page, and i found some nice PR texts there ;)</p><p><blockquote> Over the past twelve months, 18 developers contributed new code to Frugalware Linux.</p><p>This is a relatively large team, putting this project among the top 10% of all project teams on Ohloh.</p><p>For this measurement, Ohloh considered only recent changes to the code. Over the entire history of the project, 36 developers have contributed. </blockquote>
+(<a href="http://www.ohloh.net/projects/6659/factoids/273910">source</a>)</p><p>well, i always considered our team as a nice and good but small team, it turns out that if you count projects, we're not that small! :)</p><p>it also creates nice charts about what programming languages do we use, etc, etc. so it's a different approach, compared to cia, but it's interesting.</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/git-cvsimport-mini-howto.html">git-cvsimport mini howto</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Fri 23 November 2007</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>recently i needed to convert a cvs repo to git, in fact i'm providing a git mirror, so i need incremental updates.</p><p>here is the command i needed:</p><p><code>$ git cvsimport -d :pserver:anonymous@tcpflow.cvs.sourceforge.net:/cvsroot/tcpflow -C tcpflow tcpflow</code></p><p>yes, this will do the initial conversion and the incremental one, too. :)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/playing-with-tcpflow.html">playing with tcpflow</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Mon 19 November 2007</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>tcpflow is a nice small console application to debug your network data. the usage is simple. just something like</p><p><code># tcpflow -i eth0</code></p><p>is enough. you're recommended to start it in an empty directory :)</p><p>don't be surprised, the incoming and the outgoing connection to a server's given port will be logged to 2 different files ;)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/using-git-filter-branch.html">using git filter-branch</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Wed 14 November 2007</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>git filter-branch is a new command in git-1.5.3 and today i met a situation where it was really useful. here is the scenario:</p><p>i have a 'vmexam' (like soxexam, "vmiklos' examples") repo, random small code chunks, every commit touches only a given subdir. after some time some projects need an own repo and i do versioned releases. this was the case with <a href="http://vmiklos.hu/project/pyrssi/">pyrssi</a>, too</p><p>so i wanted to have a new repo with only the pyrssi-related commits and without anything else. this is exactly the case git filter-branch's subdirectory filter is for:</p><p><code>git filter-branch --subdirectory-filter python/cgi/pyrssi HEAD</code></p><p>then in the old repo i just rm -rf'd the code and i had it in the root dir of the new repo. yay! :)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/using-xosd-for-irc-notifications-and-other-goodness.html">using xosd for irc notifications and other goodness</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Fri 02 November 2007</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>so, here is the situation:</p><p>you have a machine behind a firewall and you have an ssh session to a server. and you want to send notifications to you machine. here is what i did, maybe useful for others, too</p><p><ul>
+  <li>you'll need the program called osd_cat, provided by osd</li>
+  <li>you'll need to use ssh with the -X option</li>
+  <li>if you run programs inside screen, you still won't know the the right DISPLAY number, so do a trick: add</p><p><code>[ -n "$DISPLAY" ] && echo $DISPLAY > ~/.display</code></p><p>to you ~/.bash_login</li>
+  <li>now you're ready to use osd_cat:</p><p><code>$ echo -e 'foo'|DISPLAY=<code>cat ~/.display</code> osd_cat --color=blue --age=4 --font=-*-helvetica-medium-r-*-*-*-320-*-*-*-*-*-* --offset=100 --align=right --indent=100</code></li>
+</ul></p><p>as an example, irssi has <a href="http://irssi.org/scripts/scripts/osd.pl">osd.pl</a> to use osd_cat for highlight notifications :)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/playing-with-compiz-fusion.html">playing with compiz fusion</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Sat 27 October 2007</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>Priyank recently removed Beryl from -current and added Compiz Fusion. so i did a base install then i followed the instructions in xgl's README.Frugalware. a few impressions:</p><p>pros:
+<ul>
+  <li>i have an i810 card, not nvidia, or anything extra, it's a cheap one. the only effect that was slow for me is when i marked the cube 100% transparent. but all the other effect were really fast.</li>
+  <li>compiz initially worked fine only with gnome. i'm a kde fan so i tried compiz with kde and it worked fine. i think this is something new</li>
+  <li>thanks to aiglx, i did not have to - in fact - start xgl, no editing in kdm.conf or anything, just xorg.conf</li>
+</ul></p><p>cons:<ul>
+  <li>i have 4 virtual desktops like:
+<pre>1 | 2
+----
+3 | 4</pre></p><p>compiz translates this to: a simple paper with two side and on each size there is another side on top of the other one. so it says it's not a cube. how crappy</li>
+  <li>i can't select to hide windows from other virtual desktops from the taskbar. a basic feature @ kde</li>
+</ul></p><p>conclusion? it's really nice, well done - but for daily work of course i won't enable it :)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/removing-uids-in-gpg.html">removing uids in gpg</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Fri 05 October 2007</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>here is the problem:</p><p>you hava gpg key since 5 years. you had various mail addresses over the time and every mail address is attached to a key. so it'll look ugly, like <a href="http://frugalware.org/~vmiklos/pics/shots/gpg-bloated.png">this</a>.</p><p>the problem is that once you pushed a uid (read: email address, attached to a key) to the keyserver, you can no longer remove it. but here is the solution: you can revoke it! :)</p><p>how to do so?</p><p>it's easy:</p><p><code>$ gpg --edit-key <a href="mailto:john@foo">john@foo</a>.org</code></p><p>a list of your ids with numbers are displayed. select a uid:</p><p><code>Command> uid 2</code></p><p>then you can revoke it:</p><p><code>Command> revuid 3
+Really revoke this user ID? (y/N) y
+Please select the reason for the revocation:
+  0 = No reason specified
+  4 = User ID is no longer valid
+  Q = Cancel
+(Probably you want to select 4 here)
+Your decision? 4
+Enter an optional description; end it with an empty line:
 >
-> There is always a but.
->
-> But.  Realistically, I think that you learnt so many things in the GSoC
-> project last year, that you do not really have all that much left which
-> you could learn in the Git community.  You really just would be a work
-> horse.
->
-> There are other projects out there who do fantastic and exciting things,
-> and have completely different personal (and political!) environments.
->
-> So while the Git community member says "keep him!", the mentor in me says
-> "let him go!" albeit with half a sad eye.
->
-> Therefore I am strong and point you to <a href="http://code.google.com/soc/2008">http://code.google.com/soc/2008</a>; I
-> even met some of the guys at the mentor summit, and they are all pretty
-> cool.
-</blockquote></p><p>These lines made me happy, really. :-)</p>
+Reason for revocation: User ID is no longer valid
+(No description given)
+Is this okay? (y/N) y</code></p><p>you can notice that the uid is now listed as "revoked" instead of "ultimate"</p><p>now you can exit using:</p><p><code>Command> save</code></p><p>and send it to the key server:</p><p><code>$ gpg --send-key 03915096</code></p><p>of course the uids will be still there, but that bloated list should be now short and tiny :)</p>
 </div>
 </div>
 
@@ -118,10 +267,10 @@
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/playing-with-lilypond.html">Playing with lilypond</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/dhcpcd-vs-zeroconf.html">dhcpcd vs zeroconf</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Thu 08 January 2009</p>
+    <p>Posted on: Thu 04 October 2007</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -129,7 +278,7 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>So lilypond is a really geek-friendly project to produce music notation from text-based files. It has its own cryptic language. I spent a half day playing with it, so I'm not an expert at all, but I achieved something. ;-)</p><p>The example song I wanted to describe is the <a href="http://www.youtube.com/watch?v=-hLarHt6wi8">cantina band</a> from starwars.</p><p>To make the long story short, here is the <a href="http://vmiklos.hu/music/cantina-band/cantina-band.txt">asciidoc source</a>, the <a href="http://vmiklos.hu/music/cantina-band/Makefile">Makefile</a>, and the <a href="http://vmiklos.hu/music/cantina-band">result</a>.</p>
+<p>maybe you know a situation that is regular for me: when testing a new wireless network - if dhcp is misconfigured, dhcpcd would just have to timeout. though - thanks to zeroconf support - it uses to pick up some ip addresses instead, making debugging hard. so here is a trick to disable zeroconf support (so that dhcpcd will just timeout):</p><p>append</p><p><code>dhcp_opts = -L</code></p><p>to your /etc/sysconfig/network/default (or other) profile for the section of the wireless interface</p>
 </div>
 </div>
 
@@ -138,10 +287,10 @@
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/bitlbee-skype-0-7.html">bitlbee-skype 0.7.0</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/rtorrent-with-dht-support.html">rtorrent with dht support</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Wed 07 January 2009</p>
+    <p>Posted on: Wed 03 October 2007</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -149,131 +298,10 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>It's out, the only recent change is that I added a new setting to be able to see what is the raw stream BitlBee received. The other interesting part is that after the release I finally decided to split up that huge read callback and now each part is handled by a separate function, and I have a nice array of function pointers. BTW, this also made checkpatch happy about skype.c without doing hacks like:</p><p><pre>
-printf("%s %s",
-        foo,
-        bar);
-</pre></p><p>Which would really just make the code ugly.</p><p>Yay! :)</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/migrating-git-ls-files-to-use-parseopt.html">Migrating git-ls-files to use parseopt</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Tue 06 January 2009</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>People say that using bitfields in structs is slow. Of course it reduces memory usage, but the aritmetic is slower than just using pointers.</p><p>But my real problem is that if a struct uses bitfields, I can't just pass foo-&gt;bar as a pointer. And I hate that. When migrating ls-files to parseopt, I needed to write 3 extra callback functions just because of this.</p><p>Grr.</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/non-optional-kbd.html">Non-optional kbd</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Mon 05 January 2009</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>Still preparing for my 'Computer Networks' exam, so I did not do much coding.</p><p>LGee just uploaded a few new pictures about his servers, and there are two interesting ones. ;-)</p><p>First is this one. And then yes, I must agree that some mainboards are really can't be used a server.</p><p>This other one is just interesting - first we though that's a bug in the Frugalware ppc installer, then later it turned out to be a generic Linux-ppc issue.</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/gmane-export.html">gmane export</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Sun 04 January 2009</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>OK, this was silly.</p><p>Yesterday I wanted to reply to a post on the swig mailing list. I found the post on nabble.com, which is way worse than gmane.org, but - I guess - due to SEO black magic Google prefers the previous. So I searched for the mail on gmane.org, appended the usual /raw to the mail, but I still did not get a mbox, to feed it to mutt. Given that I had no idea what do to, I just simply wrote an mbox header, then mutt was able to open it.</p><p>And finally it turns out that gmane <a href="http://gmane.org/export.php">has a nice export feature</a>. Duh! ;-)</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/pacman-g2-qt-bug.html">pacman-g2 -Qt bug</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Sat 03 January 2009</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>BMH still feeds me with info, he just found a -Qt bug - fortunately the fix was rather trivial.</p><p>The nontrivial stuff is that he wants callbacks in the Python bindings and it seems that won't be easy. The reason is that - it seems, I don't have a working implementation yet - we'll need the traditional 'void *data' extra parameters in each callback to support that, since we need to store the Python context pointer somewhere.</p><p>Of course first I want to have the whole thing working, before breaking the API with no good reason.</p><p>The whole idea is based on <a href="http://www.nabble.com/Automatically-generated-callbacks-using-directors-(python)-td19239301.html">this</a> post. The provided examples work fine, at least.</p><p>Snip. Dscho mailed me today with a project list about what could I do in Git - the two items are a major merge-recursive rework, the other is about packv4. I could learn a lot with both, my interest is in this order. But that's not yet in coding status, we're just discussing the details ATM.</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/pacman-sy-rsync-like-optimization.html">pacman -Sy: rsync-like optimization</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Fri 02 January 2009</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>This <a href="http://article.gmane.org/gmane.linux.frugalware.devel/5132">came up</a> on the mailing list, and finally resulted in a <a href="http://git.frugalware.org/gitweb/gitweb.cgi?p=pacman-g2.git;a=commitdiff;h=87f094e078f5a7eb2ed22ecd8fe27b30c930590e">commit</a> in pacman-g2.git.</p><p>The idea is to speed up the pacman -Sy operation just like rsync speeds up not re-transferring already sent data.</p><p>Also BMH started to poke me about the bindings privately, so I pushed a few fixes and probably I will continue doing so.</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/git-apply-now-uses-parseopt.html">git-apply now uses parseopt</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Thu 01 January 2009</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>At least if you track git.git's "next" branch. Happy new year! :)</p><p>(<a href="http://git.kernel.org/?p=git/git.git;a=commitdiff;h=f26c4940c4c7942a95058d9aaef7b01967085a60">patch</a>, <a href="http://git.kernel.org/?p=git/git.git;a=commitdiff;h=5dd07c022e9db90ff71223d2228f8129ee5f937c">merge</a>)</p>
+<p>dht support means support for trackerless torrents</p><p>currently rtorrent does not support it, but after a bit googling, i've found <a href="http://libtorrent.rakshasa.no/ticket/98">this ticket</a>. it mentions that there is a patch <a href="http://tk.ttdpatch.net/~jdrexler/dht/">here</a>. so i've split up the patch for libtorrent and rtorrent and uploaded these packages to my <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/bmf/">bmf</a> repo.</p><p>you need to add two extra lines to your ~/.rtorrent.rc:</p><p><pre>
+dht = auto
+dht_port = 6986
+</pre></p><p>of course the port can be anything else.</p><p>during testing, i had one "server" - where i had the test file already - and one "client" - where i had only the torrent.</p><p>i opened one port for torrent communication and one port for the dht server on the server, of course no ports were open on the client. and yes, it did work fine! :)</p><p>(<a href="http://frugalware.org/~vmiklos/pics/shots/trackerless.png">screenshot</a>)</p><p>let's hope the patch will be included in the vanilla rtorrent soon!</p>
 </div>
 </div>
 

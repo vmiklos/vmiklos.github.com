@@ -58,10 +58,10 @@
 
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/lesscharset-vs-special-chars.html">LESSCHARSET vs special chars</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/graph2k8-git-repo.html">graph2k8.git repo</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Thu 12 March 2009</p>
+    <p>Posted on: Sat 20 December 2008</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -69,7 +69,7 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>So we got <a href="http://bugs.frugalware.org/3678">this</a> bugreport yesterday, and I wasn't able to reproduce it on my x86 box, but I saw it on my iBook. It turns out that LESSCHARSET, which I set just for git, handles this case for me as well. At least after setting it, the manpage is correct on my iBook as well.</p><p>The weird thing is that it's still wrong for crazy@ - though I don't know if this will solve the problem of the reporter or not.</p><p>I started working on a new song in lilypond, I still like it, though no idea so far how to display a simple "A^4", it seems "a:4" does something much more complicated. ;)</p>
+OK, this is probably not that interesting, but who knows... I just put out some code I did during this semester for this OpenGL course. It's available <a href="http://vmiklos.hu/gitweb/?p=graph2k8.git;a=tree">here</a>.
 </div>
 </div>
 
@@ -78,10 +78,10 @@
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/patch-for-picu.html">Patch for picu</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/tags-without-a-tagger-in-git.html">Tags without a tagger in git</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Wed 11 March 2009</p>
+    <p>Posted on: Fri 19 December 2008</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -89,7 +89,7 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>I recently started using <a href="http://picasup.googlecode.com/svn/trunk/picUp/src/picup/picu.py">picu</a>, which is a nice tool (I just mirror pictures at Picasa as I like the comment/notify/label features of it.), but it had two annoying bugs (no proper header and too gmail-centric), so I sent <a href="http://frugalware.org/~vmiklos/patches/picu-nogmail.patch">this patch</a> upstream today.</p><p>Heh, and this is the 100th hacking post. So far it seems it was not a bad idea, I can search back "what did I hack on 22th", and sometimes I can link posts from here as a HOWTO, so writing it in English was a good decision.</p>
+<p>So this came up on IRC: ancient tag objects in git have no "tagger" line, and thus converting such a repo with git fast-export is not possible. And the usual way - I just <a href="http://thread.gmane.org/gmane.comp.version-control.git/103470">reported</a> it on the mailing list and Dscho quickly provided the necessary patch.</p><p>I hope the ubuntu guy (who is in CC) will at least give Dscho a "thanks", but who knows if it'll ever happen..</p>
 </div>
 </div>
 
@@ -98,10 +98,10 @@
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/perfect-localized-fonts-in-the-setup-aga.html">Perfect localized fonts in the setup again</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/tilde-in-asciidoc-manpages.html">TIlde in asciidoc manpages</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Tue 10 March 2009</p>
+    <p>Posted on: Thu 18 December 2008</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -109,7 +109,6 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>We had this problem recently that on the console the fonts were not entirely correct, for example lat2-16.psfu.gz was replaced by lat2a-16.psfu.gz. I finally found why it was still broken in the setup: I forgot to update the Makefile to include the new font in the initrd. ;-)</p><p>Now the fonts are perfect again.</p>
 </div>
 </div>
 
@@ -118,10 +117,10 @@
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/serial-driver-for-erlang.html">Serial driver for erlang</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/remove-items-from-a-python-list.html">Remove items from a python list</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Mon 09 March 2009</p>
+    <p>Posted on: Wed 17 December 2008</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -129,7 +128,12 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>I just started searching for an alternate serial driver for Erlang as the semi-official one has zero documentation, and found what?</p><p>There is a gen_serial module by spearce, we know each other since last year's GSoC. ;)</p><p>Sadly the driver seem to be Windows-only so it's not that interesting, but the world is small.</p>
+<p>One item in Python's magic word is that you don't have to really care about memory management. I already know if i want to "strdup" a list, then i need foo[:], but I did not notice that in case I iterate over a list _and_ modify it, then I need such a trick as well.</p><p>Example</p><p><pre>
+l = ['a', 'b']
+for i in l:
+        l.remove(i)
+print l
+</pre></p><p>So we remove each item from the list (an expensive version of "l = []").</p><p>However, the result will be "['b']". Now if you use "for i in l[:]:", everything will be fine, because you can iterate over the original list.</p><p>It's a shame that I do python for more than 2 years, and I did not know such a basic stuff. :(</p><p>(<a href="http://mail.python.org/pipermail/python-list/2004-September/280885.html">original post</a>)</p>
 </div>
 </div>
 
@@ -138,18 +142,31 @@
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/fighting-with-forums.html">Fighting with forums</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/a-few-note-about-rpm.html">a few note about rpm</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sun 08 March 2009</p>
+    <p>Posted on: Tue 16 December 2008</p>
   </div>
   <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
+    <p>Estimated read time: 3 minutes</p>
   </div>
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>We recently had to move forums.fw.o to a new machine and first boobaa offered a hosting. I had only ftp access, but that isn't a big problem - the bigger one is that we have this mailing list - forums two-way gateway and we failed to configure it. They have virtual domains / mailboxes on the machine (using SQL) and the machine kept rejecting mails sent to the forums by the mailing list. After debugging for about a day, we decied to just move it an other box where there are no virtual announts, and I just had to add some trivial aliases to /etc/postfix/aliases.</p><p>Sigh.</p><p>OTOH, Frugalware 1.0rc2 is out, and now we can continue bugfixing. :-)</p>
+<p>I spent some time today to prepare some rpm packages for an RHEL4 box, it was an interesting experience. To preface to this story is that first I had to do the followings on Frugalware:</p><p><ul>
+  <li>Patch mysql 5.0.37 to add support for the sphinx search engine</li>
+  <li>Make sure about sphinx itself works fine with this (though sadly I haven't had time yet to package sphinx as well).</li>
+</ul></p><p>We have a newer (but compatible, since we still ship 5.0.x) mysql, but a simple git checkout gave me the old buildscript and then the patch applied perfectly.</p><p>Then the plan changed, I needed to do this on an RHEL4 box as well.</p><p>Steps:</p><p><ul>
+  <li>Fix broken up2date config, it seems nobody installed any security update on the box for a long time.</li>
+  <li>Notice that RHEL4 has mysql 4.x, so I had to upgrade it to 5.0.x which was not trivial.</li>
+  <li>After adding the patch to the spec file, I saw that there are a bunch of manual autoconf/automake/autoheader/autowhatever calls, so I did not add a call to mysql's own autogen script. It turned out later that this was a fault, the default autofoo calls did not regenerate all the necessary files, basically they just took a lot of time, but did not really do anything useful. Sigh.</li>
+  <li>Once build was done, I had to rebuild perl's mysql driver and the whole php package because of the major mysql upgrade. Did I say I hate to touch php?</li>
+  <li>And finally the worst was to package sphinx. I used some opensuse spec file, but it turned out to be badly broken on RHEL4. Fixing it was not so problematic, but took a lot of time, because debugging a specfile under RH is a PITA.</li>
+  <li>Let me show a few examples. The equivalent of Fdestdir (the directory which will be tared up after the build is done) is not rm -rf'd before the build starts. So if you have some crap there, your final package will have it.</li>
+  <li>OTOH, Fsrcdir (the directory where the build takes place) <em>is</em> deleted, which means you can't do an incremental build.</li>
+  <li>If you break your pre-uninstall script, you can't easily uninstall a package, even with rpm -e --force --nodeps (you need some magic --no-preun switch, which is not implied by --force).</li>
+  <li>If you say rpm -Uvh foo-2.0.rpm, then sometimes it bails out with an error about it has a file conflict because /bar/baz.so is provided by foo-1.0. What? Doesn't -U stand for <em>upgrade</em>?</li>
+</ul></p><p>Okay, this was enough. I finally finished the task, but I again just can make a "this is so much more efficient with Frugalware" note. ;-)</p><p>And no, I don't like to write about why foo sucks, but both this packaging system (or at least the default settings) a docbook sometimes really sucks.</p>
 </div>
 </div>
 
@@ -158,10 +175,10 @@
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/visegrad.html">Visegrad</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/date-of-docbook-manpages.html">date of docbook manpages</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sat 07 March 2009</p>
+    <p>Posted on: Mon 15 December 2008</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -169,16 +186,7 @@
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<div class="paragraph"><p>ma dnettel meg zaivaldival voltunk bringazni. az ugymond szervezesi feladatokat en lattam el, de
-igazabol ez kimerult abban, hogy az utvonalat kitalaltam, hoztam terkepet, es korlatlan mennyisegu
-szolocukor-ellatast biztositottam nekik. :)</p></div>
-<div class="paragraph"><p>utvonal kb a kovetkezo volt: budapest - budakalasz - szentendre - leanyfalu - tahitotfalu -
-dunabogdany - visegrad - nagymaros - kismaros - vac - god - dunakeszi - budapest.</p></div>
-<div class="paragraph"><p>en haztol hazig 121 km-t mertem.</p></div>
-<div class="paragraph"><p>az ido jo volt, az elorejelzessel ellentetben nem esett, a homerseklet is jo volt, neha sutott meg a
-nap is. neha gaz volt a szel, de igazabol csak itt bp-en volt eros.</p></div>
-<div class="paragraph"><p>zaivaldi csinalt <a href="http://lerak.hu/~zaivaldi/marc7/">par kepet</a>, amit kicsit megkommentalva
-<a href="https://www.flickr.com/photos/vmiklos/albums/72157667486514784">mirroroztam</a>.</p></div>
+<p>It seems the method we used to have a custom date format (ie.: not the default mmddyy, but the yymmdd one) is no longer supported. I spent about an hour trying to figure out what's wrong with it, but it seems the solution is not so trivial and it just does not worth the effort. So it's dropped for now, sigh.</p><p>And if I'm at blaming docbook, then here it is: The git manpages still have a ".ft C" / ".ft" string pair around code blocks (or whatever they are called, think of the html &lt;pre&gt; tag), probably due to some broken custom asciidoc.conf.</p><p>I like docbook (since generating man/html/pdf is easy from it), but I really hate the fact that they break something with each release. ;-/</p>
 </div>
 </div>
 
@@ -187,10 +195,10 @@ nap is. neha gaz volt a szel, de igazabol csak itt bp-en volt eros.</p></div>
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/escaping-within-sphinx-and-mysql.html">Escaping within sphinx and mysql</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/playing-with-metapost.html">Playing with metapost</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Sat 07 March 2009</p>
+    <p>Posted on: Sun 14 December 2008</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -198,7 +206,7 @@ nap is. neha gaz volt a szel, de igazabol csak itt bp-en volt eros.</p></div>
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>We all know the usual problem with sql escaping, there is even a <a href="http://xkcd.com/327/">comic</a> about it.</p><p>There is an other SQL-related project, <a href="http://www.sphinxsearch.com/">sphinx</a>, which is a quite efficient search indexer (especially for whole word search), but it also needs escaping. Given that in sphinx "foo-bar" means "all records containing foo, but not bar", if you really want a single-word "foo-bar", then you need to use "foo\-bar".</p><p>And that's the fun part, as the escaping order matters a lot. Basically if you escape mysql first and then just insert the sphinx query, then you just created an injection yourself. ;)</p><p>So the <em>final</em> query will look like "foo\\-bar" if you did the escaping in the right order.</p><p>It's also notable that the official sphinx php API seems not escaping the ";" char, which is also a bug, as this way you can modify the search query in the way you want.</p>
+The name of the command is mpost(1), and it's part of the tetex package. I read about it in <a href="http://udrepper.livejournal.com/19751.html">udrepper</a>'s blog. The situation for me is true as well: I'm better in programming than doing anything by hand, so it's something for me. Some very initial results <a href="http://groups.google.com/group/asciidoc/msg/242f81d5d33ab04c">here</a>.
 </div>
 </div>
 
@@ -207,18 +215,18 @@ nap is. neha gaz volt a szel, de igazabol csak itt bp-en volt eros.</p></div>
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/virtualbox.html">Virtualbox</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/ghc-upgrade.html">GHC upgrade</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Fri 06 March 2009</p>
+    <p>Posted on: Sat 13 December 2008</p>
   </div>
   <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
+    <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>I earlier wrote about I was experimenting with PowerShell, so I had to install Windows in a virtual machine. It's not a big problem, we at the uni get a license to use it for free till the end of our studies (or something like that), so I started to search for what emulator should I use.</p><p>Of course my favorite is qemu, but till I don't have kvm-enabled hw and kvm support isn't fully merged from kvm, it's slow.</p><p>Given that I had to use some other emulator, I thought I gave vmware a try, they offer a 30-day trial and I wanted to see what's new in their recent versions - I think I last tried it about 2 years ago. It seems the automagic gui screwed up something and there is no more vmware-config.pl, so I gave it up.</p><p>Last, I tried Virtualbox. Man, it's fast! Of course it's bloated as well (external kernel module, guest addons, etc) - but if I forget about these issues, it really gaves me the same experience vmware gave me when I last tried it. Impressive.</p><p>As a side note, git-1.6.2 is out, sadly I haven't got much time for it - only 5 patches of mine are in the changelog. But at least now the pdf version of the user manual is supported out of the box.</p>
+<p>I just got some time to upgrade GHC to 6.10.whatever in Frugalware-current, and it seems they managed to create some screwed up bootstrap binaries, linked to lineedit. This is some BSD version of GNU readline, we did not even had it packaged and the docu says it's outdated in most distros. :-P</p><p>However, we still want to bootstrap using upstream binaries, so now we use it. At least I was able to get rid of the ugly LD_LIBRARY_PATH hack, caused by the old readline library they linked the binaries in the previous series.</p>
 </div>
 </div>
 
@@ -227,10 +235,10 @@ nap is. neha gaz volt a szel, de igazabol csak itt bp-en volt eros.</p></div>
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/ejabber-virtual-hosts.html">Ejabber virtual hosts</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/hacker-purity-test.html">Hacker Purity Test</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Thu 05 March 2009</p>
+    <p>Posted on: Fri 12 December 2008</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -238,7 +246,11 @@ nap is. neha gaz volt a szel, de igazabol csak itt bp-en volt eros.</p></div>
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>Now that I know a little bit more about Erlang I checked how to configure vhosts with ejabberd. It turns out it's quite trivial once you understand the syntax of the config file, which is just eval'd, so it has this horrible (for an outsider) syntax. ;)</p><p>Actually configuring vhosts are just about adding the new host to the DNS and adding it to /etc/ejabberd/ejabberd.cfg, like:</p><p>{hosts, ["mydomain.org", "another.com"]}.</p><p>And that's all you need. Simple, isn't it? :)</p>
+<p>I just found <a href="http://www.armory.com/tests/hacker.html">this test</a>, it's an old one, almost 20 years old. It's funny to see what questions became outdated and which didn't.</p><p>Some of my favorite questions:</p><p><ul>
+  <li>Do you complain when a "feature" you use gets fixed?</li>
+  <li>Ever mask an NMI?</li>
+  <li>Do you own more than 16 floppy disks?</li>
+</ul></p><p>Of course the last one is because I still do have more than that - though I no longer have such a reader at home - would have to go to work to read them. ;-)</p>
 </div>
 </div>
 
@@ -247,10 +259,10 @@ nap is. neha gaz volt a szel, de igazabol csak itt bp-en volt eros.</p></div>
 <hr />
 <article>
   <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/setup-bugfixing-for-existing-home-dir.html">Setup bugfixing for existing home dir</a></h1>
+    <h1><a href="https://vmiklos.hu/blog/git-janitor-cleanup.html">Git Janitor cleanup</a></h1>
   </div>
   <div class="article_meta">
-    <p>Posted on: Tue 03 March 2009</p>
+    <p>Posted on: Thu 11 December 2008</p>
   </div>
   <div class="article_readtime">
     <p>Estimated read time: 1 minutes</p>
@@ -258,7 +270,7 @@ nap is. neha gaz volt a szel, de igazabol csak itt bp-en volt eros.</p></div>
   <div class="article_text">
     <div id="preamble">
 <div class="sectionbody">
-<p>So we had <a href="http://bugs.frugalware.org/3339">this bug</a> for a while, and the <a href="http://frugalware.org/pipermail/frugalware-git/2009-March/028117.html">solution</a> was just using an other dir, so the user later can merge the contents of the two dirs.</p><p>Sigh, testing the setup still takes a lot of time. For example to test the above bug, you need to do a base install, which still takes a lot of time. Hopefully sooner or later we can switch to kvm (as the old kvm-incompatible hw gets unused) and then this can be faster.</p>
+<p>Mailed Christian Couder to cleanup up the <a href="http://git.or.cz/gitwiki/Janitor">Janitor page on the wiki</a> a bit, since for example all the git_config_string refactoring is already done.</p><p>It's nice I did not really have to explain I do not want to destroy his work, it's just no longer necessary - he understood it just fine.</p>
 </div>
 </div>
 
