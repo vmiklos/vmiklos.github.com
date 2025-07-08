@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/pygments.css">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Miklos Vajna">
+  <meta name="description" content="Posts and writings by Miklos Vajna">
+
+  <link href="https://vmiklos.hu/blog/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking RSS" />
+
+<meta name="keywords" content="en">
+
+  <title>
+    What is Miklos hacking
+&ndash; Interdependent tracked changes improvements in Writer, part 2  </title>
+
+<script type="text/javascript">
+  var _paq = window._paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//analytics.vmiklos.hu/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '1']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <h2><a href="https://vmiklos.hu/blog">What is Miklos hacking</a></h2>
+      <p></p>
+      <ul>
+        <li><a href="/" target="_blank">Root</a></li>
+        <li><a href="https://planet.documentfoundation.org/" target="_blank">LibreOffice Blogs</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://vmiklos.hu/blog">Index</a> &brvbar; <a href="https://vmiklos.hu/blog/archives.html">Archives</a>
+      &brvbar; <a href="https://vmiklos.hu/blog/feeds/all.rss.xml">RSS</a>
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sw-interdependent-redline-improvements2.html">Interdependent tracked changes improvements in Writer, part 2</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Tue 08 July 2025</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <p>Writer has some support for interdependent (or hierarchical) tracked changes: e.g. the case when you
+have a delete on top of an insert. See the <a href="https://vmiklos.hu/blog/sw-interdependent-redline-improvements.html">first
+post</a> for background.</p>
+<p>This work is primarily for <a href="https://www.collaboraonline.com/">Collabora Online</a>, but the feature is
+available in desktop Writer as well.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>With the already mentioned improvements in place, a few areas were still lacking: we didn't have UI
+for all cases where the DOCX import was possible already; combining tracked changes (redlines) were
+not complete (so you don't have to reject all parts of a logical redline one by one) and some of the
+undo/redo code didn't work as expected.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>Here is a sample case where the UI was missing to create something that was possible to import from
+DOCX: a format redline on top of an insert redline.</p>
+<p>If you had a document with an insert:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements2/1-baseline.png"><figure><img src="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements2/1-baseline.png"><figcaption>Interdependent tracked change: just insert</figcaption></figure></a></p>
+<p>And you selected BBB to mark those characters as bold, we just updated the existing insert redline
+to be bold:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements2/2-edit-old.png"><figure><img src="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements2/2-edit-old.png"><figcaption>Interdependent tracked change: old, format is not tracked separately</figcaption></figure></a></p>
+<p>But now we track a format change on top of the insert separately:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements2/3-edit-new.png"><figure><img src="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements2/3-edit-new.png"><figcaption>Interdependent tracked change: new, format is tracked separately</figcaption></figure></a></p>
+<p>This is also visible if you open the track changes dialog, which explains that now you have part of
+the insert redline covered by a format redline:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements2/4-dialog.png"><figure><img src="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements2/4-dialog.png"><figcaption>Interdependent tracked change: UI dialog now showing multiple redlines </figcaption></figure></a></p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>As usual, the high-level problem was addressed by a series of small changes. Core side:</p>
+<ul>
+<li><a href="https://git.libreoffice.org/core/commit/cc2babfa0a960c7d52ea7997aea19dcf10c12d08">sw interdependent redlines: fix nPamEndtNI -&gt; nPamEndNI typo</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/82b24dd9748c6c0a2990e70bda0960ae26415390">tdf#166319 sw interdependent redlines: combine on reject of del-then-fmt's fmt</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/612ba7b2bc5d1d12c10287094263f6d31983a3d8">tdf#166319 sw interdependent redlines: fix undo of reject of ins-then-del's del</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/eef0dfed817e40cd83e8ba8e290f45c224257f97">tdf#166319 sw interdependent redlines: add UI to create format inside insert</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/0566e8e1776921ecb26f0ddd0546ec10afeed8e0">tdf#166319 sw interdependent redlines: undo of creating an ins-then-fmt redline</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/e06eb6b4a6176692d25c758121012473fe638043">tdf#166319 sw interdependent redlines: redo of creating an ins-then-fmt redline</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/5ed41ca44bee5122a9db4aa946f6e3ecd9432574">tdf#166319 sw interdependent redlines: fix redo of reject of del-then-fmt's del</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/76c2168a276f0996deeac08ce176525821fb056e">tdf#166319 sw interdependent redlines: fix bad accept undo action for reject</a></li>
+</ul>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a development edition of Collabora Online 25.04 and try it out yourself right now: <a href="https://www.collaboraonline.com/code/">try
+the development edition</a>.  Collabora intends to continue
+supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
+available in TDF's next release too (25.8).</p>
+  </div>
+  <div class="article_meta">
+    <p>Category: <a href="https://vmiklos.hu/blog/category/libreoffice.html">libreoffice</a>
+ &ndash; Tags:
+      <a href="https://vmiklos.hu/blog/tag/en.html">en</a>    </p>
+  </div>
+
+
+</article>
+
+
+    <div id="ending_message">
+      <p>&copy; Miklos Vajna. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
+</body>
+</html>

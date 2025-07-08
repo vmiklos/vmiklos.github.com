@@ -1,5 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>What is Miklos hacking - libreoffice</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Mon, 02 Jun 2025 13:54:44 +0200</lastBuildDate><item><title>Interdependent tracked changes improvements in Writer</title><link>https://vmiklos.hu/blog/sw-interdependent-redline-improvements.html</link><description>&lt;p&gt;Writer has some support for interdependent (or hierarchical) tracked changes: e.g. the case when you
+<rss version="2.0"><channel><title>What is Miklos hacking - libreoffice</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Tue, 08 Jul 2025 08:43:10 +0200</lastBuildDate><item><title>Interdependent tracked changes improvements in Writer, part 2</title><link>https://vmiklos.hu/blog/sw-interdependent-redline-improvements2.html</link><description>&lt;p&gt;Writer has some support for interdependent (or hierarchical) tracked changes: e.g. the case when you
+have a delete on top of an insert. See the &lt;a href="https://vmiklos.hu/blog/sw-interdependent-redline-improvements.html"&gt;first
+post&lt;/a&gt; for background.&lt;/p&gt;
+&lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraonline.com/"&gt;Collabora Online&lt;/a&gt;, but the feature is
+available in desktop Writer as well.&lt;/p&gt;
+&lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;With the already mentioned improvements in place, a few areas were still lacking: we didn't have UI
+for all cases where the DOCX import was possible already; combining tracked changes (redlines) were
+not complete (so you don't have to reject all parts of a logical redline one by one) and some of the
+undo/redo code didn't work as expected.&lt;/p&gt;
+&lt;h2 id="results-so-far"&gt;Results so far&lt;a class="headerlink" href="#results-so-far" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Here is a sample case where the UI was missing to create something that was possible to import from
+DOCX: a format redline on top of an insert redline.&lt;/p&gt;
+&lt;p&gt;If you had a document with an insert:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements2/1-baseline.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements2/1-baseline.png"&gt;&lt;figcaption&gt;Interdependent tracked change: just insert&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;And you selected BBB to mark those characters as bold, we just updated the existing insert redline
+to be bold:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements2/2-edit-old.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements2/2-edit-old.png"&gt;&lt;figcaption&gt;Interdependent tracked change: old, format is not tracked separately&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;But now we track a format change on top of the insert separately:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements2/3-edit-new.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements2/3-edit-new.png"&gt;&lt;figcaption&gt;Interdependent tracked change: new, format is tracked separately&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;This is also visible if you open the track changes dialog, which explains that now you have part of
+the insert redline covered by a format redline:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements2/4-dialog.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements2/4-dialog.png"&gt;&lt;figcaption&gt;Interdependent tracked change: UI dialog now showing multiple redlines &lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id="how-is-this-implemented"&gt;How is this implemented?&lt;a class="headerlink" href="#how-is-this-implemented" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;If you would like to know a bit more about how this works, continue reading... :-)&lt;/p&gt;
+&lt;p&gt;As usual, the high-level problem was addressed by a series of small changes. Core side:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/cc2babfa0a960c7d52ea7997aea19dcf10c12d08"&gt;sw interdependent redlines: fix nPamEndtNI -&amp;gt; nPamEndNI typo&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/82b24dd9748c6c0a2990e70bda0960ae26415390"&gt;tdf#166319 sw interdependent redlines: combine on reject of del-then-fmt's fmt&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/612ba7b2bc5d1d12c10287094263f6d31983a3d8"&gt;tdf#166319 sw interdependent redlines: fix undo of reject of ins-then-del's del&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/eef0dfed817e40cd83e8ba8e290f45c224257f97"&gt;tdf#166319 sw interdependent redlines: add UI to create format inside insert&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/0566e8e1776921ecb26f0ddd0546ec10afeed8e0"&gt;tdf#166319 sw interdependent redlines: undo of creating an ins-then-fmt redline&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/e06eb6b4a6176692d25c758121012473fe638043"&gt;tdf#166319 sw interdependent redlines: redo of creating an ins-then-fmt redline&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/5ed41ca44bee5122a9db4aa946f6e3ecd9432574"&gt;tdf#166319 sw interdependent redlines: fix redo of reject of del-then-fmt's del&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/76c2168a276f0996deeac08ce176525821fb056e"&gt;tdf#166319 sw interdependent redlines: fix bad accept undo action for reject&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="want-to-start-using-this"&gt;Want to start using this?&lt;a class="headerlink" href="#want-to-start-using-this" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;You can get a development edition of Collabora Online 25.04 and try it out yourself right now: &lt;a href="https://www.collaboraonline.com/code/"&gt;try
+the development edition&lt;/a&gt;.  Collabora intends to continue
+supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
+available in TDF's next release too (25.8).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Tue, 08 Jul 2025 08:43:10 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2025-07-08:/blog/sw-interdependent-redline-improvements2.html</guid><category>libreoffice</category><category>en</category></item><item><title>Interdependent tracked changes improvements in Writer</title><link>https://vmiklos.hu/blog/sw-interdependent-redline-improvements.html</link><description>&lt;p&gt;Writer has some support for interdependent (or hierarchical) tracked changes: e.g. the case when you
 have a delete on top of an insert. While there were some working cases, handling of many
 combinations were missing. I started to make systematic improvements in this area in the recent
 past, this post gives you an overview what's done so far.&lt;/p&gt;
@@ -401,42 +441,4 @@ fallback on Linux takes the font type into account while deciding font fallback.
 &lt;p&gt;You can get a development edition of Collabora Online 24.04 and try it out yourself right now: &lt;a href="https://www.collaboraoffice.com/code/"&gt;try
 the development edition&lt;/a&gt;.  Collabora intends to continue
 supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
-available in TDF's next release too (24.8).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Wed, 07 Aug 2024 09:05:24 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2024-08-07:/blog/sw-improved-font-falback.html</guid><category>libreoffice</category><category>en</category></item><item><title>Fixing handling of line object transformations in the DOCX import of Writer</title><link>https://vmiklos.hu/blog/sw-drawingml-line-transform.html</link><description>&lt;p&gt;Writer now has improved support for toplevel line shapes when you import those from DOCX.&lt;/p&gt;
-&lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraoffice.com/"&gt;Collabora Online&lt;/a&gt;, but the feature is
-fully available in desktop Writer as well.&lt;/p&gt;
-&lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;As described in a &lt;a href="https://vmiklos.hu/blog/lo-writer-drawingml-shape-improvements.html"&gt;post from 2014&lt;/a&gt;,
-Writer reads the drawingML markup for shapes in DOCX files, including line shapes. While
-investigating a simple-looking problem around a horizontal vs vertical line, it turns out that there
-is a deeper issue here, and it looks like now have proper fix for this bug.&lt;/p&gt;
-&lt;h2 id="results-so-far"&gt;Results so far&lt;a class="headerlink" href="#results-so-far" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;Imagine that your company template has a nice footer in two columns, and the content in the columns
-are separated by a vertical line shape, but when you open your DOCX in Writer, it crosses the text
-of that footer instead:&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-drawingml-line-transform/diff-old.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-drawingml-line-transform/diff-old.png"&gt;&lt;figcaption&gt;Bugdoc, before: reference is red, Writer result is painted on top of it&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;While researching how line shapes are represented in our document model and how ODT import works, it
-turned out that the proper way to create a line shape is to only consider size / scaling when it
-comes to the individual points of the line, everything else (e.g. position / translation) should go
-to the transform matrix of the shape, then the render result will be as expected:&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-drawingml-line-transform/diff-new.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-drawingml-line-transform/diff-new.png"&gt;&lt;figcaption&gt;Bugdoc, after: reference is red, Writer result is painted on top of it&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;It was also interesting to see that this also improved other, existing test documents, e.g. core.git
-&lt;code&gt;sw/qa/extras/ooxmlimport/data/line-rotation.docx&lt;/code&gt; looked like this before:&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/line-rotation-diff-old.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-drawingml-line-transform/line-rotation-diff-old.png"&gt;&lt;figcaption&gt;3 rotated lines, before: reference is red, Writer result is painted on top of it&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;And the same fix makes it perfect:&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/line-rotation-diff-new.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-drawingml-line-transform/line-rotation-diff-new.png"&gt;&lt;figcaption&gt;3 rotated lines, after: reference is red, Writer result is painted on top of it&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Just stick to the rule: scaling goes to the points -- translation, rotation and horizontal shear
-goes to the shape.&lt;/p&gt;
-&lt;p&gt;For now, this is only there for toplevel Writer lines, but in-groupshape and Calc/Impress lines
-could also follow this technique if there is a practical need.&lt;/p&gt;
-&lt;p&gt;The "after" screenshots show ~no red, which means there is ~no reference output, where the Writer
-output would be missing.&lt;/p&gt;
-&lt;h2 id="how-is-this-implemented"&gt;How is this implemented?&lt;a class="headerlink" href="#how-is-this-implemented" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;If you would like to know a bit more about how this works, continue reading... :-)&lt;/p&gt;
-&lt;p&gt;The bugfix commit was &lt;a href="https://git.libreoffice.org/core/commit/6c09c85ec384e88c89bff0817e7fe9889d7ed68e"&gt;tdf#161779 DOCX import, drawingML: fix handling of translation for
-lines&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;The tracking bug was &lt;a href="https://bugs.documentfoundation.org/show_bug.cgi?id=161779"&gt;tdf#161779&lt;/a&gt;.&lt;/p&gt;
-&lt;h2 id="want-to-start-using-this"&gt;Want to start using this?&lt;a class="headerlink" href="#want-to-start-using-this" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;You can get a development edition of Collabora Online 24.04 and try it out yourself right now: &lt;a href="https://www.collaboraoffice.com/code/"&gt;try
-the development edition&lt;/a&gt;.  Collabora intends to continue
-supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
-available in TDF's next release too (24.8).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Tue, 09 Jul 2024 14:46:01 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2024-07-09:/blog/sw-drawingml-line-transform.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
+available in TDF's next release too (24.8).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Wed, 07 Aug 2024 09:05:24 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2024-08-07:/blog/sw-improved-font-falback.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>

@@ -59,6 +59,32 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/new-in-git-1-5-6-git-cvsexportcommit-w.html">new in git-1.5.6: git cvsexportcommit -W</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Sat 14 June 2008</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>git-1.5.6 will be released soon (probably in a few weeks) and there are some interesting news in it.</p><p>one of them is the new git cvsimport -W switch which makes it easy to do bi-directional changes between git and cvs.</p><p>to set up your local repo:</p><p><pre>$ CVSROOT=$URL cvs co module
+$ cd module
+$ git cvsimport</pre></p><p>this will do a fresh checkout of the cvs module and will import it to git. you will have two interesting git branch: origin is the "reference" one, you should not touch it, and you can work in master.</p><p>you can commit to master, etc.</p><p>then there are two tricky operations:</p><p>first, you may want to commit back your local commits.</p><p>to do this:</p><p><pre>$ for i in $(git rev-list --reverse origin..master)
+do
+        git cvsexportcommit -W -c -p -u $i
+done</pre></p><p>second, you may want to fetch upstream changes and rebase your local changes on top of them:</p><p><pre>$ git cvsimport -i
+$ git rebase origin</pre></p><p>that's all.</p><p>cookies goes to Dscho in commit <a href="http://git.kernel.org/?p=git/git.git;a=commit;h=d775734c40afed216160437c59a45c93bdf28689">d775734</a>. :)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/interesting-git-talk.html">interesting git talk</a></h1>
   </div>
   <div class="article_meta">
@@ -316,31 +342,6 @@ tailor -c bitlbee.conf
     <div id="preamble">
 <div class="sectionbody">
 <p>..continuing <a href="http://blogs.frugalware.org/vmiklos/2006/12/31/p276">last year's article</a>. so another year passed by and it's time to look back and see what we did during 2007. probably i miss a lot of stuff but here is my list:</p><p>1) ability to go back in the installer to a previous point if you missed something. do you remember the days when one had to reboot if he/she wanted to do so? :)</p><p>2) compiz improvements. this is now settled down in current and it's pretty sane. we cleaned up the old compiz and beryl, we have a single compiz-fusion, it has a nice step by step documentation and it works fine both for kde and gnome.</p><p>3) asciidoc. i think we highly improved our documentation since we switched from latex to asciidoc. a user manual of 98 pages in a nice pdf format is cute, isn't it? :)</p><p>4) newsletters. Alex started to issue newsletters and recently phayz helped out us, so it's alive again. i think it's something great.</p><p>5) yugo. 'factory' was our previous i686 build server, it was a very old machine with a cpu of 300mhz and so on. it was time to replace it and now yugo does the job.</p><p>6) fwlive. this was an old project but only test versions were available, based on old frugalware versions. now there is a live version of every released version of frugalware, thanks to janny, boobaa and ironiq. great!</p><p>7) gnetconfig. the first graphical config tool from priyank. i'm really bad at any graphical programming, so i'm glad to see finally we started to work on guis.</p><p>8) gfpm. something users always wanted and now it's here. a true graphical package manager, which is not just a wrapper but properly uses libpacman. awesome.</p><p>9) fun. this is our update manager which can sit on the system tray (or whatever i should call kicker not to be kde specific ;) ) and notifies you if there is something to update. i'm sure this is more comfortable compared to watching the -security mailing list for updates or doing a -Syu daily :)</p><p>10) syncpkgd2. if you remember, the old method was that there were only clients and they tried to figure out what to build, they built and uploaded the packages. this was very suboptimal: it allowed only one buildserver / arch and it was slow. okay, being slow is the smaller problem, but every buildserver was a single point of failure. nowadays we have two i686 buildservers (thanks to boobaa) and it's theoretically it's possible to have two x86_64 buildservers, too. so even if one i686 buildserver is down, i can be at the beach, sipping a mojito :)</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/using-reverse-ssh-tunnels.html">using reverse ssh tunnels</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Wed 19 December 2007</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>okay, i learned something today :)</p><p>you have a client behind a firewall and you have a server somewhere. and you want to ssh from the server to the client. that's exactly why ssh has a magic -R option!</p><p>if you do an</p><p><code>$ ssh -R 19022:localhost:22 server</code></p><p>that will mean that you can ssh to client:22 on the server by sshing to localhost:19022 on the server. yes, and it works even if the client is behind a firewall, yay! :)</p><p>update:</p><p>you probably want to add this to your ~/.ssh/config on the server as well:</p><p><pre>
-Host client
-        NoHostAuthenticationForLocalhost yes
-        HostName localhost
-        Port 19022
-</pre></p><p>so that you can easily just type</p><p><code>$ ssh client</code></p><p>on the server</p>
 </div>
 </div>
 

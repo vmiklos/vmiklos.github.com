@@ -59,6 +59,61 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sw-interdependent-redline-improvements2.html">Interdependent tracked changes improvements in Writer, part 2</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Tue 08 July 2025</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <p>Writer has some support for interdependent (or hierarchical) tracked changes: e.g. the case when you
+have a delete on top of an insert. See the <a href="https://vmiklos.hu/blog/sw-interdependent-redline-improvements.html">first
+post</a> for background.</p>
+<p>This work is primarily for <a href="https://www.collaboraonline.com/">Collabora Online</a>, but the feature is
+available in desktop Writer as well.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>With the already mentioned improvements in place, a few areas were still lacking: we didn't have UI
+for all cases where the DOCX import was possible already; combining tracked changes (redlines) were
+not complete (so you don't have to reject all parts of a logical redline one by one) and some of the
+undo/redo code didn't work as expected.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>Here is a sample case where the UI was missing to create something that was possible to import from
+DOCX: a format redline on top of an insert redline.</p>
+<p>If you had a document with an insert:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements2/1-baseline.png"><figure><img src="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements2/1-baseline.png"><figcaption>Interdependent tracked change: just insert</figcaption></figure></a></p>
+<p>And you selected BBB to mark those characters as bold, we just updated the existing insert redline
+to be bold:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements2/2-edit-old.png"><figure><img src="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements2/2-edit-old.png"><figcaption>Interdependent tracked change: old, format is not tracked separately</figcaption></figure></a></p>
+<p>But now we track a format change on top of the insert separately:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements2/3-edit-new.png"><figure><img src="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements2/3-edit-new.png"><figcaption>Interdependent tracked change: new, format is tracked separately</figcaption></figure></a></p>
+<p>This is also visible if you open the track changes dialog, which explains that now you have part of
+the insert redline covered by a format redline:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements2/4-dialog.png"><figure><img src="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements2/4-dialog.png"><figcaption>Interdependent tracked change: UI dialog now showing multiple redlines </figcaption></figure></a></p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>As usual, the high-level problem was addressed by a series of small changes. Core side:</p>
+<ul>
+<li><a href="https://git.libreoffice.org/core/commit/cc2babfa0a960c7d52ea7997aea19dcf10c12d08">sw interdependent redlines: fix nPamEndtNI -&gt; nPamEndNI typo</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/82b24dd9748c6c0a2990e70bda0960ae26415390">tdf#166319 sw interdependent redlines: combine on reject of del-then-fmt's fmt</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/612ba7b2bc5d1d12c10287094263f6d31983a3d8">tdf#166319 sw interdependent redlines: fix undo of reject of ins-then-del's del</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/eef0dfed817e40cd83e8ba8e290f45c224257f97">tdf#166319 sw interdependent redlines: add UI to create format inside insert</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/0566e8e1776921ecb26f0ddd0546ec10afeed8e0">tdf#166319 sw interdependent redlines: undo of creating an ins-then-fmt redline</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/e06eb6b4a6176692d25c758121012473fe638043">tdf#166319 sw interdependent redlines: redo of creating an ins-then-fmt redline</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/5ed41ca44bee5122a9db4aa946f6e3ecd9432574">tdf#166319 sw interdependent redlines: fix redo of reject of del-then-fmt's del</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/76c2168a276f0996deeac08ce176525821fb056e">tdf#166319 sw interdependent redlines: fix bad accept undo action for reject</a></li>
+</ul>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a development edition of Collabora Online 25.04 and try it out yourself right now: <a href="https://www.collaboraonline.com/code/">try
+the development edition</a>.  Collabora intends to continue
+supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
+available in TDF's next release too (25.8).</p>
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/sw-interdependent-redline-improvements.html">Interdependent tracked changes improvements in Writer</a></h1>
   </div>
   <div class="article_meta">
@@ -802,71 +857,6 @@ render:</p>
 <p>The bugfix commit was <a href="https://git.libreoffice.org/core/commit/0a89d65e6bb7be293c1a7b4615a08292701694dc">SVG export: fix handling of semi-transparent text inside a
 list</a>.</p>
 <p>The tracking bug was <a href="https://bugs.documentfoundation.org/show_bug.cgi?id=162782">tdf#162782</a>.</p>
-<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
-<p>You can get a development edition of Collabora Online 24.04 and try it out yourself right now: <a href="https://www.collaboraonline.com/code/">try
-the development edition</a>.  Collabora intends to continue
-supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
-available in TDF's next release too (25.2).</p>
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/sw-anyinput-lok.html">Improved interactivity for LOK clients in Writer's layout</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Tue 03 September 2024</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 3 minutes</p>
-  </div>
-  <div class="article_text">
-    <p>Writer now has support for doing partial layout passes when LOK clients have pending events, which
-sometimes improves interactivity a lot.</p>
-<p>This work is primarily for <a href="https://www.collaboraonline.com/">Collabora Online</a>, but the feature is
-useful for any LOK clients.</p>
-<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
-<p>I recently worked with a document that has relatively simple structure, but it has 300 pages, and
-most of the content is part of a numbered list. Pasting a simple string (like an URL) into the end
-of a paragraph resulted in a short, but annoying hang. It turns out we updated Writer's layout for
-all the 300 pages before the content was repainted on the single visible page. In theory, you
-could reorder events, so you first calculate the first page, you paint the first page, then you
-calculate the remaining 299 pages. Is this possible in practice? Let's try!</p>
-<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
-<p>The relevant part of the test document is simple: just an empty numbered paragraph, so we can paste
-somewhere:</p>
-<p><a href="https://share.vmiklos.hu/blog/sw-anyinput-lok/paste.png"><figure><img src="https://share.vmiklos.hu/blog/sw-anyinput-lok/paste.png"><figcaption>Bugdoc: empty paragraph, part of a numbered list and then pasting an URL there</figcaption></figure></a></p>
-<p>This is a good sample, because pasting into a numbered list requires invalidating all list items in that
-list, since possibly the paste operation created a new list item, and then the number portion has to
-be updated for all items in the rest of the list. So if you paste into a numbered list, you need to
-re-calculate the entire document if all the document is just a numbered list.</p>
-<p>The first problem was that Writer tracks its visible area, but LOK needs two kinds of visible areas.
-The first kind decides if invalidations are interesting for part of the document area. LOK wants to
-get all invalidations, so in case we cache some document content in the client that is near the
-visible area, we need to know when to throw away that cache.  On the other hand, we want to still
-track the actually visible viewport of the client, so we can prioritize visible vs hidden parts of
-the document. Writer in LOK mode thought that all parts of the document are a priority, but this
-could improved by taking the client's viewport into account.</p>
-<p>The second problem was that even if Writer had two layout passes (first is synchronous, for the
-visible area; second is async, for the rest of the document), both passes were performed before
-allowing a LOK client to request tiles for the issued invalidations.</p>
-<p>This is now solved by a new <code>registerAnyInputCallback()</code> API, which allows the LOK client to signal if
-it has pending events (e.g. unprocessed callbacks, tiles to be painted) or it's OK for Writer layout
-to finish its idle job first.</p>
-<p>The end result for pasting a URL into this 300 pages document, when measuring end-to-end (from
-sending the paste command to getting the first updated tile) is a decrease in response time, from
-963 ms to 14 ms.</p>
-<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
-<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
-<p>As usual, the high-level problem was addressed by a series of small changes:</p>
-<ul>
-<li><a href="https://git.libreoffice.org/core/commit/e1e77b313c9fe0fff814384a67de415e33c8b27f">cool#9735 sw lok: take LOK vis area into account when deciding idle layout</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/a22fe103e7a26270b7213448c570400a563c18ba">Related: cool#9735 vcl lok: add an AnyInput() callback</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/41aec3e9a088ad4e99e43e033c7653e2c25a85ba">Related: cool#9735 sw lok: handle the AnyInput() callback during idle layout</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/3974af7dca82f887dfdfe88f087583508c19e7ab">sfx2: fix crash in SfxObjectShell::IsHelpDocument()</a></li>
-</ul>
-<p>The tracking issue for this problem was
-<a href="https://github.com/CollaboraOnline/online/issues/9735">cool#9735</a>.</p>
 <h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
 <p>You can get a development edition of Collabora Online 24.04 and try it out yourself right now: <a href="https://www.collaboraonline.com/code/">try
 the development edition</a>.  Collabora intends to continue

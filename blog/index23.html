@@ -58,6 +58,48 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/lo-firstpage-headerfooter.html">LibreOffice Writer now supports first page header/footer</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Wed 10 October 2012</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>When you want to have pages with different properties in Writer, you use page
+styles. If you want to do something similar in Word, you have to use sections.
+One of the benefits of page styles is that you can use them multiple times, and&#8201;&#8212;&#8201;as usual with styles&#8201;&#8212;&#8201;whenever you change your mind, you can edit just the
+style, and all its uses will be updated consistently. There is, however, one
+feature that Word sections have and we lacked so far: sections can have
+different headers and footers on first, left and right pages. In Writer, you
+had to use two different page styles if you wanted to achieve the same:
+typically named "First page", then a "Default". This was because Writer could
+differentiate only between right and left pages, not first ones.</p></div>
+<div class="paragraph"><p>In LibreOffice 3.7, there will be a new checkbox to "unshare" the header and
+footer of the first page with right/left pages:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="http://wiki.documentfoundation.org/File:Sw-firstpage-headerfooter.png">
+<img src="http://wiki.documentfoundation.org/images/thumb/f/f2/Sw-firstpage-headerfooter.png/400px-Sw-firstpage-headerfooter.png" alt="http://wiki.documentfoundation.org/images/thumb/f/f2/Sw-firstpage-headerfooter.png/400px-Sw-firstpage-headerfooter.png" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>Right now, only ODF filters are updated to open / save this feature (as
+suggested by <a href="https://wiki.oasis-open.org/office/HeaderFooterFirst">this</a> old
+proposal)&#8201;&#8212;&#8201;in later versions it&#8217;s planned to update the DOCX, DOC and RTF
+filters as well, removing quite some code from import filters working around
+this limitation of Writer core.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/dunatv.html">Duna TV stream lementés</a></h1>
   </div>
   <div class="article_meta">
@@ -731,74 +773,6 @@ jhead -dsft <span style="color: #990000">*.</span>jpg</tt></pre></div></div>
 <pre><code>c=0; for i in $(ls -lhtr *.jpg|sed 's/.* //'); do c=$((c+1)); cp -a $i new/$(printf "%03d" $c).jpg; done</code></pre>
 </div></div>
 <div class="paragraph"><p>to order filenames based on the file timestamp.</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/git-notes-merge.html">Merging git notes</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Thu 07 June 2012</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>The <code>git notes</code> command is really about local annotation of commits&#8201;&#8212;&#8201;nothing
-to share. If you decide to still do so, for example the
-<a href="http://git-scm.com/2010/08/25/notes.html">git-scm.com</a> HOWTO can show you how to
-pull and push them. But what about merging?  There is no UI for that, but&#8201;&#8212;&#8201;given that with git, everything is possible&#8201;&#8212;&#8201;you can still do so manually.</p></div>
-<div class="paragraph"><p>So the problem comes when Alice fetches notes, Bob does so, Alice pushes her
-notes back, Bob annotates a different commit and when Bob wants to push, he
-gets <code>rejected, non-fast-forward</code>. Normally you would merge or rebase in this
-situation, but given that <code>git notes</code> by default updates the
-<code>refs/notes/commits</code> ref and you typically have a different branch checked out,
-you can&#8217;t use <code>git merge</code> or <code>git rebase</code> directly.</p></div>
-<div class="paragraph"><p>What works is:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>git checkout refs/notes/commits
-git fetch origin refs/notes/commits
-git merge FETCH_HEAD
-git update-ref refs/notes/commits HEAD
-git checkout master</code></pre>
-</div></div>
-<div class="colist arabic"><ol>
-<li>
-<p>
-Check out the notes, so if you have conflicts, you can resolve them.
-</p>
-</li>
-<li>
-<p>
-Fetch remote notes to FETCH_HEAD.
-</p>
-</li>
-<li>
-<p>
-Do the merge.
-</p>
-</li>
-<li>
-<p>
-Necessary, as <code>git merge</code> won&#8217;t update the ref automatically, since we&#8217;re not on a branch.
-</p>
-</li>
-<li>
-<p>
-Or whereever you were before.
-</p>
-</li>
-</ol></div>
-<div class="paragraph"><p>And now you can push your notes, as detailed in the above referred blog post.
-Yes, rebasing would be possible as well, that&#8217;s left as an exercise for the
-reader. ;-)</p></div>
 </div>
 </div>
 

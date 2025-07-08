@@ -1,5 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>What is Miklos hacking</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Mon, 02 Jun 2025 13:54:44 +0200</lastBuildDate><item><title>Interdependent tracked changes improvements in Writer</title><link>https://vmiklos.hu/blog/sw-interdependent-redline-improvements.html</link><description>&lt;p&gt;Writer has some support for interdependent (or hierarchical) tracked changes: e.g. the case when you
+<rss version="2.0"><channel><title>What is Miklos hacking</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Tue, 08 Jul 2025 08:43:10 +0200</lastBuildDate><item><title>Interdependent tracked changes improvements in Writer, part 2</title><link>https://vmiklos.hu/blog/sw-interdependent-redline-improvements2.html</link><description>&lt;p&gt;Writer has some support for interdependent (or hierarchical) tracked changes: e.g. the case when you
+have a delete on top of an insert. See the &lt;a href="https://vmiklos.hu/blog/sw-interdependent-redline-improvements.html"&gt;first
+post&lt;/a&gt; for background.&lt;/p&gt;
+&lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraonline.com/"&gt;Collabora Online&lt;/a&gt;, but the feature is
+available in desktop Writer as well.&lt;/p&gt;
+&lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;With the already mentioned improvements in place, a few areas were still lacking: we didn't have UI
+for all cases where the DOCX import was possible already; combining tracked changes (redlines) were
+not complete (so you don't have to reject all parts of a logical redline one by one) and some of the
+undo/redo code didn't work as expected.&lt;/p&gt;
+&lt;h2 id="results-so-far"&gt;Results so far&lt;a class="headerlink" href="#results-so-far" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Here is a sample case where the UI was missing to create something that was possible to import from
+DOCX: a format redline on top of an insert redline.&lt;/p&gt;
+&lt;p&gt;If you had a document with an insert:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements2/1-baseline.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements2/1-baseline.png"&gt;&lt;figcaption&gt;Interdependent tracked change: just insert&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;And you selected BBB to mark those characters as bold, we just updated the existing insert redline
+to be bold:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements2/2-edit-old.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements2/2-edit-old.png"&gt;&lt;figcaption&gt;Interdependent tracked change: old, format is not tracked separately&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;But now we track a format change on top of the insert separately:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements2/3-edit-new.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements2/3-edit-new.png"&gt;&lt;figcaption&gt;Interdependent tracked change: new, format is tracked separately&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;This is also visible if you open the track changes dialog, which explains that now you have part of
+the insert redline covered by a format redline:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements2/4-dialog.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements2/4-dialog.png"&gt;&lt;figcaption&gt;Interdependent tracked change: UI dialog now showing multiple redlines &lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id="how-is-this-implemented"&gt;How is this implemented?&lt;a class="headerlink" href="#how-is-this-implemented" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;If you would like to know a bit more about how this works, continue reading... :-)&lt;/p&gt;
+&lt;p&gt;As usual, the high-level problem was addressed by a series of small changes. Core side:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/cc2babfa0a960c7d52ea7997aea19dcf10c12d08"&gt;sw interdependent redlines: fix nPamEndtNI -&amp;gt; nPamEndNI typo&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/82b24dd9748c6c0a2990e70bda0960ae26415390"&gt;tdf#166319 sw interdependent redlines: combine on reject of del-then-fmt's fmt&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/612ba7b2bc5d1d12c10287094263f6d31983a3d8"&gt;tdf#166319 sw interdependent redlines: fix undo of reject of ins-then-del's del&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/eef0dfed817e40cd83e8ba8e290f45c224257f97"&gt;tdf#166319 sw interdependent redlines: add UI to create format inside insert&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/0566e8e1776921ecb26f0ddd0546ec10afeed8e0"&gt;tdf#166319 sw interdependent redlines: undo of creating an ins-then-fmt redline&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/e06eb6b4a6176692d25c758121012473fe638043"&gt;tdf#166319 sw interdependent redlines: redo of creating an ins-then-fmt redline&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/5ed41ca44bee5122a9db4aa946f6e3ecd9432574"&gt;tdf#166319 sw interdependent redlines: fix redo of reject of del-then-fmt's del&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/76c2168a276f0996deeac08ce176525821fb056e"&gt;tdf#166319 sw interdependent redlines: fix bad accept undo action for reject&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="want-to-start-using-this"&gt;Want to start using this?&lt;a class="headerlink" href="#want-to-start-using-this" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;You can get a development edition of Collabora Online 25.04 and try it out yourself right now: &lt;a href="https://www.collaboraonline.com/code/"&gt;try
+the development edition&lt;/a&gt;.  Collabora intends to continue
+supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
+available in TDF's next release too (25.8).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Tue, 08 Jul 2025 08:43:10 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2025-07-08:/blog/sw-interdependent-redline-improvements2.html</guid><category>libreoffice</category><category>en</category></item><item><title>Interdependent tracked changes improvements in Writer</title><link>https://vmiklos.hu/blog/sw-interdependent-redline-improvements.html</link><description>&lt;p&gt;Writer has some support for interdependent (or hierarchical) tracked changes: e.g. the case when you
 have a delete on top of an insert. While there were some working cases, handling of many
 combinations were missing. I started to make systematic improvements in this area in the recent
 past, this post gives you an overview what's done so far.&lt;/p&gt;
@@ -617,54 +657,4 @@ list&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;You can get a development edition of Collabora Online 24.04 and try it out yourself right now: &lt;a href="https://www.collaboraonline.com/code/"&gt;try
 the development edition&lt;/a&gt;.  Collabora intends to continue
 supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
-available in TDF's next release too (25.2).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 04 Oct 2024 08:22:01 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2024-10-04:/blog/sd-semi-transparent-text2.html</guid><category>libreoffice</category><category>en</category></item><item><title>Improved interactivity for LOK clients in Writer's layout</title><link>https://vmiklos.hu/blog/sw-anyinput-lok.html</link><description>&lt;p&gt;Writer now has support for doing partial layout passes when LOK clients have pending events, which
-sometimes improves interactivity a lot.&lt;/p&gt;
-&lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraonline.com/"&gt;Collabora Online&lt;/a&gt;, but the feature is
-useful for any LOK clients.&lt;/p&gt;
-&lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;I recently worked with a document that has relatively simple structure, but it has 300 pages, and
-most of the content is part of a numbered list. Pasting a simple string (like an URL) into the end
-of a paragraph resulted in a short, but annoying hang. It turns out we updated Writer's layout for
-all the 300 pages before the content was repainted on the single visible page. In theory, you
-could reorder events, so you first calculate the first page, you paint the first page, then you
-calculate the remaining 299 pages. Is this possible in practice? Let's try!&lt;/p&gt;
-&lt;h2 id="results-so-far"&gt;Results so far&lt;a class="headerlink" href="#results-so-far" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;The relevant part of the test document is simple: just an empty numbered paragraph, so we can paste
-somewhere:&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-anyinput-lok/paste.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-anyinput-lok/paste.png"&gt;&lt;figcaption&gt;Bugdoc: empty paragraph, part of a numbered list and then pasting an URL there&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;This is a good sample, because pasting into a numbered list requires invalidating all list items in that
-list, since possibly the paste operation created a new list item, and then the number portion has to
-be updated for all items in the rest of the list. So if you paste into a numbered list, you need to
-re-calculate the entire document if all the document is just a numbered list.&lt;/p&gt;
-&lt;p&gt;The first problem was that Writer tracks its visible area, but LOK needs two kinds of visible areas.
-The first kind decides if invalidations are interesting for part of the document area. LOK wants to
-get all invalidations, so in case we cache some document content in the client that is near the
-visible area, we need to know when to throw away that cache.  On the other hand, we want to still
-track the actually visible viewport of the client, so we can prioritize visible vs hidden parts of
-the document. Writer in LOK mode thought that all parts of the document are a priority, but this
-could improved by taking the client's viewport into account.&lt;/p&gt;
-&lt;p&gt;The second problem was that even if Writer had two layout passes (first is synchronous, for the
-visible area; second is async, for the rest of the document), both passes were performed before
-allowing a LOK client to request tiles for the issued invalidations.&lt;/p&gt;
-&lt;p&gt;This is now solved by a new &lt;code&gt;registerAnyInputCallback()&lt;/code&gt; API, which allows the LOK client to signal if
-it has pending events (e.g. unprocessed callbacks, tiles to be painted) or it's OK for Writer layout
-to finish its idle job first.&lt;/p&gt;
-&lt;p&gt;The end result for pasting a URL into this 300 pages document, when measuring end-to-end (from
-sending the paste command to getting the first updated tile) is a decrease in response time, from
-963 ms to 14 ms.&lt;/p&gt;
-&lt;h2 id="how-is-this-implemented"&gt;How is this implemented?&lt;a class="headerlink" href="#how-is-this-implemented" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;If you would like to know a bit more about how this works, continue reading... :-)&lt;/p&gt;
-&lt;p&gt;As usual, the high-level problem was addressed by a series of small changes:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/e1e77b313c9fe0fff814384a67de415e33c8b27f"&gt;cool#9735 sw lok: take LOK vis area into account when deciding idle layout&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/a22fe103e7a26270b7213448c570400a563c18ba"&gt;Related: cool#9735 vcl lok: add an AnyInput() callback&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/41aec3e9a088ad4e99e43e033c7653e2c25a85ba"&gt;Related: cool#9735 sw lok: handle the AnyInput() callback during idle layout&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/3974af7dca82f887dfdfe88f087583508c19e7ab"&gt;sfx2: fix crash in SfxObjectShell::IsHelpDocument()&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;The tracking issue for this problem was
-&lt;a href="https://github.com/CollaboraOnline/online/issues/9735"&gt;cool#9735&lt;/a&gt;.&lt;/p&gt;
-&lt;h2 id="want-to-start-using-this"&gt;Want to start using this?&lt;a class="headerlink" href="#want-to-start-using-this" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;You can get a development edition of Collabora Online 24.04 and try it out yourself right now: &lt;a href="https://www.collaboraonline.com/code/"&gt;try
-the development edition&lt;/a&gt;.  Collabora intends to continue
-supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
-available in TDF's next release too (25.2).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Tue, 03 Sep 2024 08:08:13 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2024-09-03:/blog/sw-anyinput-lok.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
+available in TDF's next release too (25.2).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 04 Oct 2024 08:22:01 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2024-10-04:/blog/sd-semi-transparent-text2.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
