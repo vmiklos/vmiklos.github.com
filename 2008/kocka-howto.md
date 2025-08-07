@@ -11,7 +11,7 @@ beborítani kívül-belül képekkel. Egész pontosan 3 db nagy kép és 6 db ki
 kell elképzelni, hogy 4 x 2 kocka (ill. kockának egy lapja) nagyságú, a kicsi meg 2 x 2. Ez azért
 praktikus így, mert 1 kockára való képet össze lehet tenni pont egy A4-es lapra amit ki lehet
 nyomtatni fóliára. A módszer nem tökéletes, mivel erről a fóliáról könnyen kopik a festék, így
-papír-írószer boltban kapható szeles celluxszal (az a nagy, 5 cm szeles) le kell ragasztani a fóliát
+papír-írószer boltban kapható széles celluxszal (az a nagy, 5 cm szeles) le kell ragasztani a fóliát
 felülről is. A Copy General 500 DPI-s nyomtatót használ, tehát egy kockalapra való képet 1100 px
 szélesre érdemes készíteni.
 
@@ -51,7 +51,7 @@ vágás mint a tetején a narancsnál).
 
 Ha idáig eljutottunk, akkor (felülnézetből) a jobb alsó és a jobb felső hasábját ki lehet hajtogatni
 a kockának. (felülnézetből egy 4 kocka magas narancssárga csíkot kapunk). Jobboldalt az egész nagy
-felületet elfoglalja a sötétkék. Már csak a sötétzöld és a krémsarga maradt. Forgassuk el balra
+felületet elfoglalja a sötétkék. Már csak a sötétzöld és a világossárga maradt. Forgassuk el balra
 hossztengely szerint a nagy kockát, Tehát felfele fog nézni a nagy kék felület. Most nyissuk szét a
 nagy kockát úgy, hogy hosszába a bal felét balra, jobb felét jobbra forgatjuk 90 fokkal. Továbbra is
 téglatest lesz előttünk, de most már a kék rész jobb és baloldalon függőlegesen lesz, és nem
@@ -67,3 +67,6 @@ a 8 kockalapra fog kerülni a sötétzöld.
 
 Frissítés: 2025-ben ezt a leírást követve úgy tűnik, hogy az utolsó kettő sorrendje fordított kell,
 hogy legyen, tehát sötétzöld az utolsó előtti és a világossárga az utolsó.
+
+Frissítés 2: újra követve a leírást úgy tűnik, hogy az utolsó kettő vágásának egyeznie kell, tehát a
+sötétzöld szerint kell felvágni a világossárgát is.
