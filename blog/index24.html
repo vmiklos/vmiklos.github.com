@@ -58,6 +58,69 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/exif-date-sort.html">Sorting photos by date using exif date info</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Mon 11 June 2012</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>For a family event I received photos from about 6 persons, and wanted to view
+all of them, sorted by date. The problem was that the timestamps of the files
+were sometimes incorrect, and also in all but one cases the exif timestamp was
+incorrect as well (but at least that was consistently incorrect, e.g. all
+behind of time by 20 mins, etc.)</p></div>
+<div class="paragraph"><p>So first I searched for a photo where a clock is shown, then matched photos by
+different authors showing the same action to know the time delta of each
+camera. The rest can be scripted: just read the exif info, apply the necessary
+time correction based on the camera model, and touch the file with the correct
+date. Then any image viewer can show the photos, sorted by date.</p></div>
+<div class="paragraph"><p>Here is the script I came up with:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">for</span></span> i <span style="font-weight: bold"><span style="color: #0000FF">in</span></span> <span style="color: #990000">*.</span>jpg
+<span style="font-weight: bold"><span style="color: #0000FF">do</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># 2012:01:01 01:01:01 -&gt; 2012-01-01 01:01:01</span></span>
+    <span style="color: #009900">date</span><span style="color: #990000">=</span><span style="color: #009900">$(</span>exiv2 <span style="color: #009900">$i</span> <span style="color: #990000">|</span>grep timestamp<span style="color: #990000">|</span>sed <span style="color: #FF0000">'s/.* : //'</span><span style="color: #990000">|</span>sed <span style="color: #FF0000">'s/^</span><span style="color: #CC33CC">\(</span><span style="color: #FF0000">[0-9][0-9][0-9][0-9]</span><span style="color: #CC33CC">\)</span><span style="color: #FF0000">:</span><span style="color: #CC33CC">\(</span><span style="color: #FF0000">[0-9][0-9]</span><span style="color: #CC33CC">\)</span><span style="color: #FF0000">:</span><span style="color: #CC33CC">\(</span><span style="color: #FF0000">[0-9][0-9]</span><span style="color: #CC33CC">\)</span><span style="color: #FF0000">/</span><span style="color: #CC33CC">\1</span><span style="color: #FF0000">-</span><span style="color: #CC33CC">\2</span><span style="color: #FF0000">-</span><span style="color: #CC33CC">\3</span><span style="color: #FF0000">/'</span><span style="color: #990000">)</span>
+    <span style="font-style: italic"><span style="color: #9A1900"># date string -&gt; epoch</span></span>
+    <span style="color: #009900">unix</span><span style="color: #990000">=</span><span style="color: #009900">$(</span>date --date<span style="color: #990000">=</span><span style="color: #FF0000">"$date"</span> <span style="color: #990000">+%</span>s<span style="color: #990000">)</span>
+
+    <span style="color: #009900">model</span><span style="color: #990000">=</span><span style="color: #009900">$(</span>exiv2 <span style="color: #009900">$i</span> <span style="color: #990000">|</span>grep model<span style="color: #990000">|</span>sed <span style="color: #FF0000">'s/.*: //'</span><span style="color: #990000">)</span>
+
+    <span style="font-weight: bold"><span style="color: #0000FF">if</span></span> <span style="color: #990000">[</span> <span style="color: #FF0000">"$model"</span> <span style="color: #990000">==</span> <span style="color: #FF0000">"NIKON D40"</span> <span style="color: #990000">];</span> <span style="font-weight: bold"><span style="color: #0000FF">then</span></span>
+        <span style="color: #009900">unix</span><span style="color: #990000">=</span><span style="color: #009900">$(($unix-1320))</span> <span style="font-style: italic"><span style="color: #9A1900"># Alice</span></span>
+    <span style="font-weight: bold"><span style="color: #0000FF">else</span></span>
+        <span style="color: #009900">unix</span><span style="color: #990000">=</span><span style="color: #009900">$(($unix+3600))</span> <span style="font-style: italic"><span style="color: #9A1900"># Bob</span></span>
+    <span style="font-weight: bold"><span style="color: #0000FF">fi</span></span>
+
+    <span style="font-style: italic"><span style="color: #9A1900"># epoch -&gt; date string</span></span>
+    <span style="color: #009900">date</span><span style="color: #990000">=</span><span style="color: #009900">$(</span>python -c <span style="color: #FF0000">"import time; print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime($unix))"</span><span style="color: #990000">)</span>
+    <span style="font-style: italic"><span style="color: #9A1900"># profit!</span></span>
+    touch --date<span style="color: #990000">=</span><span style="color: #FF0000">"$date"</span> <span style="color: #009900">$i</span>
+<span style="font-weight: bold"><span style="color: #0000FF">done</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># write back the timestamps to the exif info (thx boobaa)</span></span>
+jhead -dsft <span style="color: #990000">*.</span>jpg</tt></pre></div></div>
+<div class="paragraph"><p>And additionally if you don&#8217;t want to mess up the settings of the image viewer, you can use:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>c=0; for i in $(ls -lhtr *.jpg|sed 's/.* //'); do c=$((c+1)); cp -a $i new/$(printf "%03d" $c).jpg; done</code></pre>
+</div></div>
+<div class="paragraph"><p>to order filenames based on the file timestamp.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/git-notes-merge.html">Merging git notes</a></h1>
   </div>
   <div class="article_meta">
@@ -417,46 +480,6 @@ now it was btrfs. Especially the
 "<a href="http://www.youtube.com/watch?v=hxWuaozpe2I#t=16m50s">can&#8217;t you do online
 corruptions?</a>" part. ;)</p></div>
 <div class="paragraph"><p>Also: did you know the <code>filefrag</code> and <code>sum</code> commands? (e2fsprogs, coreutils)</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/mtd-utils.html">mtd-utils</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Fri 06 January 2012</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Quick node about this useful project I packaged two days ago. It has a
-<a href="http://www.linux-mtd.infradead.org/faq/ubi.html">long FAQ</a> - I was interested in
-how can one access the builtin nand storage on an arm board using it.</p></div>
-<div class="paragraph"><p>First, check your dmesg, you should see something like:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>Creating 3 MTD partitions on "orion_nand":
-0x000000000000-0x000000100000 : "u-boot"
-0x000000100000-0x000000500000 : "uImage"
-0x000000500000-0x000020000000 : "root"</code></pre>
-</div></div>
-<div class="paragraph"><p>As the names say, the three items here are the bootloader, the kernel and the
-root filesystem. To access and mount the last one, you need:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>ubiattach /dev/ubi_ctrl -m 2
-mount /dev/ubi0_0 root
-... hack hack hack ...
-umount root
-ubidetach /dev/ubi_ctrl -m 2</code></pre>
-</div></div>
 </div>
 </div>
 

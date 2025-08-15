@@ -58,6 +58,68 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/lcov.html">lcov</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Sun 27 January 2013</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>There are multiple strategies how to add testcases for code that sort of works,
+but has no or too few tests. One approach (that works quite well in
+LibreOffice, for example) is to just add tests for new code, and there the test
+is "good", if it passes, but it fails if you revert the corresponding real
+change.</p></div>
+<div class="paragraph"><p>An other approach to avoid duplicated tests is to use a tool like <code>lcov</code>, that
+can perform line or function coverage analysis for you, so a test is "good" if
+it increases the coverage. I wanted to look into this later approach for
+LibreOffice, but I decided it&#8217;s more fun to try this out for a smaller project
+first. That&#8217;s when adding testcases for BitlBee&#8217;s Skype plugin came into my
+mind.</p></div>
+<div class="paragraph"><p>The problem there is that manual testing typically includes multiple online
+Skype clients and an IRC client as well, and such tests are extremely
+unreliable. So I thought: if I&#8217;m able to
+<a href="http://en.wikipedia.org/wiki/Mock_object">mock</a> both the interactive IRC and
+Skype clients, then it&#8217;ll be easy to test the C Skype plugin itself, even for
+very special scenarios (like changing a groupchat topic in the middle of
+inviting somebody to a groupchat or similar).</p></div>
+<div class="paragraph"><p>So here is the result looks like:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code> skyped mock file   +--------+         +---------+   pyexpect mock file
+------------------&gt; | skyped | &lt;-----&gt; | bitlbee | &lt;--------------------
+                    +--------+   TCP   +---------+</code></pre>
+</div></div>
+<div class="paragraph"><p>For skyped, the exact traffic is recorded and played back later; for BitlBee,
+only the outgoing traffic is exact, for the incoming traffic <code>pyexpect</code> allows
+just patterns (to allow tolerance for not interesting changes). Once the
+framework was available, it was quite easy to add testcases: I already have
+70%+ coverage, and I think approaching the 100% function coverage is realistic.
+:-)</p></div>
+<div class="paragraph"><p>What was also interesting is that it turned out the latest upstream lcov
+release is
+<a href="http://sourceforge.net/mailarchive/forum.php?thread_name=50F3ECB7.7070505%40linux.vnet.ibm.com&amp;forum_name=ltp-coverage">not
+compatible</a> with gcc-4.7, but the necessary patches are
+<a href="https://build.opensuse.org/request/show/148334">now</a>
+<a href="https://build.opensuse.org/request/show/148408">integrated</a>, and the next
+upstream release will work out of the box.</p></div>
+<div class="paragraph"><p>The BitlBee mock files can be found
+<a href="http://code.bitlbee.org/lh/bitlbee/files/head:/protocols/skype/t">here</a>. Given
+that there are now instructions to do similar analysis for
+<a href="http://wiki.documentfoundation.org/Development/Lcov">LibreOffice as well</a>, I
+hope to look into increasing test coverage for the classes I maintain as well.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/are-you-open.html">Are you open?</a></h1>
   </div>
   <div class="article_meta">
@@ -701,87 +763,6 @@ during the LibreOffice conference I spent quite some time on this, and at the
 end even the Hebrew text is imported correctly. ;-)</p></div>
 <div class="paragraph"><p>Thanks to Lior who politely nagged me from time to time, this is now available
 on master (see the second picture), which will become LibreOffice 4.0.</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/lo-suselabs-conf.html">LibreOffice / openSUSE Conference 2012 in Berlin / Prague</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Sat 27 October 2012</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div align="center">
-<div class="paragraph"><p><span class="image">
-<a class="image" href="https://www.flickr.com/photos/vmiklos/28465865080/in/album-72157671111229062/">
-<img src="https://farm9.staticflickr.com/8575/28465865080_80cb41ed48_z.jpg" alt="https://farm9.staticflickr.com/8575/28465865080_80cb41ed48_z.jpg" />
-</a>
-</span>
-<span class="image">
-<a class="image" href="https://www.flickr.com/photos/vmiklos/28718259736/in/album-72157671111229062/">
-<img src="https://farm9.staticflickr.com/8712/28718259736_633bbdebda_z.jpg" alt="https://farm9.staticflickr.com/8712/28718259736_633bbdebda_z.jpg" />
-</a>
-</span></p></div>
-</div>
-<div class="paragraph"><p>I spent the last two weeks on two conferences:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-LibreOffice Conference in Berlin, where I <a href="https://speakerdeck.com/vmiklos/how-to-add-a-new-writer-feature">gave a talk</a>
-</p>
-</li>
-</ul></div>
-<div class="ulist"><ul>
-<li>
-<p>
-openSUSE conference in Prague, where I just attended.
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>In general, thanks for the organizers for these fantastic events!</p></div>
-<div class="paragraph"><p>A few fun facts I discovered during the conference:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-Armin is referred in the source tree as AW due to&#8230; well, it&#8217;s easy to find out once you heard about OD&#8217;s ORW reincarnation. :-)
-</p>
-</li>
-<li>
-<p>
-<code>solver</code> stands for "solar version", it does not solve anything (read Michael Stahl&#8217;s talk for details)
-</p>
-</li>
-<li>
-<p>
-I just discovered <a href="http://www.openoffice.org/marketing/ooocon2006/presentations/wednesday_d12.odp">this</a> presentation of Thorsten, slide 15 mentions a bug on x86, which is still the case on Android, 6 years later.. (even mentioned in Tor&#8217;s talk)
-</p>
-</li>
-<li>
-<p>
-"Java? I hope that language dies" (Jan Engelhardt, openSUSE Sparc guy)
-</p>
-</li>
-<li>
-<p>
-"Browser: we&#8217;re there; Office: with LibreOffice&#8201;&#8212;&#8201;even if it&#8217;s not perfect, we&#8217;re getting there. Groupware: we&#8217;re weak here" (Georg Greve, Kolab guy)
-</p>
-</li>
-<li>
-<p>
-Don&#8217;t try to change EUR to CZK in the Prague main station, they have ridiculously bad rates
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>A few pictures <a href="https://www.flickr.com/photos/vmiklos/albums/72157671111229062">here</a>.</p></div>
 </div>
 </div>
 

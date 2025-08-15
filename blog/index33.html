@@ -58,6 +58,40 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/globalsat-bt-338x-gps.html">Globalsat BT-338X GPS</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Fri 27 August 2010</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>Yesterday I bought a cheap GPS data logger / receiver, and given that the attached install CD did not support Linux, I'm collecting some hopefully useful links here.</p><p><ul>
+  <li>The <a href="http://wiki.openstreetmap.org/wiki/GPS_Reviews#Globalsat_BT-338">OpenStreetMap</a> wiki had an incorrect statement about the device has no memory - it has.</li>
+  <li><a href="http://www.globalsat.com.tw/products-page.php?menu=2&amp;gs_en_product_id=6&amp;gs_en_product_cnt_id=56">Vendor homepage</a>. (<a href="http://speedshop.hu/main.php?page=termek&amp;iid=44261">Hungarian one</a>.)</li>
+  <li>A <a href="http://blog.pjvenda.net/2007/09/my-new-toy-globalsat-dg-100-gps-data.html">blog post</a> about <a href="http://frugalware.org/packages/23237">gpsbabel</a> usage.</li>
+  <li>More gpsbabel docs: the <a href="http://www.gpsbabel.org/htmldoc-development/fmt_dg-100.html">dg-100</a> and the <a href="http://www.gpsbabel.org/htmldoc-development/fmt_skytraq.html">skytraq</a> formats.</li>
+</ul></p><p>Putting everything together, to get the log from the device using bluetooth I first had to create an rfcomm interface, as gpsbabel does not support bluetooth natively:</p><p><pre>
+# rfcomm bind 0 00:0D:B5:38:BA:C6
+</pre></p><p>Then to download and erase the log from the device:</p><p><pre>
+$ gpsbabel -i dg-100,erase=1 -f /dev/rfcomm0 -o gpx \
+        -F $(date +%Y-%m-%d).gpx
+</pre></p><p>The gpx format is fine in case you want to later reuse log with digikam's gpssync plugin (available from <a href="http://frugalware.org/packages/9654">kipi-plugins</a>).</p><p>Now in case you want to convert it to kml to show on Google Maps:</p><p><pre>
+$ gpsbabel -i gpx -f $(date +%Y-%m-%d).gpx -o kml -F $(date +%Y-%m-%d).kml
+</pre></p><p>Finally release the rfcomm interface in case you don't need it anymore:</p><p><pre>
+# rfcomm release 0
+</pre></p><p>Update: there is also a <a href="http://code.google.com/p/globdog-dg100/">gui</a> which can be used to enable logging of altitude info, etc - just <a href="http://frugalware.org/~vmiklos/patches/globdog-dg100-enable-rtcomm.patch">trivial patching</a> is needed and it works with BT-338X as well.</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/upgrading-to-haven.html">Upgrading to Haven</a></h1>
   </div>
   <div class="article_meta">
@@ -280,26 +314,6 @@ On Mon, Apr 26, 2010 at 06:46:38PM +0000, <a href="mailto:socghop.noreply@gmail.
     <div id="preamble">
 <div class="sectionbody">
 <p>Time to say bye-bye to adsl!</p><p>The optical fiber is now only <a href="http://maps.google.com/maps?f=d&amp;source=s_d&amp;saddr=1124+Budapest,+N%C3%A9metv%C3%B6lgyi+Way+55,+Hungary&amp;daddr=1124+Budapest,+Kiss+J%C3%A1nos+Alt%C3%A1bornagy+Way+57,+Hungary&amp;hl=en&amp;geocode=Feau1AIdfhkiASkV2naYg95BRzG9tgLExaGY7Q%3B&amp;mra=ls&amp;sll=47.492935,19.01343&amp;sspn=0.001783,0.004823&amp;ie=UTF8&amp;z=18">260 meters</a> away and that means it's possible to order vDSL here.</p><p>That means that means that the average download speed is now about 14MBit/s while it was about 5MBit/s with adsl. :)</p><p>Completely unrelated: if you use ps2pdf and the margins a screwed up, don't forget to give <a href="http://www-h.eng.cam.ac.uk/help/tpl/textprocessing/latex2pdfprint.html">-sPAPERSIZE=a4</a> a try.</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/solving-kernel-bugs-without-bisecting.html">Solving kernel bugs without bisecting</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Tue 13 April 2010</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>So after I upgraded to Linux-2.6.33 my wifi card stopped working after resume. I way lazy and I had no time to <a href="http://en.wikipedia.org/wiki/Bisection_method">bisect</a> it, so I just ignored the problem for a while, then today I looked up the lkml thread and bingo, an <a href="http://groups.google.com/group/linux.kernel/msg/a3b71c903e3c7bc9">easy workaround</a> is there. ;)</p><p>\o/</p>
 </div>
 </div>
 
