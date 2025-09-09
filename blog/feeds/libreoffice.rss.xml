@@ -1,5 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>What is Miklos hacking - libreoffice</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Fri, 15 Aug 2025 08:14:19 +0200</lastBuildDate><item><title>Multi-page floating tables in Writer: keep together or not</title><link>https://vmiklos.hu/blog/sw-floattable12.html</link><description>&lt;p&gt;This post is part of a series to describe how Writer now gets a feature to handle tables that are
+<rss version="2.0"><channel><title>What is Miklos hacking - libreoffice</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Tue, 09 Sep 2025 08:23:48 +0200</lastBuildDate><item><title>Interdependent tracked changes improvements in Writer, part 3</title><link>https://vmiklos.hu/blog/sw-interdependent-redline-improvements3.html</link><description>&lt;p&gt;Writer has some support for interdependent (or hierarchical) tracked changes: e.g. the case when you
+have a delete on top of an insert. See the &lt;a href="https://vmiklos.hu/blog/sw-interdependent-redline-improvements2.html"&gt;second
+post&lt;/a&gt; for background.&lt;/p&gt;
+&lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraonline.com/"&gt;Collabora Online&lt;/a&gt;, but the feature is
+available in desktop Writer as well.&lt;/p&gt;
+&lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;With the already mentioned improvements in place, the area of format redlines with character style
+or direct formatting changes were still lacking: Writer's original model here was just marking a
+text range as "formatted" and then either accept the format redline as-is, or reject reverting back
+to the paragraph style (default formatting), losing the old character style or old direct
+formatting.&lt;/p&gt;
+&lt;h2 id="results-so-far"&gt;Results so far&lt;a class="headerlink" href="#results-so-far" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Here is a sample case of a document where the old character style is Strong (~bold) and the font
+size is 24pt, while the new character style is Quote (~italic) and the font size is 36pt. The rest
+of the document uses no specific character styles and has the font size of 12pt:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements3/1-baseline.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements3/1-baseline.png"&gt;&lt;figcaption&gt;Interdependent tracked change: improved format, after document load&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Rejecting that format redline resulted in just the defaults, i.e. no character style and 12pt font
+size:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements3/2-edit-old.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements3/2-edit-old.png"&gt;&lt;figcaption&gt;Interdependent tracked change: old reject, lost character style / direct format&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;But now we track the old character style &amp;amp; direct format:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements3/3-edit-new.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements3/3-edit-new.png"&gt;&lt;figcaption&gt;Interdependent tracked change: new reject, handled character style / direct format&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;This required changes in the DOCX import, ODF import and ODF export, too.&lt;/p&gt;
+&lt;h2 id="how-is-this-implemented"&gt;How is this implemented?&lt;a class="headerlink" href="#how-is-this-implemented" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;If you would like to know a bit more about how this works, continue reading... :-)&lt;/p&gt;
+&lt;p&gt;As usual, the high-level problem was addressed by a series of small changes. Core side:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/7aa34659e2b49bf02a95a17f51e78f3ab9683235"&gt;sw: document DocumentRedlineManager&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/da3da0635a30f9b61a913bd7553b5e1278bf260e"&gt;sw: document IDocumentRedlineAccess&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/b2919d5b5ee4e057c99219f5541efc388b2d19b7"&gt;sw doc model xml dump: show the item set of a format redline&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/d7bf3a17cb27da1a58163e9db657f0a8d8344901"&gt;tdf#166319 sw interdependent redlines: fix redo of accept of ins-then-fmt's fmt&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/f66d63da05dbe2f254ffaf428257684a38523f66"&gt;tdf#166319 sw interdependent redlines: handle deleting a self ins-then-fmt&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/1ba53f5ebbd57b7baf72240784d18954688a09b9"&gt;tdf#166319 sw interdependent redlines: fix redo of reject of del-then-fmt's fmt&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/e545ada3501780ee6552bbfa19954794e0440d46"&gt;tdf#167194 sw redline reinstate: fix handling of self-inserts&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/2db0a779944f9496371b3ba68f7494c635ad431d"&gt;tdf#167761 sw format redline: register the item set in the autostyle pool&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/b78bdc9eb15fedd22ece76aeb1b43df40caf3b82"&gt;tdf#167761 sw format redline: implement ODF export&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/0e21f3b36cbd12787021c3b8ef439aab9a09efdd"&gt;tdf#167761 sw format redline, char props: implement ODF import&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/a6d8608595fd1ecfdff35c2003a28589ea1214ad"&gt;tdf#167761 sw format redline, char style: implement DOCX import&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/0ba6dd9eb3f342345663b12527a29425675d2078"&gt;tdf#167761 sw format redline, char style: implement ODF import&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/43104ad996bc9b292b66d9e605632407cb59c4c6"&gt;tdf#167761 sw format redline, char style: fix missing encode in ODF filter&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/c625247680cd5737723154b9a73c45e786611b44"&gt;tdf#167761 sw format redline, char style+direct: add ODT export&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/bbebb3908ff9a9c384a475737ead537906517387"&gt;tdf#167761 sw format redline, char style+direct: add ODT import&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="want-to-start-using-this"&gt;Want to start using this?&lt;a class="headerlink" href="#want-to-start-using-this" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;You can get a development edition of Collabora Online 25.04 and try it out yourself right now: &lt;a href="https://www.collaboraonline.com/code/"&gt;try
+the development edition&lt;/a&gt;.  Collabora intends to continue
+supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
+available in TDF's next release too (26.2).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Tue, 09 Sep 2025 08:23:48 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2025-09-09:/blog/sw-interdependent-redline-improvements3.html</guid><category>libreoffice</category><category>en</category></item><item><title>Multi-page floating tables in Writer: keep together or not</title><link>https://vmiklos.hu/blog/sw-floattable12.html</link><description>&lt;p&gt;This post is part of a series to describe how Writer now gets a feature to handle tables that are
 both floating and span over multiple pages.&lt;/p&gt;
 &lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraoffice.com/"&gt;Collabora Online&lt;/a&gt;, but is useful on
 the desktop as well. See the &lt;a href="https://vmiklos.hu/blog/sw-floattable11.html"&gt;11th post&lt;/a&gt; for the previous part.&lt;/p&gt;
@@ -395,54 +441,4 @@ list&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;You can get a development edition of Collabora Online 24.04 and try it out yourself right now: &lt;a href="https://www.collaboraonline.com/code/"&gt;try
 the development edition&lt;/a&gt;.  Collabora intends to continue
 supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
-available in TDF's next release too (25.2).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 04 Oct 2024 08:22:01 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2024-10-04:/blog/sd-semi-transparent-text2.html</guid><category>libreoffice</category><category>en</category></item><item><title>Improved interactivity for LOK clients in Writer's layout</title><link>https://vmiklos.hu/blog/sw-anyinput-lok.html</link><description>&lt;p&gt;Writer now has support for doing partial layout passes when LOK clients have pending events, which
-sometimes improves interactivity a lot.&lt;/p&gt;
-&lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraonline.com/"&gt;Collabora Online&lt;/a&gt;, but the feature is
-useful for any LOK clients.&lt;/p&gt;
-&lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;I recently worked with a document that has relatively simple structure, but it has 300 pages, and
-most of the content is part of a numbered list. Pasting a simple string (like an URL) into the end
-of a paragraph resulted in a short, but annoying hang. It turns out we updated Writer's layout for
-all the 300 pages before the content was repainted on the single visible page. In theory, you
-could reorder events, so you first calculate the first page, you paint the first page, then you
-calculate the remaining 299 pages. Is this possible in practice? Let's try!&lt;/p&gt;
-&lt;h2 id="results-so-far"&gt;Results so far&lt;a class="headerlink" href="#results-so-far" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;The relevant part of the test document is simple: just an empty numbered paragraph, so we can paste
-somewhere:&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-anyinput-lok/paste.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-anyinput-lok/paste.png"&gt;&lt;figcaption&gt;Bugdoc: empty paragraph, part of a numbered list and then pasting an URL there&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;This is a good sample, because pasting into a numbered list requires invalidating all list items in that
-list, since possibly the paste operation created a new list item, and then the number portion has to
-be updated for all items in the rest of the list. So if you paste into a numbered list, you need to
-re-calculate the entire document if all the document is just a numbered list.&lt;/p&gt;
-&lt;p&gt;The first problem was that Writer tracks its visible area, but LOK needs two kinds of visible areas.
-The first kind decides if invalidations are interesting for part of the document area. LOK wants to
-get all invalidations, so in case we cache some document content in the client that is near the
-visible area, we need to know when to throw away that cache.  On the other hand, we want to still
-track the actually visible viewport of the client, so we can prioritize visible vs hidden parts of
-the document. Writer in LOK mode thought that all parts of the document are a priority, but this
-could improved by taking the client's viewport into account.&lt;/p&gt;
-&lt;p&gt;The second problem was that even if Writer had two layout passes (first is synchronous, for the
-visible area; second is async, for the rest of the document), both passes were performed before
-allowing a LOK client to request tiles for the issued invalidations.&lt;/p&gt;
-&lt;p&gt;This is now solved by a new &lt;code&gt;registerAnyInputCallback()&lt;/code&gt; API, which allows the LOK client to signal if
-it has pending events (e.g. unprocessed callbacks, tiles to be painted) or it's OK for Writer layout
-to finish its idle job first.&lt;/p&gt;
-&lt;p&gt;The end result for pasting a URL into this 300 pages document, when measuring end-to-end (from
-sending the paste command to getting the first updated tile) is a decrease in response time, from
-963 ms to 14 ms.&lt;/p&gt;
-&lt;h2 id="how-is-this-implemented"&gt;How is this implemented?&lt;a class="headerlink" href="#how-is-this-implemented" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;If you would like to know a bit more about how this works, continue reading... :-)&lt;/p&gt;
-&lt;p&gt;As usual, the high-level problem was addressed by a series of small changes:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/e1e77b313c9fe0fff814384a67de415e33c8b27f"&gt;cool#9735 sw lok: take LOK vis area into account when deciding idle layout&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/a22fe103e7a26270b7213448c570400a563c18ba"&gt;Related: cool#9735 vcl lok: add an AnyInput() callback&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/41aec3e9a088ad4e99e43e033c7653e2c25a85ba"&gt;Related: cool#9735 sw lok: handle the AnyInput() callback during idle layout&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/3974af7dca82f887dfdfe88f087583508c19e7ab"&gt;sfx2: fix crash in SfxObjectShell::IsHelpDocument()&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;The tracking issue for this problem was
-&lt;a href="https://github.com/CollaboraOnline/online/issues/9735"&gt;cool#9735&lt;/a&gt;.&lt;/p&gt;
-&lt;h2 id="want-to-start-using-this"&gt;Want to start using this?&lt;a class="headerlink" href="#want-to-start-using-this" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;You can get a development edition of Collabora Online 24.04 and try it out yourself right now: &lt;a href="https://www.collaboraonline.com/code/"&gt;try
-the development edition&lt;/a&gt;.  Collabora intends to continue
-supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
-available in TDF's next release too (25.2).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Tue, 03 Sep 2024 08:08:13 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2024-09-03:/blog/sw-anyinput-lok.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
+available in TDF's next release too (25.2).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 04 Oct 2024 08:22:01 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2024-10-04:/blog/sd-semi-transparent-text2.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>

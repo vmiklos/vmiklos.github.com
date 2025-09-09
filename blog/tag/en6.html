@@ -59,6 +59,117 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sc-xlsx-button-macro.html">Calc buttons with macros: better XLSX support</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Thu 22 July 2021</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>Embedding macros to Calc documents and invoking them by clicking on buttons is a common use-case.
+There was also decent support for importing these from XLSX (XLSM to be precise), but the export
+side was not on par with the binary XLS export.</p></div>
+<div class="paragraph"><p>Calc now got a series of incremental improvements to map our form controls (buttons in particular)
+to OOXML&#8217;s form controls, especially when macros are assigned to such buttons.</p></div>
+<div class="paragraph"><p>This work is primarily for <a href="https://www.collaboraoffice.com/">Collabora Online</a>, but the feature is
+fully available in desktop Calc as well.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_motivation">Motivation</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Excel has both
+<a href="https://support.microsoft.com/en-us/office/assign-a-macro-to-a-form-or-a-control-button-d58edd7d-cb04-4964-bead-9c72c843a283">form
+controls and ActiveX controls</a>, and
+<a href="https://gerrit.libreoffice.org/c/core/+/94161">tdf#106181 XLSX export: output form controls</a>
+last year started adding support for form control export to XLSX.</p></div>
+<div class="paragraph"><p>Hoping that this will be mostly shared drawingML export code fixing (benefiting DOCX and PPTX as
+well), it seemed reasonable to assume that we can improve button handling from the "it&#8217;s lost" state
+to "it&#8217;s good enough" with some effort.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_results_so_far">Results so far</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Now Excel shows the button and you can click on it:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://share.vmiklos.hu/blog/sc-xlsx-button-macro/new.png" alt="https://share.vmiklos.hu/blog/sc-xlsx-button-macro/new.png" />
+</div>
+<div class="title">Figure 1. Excel consuming our XLSM output with a button and a macro</div>
+</div>
+<div class="paragraph"><p>While it used to just refuse our export result:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://share.vmiklos.hu/blog/sc-xlsx-button-macro/old.png" alt="https://share.vmiklos.hu/blog/sc-xlsx-button-macro/old.png" />
+</div>
+<div class="title">Figure 2. Excel refusing bad XLSM output</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_how_is_this_implemented">How is this implemented?</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
+<div class="paragraph"><p>As usual, the end goal was reached via a set of incremental commits:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/118085">sc: don&#8217;t require ctrl-click when clicking
+  on internal links of shapes</a> was a UX problem, users don&#8217;t finding Ctrl-click
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/118168">XLSX export: improve handling of checkbox
+  (form controls)</a> was an improvement to the existing checkbox export code, probably today&#8217;s Excel is just more strict in what it accepts
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/118219">XLSX export: handle button form controls</a>
+  adds the initial button support
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/118401">XLSX import: fix handling of named ranges
+  referring to PathMissing sheets</a> fixes an import problem around named ranges and external references
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/118485">XLSX export: handle macros on button form
+  controls</a> adds the macro bits of buttons
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/118600">XSLX export, button form control: fix
+  handling of no macros</a> is a fixup for non-macro buttons
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_want_to_start_using_this">Want to start using this?</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
+expect all of this work will be available in TDF&#8217;s
+<a href="http://dev-builds.libreoffice.org/daily/master/">next release</a> (7.3).</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/sw-line-height.html">Writer line heights: removing a 16bit limit</a></h1>
   </div>
   <div class="article_meta">
@@ -1006,111 +1117,6 @@ signature verification, not the own tokanizer.</p></div>
 <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
 intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
 of this work will be available in TDF&#8217;s next release too (7.1).</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/cool-g-review-backport.html">Effecting code review and backporting for Collabora Online</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Wed 02 December 2020</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 3 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Collabora Online now has a <code>./g</code>
-<a href="https://github.com/CollaboraOnline/online/blob/a4becf39abc3228fa899f71ff284d41c3c199627/g">script</a>
-that tries to bring some of the Gerrit-based review benefits to a workflow based on GitHub.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_motivation">Motivation</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Collabora Online is on GitHub, but <a href="https://git.libreoffice.org/core">core.git</a> is still on Gerrit, so it made sense to spend some time on a small shell script that gives you review and backport experience that is closer to Gerrit than the stock GitHub workflow.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_how_we_use_github">How we use GitHub</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Most Online committers push their code for review directly to <code>online.git</code>, to private namespaced
-branches, like <code>private/kendy/master</code>, then a pull request can be created to get commits from that
-branch into master after CI, review, etc. This workflow has the benefit that you don&#8217;t have to deal
-with the complexity of multiple repos.</p></div>
-<div class="paragraph"><p>Next to master, there are distro branches like <code>distro/collabora/co-6-4</code>, we may or may not want to
-backport the contents of a PR to that stable branch.</p></div>
-<div class="paragraph"><p>It&#8217;s important that Gerrit used to have a <code>git review</code> command to just submit your changes for
-review, without asking anything. That explains why the stock GitHub workflow where you need to name
-the source branch of your PR feels unnecessary complexity. Creating the PR by visiting a webpage is
-again something we want to avoid. Not to mention open questions like should you delete your source
-branch after a PR is merged? Should you delete your source repo?</p></div>
-<div class="paragraph"><p>On the other hand, we&#8217;re interested in GitHub&#8217;s ability to have multiple commits in a PR: Gerrit
-forces to have one commit per change. The GitHub way encourages developers to split changes into
-more commits, now that the review and CI cost won&#8217;t increase just due to such splits.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_submit_for_review">Submit for review</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>The happy path is when you have one or more local commits and you want to submit it for review. In
-this case now you can do:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>./g review</code></pre>
-</div></div>
-<div class="paragraph"><p>And the script will figure out that you want to push your local branch to a remote branch like
-<code>private/kendy/master</code> and also create a pull request for you, printing its URL.</p></div>
-<div class="paragraph"><p>In case that branch already exists then you need to specify a name:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>./g review myhack</code></pre>
-</div></div>
-<div class="paragraph"><p>So parallel reviews are possible, but only the first gets an inferred name. Both cases need no
-clicking in a browser, thanks to <a href="https://github.com/cli/cli">gh</a>.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_submit_a_backport">Submit a backport</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>The easiest case is when you can assume that the master branch and the distro branch is so close to
-each other that there won&#8217;t be conflicts to be resolved. In that case, you can do:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>./g backport distro/collabora/co-6-4 790</code></pre>
-</div></div>
-<div class="paragraph"><p>to pick all commits from <a href="https://github.com/collaboraonline/online/pull/790">PR 790</a> (which is already
-merged to master) to a distro branch.</p></div>
-<div class="paragraph"><p>Again, you can have multiple backports in progress, e.g. you can do:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>./g backport distro/collabora/co-6-4 790 myhack</code></pre>
-</div></div>
-<div class="paragraph"><p>If the default name is already used. The backport syntax is a bit longer, so you can always just
-type <code>./g backport</code> and you&#8217;ll get the usage.</p></div>
-<div class="paragraph"><p>This second command is a bit more complicated, as <code>gh</code> has no trivial way to expose what is the
-commit range of a PR. But there is <code>gh api graphql</code> which can do arbitrary
-<a href="https://docs.github.com/en/free-pro-team@latest/graphql">GraphQL</a> queries, which provide this
-information. At this stage it may make sense to just rewrite the whole <code>./g</code> script in e.g. Python,
-but till that happens, we parse the output of the query using <a href="https://stedolan.github.io/jq/">jq</a>.</p></div>
-<div class="paragraph"><p>Finally, if you do have conflicts or you want a local build test / manual test before submitting,
-you can always check out the distro branch manually, cherry-pick there and use plain <code>./g review</code> to
-submit your backport for review.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_want_to_start_using_this">Want to start using this?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>You can go to the <a href="https://collaboraonline.github.io/">Collabora Online</a> community website and see how
-to build the code. Then you may want to solve an
-<a href="https://github.com/CollaboraOnline/online/issues?q=is%3Aissue+is%3Aopen+label%3A%22Easy+Hack%22">easy
-hack</a>, finally submit your commit for review either by using the above method or whichever way you
-prefer contributing to GitHub projects.</p></div>
 </div>
 </div>
 

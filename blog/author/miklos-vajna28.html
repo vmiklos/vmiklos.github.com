@@ -59,6 +59,43 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/kvm-windows-2003.html">KVM vs Windows 2003</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Fri 01 April 2011</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>A few days ago I wanted to try out Windows 2003 (to be used for a task
+at the university) in KVM, to be exact using libvirt. First I didn&#8217;t do
+any non-intuitive trick, but later it turned out what virtio should be
+enabled for the block devices or the whole machine will be slow as hell.
+For the records, here is what worked for me:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>wget http://alt.fedoraproject.org/pub/alt/virtio-win/latest/images/bin/virtio-win-1.1.16.vfd
+virt-install --name=vmiklos-w2003 --arch=x86_64 --vcpus=1 --ram=2048 \
+        --os-type=windows --os-variant=win2k3 --connect=qemu:///system \
+        --network network=default \
+        --cdrom=/virt/vmiklos-w2003/en_windows_server_2003_with_sp1_enterprise.iso \
+        --disk path=/virt/vmiklos-w2003/vmiklos-w2003.img,size=24,bus=virtio \
+        --disk path=/virt/vmiklos-w2003/virtio-win-1.1.16.vfd,device=floppy \
+        --accelerate --vnc --noautoconsole --keymap=us</code></pre>
+</div></div>
+<div class="paragraph"><p>When the installer asks if you have a special SCSI driver floppy, ask for it,
+then you can select the virtio driver.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/lo-apply.html">Apply button to style edit dialog in Writer</a></h1>
   </div>
   <div class="article_meta">
@@ -380,56 +417,6 @@ udev support in our LVM package, and that means LVM volumes under
 systemd not work as expected. Thanks to Lennart for the quick
 <a href="http://article.gmane.org/gmane.comp.sysutils.systemd.devel/1073">answer</a>.
 :)</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/nationality-of-frugalware-developers.html">Nationality of currently active Frugalware developers</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Fri 14 January 2011</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="/pic/nationality-of-frugalware-developers.t.png" alt="/pic/nationality-of-frugalware-developers.t.png" />
-</div>
-</div>
-<div class="paragraph"><p>Just a FYI:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>$ ./chkacc --verbose
-Accepting active developer 'vmiklos' [hu]
-Accepting active developer 'iron' [hu]
-Accepting active developer 'voroskoi' [hu]
-Accepting active developer 'boobaa' [hu]
-Accepting active developer 'crazy' [ro]
-Accepting active developer 'priyank' [in]
-Accepting active developer 'hermier' [fr]
-Accepting active developer 'devil505' [fr]
-Accepting active developer 'bouleetbil' [fr]
-Accepting active developer 'ryuo' [us]
-Accepting active developer 'gholafox' [fr]
-Accepting active developer 'phayz' [au]
-Accepting active developer 'elentir' [fr]
-Accepting active developer 'cedynamix' [fr]
-Accepting active developer 'jercel' [fr]
-Accepting active developer 'exceed' [fr]
-Accepting active developer 'dex' [de]
-Accepting active developer 'kooda' [fr]
-Accepting active developer 'centuri0' [fr]
-Accepting active developer 'kikadf' [hu]
-Accepting active developer 'pingax' [fr]</code></pre>
-</div></div>
 </div>
 </div>
 

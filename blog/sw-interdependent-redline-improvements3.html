@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/pygments.css">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Miklos Vajna">
+  <meta name="description" content="Posts and writings by Miklos Vajna">
+
+  <link href="https://vmiklos.hu/blog/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking RSS" />
+
+<meta name="keywords" content="en">
+
+  <title>
+    What is Miklos hacking
+&ndash; Interdependent tracked changes improvements in Writer, part 3  </title>
+
+<script type="text/javascript">
+  var _paq = window._paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//analytics.vmiklos.hu/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '1']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <h2><a href="https://vmiklos.hu/blog">What is Miklos hacking</a></h2>
+      <p></p>
+      <ul>
+        <li><a href="/" target="_blank">Root</a></li>
+        <li><a href="https://planet.documentfoundation.org/" target="_blank">LibreOffice Blogs</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://vmiklos.hu/blog">Index</a> &brvbar; <a href="https://vmiklos.hu/blog/archives.html">Archives</a>
+      &brvbar; <a href="https://vmiklos.hu/blog/feeds/all.rss.xml">RSS</a>
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sw-interdependent-redline-improvements3.html">Interdependent tracked changes improvements in Writer, part 3</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Tue 09 September 2025</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 3 minutes</p>
+  </div>
+  <div class="article_text">
+    <p>Writer has some support for interdependent (or hierarchical) tracked changes: e.g. the case when you
+have a delete on top of an insert. See the <a href="https://vmiklos.hu/blog/sw-interdependent-redline-improvements2.html">second
+post</a> for background.</p>
+<p>This work is primarily for <a href="https://www.collaboraonline.com/">Collabora Online</a>, but the feature is
+available in desktop Writer as well.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>With the already mentioned improvements in place, the area of format redlines with character style
+or direct formatting changes were still lacking: Writer's original model here was just marking a
+text range as "formatted" and then either accept the format redline as-is, or reject reverting back
+to the paragraph style (default formatting), losing the old character style or old direct
+formatting.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>Here is a sample case of a document where the old character style is Strong (~bold) and the font
+size is 24pt, while the new character style is Quote (~italic) and the font size is 36pt. The rest
+of the document uses no specific character styles and has the font size of 12pt:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements3/1-baseline.png"><figure><img src="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements3/1-baseline.png"><figcaption>Interdependent tracked change: improved format, after document load</figcaption></figure></a></p>
+<p>Rejecting that format redline resulted in just the defaults, i.e. no character style and 12pt font
+size:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements3/2-edit-old.png"><figure><img src="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements3/2-edit-old.png"><figcaption>Interdependent tracked change: old reject, lost character style / direct format</figcaption></figure></a></p>
+<p>But now we track the old character style &amp; direct format:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements3/3-edit-new.png"><figure><img src="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements3/3-edit-new.png"><figcaption>Interdependent tracked change: new reject, handled character style / direct format</figcaption></figure></a></p>
+<p>This required changes in the DOCX import, ODF import and ODF export, too.</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>As usual, the high-level problem was addressed by a series of small changes. Core side:</p>
+<ul>
+<li><a href="https://git.libreoffice.org/core/commit/7aa34659e2b49bf02a95a17f51e78f3ab9683235">sw: document DocumentRedlineManager</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/da3da0635a30f9b61a913bd7553b5e1278bf260e">sw: document IDocumentRedlineAccess</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/b2919d5b5ee4e057c99219f5541efc388b2d19b7">sw doc model xml dump: show the item set of a format redline</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/d7bf3a17cb27da1a58163e9db657f0a8d8344901">tdf#166319 sw interdependent redlines: fix redo of accept of ins-then-fmt's fmt</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/f66d63da05dbe2f254ffaf428257684a38523f66">tdf#166319 sw interdependent redlines: handle deleting a self ins-then-fmt</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/1ba53f5ebbd57b7baf72240784d18954688a09b9">tdf#166319 sw interdependent redlines: fix redo of reject of del-then-fmt's fmt</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/e545ada3501780ee6552bbfa19954794e0440d46">tdf#167194 sw redline reinstate: fix handling of self-inserts</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/2db0a779944f9496371b3ba68f7494c635ad431d">tdf#167761 sw format redline: register the item set in the autostyle pool</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/b78bdc9eb15fedd22ece76aeb1b43df40caf3b82">tdf#167761 sw format redline: implement ODF export</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/0e21f3b36cbd12787021c3b8ef439aab9a09efdd">tdf#167761 sw format redline, char props: implement ODF import</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/a6d8608595fd1ecfdff35c2003a28589ea1214ad">tdf#167761 sw format redline, char style: implement DOCX import</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/0ba6dd9eb3f342345663b12527a29425675d2078">tdf#167761 sw format redline, char style: implement ODF import</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/43104ad996bc9b292b66d9e605632407cb59c4c6">tdf#167761 sw format redline, char style: fix missing encode in ODF filter</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/c625247680cd5737723154b9a73c45e786611b44">tdf#167761 sw format redline, char style+direct: add ODT export</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/bbebb3908ff9a9c384a475737ead537906517387">tdf#167761 sw format redline, char style+direct: add ODT import</a></li>
+</ul>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a development edition of Collabora Online 25.04 and try it out yourself right now: <a href="https://www.collaboraonline.com/code/">try
+the development edition</a>.  Collabora intends to continue
+supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
+available in TDF's next release too (26.2).</p>
+  </div>
+  <div class="article_meta">
+    <p>Category: <a href="https://vmiklos.hu/blog/category/libreoffice.html">libreoffice</a>
+ &ndash; Tags:
+      <a href="https://vmiklos.hu/blog/tag/en.html">en</a>    </p>
+  </div>
+
+
+</article>
+
+
+    <div id="ending_message">
+      <p>&copy; Miklos Vajna. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
+</body>
+</html>

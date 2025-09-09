@@ -59,6 +59,61 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sw-textbox-capture.html">Handling page captures for Writer TextBoxes</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Fri 08 November 2024</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 3 minutes</p>
+  </div>
+  <div class="article_text">
+    <p>Writer TextBoxes provide the user with shapes that can have complex geometry and complex content.
+There is also a feature to capture shapes inside page boundaries: now the two features interact with
+each other better.</p>
+<p>This work is primarily for <a href="https://www.collaboraonline.com/">Collabora Online</a>, but the feature is
+available in desktop Writer as well.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>As described in a <a href="https://vmiklos.hu/blog/textbox.html">previous post</a>, Writer implements the TextBox
+feature with a pair of objects: a Draw shape (with complex geometry) and a (hidden) Writer TextFrame,
+providing complex content. To avoid wrapping problems, the underlying TextFrame always has its wrap
+type set to "through", i.e. text may wrap around the Draw shape, but the hidden TextFrame is always
+ignored during text wrapping.</p>
+<p>In most cases this provides the expected behavior, because the user sees one object, so wrapping
+around at most one object is not surprising.</p>
+<p>However, there is also an other feature, that shapes may be captured inside page frames: if their
+position would be outside the page frame, Writer corrects this, so they are not off-page. This also
+makes sense, so it can't happen that your document has a shape that is hard to find, due to a silly
+position.</p>
+<p>The trouble comes when these two are combined: the Draw shape's position gets adjusted to be
+captured inside the page frame, but the TextFrame's wrap type is "through", and objects with this
+wrap type are an exception from the capturing mechanism, so the position of the two shapes get out
+of sync.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>The problem is now solved by improving the layout, so in case the TextFrame is actually part of a
+Draw shape + TextFrame pair (forming a TextBox), then we calculate the effective wrap type of the
+TextFrame based on the wrap type of its Draw shape, so either both objects are captured or none,
+which results in consistent render result.</p>
+<p>Here is a sample document where all margins are configured to be equal, but capturing corrected the
+Draw shape (and not the TextFrame):</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-textbox-capture/old.png"><figure><img src="https://share.vmiklos.hu/blog/sw-textbox-capture/old.png"><figcaption>Bugdoc: old Writer render</figcaption></figure></a></p>
+<p>And here is the same document, with consistent positioning:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-textbox-capture/new.png"><figure><img src="https://share.vmiklos.hu/blog/sw-textbox-capture/new.png"><figcaption>Bugdoc: new Writer render</figcaption></figure></a></p>
+<p>As you can see, now the rendered margins actually equal, as wanted.</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>The bugfix commit was <a href="https://git.libreoffice.org/core/commit/c8549fa3204802daec8597ba0f9f4f7ef23d5cd2">sw textbox: capture fly when its draw object is captured</a>.</p>
+<p>The tracking bug was <a href="https://bugs.documentfoundation.org/show_bug.cgi?id=138711">tdf#138711</a>.</p>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a development edition of Collabora Online 24.04 and try it out yourself right now: <a href="https://www.collaboraonline.com/code/">try
+the development edition</a>.  Collabora intends to continue
+supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
+available in TDF's next release too (25.2).</p>
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/sd-semi-transparent-text2.html">Per-paragraph semi-transparent shape text in Impress</a></h1>
   </div>
   <div class="article_meta">
@@ -638,62 +693,6 @@ that needed a fix similar to what the statusbar already had, now done.</p>
 <a href="https://www.collaboraoffice.com/code/quick-tryout-nextcloud-docker/">try the development edition</a>.
 Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
 expect all of this work will be available in TDF's next release too (24.8).</p>
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/sw-floattable11.html">Multi-page floating tables in Writer: tables wrapping tables</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Wed 03 January 2024</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 3 minutes</p>
-  </div>
-  <div class="article_text">
-    <p>This post is part of a series to describe how Writer now gets a feature to handle tables that are
-both floating and span over multiple pages.</p>
-<p>This work is primarily for <a href="https://www.collaboraoffice.com/">Collabora Online</a>, but is useful on
-the desktop as well. See the <a href="https://vmiklos.hu/blog/sw-floattable10.html">10th post</a> for the previous part.</p>
-<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
-<p>Previous posts described the hardest part of multi-page floating tables: making sure that text can
-wrap around them and they can split across pages. In this part, we'll look at a case where that
-content is not just text, but the wrapping content itself is also a table.</p>
-<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
-<p>Regarding testing of the floating table feature in general, the core.git repository has 92 files now
-which are focusing on correct handling of floating tables (filenames matching
-<code>floattable-|floating-table-</code>). This doesn't count cases where the document model is built using C++
-code in the memory and then we assert the result of some operation.</p>
-<p>Here are some screenshots from the improvements this month:</p>
-<p><a href="https://share.vmiklos.hu/blog/sw-floattable11/2023-12-01-floattable-click-correct.png"><figure><img src="https://share.vmiklos.hu/blog/sw-floattable11/2023-12-01-floattable-click-correct.png"><figcaption>Improved click handling near the first page of a floating table</figcaption></figure></a></p>
-<p>The first screenshot shows a situation where the mouse cursor is near the right edge of the first
-page of a floating table. What used to happen is we found this position close to the invisible
-anchor of the floating table on that page, then corrected this position to be at the real anchor on
-the last page. In short, the user clicked on one page and we jumped to the last page. This is now
-fixed, we notice that part of the floating table is close to the click position and we correct the
-cursor to be at the closest position inside the table's content.</p>
-<p><a href="https://share.vmiklos.hu/blog/sw-floattable11/2023-12-05-floattable-tablewrap.png"><figure><img src="https://share.vmiklos.hu/blog/sw-floattable11/2023-12-05-floattable-tablewrap.png"><figcaption>A floating table, wrapped by an inline table: old, new and reference rendering</figcaption></figure></a></p>
-<p>The next screenshot shows a floating table where the content wrapping around the table happens to be
-an inline table. You can see how such wrapping didn't happen in the past, and the new rendering is
-close to the reference now.</p>
-<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
-<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
-<p>As usual, the high-level problem was addressed by a series of small changes:</p>
-<ul>
-<li><a href="https://git.libreoffice.org/core/commit/f461853b11439c4e485a79174d34735395e5bf52">sw floattable: fix finding the nearest text in split flys on mouse click</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/868140fcc1311259b9d5f666637b33d226511a53">tdf#60558 sw floattable: allow wrap of table on the right of a floattable</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/0746d13365139c356eb9d297a358c486bf47d6fb">sw floattable: fix split of anchor text in 2nd half of the paragraph</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/d852e27ed205c1a60de0979b80f3861bf93c44ae">sw floattable: fix split of anchor text at para start</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/5fec60b4732bdbdb681be08e43a9be47c3bfb320">sw floattable: fix outdated text frame portions after split</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/4e8895d3d86db3776c56070c395cd727fd4b9101">sw floattable: disable UI to enable this when anchored inside TextBox</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/164fb25f7b2db7d833d6d0f28e49c5cac68426b3">tdf#158686 sw floattable: fix print preview crash</a></li>
-</ul>
-<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
-<p>You can get a snapshot / demo of Collabora Office 23.05 and try it out yourself right now: <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try the
-unstable snapshot</a>.  Collabora
-intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF's next release too (24.8).</p>
   </div>
 </article>
 
