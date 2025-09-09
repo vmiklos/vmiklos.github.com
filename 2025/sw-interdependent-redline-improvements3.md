@@ -2,7 +2,7 @@ Title: Interdependent tracked changes improvements in Writer, part 3
 Slug: sw-interdependent-redline-improvements3
 Category: libreoffice
 Tags: en
-Date: 2025-09-08T14:07:37+02:00
+Date: 2025-09-09T08:23:48+02:00
 
 Writer has some support for interdependent (or hierarchical) tracked changes: e.g. the case when you
 have a delete on top of an insert. See the [second
