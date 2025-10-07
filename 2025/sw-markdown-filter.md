@@ -2,7 +2,7 @@ Title: Markdown import/export in Writer
 Slug: sw-markdown-filter
 Category: libreoffice
 Tags: en
-Date: 2025-10-06T14:41:09+02:00
+Date: 2025-10-07T08:13:55+02:00
 
 Writer recently got a Markdown import & export filter and there were a number of improvements to
 that.
