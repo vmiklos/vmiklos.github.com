@@ -59,6 +59,94 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sw-markdown-filter.html">Markdown import/export in Writer</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Tue 07 October 2025</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 3 minutes</p>
+  </div>
+  <div class="article_text">
+    <p>Writer recently got a Markdown import &amp; export filter and there were a number of improvements to
+that.</p>
+<p>This work is primarily for <a href="https://www.collaboraonline.com/">Collabora Online</a>, but the feature is
+available in desktop Writer as well.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>Ujjawal Kumar contributed a markdown import to Writer, as part of Google Summer of Code (GSoC) this
+summer. Mike Kaganski of Collabora also created a minimal markdown export in Writer. I looked at the
+feature differences between the two, and filled in various gaps in the markdown export. I also added
+a few general markdown import/export improvements relevant for normal Writer documents, like
+embedded image support.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>Here is a sample case of a document using inline code spans:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-markdown-filter/1-code-baseline.png"><figure><img src="https://share.vmiklos.hu/blog/sw-markdown-filter/1-code-baseline.png"><figcaption>Code span: baseline</figcaption></figure></a></p>
+<p>Exporting this to markdown &amp; loading back to Writer, the code span was lost:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-markdown-filter/1-code-old.png"><figure><img src="https://share.vmiklos.hu/blog/sw-markdown-filter/1-code-old.png"><figcaption>Code span: old result</figcaption></figure></a></p>
+<p>And now it's preserved:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-markdown-filter/1-code-new.png"><figure><img src="https://share.vmiklos.hu/blog/sw-markdown-filter/1-code-new.png"><figcaption>Code span: new result</figcaption></figure></a></p>
+<p>This also works with code blocks.</p>
+<p>Second, here is a document with lists:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-markdown-filter/2-list-baseline.png"><figure><img src="https://share.vmiklos.hu/blog/sw-markdown-filter/2-list-baseline.png"><figcaption>Lists: baseline</figcaption></figure></a></p>
+<p>Exporting this to markdown &amp; loading back to Writer, the lists were lost:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-markdown-filter/2-list-old.png"><figure><img src="https://share.vmiklos.hu/blog/sw-markdown-filter/2-list-old.png"><figcaption>Lists: old result</figcaption></figure></a></p>
+<p>And now they are preserved:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-markdown-filter/2-list-new.png"><figure><img src="https://share.vmiklos.hu/blog/sw-markdown-filter/2-list-new.png"><figcaption>Lists: new result</figcaption></figure></a></p>
+<p>This also works with nested lists.</p>
+<p>Third, here is a document with an image:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-markdown-filter/3-image-baseline.png"><figure><img src="https://share.vmiklos.hu/blog/sw-markdown-filter/3-image-baseline.png"><figcaption>Image: baseline</figcaption></figure></a></p>
+<p>Exporting this to markdown &amp; loading back to Writer, the image was lost:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-markdown-filter/3-image-old.png"><figure><img src="https://share.vmiklos.hu/blog/sw-markdown-filter/3-image-old.png"><figcaption>Image: old result</figcaption></figure></a></p>
+<p>And now it's preserved:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-markdown-filter/3-image-new.png"><figure><img src="https://share.vmiklos.hu/blog/sw-markdown-filter/3-image-new.png"><figcaption>Image: new result</figcaption></figure></a></p>
+<p>This also works with embedded and anchored images.</p>
+<p>Fourth, here is a document with a table:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-markdown-filter/4-table-baseline.png"><figure><img src="https://share.vmiklos.hu/blog/sw-markdown-filter/4-table-baseline.png"><figcaption>Table: baseline</figcaption></figure></a></p>
+<p>Exporting this to markdown &amp; loading back to Writer, the table was lost:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-markdown-filter/4-table-old.png"><figure><img src="https://share.vmiklos.hu/blog/sw-markdown-filter/4-table-old.png"><figcaption>Table: old result</figcaption></figure></a></p>
+<p>And now it's preserved:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-markdown-filter/4-table-new.png"><figure><img src="https://share.vmiklos.hu/blog/sw-markdown-filter/4-table-new.png"><figcaption>Table: new result</figcaption></figure></a></p>
+<p>This also works with table alignments and nested tables (to the extent the markdown markup allows
+that).</p>
+<p>Fifth, here is a document with a quote block:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-markdown-filter/5-quote-baseline.png"><figure><img src="https://share.vmiklos.hu/blog/sw-markdown-filter/5-quote-baseline.png"><figcaption>Quote: baseline</figcaption></figure></a></p>
+<p>Exporting this to markdown &amp; loading back to Writer, the table was lost:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-markdown-filter/5-quote-old.png"><figure><img src="https://share.vmiklos.hu/blog/sw-markdown-filter/5-quote-old.png"><figcaption>Quote: old result</figcaption></figure></a></p>
+<p>And now it's preserved:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-markdown-filter/5-quote-new.png"><figure><img src="https://share.vmiklos.hu/blog/sw-markdown-filter/5-quote-new.png"><figcaption>Quote: new result</figcaption></figure></a></p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>As usual, the high-level problem was addressed by a series of small changes. Core side:</p>
+<ul>
+<li><a href="https://git.libreoffice.org/core/commit/55393d9cc42b0402362022594b04ab4888257fb7">desktop lok, doc save: register .md for Markdown</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/959c448e9531a53e068e4cec3a56b0caf0e0d3d1">sw markdown export: handle code</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/bcef97f29a7126cb3469066de4bacafaae30f86a">tdf#168152 sw markdown export: handle lists</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/fefd59b58c7d87e034fbf1c45cefa6a87ed09976">tdf#168172 sw markdown export: handle images</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/f073d733568d3b635ac8b2c3a5081afd679b4915">tdf#167564 sw markdown export: handle tables</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/c94b0c7ace10f5913aa53b593aa0ccd544df3cc3">sw markdown export: handle block quote</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/85aa1402c670e8c85949c5aaf01f529a0a59c05b">tdf#168317 sw markdown export: handle code block</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/5d0022c28b149dcc1db22176e442d130ff8d0279">sw markdown export: handle table cell adjustment</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/b7bc0e5f3999950d6b5f0d2bdcda2c6cc2f04e61">tdf#168341 sw markdown filter: handle links on images</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/f63c14c9e45d795c6d5927103181c8d0ede8a34b">sw markdown export: handle line breaks</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/3a294f97a9b37cc8ff38f76200b5b58879a3a72f">tdf#168446 sw markdown export: improve image name/description/title handling</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/852d8b06bcecc5c68194fced94e4c7af02086c52">tdf#167564 sw markdown export: handle multi-para table cells</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/c830c9ab824c8086b2124fec44f834a1d0ae4fa5">tdf#167564 sw markdown export: handle nested table cells</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/7608d96302652eb48863da441e121e0c61350412">tdf#168617 sw markdown filter: map tasks to checkbox content controls and back</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/169e1f3b914ac590b3719b8129b4f0913d4da228">sw markdown filter: import images with 'data:' URLs</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/8d60fcdac9bc79c7b8956ed3cd9e9f518b28c119">sw markdown filter: export non-linked inline images</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/3c29e1277bda566b4455123a7a53c8f0fc6eda98">tdf#168662 sw markdown export: extract inline image export functions</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/e0601a598977265c5b05ba397bce04d9689fca4b">tdf#168662 sw markdown export: handle anchored images</a></li>
+</ul>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a development edition of Collabora Online 25.04 and try it out yourself right now: <a href="https://www.collaboraonline.com/code/">try
+the development edition</a>.  Collabora intends to continue
+supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
+available in TDF's next release too (26.2).</p>
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/sw-interdependent-redline-improvements3.html">Interdependent tracked changes improvements in Writer, part 3</a></h1>
   </div>
   <div class="article_meta">
@@ -817,57 +905,6 @@ a set of conditions which now does a decent emulation of Word's rules in this re
 <li><a href="https://git.libreoffice.org/core/commit/abd90828cf101581a07b9d1c371a8c3156521e9f">tdf#160952 sw: ignore top margin of para on non-first pages with newer DOCX</a></li>
 <li><a href="https://git.libreoffice.org/core/commit/ae7900dd42a65aaf60df6b21b9ad511496b209d9">tdf#164095 sw: fix missing top margin on paragraph after changing page style</a></li>
 </ul>
-<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
-<p>You can get a development edition of Collabora Online 24.04 and try it out yourself right now: <a href="https://www.collaboraonline.com/code/">try
-the development edition</a>.  Collabora intends to continue
-supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
-available in TDF's next release too (25.2).</p>
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/editeng-rtf-export-lost-para-style.html">Editeng RTF export: fixing a lost paragraph style</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Wed 04 December 2024</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
-  </div>
-  <div class="article_text">
-    <p>Impress shape text doesn't have much support for styles, e.g. the default UI in Writer gives you a
-paragraph style dropdown, and you don't get the same in Impress. Still, a paragraph style is
-attached to bullets based on their outline level, and Impress has a View → Outline menu item to give
-you that styled text you can copy. Pasting that to Writer started to lose styles recently and it's
-now fixed to work again.</p>
-<p>This work is primarily for <a href="https://www.collaboraonline.com/">Collabora Online</a>, but the feature is
-available in desktop Impress as well.</p>
-<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
-<p>As described in a <a href="https://git.libreoffice.org/core/commit/70d1bd6ee0eba9d6661cd6280566f77a87f2d068">previous
-commit</a>, I had a
-case where lots of not needed paragraph styles were exported to RTF in case an Impress document had
-enough master pages. The idea was to only export actually used paragraph styles, to avoid wasting
-CPU power.</p>
-<p>Turns out filtering out paragraph styles has to happen at two locations:</p>
-<ul>
-<li>in the style table to assign an index to a paragraph style</li>
-<li>when referring to those styles</li>
-</ul>
-<p>The problem was that unused styles were removed from the style table, but not from the style → index
-mapping, so as soon as you had both used and unused paragraph styles, the declared and the referred
-style indexes didn't match anymore.</p>
-<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
-<p>Here is a sample paste result in Writer, where you can see that the text doesn't have a custom
-paragraph style:</p>
-<p><a href="https://share.vmiklos.hu/blog/editeng-rtf-export-lost-para-style/old.png"><figure><img src="https://share.vmiklos.hu/blog/editeng-rtf-export-lost-para-style/old.png"><figcaption>Bugdoc: old Writer paste</figcaption></figure></a></p>
-<p>And here is the same paste, now with paragraph styles restored:</p>
-<p><a href="https://share.vmiklos.hu/blog/editeng-rtf-export-lost-para-style/new.png"><figure><img src="https://share.vmiklos.hu/blog/editeng-rtf-export-lost-para-style/new.png"><figcaption>Bugdoc: new Writer paste</figcaption></figure></a></p>
-<p>As you can see, now the pasted text has paragraph styles.</p>
-<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
-<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
-<p>The bugfix commit was <a href="https://git.libreoffice.org/core/commit/c8b607b7c0096c58dc5187262bf0133dee728d50">editeng RTF export: fix broken offsets into the para style table</a>.</p>
-<p>The tracking bug was <a href="https://bugs.documentfoundation.org/show_bug.cgi?id=163883">tdf#163883</a>.</p>
 <h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
 <p>You can get a development edition of Collabora Online 24.04 and try it out yourself right now: <a href="https://www.collaboraonline.com/code/">try
 the development edition</a>.  Collabora intends to continue

@@ -1,5 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>What is Miklos hacking - libreoffice</title><link>https://vmiklos.hu/blog/</link><description></description><lastBuildDate>Tue, 09 Sep 2025 08:23:48 +0200</lastBuildDate><item><title>Interdependent tracked changes improvements in Writer, part 3</title><link>https://vmiklos.hu/blog/sw-interdependent-redline-improvements3.html</link><description>&lt;p&gt;Writer has some support for interdependent (or hierarchical) tracked changes: e.g. the case when you
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>What is Miklos hacking - libreoffice</title><link>https://vmiklos.hu/blog/</link><description/><atom:link href="https://vmiklos.hu/blog/feeds/libreoffice.rss.xml" rel="self"/><lastBuildDate>Tue, 07 Oct 2025 08:13:55 +0200</lastBuildDate><item><title>Markdown import/export in Writer</title><link>https://vmiklos.hu/blog/sw-markdown-filter.html</link><description>&lt;p&gt;Writer recently got a Markdown import &amp;amp; export filter and there were a number of improvements to
+that.&lt;/p&gt;
+&lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraonline.com/"&gt;Collabora Online&lt;/a&gt;, but the feature is
+available in desktop Writer as well.&lt;/p&gt;
+&lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Ujjawal Kumar contributed a markdown import to Writer, as part of Google Summer of Code (GSoC) this
+summer. Mike Kaganski of Collabora also created a minimal markdown export in Writer. I looked at the
+feature differences between the two, and filled in various gaps in the markdown export. I also added
+a few general markdown import/export improvements relevant for normal Writer documents, like
+embedded image support.&lt;/p&gt;
+&lt;h2 id="results-so-far"&gt;Results so far&lt;a class="headerlink" href="#results-so-far" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Here is a sample case of a document using inline code spans:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-markdown-filter/1-code-baseline.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-markdown-filter/1-code-baseline.png"&gt;&lt;figcaption&gt;Code span: baseline&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Exporting this to markdown &amp;amp; loading back to Writer, the code span was lost:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-markdown-filter/1-code-old.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-markdown-filter/1-code-old.png"&gt;&lt;figcaption&gt;Code span: old result&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;And now it's preserved:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-markdown-filter/1-code-new.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-markdown-filter/1-code-new.png"&gt;&lt;figcaption&gt;Code span: new result&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;This also works with code blocks.&lt;/p&gt;
+&lt;p&gt;Second, here is a document with lists:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-markdown-filter/2-list-baseline.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-markdown-filter/2-list-baseline.png"&gt;&lt;figcaption&gt;Lists: baseline&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Exporting this to markdown &amp;amp; loading back to Writer, the lists were lost:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-markdown-filter/2-list-old.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-markdown-filter/2-list-old.png"&gt;&lt;figcaption&gt;Lists: old result&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;And now they are preserved:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-markdown-filter/2-list-new.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-markdown-filter/2-list-new.png"&gt;&lt;figcaption&gt;Lists: new result&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;This also works with nested lists.&lt;/p&gt;
+&lt;p&gt;Third, here is a document with an image:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-markdown-filter/3-image-baseline.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-markdown-filter/3-image-baseline.png"&gt;&lt;figcaption&gt;Image: baseline&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Exporting this to markdown &amp;amp; loading back to Writer, the image was lost:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-markdown-filter/3-image-old.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-markdown-filter/3-image-old.png"&gt;&lt;figcaption&gt;Image: old result&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;And now it's preserved:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-markdown-filter/3-image-new.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-markdown-filter/3-image-new.png"&gt;&lt;figcaption&gt;Image: new result&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;This also works with embedded and anchored images.&lt;/p&gt;
+&lt;p&gt;Fourth, here is a document with a table:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-markdown-filter/4-table-baseline.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-markdown-filter/4-table-baseline.png"&gt;&lt;figcaption&gt;Table: baseline&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Exporting this to markdown &amp;amp; loading back to Writer, the table was lost:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-markdown-filter/4-table-old.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-markdown-filter/4-table-old.png"&gt;&lt;figcaption&gt;Table: old result&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;And now it's preserved:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-markdown-filter/4-table-new.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-markdown-filter/4-table-new.png"&gt;&lt;figcaption&gt;Table: new result&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;This also works with table alignments and nested tables (to the extent the markdown markup allows
+that).&lt;/p&gt;
+&lt;p&gt;Fifth, here is a document with a quote block:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-markdown-filter/5-quote-baseline.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-markdown-filter/5-quote-baseline.png"&gt;&lt;figcaption&gt;Quote: baseline&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Exporting this to markdown &amp;amp; loading back to Writer, the table was lost:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-markdown-filter/5-quote-old.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-markdown-filter/5-quote-old.png"&gt;&lt;figcaption&gt;Quote: old result&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;And now it's preserved:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-markdown-filter/5-quote-new.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-markdown-filter/5-quote-new.png"&gt;&lt;figcaption&gt;Quote: new result&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id="how-is-this-implemented"&gt;How is this implemented?&lt;a class="headerlink" href="#how-is-this-implemented" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;If you would like to know a bit more about how this works, continue reading... :-)&lt;/p&gt;
+&lt;p&gt;As usual, the high-level problem was addressed by a series of small changes. Core side:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/55393d9cc42b0402362022594b04ab4888257fb7"&gt;desktop lok, doc save: register .md for Markdown&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/959c448e9531a53e068e4cec3a56b0caf0e0d3d1"&gt;sw markdown export: handle code&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/bcef97f29a7126cb3469066de4bacafaae30f86a"&gt;tdf#168152 sw markdown export: handle lists&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/fefd59b58c7d87e034fbf1c45cefa6a87ed09976"&gt;tdf#168172 sw markdown export: handle images&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/f073d733568d3b635ac8b2c3a5081afd679b4915"&gt;tdf#167564 sw markdown export: handle tables&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/c94b0c7ace10f5913aa53b593aa0ccd544df3cc3"&gt;sw markdown export: handle block quote&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/85aa1402c670e8c85949c5aaf01f529a0a59c05b"&gt;tdf#168317 sw markdown export: handle code block&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/5d0022c28b149dcc1db22176e442d130ff8d0279"&gt;sw markdown export: handle table cell adjustment&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/b7bc0e5f3999950d6b5f0d2bdcda2c6cc2f04e61"&gt;tdf#168341 sw markdown filter: handle links on images&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/f63c14c9e45d795c6d5927103181c8d0ede8a34b"&gt;sw markdown export: handle line breaks&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/3a294f97a9b37cc8ff38f76200b5b58879a3a72f"&gt;tdf#168446 sw markdown export: improve image name/description/title handling&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/852d8b06bcecc5c68194fced94e4c7af02086c52"&gt;tdf#167564 sw markdown export: handle multi-para table cells&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/c830c9ab824c8086b2124fec44f834a1d0ae4fa5"&gt;tdf#167564 sw markdown export: handle nested table cells&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/7608d96302652eb48863da441e121e0c61350412"&gt;tdf#168617 sw markdown filter: map tasks to checkbox content controls and back&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/169e1f3b914ac590b3719b8129b4f0913d4da228"&gt;sw markdown filter: import images with 'data:' URLs&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/8d60fcdac9bc79c7b8956ed3cd9e9f518b28c119"&gt;sw markdown filter: export non-linked inline images&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/3c29e1277bda566b4455123a7a53c8f0fc6eda98"&gt;tdf#168662 sw markdown export: extract inline image export functions&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/e0601a598977265c5b05ba397bce04d9689fca4b"&gt;tdf#168662 sw markdown export: handle anchored images&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="want-to-start-using-this"&gt;Want to start using this?&lt;a class="headerlink" href="#want-to-start-using-this" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;You can get a development edition of Collabora Online 25.04 and try it out yourself right now: &lt;a href="https://www.collaboraonline.com/code/"&gt;try
+the development edition&lt;/a&gt;.  Collabora intends to continue
+supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
+available in TDF's next release too (26.2).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Tue, 07 Oct 2025 08:13:55 +0200</pubDate><guid>tag:vmiklos.hu,2025-10-07:/blog/sw-markdown-filter.html</guid><category>libreoffice</category><category>en</category></item><item><title>Interdependent tracked changes improvements in Writer, part 3</title><link>https://vmiklos.hu/blog/sw-interdependent-redline-improvements3.html</link><description>&lt;p&gt;Writer has some support for interdependent (or hierarchical) tracked changes: e.g. the case when you
 have a delete on top of an insert. See the &lt;a href="https://vmiklos.hu/blog/sw-interdependent-redline-improvements2.html"&gt;second
 post&lt;/a&gt; for background.&lt;/p&gt;
 &lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraonline.com/"&gt;Collabora Online&lt;/a&gt;, but the feature is
@@ -45,7 +118,7 @@ size:&lt;/p&gt;
 &lt;p&gt;You can get a development edition of Collabora Online 25.04 and try it out yourself right now: &lt;a href="https://www.collaboraonline.com/code/"&gt;try
 the development edition&lt;/a&gt;.  Collabora intends to continue
 supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
-available in TDF's next release too (26.2).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Tue, 09 Sep 2025 08:23:48 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2025-09-09:/blog/sw-interdependent-redline-improvements3.html</guid><category>libreoffice</category><category>en</category></item><item><title>Multi-page floating tables in Writer: keep together or not</title><link>https://vmiklos.hu/blog/sw-floattable12.html</link><description>&lt;p&gt;This post is part of a series to describe how Writer now gets a feature to handle tables that are
+available in TDF's next release too (26.2).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Tue, 09 Sep 2025 08:23:48 +0200</pubDate><guid>tag:vmiklos.hu,2025-09-09:/blog/sw-interdependent-redline-improvements3.html</guid><category>libreoffice</category><category>en</category></item><item><title>Multi-page floating tables in Writer: keep together or not</title><link>https://vmiklos.hu/blog/sw-floattable12.html</link><description>&lt;p&gt;This post is part of a series to describe how Writer now gets a feature to handle tables that are
 both floating and span over multiple pages.&lt;/p&gt;
 &lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraoffice.com/"&gt;Collabora Online&lt;/a&gt;, but is useful on
 the desktop as well. See the &lt;a href="https://vmiklos.hu/blog/sw-floattable11.html"&gt;11th post&lt;/a&gt; for the previous part.&lt;/p&gt;
@@ -85,7 +158,7 @@ to split and use space at a previous page if they fit there.&lt;/p&gt;
 &lt;p&gt;You can get a development edition of Collabora Online 25.04 and try it out yourself right now: &lt;a href="https://www.collaboraonline.com/code/"&gt;try
 the development edition&lt;/a&gt;.  Collabora intends to continue
 supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
-available in TDF's next release too (26.2).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 15 Aug 2025 08:14:19 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2025-08-15:/blog/sw-floattable12.html</guid><category>libreoffice</category><category>en</category></item><item><title>Interdependent tracked changes improvements in Writer, part 2</title><link>https://vmiklos.hu/blog/sw-interdependent-redline-improvements2.html</link><description>&lt;p&gt;Writer has some support for interdependent (or hierarchical) tracked changes: e.g. the case when you
+available in TDF's next release too (26.2).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 15 Aug 2025 08:14:19 +0200</pubDate><guid>tag:vmiklos.hu,2025-08-15:/blog/sw-floattable12.html</guid><category>libreoffice</category><category>en</category></item><item><title>Interdependent tracked changes improvements in Writer, part 2</title><link>https://vmiklos.hu/blog/sw-interdependent-redline-improvements2.html</link><description>&lt;p&gt;Writer has some support for interdependent (or hierarchical) tracked changes: e.g. the case when you
 have a delete on top of an insert. See the &lt;a href="https://vmiklos.hu/blog/sw-interdependent-redline-improvements.html"&gt;first
 post&lt;/a&gt; for background.&lt;/p&gt;
 &lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraonline.com/"&gt;Collabora Online&lt;/a&gt;, but the feature is
@@ -125,7 +198,7 @@ the insert redline covered by a format redline:&lt;/p&gt;
 &lt;p&gt;You can get a development edition of Collabora Online 25.04 and try it out yourself right now: &lt;a href="https://www.collaboraonline.com/code/"&gt;try
 the development edition&lt;/a&gt;.  Collabora intends to continue
 supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
-available in TDF's next release too (25.8).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Tue, 08 Jul 2025 08:43:10 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2025-07-08:/blog/sw-interdependent-redline-improvements2.html</guid><category>libreoffice</category><category>en</category></item><item><title>Interdependent tracked changes improvements in Writer</title><link>https://vmiklos.hu/blog/sw-interdependent-redline-improvements.html</link><description>&lt;p&gt;Writer has some support for interdependent (or hierarchical) tracked changes: e.g. the case when you
+available in TDF's next release too (25.8).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Tue, 08 Jul 2025 08:43:10 +0200</pubDate><guid>tag:vmiklos.hu,2025-07-08:/blog/sw-interdependent-redline-improvements2.html</guid><category>libreoffice</category><category>en</category></item><item><title>Interdependent tracked changes improvements in Writer</title><link>https://vmiklos.hu/blog/sw-interdependent-redline-improvements.html</link><description>&lt;p&gt;Writer has some support for interdependent (or hierarchical) tracked changes: e.g. the case when you
 have a delete on top of an insert. While there were some working cases, handling of many
 combinations were missing. I started to make systematic improvements in this area in the recent
 past, this post gives you an overview what's done so far.&lt;/p&gt;
@@ -208,7 +281,7 @@ format is always on top of something. Finally the same type is never on top of i
 &lt;p&gt;You can get a development edition of Collabora Online 25.04 and try it out yourself right now: &lt;a href="https://www.collaboraonline.com/code/"&gt;try
 the development edition&lt;/a&gt;.  Collabora intends to continue
 supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
-available in TDF's next release too (25.8).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Mon, 02 Jun 2025 13:54:44 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2025-06-02:/blog/sw-interdependent-redline-improvements.html</guid><category>libreoffice</category><category>en</category></item><item><title>Reinstate for tracked changes in Writer</title><link>https://vmiklos.hu/blog/sw-redline-reinstate.html</link><description>&lt;p&gt;Writer has the concept of rejecting tracked changes: if a proposed insertion or deletion is not
+available in TDF's next release too (25.8).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Mon, 02 Jun 2025 13:54:44 +0200</pubDate><guid>tag:vmiklos.hu,2025-06-02:/blog/sw-interdependent-redline-improvements.html</guid><category>libreoffice</category><category>en</category></item><item><title>Reinstate for tracked changes in Writer</title><link>https://vmiklos.hu/blog/sw-redline-reinstate.html</link><description>&lt;p&gt;Writer has the concept of rejecting tracked changes: if a proposed insertion or deletion is not
 wanted, then one can reject it to push back on the proposal. So far such an action left no trace in
 the document, which is sometimes not wanted. Calling reinstate on a change behaves like reject, but
 with history: it reinstates the original state, with the rejected change preserved in the document.&lt;/p&gt;
@@ -262,7 +335,7 @@ in the end still reject the change, but without deleting the original change.&lt
 &lt;p&gt;You can get a development edition of Collabora Online 25.04 and try it out yourself right now: &lt;a href="https://www.collaboraonline.com/code/"&gt;try
 the development edition&lt;/a&gt;.  Collabora intends to continue
 supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
-available in TDF's next release too (25.8).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Thu, 08 May 2025 08:44:48 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2025-05-08:/blog/sw-redline-reinstate.html</guid><category>libreoffice</category><category>en</category></item><item><title>Per-user track changes recording in Writer</title><link>https://vmiklos.hu/blog/sw-per-view-redline-record.html</link><description>&lt;p&gt;Writer has the concept of recording tracked changes or not: if recording, typing into a document or
+available in TDF's next release too (25.8).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Thu, 08 May 2025 08:44:48 +0200</pubDate><guid>tag:vmiklos.hu,2025-05-08:/blog/sw-redline-reinstate.html</guid><category>libreoffice</category><category>en</category></item><item><title>Per-user track changes recording in Writer</title><link>https://vmiklos.hu/blog/sw-per-view-redline-record.html</link><description>&lt;p&gt;Writer has the concept of recording tracked changes or not: if recording, typing into a document or
 deleting content will create tracked changes of type insertion or deletion. So far this was a
 per-document setting, but now individual users can enable or disable this as they wish.&lt;/p&gt;
 &lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraonline.com/"&gt;Collabora Online&lt;/a&gt;, but the feature is
@@ -299,7 +372,7 @@ the right, while this was not possible before.&lt;/p&gt;
 &lt;p&gt;You can get a development edition of Collabora Online 25.04 and try it out yourself right now: &lt;a href="https://www.collaboraonline.com/code/"&gt;try
 the development edition&lt;/a&gt;.  Collabora intends to continue
 supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
-available in TDF's next release too (25.8).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Wed, 02 Apr 2025 13:33:03 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2025-04-02:/blog/sw-per-view-redline-record.html</guid><category>libreoffice</category><category>en</category></item><item><title>Ignoring the paragraph margin at the top of pages in Writer</title><link>https://vmiklos.hu/blog/sw-ignore-margin-page-top.html</link><description>&lt;p&gt;Writer has the concept of paragraph margins and page margins, but what happens when you combine the
+available in TDF's next release too (25.8).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Wed, 02 Apr 2025 13:33:03 +0200</pubDate><guid>tag:vmiklos.hu,2025-04-02:/blog/sw-per-view-redline-record.html</guid><category>libreoffice</category><category>en</category></item><item><title>Ignoring the paragraph margin at the top of pages in Writer</title><link>https://vmiklos.hu/blog/sw-ignore-margin-page-top.html</link><description>&lt;p&gt;Writer has the concept of paragraph margins and page margins, but what happens when you combine the
 two? It turns out the expectation is that sometimes the top paragraph margin is ignored in this
 case. We'll see two cases where the behavior of Writer is now improved to better match Word in this
 regard.&lt;/p&gt;
@@ -330,7 +403,7 @@ a set of conditions which now does a decent emulation of Word's rules in this re
 &lt;p&gt;You can get a development edition of Collabora Online 24.04 and try it out yourself right now: &lt;a href="https://www.collaboraonline.com/code/"&gt;try
 the development edition&lt;/a&gt;.  Collabora intends to continue
 supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
-available in TDF's next release too (25.2).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Wed, 08 Jan 2025 09:53:05 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2025-01-08:/blog/sw-ignore-margin-page-top.html</guid><category>libreoffice</category><category>en</category></item><item><title>Editeng RTF export: fixing a lost paragraph style</title><link>https://vmiklos.hu/blog/editeng-rtf-export-lost-para-style.html</link><description>&lt;p&gt;Impress shape text doesn't have much support for styles, e.g. the default UI in Writer gives you a
+available in TDF's next release too (25.2).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Wed, 08 Jan 2025 09:53:05 +0100</pubDate><guid>tag:vmiklos.hu,2025-01-08:/blog/sw-ignore-margin-page-top.html</guid><category>libreoffice</category><category>en</category></item><item><title>Editeng RTF export: fixing a lost paragraph style</title><link>https://vmiklos.hu/blog/editeng-rtf-export-lost-para-style.html</link><description>&lt;p&gt;Impress shape text doesn't have much support for styles, e.g. the default UI in Writer gives you a
 paragraph style dropdown, and you don't get the same in Impress. Still, a paragraph style is
 attached to bullets based on their outline level, and Impress has a View → Outline menu item to give
 you that styled text you can copy. Pasting that to Writer started to lose styles recently and it's
@@ -366,7 +439,7 @@ paragraph style:&lt;/p&gt;
 &lt;p&gt;You can get a development edition of Collabora Online 24.04 and try it out yourself right now: &lt;a href="https://www.collaboraonline.com/code/"&gt;try
 the development edition&lt;/a&gt;.  Collabora intends to continue
 supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
-available in TDF's next release too (25.2).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Wed, 04 Dec 2024 11:34:30 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2024-12-04:/blog/editeng-rtf-export-lost-para-style.html</guid><category>libreoffice</category><category>en</category></item><item><title>Handling page captures for Writer TextBoxes</title><link>https://vmiklos.hu/blog/sw-textbox-capture.html</link><description>&lt;p&gt;Writer TextBoxes provide the user with shapes that can have complex geometry and complex content.
+available in TDF's next release too (25.2).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Wed, 04 Dec 2024 11:34:30 +0100</pubDate><guid>tag:vmiklos.hu,2024-12-04:/blog/editeng-rtf-export-lost-para-style.html</guid><category>libreoffice</category><category>en</category></item><item><title>Handling page captures for Writer TextBoxes</title><link>https://vmiklos.hu/blog/sw-textbox-capture.html</link><description>&lt;p&gt;Writer TextBoxes provide the user with shapes that can have complex geometry and complex content.
 There is also a feature to capture shapes inside page boundaries: now the two features interact with
 each other better.&lt;/p&gt;
 &lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraonline.com/"&gt;Collabora Online&lt;/a&gt;, but the feature is
@@ -406,39 +479,4 @@ Draw shape (and not the TextFrame):&lt;/p&gt;
 &lt;p&gt;You can get a development edition of Collabora Online 24.04 and try it out yourself right now: &lt;a href="https://www.collaboraonline.com/code/"&gt;try
 the development edition&lt;/a&gt;.  Collabora intends to continue
 supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
-available in TDF's next release too (25.2).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 08 Nov 2024 08:58:46 +0100</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2024-11-08:/blog/sw-textbox-capture.html</guid><category>libreoffice</category><category>en</category></item><item><title>Per-paragraph semi-transparent shape text in Impress</title><link>https://vmiklos.hu/blog/sd-semi-transparent-text2.html</link><description>&lt;p&gt;The SVG export in Impress now supports a per-paragraph setting to handle semi-transparent shape
-text, while previously this was only possible to control at a per-shape level.&lt;/p&gt;
-&lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraonline.com/"&gt;Collabora Online&lt;/a&gt;, but the feature is
-available in desktop Impress as well.&lt;/p&gt;
-&lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;As described in a &lt;a href="https://vmiklos.hu/blog/sd-semi-transparent-text.html"&gt;previous post&lt;/a&gt;, Impress already
-had the capability to have semi-transparent shape text, but the SVG export of this for the case when
-not all paragraphs have the same setting was broken.&lt;/p&gt;
-&lt;p&gt;Transparency in SVG can be described as a property of a group (&lt;code&gt;&amp;lt;g style="opacity: 0.5"&amp;gt;...&amp;lt;/g&amp;gt;&lt;/code&gt;)
-and it can be also a property of the text (&lt;code&gt;&amp;lt;tspan fill-opacity="0.5"&amp;gt;...&amp;lt;/tspan&amp;gt;&lt;/code&gt;).&lt;/p&gt;
-&lt;p&gt;The SVG export works with the metafile of the shape, so when looking for meta actions, it tries to
-guess if the transparency will be for text: if so, it needs to use the &lt;code&gt;tspan&lt;/code&gt; markup, otherwise
-going with the &lt;code&gt;g&lt;/code&gt; markup is OK.&lt;/p&gt;
-&lt;p&gt;What happened here is that meta action for a normal text started, so the SVG export assumed the text
-is not semi-transparent, but later the second line was still transparent, so we started a group
-element, and this resulted in a not even well-formed XML output.&lt;/p&gt;
-&lt;h2 id="results-so-far"&gt;Results so far&lt;a class="headerlink" href="#results-so-far" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;The relevant part of the test document is simple: just 3 paragraphs, the second one is
-semi-transparent (and also has a bullet, as an extra):&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sd-semi-transparent-text2/svg-1input.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sd-semi-transparent-text2/svg-1input.png"&gt;&lt;figcaption&gt;Bugdoc: original Impress render&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Once this was exported to SVG, this resulted in a non-well-formed XML, so you got this error in a
-web browser:&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sd-semi-transparent-text2/svg-2bad.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sd-semi-transparent-text2/svg-2bad.png"&gt;&lt;figcaption&gt;Bugdoc: old SVG render&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Once tweaking the transparency mask writer to check if text started already, we get the correct SVG
-render:&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sd-semi-transparent-text2/svg-3good.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sd-semi-transparent-text2/svg-3good.png"&gt;&lt;figcaption&gt;Bugdoc: new SVG render&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;h2 id="how-is-this-implemented"&gt;How is this implemented?&lt;a class="headerlink" href="#how-is-this-implemented" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;If you would like to know a bit more about how this works, continue reading... :-)&lt;/p&gt;
-&lt;p&gt;The bugfix commit was &lt;a href="https://git.libreoffice.org/core/commit/0a89d65e6bb7be293c1a7b4615a08292701694dc"&gt;SVG export: fix handling of semi-transparent text inside a
-list&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;The tracking bug was &lt;a href="https://bugs.documentfoundation.org/show_bug.cgi?id=162782"&gt;tdf#162782&lt;/a&gt;.&lt;/p&gt;
-&lt;h2 id="want-to-start-using-this"&gt;Want to start using this?&lt;a class="headerlink" href="#want-to-start-using-this" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;You can get a development edition of Collabora Online 24.04 and try it out yourself right now: &lt;a href="https://www.collaboraonline.com/code/"&gt;try
-the development edition&lt;/a&gt;.  Collabora intends to continue
-supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
-available in TDF's next release too (25.2).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 04 Oct 2024 08:22:01 +0200</pubDate><guid isPermaLink="false">tag:vmiklos.hu,2024-10-04:/blog/sd-semi-transparent-text2.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
+available in TDF's next release too (25.2).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 08 Nov 2024 08:58:46 +0100</pubDate><guid>tag:vmiklos.hu,2024-11-08:/blog/sw-textbox-capture.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>

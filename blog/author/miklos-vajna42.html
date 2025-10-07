@@ -59,6 +59,32 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/nokia-fbus-from-python.html">Nokia fbus from Python</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Mon 16 March 2009</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>So yesterday I found <a href="http://www.embedtronics.com/nokia/fbus.html">this</a> article and I wanted to try it out from Python.</p><p>Here is a few lines of code to send that "get hw and firmware version" message to the phone and at least read an ACK:</p><p><code>
+import serial, time</p><p>ser = serial.Serial("/dev/ttyUSB0", 115200)
+ser.setRTS(False)
+ser.write("\x1E\x00\x0C\xD1\x00\x07\x00\x01\x00\x03\x00\x01\x40\x00\x52\xD5")
+print repr(ser.read(1))
+print repr(ser.read(10))
+</code></p><p>Of course this is just a PoC, the first read could be avoided and we could just read one char till we hit the 0x1e one. But that .setRTS() took a few hours to figure out. ;-)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/wip-support-in-syncd.html">WIP support in syncd</a></h1>
   </div>
   <div class="article_meta">
@@ -240,26 +266,6 @@ dunabogdany - visegrad - nagymaros - kismaros - vac - god - dunakeszi - budapest
 nap is. neha gaz volt a szel, de igazabol csak itt bp-en volt eros.</p></div>
 <div class="paragraph"><p>zaivaldi csinalt <a href="http://lerak.hu/~zaivaldi/marc7/">par kepet</a>, amit kicsit megkommentalva
 <a href="https://www.flickr.com/photos/vmiklos/albums/72157667486514784">mirroroztam</a>.</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/escaping-within-sphinx-and-mysql.html">Escaping within sphinx and mysql</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Sat 07 March 2009</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>We all know the usual problem with sql escaping, there is even a <a href="http://xkcd.com/327/">comic</a> about it.</p><p>There is an other SQL-related project, <a href="http://www.sphinxsearch.com/">sphinx</a>, which is a quite efficient search indexer (especially for whole word search), but it also needs escaping. Given that in sphinx "foo-bar" means "all records containing foo, but not bar", if you really want a single-word "foo-bar", then you need to use "foo\-bar".</p><p>And that's the fun part, as the escaping order matters a lot. Basically if you escape mysql first and then just insert the sphinx query, then you just created an injection yourself. ;)</p><p>So the <em>final</em> query will look like "foo\\-bar" if you did the escaping in the right order.</p><p>It's also notable that the official sphinx php API seems not escaping the ";" char, which is also a bug, as this way you can modify the search query in the way you want.</p>
 </div>
 </div>
 

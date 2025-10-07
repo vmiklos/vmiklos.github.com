@@ -61,6 +61,92 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sw-number-portion.html">Improved number portion formatting in Writer</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Tue 03 January 2023</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 3 minutes</p>
+  </div>
+  <div class="article_text">
+    <p>Number portions generated when using lists/numberings/bullets in Writer now can have formatting
+which is preserved in ODT files as well.</p>
+<p>First, thanks <a href="https://www.docmosis.com/">Docmosis</a> for funding this work by
+<a href="https://www.collaboraoffice.com/">Collabora</a>.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>Word and DOCX files support explicit character properties for the paragraph marker, and these are
+also used for the formatting of a number portion if the paragraph has one. This was already loaded
+from / saved to DOCX, but it was lost when saving to ODT.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>First, we got a bug document, where the reference rendering and our rendering differed:</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-number-portion/sw-number-portion-1.png"><figcaption>Reference (on the left) and our old (on the right) rendering, due to bookmarks</figcaption>
+</figure>
+</p>
+<p>In this case, what happened was that part of the heading text was covered by a bookmark, so we first
+created multiple character ranges (outside the bookmark, inside the bookmark), then as an
+optimization we even unified them to be a single formatted character range, covering the entire
+paragraph. This was a document model that is different from the bookmark-free version, where the
+character formatting was set on the paragraph itself.</p>
+<p>This was fixed at render time and at DOCX export time to consider both full-paragraph character
+ranges and in-paragraph character properties. For a while, this looked like the entire story, since
+this now looks good in Writer:</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-number-portion/sw-number-portion-1good.png"><figcaption>Our new rendering, handling bookmarks</figcaption>
+</figure>
+</p>
+<p>A bit later another, related bug was discovered. Given a reference document:</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-number-portion/sw-number-portion-2-ref.png"><figcaption>Reference rendering of a second document</figcaption>
+</figure>
+</p>
+<p>Just opening this DOCX file in Writer, it looked like this:</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-number-portion/sw-number-portion-3-import.png"><figcaption>Old rendering in Writer</figcaption>
+</figure>
+</p>
+<p>Note how the first number portion turned into bold! This was expected after the above layout change
+to consider full-paragraph formatted character ranges, but it also meant that Word can have one
+set of character formatting for the entire character range of a paragraph, and another for the
+paragraph marker.</p>
+<p>To make the problem worse, this second document was showing that even the ODT export/export feature
+had problems, still:</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-number-portion/sw-number-portion-4-odf.png"><figcaption>Old rendering in Writer after ODT save + load</figcaption>
+</figure>
+</p>
+<p>The fix to solve all of the above was to undo the previous render / DOCX export change, then teach
+the ODT export to explicitly save the paragraph marker formatting (as an empty span at the end of
+the text node) to ODT, and also to load it back.</p>
+<p>This means that now Writer can render the second document correctly, without breaking the first
+document:</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-number-portion/sw-number-portion-5-good.png"><figcaption>New rendering in Writer</figcaption>
+</figure>
+</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>As usual, the high-level problem was addressed by a series of small changes:</p>
+<!-- s/\([^ ]\+\) \(.*\)/- [\2](https:\/\/git.libreoffice.org\/core\/commit\/\1)/g -->
+
+<ul>
+<li><a href="https://git.libreoffice.org/core/commit/e6907bc15cfa3c561d4aafbcc92eff291dc68cdd">sw, numbering portion format: consider full-para char formats as well</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/dfba56830288b381eaaaf6b8f9454834301497db">DOCX export, numbering portion format: consider full-para char formats as well</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/585d440df98ff3b967c191908ac2d4b2f7e29326">sw, numbering portion format: ignore char formats covering the entire paragraph</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/3998b98749739b2c499ffc4d83188e1034b66750">sw: ODT import/export of DOCX's paragraph marker formatting</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/4634a27dd6f762168b3d7820326611b20b7d385c">sw: fix ODT import of paragraph marker formatting</a></li>
+</ul>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a snapshot / demo of Collabora Office 22.05 and try it out yourself right now: <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try the
+unstable snapshot</a>.  Collabora
+intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
+of this work will be available in TDF's next release too (7.6).</p>
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/pdf-watermark.html">Improved watermark in the PDF export</a></h1>
   </div>
   <div class="article_meta">
@@ -1299,186 +1385,6 @@ objects on the right. Here is how it looks now in Writer:</p></div>
 <h2 id="_want_to_start_using_this">Want to start using this?</h2>
 <div class="sectionbody">
 <div class="paragraph"><p>You can get a snapshot / demo of Collabora Office 2022 and try it out yourself right now:
-<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
-intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF&#8217;s next release too (7.4).</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/sw-page-table-para-border.html">Word-style border fixes in Writer: pages, tables and paragraphs</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Tue 08 March 2022</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 3 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Writer now has a set of improvements to better render Word-style borders around pages, tables and
-paragaphs. This required adjusting how we perform automatic mirroring and also to make sure that
-clipping is done the Word way.</p></div>
-<div class="paragraph"><p>First, thanks <a href="https://www.docmosis.com/">Docmosis</a> and <a href="https://www.tubitak.gov.tr/en">TUBITAK</a> who
-made this work by <a href="https://www.collaboraoffice.com/">Collabora</a> possible.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_motivation">Motivation</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Word users expect to able to import their documents to Writer and experience high fidelity
-rendering: this means Writer has to support the way page / table / paragraph borders are painted
-according to the OOXML model as well. This is all done conditionally, so existing ODF documents are
-left unchanged.</p></div>
-<div class="paragraph"><p>This is a set of 5 bugfixes, requested by multiple of our customers.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_results">Results</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>First let&#8217;s look at the new render result for page borders:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-page-table-para-border/page-border-new.png" alt="https://share.vmiklos.hu/blog/sw-page-table-para-border/page-border-new.png" />
-</div>
-<div class="title">Figure 1. Word-style page borders, new result</div>
-</div>
-<div class="paragraph"><p>And this is how it used to look like:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-page-table-para-border/page-border-old.png" alt="https://share.vmiklos.hu/blog/sw-page-table-para-border/page-border-old.png" />
-</div>
-<div class="title">Figure 2. Word-style page borders, old result</div>
-</div>
-<div class="paragraph"><p>Finally you can compare that with the reference:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-page-table-para-border/page-border-ref.png" alt="https://share.vmiklos.hu/blog/sw-page-table-para-border/page-border-ref.png" />
-</div>
-<div class="title">Figure 3. Word-style page borders, reference</div>
-</div>
-<div class="paragraph"><p>What you can see here is that the page has a double border: the outer line is thick and the inner
-line is thin. The right and bottom border was incorrect as our result was the opposite of the
-reference.</p></div>
-<div class="paragraph"><p>Second, let&#8217;s look at the new render result for table borders:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-page-table-para-border/table-border-new.png" alt="https://share.vmiklos.hu/blog/sw-page-table-para-border/table-border-new.png" />
-</div>
-<div class="title">Figure 4. Word-style table borders, new result</div>
-</div>
-<div class="paragraph"><p>And this is how it used to look like:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-page-table-para-border/table-border-old.png" alt="https://share.vmiklos.hu/blog/sw-page-table-para-border/table-border-old.png" />
-</div>
-<div class="title">Figure 5. Word-style table borders, old result</div>
-</div>
-<div class="paragraph"><p>Finally you can compare that with the reference:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-page-table-para-border/table-border-ref.png" alt="https://share.vmiklos.hu/blog/sw-page-table-para-border/table-border-ref.png" />
-</div>
-<div class="title">Figure 6. Word-style table borders, reference</div>
-</div>
-<div class="paragraph"><p>You can notice a number of problems here:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-the inner horizontal line at the top table was overrunning, it was even painted between the two
-  lines of the outer double border
-</p>
-</li>
-<li>
-<p>
-the middle table shows how the vertical thick and thin lines of the outer double border was
-  reversed
-</p>
-</li>
-<li>
-<p>
-the bottom table shows how the horizontal tick inner border was not consistent
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>The new render result properly clips the inner border lines, so they don&#8217;t intersect outer borders,
-and the border mirroring (similar to the page borders) is now correct for table borders as well.</p></div>
-<div class="paragraph"><p>Third, let&#8217;s look at the new render result for paragraph borders:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-page-table-para-border/para-border-new.png" alt="https://share.vmiklos.hu/blog/sw-page-table-para-border/para-border-new.png" />
-</div>
-<div class="title">Figure 7. Word-style paragraph borders, new result</div>
-</div>
-<div class="paragraph"><p>And this is how it used to look like:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-page-table-para-border/para-border-old.png" alt="https://share.vmiklos.hu/blog/sw-page-table-para-border/para-border-old.png" />
-</div>
-<div class="title">Figure 8. Word-style paragraph borders, old result</div>
-</div>
-<div class="paragraph"><p>Finally you can compare that with the reference:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-page-table-para-border/para-border-ref.png" alt="https://share.vmiklos.hu/blog/sw-page-table-para-border/para-border-ref.png" />
-</div>
-<div class="title">Figure 9. Word-style paragraph borders, reference</div>
-</div>
-<div class="paragraph"><p>What&#8217;s visible here is that some paragraph inside the table cell had borders defined, but due to how
-the reference clips these borders, this border was not visible. That unexpected border is now also
-omitted in Writer.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_how_is_this_implemented">How is this implemented?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
-<div class="paragraph"><p>As usual, the high-level problem was addressed by a series of bugfix changes.</p></div>
-<div class="paragraph"><p>For the page border:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/129281">https://gerrit.libreoffice.org/c/core/+/129281</a> sw: fix swapped inner vs outer border for Word-style right/bottom page borders
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>For the table border:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/128053">https://gerrit.libreoffice.org/c/core/+/128053</a> sw: fix too long inner borders intersecting with outer borders for Word cells
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/128289">https://gerrit.libreoffice.org/c/core/+/128289</a> sw: fix swapped inner vs outer border for Word-style left table borders
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/128383">https://gerrit.libreoffice.org/c/core/+/128383</a> sw: fix swapped inner vs outer border for Word-style bottom table borders
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>For the paragraph border:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/128569">https://gerrit.libreoffice.org/c/core/+/128569</a> sw: fix unexpected paragraph border inside table cells
-</p>
-</li>
-</ul></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_want_to_start_using_this">Want to start using this?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
 <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
 intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
 of this work will be available in TDF&#8217;s next release too (7.4).</p></div>
