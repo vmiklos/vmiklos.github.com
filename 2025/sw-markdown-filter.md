@@ -81,7 +81,7 @@ Fifth, here is a document with a quote block:
 
 [![Quote: baseline](https://share.vmiklos.hu/blog/sw-markdown-filter/5-quote-baseline.png)](https://share.vmiklos.hu/blog/sw-markdown-filter/5-quote-baseline.png)
 
-Exporting this to markdown & loading back to Writer, the table was lost:
+Exporting this to markdown & loading back to Writer, the quote's paragraph indentation was lost:
 
 [![Quote: old result](https://share.vmiklos.hu/blog/sw-markdown-filter/5-quote-old.png)](https://share.vmiklos.hu/blog/sw-markdown-filter/5-quote-old.png)
 
