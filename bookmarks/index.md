@@ -102,7 +102,7 @@ These are tutorials I found very useful before jumping into an actual spec.
 
 # pdf
 
-- [pdfnup](https://github.com/rrthomas/pdfjam-extras/blob/master/bin/pdfnup): `pdfnup --landscape -o out.pdf --nup 2x1 in.pdf`
+- [pdfnup](https://github.com/rrthomas/pdfjam-extras/blob/master/bin/pdfnup): `pdfnup --landscape -o out.pdf --nup 2x1 in.pdf` (and `--paper a4paper` is the result would be landscape content on portrait pages)
 - [pdftk cli examples](https://www.pdflabs.com/docs/pdftk-cli-examples/)
 
 # python
