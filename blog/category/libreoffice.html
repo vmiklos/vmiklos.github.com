@@ -61,6 +61,63 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sw-interdependent-redline-improvements4.html">Interdependent tracked changes improvements in Writer, part 4: direct accept/reject</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Tue 04 November 2025</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 3 minutes</p>
+  </div>
+  <div class="article_text">
+    <p>Writer has some support for interdependent (or hierarchical) tracked changes: e.g. the case when you
+have a delete on top of an insert. See the <a href="https://vmiklos.hu/blog/sw-interdependent-redline-improvements3.html">third
+post</a> for background.</p>
+<p>This work is primarily for <a href="https://www.collaboraonline.com/">Collabora Online</a>, but the feature is
+available in desktop Writer as well.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>Interdependent changes mean that the UI shows one type of change on top of an other change, e.g.
+formatting on top of insert. Writer knows the priority of each type, so in case you have an insert
+or delete change and on top of that you have a formatting, then the UI will look "through" the
+formatting and work on the underlying insert or delete when you navigate with your cursor to a
+position with multiple changes and you press Accept on the Review tab of the notebookbar.</p>
+<p>Usually this is what you mean, but what if you want to work on the formatting at the top, directly?
+You can now open the Manage Changes dialog using the Manage button on the Review tab of the
+notebookbar and if you go to the formatting change row of the dialog, then pressing Accept there
+will accept the formatting change, not the insert or delete change. This is possible, because the dialog
+gives you a way to precisely select which tracked change you want to work with, even if a specific
+cursor position has multiple tracked changes.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>Here is a sample <code>ins-then-format.docx</code> document from the core.git testcases, the baseline has an
+insertion, and part of that is covered by an additional formatting change on top:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements4/baseline.png"><figure><img src="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements4/baseline.png"><figcaption>Interdependent tracked change: baseline</figcaption></figure></a></p>
+<p>If you just go in the middle of the document and press Accept, that will work with the more
+important insert change, so the result looks like this:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements4/default-accept-result.png"><figure><img src="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements4/default-accept-result.png"><figcaption>Interdependent tracked change: default accept result</figcaption></figure></a></p>
+<p>But now you can also open the Manage Changes dialog, to be more specific by directly selecting the
+formatting change:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements4/direct-accept.png"><figure><img src="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements4/direct-accept.png"><figcaption>Interdependent tracked change: direct accept via the dialog</figcaption></figure></a></p>
+<p>And when you accept the formatting change directly, the result will be just the insert change:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements4/direct-accept-result.png"><figure><img src="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements4/direct-accept-result.png"><figcaption>Interdependent tracked change: direct accept result</figcaption></figure></a></p>
+<p>You can save and load the results in both DOCX and ODT, as usual.</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>As usual, the high-level problem was addressed by a series of small changes. Core side:</p>
+<ul>
+<li><a href="https://git.libreoffice.org/core/commit/55640f9f0a4741f8e4b5b98096af822cee71da2c">tdf#166319 sw interdependent redlines: allow accept/reject for fmt on ins/del</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/d04ab0febcf660e87d19574adc08f9f2af75509f">tdf#166319 sw interdependent redlines: fix redo of accept for fmt on ins/del</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/1e3b8177aef8cc3a242cd9fd41d492f2fd89d21e">tdf#166319 sw interdependent redlines: fix redo of direct reject for format</a></li>
+</ul>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a development edition of Collabora Online 25.04 and try it out yourself right now: <a href="https://www.collaboraonline.com/code/">try
+the development edition</a>.  Collabora intends to continue
+supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
+available in TDF's next release too (26.2).</p>
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/sw-markdown-filter.html">Markdown import/export in Writer</a></h1>
   </div>
   <div class="article_meta">
@@ -626,61 +683,6 @@ paragraph style:</p>
 <p>If you would like to know a bit more about how this works, continue reading... :-)</p>
 <p>The bugfix commit was <a href="https://git.libreoffice.org/core/commit/c8b607b7c0096c58dc5187262bf0133dee728d50">editeng RTF export: fix broken offsets into the para style table</a>.</p>
 <p>The tracking bug was <a href="https://bugs.documentfoundation.org/show_bug.cgi?id=163883">tdf#163883</a>.</p>
-<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
-<p>You can get a development edition of Collabora Online 24.04 and try it out yourself right now: <a href="https://www.collaboraonline.com/code/">try
-the development edition</a>.  Collabora intends to continue
-supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
-available in TDF's next release too (25.2).</p>
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/sw-textbox-capture.html">Handling page captures for Writer TextBoxes</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Fri 08 November 2024</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 3 minutes</p>
-  </div>
-  <div class="article_text">
-    <p>Writer TextBoxes provide the user with shapes that can have complex geometry and complex content.
-There is also a feature to capture shapes inside page boundaries: now the two features interact with
-each other better.</p>
-<p>This work is primarily for <a href="https://www.collaboraonline.com/">Collabora Online</a>, but the feature is
-available in desktop Writer as well.</p>
-<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
-<p>As described in a <a href="https://vmiklos.hu/blog/textbox.html">previous post</a>, Writer implements the TextBox
-feature with a pair of objects: a Draw shape (with complex geometry) and a (hidden) Writer TextFrame,
-providing complex content. To avoid wrapping problems, the underlying TextFrame always has its wrap
-type set to "through", i.e. text may wrap around the Draw shape, but the hidden TextFrame is always
-ignored during text wrapping.</p>
-<p>In most cases this provides the expected behavior, because the user sees one object, so wrapping
-around at most one object is not surprising.</p>
-<p>However, there is also an other feature, that shapes may be captured inside page frames: if their
-position would be outside the page frame, Writer corrects this, so they are not off-page. This also
-makes sense, so it can't happen that your document has a shape that is hard to find, due to a silly
-position.</p>
-<p>The trouble comes when these two are combined: the Draw shape's position gets adjusted to be
-captured inside the page frame, but the TextFrame's wrap type is "through", and objects with this
-wrap type are an exception from the capturing mechanism, so the position of the two shapes get out
-of sync.</p>
-<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
-<p>The problem is now solved by improving the layout, so in case the TextFrame is actually part of a
-Draw shape + TextFrame pair (forming a TextBox), then we calculate the effective wrap type of the
-TextFrame based on the wrap type of its Draw shape, so either both objects are captured or none,
-which results in consistent render result.</p>
-<p>Here is a sample document where all margins are configured to be equal, but capturing corrected the
-Draw shape (and not the TextFrame):</p>
-<p><a href="https://share.vmiklos.hu/blog/sw-textbox-capture/old.png"><figure><img src="https://share.vmiklos.hu/blog/sw-textbox-capture/old.png"><figcaption>Bugdoc: old Writer render</figcaption></figure></a></p>
-<p>And here is the same document, with consistent positioning:</p>
-<p><a href="https://share.vmiklos.hu/blog/sw-textbox-capture/new.png"><figure><img src="https://share.vmiklos.hu/blog/sw-textbox-capture/new.png"><figcaption>Bugdoc: new Writer render</figcaption></figure></a></p>
-<p>As you can see, now the rendered margins actually equal, as wanted.</p>
-<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
-<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
-<p>The bugfix commit was <a href="https://git.libreoffice.org/core/commit/c8549fa3204802daec8597ba0f9f4f7ef23d5cd2">sw textbox: capture fly when its draw object is captured</a>.</p>
-<p>The tracking bug was <a href="https://bugs.documentfoundation.org/show_bug.cgi?id=138711">tdf#138711</a>.</p>
 <h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
 <p>You can get a development edition of Collabora Online 24.04 and try it out yourself right now: <a href="https://www.collaboraonline.com/code/">try
 the development edition</a>.  Collabora intends to continue

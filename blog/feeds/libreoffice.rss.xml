@@ -1,5 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>What is Miklos hacking - libreoffice</title><link>https://vmiklos.hu/blog/</link><description/><atom:link href="https://vmiklos.hu/blog/feeds/libreoffice.rss.xml" rel="self"/><lastBuildDate>Tue, 07 Oct 2025 08:13:55 +0200</lastBuildDate><item><title>Markdown import/export in Writer</title><link>https://vmiklos.hu/blog/sw-markdown-filter.html</link><description>&lt;p&gt;Writer recently got a Markdown import &amp;amp; export filter and there were a number of improvements to
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>What is Miklos hacking - libreoffice</title><link>https://vmiklos.hu/blog/</link><description/><atom:link href="https://vmiklos.hu/blog/feeds/libreoffice.rss.xml" rel="self"/><lastBuildDate>Tue, 04 Nov 2025 08:11:48 +0100</lastBuildDate><item><title>Interdependent tracked changes improvements in Writer, part 4: direct accept/reject</title><link>https://vmiklos.hu/blog/sw-interdependent-redline-improvements4.html</link><description>&lt;p&gt;Writer has some support for interdependent (or hierarchical) tracked changes: e.g. the case when you
+have a delete on top of an insert. See the &lt;a href="https://vmiklos.hu/blog/sw-interdependent-redline-improvements3.html"&gt;third
+post&lt;/a&gt; for background.&lt;/p&gt;
+&lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraonline.com/"&gt;Collabora Online&lt;/a&gt;, but the feature is
+available in desktop Writer as well.&lt;/p&gt;
+&lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Interdependent changes mean that the UI shows one type of change on top of an other change, e.g.
+formatting on top of insert. Writer knows the priority of each type, so in case you have an insert
+or delete change and on top of that you have a formatting, then the UI will look "through" the
+formatting and work on the underlying insert or delete when you navigate with your cursor to a
+position with multiple changes and you press Accept on the Review tab of the notebookbar.&lt;/p&gt;
+&lt;p&gt;Usually this is what you mean, but what if you want to work on the formatting at the top, directly?
+You can now open the Manage Changes dialog using the Manage button on the Review tab of the
+notebookbar and if you go to the formatting change row of the dialog, then pressing Accept there
+will accept the formatting change, not the insert or delete change. This is possible, because the dialog
+gives you a way to precisely select which tracked change you want to work with, even if a specific
+cursor position has multiple tracked changes.&lt;/p&gt;
+&lt;h2 id="results-so-far"&gt;Results so far&lt;a class="headerlink" href="#results-so-far" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Here is a sample &lt;code&gt;ins-then-format.docx&lt;/code&gt; document from the core.git testcases, the baseline has an
+insertion, and part of that is covered by an additional formatting change on top:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements4/baseline.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements4/baseline.png"&gt;&lt;figcaption&gt;Interdependent tracked change: baseline&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;If you just go in the middle of the document and press Accept, that will work with the more
+important insert change, so the result looks like this:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements4/default-accept-result.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements4/default-accept-result.png"&gt;&lt;figcaption&gt;Interdependent tracked change: default accept result&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;But now you can also open the Manage Changes dialog, to be more specific by directly selecting the
+formatting change:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements4/direct-accept.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements4/direct-accept.png"&gt;&lt;figcaption&gt;Interdependent tracked change: direct accept via the dialog&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;And when you accept the formatting change directly, the result will be just the insert change:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements4/direct-accept-result.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements4/direct-accept-result.png"&gt;&lt;figcaption&gt;Interdependent tracked change: direct accept result&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;You can save and load the results in both DOCX and ODT, as usual.&lt;/p&gt;
+&lt;h2 id="how-is-this-implemented"&gt;How is this implemented?&lt;a class="headerlink" href="#how-is-this-implemented" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;If you would like to know a bit more about how this works, continue reading... :-)&lt;/p&gt;
+&lt;p&gt;As usual, the high-level problem was addressed by a series of small changes. Core side:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/55640f9f0a4741f8e4b5b98096af822cee71da2c"&gt;tdf#166319 sw interdependent redlines: allow accept/reject for fmt on ins/del&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/d04ab0febcf660e87d19574adc08f9f2af75509f"&gt;tdf#166319 sw interdependent redlines: fix redo of accept for fmt on ins/del&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/1e3b8177aef8cc3a242cd9fd41d492f2fd89d21e"&gt;tdf#166319 sw interdependent redlines: fix redo of direct reject for format&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="want-to-start-using-this"&gt;Want to start using this?&lt;a class="headerlink" href="#want-to-start-using-this" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;You can get a development edition of Collabora Online 25.04 and try it out yourself right now: &lt;a href="https://www.collaboraonline.com/code/"&gt;try
+the development edition&lt;/a&gt;.  Collabora intends to continue
+supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
+available in TDF's next release too (26.2).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Tue, 04 Nov 2025 08:11:48 +0100</pubDate><guid>tag:vmiklos.hu,2025-11-04:/blog/sw-interdependent-redline-improvements4.html</guid><category>libreoffice</category><category>en</category></item><item><title>Markdown import/export in Writer</title><link>https://vmiklos.hu/blog/sw-markdown-filter.html</link><description>&lt;p&gt;Writer recently got a Markdown import &amp;amp; export filter and there were a number of improvements to
 that.&lt;/p&gt;
 &lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraonline.com/"&gt;Collabora Online&lt;/a&gt;, but the feature is
 available in desktop Writer as well.&lt;/p&gt;
@@ -439,44 +481,4 @@ paragraph style:&lt;/p&gt;
 &lt;p&gt;You can get a development edition of Collabora Online 24.04 and try it out yourself right now: &lt;a href="https://www.collaboraonline.com/code/"&gt;try
 the development edition&lt;/a&gt;.  Collabora intends to continue
 supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
-available in TDF's next release too (25.2).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Wed, 04 Dec 2024 11:34:30 +0100</pubDate><guid>tag:vmiklos.hu,2024-12-04:/blog/editeng-rtf-export-lost-para-style.html</guid><category>libreoffice</category><category>en</category></item><item><title>Handling page captures for Writer TextBoxes</title><link>https://vmiklos.hu/blog/sw-textbox-capture.html</link><description>&lt;p&gt;Writer TextBoxes provide the user with shapes that can have complex geometry and complex content.
-There is also a feature to capture shapes inside page boundaries: now the two features interact with
-each other better.&lt;/p&gt;
-&lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraonline.com/"&gt;Collabora Online&lt;/a&gt;, but the feature is
-available in desktop Writer as well.&lt;/p&gt;
-&lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;As described in a &lt;a href="https://vmiklos.hu/blog/textbox.html"&gt;previous post&lt;/a&gt;, Writer implements the TextBox
-feature with a pair of objects: a Draw shape (with complex geometry) and a (hidden) Writer TextFrame,
-providing complex content. To avoid wrapping problems, the underlying TextFrame always has its wrap
-type set to "through", i.e. text may wrap around the Draw shape, but the hidden TextFrame is always
-ignored during text wrapping.&lt;/p&gt;
-&lt;p&gt;In most cases this provides the expected behavior, because the user sees one object, so wrapping
-around at most one object is not surprising.&lt;/p&gt;
-&lt;p&gt;However, there is also an other feature, that shapes may be captured inside page frames: if their
-position would be outside the page frame, Writer corrects this, so they are not off-page. This also
-makes sense, so it can't happen that your document has a shape that is hard to find, due to a silly
-position.&lt;/p&gt;
-&lt;p&gt;The trouble comes when these two are combined: the Draw shape's position gets adjusted to be
-captured inside the page frame, but the TextFrame's wrap type is "through", and objects with this
-wrap type are an exception from the capturing mechanism, so the position of the two shapes get out
-of sync.&lt;/p&gt;
-&lt;h2 id="results-so-far"&gt;Results so far&lt;a class="headerlink" href="#results-so-far" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;The problem is now solved by improving the layout, so in case the TextFrame is actually part of a
-Draw shape + TextFrame pair (forming a TextBox), then we calculate the effective wrap type of the
-TextFrame based on the wrap type of its Draw shape, so either both objects are captured or none,
-which results in consistent render result.&lt;/p&gt;
-&lt;p&gt;Here is a sample document where all margins are configured to be equal, but capturing corrected the
-Draw shape (and not the TextFrame):&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-textbox-capture/old.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-textbox-capture/old.png"&gt;&lt;figcaption&gt;Bugdoc: old Writer render&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;And here is the same document, with consistent positioning:&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-textbox-capture/new.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-textbox-capture/new.png"&gt;&lt;figcaption&gt;Bugdoc: new Writer render&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;As you can see, now the rendered margins actually equal, as wanted.&lt;/p&gt;
-&lt;h2 id="how-is-this-implemented"&gt;How is this implemented?&lt;a class="headerlink" href="#how-is-this-implemented" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;If you would like to know a bit more about how this works, continue reading... :-)&lt;/p&gt;
-&lt;p&gt;The bugfix commit was &lt;a href="https://git.libreoffice.org/core/commit/c8549fa3204802daec8597ba0f9f4f7ef23d5cd2"&gt;sw textbox: capture fly when its draw object is captured&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;The tracking bug was &lt;a href="https://bugs.documentfoundation.org/show_bug.cgi?id=138711"&gt;tdf#138711&lt;/a&gt;.&lt;/p&gt;
-&lt;h2 id="want-to-start-using-this"&gt;Want to start using this?&lt;a class="headerlink" href="#want-to-start-using-this" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;You can get a development edition of Collabora Online 24.04 and try it out yourself right now: &lt;a href="https://www.collaboraonline.com/code/"&gt;try
-the development edition&lt;/a&gt;.  Collabora intends to continue
-supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
-available in TDF's next release too (25.2).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 08 Nov 2024 08:58:46 +0100</pubDate><guid>tag:vmiklos.hu,2024-11-08:/blog/sw-textbox-capture.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
+available in TDF's next release too (25.2).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Wed, 04 Dec 2024 11:34:30 +0100</pubDate><guid>tag:vmiklos.hu,2024-12-04:/blog/editeng-rtf-export-lost-para-style.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>

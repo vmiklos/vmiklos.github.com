@@ -59,6 +59,63 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sw-interdependent-redline-improvements4.html">Interdependent tracked changes improvements in Writer, part 4: direct accept/reject</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Tue 04 November 2025</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 3 minutes</p>
+  </div>
+  <div class="article_text">
+    <p>Writer has some support for interdependent (or hierarchical) tracked changes: e.g. the case when you
+have a delete on top of an insert. See the <a href="https://vmiklos.hu/blog/sw-interdependent-redline-improvements3.html">third
+post</a> for background.</p>
+<p>This work is primarily for <a href="https://www.collaboraonline.com/">Collabora Online</a>, but the feature is
+available in desktop Writer as well.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>Interdependent changes mean that the UI shows one type of change on top of an other change, e.g.
+formatting on top of insert. Writer knows the priority of each type, so in case you have an insert
+or delete change and on top of that you have a formatting, then the UI will look "through" the
+formatting and work on the underlying insert or delete when you navigate with your cursor to a
+position with multiple changes and you press Accept on the Review tab of the notebookbar.</p>
+<p>Usually this is what you mean, but what if you want to work on the formatting at the top, directly?
+You can now open the Manage Changes dialog using the Manage button on the Review tab of the
+notebookbar and if you go to the formatting change row of the dialog, then pressing Accept there
+will accept the formatting change, not the insert or delete change. This is possible, because the dialog
+gives you a way to precisely select which tracked change you want to work with, even if a specific
+cursor position has multiple tracked changes.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>Here is a sample <code>ins-then-format.docx</code> document from the core.git testcases, the baseline has an
+insertion, and part of that is covered by an additional formatting change on top:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements4/baseline.png"><figure><img src="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements4/baseline.png"><figcaption>Interdependent tracked change: baseline</figcaption></figure></a></p>
+<p>If you just go in the middle of the document and press Accept, that will work with the more
+important insert change, so the result looks like this:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements4/default-accept-result.png"><figure><img src="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements4/default-accept-result.png"><figcaption>Interdependent tracked change: default accept result</figcaption></figure></a></p>
+<p>But now you can also open the Manage Changes dialog, to be more specific by directly selecting the
+formatting change:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements4/direct-accept.png"><figure><img src="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements4/direct-accept.png"><figcaption>Interdependent tracked change: direct accept via the dialog</figcaption></figure></a></p>
+<p>And when you accept the formatting change directly, the result will be just the insert change:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements4/direct-accept-result.png"><figure><img src="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements4/direct-accept-result.png"><figcaption>Interdependent tracked change: direct accept result</figcaption></figure></a></p>
+<p>You can save and load the results in both DOCX and ODT, as usual.</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>As usual, the high-level problem was addressed by a series of small changes. Core side:</p>
+<ul>
+<li><a href="https://git.libreoffice.org/core/commit/55640f9f0a4741f8e4b5b98096af822cee71da2c">tdf#166319 sw interdependent redlines: allow accept/reject for fmt on ins/del</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/d04ab0febcf660e87d19574adc08f9f2af75509f">tdf#166319 sw interdependent redlines: fix redo of accept for fmt on ins/del</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/1e3b8177aef8cc3a242cd9fd41d492f2fd89d21e">tdf#166319 sw interdependent redlines: fix redo of direct reject for format</a></li>
+</ul>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a development edition of Collabora Online 25.04 and try it out yourself right now: <a href="https://www.collaboraonline.com/code/">try
+the development edition</a>.  Collabora intends to continue
+supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
+available in TDF's next release too (26.2).</p>
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/sw-markdown-filter.html">Markdown import/export in Writer</a></h1>
   </div>
   <div class="article_meta">
@@ -864,52 +921,6 @@ purposes.</p>
 <h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
 <p>You can get a development edition of Collabora Online 24.04 and try it out yourself right now: <a href="https://www.collaboraoffice.com/code/">try
 the development edition</a>.</p>
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/sw-ignore-margin-page-top.html">Ignoring the paragraph margin at the top of pages in Writer</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Wed 08 January 2025</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
-  </div>
-  <div class="article_text">
-    <p>Writer has the concept of paragraph margins and page margins, but what happens when you combine the
-two? It turns out the expectation is that sometimes the top paragraph margin is ignored in this
-case. We'll see two cases where the behavior of Writer is now improved to better match Word in this
-regard.</p>
-<p>This work is primarily for <a href="https://www.collaboraonline.com/">Collabora Online</a>, but the feature is
-available in desktop Writer as well.</p>
-<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
-<p>As described in a <a href="https://bugs.documentfoundation.org/show_bug.cgi?id=160952">previous bugreport</a>,
-there was a first problem where Word ignored the top paragraph margin of a document, but Writer did
-not. A <a href="https://bugs.documentfoundation.org/show_bug.cgi?id=164095">recent bugreport</a> then pointed
-out that the first implementation went too far and now a wanted top margin was ignored. This lead to
-a set of conditions which now does a decent emulation of Word's rules in this regard.</p>
-<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
-<p>Here is the old Writer render result for a document where the top margin should be ignored:</p>
-<p><a href="https://share.vmiklos.hu/blog/sw-ignore-margin-page-top/old.png"><figure><img src="https://share.vmiklos.hu/blog/sw-ignore-margin-page-top/old.png"><figcaption>Bugdoc: old Writer render</figcaption></figure></a></p>
-<p>And here is the new Writer render result for a document where the top margin is ignored:</p>
-<p><a href="https://share.vmiklos.hu/blog/sw-ignore-margin-page-top/new.png"><figure><img src="https://share.vmiklos.hu/blog/sw-ignore-margin-page-top/new.png"><figcaption>Bugdoc: new Writer render</figcaption></figure></a></p>
-<p>Finally, the reference render result, showing the ignored top paragraph margin:</p>
-<p><a href="https://share.vmiklos.hu/blog/sw-ignore-margin-page-top/ref.png"><figure><img src="https://share.vmiklos.hu/blog/sw-ignore-margin-page-top/ref.png"><figcaption>Bugdoc: reference render</figcaption></figure></a></p>
-<p>As you can see, now the unwanted top paragraph margin is omitted at page top.</p>
-<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
-<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
-<p>As usual, the high-level problem was addressed by a series of small changes:</p>
-<ul>
-<li><a href="https://git.libreoffice.org/core/commit/abd90828cf101581a07b9d1c371a8c3156521e9f">tdf#160952 sw: ignore top margin of para on non-first pages with newer DOCX</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/ae7900dd42a65aaf60df6b21b9ad511496b209d9">tdf#164095 sw: fix missing top margin on paragraph after changing page style</a></li>
-</ul>
-<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
-<p>You can get a development edition of Collabora Online 24.04 and try it out yourself right now: <a href="https://www.collaboraonline.com/code/">try
-the development edition</a>.  Collabora intends to continue
-supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
-available in TDF's next release too (25.2).</p>
   </div>
 </article>
 

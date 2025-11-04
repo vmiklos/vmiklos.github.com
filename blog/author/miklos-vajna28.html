@@ -59,6 +59,44 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/libreoffice-3.4-packaging.html">LibreOffice 3.4 Packaging</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Wed 04 May 2011</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>The next major LibreOffice version, 3.4, means some work for (Linux
+distribution, and other) packagers, as the <code>build</code> repo is now
+deprecated and packagers are suggested to use the <code>bootstrap</code> repo
+directly, which is a different build system.</p></div>
+<div class="paragraph"><p>On one hand, this is a nice cleanup - there is now a single configure
+script. OTOH this needs major rework of distro build scripts.</p></div>
+<div class="paragraph"><p>The interesting part here is that the official binary installers are not
+using the <code>make DESTDIR=/some/path install</code> method to install the
+compiled binaries, so it was discovered quite late that it wasn&#8217;t
+working properly. First Hanno and Petr
+<a href="http://cgit.freedesktop.org/libreoffice/bootstrap/commit/?id=c612724331a3d66d2ee488d91161a54f4d3576bd">worked
+on this</a>, then I
+<a href="http://cgit.freedesktop.org/libreoffice/bootstrap/commit/?id=b9dd2241c60635ba15929ffad9962928460bd3ec">fixed</a>
+a minor, but blocking glitch.</p></div>
+<div class="paragraph"><p>As a result 3.4 beta4 will be something packagers (even the ones not
+using the split build) can offer to distro users for testing without
+patching. Binaries for Frugalware users
+<a href="http://ftp.frugalware.org/pub/other/people/vmiklos/lotesting/frugalware-i686/">here</a>
+(i686-only at the moment).</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/gsoc2011-accepted.html">GSoC 2011 - Accepted</a></h1>
   </div>
   <div class="article_meta">
@@ -364,62 +402,6 @@ fix</a> addresses this, and now the result is the expected one:</p></div>
 <img src="http://vmiklos.hu/pic/loru3.png" alt="http://vmiklos.hu/pic/loru3.png" />
 </div>
 </div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/lo-doxygen-for-new-headers.html">LibreOffice's git-hooks now warn about undocumented classes</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Fri 21 January 2011</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>There was a thread about this topic already, but just refusing to commit
-new files without documentation sounded too aggressive. So the
-<a href="http://cgit.freedesktop.org/libreoffice/bootstrap/commit/?id=5e7d47da56c9b35331756bcb915b23e2f14a62d6">current
-code</a> just prints a warning.</p></div>
-<div class="paragraph"><p>It was also requested to show some good/bad examples. Lubos
-<a href="http://thread.gmane.org/gmane.comp.documentfoundation.libreoffice.devel/2938/focus=5389">volunteered</a>
-to add detailed instructions in the wiki, so I&#8217;m just describing in
-short what did I test so far.</p></div>
-<div class="paragraph"><p>A good example:</p></div>
-<div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight
-by Lorenzo Bettini
-http://www.lorenzobettini.it
-http://www.gnu.org/software/src-highlite -->
-<pre><tt><span style="font-style: italic"><span style="color: #9A1900">/// Handles export of foos using RTF markup</span></span>
-<span style="font-weight: bold"><span style="color: #0000FF">class</span></span> <span style="color: #008080">RtfFoo</span>
-<span style="color: #FF0000">{</span>
-<span style="color: #FF0000">}</span><span style="color: #990000">;</span></tt></pre></div></div>
-<div class="paragraph"><p>A bad example:</p></div>
-<div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight
-by Lorenzo Bettini
-http://www.lorenzobettini.it
-http://www.gnu.org/software/src-highlite -->
-<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">class</span></span> <span style="color: #008080">RtfBarBuggy</span>
-<span style="color: #FF0000">{</span>
-<span style="color: #FF0000">}</span><span style="color: #990000">;</span></tt></pre></div></div>
-<div class="paragraph"><p>Example output when a warning is emitted:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>~/git/libreoffice/master/sw$ git commit -a -m foo
-sw/source/filter/ww8/bar.hxx:30: warning: Compound RtfBarBuggy is not documented.
-[master 1b11571] foo
- 3 files changed, 68 insertions(+), 0 deletions(-)
- create mode 100644 sw/source/filter/ww8/bar.hxx
- create mode 100644 sw/source/filter/ww8/foo.hxx</code></pre>
-</div></div>
 </div>
 </div>
 

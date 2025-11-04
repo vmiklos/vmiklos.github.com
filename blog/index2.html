@@ -58,6 +58,52 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sw-ignore-margin-page-top.html">Ignoring the paragraph margin at the top of pages in Writer</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Wed 08 January 2025</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <p>Writer has the concept of paragraph margins and page margins, but what happens when you combine the
+two? It turns out the expectation is that sometimes the top paragraph margin is ignored in this
+case. We'll see two cases where the behavior of Writer is now improved to better match Word in this
+regard.</p>
+<p>This work is primarily for <a href="https://www.collaboraonline.com/">Collabora Online</a>, but the feature is
+available in desktop Writer as well.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>As described in a <a href="https://bugs.documentfoundation.org/show_bug.cgi?id=160952">previous bugreport</a>,
+there was a first problem where Word ignored the top paragraph margin of a document, but Writer did
+not. A <a href="https://bugs.documentfoundation.org/show_bug.cgi?id=164095">recent bugreport</a> then pointed
+out that the first implementation went too far and now a wanted top margin was ignored. This lead to
+a set of conditions which now does a decent emulation of Word's rules in this regard.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>Here is the old Writer render result for a document where the top margin should be ignored:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-ignore-margin-page-top/old.png"><figure><img src="https://share.vmiklos.hu/blog/sw-ignore-margin-page-top/old.png"><figcaption>Bugdoc: old Writer render</figcaption></figure></a></p>
+<p>And here is the new Writer render result for a document where the top margin is ignored:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-ignore-margin-page-top/new.png"><figure><img src="https://share.vmiklos.hu/blog/sw-ignore-margin-page-top/new.png"><figcaption>Bugdoc: new Writer render</figcaption></figure></a></p>
+<p>Finally, the reference render result, showing the ignored top paragraph margin:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-ignore-margin-page-top/ref.png"><figure><img src="https://share.vmiklos.hu/blog/sw-ignore-margin-page-top/ref.png"><figcaption>Bugdoc: reference render</figcaption></figure></a></p>
+<p>As you can see, now the unwanted top paragraph margin is omitted at page top.</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>As usual, the high-level problem was addressed by a series of small changes:</p>
+<ul>
+<li><a href="https://git.libreoffice.org/core/commit/abd90828cf101581a07b9d1c371a8c3156521e9f">tdf#160952 sw: ignore top margin of para on non-first pages with newer DOCX</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/ae7900dd42a65aaf60df6b21b9ad511496b209d9">tdf#164095 sw: fix missing top margin on paragraph after changing page style</a></li>
+</ul>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a development edition of Collabora Online 24.04 and try it out yourself right now: <a href="https://www.collaboraonline.com/code/">try
+the development edition</a>.  Collabora intends to continue
+supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
+available in TDF's next release too (25.2).</p>
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/editeng-rtf-export-lost-para-style.html">Editeng RTF export: fixing a lost paragraph style</a></h1>
   </div>
   <div class="article_meta">
@@ -607,66 +653,6 @@ in Firefox.</p>
 <li><a href="https://git.libreoffice.org/core/commit/2efe362c99a9fa6e9a71b9b675b025c64b6c7f9d">tdf#159483 sc HTML copy: handle data-sheets-formula attribute</a></li>
 </ul>
 <p>The tracking issue on the Online side was <a href="https://github.com/CollaboraOnline/online/issues/8023">cool#8023</a>.</p>
-<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
-<p>You can get a snapshot / demo of Collabora Office 24.04 and try it out yourself right now: <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try the
-unstable snapshot</a>.  Collabora
-intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF's next release too (24.8).</p>
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/sw-legal-numbering.html">Legal numbering in Writer: DOC and RTF support</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Fri 01 March 2024</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 3 minutes</p>
-  </div>
-  <div class="article_text">
-    <p>Writer now supports legal numbering for two more formats: DOC and RTF (ODT and DOCX were working
-already.)</p>
-<p>This work is primarily for <a href="https://www.collaboraoffice.com/">Collabora Online</a>, done as a
-<a href="https://vmiklos.hu/blog/sw-content-controls3.html">HackWeek</a> project, but the feature is fully available in
-desktop Writer as well.</p>
-<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
-<p>Legal numbering is a way to influence the number format of values inherited in a multi-level
-numbering. Say, the outer numbering uses Roman numerals and the inner numbering uses X.Y as the number
-format, but the inner level wants to display the outer values as Arabic numerals. If this is wanted
-(and guessing from the name, sometimes lawyers do want this), then the inner number portion will
-expand to values like "2.01" instead of "II.01", while the outer number portions will remain values
-like "II".</p>
-<p>Mike did <a href="https://bugs.documentfoundation.org/show_bug.cgi?id=150408">80% of the work</a>, what you can
-see here is just the RTF/DOC filters.</p>
-<p>Picking a smaller feature task like this looked like a good idea, since I wanted to spend some of
-the time on regression fixing around last year's multi-page floating table project.</p>
-<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
-<p>For (binary) DOC, the relevant detail is the <code>fLegal</code> bit in the <code>LVLF</code> structure. Here is the
-result:</p>
-<p><a href="https://share.vmiklos.hu/blog/sw-legal-numbering/2024-02-29-writer-legal-numbering-doc.png"><figure><img src="https://share.vmiklos.hu/blog/sw-legal-numbering/2024-02-29-writer-legal-numbering-doc.png"><figcaption>Improved handling of legal numbering from DOC: old, new and reference rendering</figcaption></figure></a></p>
-<p>It shows how the outer "II" gets turned into "2", while it remained "II" in the past. This works for
-both loading and saving.</p>
-<p>The same feature is now handled in the RTF filter as well. There the relevant detail is the
-<code>\levellegal</code> control word, which has an odd 1 default value (the default is usually 0). Here is the
-result:</p>
-<p><a href="https://share.vmiklos.hu/blog/sw-legal-numbering/2024-02-29-writer-legal-numbering-rtf.png"><figure><img src="https://share.vmiklos.hu/blog/sw-legal-numbering/2024-02-29-writer-legal-numbering-rtf.png"><figcaption>Improved handling of legal numbering from RTF: old, new and reference rendering</figcaption></figure></a></p>
-<p>It shows that the RTF filter is up to speed with the DOC one by now.</p>
-<p>As for the multi-page floating tables, I looked at
-<a href="https://bugs.documentfoundation.org/show_bug.cgi?id=158986">tdf#158986</a> and
-<a href="https://bugs.documentfoundation.org/show_bug.cgi?id=158801">tdf#158801</a>.</p>
-<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
-<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
-<p>As usual, the high-level problem was addressed by a series of small changes:</p>
-<ul>
-<li><a href="https://git.libreoffice.org/core/commit/397d72e582c725d162c7e0b819dc6c0bb62e42b0">Related: tdf#158986 sw floattable: fix unexpected page break with sections</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/b7c4c4d45f44a26283678f3dc32982b3a728c614">tdf#158986 sw floattable: fix RTF import of table followed by \sect</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/a73b3994fb6a2cc10b2d65cbaad201762610cecc">Related: tdf#150408 DOC filter: handle legal numbering</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/e8487bedb20a429565b4a0e4bd2d6806cc603b7f">Related: tdf#150408 RTF filter: handle legal numbering</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/c98ff922831f56253af2a050b8e07cfc89b7a387">Related: tdf#158986 sw floattable, RTF import: use more setNeedPar()</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/186de7178c6065e1de13fd216b46ac9b716e44c5">tdf#158801 sw floattable: fix crash with headers and interactive editing</a></li>
-</ul>
 <h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
 <p>You can get a snapshot / demo of Collabora Office 24.04 and try it out yourself right now: <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try the
 unstable snapshot</a>.  Collabora
