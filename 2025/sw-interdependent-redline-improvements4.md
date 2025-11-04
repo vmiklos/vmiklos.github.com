@@ -13,7 +13,7 @@ available in desktop Writer as well.
 
 ## Motivation
 
-Interdependent changes mean that the UI shows one type of change on top of an other change, e.g.
+Interdependent changes mean that the UI shows one type of change on top of another change, e.g.
 formatting on top of insert. Writer knows the priority of each type, so in case you have an insert
 or delete change and on top of that you have a formatting, then the UI will look "through" the
 formatting and work on the underlying insert or delete when you navigate with your cursor to a
