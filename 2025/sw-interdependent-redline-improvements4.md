@@ -2,7 +2,7 @@ Title: Interdependent tracked changes improvements in Writer, part 4: direct acc
 Slug: sw-interdependent-redline-improvements4
 Category: libreoffice
 Tags: en
-Date: 2025-11-03T16:40:26+01:00
+Date: 2025-11-04T08:11:48+01:00
 
 Writer has some support for interdependent (or hierarchical) tracked changes: e.g. the case when you
 have a delete on top of an insert. See the [third
@@ -22,14 +22,14 @@ position with multiple changes and you press Accept on the Review tab of the not
 Usually this is what you mean, but what if you want to work on the formatting at the top, directly?
 You can now open the Manage Changes dialog using the Manage button on the Review tab of the
 notebookbar and if you go to the formatting change row of the dialog, then pressing Accept there
-will accept the format change, not the insert or delete change. This is possible, because the dialog
+will accept the formatting change, not the insert or delete change. This is possible, because the dialog
 gives you a way to precisely select which tracked change you want to work with, even if a specific
 cursor position has multiple tracked changes.
 
 ## Results so far
 
 Here is a sample `ins-then-format.docx` document from the core.git testcases, the baseline has an
-insertion, and part of that is covered by an additional format change on top:
+insertion, and part of that is covered by an additional formatting change on top:
 
 [![Interdependent tracked change: baseline](https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements4/baseline.png)](https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements4/baseline.png)
 
@@ -39,11 +39,11 @@ important insert change, so the result looks like this:
 [![Interdependent tracked change: default accept result](https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements4/default-accept-result.png)](https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements4/default-accept-result.png)
 
 But now you can also open the Manage Changes dialog, to be more specific by directly selecting the
-format change:
+formatting change:
 
 [![Interdependent tracked change: direct accept via the dialog](https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements4/direct-accept.png)](https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements4/direct-accept.png)
 
-And when you accept the format change directly, the result will be just the insert change:
+And when you accept the formatting change directly, the result will be just the insert change:
 
 [![Interdependent tracked change: direct accept result](https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements4/direct-accept-result.png)](https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements4/direct-accept-result.png)
 
