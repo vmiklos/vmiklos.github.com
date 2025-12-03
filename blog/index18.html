@@ -58,6 +58,110 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/perfect-ww8-comment-import.html">Perfect WW8 comment import</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Sat 24 January 2015</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>TL;DR: Import of annotated text ranges from binary DOC format was a problem
+for quite some time, now it should be as good as it always was in the
+ODT/DOCX/RTF filter.</p></div>
+<div class="paragraph"><p>Longer version: the import of annotation marks from binary DOC was never
+perfect. My
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=7907cc0ef9751d553014bd3bab49be9e7fc31bca">initial
+implementation</a> had a somewhat hidden, but important shortcoming, in the form
+of a "Don&#8217;t support ranges affecting multiple SwTxtNode for now." comment. The
+underlying problem was that annotation marks have a start and end position,
+and this is described as an offset into the piece table (so the unit was a
+character position, CP) in the binary DOC format, while in Writer, we work
+with document model positions (text node and content indexes, SwPosition), and it isn&#8217;t
+trivial to map between these two.</p></div>
+<div class="paragraph"><p><a href="http://zolnaitamas.blogspot.com/">Tamás</a> somewhat
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=f2945255df273404ee2457dcf761cb8f334b732b">improved</a>
+this homegrown CP &#8594; SwPosition mapping code, but was still far from perfect. Here is an example. This is how <a href="http://people.freedesktop.org/~vmiklos/2015/perfect-ww8-comment-import.doc">this demo document</a> looks like now in LibreOffice Writer:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh6.googleusercontent.com/-SYW-7l2Otpo/VMQDQ-Fme1I/AAAAAAAAFLg/nkGHlfIV85Y/s0/">
+<img src="https://lh6.googleusercontent.com/-SYW-7l2Otpo/VMQDQ-Fme1I/AAAAAAAAFLg/nkGHlfIV85Y/s800/" alt="https://lh6.googleusercontent.com/-SYW-7l2Otpo/VMQDQ-Fme1I/AAAAAAAAFLg/nkGHlfIV85Y/s800/" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>And this is how it looked like before the end of last year:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh4.googleusercontent.com/-geD82nPpzC4/VMQDQ9souvI/AAAAAAAAFLk/Mhuqrib2DEs/s0/">
+<img src="https://lh4.googleusercontent.com/-geD82nPpzC4/VMQDQ9souvI/AAAAAAAAFLk/Mhuqrib2DEs/s800/" alt="https://lh4.googleusercontent.com/-geD82nPpzC4/VMQDQ9souvI/AAAAAAAAFLk/Mhuqrib2DEs/s800/" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>Notice how "Start" is commented and it wasn&#8217;t before. Which one is correct? Here is the reference:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh5.googleusercontent.com/-L_LmD_wIZks/VMQDQ76Jn3I/AAAAAAAAFLo/mMHr5h5p4oM/s0/">
+<img src="https://lh5.googleusercontent.com/-L_LmD_wIZks/VMQDQ76Jn3I/AAAAAAAAFLo/mMHr5h5p4oM/s800/" alt="https://lh5.googleusercontent.com/-L_LmD_wIZks/VMQDQ76Jn3I/AAAAAAAAFLo/mMHr5h5p4oM/s800/" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>The reason is that the document has fields and tables, and the homegrown CP &#8594;
+SwPosition mapping did not handle this. A much better approach is to handle
+the mapping as we do it for bookmarks: even if at the end annotation marks and
+bookmarks are entires in <code>sw::mark::MarkManager</code>, it&#8217;s possible to set the
+start position as a character attribute during import (since mapping the
+<em>current</em> CP to the current SwPosition is easy) and when we know both the
+start and end, delete the character attribute and turn it into a mark manager
+entry. That&#8217;s exactly what I&#8217;ve done. The first screenshot is the result of 3
+changes:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=271722d923610d128a358528e64d7233641ea0dc">add
+  a annotationmark-start character attribute</a>
+</p>
+</li>
+<li>
+<p>
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=677fdd4fa235466649911042577bc4980d42deb6">tokenize
+  the annitationmark start and end structures from binary DOC</a>
+</p>
+</li>
+<li>
+<p>
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=0ec0ec267986644084baaa5bda5ba917dc5744df">handle
+  annotation marks via the character attribute added in the first change</a>
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Hopefully this makes LibreOffice not only
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=b1cd83c625a2afeb9da43cc9745d79c01963c797">avoid
+crashing</a> on such complex annotated contents, but also puts an end to the
+long story of "annotation marks from binary DOC" problems.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">Just like how C++11 perfect forwarding isn&#8217;t perfect&#8201;&#8212;&#8201;if you think
+it is, see "Familiarize yourself with perfect forwarding failure cases." in
+<a href="http://scottmeyers.blogspot.hu/2014/08/near-final-draft-of-effective-modern-c.html">this
+post of Scoot</a>&#8201;&#8212;&#8201;the above changes may still not result in a truly perfect
+import result of DOC annotation marks. But I think the #1 problem in this area
+is now solved. :-)</td>
+</tr></table>
+</div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/export-validation.html">Export validation as a new year's resolution</a></h1>
   </div>
   <div class="article_meta">
@@ -938,54 +1042,6 @@ something goes wrong, report it to us in the
 <a href="https://www.libreoffice.org/get-help/bug/">Bugzilla</a>, so we can try fix it
 before 4.4 gets branched off. Last, but not at least, thanks for
 <a href="http://www.cloudon.com/">CloudOn</a> for funding these improvements! :-)</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/lo-writer-training-2014.html">Updated Writer training slides</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Tue 08 July 2014</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div style="text-align: center; font-size: 0.6em;">
-<img src="https://lh4.googleusercontent.com/-qJiiajLRZ7A/U7vLBcDzbBI/AAAAAAAAEf0/mo6E4QbfVWU/s400/"/>
-<p>(via <a href="https://www.flickr.com/photos/michaeljosh/4382953112/">michaeljosh</a>)</p>
-</div>
-<div class="paragraph"><p>Last year I
-<a href="https://speakerdeck.com/vmiklos/libreoffice-writer-training">published</a> some
-Writer training slides, which are hopefully a useful extension to in-tree
-documentation like
-<a href="http://cgit.freedesktop.org/libreoffice/core/tree/sw/README">sw/README</a> and
-<a href="http://cgit.freedesktop.org/libreoffice/core/tree/sw/qa/extras/README">sw/qa/extras/README</a>.</p></div>
-<div class="paragraph"><p>Last week I reviewed those slides and realized that some of them are outdated. So here comes an updated version:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-<a href="https://speakerdeck.com/vmiklos/writer-training-number-1-2014">first part</a>,
-  up to, but not including layout
-</p>
-</li>
-<li>
-<p>
-<a href="https://speakerdeck.com/vmiklos/writer-training-number-2-2014">second part</a>,
-  starting from the layout
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>The intention is that these build nicely on top of Michael&#8217;s
-<a href="https://people.gnome.org/~michael/blog/2013-07-26.html">generic intro</a> slides,
-and with that, the reader can have a good "big picture" understanding of the
-code base. For the gory details, you always need to read the code anyway. ;-)</p></div>
 </div>
 </div>
 

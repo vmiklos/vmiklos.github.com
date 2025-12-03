@@ -61,6 +61,85 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sw-markdown-templating.html">Markdown import in Writer: the new template option</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Wed 03 December 2025</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 3 minutes</p>
+  </div>
+  <div class="article_text">
+    <p>Writer recently got a new markdown import option to take styles from a template, leading to much
+prettier output when converting markdown to PDF, DOCX or ODT.</p>
+<p>This work is primarily for <a href="https://www.collaboraonline.com/">Collabora Online</a>, but the templating
+feature is available in desktop Writer as well.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>A <a href="https://vmiklos.hu/blog/sw-markdown-filter.html">previous post</a> mentioned recent improvements to the
+markdown import/export in Writer.</p>
+<p>But if you convert some markdown to e.g. PDF, all the headings just have the default look, wouldn't
+it be nice to take your organization template and add colors and other formatting there,
+automatically?</p>
+<p>Also, wouldn't it be nice if you could paste as markdown in COOL or copy the current selection as
+markdown? Which would enable all sorts of interesting use-cases, like using an external API to turn
+the selection into a summary or translating it to a different language.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>Here is a sample input markdown:</p>
+<div class="highlight"><pre><span></span><code><span class="gh"># heading 1</span>
+
+body text
+</code></pre></div>
+
+<p>Here is how it looks like if you template it using the core.git <code>sw/qa/filter/md/data/template.docx</code>
+sample:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-markdown-templating/templated.png"><figure><img src="https://share.vmiklos.hu/blog/sw-markdown-templating/templated.png"><figcaption>PDF result: templated</figcaption></figure></a></p>
+<p>curl invocation for this:</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-k<span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;data=@/path/to/test.md&quot;</span><span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;template=@/path/to/template.docx&quot;</span><span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;format=pdf&quot;</span><span class="w"> </span>-o<span class="w"> </span>out.pdf<span class="w"> </span>https://localhost:9980/cool/convert-to
+</code></pre></div>
+
+<p>Or example desktop command-line:</p>
+<div class="highlight"><pre><span></span><code>soffice<span class="w"> </span>--infilter<span class="o">=</span><span class="s1">&#39;Markdown:{&quot;TemplateURL&quot;:{&quot;type&quot;:&quot;string&quot;,&quot;value&quot;:&quot;./template.ott&quot;}}&#39;</span><span class="w"> </span>test.md
+</code></pre></div>
+
+<p>While it would look like this by default:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-markdown-templating/default.png"><figure><img src="https://share.vmiklos.hu/blog/sw-markdown-templating/default.png"><figcaption>PDF result: default</figcaption></figure></a></p>
+<p>The other part is the PostMessage API of COOL, if you want to copy and paste as markdown. What's
+newly possible:</p>
+<ul>
+<li>Copy the current selection: set MessageId to <code>Action_Copy</code> and the value to <code>{"Mimetype": "text/markdown;charset=utf-8"}</code></li>
+<li>Paste at the current cursor position: set MessageId to <code>Action_Paste</code> and the value to
+  something like <code>{"Mimetype": "text/markdown;charset=utf-8", "Data": "foo _bar_ baz"}</code></li>
+</ul>
+<p>You can read more about the PostMessage API in the <a href="https://sdk.collaboraonline.com/docs/postmessage_api.html">COOL
+SDK</a>.</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>As usual, the high-level problem was addressed by a series of small changes. Core side:</p>
+<ul>
+<li><a href="https://git.libreoffice.org/core/commit/7462639341c043bf72560e0ddfff06e1e8879859">tdf#169316 sw markdown import: add a TemplateURL parameter</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/6d1312e160ee8c2c0f65b6e0a86333bf3c9c60ce">tdf#169316 sw markdown import, template: handle non-ODF formats as well</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/64cf69926b7cb6fc94efd792b173ac12aa93cb8f">cool#13468 sw markdown paste: add UNO command parameter to skip the detection</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/5ae32bee8dfe5b3264debc02276a3eeac7f51021">Related: tdf#169251 sw markdown export: fix crash on OLE with no graphic</a></li>
+</ul>
+<p>Online side:</p>
+<ul>
+<li><a href="https://github.com/collaboraonline/online/commit/5741a8fe91f9fe2969926cf70c8c51f1dd144ad5">cool#13419 convert-to template option: handle multiple streams in ConvertToPartHandler</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/31109066f2ea2b935cd9d2bc06b5debc6206b41a">cool#13419 convert-to template option: pass it to doc broker</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/3916a7f82fd6454409b86b9915d33f9f2491a348">cool#13419 convert-to template option: pass it to the kit process</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/b993c314e1b50aea382a1dac7391a3949e65045b">cool#13419 convert-to template option: more strict param name, generalize filenames</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/852479accd67880934393f14c4101ad72e9ba806">cool#13419 convert-to template option: add testcase</a></li>
+<li><a href="https://github.com/collaboraonline/online/commit/81881d58fd537924091a5e2e41d033e91c98c8be">cool#13468 PostMessage API: allow copying the current text selection</a></li>
+</ul>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a development edition of Collabora Online 25.04 and try it out yourself right now: <a href="https://www.collaboraonline.com/code/">try
+the development edition</a>.  Collabora intends to continue
+supporting and contributing to LibreOffice, the code is merged so we expect the core of this work
+will be available in TDF's next release too (26.2).</p>
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/sw-interdependent-redline-improvements4.html">Interdependent tracked changes improvements in Writer, part 4: direct accept/reject</a></h1>
   </div>
   <div class="article_meta">
@@ -632,57 +711,6 @@ a set of conditions which now does a decent emulation of Word's rules in this re
 <li><a href="https://git.libreoffice.org/core/commit/abd90828cf101581a07b9d1c371a8c3156521e9f">tdf#160952 sw: ignore top margin of para on non-first pages with newer DOCX</a></li>
 <li><a href="https://git.libreoffice.org/core/commit/ae7900dd42a65aaf60df6b21b9ad511496b209d9">tdf#164095 sw: fix missing top margin on paragraph after changing page style</a></li>
 </ul>
-<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
-<p>You can get a development edition of Collabora Online 24.04 and try it out yourself right now: <a href="https://www.collaboraonline.com/code/">try
-the development edition</a>.  Collabora intends to continue
-supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
-available in TDF's next release too (25.2).</p>
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/editeng-rtf-export-lost-para-style.html">Editeng RTF export: fixing a lost paragraph style</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Wed 04 December 2024</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
-  </div>
-  <div class="article_text">
-    <p>Impress shape text doesn't have much support for styles, e.g. the default UI in Writer gives you a
-paragraph style dropdown, and you don't get the same in Impress. Still, a paragraph style is
-attached to bullets based on their outline level, and Impress has a View → Outline menu item to give
-you that styled text you can copy. Pasting that to Writer started to lose styles recently and it's
-now fixed to work again.</p>
-<p>This work is primarily for <a href="https://www.collaboraonline.com/">Collabora Online</a>, but the feature is
-available in desktop Impress as well.</p>
-<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
-<p>As described in a <a href="https://git.libreoffice.org/core/commit/70d1bd6ee0eba9d6661cd6280566f77a87f2d068">previous
-commit</a>, I had a
-case where lots of not needed paragraph styles were exported to RTF in case an Impress document had
-enough master pages. The idea was to only export actually used paragraph styles, to avoid wasting
-CPU power.</p>
-<p>Turns out filtering out paragraph styles has to happen at two locations:</p>
-<ul>
-<li>in the style table to assign an index to a paragraph style</li>
-<li>when referring to those styles</li>
-</ul>
-<p>The problem was that unused styles were removed from the style table, but not from the style → index
-mapping, so as soon as you had both used and unused paragraph styles, the declared and the referred
-style indexes didn't match anymore.</p>
-<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
-<p>Here is a sample paste result in Writer, where you can see that the text doesn't have a custom
-paragraph style:</p>
-<p><a href="https://share.vmiklos.hu/blog/editeng-rtf-export-lost-para-style/old.png"><figure><img src="https://share.vmiklos.hu/blog/editeng-rtf-export-lost-para-style/old.png"><figcaption>Bugdoc: old Writer paste</figcaption></figure></a></p>
-<p>And here is the same paste, now with paragraph styles restored:</p>
-<p><a href="https://share.vmiklos.hu/blog/editeng-rtf-export-lost-para-style/new.png"><figure><img src="https://share.vmiklos.hu/blog/editeng-rtf-export-lost-para-style/new.png"><figcaption>Bugdoc: new Writer paste</figcaption></figure></a></p>
-<p>As you can see, now the pasted text has paragraph styles.</p>
-<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
-<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
-<p>The bugfix commit was <a href="https://git.libreoffice.org/core/commit/c8b607b7c0096c58dc5187262bf0133dee728d50">editeng RTF export: fix broken offsets into the para style table</a>.</p>
-<p>The tracking bug was <a href="https://bugs.documentfoundation.org/show_bug.cgi?id=163883">tdf#163883</a>.</p>
 <h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
 <p>You can get a development edition of Collabora Online 24.04 and try it out yourself right now: <a href="https://www.collaboraonline.com/code/">try
 the development edition</a>.  Collabora intends to continue

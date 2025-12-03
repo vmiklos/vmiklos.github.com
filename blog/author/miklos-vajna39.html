@@ -59,6 +59,26 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/writing-ppt-presentations-from-asciidoc.html">Writing ppt presentations from asciidoc</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Thu 14 May 2009</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>Okay, this is a crazy idea, but I love asciidoc. So the pipeline is the following: asciidoc -&gt; docbook -&gt; latex -&gt; pdf -&gt; odp -&gt; ppt.</p><p>The fun part is that docbook is XML and then later I convert the stuff back to XML again (odp), but that's necessary as latex adds the nice themes and layout to the text.</p><p>Also the method is semi-automated as I generate latex from asciidoc, then copy&amp;paste it to a latex-beamer document with some manual fixup, then I can convert the rest in a more or less automated way. Time to package odfpy and other affected, but not yet packaged components. ;-)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/godollo-170.html">Godollo 170</a></h1>
   </div>
   <div class="article_meta">
@@ -255,26 +275,6 @@ code
     <div id="preamble">
 <div class="sectionbody">
 <p>We hit <a href="http://groups.google.com/group/asciidoc/browse_thread/thread/fd27add515597c06?pli=1">this bug</a> after I upgraded asciidoc on the server where we build the Frugalware documentation, luckily I just had to backport the given patch from hg and it now works fine.</p><p>I like how responsible the upstream (Stuart) is. Asciidoc is not bug-free, but as long as one provides simple reproducers, he quickly fixes bugs, yay! :)</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/iscsi-fun.html">iSCSI fun</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Mon 06 April 2009</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>So I was playing with iSCSI, and the tricky part was that I shared out a block device to a Windows one and the silly OS created a partition table on it, but the block device was an LVM LV. So it was like /dev/mapper/foo-lvol0, and of udev did not create /dev/mapper/foo-lvol0p1, so it was hard the mount.</p><p>Next example about hacking Frugalware is useful, we had this problem while generating the USB installer image as well, the trick was to mount /dev/mapper/foo-lvol0 with -o offset=32256, and this works generally as long as the partition table is an old PC one (so it's not an MS dynamic disk or anything).</p>
 </div>
 </div>
 
