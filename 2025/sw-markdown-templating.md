@@ -2,7 +2,7 @@ Title: Markdown import in Writer: the new template option
 Slug: sw-markdown-templating
 Category: libreoffice
 Tags: en
-Date: 2025-12-02T15:01:13+01:00
+Date: 2025-12-03T09:35:36+01:00
 
 Writer recently got a new markdown import option to take styles from a template, leading to much
 prettier output when converting markdown to PDF, DOCX or ODT.
@@ -40,13 +40,13 @@ sample:
 
 curl invocation for this:
 
-```
+```bash
 curl -k -F "data=@/path/to/test.md" -F "template=@/path/to/template.docx" -F "format=pdf" -o out.pdf https://localhost:9980/cool/convert-to
 ```
 
 Or example desktop command-line:
 
-```
+```bash
 soffice --infilter='Markdown:{"TemplateURL":{"type":"string","value":"./template.ott"}}' test.md
 ```
 
