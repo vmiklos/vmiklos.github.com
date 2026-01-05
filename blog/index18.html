@@ -58,6 +58,126 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/tiled-editing-part-1.html">Tiled editing: from viewing only to a living document</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Tue 27 January 2015</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 3 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>As it has been announced
+<a href="http://blog.documentfoundation.org/2015/01/21/libreoffice-viewer-for-android/">last
+week</a>, an Android port of LibreOffice in the form of a viewer app is now
+available for download.  What&#8217;s next?
+<a href="http://blog.documentfoundation.org/2015/01/27/the-document-foundation-announces-the-results-of-the-android-tender/">Editing</a>,
+naturally.  First, thanks again to The Document Foundation&#8201;&#8212;&#8201;and all the
+<a href="http://donate.libreoffice.org/">donors</a> who made this (ongoing) work possible.
+In this post I would like to explain what did we do with
+<a href="http://tomazvajngerl.blogspot.com/">Tomaž Vajngerl</a> at Collabora so far in that
+direction.</p></div>
+<div class="paragraph"><p>If you ever touched the Android port of LibreOffice, you probably noticed that
+sadly developing for Android is much harder compared to Linux (desktop). On
+Linux, if you just touch a single module, it&#8217;s possible to rebuild just that
+module in a few seconds, and then you can run soffice again with your
+modifications included. On Android, this is much harder:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+due to a limitation of the Android linker, we link all the native code into
+  a single shared object, that has to be re-linked after each native code
+  modification
+</p>
+</li>
+<li>
+<p>
+the native + the Java code has to be packed into a .apk archive
+</p>
+</li>
+<li>
+<p>
+the .apk archive has to be uploaded to the device (or emulator) and
+  installed there
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>and only then can you test your changes. To partly sidestep from this problem,
+we split the "Android editing" into two:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+tiled editing: this can be tested on Linux using the gtktiledviewer test
+  application (and ideally any core problem can be seen here already)
+</p>
+</li>
+<li>
+<p>
+Android LibreOfficeKit client: replacing gtktiledviewer with the real
+  Android client code, and this time testing it on the device
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>One problem with this approach was that while Android properly rendered small
+tiles of 256x256 pixels, gtktiledviewer rendered a single huge tile. This
+means that in case part of the document changes and we need to re-draw it, we
+always repainted the whole document in gtktiledviewer, while we only repainted
+the necessary parts on Android. Guess what, if the area to be repainted is
+wrong, it&#8217;ll be visible on Android but not on gtktiledviewer. So the first
+task we solved was to let gtktiledviewer also render small tiles. For
+debugging purposes, small red rectangles are painted at the top left corners
+of each rectangle, so the size and position of the tiles can be seen easily:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://lh5.googleusercontent.com/-VvQFF-Kg270/VMYqe9G76-I/AAAAAAAAFL4/Fnh9_ig03Ww/s0/">
+<img src="https://lh5.googleusercontent.com/-VvQFF-Kg270/VMYqe9G76-I/AAAAAAAAFL4/Fnh9_ig03Ww/s420/" alt="https://lh5.googleusercontent.com/-VvQFF-Kg270/VMYqe9G76-I/AAAAAAAAFL4/Fnh9_ig03Ww/s420/" />
+</a>
+</div>
+</div>
+<div class="paragraph"><p>The next step was to somehow start work on real editing&#8201;&#8212;&#8201;but where to start? We identified two critical building blocks:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+there should be some way for the user to provide input (e.g. press a key on
+  the software keyboard)
+</p>
+</li>
+<li>
+<p>
+once the document changed, the application has to redraw the changed part of
+  the view
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>To avoid solving two problems at the same time, we first went after the
+second. One use case that only requires the update of the view is blinking
+text. Even if no touch or key events are available, a blinking text wants to
+update the view using a timer, so it&#8217;s a good testcase. It&#8217;s now possible for
+LibreOfficeKit clients to register a notification callback, and using that,
+LibreOffice can notify clients if part of the view has to be redrawn. Here is
+how it looks using gtktiledviewer:</p></div>
+<center>
+<iframe width="420" height="315" src="http://www.youtube.com/embed/rgv76GPlMRU" frameborder="0" allowfullscreen></iframe>
+</center>
+<div class="paragraph"><p>This demonstrates that the LibreOfficeKit implementation in LibreOffice core
+and also the gtktiledviewer client code handle correctly tile invalidations.
+Once that was done, we could also implement a similar client code in the
+Android app&#8201;&#8212;&#8201;it looks like this:</p></div>
+<center>
+<iframe width="420" height="315" src="http://www.youtube.com/embed/EkGpCrGlhiY" frameborder="0" allowfullscreen></iframe>
+</center>
+<div class="paragraph"><p>That&#8217;s it for now&#8201;&#8212;&#8201;next on our list is adding support for input handling, so
+it&#8217;s possible to type in some text. :-)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/perfect-ww8-comment-import.html">Perfect WW8 comment import</a></h1>
   </div>
   <div class="article_meta">
@@ -723,325 +843,6 @@ for a hint. Oh, and if you would like to build your own binary&#8230; err T-shir
 you can do it:
 <a href="http://people.freedesktop.org/~vmiklos/2014/bugs-tshirt.odg">here</a> is the ODG
 file that can serve as a source. Happy bugfixing! :-)</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/textbox.html">TextBox: complex LibreOffice Writer content inside shapes</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Wed 16 July 2014</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 5 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://lh6.googleusercontent.com/-Aq8Uxzw0bys/U8ZXkDbzhfI/AAAAAAAAEiQ/2pvZlSkHTsc/s0/">
-<img src="https://lh6.googleusercontent.com/-Aq8Uxzw0bys/U8ZXkDbzhfI/AAAAAAAAEiQ/2pvZlSkHTsc/s400/" alt="https://lh6.googleusercontent.com/-Aq8Uxzw0bys/U8ZXkDbzhfI/AAAAAAAAEiQ/2pvZlSkHTsc/s400/" />
-</a>
-</div>
-</div>
-<div class="paragraph"><p>TL;DR: see above&#8201;&#8212;&#8201;it&#8217;s now possible to have complex Writer content (charts,
-tracked changes, tables, fields, etc.) inside drawinglayer shapes, yay! :-)</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_the_problem">The problem</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Writer in LibreOffice 4.3 can have two kind of shapes: drawinglayer ones or
-Writer TextFrames. (Let&#8217;s ignore OLE objects and Writer pictures for now.)
-Drawinglayer shapes can be triangles (non-rectangular), rectangles can have
-rounded corners and so on, but shape text is handled by editeng&#8201;&#8212;&#8201;the same
-engine that is used for Impress shapes or Calc cells. OTOH a Writer TextFrame
-can contain anything that is supported by Writer (Writer fields, styles,
-tables, etc.), but its drawing capabilities are quite limited: no triangle,
-rounded corners, etc. Together with <a href="http://www.cloudon.com/">CloudOn</a>, we
-thought the best would be to be able to have both, and started to use the
-"shape with TextBox" term for this feature.</p></div>
-<div class="paragraph"><p>A user can already sort of to do this by creating a drawinglayer shape, then a
-Writer TextFrame, and by setting the properties of the Writer TextFrame
-(position, size, etc) to appear as if the TextFrame would be the shape text of
-the drawinglayer shape.  The idea is to tie these two objects together, so the
-(UI and API) user sees them as a single object.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_results">Results</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>I&#8217;m providing here a few screenshots. Above, you can see <a href="http://cgit.freedesktop.org/libreoffice/core/tree/sw/qa/extras/odfexport/data/textbox-rounded-corners.odt">an ODF document</a>
-having a rectangle with rounded corners, still containing a table.</p></div>
-<div class="paragraph"><p>Given that OOXML has this feature since its birth, I&#8217;m also showing <a href="http://people.freedesktop.org/~vmiklos/2014/textbox/">a few DOCX
-documents</a>, which are now handled far better:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-chart inside a left arrow callout:
-</p>
-</li>
-</ul></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://lh4.googleusercontent.com/-s5ABCN9pchc/U8ZXfLV5eKI/AAAAAAAAEh4/uxpwBVIcJRU/s0/">
-<img src="https://lh4.googleusercontent.com/-s5ABCN9pchc/U8ZXfLV5eKI/AAAAAAAAEh4/uxpwBVIcJRU/s400/" alt="https://lh4.googleusercontent.com/-s5ABCN9pchc/U8ZXfLV5eKI/AAAAAAAAEh4/uxpwBVIcJRU/s400/" />
-</a>
-</div>
-</div>
-<div class="ulist"><ul>
-<li>
-<p>
-tracked changes inside a cloud callout:
-</p>
-</li>
-</ul></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://lh6.googleusercontent.com/-AzHF9r3PMgY/U8ZXhbZuXOI/AAAAAAAAEiA/58FsbrkumcM/s0/">
-<img src="https://lh6.googleusercontent.com/-AzHF9r3PMgY/U8ZXhbZuXOI/AAAAAAAAEiA/58FsbrkumcM/s400/" alt="https://lh6.googleusercontent.com/-AzHF9r3PMgY/U8ZXhbZuXOI/AAAAAAAAEiA/58FsbrkumcM/s400/" />
-</a>
-</div>
-</div>
-<div class="ulist"><ul>
-<li>
-<p>
-SmartArt inside a snip diagonal corner rectangle:
-</p>
-</li>
-</ul></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://lh3.googleusercontent.com/-_1-RYPfLX2w/U8ZXi6XNEhI/AAAAAAAAEiI/irEHHeoxRXU/s0/">
-<img src="https://lh3.googleusercontent.com/-_1-RYPfLX2w/U8ZXi6XNEhI/AAAAAAAAEiI/irEHHeoxRXU/s400/" alt="https://lh3.googleusercontent.com/-_1-RYPfLX2w/U8ZXi6XNEhI/AAAAAAAAEiI/irEHHeoxRXU/s400/" />
-</a>
-</div>
-</div>
-<div class="ulist"><ul>
-<li>
-<p>
-Table of Contents inside a pentagon:
-</p>
-</li>
-</ul></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://lh3.googleusercontent.com/-aBD1Rbv4-DU/U8ZXlV2vxSI/AAAAAAAAEiY/atjjnYGDQyw/s0/">
-<img src="https://lh3.googleusercontent.com/-aBD1Rbv4-DU/U8ZXlV2vxSI/AAAAAAAAEiY/atjjnYGDQyw/s400/" alt="https://lh3.googleusercontent.com/-aBD1Rbv4-DU/U8ZXlV2vxSI/AAAAAAAAEiY/atjjnYGDQyw/s400/" />
-</a>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_details">Details</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>What follows is something you can probably skip if you&#8217;re a user&#8201;&#8212;&#8201;however if
-you&#8217;re a developer and you want to understand how the above is implemented,
-then read on. ;-)</p></div>
-<div class="sect2">
-<h3 id="_situation_in_4_3">Situation in 4.3</h3>
-<div class="paragraph"><p>From the drawinglayer point of view: <code>SwDoc</code> contains an <code>SdrModel</code>
-(<code>SwDoc::GetOrCreateDrawModel()</code>), which contains a single <code>SdrPage</code>
-(<code>SdrModel::GetPage()</code>)&#8201;&#8212;&#8201;Draw/Impress contain multiple sdr pages. The
-<code>SdrPage</code> contains the shapes: e.g. a triangle is an <code>SdrObjCustomShape</code>. For
-TextFrames, a placeholder object called <code>SwVirtFlyDrawObj</code> is added to the
-draw page.</p></div>
-<div class="paragraph"><p>The writer-specific properties of an <code>SdrObject</code> is stored as an <code>SwFrmFmt</code>
-object, an <code>SwFrmFmt</code> array is a member of <code>SwDoc</code> ("frame format table"). The
-anchor position and the node index of the frame contents counts as a property.</p></div>
-<div class="paragraph"><p>At UNO level, a single <code>DrawPage</code> object is part of the Component (opened
-document), which abstracts away the internal <code>SdrPage</code>.</p></div>
-<div class="paragraph"><p>For TextFrames, the UNO API works exactly the same way, except that the
-implementation stores all properties of the TextFrame in the <code>SwFrmFmt</code> (and
-some properties are different, compared to a drawinglayer shape).</p></div>
-<div class="paragraph"><p>One remaining detail is how the shape text is represented. In case of
-drawinglayer shapes, this is provided by editeng: internally an <code>EditTextObject</code>
-provides a container for paragraphs, at UNO API level <code>SvxUnoTextContent</code>
-provides an interface that presents paragraphs and their text portions.</p></div>
-<div class="paragraph"><p>For TextFrames, the contents of the frames is stored in a special section in
-the Writer text node array (in the 3rd toplevel section, while the 5th
-toplevel section is used for body text), that&#8217;s how it can contain anything
-that&#8217;s a valid Writer body text. An offset into this node array of the
-"content" property of the <code>SwFrmFmt</code>.</p></div>
-</div>
-<div class="sect2">
-<h3 id="_document_model">Document model</h3>
-<div class="paragraph"><p>At a document model level, we need a way to describe that an <code>SdrObject</code>
-(provided by svx) has an associated TextFrame (provided by sw). svx can&#8217;t
-depend on sw, but in the <code>SwFrmFmt</code> of the SdrObject, we can use the so far
-unused <code>RES_CNTNT</code> ("content") property to point to a TextFrame content.</p></div>
-<div class="paragraph"><p>So behind the scenes the UNO API and the UI does the following when
-turning on the TextBox bit for a drawinglayer shape:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-creates a TextFrame
-</p>
-</li>
-<li>
-<p>
-connects the <code>SdrObject</code> to the TextFrame
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>Also, every property of the TextFrame depends on the properties of the
-<code>SdrObject</code>, think of the followings:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-position / size is the largest rectangle that fits inside the shape
-</p>
-</li>
-<li>
-<p>
-borders are disabled
-</p>
-</li>
-<li>
-<p>
-background is transparent
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>Finding the largest rectangle that fits inside the shape is probably the most
-interesting here, it&#8217;s implemented in <code>SwTextBoxHelper::getTextRectangle()</code>,
-which uses <code>SdrObjCustomShape::GetTextBounds()</code>.</p></div>
-</div>
-<div class="sect2">
-<h3 id="_uno_api">UNO API</h3>
-<div class="paragraph"><p>The UNO API hides the detail that the TextFrame and the <code>SdrObject</code> are in
-fact two objects. To get there, the followings are done:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-<code>SwXShape</code> is modified, so that in the TextBox case not editengine, but the
-  attached TextFrame is accessed when <code>getText()</code> is invoked.
-  This was a bit tricky, as <code>SwXShape</code> doesn&#8217;t have an explicit <code>getText()</code>
-  implementation: it overrides <code>queryInterface()</code> instead (see
-  <code>SwTextBoxHelper::queryInterface()</code>).
-</p>
-</li>
-<li>
-<p>
-<code>SwXDrawPage</code> (its <code>XEnumerationAccess</code> and <code>XIndexAccess</code>) is modified to
-  ignore TextFrames in the TextBox case
-</p>
-</li>
-<li>
-<p>
-<code>SwXTextPortionEnumeration</code> is modified to ignore TextFrames in the TextBox case
-</p>
-</li>
-<li>
-<p>
-<code>SwXText::insertTextContent()</code> and <code>SwXText::appendTextContent()</code> is
-  modified to handle the TextBox case
-</p>
-</li>
-</ul></div>
-</div>
-<div class="sect2">
-<h3 id="_layout">Layout</h3>
-<div class="paragraph"><p>This was the easiest part: the "merge TextFrame and <code>SdrObj</code> into a shape with
-TextBox" approach ensured that that we use existing layout features here, no
-major effort was necessary here.</p></div>
-<div class="paragraph"><p>One interesting detail here was the positioning of as-character anchored
-shapes having TextBoxes, that&#8217;s now handled in <code>SwFlyCntPortion::SetBase()</code>.</p></div>
-</div>
-<div class="sect2">
-<h3 id="_filters">Filters</h3>
-<div class="paragraph"><p>The primary point of this feature is to improve Word (and in particular DOCX)
-compatibility, and of course I wanted to update ODF as necessary as well.</p></div>
-<div class="paragraph"><p>Regarding the new feature, I did the followings:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-DOCX import now avoids setting service name from original to
-  <code>css.text.TextFrame</code> in case shape has shape text
-</p>
-</li>
-<li>
-<p>
-DOCX export now handles the TextBox case: reads Writer text instead of
-  editeng text as necessary
-</p>
-</li>
-<li>
-<p>
-ODF export now adds a
-  <a href="https://wiki.documentfoundation.org/Development/ODF_Implementer_Notes#List_of_LibreOffice_ODF_extensions">new
-  optional boolean attribute</a> to make export of the TextBox case possible
-</p>
-</li>
-<li>
-<p>
-ODF import now handles the new attribute and act accordingly
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>Note that regarding backwards compatibility, we keep supporting
-editengine-based text as well. This has the best of two worlds:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-existing ODF documents are unchanged, but
-</p>
-</li>
-<li>
-<p>
-the TextBox feature is enabled unconditionally in DOCX import to avoid
-  formatting loss
-</p>
-</li>
-</ul></div>
-</div>
-<div class="sect2">
-<h3 id="_user_interface">User Interface</h3>
-<div class="paragraph"><p>I took care of the followings:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-the context menu of shapes now provides an item to add / remove a TextBox
-  to/from a shape
-</p>
-</li>
-<li>
-<p>
-when moving or resizing a shape, the TextBox properties are updated
-  as well
-</p>
-</li>
-<li>
-<p>
-when the shape is deleted, the associated TextBox is also
-  deleted
-</p>
-</li>
-<li>
-<p>
-editing individual TextBox properties is no longer possible, since they
-  depend on the shape properties
-</p>
-</li>
-</ul></div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_summary">Summary</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>If you want to try these out yourself, get a
-<a href="http://dev-builds.libreoffice.org/daily/">daily build</a> and play with it! If
-something goes wrong, report it to us in the
-<a href="https://www.libreoffice.org/get-help/bug/">Bugzilla</a>, so we can try fix it
-before 4.4 gets branched off. Last, but not at least, thanks for
-<a href="http://www.cloudon.com/">CloudOn</a> for funding these improvements! :-)</p></div>
 </div>
 </div>
 

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/pygments.css">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Miklos Vajna">
+  <meta name="description" content="Posts and writings by Miklos Vajna">
+
+  <link href="https://vmiklos.hu/blog/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking RSS" />
+
+<meta name="keywords" content="en">
+
+  <title>
+    What is Miklos hacking
+&ndash; Bullet improvements in Impress  </title>
+
+<script type="text/javascript">
+  var _paq = window._paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//analytics.vmiklos.hu/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '1']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <h2><a href="https://vmiklos.hu/blog">What is Miklos hacking</a></h2>
+      <p></p>
+      <ul>
+        <li><a href="/" target="_blank">Root</a></li>
+        <li><a href="https://planet.documentfoundation.org/" target="_blank">LibreOffice Blogs</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://vmiklos.hu/blog">Index</a> &brvbar; <a href="https://vmiklos.hu/blog/archives.html">Archives</a>
+      &brvbar; <a href="https://vmiklos.hu/blog/feeds/all.rss.xml">RSS</a>
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sd-bullet-improvements.html">Bullet improvements in Impress</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Mon 05 January 2026</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 3 minutes</p>
+  </div>
+  <div class="article_text">
+    <p>The bullet support in Impress got a couple of improvements recently, some of this is PPTX support
+and others are general UI improvements.</p>
+<p>This work is primarily for <a href="https://www.collaboraonline.com/">Collabora Online</a>, but the feature is
+available in desktop Impress as well.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>Probably the most simple presentations are just a couple of slides, each slide having a title shape
+and an outliner shape, containing some bullets, perhaps with some additional images. Images are just
+bitmaps, so let's focus on outliner shapes and their outliner / bullet styles.</p>
+<p>What happens if you save these to PPTX and load it back? Can you toggle between a numbering and a
+bullet? Can you return to an outliner style after you had direct formatting for your bullet?</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>The first case was about bullet editing of this document:</p>
+<p><a href="https://share.vmiklos.hu/blog/sd-bullet-improvements/sd-bullet-improvements-1.png"><figure><img src="https://share.vmiklos.hu/blog/sd-bullet-improvements/sd-bullet-improvements-1.png"><figcaption>Outliner shape with 3 outliner styles</figcaption></figure></a></p>
+<p>If you pressed enter at the end of 'First level', then pressed <code>&lt;tab&gt;</code> to promote the current
+paragraph to the second level, nothing happened. The reason for this was that our PPTX export was
+missing the list styles of shapes, except for the very first list style. And the same was missing on
+the import side, too. With this, not only the rendering of the bullets are OK, but also adding new
+paragraphs and using promoting / demoting to change levels work as expected.</p>
+<p>The second case was about this document, where the second level had a numbering, not a bullet:</p>
+<p><a href="https://share.vmiklos.hu/blog/sd-bullet-improvements/sd-bullet-improvements-2.png"><figure><img src="https://share.vmiklos.hu/blog/sd-bullet-improvements/sd-bullet-improvements-2.png"><figcaption>Outliner shape with a numbering on the second level</figcaption></figure></a></p>
+<p>We only had UI to first toggle off a numbering to no numbering, then you could toggle on bullets.
+Now it's possible to do this change in one step.</p>
+<p>The last case was about styles. Imagine that you had a master page with an outline shape and some
+reasonably looking configuration for the first and second levels as outline styles:</p>
+<p><a href="https://share.vmiklos.hu/blog/sd-bullet-improvements/sd-bullet-improvements-3.png"><figure><img src="https://share.vmiklos.hu/blog/sd-bullet-improvements/sd-bullet-improvements-3.png"><figcaption>Outliner shape with two outline styles</figcaption></figure></a></p>
+<p>Notice how the last paragraph has a slightly inconsistent formatting, due to direct formatting.
+Let's fix this.</p>
+<p>Go to the end of the last bullet, which is currently not connected to an outline style, toggle
+bullets off and then toggle it on again. Now we clear direct formatting when we turn off the bullet,
+so next time you turn bullets on, it'll be again connected to the outline style's bullet
+configuration and the content will look better.</p>
+<p>Note how this even improves consistency: Writer was behaving the same way already, when toggling
+bullets off and then toggle on again resulted in getting rid of previously applied unwanted direct
+formatting.</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>As usual, the high-level problem was addressed by a series of small changes. Core side:</p>
+<ul>
+<li><a href="https://git.libreoffice.org/core/commit/6a8b96ddd47af2be3f06e299ee7058438083ba5b">PPTX export: fix missing non-first level list style for outline shapes</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/ccb9e9ef70c4fae3f69b63083cab838794a3d46d">sd doc model dump: allow invoking this from outside sd/ in a debugger</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/e96f2ef1a299c95d83c6a7945fcc92f8f1833112">sd doc model xml dump: show styles</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/cb108a10479e72b63d32cae020a4ac178e763d14">tdf#168559 PPTX imp: fix missing custom level list style for outline shapes</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/b2c5d52f733cca2656daa0a2cfdd85a1108635f4">tdf#168559 PPTX imp: fix missing list style for outline shapes on master pages</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/f60ee00edcc5b0fdee5227bb695448119cddb013">tdf#89365 sd UI: fix transitioning from a numbered list to a bulleted list</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/0856eee636f512ae2cffc141b7ab3b5065d8beda">tdf#169275 sd UI: clear direct format when turning off bullet/num</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/122ff49f6ee6b88386cd30a542a92b04c508e47a">sd: extract <code>FN_TRANSFORM_DOCUMENT_STRUCTURE</code> handling to a new function</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/1dc25f541784b5e50210af1d5ffb619ec55220f1">sd, FuBulletAndPosition: avoid magic number for bullet toggle</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/a26e176abcd40438d19e2a9012db1342bdcaba12">Related: tdf#89365 sd UI, from numbering to bullet: fix defaults</a></li>
+</ul>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a development edition of Collabora Online 25.04 and try it out yourself right now: <a href="https://www.collaboraonline.com/code/">try
+the development edition</a>.  Collabora intends to continue
+supporting and contributing to LibreOffice, the code is merged so we expect the core of this work
+will be available in TDF's next release too (26.2).</p>
+  </div>
+  <div class="article_meta">
+    <p>Category: <a href="https://vmiklos.hu/blog/category/libreoffice.html">libreoffice</a>
+ &ndash; Tags:
+      <a href="https://vmiklos.hu/blog/tag/en.html">en</a>    </p>
+  </div>
+
+
+</article>
+
+
+    <div id="ending_message">
+      <p>&copy; Miklos Vajna. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
+</body>
+</html>

@@ -58,6 +58,57 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/userspace-boot-speed.html">Userspace boot speed: less than a second</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Sat 24 September 2011</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>I did not care about boot speed for a long time, since servers usually
+restarted only for kernel upgrades, laptops suspend to ram all the time,
+and I have no desktop machine at home for years now.  Though one use
+case started to motivate me recently: I use virtual machines a lot, and
+waiting for them to boot up is boring.</p></div>
+<div class="paragraph"><p>So I looked at the <code>systemd-analyze blame</code> output, and it turned out
+that for a base-only install the only service that takes a lot of time
+is <code>netconfig</code>. It&#8217;s because it was a <code>oneshot</code> service, so the whole
+boot process waited for <code>dhcpcd</code> to get an IP. A much better solution is
+to just start netconfig in the background and move on&#8201;&#8212;&#8201;and that&#8217;s
+exactly frugalwareutils in git does now.</p></div>
+<div class="paragraph"><p>Before:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>$ systemd-analyze
+Startup finished in 2030ms (kernel) + 1166ms (initrd) + 6755ms (userspace) = 9953ms</code></pre>
+</div></div>
+<div class="paragraph"><p>After:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>$ systemd-analyze
+Startup finished in 2039ms (kernel) + 1146ms (initrd) + 892ms (userspace) = 4079ms</code></pre>
+</div></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">Again, this is for a virtual machine (where the host has some IO
+cache) and for a base-only install.</td>
+</tr></table>
+</div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/lo-l10n-build-speedup.html">Speeding up build with a lot languages enabled</a></h1>
   </div>
   <div class="article_meta">
@@ -549,151 +600,6 @@ LGee kepei
 </p>
 </li>
 </ul></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/jogsi.html">Mennyibe kerul 2011-ben egy jogsi?</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Fri 27 May 2011</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Azt tudjuk, hogy a <a href="http://www.mazsolajogsi.hu/">reklam szerint</a> csak
-49.000 Ft. A kerdes inkabb az, hogy ez a valosagban hogy alakul.</p></div>
-<div class="paragraph"><p>Remelhetoleg a sajat peldam eleg atlagosnak mondhato: volt jopar
-potoram, viszont a vizsgakon elsore atmentem. Van akinek mondjuk a
-forgalmi csak masodszorra sikerul, de ott meg lehet nincs ennyi potora,
-es akkor ugyanott tartunk.</p></div>
-<div class="paragraph"><p>Lenyeg, hogy irogattam, hogy a <a href="http://www.taltosjogsi.hu/">Taltosban</a> (fo
-kivalasztasi szempont: ma este hol indul KRESZ tanfolyam :) ) nalunk
-miert mennyit kellett fizetni, ime hat a lista, amibol tenyleg nem
-hianyzik semmi:</p></div>
-<div class="tableblock">
-<table rules="all"
-width="100%"
-frame="border"
-cellspacing="0" cellpadding="4">
-<col width="33%" />
-<col width="33%" />
-<col width="33%" />
-<thead>
-<tr>
-<th align="left" valign="top"> Szakasz     </th>
-<th align="left" valign="top"> Mire               </th>
-<th align="left" valign="top"> Mennyit</th>
-</tr>
-</thead>
-<tfoot>
-<tr>
-<td align="left" valign="top"><p class="table"></p></td>
-<td align="left" valign="top"><p class="table"></p></td>
-<td align="left" valign="top"><p class="table">139 300,00 Ft</p></td>
-</tr>
-</tfoot>
-<tbody>
-<tr>
-<td align="left" valign="top"><p class="table">KRESZ:</p></td>
-<td align="left" valign="top"><p class="table">Oktatas I.</p></td>
-<td align="left" valign="top"><p class="table">12 000,00 Ft</p></td>
-</tr>
-<tr>
-<td align="left" valign="top"><p class="table"></p></td>
-<td align="left" valign="top"><p class="table">Vizsgadij</p></td>
-<td align="left" valign="top"><p class="table">4 600,00 Ft</p></td>
-</tr>
-<tr>
-<td align="left" valign="top"><p class="table"></p></td>
-<td align="left" valign="top"><p class="table">Orvos</p></td>
-<td align="left" valign="top"><p class="table">4 000,00 Ft</p></td>
-</tr>
-<tr>
-<td align="left" valign="top"><p class="table"></p></td>
-<td align="left" valign="top"><p class="table">Oktatas II.</p></td>
-<td align="left" valign="top"><p class="table">12 000,00 Ft</p></td>
-</tr>
-<tr>
-<td align="left" valign="top"><p class="table">Rutin:</p></td>
-<td align="left" valign="top"><p class="table">Normal ora</p></td>
-<td align="left" valign="top"><p class="table">12 000,00 Ft</p></td>
-</tr>
-<tr>
-<td align="left" valign="top"><p class="table"></p></td>
-<td align="left" valign="top"><p class="table">Vizsgadij</p></td>
-<td align="left" valign="top"><p class="table">4 700,00 Ft</p></td>
-</tr>
-<tr>
-<td align="left" valign="top"><p class="table"></p></td>
-<td align="left" valign="top"><p class="table">Tankonyv</p></td>
-<td align="left" valign="top"><p class="table">1 500,00 Ft</p></td>
-</tr>
-<tr>
-<td align="left" valign="top"><p class="table"></p></td>
-<td align="left" valign="top"><p class="table">Potora I.</p></td>
-<td align="left" valign="top"><p class="table">4 000,00 Ft</p></td>
-</tr>
-<tr>
-<td align="left" valign="top"><p class="table"></p></td>
-<td align="left" valign="top"><p class="table">Potora II.</p></td>
-<td align="left" valign="top"><p class="table">4 000,00 Ft</p></td>
-</tr>
-<tr>
-<td align="left" valign="top"><p class="table"></p></td>
-<td align="left" valign="top"><p class="table">Potora III.</p></td>
-<td align="left" valign="top"><p class="table">4 000,00 Ft</p></td>
-</tr>
-<tr>
-<td align="left" valign="top"><p class="table">Forgalmi:</p></td>
-<td align="left" valign="top"><p class="table">Normal ora I.</p></td>
-<td align="left" valign="top"><p class="table">12 000,00 Ft</p></td>
-</tr>
-<tr>
-<td align="left" valign="top"><p class="table"></p></td>
-<td align="left" valign="top"><p class="table">Normal ora II.</p></td>
-<td align="left" valign="top"><p class="table">12 000,00 Ft</p></td>
-</tr>
-<tr>
-<td align="left" valign="top"><p class="table"></p></td>
-<td align="left" valign="top"><p class="table">Vizsgadij</p></td>
-<td align="left" valign="top"><p class="table">11 000,00 Ft</p></td>
-</tr>
-<tr>
-<td align="left" valign="top"><p class="table"></p></td>
-<td align="left" valign="top"><p class="table">Potora I.</p></td>
-<td align="left" valign="top"><p class="table">12 000,00 Ft</p></td>
-</tr>
-<tr>
-<td align="left" valign="top"><p class="table"></p></td>
-<td align="left" valign="top"><p class="table">Potora II.</p></td>
-<td align="left" valign="top"><p class="table">12 000,00 Ft</p></td>
-</tr>
-<tr>
-<td align="left" valign="top"><p class="table">Eu.:</p></td>
-<td align="left" valign="top"><p class="table">Oktatas</p></td>
-<td align="left" valign="top"><p class="table">8 000,00 Ft</p></td>
-</tr>
-<tr>
-<td align="left" valign="top"><p class="table"></p></td>
-<td align="left" valign="top"><p class="table">Vizsgadij</p></td>
-<td align="left" valign="top"><p class="table">5 500,00 Ft</p></td>
-</tr>
-<tr>
-<td align="left" valign="top"><p class="table">Okmanyiroda</p></td>
-<td align="left" valign="top"><p class="table"></p></td>
-<td align="left" valign="top"><p class="table">4 000,00 Ft</p></td>
-</tr>
-</tbody>
-</table>
-</div>
 </div>
 </div>
 

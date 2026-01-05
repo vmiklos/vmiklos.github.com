@@ -58,6 +58,27 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/benchmarking-darcs-fast-export.html">Benchmarking darcs-fast-export</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Wed 26 November 2008</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>OK, so I got this idea in the darcs-user mailing list that it would be nice to do some benchmarks on how fast and correct darcs-fast-export is. Actually I already have a TODO item about an idea that would make it faster, but doing a benchmark before doing the speedup is required in that case as well, so that I can show "hey, this is cool, it results in foo% speedup!11". ;-)</p><p>And if I'm already there, I plan to do it with tailor as well, I'm just curious about how fast it is. Ideally fast-import is much faster, but I guess the current darcs exporter does not make use of it, so I expect something like 1:1 for now.</p><p>The test repo is darcs' darcs, current status with darcs-fast-export is like:</p><p><pre>progress [2008-11-25 16:02:28] getting list of patches
+progress [2008-11-26 00:53:25] 4000/6548 patches</pre></p><p>Yeah, darcs apply is slow.</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/sample-a-implementation-in-java.html">Sample A* implementation in Java</a></h1>
   </div>
   <div class="article_meta">
@@ -240,37 +261,6 @@ The IPv6 tunnel I use changed its IPv4 address. This caused some great silence i
     <div id="preamble">
 <div class="sectionbody">
 <p>many of you asked, so it's better if i describe it here.</p><p>i recently started working on ppc packages, without any kind of big announcement. that was on purpose. i don't have too much time for this (so surely i won't maintain - at least not manually - a full ppc port with security fixes, etc), but i'm interested at least getting a working toolchain, so that anybody who has such a machine and time can easily help.</p><p>so no, this will not be in 0.9, we didn't plan anything like that.</p><p>maybe for 1.0, we'll see :)</p><p>ah, as a side not, it was interesting today, i met (unintentionally) one of the Hungarian summer of code guys. i previously collected such a list, and i was surprised about i did not know about him. so i asked to type "blogs.frugalware.org", and search for "summer of code" to see if he is really missing from the list. actually he was not missing. but the funny fact was that - as usually - i was prepared to be forced to spell "frugalware", but this was not the case this time, he typed the word properly without asking. heh, we're getting known! :]</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/using-git-bzr.html">using git-bzr</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Thu 31 July 2008</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>It seems recently one of my favorite topics is 'how to convert from $random SCM to git' ;)</p><p>So, I already had a configuration using tailor, but that was slow. I know this already. Tailor is good because it always works, it isn't good because it's fast.</p><p>First, you need git-1.6.0rc0 or higher, you can find an fpm in my <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/bmf/frugalware-i686/">bmf repo</a>.</p><p>Second, you need the bzr fastimport plugin:</p><p><code>bzr branch lp:bzr-fastimport</code></p><p>Then enable the plugin:</p><p><code>cd ~/.bzr/plugins; ln -s /path/to/bzr-fastimport fastimport</code></p><p>Now you can clone git-bzr itself:</p><p><code>git clone git://github.com/pieter/git-bzr.git</code></p><p>Put it to your PATH:</p><p><code>cd ~/bin; ln -s /path/to/git-bzr/git-bzr .</code></p><p>NOTE: so you should not symlink the dir, but the script inside the dir.</p><p>Okay, this is done, now clone (branch in bzr terms) the bzr repo you want to convert. For example:</p><p><code>bzr branch <a href="http://code.bitlbee.org/bitlbee/">http://code.bitlbee.org/bitlbee/</a></code></p><p>Finally do the conversion (from the git-bzr README):</p><p><pre>
-git bzr add upstream ../bzr-branch
-git bzr fetch upstream
-git checkout -b local_branch bzr/upstream
-: hack hack hack
-git bzr push upstream
-</pre></p><p>Actually for now I only needed a one-directional convert, so my update-bitlbee.sh now looks like:</p><p><pre>
-cd ~/scm/bzr/bitlbee
-bzr pull
-cd - # so we are again under bitlbee.git, it works in bare repos as well!
-git bzr fetch upstream
-</pre></p><p>And yes, the resulting trees match perfectly! ;)</p><p>(Yes, I plan to package git-bzr and bzr-fastimport but I want to give it a good testing first.)</p>
 </div>
 </div>
 

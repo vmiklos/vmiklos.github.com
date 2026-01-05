@@ -59,6 +59,45 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/insert-current-datetime.html">Inserting current date and time vs. Hungarian keyboard layout</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Tue 13 December 2011</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>There was an old Calc
+<a href="https://bugs.freedesktop.org/show_bug.cgi?id=30714">bugreport</a> about this, and
+it was an interesting challenge, since I never touched Calc code before.</p></div>
+<div class="paragraph"><p>First, the references:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="http://office.microsoft.com/en-us/excel-help/insert-the-current-date-and-time-in-a-cell-HP003056107.aspx">English Excel help</a>
+</p>
+</li>
+<li>
+<p>
+<a href="http://office.microsoft.com/hu-hu/excel-help/az-aktualis-datum-es-ido-beszurasa-cellaba-HP003056107.aspx">Hungarian Excel help</a>
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Given that there is no easy way to enter Ctrl-Shift-";" using a Hungarian
+keyboard, the Hungarian equivalent is Ctrl-Shift-".".</p></div>
+<div class="paragraph"><p>Actually, once <a href="http://www.youtube.com/watch?v=7nMCjBx7-T4">this feature</a> will be
+implemented, not sure how the Hungarian users will access it. :)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/duplex-printing.html">Duplex printing</a></h1>
   </div>
   <div class="article_meta">
@@ -409,57 +448,6 @@ a
 </li>
 </ul></div>
 <div class="paragraph"><p>Thank you for the invitation, it was great fun!</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/userspace-boot-speed.html">Userspace boot speed: less than a second</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Sat 24 September 2011</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>I did not care about boot speed for a long time, since servers usually
-restarted only for kernel upgrades, laptops suspend to ram all the time,
-and I have no desktop machine at home for years now.  Though one use
-case started to motivate me recently: I use virtual machines a lot, and
-waiting for them to boot up is boring.</p></div>
-<div class="paragraph"><p>So I looked at the <code>systemd-analyze blame</code> output, and it turned out
-that for a base-only install the only service that takes a lot of time
-is <code>netconfig</code>. It&#8217;s because it was a <code>oneshot</code> service, so the whole
-boot process waited for <code>dhcpcd</code> to get an IP. A much better solution is
-to just start netconfig in the background and move on&#8201;&#8212;&#8201;and that&#8217;s
-exactly frugalwareutils in git does now.</p></div>
-<div class="paragraph"><p>Before:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>$ systemd-analyze
-Startup finished in 2030ms (kernel) + 1166ms (initrd) + 6755ms (userspace) = 9953ms</code></pre>
-</div></div>
-<div class="paragraph"><p>After:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>$ systemd-analyze
-Startup finished in 2039ms (kernel) + 1146ms (initrd) + 892ms (userspace) = 4079ms</code></pre>
-</div></div>
-<div class="admonitionblock">
-<table><tr>
-<td class="icon">
-<div class="title">Note</div>
-</td>
-<td class="content">Again, this is for a virtual machine (where the host has some IO
-cache) and for a base-only install.</td>
-</tr></table>
-</div>
 </div>
 </div>
 

@@ -59,6 +59,30 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/bitlbee-skype-0-7.html">bitlbee-skype 0.7.0</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Wed 07 January 2009</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>It's out, the only recent change is that I added a new setting to be able to see what is the raw stream BitlBee received. The other interesting part is that after the release I finally decided to split up that huge read callback and now each part is handled by a separate function, and I have a nice array of function pointers. BTW, this also made checkpatch happy about skype.c without doing hacks like:</p><p><pre>
+printf("%s %s",
+        foo,
+        bar);
+</pre></p><p>Which would really just make the code ugly.</p><p>Yay! :)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/migrating-git-ls-files-to-use-parseopt.html">Migrating git-ls-files to use parseopt</a></h1>
   </div>
   <div class="article_meta">
@@ -251,26 +275,6 @@ git log --reverse --no-merges --pretty=oneline master ^origin/master|sed 's/.* \
 </pre></p><p>Then I started a for cycle as well, but now just ignoring the failed builds:</p><p><pre>
 git checkout -f; for i in $(cat ~/build.list); do echo $i; cd ~/git/python26/source/*/$i || continue; sudo makepkg -t python26,current -C; git clean -x -d -f; makepkg -dgu; rm -rf src; if sudo makepkg -t python26,current -cu; then repoman -t python26 -k push; else echo $i >> ~/broken.list; fi; done
 </pre></p><p>fortunately less then 5% of all pkgs failed.</p><p>OK, that's all.</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/python-2-6.html">Python 2.6</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Sat 27 December 2008</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>Started to work on a python26 WIP repo. About 400 packages will need a rebuild, so it'll be fun. I'll publish all the needed scripts here when I'm done - though most of them is in a "use once, then trow away" style.</p><p>While waiting for the above scripts, I also started to work on converting git's builtin-apply to parseopt. Ideally it would be trivial, but it really have a lot of options, so probably I won't finish that today, either.</p>
 </div>
 </div>
 
