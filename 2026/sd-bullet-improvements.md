@@ -2,7 +2,7 @@ Title: Bullet improvements in Impress
 Slug: sd-bullet-improvements
 Category: libreoffice
 Tags: en
-Date: 2026-01-02T15:21:39+01:00
+Date: 2026-01-05T08:37:39+01:00
 
 The bullet support in Impress got a couple of improvements recently, some of this is PPTX support
 and others are general UI improvements.
@@ -43,12 +43,13 @@ reasonably looking configuration for the first and second levels as outline styl
 
 [![Outliner shape with two outline styles](https://share.vmiklos.hu/blog/sd-bullet-improvements/sd-bullet-improvements-3.png)](https://share.vmiklos.hu/blog/sd-bullet-improvements/sd-bullet-improvements-3.png)
 
-And now you go to the start of the first bullet, which is currently connected to the first outline
-style, toggle bullets off and then toggle it on again. We used to create direct formatting in this
-case, which disconnects it from outline style and your content will look inconsistent if you change
-those outline styles later. Now we clear direct formatting when we turn off the bullet, so next time
-you turn bullets on, it'll be again connected to the outline style's bullet configuration and the
-content will look better on style updates.
+Notice how the last paragraph has a slightly inconsistent formatting, due to direct formatting.
+Let's fix this.
+
+Go to the end of the last bullet, which is currently not connected to an outline style, toggle
+bullets off and then toggle it on again. Now we clear direct formatting when we turn off the bullet,
+so next time you turn bullets on, it'll be again connected to the outline style's bullet
+configuration and the content will look better.
 
 Note how this even improves consistency: Writer was behaving the same way already, when toggling
 bullets off and then toggle on again resulted in getting rid of previously applied unwanted direct
