@@ -2,7 +2,7 @@ Title: Improving deleted commented text ranges in Writer's DOCX filter
 Slug: sw-ranged-comment-delete-docx
 Category: libreoffice
 Tags: en
-Date: 2026-02-03T16:34:59+01:00
+Date: 2026-02-04T08:42:44+01:00
 
 If you have a commented text range, which gets deleted while track changes is on and you later save
 and load this with Writer's DOCX filter, that works now correctly.
@@ -17,12 +17,12 @@ track changes is enabled. These could be already exported to and imported from D
 you could not combine these.
 
 With the increasing popularity of commenting text ranges (rather than just inserting a comment with
-an anchor), not being table to combine these was annoying.
+an anchor), not being able to combine these was annoying.
 
 ## Results so far
 
 Here is how a commented text range inside a delete from DOCX now looks like, note the
-semi-transparent comment hintint it's deleted:
+semi-transparent comment hinting it's deleted:
 
 [![Commented text range, inside a tracked delete, in DOCX, Collabora Online](https://share.vmiklos.hu/blog/sw-ranged-comment-delete-docx/cool-good.png)](https://share.vmiklos.hu/blog/sw-ranged-comment-delete-docx/cool-good.png)
 
