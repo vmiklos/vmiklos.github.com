@@ -1,5 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>What is Miklos hacking</title><link>https://vmiklos.hu/blog/</link><description/><atom:link href="https://vmiklos.hu/blog/feeds/all.rss.xml" rel="self"/><lastBuildDate>Mon, 05 Jan 2026 08:37:39 +0100</lastBuildDate><item><title>Bullet improvements in Impress</title><link>https://vmiklos.hu/blog/sd-bullet-improvements.html</link><description>&lt;p&gt;The bullet support in Impress got a couple of improvements recently, some of this is PPTX support
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>What is Miklos hacking</title><link>https://vmiklos.hu/blog/</link><description/><atom:link href="https://vmiklos.hu/blog/feeds/all.rss.xml" rel="self"/><lastBuildDate>Wed, 04 Feb 2026 08:42:44 +0100</lastBuildDate><item><title>Improving deleted commented text ranges in Writer's DOCX filter</title><link>https://vmiklos.hu/blog/sw-ranged-comment-delete-docx.html</link><description>&lt;p&gt;If you have a commented text range, which gets deleted while track changes is on and you later save
+and load this with Writer's DOCX filter, that works now correctly.&lt;/p&gt;
+&lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraonline.com/"&gt;Collabora Online&lt;/a&gt;, but the feature is
+available in desktop Writer as well.&lt;/p&gt;
+&lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;It was already possible to comment on text ranges. Comments were also supported inside deletes when
+track changes is enabled. These could be already exported to and imported from DOCX in Writer. But
+you could not combine these.&lt;/p&gt;
+&lt;p&gt;With the increasing popularity of commenting text ranges (rather than just inserting a comment with
+an anchor), not being able to combine these was annoying.&lt;/p&gt;
+&lt;h2 id="results-so-far"&gt;Results so far&lt;a class="headerlink" href="#results-so-far" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Here is how a commented text range inside a delete from DOCX now looks like, note the
+semi-transparent comment hinting it's deleted:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-ranged-comment-delete-docx/cool-good.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-ranged-comment-delete-docx/cool-good.png"&gt;&lt;figcaption&gt;Commented text range, inside a tracked delete, in DOCX, Collabora Online&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;As a side effect, this also fixes the behavior in desktop Writer, which crosses out deleted
+comments:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-ranged-comment-delete-docx/desktop-good.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-ranged-comment-delete-docx/desktop-good.png"&gt;&lt;figcaption&gt;Commented text range, inside a tracked delete, in DOCX, desktop&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;In the past, the "is this deleted" property was not visible in the render result:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-ranged-comment-delete-docx/cool-bad.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-ranged-comment-delete-docx/cool-bad.png"&gt;&lt;figcaption&gt;Commented text range, inside a tracked delete, in DOCX, Collabora Online, old bad state&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;And it was also bad in desktop Writer:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-ranged-comment-delete-docx/desktop-bad.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-ranged-comment-delete-docx/desktop-bad.png"&gt;&lt;figcaption&gt;Commented text range, inside a tracked delete, in DOCX, desktop, old bad state&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;This required changes to both DOCX import and export: a comment could be deleted or could have an
+anchor which is a text range, but you couldn't have both.&lt;/p&gt;
+&lt;h2 id="how-is-this-implemented"&gt;How is this implemented?&lt;a class="headerlink" href="#how-is-this-implemented" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;If you would like to know a bit more about how this works, continue reading... :-)&lt;/p&gt;
+&lt;p&gt;As usual, the high-level problem was addressed by a series of small changes. Core side:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/5d101c9919c7c0798df092bd31b828d0a144abba"&gt;cool#13988 DOCX import: fix missing delete flag on deleted comments with ranges&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/a72506da82d2e0334e23a8c3c1cd07282fdd7ca3"&gt;cool#13988 DOCX export: fix missing delete flag on deleted comments with ranges&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="want-to-start-using-this"&gt;Want to start using this?&lt;a class="headerlink" href="#want-to-start-using-this" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;You can get a development edition of Collabora Online 25.04 and try it out yourself right now: &lt;a href="https://www.collaboraonline.com/code/"&gt;try
+the development edition&lt;/a&gt;.  Collabora intends to continue
+supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
+available in TDF's next release too (26.8).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Wed, 04 Feb 2026 08:42:44 +0100</pubDate><guid>tag:vmiklos.hu,2026-02-04:/blog/sw-ranged-comment-delete-docx.html</guid><category>libreoffice</category><category>en</category></item><item><title>Bullet improvements in Impress</title><link>https://vmiklos.hu/blog/sd-bullet-improvements.html</link><description>&lt;p&gt;The bullet support in Impress got a couple of improvements recently, some of this is PPTX support
 and others are general UI improvements.&lt;/p&gt;
 &lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraonline.com/"&gt;Collabora Online&lt;/a&gt;, but the feature is
 available in desktop Impress as well.&lt;/p&gt;
@@ -494,41 +528,4 @@ in the end still reject the change, but without deleting the original change.&lt
 &lt;p&gt;You can get a development edition of Collabora Online 25.04 and try it out yourself right now: &lt;a href="https://www.collaboraonline.com/code/"&gt;try
 the development edition&lt;/a&gt;.  Collabora intends to continue
 supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
-available in TDF's next release too (25.8).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Thu, 08 May 2025 08:44:48 +0200</pubDate><guid>tag:vmiklos.hu,2025-05-08:/blog/sw-redline-reinstate.html</guid><category>libreoffice</category><category>en</category></item><item><title>Per-user track changes recording in Writer</title><link>https://vmiklos.hu/blog/sw-per-view-redline-record.html</link><description>&lt;p&gt;Writer has the concept of recording tracked changes or not: if recording, typing into a document or
-deleting content will create tracked changes of type insertion or deletion. So far this was a
-per-document setting, but now individual users can enable or disable this as they wish.&lt;/p&gt;
-&lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraonline.com/"&gt;Collabora Online&lt;/a&gt;, but the feature is
-available in desktop Writer as well.&lt;/p&gt;
-&lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;When Alice keeps typing and Bob enables change tracking, then surprisingly the typed characters of
-Alice will form a tracked insertion, which is surprising, since that was not the case a second ago
-and Alice didn't do anything other than typing.&lt;/p&gt;
-&lt;p&gt;Giving users a choice if they enable recording for just this user or for all users fixes this
-problem.&lt;/p&gt;
-&lt;h2 id="results-so-far"&gt;Results so far&lt;a class="headerlink" href="#results-so-far" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;Here is how the per-user (technically per-view) tracked changes recording looks like:&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-per-view-redline/sw-per-view-redline.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-per-view-redline/sw-per-view-redline.png"&gt;&lt;figcaption&gt;Per-view tracked changes recording&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;As you can see, the user on the left has recording turned on and this doesn't influence the user on
-the right, while this was not possible before.&lt;/p&gt;
-&lt;h2 id="how-is-this-implemented"&gt;How is this implemented?&lt;a class="headerlink" href="#how-is-this-implemented" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;If you would like to know a bit more about how this works, continue reading... :-)&lt;/p&gt;
-&lt;p&gt;As usual, the high-level problem was addressed by a series of small changes. Core side:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/ab91358566ccf31f7a9ac57f1c32a9c62840f5d5"&gt;cool#11226 sw per-view redline on: support this-view &amp;lt;-&amp;gt; all-views transition&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/85fc28a4e55bb8dafd69a19dc5d21a76501446cb"&gt;cool#11226 sw per-view redline on: state for the per-view and per-doc commands&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/368e2e445c1941d37697cee05a50a34150d18015"&gt;cool#11226 sw per-view redline on: allow both per-view and per-doc&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/745256f37973d89ea068acd831eba8054a81b93b"&gt;Related: cool#11226 sw per-view redline on: fix ratio buttons of is-show&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/ae6d396552cd3cebd7fba4942e6ca2fd5de579af"&gt;cool#11226 sw per-view redline on: add view-aware getter&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/e36643877e5ddf57a34481f1c46f87cf250caf19"&gt;cool#11226 sw per-view redline on: move the setter to the model&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/025a1e4612fecf59f38910fbf52fc63db054ae5f"&gt;cool#11226 sw per-view redline on: add new flag in SwViewOption&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/88e12a83aec0ffda82195c8a1e34a255d3cfdfd5"&gt;cool#11226 sw layout xml dump: show some more view options&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;Online side:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/c37904149498658c3fd25f043fc5f34be89fb120"&gt;cool#11226 sw per-view redline on: add tri-state UI in the notebookbar&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id="want-to-start-using-this"&gt;Want to start using this?&lt;a class="headerlink" href="#want-to-start-using-this" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;You can get a development edition of Collabora Online 25.04 and try it out yourself right now: &lt;a href="https://www.collaboraonline.com/code/"&gt;try
-the development edition&lt;/a&gt;.  Collabora intends to continue
-supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
-available in TDF's next release too (25.8).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Wed, 02 Apr 2025 13:33:03 +0200</pubDate><guid>tag:vmiklos.hu,2025-04-02:/blog/sw-per-view-redline-record.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
+available in TDF's next release too (25.8).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Thu, 08 May 2025 08:44:48 +0200</pubDate><guid>tag:vmiklos.hu,2025-05-08:/blog/sw-redline-reinstate.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>

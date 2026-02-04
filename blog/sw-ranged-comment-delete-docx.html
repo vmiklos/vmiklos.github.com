@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/pygments.css">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Miklos Vajna">
+  <meta name="description" content="Posts and writings by Miklos Vajna">
+
+  <link href="https://vmiklos.hu/blog/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking RSS" />
+
+<meta name="keywords" content="en">
+
+  <title>
+    What is Miklos hacking
+&ndash; Improving deleted commented text ranges in Writer's DOCX filter  </title>
+
+<script type="text/javascript">
+  var _paq = window._paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//analytics.vmiklos.hu/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '1']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <h2><a href="https://vmiklos.hu/blog">What is Miklos hacking</a></h2>
+      <p></p>
+      <ul>
+        <li><a href="/" target="_blank">Root</a></li>
+        <li><a href="https://planet.documentfoundation.org/" target="_blank">LibreOffice Blogs</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://vmiklos.hu/blog">Index</a> &brvbar; <a href="https://vmiklos.hu/blog/archives.html">Archives</a>
+      &brvbar; <a href="https://vmiklos.hu/blog/feeds/all.rss.xml">RSS</a>
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sw-ranged-comment-delete-docx.html">Improving deleted commented text ranges in Writer's DOCX filter</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Wed 04 February 2026</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <p>If you have a commented text range, which gets deleted while track changes is on and you later save
+and load this with Writer's DOCX filter, that works now correctly.</p>
+<p>This work is primarily for <a href="https://www.collaboraonline.com/">Collabora Online</a>, but the feature is
+available in desktop Writer as well.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>It was already possible to comment on text ranges. Comments were also supported inside deletes when
+track changes is enabled. These could be already exported to and imported from DOCX in Writer. But
+you could not combine these.</p>
+<p>With the increasing popularity of commenting text ranges (rather than just inserting a comment with
+an anchor), not being able to combine these was annoying.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>Here is how a commented text range inside a delete from DOCX now looks like, note the
+semi-transparent comment hinting it's deleted:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-ranged-comment-delete-docx/cool-good.png"><figure><img src="https://share.vmiklos.hu/blog/sw-ranged-comment-delete-docx/cool-good.png"><figcaption>Commented text range, inside a tracked delete, in DOCX, Collabora Online</figcaption></figure></a></p>
+<p>As a side effect, this also fixes the behavior in desktop Writer, which crosses out deleted
+comments:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-ranged-comment-delete-docx/desktop-good.png"><figure><img src="https://share.vmiklos.hu/blog/sw-ranged-comment-delete-docx/desktop-good.png"><figcaption>Commented text range, inside a tracked delete, in DOCX, desktop</figcaption></figure></a></p>
+<p>In the past, the "is this deleted" property was not visible in the render result:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-ranged-comment-delete-docx/cool-bad.png"><figure><img src="https://share.vmiklos.hu/blog/sw-ranged-comment-delete-docx/cool-bad.png"><figcaption>Commented text range, inside a tracked delete, in DOCX, Collabora Online, old bad state</figcaption></figure></a></p>
+<p>And it was also bad in desktop Writer:</p>
+<p><a href="https://share.vmiklos.hu/blog/sw-ranged-comment-delete-docx/desktop-bad.png"><figure><img src="https://share.vmiklos.hu/blog/sw-ranged-comment-delete-docx/desktop-bad.png"><figcaption>Commented text range, inside a tracked delete, in DOCX, desktop, old bad state</figcaption></figure></a></p>
+<p>This required changes to both DOCX import and export: a comment could be deleted or could have an
+anchor which is a text range, but you couldn't have both.</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>As usual, the high-level problem was addressed by a series of small changes. Core side:</p>
+<ul>
+<li><a href="https://git.libreoffice.org/core/commit/5d101c9919c7c0798df092bd31b828d0a144abba">cool#13988 DOCX import: fix missing delete flag on deleted comments with ranges</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/a72506da82d2e0334e23a8c3c1cd07282fdd7ca3">cool#13988 DOCX export: fix missing delete flag on deleted comments with ranges</a></li>
+</ul>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a development edition of Collabora Online 25.04 and try it out yourself right now: <a href="https://www.collaboraonline.com/code/">try
+the development edition</a>.  Collabora intends to continue
+supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
+available in TDF's next release too (26.8).</p>
+  </div>
+  <div class="article_meta">
+    <p>Category: <a href="https://vmiklos.hu/blog/category/libreoffice.html">libreoffice</a>
+ &ndash; Tags:
+      <a href="https://vmiklos.hu/blog/tag/en.html">en</a>    </p>
+  </div>
+
+
+</article>
+
+
+    <div id="ending_message">
+      <p>&copy; Miklos Vajna. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
+</body>
+</html>
