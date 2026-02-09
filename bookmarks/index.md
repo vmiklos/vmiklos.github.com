@@ -67,6 +67,7 @@ These are tutorials I found very useful before jumping into an actual spec.
 - [C++ type traits](https://www.internalpointers.com/post/quick-primer-type-traits-modern-cpp)
 - [PDF](https://www.adobe.com/technology/pdfs/presentations/KingPDFTutorial.pdf)
 - [PDF signing](https://www.adobe.com/devnet-docs/etk_deprecated/tools/DigSig/Acrobat_DigitalSignatures_in_PDF.pdf)
+- [EMF](https://github.com/timar/EMFExplorer)
 
 # lego
 
