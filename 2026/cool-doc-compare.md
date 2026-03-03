@@ -1,4 +1,4 @@
-Title: Comparing text document in Collabora Online
+Title: Comparing text documents in Collabora Online
 Slug: cool-doc-compare
 Category: collabora-online
 Tags: en
@@ -17,7 +17,7 @@ Collabora Online's core already contained a document compare feature, but this w
 with the SDK (REST API) or with the browser UI.
 
 Additionally, while some users took a training in understanding track changes (or: redlines), the
-usage of underlyines for inserts and strike-throughs for deletions may not be obvious. An
+usage of underlines for inserts and strike-throughs for deletions may not be obvious. An
 alternative of this is a side-by-side view, which is now available in Collabora Online for text
 documents.
 
