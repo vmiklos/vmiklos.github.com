@@ -59,6 +59,31 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/acpi-emulation-on-ppc.html">acpi emulation on ppc</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Fri 05 September 2008</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>Probably most mobile users know the 'acpi' command, a simple command-line utility that shows the state of the battery on a PC.</p><p>The problem is that iBooks have PMU, not ACPI support, so that problem can hardly output anything useful. I searched for an equivalent for a while, but actually couldn't find such a utility, and quite frankly, it's not a big deal to write such a one, so I stopped wasting with searching alternatives, I just wrote one.</p><p>Sample outputs:</p><p><pre>$ acpi
+     Battery 1: discharging, 92%, 04:34:17 remaining</pre>
+<pre>$ acpi
+     Battery 1: charging, 99%, 00:10:53 until charged</pre>
+<pre>$ acpi
+     Battery 1: charged, 100%</pre></p><p>The short script (54 lines) is available <a href="http://git.frugalware.org/repos/vmexam/python/acpi.py">here</a>.</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/playing-with-a-ppc-box.html">playing with a ppc box</a></h1>
   </div>
   <div class="article_meta">
@@ -266,31 +291,6 @@ $ git rebase origin</pre></p><p>that's all.</p><p>cookies goes to Dscho in commi
     <div id="preamble">
 <div class="sectionbody">
 <p>yesterday somebody mentioned on #git <a href="http://www.gitcasts.com/posts/railsconf-git-talk">this talk</a>. it's not a real video, just audio + slides but it's really nice. i would say if the "Linus one" made you say "heh, this may worth to check out" then this one will be the "hey, this one prevented me from learning things the hard way".</p><p>it's just one hour and it describes so many important tricks that i haven't encountered elsewhere yet.</p><p>just watch it.</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/fop-0-9x.html">fop 0.9x</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Sun 04 May 2008</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>uhm, this will be a long post, but i'll try to keep it short :)</p><p>a few words about fop. we write our documentation in asciidoc. asciidoc is plain text with a very simple markup, asciidoc can convert this to docbook. then docbook-xsl can convert this to .fo, finally fop can convert .fo to .pdf.</p><p>my problem with fop is that it's written in java and we just used the upstream binary. this is primarily a security problem.</p><p>so, about one and a half months ago got the crazy idea to compile fop from source. of course the correct way to do this is to package first the depends. this is really a avalanche, becase we didn't have too much generic java libs packaged, so i had to package many. namely:</p><p>jflex, piccolo, gnu.regexp, jarjar, jmock, qdox, easymock, hamcrest, iso-relax, relaxngdatatype, xsdlib, msv, xpp3, xpp2, gnu-crypto, apache-log4j, xmldb-api, ws-jaxme, dom4j, jdom, icu4j, jaxp, jaxp, xom, jaxen, rhino, batik, servletapi, jaf, gnuinetlib, gnumail, avalon-logkit, avalon-framework, commons-logging, commons-io and xmlgraphics-commons.</p><p>hm. that's 36. horrible ;)</p><p>the nice thing is that all these (except xmlgraphics-commons because classpath still lacks jpeg support) are compiled with the ecj/gcj toolchain, without any sun blob.</p><p>the other benefits are:
-<ul>
-  <li>a native fop binary:<pre>$ file /usr/bin/fop
-/usr/bin/fop: ELF 32-bit LSB executable, Intel 80386, version 1 (SYSV), for GNU/Linux 2.6.0, dynamically linked (uses shared libs), stripped</pre></li>
-  <li>now we got rid of fop-devel, since this version can both convert ttf fonts to xml ones (needed if you want to embed custom fonts into pdf) and convert fo documents to pdf ones.</li>
-</ul></p><p>yay!</p>
 </div>
 </div>
 

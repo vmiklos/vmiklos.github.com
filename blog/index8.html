@@ -58,6 +58,167 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/smartart-improvements-6.html">SmartArt improvements in Impress, part 6</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Fri 02 October 2020</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 3 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>Impress now has support for an improved auto-fit-of-text layout across multiple shapes, also the
+snake algorithm now handles width requests from constraints much better for SmartArt graphics from
+PPTX files. This builds on top of the <a href="https://vmiklos.hu/blog/smartart-improvements-5.html">previous
+improvements</a> around SmartArt support.</p></div>
+<div class="paragraph"><p>First, thanks to our partner <a href="https://www.suse.com/">SUSE</a> for working with
+<a href="https://www.collaboraoffice.com/">Collabora</a> to make this possible.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_motivation">Motivation</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>SmartArt allows declaring your content and requirements for a graphic, then the layout will take
+care of arranging that in a suitable way. It is allowed to ask for an automatic font size, which is
+small enough so that all the content fits into the shape. At the same time, you can ask that the
+font size is the same in multiple shapes. Impress lacked the ability to do the latter, leading to
+different font sizes in different shapes, all automatic inside a single shape.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_results_so_far">Results so far</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Here is how the automatic text scaling across multiple shapes works in practice:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://lh3.googleusercontent.com/5f-rH0nKGed-6GhBn3bAOMH6sVUeZUeqt2TsFydVSFlL_185Hj6BjNkchKn7DVKpAQmRsg6bGNwKyBIN9bR1sRYacqcKnLYOeqasGZB2IWRohN8mtgFG9aNN_k5ofC_ZqunSeHqIYTc=w640" alt="https://lh3.googleusercontent.com/5f-rH0nKGed-6GhBn3bAOMH6sVUeZUeqt2TsFydVSFlL_185Hj6BjNkchKn7DVKpAQmRsg6bGNwKyBIN9bR1sRYacqcKnLYOeqasGZB2IWRohN8mtgFG9aNN_k5ofC_ZqunSeHqIYTc=w640" />
+</div>
+<div class="title">Figure 1. Autofit synchronization, new output</div>
+</div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://lh3.googleusercontent.com/lncpRp13-vUBJH5Kt4ccYHMULGQ8U1Qw8v5z7LmRSE9bv6yjukFMfuiJolCKbVOpjT-85zw_BQMj72dKJLVnMI242CQlIxR7tDUbhBuVaYDuGPRVnAqhCsGbDmGLmyu-7ueA39kNXIg=w640" alt="https://lh3.googleusercontent.com/lncpRp13-vUBJH5Kt4ccYHMULGQ8U1Qw8v5z7LmRSE9bv6yjukFMfuiJolCKbVOpjT-85zw_BQMj72dKJLVnMI242CQlIxR7tDUbhBuVaYDuGPRVnAqhCsGbDmGLmyu-7ueA39kNXIg=w640" />
+</div>
+<div class="title">Figure 2. Autofit synchronization, old output</div>
+</div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://lh3.googleusercontent.com/Go9LGPftmbtFnQXgzxITJVLhEVJF1B13Ge3PGbyKPNEzCJ2zi2DfYBMak92v127PJGYyzjL8V9fTh8Fb_vZXpAdBrBRQizd2onXM8dBka38BkBEi2FE8UP3JCPecKN1m9u8fR591GMM=w640" alt="https://lh3.googleusercontent.com/Go9LGPftmbtFnQXgzxITJVLhEVJF1B13Ge3PGbyKPNEzCJ2zi2DfYBMak92v127PJGYyzjL8V9fTh8Fb_vZXpAdBrBRQizd2onXM8dBka38BkBEi2FE8UP3JCPecKN1m9u8fR591GMM=w640" />
+</div>
+<div class="title">Figure 3. Autofit synchronization, reference output</div>
+</div>
+<div class="paragraph"><p>You can see how the old output used to have unexpected large text in shape A, but now has the same
+text size as shape B. This is not applied unconditionally, shape C can request to have an
+independent, fixed font size.</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://lh3.googleusercontent.com/7IBC-z9NfhP0mjutFPQLPN312AH5Jch6Gss-75kROjLksQ3MnSZnhTodrPDJBm3MmkcQ-rHKvzozgB1O8j8rDBJEkzCf9vgmgrSYa3kH7GqnDS0BgBnlSOWC0GQxVBCIMYX0-Blf_F8=w640" alt="https://lh3.googleusercontent.com/7IBC-z9NfhP0mjutFPQLPN312AH5Jch6Gss-75kROjLksQ3MnSZnhTodrPDJBm3MmkcQ-rHKvzozgB1O8j8rDBJEkzCf9vgmgrSYa3kH7GqnDS0BgBnlSOWC0GQxVBCIMYX0-Blf_F8=w640" />
+</div>
+<div class="title">Figure 4. Snake rows, new output</div>
+</div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://lh3.googleusercontent.com/4y0pEF3utBcpXMcCsrvrkvnNCdKKyhVlwejiwsI6cMUrA1nV4u1VuE4l1Xhuw60jQYrkeQD54Y0JuB4NR571kwtluUGceclQPZPcYITEyqf0GF1Y7fr_GXNnSRCtnXO1jjtcO_nSLS0=w640" alt="https://lh3.googleusercontent.com/4y0pEF3utBcpXMcCsrvrkvnNCdKKyhVlwejiwsI6cMUrA1nV4u1VuE4l1Xhuw60jQYrkeQD54Y0JuB4NR571kwtluUGceclQPZPcYITEyqf0GF1Y7fr_GXNnSRCtnXO1jjtcO_nSLS0=w640" />
+</div>
+<div class="title">Figure 5. Snake rows, old output</div>
+</div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://lh3.googleusercontent.com/JqIugvyKapfY6Hw0bs7OtWMJ2sj5mdFOv8ebJwZac_BgmuJXKyHxDUdzCj0xZl9zcksXDjdqthce1xrHJzZdGG_024CLbVBSoCmR-X_qFxdWupFwXBa281LId18qezAU80vuT69kGl0=w640" alt="https://lh3.googleusercontent.com/JqIugvyKapfY6Hw0bs7OtWMJ2sj5mdFOv8ebJwZac_BgmuJXKyHxDUdzCj0xZl9zcksXDjdqthce1xrHJzZdGG_024CLbVBSoCmR-X_qFxdWupFwXBa281LId18qezAU80vuT69kGl0=w640" />
+</div>
+<div class="title">Figure 6. Snake rows, reference output</div>
+</div>
+<div class="paragraph"><p>You can see that the old output laid shapes all over the place, while the new output puts them to a
+3 by 2 matrix. The reason this works is because now we parse width requests from constraints
+correctly. This means we give spacings a smaller width, real shapes a larger width, so the content
+fits in less rows and the layout looks like a grid, matching the reference rendering.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_how_is_this_implemented">How is this implemented?</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
+<div class="paragraph"><p>As for the autofit synchronization:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/102266">svx UNO API for shapes: expose what scaling factor
+  is used for autofit scaling</a> made it possible to know what is a good scaling factor for one shape
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/102324">svx UNO API for shapes: allow setting a max factor
+  for autofit text scale</a> made it possible to set the scaling factor, overriding what it would
+  calculate by itself. This is a trade-off: setting the scaling factor on the shape inside the
+  document model has the benefit that the importer doesn&#8217;t duplicate any text measuring code. The cost
+  is that now there is an UNO property that you can set, but the value of that won&#8217;t be retained if
+  you save to ODF and load the document back. At least not currently
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/102490">oox smartart: add support for syncing font heights
+  of multiple shapes</a> is the SmartArt code to use the above mentioned building blocks
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/102689">oox smartart: handle &lt;dgm:prSet &#8230; custT="1"/&gt;</a>
+  made it possible to not perform auto-scaling for certain shapes, if they request so
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Beyond that, for the snake rows:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/103411">oox smartart: snake algo: consider child&#8217;s aspect
+  ratio request for cols/rows</a> started to improve the grid calculation, so less vertical space is
+  needed
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/103594">oox smartart: snake algo: start parsing relative
+  width constraints</a> allows differentiating between space items on a snake path (small width) and
+  shape items, which typically have a larger width
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/103629">oox smartart: snake algo: apply constraints on
+  child shape widths</a> uses the information collected in the previous step, so the sample document is
+  requesting the expected 3 by 2 grid
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/103680">oox smartart: snake algo: make sure child shape
+  height stays within parent</a> finally makes sure that the content is not falling off the slide,
+  which would make it impossible to read when projecting
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_want_to_start_using_this">Want to start using this?</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
+<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
+intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
+of this work will be available in TDF&#8217;s next release too (7.1).</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/sw-locale-independent-templates.html">Locale-independent Writer templates</a></h1>
   </div>
   <div class="article_meta">
@@ -982,45 +1143,6 @@ Poor layout of rotated text in table cells with automatic height
 import. Also, the rotated text in the "row heading" cells was broken into multiple columns. Both are
 fixed now.</p></div>
 <div class="paragraph"><p>All this is available in LibreOffice master (towards 6.4), so you can try it out
-<a href="http://dev-builds.libreoffice.org/daily/master/">right now</a>, if interested.</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/sd-semi-transparent-text.html">Semi-transparent text in Draw/Impress</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Fri 20 December 2019</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Draw/Impress now has
-<a href="https://git.libreoffice.org/core/commits/3e5bedbb6910053c0cee4112cd382fbd035c9832..6dbb317ebec681d236c6ce354f581108fd814f7b">support</a>
-for semi-transparent shape text, next to the existing transparency support in the context of shape
-fill colors and shape border colors.</p></div>
-<div class="paragraph"><p>First, thanks <a href="https://vector.com/">Vector</a> who made this work by
-<a href="https://www.collaboraoffice.com/">Collabora</a> possible.</p></div>
-<div class="paragraph"><p>Here is how it looks:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/FJ55-BJ_Mc75TiyrPYuvtOscHOqFp81sEI4SfJvybPzaXG5Y2n4mIoLRzkXydEEmtEf--l9s_h-L4CyYjuGpTyOngOTi8YAzIFp8bQBEn0k2DWsRzJHLdfttf74wTbdPgZUzgSnOYQ=w640" alt="https://lh3.googleusercontent.com/FJ55-BJ_Mc75TiyrPYuvtOscHOqFp81sEI4SfJvybPzaXG5Y2n4mIoLRzkXydEEmtEf--l9s_h-L4CyYjuGpTyOngOTi8YAzIFp8bQBEn0k2DWsRzJHLdfttf74wTbdPgZUzgSnOYQ=w640" />
-</div>
-<div class="title">Figure 1. Semi-transparent text in Draw</div>
-</div>
-<div class="paragraph"><p>What you can see is that next to the existing character color, now you can also set a transparency
-percentage to decide if the text should be entirely transparent, entirely opaque or something
-between the two.</p></div>
-<div class="paragraph"><p>The primary focus was Draw in this case, but this also helps PPTX support, as the importer/exporter
-now handles this for Impress documents as well.</p></div>
-<div class="paragraph"><p>All this is available in LibreOffice master (towards 6.5), so you can try it out
 <a href="http://dev-builds.libreoffice.org/daily/master/">right now</a>, if interested.</p></div>
 </div>
 </div>

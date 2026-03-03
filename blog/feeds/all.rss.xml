@@ -1,5 +1,130 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>What is Miklos hacking</title><link>https://vmiklos.hu/blog/</link><description/><atom:link href="https://vmiklos.hu/blog/feeds/all.rss.xml" rel="self"/><lastBuildDate>Wed, 04 Feb 2026 08:42:44 +0100</lastBuildDate><item><title>Improving deleted commented text ranges in Writer's DOCX filter</title><link>https://vmiklos.hu/blog/sw-ranged-comment-delete-docx.html</link><description>&lt;p&gt;If you have a commented text range, which gets deleted while track changes is on and you later save
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>What is Miklos hacking</title><link>https://vmiklos.hu/blog/</link><description/><atom:link href="https://vmiklos.hu/blog/feeds/all.rss.xml" rel="self"/><lastBuildDate>Tue, 03 Mar 2026 14:21:25 +0100</lastBuildDate><item><title>Comparing text document in Collabora Online</title><link>https://vmiklos.hu/blog/cool-doc-compare.html</link><description>&lt;p&gt;If you have two documents or two versions of a document to compare, then traditional tracked changes
+is too late, the untracked changes are already in the document.&lt;/p&gt;
+&lt;p&gt;This work for &lt;a href="https://www.collaboraonline.com/"&gt;Collabora Online&lt;/a&gt; adds interactive a
+non-interactive document compare to create tracked changes after the fact, finally introduces a
+document compare view, to better understand these changes.&lt;/p&gt;
+&lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Collabora Online's core already contained a document compare feature, but this was never integrated
+with the SDK (REST API) or with the browser UI.&lt;/p&gt;
+&lt;p&gt;Additionally, while some users took a training in understanding track changes (or: redlines), the
+usage of underlyines for inserts and strike-throughs for deletions may not be obvious. An
+alternative of this is a side-by-side view, which is now available in Collabora Online for text
+documents.&lt;/p&gt;
+&lt;h2 id="results-so-far"&gt;Results so far&lt;a class="headerlink" href="#results-so-far" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;h3 id="non-interactive-document-compare"&gt;Non-interactive document compare&lt;a class="headerlink" href="#non-interactive-document-compare" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;See the &lt;a href="https://sdk.collaboraonline.com/docs/conversion_api.html#compare-compare-option"&gt;SDK&lt;/a&gt;, now
+you can convert e.g. an editable (new) docx file to PDF in a way that your request references your
+old docx file as a parameter, and the resulting PDF shows the differences:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;curl&lt;span class="w"&gt; &lt;/span&gt;-k&lt;span class="w"&gt; &lt;/span&gt;-F&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;data=@new.docx&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-F&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;compare=@old.docx&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-F&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;format=pdf&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-o&lt;span class="w"&gt; &lt;/span&gt;out.pdf&lt;span class="w"&gt; &lt;/span&gt;https://localhost:9980/cool/convert-to
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h3 id="interactive-document-compare"&gt;Interactive document compare&lt;a class="headerlink" href="#interactive-document-compare" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;Technically this is a bit similar to image insertion: once you open your new document, you can
+compare its content with an old local or remote document:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/cool-doc-compare/interactive.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/cool-doc-compare/interactive.png"&gt;&lt;figcaption&gt;Collabora Online: interactive document compare for text documents&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Just use the Compare button on the Review tab on the notebookbar.&lt;/p&gt;
+&lt;h3 id="document-compare-view"&gt;Document compare view&lt;a class="headerlink" href="#document-compare-view" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;We worked with Gokay to build this. The LOK API now provides "tile modes" for text documents,
+similar to how presentations already have tile modes for slide content, master pages and notes. The
+default tile mode is unchanged for text documents, but the Review tab of the notebookbar has a View
+Changes button and then the new left hand side, right hand side tile modes allow you to show the
+changes side by side:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/cool-doc-compare/doc-compare-view.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/cool-doc-compare/doc-compare-view.png"&gt;&lt;figcaption&gt;Collabora Online: the new document compare view&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Removed content is colored with a red-like color, added content is colored with a green-like color.
+The matching content on the other side is gray. This is not only for text, e.g. images have a frame
+with a similar color.&lt;/p&gt;
+&lt;p&gt;Now that the LOK API could provide tiles either left or right hand side mode, Gokay built a whole
+new tile layout on the browser side, so these are shown nicely side by side.&lt;/p&gt;
+&lt;p&gt;To better understand what you see on your screen, now there are also labels at the top of the first
+pages:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/cool-doc-compare/doc-compare-labels.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/cool-doc-compare/doc-compare-labels.png"&gt;&lt;figcaption&gt;Collabora Online: the new document compare labels&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;This describes the purposes of the two sides, and in case you're right after a document compare
+action, also shows you the file names, modification dates and author names.&lt;/p&gt;
+&lt;p&gt;For integrators, it's possible to start in this mode by default, if you append &lt;code&gt;&amp;amp;comparechanges=1&lt;/code&gt;
+to COOL's iframe URL.&lt;/p&gt;
+&lt;p&gt;Finally if you hover over a tracked change with your mouse, now you get a highlight for that piece
+of text on both sides, to match the same parts of the old and new version better. A deletion looks
+like this:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/cool-doc-compare/highlight-delete.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/cool-doc-compare/highlight-delete.png"&gt;&lt;figcaption&gt;Collabora Online: document compare view, highlight of a delete&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;This also works for inserts:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/cool-doc-compare/highlight-insert.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/cool-doc-compare/highlight-insert.png"&gt;&lt;figcaption&gt;Collabora Online: document compare view, highlight of an insert&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id="how-is-this-implemented"&gt;How is this implemented?&lt;a class="headerlink" href="#how-is-this-implemented" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;If you would like to know a bit more about how this works, continue reading... :-)&lt;/p&gt;
+&lt;p&gt;As usual, the high-level problem was addressed by a series of small changes. Core side:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/bb8086aea02d867c6de4ef298808c47ba2bfe356"&gt;cool#13574 sw lok: introduce a redline render mode view option&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/b3656a81b40bd5012d6e9a52527e241cd6586571"&gt;cool#13574 sw lok: improve non-standard redline render mode colors&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/4b3eb51d4e2fb19c3c05a83b6890de070aa58ab7"&gt;cool#13574 sw lok: increase saturation of non-standard redline render mode&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/3c4da8d9fc1245b2b48d3b73ee88c29d2c1198ad"&gt;cool#13574 sw redline render mode: add uno command to switch from standard&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/5ba4c652fab709d5d8182b4ad99bf1e676e7e6ca"&gt;cool#13574 sw redline render mode: send LOK status&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/3b2ab404e21b648ddc9761c175dadb32b6459364"&gt;cool#13574 sw redline render mode: invalidate both omit modes together&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/a24dd7b1d742ccd59768db8b6b6a522588952108"&gt;cool#13574 sw redline render mode: avoid coloring, set lightness&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/95c924760a9923b507a9d44a64edda851ff7567c"&gt;cool#13574 sw redline render mode: extract SwTextPaintOmitter from text painter&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/58d677055d9f6da976bf4fe34c1d89dd6871050d"&gt;cool#13988 sw redline render mode: handle anchored images&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/c2527991e86edb9f27efc93f6a5e66c078ecc0cf"&gt;cool#13574 sw redline render mode: somewhat color ins/del as green/red&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/8314046a4fdb706cf9bb4d65c97792ed7410fb0f"&gt;cool#13988 sw redline render mode: handle inline images&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/9b47b7914242811fe69815485840f20bc7bd7887"&gt;cool#13988 sw redline render mode: add colored border for anchored images&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/36a6ca3e6de7106bdd0497386d29a05337c5a90c"&gt;cool#13988 sw redline render mode: add colored border for inline images&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/ef623651aa63097810461c10e0f8d41ff48d1f21"&gt;cool#13988 sw redline render mode: handle moves&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/cef7b1ac8c26fd33c56d4a0aebdd81e2050c814d"&gt;cool#13988 sw redline render mode: table row redlines&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/e609c44293ca7ba5658459aec15b6b084cb1bfd1"&gt;cool#13988 sw redline render mode: handle number portions&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/edef9fffa00bddb8f03ef00e6b693c967a15b28f"&gt;cool#13988 sw redline render mode: handle tab portions&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/c71d2bdb298639573fa5a93cdd5f211dabcf61c7"&gt;cool#13988 sw redline render mode: expose old/new author/date when comparing&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/8dcecf717b5cd231adbc49e27ccf1b7aa0230a3a"&gt;cool#13988 sw redline tooltip LOK API: expose anchor range&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;COOL side:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/ac74dffe035f2a05131ff787267d9a69db5590d1"&gt;cool#4535 convert-to compare option: introduce 'additional files'&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/9f45bb834e14d5cc02d4bad29a32208becb911e8"&gt;cool#4535 convert-to compare option: insert old reference doc before save&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/17e450a4de0cd6291e1e05763f16e54db13ada6f"&gt;cool#4535 convert-to compare option: add testcase&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/7bf48566de9324f653fc2e2ca17358c8d24d3563"&gt;cool#13574 redline render mode: send statusupdate with mode=2 when entering doc compare mode&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/464c494bb824af210e9e11399395e3cd768ef04b"&gt;cool#13574 redline render mode: fix missing invalidate after the 2nd enter&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/829a32986b7d813a0fb13766353152006d6c1414"&gt;cool#13574 redline render mode: extract sendTileCombineMessage() from sendTileCombineRequest()&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/4d422ea7aaf29a5f8256925e9f1937b866e5ea7d"&gt;cool#13574 redline render mode: request mode=1 tiles on requesting mode=2 tiles&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/6094763d13ecca51d8f69edab48598766b12383e"&gt;cool#13988 browser: fire comparedocuments event on selecting a file for doc compare purposes&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/a8bcdbd8e373b617136e53bd76a472fbe17c4a41"&gt;cool#13988 browser, on comparedocuments: send insertfile websocket message&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/6faaa5387b23388bf162a8767aca3ae6b16f6e3e"&gt;cool#13988 kit, insert file: handle the comparedocuments type&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/9d18df799850256c9995b4a7f275504eae44b50b"&gt;cool#13988 doc compare: add testcase&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/8a068c12f2e0b565431012a7a1653770cdf99e18"&gt;cool#13988 doc compare, browser: add a new Action_CompareDocuments PostMessage&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/5dea1513c5701fd178b129ff653295e4690b8f11"&gt;cool#13988 doc compare, kit: handle comparedocumentsurl file insertion&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/1e58b2211c120bc3ba4864cc7dda5696fb957aad"&gt;cool#14093 browser: show the user name of other text cursors on mouse hover&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/addd98ec5e4ba3cf7c54149ac82708a2a944c369"&gt;cool#14093 add testcase&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/7fd64cdc17c0185f0b06146b8c967e32e1af506a"&gt;cypress, cursor header section: improve testability&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/97b43daf258d497222b8fa0ae7db3ffcf9fd26c6"&gt;cool#14299 redline render mode: change notebookbar button type to bigcustomtoolitem&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/289bc381b468fa08ce5129e36f45ef41a6d76d68"&gt;cool#13988 redline render mode: add a HTTP parameter to activate this mode on load&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/4e2fe9d2b4c0f907e4ec259c5b841aa60d892a73"&gt;cool#13988 redline render mode: fix TilesMiddleware.getMissingTiles()&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/55572c07b963f46b3184d7f7245c4a720348d31b"&gt;cool#13988 redline render mode: improve TilesMiddleware.updateTileDistance()&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/9d3d2654bf20c29e7c4b5d7cb55be0a3279406e6"&gt;cool#13988 redline render mode: fix the HTTP GET parameter&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/1f450e4bab850750d140d8edc37a64d70665301b"&gt;cool#13988 redline render mode: add missing tiles testcase&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/4cbbefe0de61e988cf91156b1345b666e38dbcdc"&gt;cool#13988 redline render mode: add a new CompareChangesLabelSection&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/3c975ab0164d9779f3c713ca86d5a4e155f4b5e7"&gt;cool#13988 redline render mode: scroll CompareChangesLabelSection&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/75faeb062b19f2c725f6759c078f60b411fb0505"&gt;cool#13988 redline render mode: labels can be now multiline&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/0ef4c6695a3062e5d201cf8ab1e455a46198fe8e"&gt;cool#13988 redline render mode: display author / modification date for both sides&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/fc1aa2f72341fb471147b84e45bd47978f25e3e5"&gt;cool#13988 redline render mode: deduplicate the label setup code for the two sides&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/e5e9253df85f44ecb4e83b8ddd3a334075d5dffc"&gt;cool#13988 redline render mode: center the title vertically when we have no subtitle&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/4e7b90f138a911c2a8390ccc71bcd0e8332666cf"&gt;cool#13988 redline render mode: avoid doc name when just viewing tracked changes&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/d445f6b207ec5da627d369e45d2612b9b40ddd42"&gt;cool#13988 redline render mode: switch to gray/blue backgrounds for the labels&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/6681c51c768c5d0fdda7185a5933a4ec73eff807"&gt;cool#13988 redline render mode: show the old file name in the old label after local compare&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/75e80afa5244fcec77bb0712132988b1825fe6e6"&gt;cool#13988 redline render mode: try to avoid DOM node touch while drawing&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/9552891901060d9e8190a196db503c583ed7affc"&gt;cool#13988 redline render mode: show the old file name also with a remote compare&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/ee73a3fffff956ef8b220278c0d8db81aa134aea"&gt;cool#13988 redline render mode: fix insert/delete tooltip&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/9377a6aafe17e3390fdd23a273881227b5ff727a"&gt;cool#13988 redline render mode: extract common code from ContentControlSection to CanvasSectionObject&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/fd82271030e1b43044dc2ff80c0a064e63c81388"&gt;cool#13988 redline render mode: add a new TooltipAnchorSection&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/5c0d4fa0717f42616edc9e8dc4eb9b46d243173b"&gt;cool#13988 redline render mode: add dynamic color for the tooltip anchor section&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/c3d8efdecac38f7cfce04013517e9906dccfdb5c"&gt;cool#13988 redline render mode: don't highlight redline ranges by default&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/e75a456b37d5a082354f68b71ec34e0bcdbd8318"&gt;cool#13770 windows: use LOK's new registerFileSaveDialogCallback()&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/23e5b49f1f46a3160ee8d56549d56a06b8179814"&gt;cool#13988 redline render mode: highlight both sides&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/63d8119d329b3e09f1b97d0aa8a9b66b43fbcd60"&gt;cool#13988 redline render mode: adjust highlight color to text color&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/dc519e8018e63b842eafd84b3b14612f44611a10"&gt;cool#13988 redline render mode: work with last used tile mode when showing tooltip&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/1f1dca27cc74ae81fc7c0eab0438bffe55583b69"&gt;cool#13988 redline render mode: add tooltip anchor section cypress test&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/ba76222c1002d9f4f9ddc6612364ffe09563aa5c"&gt;Related: cool#14716 document compare: fix position of the context toolbar&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/d1610fe671c09345cd7a78845f9f6281c089b027"&gt;Related: cool#14716 document compare: add context toolbar position test&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/38c139612967cec17d6ccc95057264bc670833be"&gt;cool#14716 document compare: fix bad tile position after zoom change&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="want-to-start-using-this"&gt;Want to start using this?&lt;a class="headerlink" href="#want-to-start-using-this" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;You can get a development edition of Collabora Online 25.04 and try it out yourself right now: &lt;a href="https://www.collaboraonline.com/code/"&gt;try
+the development edition&lt;/a&gt;.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Tue, 03 Mar 2026 14:21:25 +0100</pubDate><guid>tag:vmiklos.hu,2026-03-03:/blog/cool-doc-compare.html</guid><category>collabora-online</category><category>en</category></item><item><title>Improving deleted commented text ranges in Writer's DOCX filter</title><link>https://vmiklos.hu/blog/sw-ranged-comment-delete-docx.html</link><description>&lt;p&gt;If you have a commented text range, which gets deleted while track changes is on and you later save
 and load this with Writer's DOCX filter, that works now correctly.&lt;/p&gt;
 &lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraonline.com/"&gt;Collabora Online&lt;/a&gt;, but the feature is
 available in desktop Writer as well.&lt;/p&gt;
@@ -474,58 +599,4 @@ format is always on top of something. Finally the same type is never on top of i
 &lt;p&gt;You can get a development edition of Collabora Online 25.04 and try it out yourself right now: &lt;a href="https://www.collaboraonline.com/code/"&gt;try
 the development edition&lt;/a&gt;.  Collabora intends to continue
 supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
-available in TDF's next release too (25.8).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Mon, 02 Jun 2025 13:54:44 +0200</pubDate><guid>tag:vmiklos.hu,2025-06-02:/blog/sw-interdependent-redline-improvements.html</guid><category>libreoffice</category><category>en</category></item><item><title>Reinstate for tracked changes in Writer</title><link>https://vmiklos.hu/blog/sw-redline-reinstate.html</link><description>&lt;p&gt;Writer has the concept of rejecting tracked changes: if a proposed insertion or deletion is not
-wanted, then one can reject it to push back on the proposal. So far such an action left no trace in
-the document, which is sometimes not wanted. Calling reinstate on a change behaves like reject, but
-with history: it reinstates the original state, with the rejected change preserved in the document.&lt;/p&gt;
-&lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraonline.com/"&gt;Collabora Online&lt;/a&gt;, but the feature is
-available in desktop Writer as well.&lt;/p&gt;
-&lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;When Alice works on a document to insert e.g. new conditions for a contract, then perhaps Bob is not
-happy with the proposal. But just rejecting the change "silently" would not be polite: the tracked
-change then disappears, so possibly Alice thinks it was accepted and Bob didn't communicate the
-pushback explicitly in the resulting document, either.&lt;/p&gt;
-&lt;p&gt;Reinstate is meant to improve this interaction: if an insert is reinstated, then an explicit delete
-is created on top of the insert, so Alice can see that Bob was not happy with the proposal. Or in
-case Alice proposed a delete, Bob can reinstate that by adding the same content again to the
-document, without typing the text manually after the delete.&lt;/p&gt;
-&lt;p&gt;This is a UI feature: the resulting model still only contains inserts and deletes, so it works even with
-DOCX files.&lt;/p&gt;
-&lt;h2 id="results-so-far"&gt;Results so far&lt;a class="headerlink" href="#results-so-far" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;Given an insert:&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-redline-reinstate/insert.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-redline-reinstate/insert.png"&gt;&lt;figcaption&gt;Reinstate: an insert&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Now you can easily create a delete on top of the insert:&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-redline-reinstate/insert-after.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-redline-reinstate/insert-after.png"&gt;&lt;figcaption&gt;Reinstate: a reinstated insert&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;And given a delete:&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-redline-reinstate/delete.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-redline-reinstate/delete.png"&gt;&lt;figcaption&gt;Reinstate: a delete&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Now you can easily create an insert right after the delete, preserving complex content:&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-redline-reinstate/delete-after.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-redline-reinstate/delete-after.png"&gt;&lt;figcaption&gt;Reinstate: a reinstated delete&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;As you can see, this creates the opposite of the original change as a new tracked change, so it will
-in the end still reject the change, but without deleting the original change.&lt;/p&gt;
-&lt;h2 id="how-is-this-implemented"&gt;How is this implemented?&lt;a class="headerlink" href="#how-is-this-implemented" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;If you would like to know a bit more about how this works, continue reading... :-)&lt;/p&gt;
-&lt;p&gt;As usual, the high-level problem was addressed by a series of small changes. Core side:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/7af8b3d3305fe8344cb9339269c5dc3f1cd44650"&gt;cool#11357 sw redline reinstate: implement this for a single insert&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/1df71464588d4cfcba708cf00ef7b6ac94574c8f"&gt;cool#11357 sw redline reinstate: handle inserts in selection&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/e312cf46fe840f04b729600db9efe89d5f58d6fe"&gt;cool#11357 sw redline reinstate: handle a single delete&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/db541619cb1ca83598ec479eb9f52e559a8fe72d"&gt;cool#11357 sw redline reinstate: handle a single rich delete&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/157c00922959adc8fd2e0203ed94dfd847479c54"&gt;cool#11357 sw redline reinstate: handle deletes in selection&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/447935fba57f1b0f88c0b56cccf5bf971fb1e819"&gt;cool#11357 sw redline reinstate: simplify ReinstateRedlinesInSelection()&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/9c2c98ac7668e4a3a2e3a70cc54b632de5f79621"&gt;cool#11357 sw redline reinstate: add command state&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/1926105b47df7b15dd34a8c1135f83b936bf9926"&gt;cool#11357 sw redline reinstate: add a reinstate-and-next command&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/4535698e0b16bf003e8a3705e28f7347f509eb12"&gt;cool#11357 sw redline reinstate: add a reinstate-all command&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/01311bb1e4c2404354cce8934d36991d91d527b2"&gt;cool#11357 sw redline reinstate: avoid unwanted multi- or table selection&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/fbf9465e2bc9f878723674d1eff13e0c69656057"&gt;cool#11357 sw redline reinstate: fix undo string for a single redline&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/7d702ebbfcda41ce2972e30b2a1e493c320df67c"&gt;cool#11357 sw redline reinstate: fix undo count &amp;amp; string for multiple redlines&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/dcd3427149c33852428b4198c22f6f858125c294"&gt;cool#11357 sw redline reinstate: add to the context menu for text&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;Online side:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/3d7933974241fe5d015a9d80f2cc8bde1c1d352e"&gt;cool#11357 sw redline reinstate: add UI for this&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id="want-to-start-using-this"&gt;Want to start using this?&lt;a class="headerlink" href="#want-to-start-using-this" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;You can get a development edition of Collabora Online 25.04 and try it out yourself right now: &lt;a href="https://www.collaboraonline.com/code/"&gt;try
-the development edition&lt;/a&gt;.  Collabora intends to continue
-supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
-available in TDF's next release too (25.8).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Thu, 08 May 2025 08:44:48 +0200</pubDate><guid>tag:vmiklos.hu,2025-05-08:/blog/sw-redline-reinstate.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
+available in TDF's next release too (25.8).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Mon, 02 Jun 2025 13:54:44 +0200</pubDate><guid>tag:vmiklos.hu,2025-06-02:/blog/sw-interdependent-redline-improvements.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>

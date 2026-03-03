@@ -59,6 +59,70 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/pdfium.html">LibreOffice now uses pdfium to render inserted PDF images</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Mon 20 March 2017</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>pdfium is the rendering library used in Chromium&#8217;s pdf viewer. It&#8217;s based on
+the foxit pdf renderer and its rendering quality is much better compared to
+the pre-existing "convert PDF to ODG, then to an image" code when it comes to
+just viewing a PDF file.  First, thanks to <a href="http://www.pmg.be/">PMG</a> who made
+this work possible.</p></div>
+<div class="paragraph"><p>Let&#8217;s look at a few samples that compare the old pdfimport rendering result
+and the new pdfium-based one. One important feature is that embedded fonts are
+handled. This is how this inserted PDF looked like previously:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://farm4.staticflickr.com/3727/33163219940_3a2a3278a0_o.png" alt="https://farm4.staticflickr.com/3727/33163219940_3a2a3278a0_o.png" />
+</div>
+</div>
+<div class="paragraph"><p>Compare it with the new result:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://farm3.staticflickr.com/2927/33547029855_92c1a5150d_o.png" alt="https://farm3.staticflickr.com/2927/33547029855_92c1a5150d_o.png" />
+</div>
+</div>
+<div class="paragraph"><p>Now let&#8217;s see the front page of a magazine, you can see 4 unexpected artifacts:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://farm4.staticflickr.com/3948/33563793222_8a6b8e8a6b_z.jpg" alt="https://farm4.staticflickr.com/3948/33563793222_8a6b8e8a6b_z.jpg" />
+</div>
+</div>
+<div class="paragraph"><p>New result:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://farm3.staticflickr.com/2809/33547029645_de7cbcd800_z.jpg" alt="https://farm3.staticflickr.com/2809/33547029645_de7cbcd800_z.jpg" />
+</div>
+</div>
+<div class="paragraph"><p>Finally a problem with pdfium was that LibreOffice got bitmaps from it, so in case you re-exported to PDF, the quality of these PDF images were worse than in the original PDF file. The PDF specification has a <em>reference XObject</em> feature that helps in this case: it allows the PDF export to still write the bitmap to the exported PDF, but in case the reader supports this feature, the vector-based original file will be shown, not the bitmap.</p></div>
+<div class="paragraph"><p>Here is a simple hand-crafted star in a PDF file, as it looked initially:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://farm3.staticflickr.com/2915/33163219680_30f63b4a82_z.jpg" alt="https://farm3.staticflickr.com/2915/33163219680_30f63b4a82_z.jpg" />
+</div>
+</div>
+<div class="paragraph"><p>This is how it looks after LibreOffice&#8217;s PDF export learned to emit reference XObjects:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://farm4.staticflickr.com/3933/33547029485_4f487bb26c_z.jpg" alt="https://farm4.staticflickr.com/3933/33547029485_4f487bb26c_z.jpg" />
+</div>
+</div>
+<div class="paragraph"><p>All this is available in LibreOffice master, towards 5.4.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/xmlsec-nss-ecdsa.html">ECDSA support in xmlsec-nss, bundled by LibreOffice</a></h1>
   </div>
   <div class="article_meta">
@@ -818,50 +882,6 @@ the UI&#8217;s "Save original PDF" feature has a new
 <code>XOutdevTest::testPdfGraphicExport()</code> test.</p></div>
 <div class="paragraph"><p>Oh, and if you intent to test this manually in a self-created build, make sure
 to avoid <code>--disable-pdfimport</code>, otherwise this feature can&#8217;t work. ;-)</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/sw-smallcaps-toolbar-button.html">Small capitals toolbar button in LibreOffice Writer</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Mon 03 October 2016</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://farm6.staticflickr.com/5235/29982452081_a9ca103f2f_o.png">
-<img src="https://farm6.staticflickr.com/5235/29982452081_187d99dece_z.jpg" alt="https://farm6.staticflickr.com/5235/29982452081_187d99dece_z.jpg" />
-</a>
-</div>
-</div>
-<div class="paragraph"><p>It was <a href="https://bugs.documentfoundation.org/show_bug.cgi?id=87914">requested</a> to
-be able to set the small capitals character property via a toolbar button in
-Writer, which was indeed not possible. Not only the toolbar button wasn&#8217;t
-there, but the underlying UNO command was also missing (which you can use e.g.
-from a macro to format the current selection).</p></div>
-<div class="paragraph"><p>So my
-<a href="https://gerrit.libreoffice.org/gitweb?p=core.git;a=commit;h=d378cd2f766eeb1fd1c98f62c9ae6b5b59fd00f1">commit</a>
-added a simple set of icons to the galaxy theme for the new toolbar button,
-defined the new UNO command for Writer text and added it to Writer&#8217;s text
-object bar, next to the upper case and lower case buttons (hidden by default).
-One difference from those buttons is that those buttons perform a
-transliteration, while this one really just sets a character property, you can
-easily undo the property later if needed.</p></div>
-<div class="paragraph"><p>Wrt. other icon themes, see
-<a href="http://listarchives.libreoffice.org/global/design/msg07922.html">this mail</a>,
-hopefully the design team can help there.</p></div>
-<div class="paragraph"><p>As usual, you can try this right now with a 5.3
-<a href="http://dev-builds.libreoffice.org/daily/master/">daily build</a>. :-)</p></div>
 </div>
 </div>
 
