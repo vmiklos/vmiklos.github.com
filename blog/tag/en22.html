@@ -59,6 +59,82 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/git-review.html">git-review</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Thu 28 February 2013</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>LibreOffice started to use <a href="https://gerrit.libreoffice.org/">Gerrit</a> for code
+review, and while occasional contributors
+<a href="https://wiki.documentfoundation.org/Development/gerrit/SubmitPatch">can submit
+patches manually</a>, in case one does many reviews, it&#8217;s handy to use a dedicated
+tool. In core.git, we have
+<a href="http://cgit.freedesktop.org/libreoffice/core/tree/logerrit">logerrit</a>, but
+that&#8217;s not advised for regular reviewers, either,
+<a href="https://github.com/openstack-infra/git-review">git-review</a> is recommended
+instead.</p></div>
+<div class="paragraph"><p>So I looked into git-review. The good news is that it&#8217;s packaged already for most distributions, e.g. a simple</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>zypper in python-git-review</code></pre>
+</div></div>
+<div class="paragraph"><p>on openSUSE installs it.</p></div>
+<div class="paragraph"><p>I wanted to use this tool for two tasks:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Submitting changes to Gerrit: <code>git review -R</code> could do that. <code>-R</code> prevents
+  automatic rebase, so a test build won&#8217;t fail because your patch is based on
+  an already broken commit. The other good thing is that you don&#8217;t have to
+  remember where to submit: both the master and libreoffice-4-0 branches contain
+  a <code>.gitreview</code> file that contains the necessary server / branch information.
+</p>
+</li>
+<li>
+<p>
+Cherry-picking changes from Gerrit: I found no option for this. A cherry-pick
+  command is generated on the web interface, but it&#8217;s more complicated than a
+  simple <code>&lt;some command&gt; &lt;number of the change&gt;</code>. So I submitted
+  <a href="https://review.openstack.org/17290">this change</a> to git-review itself, the next
+  release will be able to do <code>git review -x &lt;number of the change&gt;</code>.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Probably the browser interface is still the best to comment (especially inline
+comment) and approve changes, though David even submitted a
+<a href="https://review.openstack.org/17423">proof of concept patch</a> for that as well.</p></div>
+<div class="paragraph"><p>Finally, let me just clear two myths:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+If you use Google for OpenID login, you can have multiple OpenID accounts
+  associated with your Gerrit login, so it&#8217;s not a problem (first I thought it
+  is) if you use one email for Gerrit and an other one for accessing other
+  Google services.
+</p>
+</li>
+<li>
+<p>
+Somewhere I read that the stock LibreOffice hooks conflict with git-review:
+  nope, git-review didn&#8217;t touch the hooks, you can use the tool without
+  corrupting them in any way.
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/swtextframe-gradientbackground.html">LibreOffice Writer now supports gradients in text frame backgrounds</a></h1>
   </div>
   <div class="article_meta">
@@ -740,48 +816,6 @@ something goes wrong, report it to us in the
 before 4.0 is released. And remember, there are lots more improvements
 <a href="http://wiki.documentfoundation.org/ReleaseNotes/4.0">coming</a> in LibreOffice 4.0,
 stay tuned!</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/lo-rtfimport-drawingobjects.html">LibreOffice RTF import Drawing Objects improvements</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Sat 10 November 2012</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div align="center">
-<div class="paragraph"><p><span class="image">
-<a class="image" href="https://lh6.googleusercontent.com/-mckhq4D5DG8/UJ4m54N4GoI/AAAAAAAAB1k/QwaK6eXTFBo/s800/fdo42407-lo34.png">
-<img src="https://lh6.googleusercontent.com/-mckhq4D5DG8/UJ4m54N4GoI/AAAAAAAAB1k/QwaK6eXTFBo/s400/fdo42407-lo34.png" alt="https://lh6.googleusercontent.com/-mckhq4D5DG8/UJ4m54N4GoI/AAAAAAAAB1k/QwaK6eXTFBo/s400/fdo42407-lo34.png" />
-</a>
-</span>
-<span class="image">
-<a class="image" href="https://lh6.googleusercontent.com/-_9nMd0soa8E/UJ4m9vQhMiI/AAAAAAAAB1s/kc7I5YUbGnc/s800/fdo42407-master.png">
-<img src="https://lh6.googleusercontent.com/-_9nMd0soa8E/UJ4m9vQhMiI/AAAAAAAAB1s/kc7I5YUbGnc/s400/fdo42407-master.png" alt="https://lh6.googleusercontent.com/-_9nMd0soa8E/UJ4m9vQhMiI/AAAAAAAAB1s/kc7I5YUbGnc/s400/fdo42407-master.png" />
-</a>
-</span></p></div>
-</div>
-<div class="paragraph"><p>It all started with <a href="https://bugs.freedesktop.org/show_bug.cgi?id=42407">this
-bugreport</a> about a year ago. RTF has two different markups to describe shapes.
-The old one (used till Word 6.0) is called Drawing Objects, the new one talks
-about Shapes. The first picture shows the "support" for this syntax in
-LibreOffice 3.4, and the situation did not change with my RTF import rework, as
-I wasn&#8217;t aware of any document still using this old syntax. So when I got this
-bugreport, I knew it&#8217;ll take some time to produce the correct layout, but now
-during the LibreOffice conference I spent quite some time on this, and at the
-end even the Hebrew text is imported correctly. ;-)</p></div>
-<div class="paragraph"><p>Thanks to Lior who politely nagged me from time to time, this is now available
-on master (see the second picture), which will become LibreOffice 4.0.</p></div>
 </div>
 </div>
 

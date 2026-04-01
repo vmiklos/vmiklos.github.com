@@ -1,5 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>What is Miklos hacking - collabora-online</title><link>https://vmiklos.hu/blog/</link><description/><atom:link href="https://vmiklos.hu/blog/feeds/collabora-online.rss.xml" rel="self"/><lastBuildDate>Tue, 03 Mar 2026 14:21:25 +0100</lastBuildDate><item><title>Comparing text documents in Collabora Online</title><link>https://vmiklos.hu/blog/cool-doc-compare.html</link><description>&lt;p&gt;If you have two documents or two versions of a document to compare, then traditional tracked changes
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>What is Miklos hacking - collabora-online</title><link>https://vmiklos.hu/blog/</link><description/><atom:link href="https://vmiklos.hu/blog/feeds/collabora-online.rss.xml" rel="self"/><lastBuildDate>Wed, 01 Apr 2026 08:55:11 +0200</lastBuildDate><item><title>Comparing text documents in Collabora Online: improved UI</title><link>https://vmiklos.hu/blog/cool-doc-compare2.html</link><description>&lt;p&gt;The document compare view in &lt;a href="https://www.collaboraonline.com/"&gt;Collabora Online&lt;/a&gt; Writer allows
+comparing documents side by side, see &lt;a href="https://vmiklos.hu/blog/cool-doc-compare.html"&gt;the first post&lt;/a&gt; for more
+info about the feature in general.&lt;/p&gt;
+&lt;p&gt;This second post is meant to give you an update on what happened in this area in the last month.&lt;/p&gt;
+&lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Collabora Online core supports showing or hiding tracked changes in document content, we have a UI
+button for that, see the notebookbar's Review tab, the Tracking section's Show button.&lt;/p&gt;
+&lt;p&gt;Entering doc compare mode or leaving it works by clicking on the View Changes button, in the same
+section.&lt;/p&gt;
+&lt;p&gt;But this means that you can show/hide changes (modifies the document layout, affects everyone) and
+also view them (only affects your view), and they do quite different things. :-)&lt;/p&gt;
+&lt;h2 id="results-so-far"&gt;Results so far&lt;a class="headerlink" href="#results-so-far" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;The new UI has a button with a drop-down: the button is toggle that reflects if you compare change
+side-by-side or not.  And if you click the drop-down next to the button, it's clear that show/hide
+is for inline rendering in the document layout while the other option is to render changes
+side-by-side:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/cool-doc-compare2/new.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/cool-doc-compare2/new.png"&gt;&lt;figcaption&gt;Collabora Online: view changes inline or side-by-side&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;While this used to look like this:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/cool-doc-compare2/old.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/cool-doc-compare2/old.png"&gt;&lt;figcaption&gt;Old UI: show or view changes?&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;There were also a number of other smaller improvements: now side-by-side rendering works nicely if
+you use IME to type characters, a missing invalidation is sorted out and side-by-side rendering is
+better with comments.&lt;/p&gt;
+&lt;h2 id="how-is-this-implemented"&gt;How is this implemented?&lt;a class="headerlink" href="#how-is-this-implemented" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;If you would like to know a bit more about how this works, continue reading... :-)&lt;/p&gt;
+&lt;p&gt;As usual, the high-level problem was addressed by a series of small changes. Core side:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/ba91aae53989dcbc447a53b6350a6bb1208c808b"&gt;tdf#171191 sw redline render mode: fix crash on IME input&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;COOL side:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/207880a8965e169966cdc206c54e0183e85ad65a"&gt;browser, document compare: annotate overriding functions with 'override'&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/d8972a97ae438600046f1f11e71308643e97eefe"&gt;cool#14940 document compare: merge Show and View Changes buttons into a single menu button&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/ad2cd0e13aca91ebc02031f27ff9567c297e511c"&gt;cool#14990 document compare: fix lost mode=2 full invalidations&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/5c2c98a28858454e1e306bc25499cd3286bb71eb"&gt;cool#15195 document compare: fix bad vertical position of comments on scrolling&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/ce52a2c0c1d2022be42f4a21cebab07a5fb86887"&gt;cool#15195 document compare: fix bad horizontal position of comments&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="want-to-start-using-this"&gt;Want to start using this?&lt;a class="headerlink" href="#want-to-start-using-this" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;You can get a development edition of Collabora Online 25.04 and try it out yourself right now: &lt;a href="https://www.collaboraonline.com/code/"&gt;try
+the development edition&lt;/a&gt;.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Wed, 01 Apr 2026 08:55:11 +0200</pubDate><guid>tag:vmiklos.hu,2026-04-01:/blog/cool-doc-compare2.html</guid><category>collabora-online</category><category>en</category></item><item><title>Comparing text documents in Collabora Online</title><link>https://vmiklos.hu/blog/cool-doc-compare.html</link><description>&lt;p&gt;If you have two documents or two versions of a document to compare, then traditional tracked changes
 is too late, the untracked changes are already in the document.&lt;/p&gt;
 &lt;p&gt;This work for &lt;a href="https://www.collaboraonline.com/"&gt;Collabora Online&lt;/a&gt; adds interactive a
 non-interactive document compare to create tracked changes after the fact, finally introduces a

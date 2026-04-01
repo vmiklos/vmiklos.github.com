@@ -59,6 +59,115 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sw-merged-border.html">Improving borders of merged table cells in Writer</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Wed 14 April 2021</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>Writer now has better
+<a href="https://git.libreoffice.org/core/commit/66ac8e60896f6306bed8fbb34606fd14474f19ce">support</a> for
+Word-compatible border rending when it comes to vertically merged cells in tables.</p></div>
+<div class="paragraph"><p>First, thanks <a href="https://www.docmosis.com/">Docmosis</a> who made this work by
+<a href="https://www.collaboraoffice.com/">Collabora</a> possible.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_motivation">Motivation</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Both Word and Writer allow specifying borders for any kind of table cells. When the user creates a
+vertically merged cell, there is a covering cell and there is one or more covered table cells.</p></div>
+<div class="paragraph"><p>The Writer approach is to render the cell borders according to the properties of the covering cell.
+This has the benefit that each edge of the table cell has a single border style (e.g. dashed or
+hairline).</p></div>
+<div class="paragraph"><p>The Word approach is to render the cell borders as if there would be no vertical merge, according to
+the properties of the covered cell. This has the benefit that merging the content of cells
+vertically doesn&#8217;t change the border rendering, but it also requires more complex code for painting.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_results_so_far">Results so far</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Writer can now detect that your tables originate from Word formats and render table borders the Word way in that case.</p></div>
+<div class="paragraph"><p>Here is how the new rendering result look like:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://share.vmiklos.hu/blog/sw-merged-border/new.png" alt="https://share.vmiklos.hu/blog/sw-merged-border/new.png" />
+</div>
+<div class="title">Figure 1. Writer rendering in compatibility mode, new output</div>
+</div>
+<div class="paragraph"><p>And here is how it used to look like:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://share.vmiklos.hu/blog/sw-merged-border/old.png" alt="https://share.vmiklos.hu/blog/sw-merged-border/old.png" />
+</div>
+<div class="title">Figure 2. Writer rendering in compatibility mode, old output</div>
+</div>
+<div class="paragraph"><p>And finally the reference rendering is:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://share.vmiklos.hu/blog/sw-merged-border/ref.png" alt="https://share.vmiklos.hu/blog/sw-merged-border/ref.png" />
+</div>
+<div class="title">Figure 3. Writer rendering in compatibility mode, reference output</div>
+</div>
+<div class="paragraph"><p>You can see that the B4 and B5 cells are covered, they had some unwanted border on their left side
+and this is now gone.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_how_is_this_implemented">How is this implemented?</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+First, some building blocks were introduced: <code>SwCellFrame::GetCoveredCellInRow()</code> can look up a
+  covered cell in a certain row, provided that this cell covers it
+</p>
+</li>
+<li>
+<p>
+Building on top of this, <code>SwCellFrame::GetCoveredCells()</code> can provide a list of cell frames which
+  are covered by the current cell, due to vertical merge. This is needed, because previously the
+  layout didn&#8217;t have to consider properties of covered cells, so while the document model had this
+  information, it was not visible to the layout in a convenient way
+</p>
+</li>
+<li>
+<p>
+Using the above functionality, <code>SwTabFramePainter::Insert()</code> can suppress painting of certain
+  border lines in Word compatibility mode
+</p>
+</li>
+<li>
+<p>
+Finally, the code change can be covered with a test by recording the rendering and asserting the
+  vertical positions of border points: we can check that all the positions belong to the 1st, 2nd or
+  3rd rows, and not to a row below them
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_want_to_start_using_this">Want to start using this?</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
+expect all of this work will be available in TDF&#8217;s
+<a href="http://dev-builds.libreoffice.org/daily/master/">next release</a> (7.2).</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/hackweek-2021.html">My hack week at Collabora: improvements to gutter margin in Writer</a></h1>
   </div>
   <div class="article_meta">
@@ -973,43 +1082,6 @@ a single place.</p></div>
 <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
 intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
 of this work will be available in TDF&#8217;s next release too (7.1).</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/libocon2020.html">OOXML / PDF Digital Signing in Draw and elsewhere conference talk</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Fri 16 October 2020</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://files.speakerdeck.com/presentations/eae85c2ac9d443708bda7ca26b3f5a6f/pdf-visible-sign-loconf-online-2k20.pdf">
-<img src="https://lh3.googleusercontent.com/4cDltVS1u4m8FWC9Bb54TWILfzrFEXKNUcKKE6cxTIzsDWbX4SXPNw6JM01eLVzyqSqsyWhukcXXWmlJthx9q8tdbqO1LfO8FQECzBcEK3ZQl1lCXdpoAFGKZn_H9sNy0QLgNpPox_w=w1920" alt="https://lh3.googleusercontent.com/4cDltVS1u4m8FWC9Bb54TWILfzrFEXKNUcKKE6cxTIzsDWbX4SXPNw6JM01eLVzyqSqsyWhukcXXWmlJthx9q8tdbqO1LfO8FQECzBcEK3ZQl1lCXdpoAFGKZn_H9sNy0QLgNpPox_w=w1920" />
-</a>
-</div>
-</div>
-<div class="paragraph"><p>Today I gave a <a href="https://events.opensuse.org/conferences/oSLO/program/proposals/3187/">OOXML / PDF
-Digital Signing in Draw and elsewhere</a> talk at the LibreOffice Conference 2020. The (virtual) room
-was well-crowded&#8201;&#8212;&#8201;somehow people find digital signatures interesting. ;-)</p></div>
-<div class="paragraph"><p>It contains an overview of the ODF/OOXML/PDF signing feature set and also details the latest
-improvements, like visible PDF signing.</p></div>
-<div class="paragraph"><p>I expect quite some other slides from other Collaborans and the wider community will be available on
-<a href="http://planet.documentfoundation.org/">Planet</a>, don&#8217;t miss them.</p></div>
-<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office and try the presented features out yourself right
-now: <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.
-Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
-expect all of this work will be available in TDF&#8217;s next release too (7.1).</p></div>
 </div>
 </div>
 
