@@ -2,30 +2,31 @@ Title: Comparing text documents in Collabora Online: improved UI
 Slug: cool-doc-compare2
 Category: collabora-online
 Tags: en
-Date: 2026-03-31T16:12:53+02:00
+Date: 2026-04-01T08:55:11+02:00
 
-The document compare view in [Collabora Online](https://www.collaboraonline.com/) allows comparing
-documents side by side, see [the first post]({filename}/2026/cool-doc-compare.md) for more info
-about the feature in general.
+The document compare view in [Collabora Online](https://www.collaboraonline.com/) Writer allows
+comparing documents side by side, see [the first post]({filename}/2026/cool-doc-compare.md) for more
+info about the feature in general.
 
 This second post is meant to give you an update on what happened in this area in the last month.
 
 ## Motivation
 
-Collabora Online core supports showing or hiding tracked changes in document tiles, we have a UI
+Collabora Online core supports showing or hiding tracked changes in document content, we have a UI
 button for that, see the notebookbar's Review tab, the Tracking section's Show button.
 
 Entering doc compare mode or leaving it works by clicking on the View Changes button, in the same
 section.
 
-But this means that you can show/hide changes and also view them, and they do quite different
-things. :-)
+But this means that you can show/hide changes (modifies the document layout, affects everyone) and
+also view them (only affects your view), and they do quite different things. :-)
 
 ## Results so far
 
-The new has a button with a drop-down: the button is toggle that reflects if tracked changes are
-shown or hidden in the document layout. And if you click the drop-down next to the button, it's clear
-that show/hide is for inline rendering while the other option is to render changes side-by-side:
+The new UI has a button with a drop-down: the button is toggle that reflects if you compare change
+side-by-side or not.  And if you click the drop-down next to the button, it's clear that show/hide
+is for inline rendering in the document layout while the other option is to render changes
+side-by-side:
 
 [![Collabora Online: view changes inline or side-by-side](https://share.vmiklos.hu/blog/cool-doc-compare2/new.png)](https://share.vmiklos.hu/blog/cool-doc-compare2/new.png)
 
