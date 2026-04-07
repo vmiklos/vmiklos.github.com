@@ -126,7 +126,6 @@ These are tutorials I found very useful before jumping into an actual spec.
 - [why incremental development](https://llvm.org/docs/DeveloperPolicy.html#incremental-development)
 - [why no tablets](https://www.engadget.com/2019/06/20/google-is-giving-up-on-tablets/)
 - [why IRC](https://drewdevault.com/2019/07/01/Absence-of-features-in-IRC.html)
-- [why no management](https://improvingsoftware.com/2009/05/19/programmers-before-you-turn-40-get-a-plan-b/)
 - [why no phone in church](https://me.me/i/by-entering-this-church-it-may-be-possible-that-you-08e32ab5101b46f7859d63b385748005)
 - [why no change detector tests](https://testing.googleblog.com/2015/01/testing-on-toilet-change-detector-tests.html)
 - [why no GC](https://blog.discordapp.com/why-discord-is-switching-from-go-to-rust-a190bbca2b1f) (if performance is critical)
