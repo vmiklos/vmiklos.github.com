@@ -44,7 +44,6 @@ title: Bookmarks
 
 - [car parking info](https://nmzrt.hu/szolgaltatasok/parkolas/parkolasi-zonak.html)
 - [puzzle helper](https://bitepito.hu/rejtveny/)
-- [kepernyocsokkento program](https://www.bethesda.hu/kepernyocsokkento-program/)
 - [alkohol kalkulator](https://www.alkoholkalkulator.hu/hu/)
 
 # imagemagick
@@ -122,6 +121,7 @@ These are tutorials I found very useful before jumping into an actual spec.
 - [why no rewrites](https://www.joelonsoftware.com/2000/04/06/things-you-should-never-do-part-i/)
 - [why rewrites are expensive](https://8thlight.com/blog/doug-bradbury/2018/11/27/true-cost-rewrites.html)
 - [use GitHub with care](http://joeyh.name/blog/entry/the_single_most_important_criteria_when_replacing_Github/)
+- [use Google with care](https://mastodon.social/@adamndsmith/116328215860941572)
 - [should be a one-line change](https://www.simplethread.com/dear-client-heres-why-that-change-took-so-long/)
 - [why incremental development](https://llvm.org/docs/DeveloperPolicy.html#incremental-development)
 - [why no tablets](https://www.engadget.com/2019/06/20/google-is-giving-up-on-tablets/)
