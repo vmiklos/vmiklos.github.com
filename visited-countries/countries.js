@@ -22,4 +22,5 @@ countries = [
 	'turkey', // Turkey: Marmaris 2012
 	'portugal', // Portugal: Albufeira 2023
 	'luxembourg', // Luxembourg: Luxembourg 2024
+	'malta', // Malta: 2026
 ];
