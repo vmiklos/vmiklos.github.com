@@ -58,6 +58,37 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/odfsig.html">odfsig: an Open Document Format (ODF) digital signatures tool</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Sun 23 September 2018</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>I created a toy project to experiment with a few technologies I wanted to try
+out (<a href="https://cmake.org/">cmake</a>,
+<a href="https://github.com/google/googletest">googletest</a>,
+<a href="https://www.aleksey.com/xmlsec/">xmlsec</a> outside LibreOffice,
+<a href="https://libzip.org/">libzip</a> and <a href="https://www.appveyor.com/">AppVeyor</a>). The
+result is a tool with a similar interface as pdfsig from poppler (for PDF
+files), just for ODF: a cmdline executable to verify the digital signature(s)
+in an ODF document.</p></div>
+<div class="paragraph"><p>The <a href="https://github.com/vmiklos/odfsig">source code</a> now has CI on Linux and
+Windows, so perhaps in a shape that is interesting for others to have a look
+as well. And if not, then no problem, it was interesting to put together these
+building blocks and see them working as expected. :-)</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/mutt-address-book.html">mutt/vim offline address book with multiple sources</a></h1>
   </div>
   <div class="article_meta">
@@ -775,122 +806,6 @@ editors developer room</a>. The room was well-crowded&#8201;&#8212;&#8201;perhap
 talk was about LibreOffice/Collabora Online. ;-)</p></div>
 <div class="paragraph"><p>Quite some other slides will be available on
 <a href="http://planet.documentfoundation.org/">Planet</a> I expect, don&#8217;t miss them.</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/epub3-improvements-2.html">EPUB3 export improvements in Libreoffice Writer, take two</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Thu 11 January 2018</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 3 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>I worked on improving the EPUB3 export filter in LibreOffice further recently.
-First, thanks to <a href="http://nouenoff.nl/">Nou&amp;Off</a> in cooperation with a customer
-who made this work possible. Since the
-<a href="https://vmiklos.hu/blog/epub3-improvements.html">previous blog entry</a> there have been a
-number of improvements around a next set of topics.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_cover_images">Cover images</h2>
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://farm5.staticflickr.com/4760/38920770224_b247fa89c4_o.png" alt="https://farm5.staticflickr.com/4760/38920770224_b247fa89c4_o.png" />
-</div>
-</div>
-<div class="paragraph"><p>It is now possible to specify a cover image for the exported EPUB file. Given
-that a cover image is not naturally part of the Writer document model, I introduced the
-concept of a media directory for the EPUB export. The media directory is a
-directory next to the source file, with the &lt;file name without extension&gt;
-name. If that directory contains a file named cover.svg (or .gif, .jpg, .png),
-the exporter will automatically use it. Otherwise you can customize this
-default.</p></div>
-<div class="paragraph"><p>The picture shows two EPUB files in <a href="http://readium.org/">Readium</a> with
-different cover images.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_improved_metadata_support">Improved metadata support</h2>
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://farm5.staticflickr.com/4603/38920770174_142950782e_o.png" alt="https://farm5.staticflickr.com/4603/38920770174_142950782e_o.png" />
-</div>
-</div>
-<div class="paragraph"><p>It&#8217;s quite frequent that you are technically author of a document, but the
-logical author of the book is somebody else. Same for the date of the book,
-and so on. So the EPUB export dialog now has support for overwriting the
-defaults coming from the Writer document model. For mass-conversion of
-documents it&#8217;s possible to place a &lt;file name without extension&gt;.xmp file in
-the media directory and <a href="http://www.adobe.com/devnet/xmp.html">XMP</a> metadata
-from that file will also overwrite metadata coming from the document model.</p></div>
-<div class="paragraph"><p>The picture shows the extended EPUB export options dialog.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_footnotes_and_image_popups">Footnotes and image popups</h2>
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://farm5.staticflickr.com/4612/38920770144_e90e2a8e92_o.png" alt="https://farm5.staticflickr.com/4612/38920770144_e90e2a8e92_o.png" />
-</div>
-</div>
-<div class="paragraph"><p>I&#8217;ve added support for footnotes. As a special case of this, image popups on
-images and text is now supported. This works by placing a relative link on a
-text portion or on an image, and placing an image with the same name (e.g. in
-high resolution) in the media directory. In this case the EPUB export will
-bundle the image from the media directory inside the EPUB file and clicking on
-the text or image will open the bundled image in a popup (or in some other
-container, depending on how your reader interprets footnotes).</p></div>
-<div class="paragraph"><p>The picture shows such a popup in Microsoft Edge.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_fixed_layout">Fixed layout</h2>
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://farm5.staticflickr.com/4604/38920770104_108465bda1_o.png" alt="https://farm5.staticflickr.com/4604/38920770104_108465bda1_o.png" />
-</div>
-</div>
-<div class="paragraph"><p>The EPUB3 fixed layout is quite similar to PDF, just it is built on top of
-XHTML and SVG. Possible use-cases for this can be:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-exporting a document where presenting the content as reflowable text would
-  be misleading (e.g. comic books), but the publisher of the book only works
-  with EPUB (reflowable or fixed layout, but no PDF)
-</p>
-</li>
-<li>
-<p>
-printing (again, in case for some reason you want to avoid PDF)
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>These might be very specific situations, but luckily supporting them is not
-too complex. I implemented an approach very similar to the PDF export, where
-we export individual pages of the Writer document&#8217;s layout as a metafile, and
-then consume that&#8201;&#8212;&#8201;this time with the SVG export. Building on top of the
-existing Writer layout and SVG export means the hard work is really done by
-these components, the EPUB fixed layout export just puts these together.</p></div>
-<div class="paragraph"><p>The picture shows a Writer document with a table of contents containing page
-numbers, a header and a footer in Readium.</p></div>
-<div class="paragraph"><p>All this is available in master (towards LibreOffice 6.1), or you can grab a
-<a href="http://dev-builds.libreoffice.org/daily/master/">daily build</a> and try it out
-right now. :-)</p></div>
 </div>
 </div>
 

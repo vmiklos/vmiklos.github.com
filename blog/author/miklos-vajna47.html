@@ -59,6 +59,26 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/linux-bisecting.html">Linux bisecting</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Thu 22 January 2009</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>So I reported this "timer runs too fast" bug to LKML and they asked me to bisect it. I know bisect already, but I only bisected userspace software which is easy. Basically you write a script that reproduces the issue, then git bisect will find the first bad commit automatically.</p><p>With the kernel, this is much slower, because you must manually test each step.</p><p>Of course I wanted to speed things up, so I wrote a small testcase and run it right after init=/bin/sh. This is bad. I haven't noticed until almost the end of the bisect that the bug occurs only after udev is loaded. Now that I'm sure the corrected test script really reports GOOD for 2.6.27 and BAD for 2.6.28, I can do the real bisect...</p><p>As a side note, doing this with 1 machine would be really annoying. Luckily I can do whatever I want on my iBook, the build is done one of our fast Frugalware servers (dream) and I just download and test the bzImage on my notebook. I guess network booting would make it a bit faster (because currently I boot the test kernel, boot back the working one, download the next test one, goto 1), but I won't set up a whole tftp server on my iBook just for this. ;)</p><p>So hopefully tomorrow we'll know what is the real first bad commit.</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/done-and-need-to-be-done-kernel-updates.html">Done and need-to-be-done kernel updates</a></h1>
   </div>
   <div class="article_meta">
@@ -254,38 +274,6 @@ CFLAGS = -g -O2 -Wall -Werror -fno-inline -Wold-style-definition -Wdeclaration-a
     <div id="preamble">
 <div class="sectionbody">
 <p>Of course I have no idea if this is the right name of this stuff, to make long story short, I finally found a <a href="http://article.gmane.org/gmane.comp.gnu.lilypond.general/44348">workaround</a> to display this beast in lilypond. Yay!</p><p>This project is really addictive, you can spend a whole day reading its documentation and you still just say "wow, this and even that is possible with this stufff". ;-)</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/oprofile.html">oprofile</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Sun 11 January 2009</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>I did not have to work with a profiling tool for C so far, so here is my first experience.</p><p>The kernel has to have oprofile support (the kernel in Frugalware-current does not have it, I'll add it after 1.0pre2). You'll need a kernel vmlinux file if you want to benchmark the syscalls as well (I did not need this one).</p><p>Then there are 3 levels of starting: opcontrol --init/--deinit, --start-daemon/--shutdown and --start/--stop. The first one prepares /dev/profile, the second one starts the deamon, finally the third one start profiling. Obviously the second part does the opposite.</p><p>Once you did a --stop, you can get the results. Example output:</p><p><pre>
-$ opreport -l /home/vmiklos/git/git/git /usr/lib/libz.so.1|head
-CPU: CPU with timer interrupt, speed 0 MHz (estimated)
-Profiling through timer interrupt
-samples  %        app name                 symbol name
-22823    56.4898  libz.so.1.2.3            inflate_fast
-6019     14.8978  libz.so.1.2.3            adler32
-5975     14.7889  libz.so.1.2.3            inflate
-4233     10.4772  libz.so.1.2.3            inflate_table
-456       1.1287  libz.so.1.2.3            crc32
-252       0.6237  git                      patch_delta
-55        0.1361  git                      use_pack
-</pre></p><p>which is pretty much what I expected - I did a 'git verify-pack' between --start/--stop, so the time spent with reading the compressed git object database.</p><p>TBH I miss a strace/sudo-like simple wrapper as well...</p>
 </div>
 </div>
 

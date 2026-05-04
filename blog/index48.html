@@ -58,6 +58,38 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/oprofile.html">oprofile</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Sun 11 January 2009</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>I did not have to work with a profiling tool for C so far, so here is my first experience.</p><p>The kernel has to have oprofile support (the kernel in Frugalware-current does not have it, I'll add it after 1.0pre2). You'll need a kernel vmlinux file if you want to benchmark the syscalls as well (I did not need this one).</p><p>Then there are 3 levels of starting: opcontrol --init/--deinit, --start-daemon/--shutdown and --start/--stop. The first one prepares /dev/profile, the second one starts the deamon, finally the third one start profiling. Obviously the second part does the opposite.</p><p>Once you did a --stop, you can get the results. Example output:</p><p><pre>
+$ opreport -l /home/vmiklos/git/git/git /usr/lib/libz.so.1|head
+CPU: CPU with timer interrupt, speed 0 MHz (estimated)
+Profiling through timer interrupt
+samples  %        app name                 symbol name
+22823    56.4898  libz.so.1.2.3            inflate_fast
+6019     14.8978  libz.so.1.2.3            adler32
+5975     14.7889  libz.so.1.2.3            inflate
+4233     10.4772  libz.so.1.2.3            inflate_table
+456       1.1287  libz.so.1.2.3            crc32
+252       0.6237  git                      patch_delta
+55        0.1361  git                      use_pack
+</pre></p><p>which is pretty much what I expected - I did a 'git verify-pack' between --start/--stop, so the time spent with reading the compressed git object database.</p><p>TBH I miss a strace/sudo-like simple wrapper as well...</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/preparing-frugalware-1-0pre2.html">Preparing Frugalware 1.0pre2</a></h1>
   </div>
   <div class="article_meta">
@@ -254,26 +286,6 @@ printf("%s %s",
     <div id="preamble">
 <div class="sectionbody">
 <p>This <a href="http://article.gmane.org/gmane.linux.frugalware.devel/5132">came up</a> on the mailing list, and finally resulted in a <a href="http://git.frugalware.org/gitweb/gitweb.cgi?p=pacman-g2.git;a=commitdiff;h=87f094e078f5a7eb2ed22ecd8fe27b30c930590e">commit</a> in pacman-g2.git.</p><p>The idea is to speed up the pacman -Sy operation just like rsync speeds up not re-transferring already sent data.</p><p>Also BMH started to poke me about the bindings privately, so I pushed a few fixes and probably I will continue doing so.</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/git-apply-now-uses-parseopt.html">git-apply now uses parseopt</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Thu 01 January 2009</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>At least if you track git.git's "next" branch. Happy new year! :)</p><p>(<a href="http://git.kernel.org/?p=git/git.git;a=commitdiff;h=f26c4940c4c7942a95058d9aaef7b01967085a60">patch</a>, <a href="http://git.kernel.org/?p=git/git.git;a=commitdiff;h=5dd07c022e9db90ff71223d2228f8129ee5f937c">merge</a>)</p>
 </div>
 </div>
 

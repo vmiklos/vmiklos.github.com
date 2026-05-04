@@ -58,6 +58,141 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sw-bibliography-page.html">Bibliography improvements in LibreOffice Writer: refer to a specific page</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Wed 05 May 2021</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 3 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>The bibliography feature in Writer allows authors of e.g. scientific papers to track sources: first
+you can insert bibliography entry fields, then at the end you can generate a bibliography table
+automatically.</p></div>
+<div class="paragraph"><p>Writer recently gained <a href="https://vmiklos.hu/blog/sw-bibliography.html">two improvements in this area</a>, and
+now there is one more: the ability to refer to a specific page of a (potentially long) source.</p></div>
+<div class="paragraph"><p>First, thanks <a href="https://ulakbim.tubitak.gov.tr/en">TUBITAK ULAKBIM</a> who made this work by
+<a href="https://www.collaboraoffice.com/">Collabora</a> possible.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_motivation">Motivation</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>The same feature in normal HTML linking / citation is well-known: you can place anchors in your
+document and then links can refer to not only to your page, but also can set the fragment part of
+the URL to jump to a specific section directly. E.g.
+<a href="https://vmiklos.hu/blog/sw-bibliography.html#_motivation">this link</a> will jump to the "Motivation"
+section of the above referred previous post.</p></div>
+<div class="paragraph"><p>Wouldn&#8217;t it be nice if you could also jump to a specific page of a scientific PDF?</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_results_so_far">Results so far</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>You can add such references by choosing the Insert &#8594; Table of Contents and Index &#8594; Bibliography
+Entry menu item.  Set Bibliography Source to Document Content and press the New button. The
+appearing dialog now has widgets to set a specific page number:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://share.vmiklos.hu/blog/sw-bibliography-page/page.png" alt="https://share.vmiklos.hu/blog/sw-bibliography-page/page.png" />
+</div>
+<div class="title">Figure 1. Refer to a specic page of a bibliography source, user interface</div>
+</div>
+<div class="paragraph"><p>This is then stored in the URL by setting its fragment to <code>page=...</code>, and typically PDF readers
+understand this syntax, so when you click on the URL, the PDF will open exactly on the cited page.</p></div>
+<div class="paragraph"><p>This also works the other way around: URLs with such syntax are presented to the user with the
+dedicated widget to see, edit or delete the page number of the URL.</p></div>
+<div class="paragraph"><p>Finally, if you refer to different pages of the same source, the bibliography text generator detects
+this and lists the source in the bibliography only once.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_how_is_this_implemented">How is this implemented?</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
+<div class="paragraph"><p>As usual, the high-level problem was addressed by a series of incremental development steps:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/111653">sw bibliography, refer to a page: strip
+  URLs in the bibliography table</a> improved the bibliography table generator to not show page fragments
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/111761">sw bibliography, refer to a page:
+  de-duplicate bibliography table URLs</a> merged the idendical sources to a single entry in the bibliography
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/112400">sw bibliography, refer to a page: make the
+  biblio field clickable</a> allows opening the URL-with-page by clicking on the bibliography entry field
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/112981">sw bibliography, refer to a page: add open
+  hyperlink context menu</a> implemented the context menu, in case you prefer to avoid ctrl-click for hyperlink opening
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/113035">sw bibliography, refer to a page: add PDF
+  export links</a> improved the PDF export to have clickable bibliography entry fields
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/114059">sw bibliography, refer to a page: fix
+  biblio field relative URLs</a> added support for relative URLs, in case the edited document and
+  referred PDFs are in the same directory, next to each other
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/114104">sw bibliography, refer to a page: also
+  de-duplicate relative URLs</a> made the relative URL and bibliography table row merging work together
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/114380">sw bibliography, refer to a page: edit the
+  page number of individual entries</a> allows editing just a single bibliography entry field for page
+  number purposes, since in other cases it makes sense to update all fields of the same source (e.g.
+  correcting a spelling mistake in an author name)
+</p>
+</li>
+<li>
+<p>
+<a href="https://gerrit.libreoffice.org/c/core/+/114443">sw bibliography, refer to a page: add
+  dedicate widget to show the page number</a>,
+  <a href="https://gerrit.libreoffice.org/c/core/+/114664">sw bibliography, refer to a page: save
+  edited page number</a> and <a href="https://gerrit.libreoffice.org/c/core/+/114750">sw bibliography,
+  refer to a page: add insert/delete UI</a> add support for creating, showing, editing and deleting page
+  numbers of such URLs on the user interface
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_want_to_start_using_this">Want to start using this?</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
+expect all of this work will be available in TDF&#8217;s
+<a href="http://dev-builds.libreoffice.org/daily/master/">next release</a> (7.2).</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/sw-merged-border.html">Improving borders of merged table cells in Writer</a></h1>
   </div>
   <div class="article_meta">
@@ -984,94 +1119,6 @@ itself.</p></div>
 </ul></div>
 <div class="paragraph"><p>With these, it&#8217;s now possible to edit these calendars, without breaking the fields which provide the
 day numbers.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_want_to_start_using_this">Want to start using this?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
-<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
-intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF&#8217;s next release too (7.1).</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/sd-zero-byte-files.html">Detecting 0-byte files based on extension in Impress and elsewhere</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Fri 13 November 2020</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 3 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Impress (and Writer and Calc) now has support for detecting 0-byte files on open/import based on
-their extension. This builds on top of the
-<a href="https://vmiklos.hu/blog/sw-locale-independent-templates.html">previous language-independent template
-improvements</a>. This means that e.g. a 0-byte PPTX file will open as an empty Impress presentation,
-not in Writer.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_motivation">Motivation</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>We regularly see customers wanting minimal templates, which are language independent and have no
-content. Such files are handy if your workflow is to first name an empty document (create it) and
-only then edit it (and not the other way around: first create the document, then save it by giving
-it a name). This is easy for <code>.txt</code> files: if it&#8217;s zero bytes, it&#8217;s empty. But then this approach is
-also expected to work for other file formats as well, where our original approach was more
-technical: if it&#8217;s an empty file, that that can be only plain text, so we (almost) always opened it
-in Writer, not matching the user expectations.</p></div>
-<div class="paragraph"><p>Instead of explaining the problem to people again and again (that a literally empty PPTX file is not
-a PPTX template), there is value in just adapting the code instead to "do what I mean".</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_results_so_far">Results so far</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>An empty PPTX file is now handled like this:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/zk3b0f2Rx3t5vFVuKiimujSJWYwPNH05PCf5Indih3OwMDeBrOUH1X7N22PO46kIbxTVzI0V3IV-bE0sMycTHGj2eRqKT6K7eQkZ0Py9QVCPIhV0pdKdGPLGH08xpw72wFQ-3eGyX4k=w1920" alt="https://lh3.googleusercontent.com/zk3b0f2Rx3t5vFVuKiimujSJWYwPNH05PCf5Indih3OwMDeBrOUH1X7N22PO46kIbxTVzI0V3IV-bE0sMycTHGj2eRqKT6K7eQkZ0Py9QVCPIhV0pdKdGPLGH08xpw72wFQ-3eGyX4k=w1920" />
-</div>
-<div class="title">Figure 1. Empty PPTX file opening in Impress</div>
-</div>
-<div class="paragraph"><p>You can see this is no longer opening in Writer as plain text but in Impress, which is clearly a
-less surprising behavior.</p></div>
-<div class="paragraph"><p>Here is what happens if you open an empty DOTX (template):</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/cVB_kK2wDyNIJjLt9v9UcNS4AagRCifwBofp70mHfNVzopvrN1cxcsVLhWfEArhab_PwSFkAvLlMUS1witevRcKeEn9UXYtw5o4VeGSztvnNUi6YMtR3t2DUIu1k2LLOUhnpckAnrwQ=w1920" alt="https://lh3.googleusercontent.com/cVB_kK2wDyNIJjLt9v9UcNS4AagRCifwBofp70mHfNVzopvrN1cxcsVLhWfEArhab_PwSFkAvLlMUS1witevRcKeEn9UXYtw5o4VeGSztvnNUi6YMtR3t2DUIu1k2LLOUhnpckAnrwQ=w1920" />
-</div>
-<div class="title">Figure 2. Empty DOTX file creates a new Writer document</div>
-</div>
-<div class="paragraph"><p>You can see that it is even recognized that this is a template format, so a new document is created,
-not the template itself is opened for editing.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_how_is_this_implemented">How is this implemented?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
-<div class="paragraph"><p>You can see the code change in
-<a href="https://git.libreoffice.org/core/commit/ada07f303e7cd1e39c73abe0741aefe7d9d73a57">this commit</a>.
-First, we restrict this trick to file URLs, and also to empty files.</p></div>
-<div class="paragraph"><p>Second, we look at the extension of the file and try to match an import filter that usually handles
-that extension. This helps, because then nominally the correct filter will be used for the import,
-so save will not ask for a filename (as it happens for new documents), but it will know what target
-filename and export filter to use.</p></div>
-<div class="paragraph"><p>Finally we need to avoid actually invoking the import filter, because no file content is not
-something an import filter has to handle if its filter detection would reject the file. (E.g. PPTX
-is expected to be a valid ZIP file.) This is important, because we want to avoid touching each &amp;
-every file filter to not fail for empty file content&#8201;&#8212;&#8201;instead we want to handle this centrally, at
-a single place.</p></div>
 </div>
 </div>
 <div class="sect1">

@@ -1,5 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>What is Miklos hacking - collabora-online</title><link>https://vmiklos.hu/blog/</link><description/><atom:link href="https://vmiklos.hu/blog/feeds/collabora-online.rss.xml" rel="self"/><lastBuildDate>Wed, 01 Apr 2026 08:55:11 +0200</lastBuildDate><item><title>Comparing text documents in Collabora Online: improved UI</title><link>https://vmiklos.hu/blog/cool-doc-compare2.html</link><description>&lt;p&gt;The document compare view in &lt;a href="https://www.collaboraonline.com/"&gt;Collabora Online&lt;/a&gt; Writer allows
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>What is Miklos hacking - collabora-online</title><link>https://vmiklos.hu/blog/</link><description/><atom:link href="https://vmiklos.hu/blog/feeds/collabora-online.rss.xml" rel="self"/><lastBuildDate>Mon, 04 May 2026 15:29:42 +0200</lastBuildDate><item><title>Better pasting of markdown into Collabora Online Writer</title><link>https://vmiklos.hu/blog/sw-markdown-paste.html</link><description>&lt;p&gt;Writer has a markdown import/export filter in &lt;a href="https://www.collaboraonline.com/"&gt;Collabora Online&lt;/a&gt;,
+see &lt;a href="https://vmiklos.hu/blog/sw-markdown-templating.html"&gt;the post from December&lt;/a&gt; for more info about the
+filter in general.&lt;/p&gt;
+&lt;p&gt;This post is meant to detail a recent improvement when a markdown snippet is on the clipboard and
+it's pasted into an existing Writer document.&lt;/p&gt;
+&lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Writer import filters operate in two modes: normally an empty model gets populated by reading user
+input from a file, in a certain format. You can also paste similar data from the clipboard, in which
+case the target model is not empty and this introduces some complexity.&lt;/p&gt;
+&lt;p&gt;The markdown import was missing some tweaks which were there already in the ODT and RTF paste code.
+Additionally, given that markdown only allows limited formatting, it makes sense to inherit more
+formatting from the paste position, so the pasted content's formatting is consistent with the
+formatting of the surrounding content.&lt;/p&gt;
+&lt;h2 id="results-so-far"&gt;Results so far&lt;a class="headerlink" href="#results-so-far" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;The document from &lt;a href="https://github.com/CollaboraOnline/online/issues/15535"&gt;the issue&lt;/a&gt; had bullets
+with text "A" and "B", the first problem was that pasting before "A" resulted in a mix of existing
+vs pasted content:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-markdown-paste/bad1.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-markdown-paste/bad1.png"&gt;&lt;figcaption&gt;Collabora Online Writer markdown paste: before fixing paragraph splits&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;After fixing that, the problem was that the bullet format from markdown and in the existing document
+was different:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-markdown-paste/bad2.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-markdown-paste/bad2.png"&gt;&lt;figcaption&gt;Collabora Online Writer markdown paste: paragraph splits are fixed, bullet formats are not&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Once that got fixed, the paragraph style was still bad:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-markdown-paste/bad3.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-markdown-paste/bad3.png"&gt;&lt;figcaption&gt;Collabora Online Writer markdown paste: bullet formats are fixed, paragraph style is not&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Which lead to the correct paste result:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-markdown-paste/good.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-markdown-paste/good.png"&gt;&lt;figcaption&gt;Collabora Online Writer markdown paste: paragraph style is fixed&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;As a bonus point, undo for the paste now works correctly, too.&lt;/p&gt;
+&lt;h2 id="how-is-this-implemented"&gt;How is this implemented?&lt;a class="headerlink" href="#how-is-this-implemented" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;If you would like to know a bit more about how this works, continue reading... :-)&lt;/p&gt;
+&lt;p&gt;As usual, the high-level problem was addressed by a series of small changes:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://gerrit.collaboraoffice.com/plugins/gitiles/online/+/f97a7bf0efbe1abb9fbecb58449b2845632839fd"&gt;cool#15535 sw markdown import: handle pasting into an existing paragraph&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://gerrit.collaboraoffice.com/plugins/gitiles/online/+/f16394d42af604fcaf4a28938a317f15d1732fc9"&gt;Related: cool#15535 sw markdown import: use matching num rule if possible&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://gerrit.collaboraoffice.com/plugins/gitiles/online/+/840bd79a47fad50a80b9720176ad53dd50649091"&gt;Related: cool#15535 sw markdown import: use matching paragraph formatting&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="want-to-start-using-this"&gt;Want to start using this?&lt;a class="headerlink" href="#want-to-start-using-this" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;You can get a development edition of Collabora Online 25.04 and try it out yourself right now: &lt;a href="https://www.collaboraonline.com/code/"&gt;try
+the development edition&lt;/a&gt;.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Mon, 04 May 2026 15:29:42 +0200</pubDate><guid>tag:vmiklos.hu,2026-05-04:/blog/sw-markdown-paste.html</guid><category>collabora-online</category><category>en</category></item><item><title>Comparing text documents in Collabora Online: improved UI</title><link>https://vmiklos.hu/blog/cool-doc-compare2.html</link><description>&lt;p&gt;The document compare view in &lt;a href="https://www.collaboraonline.com/"&gt;Collabora Online&lt;/a&gt; Writer allows
 comparing documents side by side, see &lt;a href="https://vmiklos.hu/blog/cool-doc-compare.html"&gt;the first post&lt;/a&gt; for more
 info about the feature in general.&lt;/p&gt;
 &lt;p&gt;This second post is meant to give you an update on what happened in this area in the last month.&lt;/p&gt;
