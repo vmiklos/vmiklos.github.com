@@ -1,5 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>What is Miklos hacking - collabora-online</title><link>https://vmiklos.hu/blog/</link><description/><atom:link href="https://vmiklos.hu/blog/feeds/collabora-online.rss.xml" rel="self"/><lastBuildDate>Mon, 04 May 2026 15:29:42 +0200</lastBuildDate><item><title>Better pasting of markdown into Collabora Online Writer</title><link>https://vmiklos.hu/blog/sw-markdown-paste.html</link><description>&lt;p&gt;Writer has a markdown import/export filter in &lt;a href="https://www.collaboraonline.com/"&gt;Collabora Online&lt;/a&gt;,
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>What is Miklos hacking - collabora-online</title><link>https://vmiklos.hu/blog/</link><description/><atom:link href="https://vmiklos.hu/blog/feeds/collabora-online.rss.xml" rel="self"/><lastBuildDate>Wed, 03 Jun 2026 15:41:57 +0200</lastBuildDate><item><title>Format-on-format change tracking in Collabora Online Writer</title><link>https://vmiklos.hu/blog/sw-redline-format-on-format.html</link><description>&lt;p&gt;Inter-dependent change tracking in &lt;a href="https://www.collaboraonline.com/"&gt;Collabora Online&lt;/a&gt; was mostly a
+topic last year, see &lt;a href="https://vmiklos.hu/blog/sw-interdependent-redline-improvements4.html"&gt;the post from
+November&lt;/a&gt; for more info about the
+feature in general: this is the case when you create a change on top of another change.&lt;/p&gt;
+&lt;p&gt;This post is meant to deal with the situation where you already have a recorded formatting and
+somebody else creates a new formatting on top of that.&lt;/p&gt;
+&lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Writer supports insert-then-delete, insert-then-format and delete-then-format as combinations of
+changes with different types. So format-on-format is not supported at a file format level, DOCX
+can't represent it, either.&lt;/p&gt;
+&lt;p&gt;But instead of just losing the old format when we create a new format, we can do better: update the
+format redline to now track the formatting of the union of the old and new format change.&lt;/p&gt;
+&lt;p&gt;This still means that the metadata (e.g. author) will be only stored for the new change, but accept
+or reject on the format will result in the expected formatting.&lt;/p&gt;
+&lt;h2 id="results-so-far"&gt;Results so far&lt;a class="headerlink" href="#results-so-far" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;The document from &lt;a href="https://github.com/CollaboraOnline/online/issues/15749"&gt;the issue&lt;/a&gt; had BBB as
+bold by Alice:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-redline-format-on-format/before.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-redline-format-on-format/before.png"&gt;&lt;figcaption&gt;Collabora Online Writer: a format redline&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;And now once a different editor marks the middle B as italic, additionally, then the formatting on
+this middle character is now attributed to the new editor:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-redline-format-on-format/after.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-redline-format-on-format/after.png"&gt;&lt;figcaption&gt;Collabora Online Writer: format on top of format, different editors&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Without the fix, rejection only removed the italics. With the fix, now reject correctly removes both
+the bold and the italic formatting. Accept is a little bit easier, since we don't need to touch the
+formatting in the model, just delete the change from the table of changes.&lt;/p&gt;
+&lt;h2 id="how-is-this-implemented"&gt;How is this implemented?&lt;a class="headerlink" href="#how-is-this-implemented" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;If you would like to know a bit more about how this works, continue reading... :-)&lt;/p&gt;
+&lt;p&gt;As usual, the high-level problem was addressed by a series of small changes:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://gerrit.collaboraoffice.com/plugins/gitiles/online/+/bd7f20bdf7d1e66ab13c46074c0482ccab6d6867"&gt;cool#15451 sw interdependent redlines: fix creating a format on top of format-on-delete&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://gerrit.collaboraoffice.com/plugins/gitiles/online/+/0449be1640408a3fad529ed5dec82ae7bd7af240"&gt;cool#15749 sw interdependent redlines: fix creating a format on top of format&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="want-to-start-using-this"&gt;Want to start using this?&lt;a class="headerlink" href="#want-to-start-using-this" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;You can get a development edition of Collabora Online 25.04 and try it out yourself right now: &lt;a href="https://www.collaboraonline.com/code/"&gt;try
+the development edition&lt;/a&gt;.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Wed, 03 Jun 2026 15:41:57 +0200</pubDate><guid>tag:vmiklos.hu,2026-06-03:/blog/sw-redline-format-on-format.html</guid><category>collabora-online</category><category>en</category></item><item><title>Better pasting of markdown into Collabora Online Writer</title><link>https://vmiklos.hu/blog/sw-markdown-paste.html</link><description>&lt;p&gt;Writer has a markdown import/export filter in &lt;a href="https://www.collaboraonline.com/"&gt;Collabora Online&lt;/a&gt;,
 see &lt;a href="https://vmiklos.hu/blog/sw-markdown-templating.html"&gt;the post from December&lt;/a&gt; for more info about the
 filter in general.&lt;/p&gt;
 &lt;p&gt;This post is meant to detail a recent improvement when a markdown snippet is on the clipboard and
