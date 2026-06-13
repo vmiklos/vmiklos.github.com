@@ -208,6 +208,9 @@ the LICENSE file.</p>
 <p>You can build the code using:</p>
 <pre><code class="language-console">./gradlew build
 </code></pre>
+<p>This builds both product flavors: <code>foss</code> (this is what F-Droid ships, free of proprietary Google
+dependencies) and <code>gplay</code> (adds the Google Drive backup destination). To build or install only the
+Drive-capable flavor, use e.g. <code>./gradlew assembleGplayRelease</code> or <code>./gradlew installGplayDebug</code>.</p>
 <p>You can run the tests using:</p>
 <pre><code class="language-console">./gradlew test
 ./gradlew connectedAndroidTest
@@ -277,11 +280,53 @@ a single tap: i.e. it's the same as opening the app and tapping on the start/sto
 <p>This allows manually setting the dark mode for plees-tracker. This is useful on Android versions &lt;=
 9, where there is no system-provided dark mode. This works out of the box on newer Android versions.</p>
 <h3 id="backup"><a class="header" href="#backup">Backup</a></h3>
-<p>Backup settings allow you to automatically back up your sleeps after a tracking stopped. This is
-useful in case you selected a path which is then implicitly synchronized to some external server,
-e.g. Nextcloud.</p>
+<p>Backup settings start with an &quot;Automatic backup&quot; switch, which is off by default. Turning it on for
+the first time asks where to back up to; the switch turns itself back off when the last backup
+destination is removed. When it's off, no backups run and any configured destinations below it are
+greyed out (they are kept, so turning the switch back on resumes backups unchanged).</p>
+<p>Backups go to the configured destinations, which are shown as rows in the settings: one device
+folder and (in the <code>gplay</code> flavor) one Google Drive account can be configured, separately or
+together.</p>
+<p>&quot;Add backup destination&quot; opens a chooser where both &quot;This device (folder)&quot; and &quot;Google Drive&quot; can be
+ticked. Once one type is configured, the row's label adapts (&quot;Add device backup destination&quot; / &quot;Add
+Google Drive backup destination&quot;) and adding the remaining type asks whether the new destination is
+in addition to or instead of the existing one. &quot;Instead of Google Drive&quot; permanently deletes the
+Drive backup; switching to Drive instead of the folder asks whether to also delete the folder's
+backup.csv. The add row disappears once both types are configured.</p>
+<p>Folder backups write a backup.csv file into the chosen folder. This is useful in case you select a
+path which is then implicitly synchronized to some external server, e.g. Nextcloud. Tapping the
+folder row offers: Change path and Remove folder. Removing the folder offers an optional &quot;Also
+delete the backup file (backup.csv)&quot; checkbox when a backup exists; the file is kept unless that is
+ticked.</p>
 <p>Pretty backup allows you to create a CSV file which has human-readable start, stop and length values
 during exporting to a file. This pretty output can't be imported back, though.</p>
+<h4 id="google-drive"><a class="header" href="#google-drive">Google Drive</a></h4>
+<p>The Google Drive destination is only available in the <code>gplay</code> build flavor (the F-Droid <code>foss</code>
+flavor is free of proprietary Google dependencies, so it only offers the folder destination).</p>
+<p>When you add Google Drive, you sign in with a Google account and your sleeps are backed up to your
+Drive's hidden per-app storage (the appDataFolder): it's not visible among your normal Drive files
+and is only accessible to this app.</p>
+<p>A newly added account backs up once a day by default; &quot;Change frequency&quot; switches between &quot;Once a
+day&quot; and &quot;On sleep add / edit / remove&quot;. Automatic uploads are skipped when nothing changed since
+the last successful upload; &quot;Back up now&quot; always uploads. When an automatic upload fails (no
+network, or the app's Drive access was revoked), the data stays on the device and the upload is
+retried in the background until it succeeds.</p>
+<p>If the Google account is removed from the device's system settings, the destination row is kept but
+marked &quot;Account not on this device&quot; and backups pause; adding the account back, or using &quot;Change
+account&quot; to pick another, resumes them, and &quot;Remove account&quot; discards the destination.</p>
+<p>Tapping the Google Drive row offers: Back up now, Change frequency, Restore backup and Delete
+backup (the last two only when a backup exists), Change account and Remove account. Remove account offers an optional &quot;Also delete the Google Drive backup&quot; checkbox when a
+backup exists; removing the account never deletes the backup unless that is ticked.</p>
+<p>&quot;Restore backup&quot; downloads the backup, which is handy after a reinstall or on a new
+phone. When local sleeps exist, it asks whether to &quot;Merge with existing data&quot; or &quot;Replace existing
+data&quot;; replacing deletes all local sleeps first. With no local sleeps the backup is restored
+directly.</p>
+<p>Setting this up for a self-built <code>gplay</code> flavor requires a Google Cloud project of your own: enable
+the Drive API, add the <code>.../auth/drive.appdata</code> scope to the OAuth consent screen, and create an
+OAuth 2.0 client ID of type &quot;Android&quot; for the app's package name and signing certificate SHA-1
+fingerprint (register both the release package and the <code>.debug</code> package if you test debug builds).
+The <code>drive.appdata</code> scope is not &quot;sensitive&quot;, so no Google verification review is needed. Sign-in
+fails until this is configured.</p>
 <h3 id="dashboard"><a class="header" href="#dashboard">Dashboard</a></h3>
 <p>You can also customize the dashboard duration, which limits the sleeps and sleep statistics on the
 dashboard and graphs to the time period selected in the main activity. The default is to only show
@@ -433,6 +478,11 @@ Logcat tab in Android Studio.</p>
 <h2 id="master"><a class="header" href="#master">master</a></h2>
 <ul>
 <li>sleep activity now has a 'times woken up' widget (@Rikul)</li>
+<li>backup settings redesign: multiple backup destinations (a device folder and, in the gplay flavor,
+Google Drive with restore), per-destination menus (@avi12)</li>
+<li>new foss/gplay product flavors: the F-Droid build is foss, release artifacts are now
+app-foss-release.apk and app-gplay-release.apk (@avi12)</li>
+<li>Resolves: gh#579 CSV import: tolerate if seconds is used instead of milliseconds</li>
 </ul>
 <h2 id="262"><a class="header" href="#262">26.2</a></h2>
 <ul>
