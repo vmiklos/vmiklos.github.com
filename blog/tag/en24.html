@@ -59,6 +59,69 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/exif-date-sort.html">Sorting photos by date using exif date info</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Mon 11 June 2012</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>For a family event I received photos from about 6 persons, and wanted to view
+all of them, sorted by date. The problem was that the timestamps of the files
+were sometimes incorrect, and also in all but one cases the exif timestamp was
+incorrect as well (but at least that was consistently incorrect, e.g. all
+behind of time by 20 mins, etc.)</p></div>
+<div class="paragraph"><p>So first I searched for a photo where a clock is shown, then matched photos by
+different authors showing the same action to know the time delta of each
+camera. The rest can be scripted: just read the exif info, apply the necessary
+time correction based on the camera model, and touch the file with the correct
+date. Then any image viewer can show the photos, sorted by date.</p></div>
+<div class="paragraph"><p>Here is the script I came up with:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">for</span></span> i <span style="font-weight: bold"><span style="color: #0000FF">in</span></span> <span style="color: #990000">*.</span>jpg
+<span style="font-weight: bold"><span style="color: #0000FF">do</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># 2012:01:01 01:01:01 -&gt; 2012-01-01 01:01:01</span></span>
+    <span style="color: #009900">date</span><span style="color: #990000">=</span><span style="color: #009900">$(</span>exiv2 <span style="color: #009900">$i</span> <span style="color: #990000">|</span>grep timestamp<span style="color: #990000">|</span>sed <span style="color: #FF0000">'s/.* : //'</span><span style="color: #990000">|</span>sed <span style="color: #FF0000">'s/^</span><span style="color: #CC33CC">\(</span><span style="color: #FF0000">[0-9][0-9][0-9][0-9]</span><span style="color: #CC33CC">\)</span><span style="color: #FF0000">:</span><span style="color: #CC33CC">\(</span><span style="color: #FF0000">[0-9][0-9]</span><span style="color: #CC33CC">\)</span><span style="color: #FF0000">:</span><span style="color: #CC33CC">\(</span><span style="color: #FF0000">[0-9][0-9]</span><span style="color: #CC33CC">\)</span><span style="color: #FF0000">/</span><span style="color: #CC33CC">\1</span><span style="color: #FF0000">-</span><span style="color: #CC33CC">\2</span><span style="color: #FF0000">-</span><span style="color: #CC33CC">\3</span><span style="color: #FF0000">/'</span><span style="color: #990000">)</span>
+    <span style="font-style: italic"><span style="color: #9A1900"># date string -&gt; epoch</span></span>
+    <span style="color: #009900">unix</span><span style="color: #990000">=</span><span style="color: #009900">$(</span>date --date<span style="color: #990000">=</span><span style="color: #FF0000">"$date"</span> <span style="color: #990000">+%</span>s<span style="color: #990000">)</span>
+
+    <span style="color: #009900">model</span><span style="color: #990000">=</span><span style="color: #009900">$(</span>exiv2 <span style="color: #009900">$i</span> <span style="color: #990000">|</span>grep model<span style="color: #990000">|</span>sed <span style="color: #FF0000">'s/.*: //'</span><span style="color: #990000">)</span>
+
+    <span style="font-weight: bold"><span style="color: #0000FF">if</span></span> <span style="color: #990000">[</span> <span style="color: #FF0000">"$model"</span> <span style="color: #990000">==</span> <span style="color: #FF0000">"NIKON D40"</span> <span style="color: #990000">];</span> <span style="font-weight: bold"><span style="color: #0000FF">then</span></span>
+        <span style="color: #009900">unix</span><span style="color: #990000">=</span><span style="color: #009900">$(($unix-1320))</span> <span style="font-style: italic"><span style="color: #9A1900"># Alice</span></span>
+    <span style="font-weight: bold"><span style="color: #0000FF">else</span></span>
+        <span style="color: #009900">unix</span><span style="color: #990000">=</span><span style="color: #009900">$(($unix+3600))</span> <span style="font-style: italic"><span style="color: #9A1900"># Bob</span></span>
+    <span style="font-weight: bold"><span style="color: #0000FF">fi</span></span>
+
+    <span style="font-style: italic"><span style="color: #9A1900"># epoch -&gt; date string</span></span>
+    <span style="color: #009900">date</span><span style="color: #990000">=</span><span style="color: #009900">$(</span>python -c <span style="color: #FF0000">"import time; print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime($unix))"</span><span style="color: #990000">)</span>
+    <span style="font-style: italic"><span style="color: #9A1900"># profit!</span></span>
+    touch --date<span style="color: #990000">=</span><span style="color: #FF0000">"$date"</span> <span style="color: #009900">$i</span>
+<span style="font-weight: bold"><span style="color: #0000FF">done</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># write back the timestamps to the exif info (thx boobaa)</span></span>
+jhead -dsft <span style="color: #990000">*.</span>jpg</tt></pre></div></div>
+<div class="paragraph"><p>And additionally if you don&#8217;t want to mess up the settings of the image viewer, you can use:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>c=0; for i in $(ls -lhtr *.jpg|sed 's/.* //'); do c=$((c+1)); cp -a $i new/$(printf "%03d" $c).jpg; done</code></pre>
+</div></div>
+<div class="paragraph"><p>to order filenames based on the file timestamp.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/git-notes-merge.html">Merging git notes</a></h1>
   </div>
   <div class="article_meta">
@@ -581,45 +644,6 @@ jBPM and bpm-console: these were part of my <a href="https://github.com/vmiklos/
 </p>
 </li>
 </ul></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/insert-current-datetime.html">Inserting current date and time vs. Hungarian keyboard layout</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Tue 13 December 2011</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>There was an old Calc
-<a href="https://bugs.freedesktop.org/show_bug.cgi?id=30714">bugreport</a> about this, and
-it was an interesting challenge, since I never touched Calc code before.</p></div>
-<div class="paragraph"><p>First, the references:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-<a href="http://office.microsoft.com/en-us/excel-help/insert-the-current-date-and-time-in-a-cell-HP003056107.aspx">English Excel help</a>
-</p>
-</li>
-<li>
-<p>
-<a href="http://office.microsoft.com/hu-hu/excel-help/az-aktualis-datum-es-ido-beszurasa-cellaba-HP003056107.aspx">Hungarian Excel help</a>
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>Given that there is no easy way to enter Ctrl-Shift-";" using a Hungarian
-keyboard, the Hungarian equivalent is Ctrl-Shift-".".</p></div>
-<div class="paragraph"><p>Actually, once <a href="http://www.youtube.com/watch?v=7nMCjBx7-T4">this feature</a> will be
-implemented, not sure how the Hungarian users will access it. :)</p></div>
 </div>
 </div>
 

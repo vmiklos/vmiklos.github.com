@@ -58,6 +58,65 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sd-faster-slide-copy.html">Faster slide copy in Collabora Online Writer</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Fri 10 July 2026</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 3 minutes</p>
+  </div>
+  <div class="article_text">
+    <p>Copying slides between Impress documents in <a href="https://www.collaboraonline.com/">Collabora Online</a> was
+working already, see e.g. <a href="https://www.youtube.com/watch?v=b2sgsvvEnuM">a feature Friday video</a> from
+last year for details.</p>
+<p>This post is meant to detail how we managed to make it about 5 times faster for large presentations
+with lots of high-resolution screenshots.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>Impress supports lazy-loading images. This means that once you open a presentation with lots of
+slides (our testcase was 85 slides), then only the first few slides are rendered, and the images on
+other slides aren't even parsed / decompressed.</p>
+<p>This is good, the first slide is rendered faster this way. Also the preview of the first few slides
+are shown, but the rest of the slides are not rendered, so you can even edit the first slides
+without "swapping in" images on later slides.</p>
+<p>But we noticed that copying slides between documents means saving the copied slides to ODP, and we
+swap in images during ODP save, which makes this operation slower than it needs to be. In practice
+75% of the cost was uncompressing PNG files to calculate a checksum on the raw pixel data:</p>
+<p><a href="https://share.vmiklos.hu/blog/sd-faster-slide-copy/flame1-bad.svg"><figure><img src="https://share.vmiklos.hu/blog/sd-faster-slide-copy/flame1-bad.svg"><figcaption>Collabora Online Impress: bad checksum calc on unompressed image data</figcaption></figure></a></p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>The <a href="https://github.com/CollaboraOnline/online/issues/15962">the issue</a> shows that our goal is to
+not call <code>ImpGraphic::ensureAvailable()</code> while saving to ODP. The first step was to calculate the
+checksum on the compressed image data. After that, we get a new flamegraph:</p>
+<p><a href="https://share.vmiklos.hu/blog/sd-faster-slide-copy/flame2-bad.svg"><figure><img src="https://share.vmiklos.hu/blog/sd-faster-slide-copy/flame2-bad.svg"><figcaption>Collabora Online Impress: swap in to have access to the graphic link</figcaption></figure></a></p>
+<p>Here we swapped in to always have access to a "graphic link". This gives access to the underlying
+compressed image data. But a just created image may not have that compressed form, so if you
+unconditionally want a "graphic link", you hit a complex code path, which includes swapping the
+image in. The solution is to ask for the "shared graphic link", which may not be available. It is
+typically available and is the fast path; and we have fallback code in place if the graphic has no
+"graphic link". After fixing that, we get a third bad flamegraph:</p>
+<p><a href="https://share.vmiklos.hu/blog/sd-faster-slide-copy/flame3-bad.svg"><figure><img src="https://share.vmiklos.hu/blog/sd-faster-slide-copy/flame3-bad.svg"><figcaption>Collabora Online Impress: swap in to have a graphic ID</figcaption></figure></a></p>
+<p>This last problem is around producing something called a GraphicID. This is used to identify an
+image in a unique way, and ODP save uses it to name the graphic in the ZIP file as something like <code>Pictures/10000201000000130000001391B82C7409B72726.png</code>. After fixing that to only use image metadata we get a much more reasonable performance profile:</p>
+<p><a href="https://share.vmiklos.hu/blog/sd-faster-slide-copy/flame4-good.svg"><figure><img src="https://share.vmiklos.hu/blog/sd-faster-slide-copy/flame4-good.svg"><figcaption>Collabora Online Impress: no PNG swap-in during ODP save</figcaption></figure></a></p>
+<p>For a sample document, copying 85 slides used to take 5100 ms, and now takes 978 ms (19% of
+baseline) with these improvements.</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>As usual, the high-level problem was addressed by a series of small changes:</p>
+<ul>
+<li><a href="https://gerrit.collaboraoffice.com/plugins/gitiles/online/+/5ed08a860ceb6a2b4e45369c34b8b09bae38dfc8">cool#15962 engine vcl: move the CRC to being on the compressed stream if we have one</a></li>
+<li><a href="https://gerrit.collaboraoffice.com/plugins/gitiles/online/+/1b3e142d8206e141fc32448a7f25a1aa5e94418d">Related: cool#15962 engine vcl: add a checksum to the BinaryDataContainer</a></li>
+<li><a href="https://gerrit.collaboraoffice.com/plugins/gitiles/online/+/f9bce20ed00fdab1fbef3207626e0a95a7b4bcbc">cool#15962 engine xmloff: save graphic using the shared gfx link</a></li>
+<li><a href="https://gerrit.collaboraoffice.com/plugins/gitiles/online/+/f59b1faf7597ae2eb538f6cd7b4861ced663503f">cool#15962 engine vcl: construct GraphicID for PNG files without swapping in</a></li>
+</ul>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a development edition of Collabora Online 26.04 and try it out yourself right now: <a href="https://www.collaboraonline.com/code/">try
+the development edition</a>.</p>
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/sw-redline-format-on-format.html">Format-on-format change tracking in Collabora Online Writer</a></h1>
   </div>
   <div class="article_meta">
@@ -680,67 +739,6 @@ that).</p>
 <li><a href="https://git.libreoffice.org/core/commit/8d60fcdac9bc79c7b8956ed3cd9e9f518b28c119">sw markdown filter: export non-linked inline images</a></li>
 <li><a href="https://git.libreoffice.org/core/commit/3c29e1277bda566b4455123a7a53c8f0fc6eda98">tdf#168662 sw markdown export: extract inline image export functions</a></li>
 <li><a href="https://git.libreoffice.org/core/commit/e0601a598977265c5b05ba397bce04d9689fca4b">tdf#168662 sw markdown export: handle anchored images</a></li>
-</ul>
-<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
-<p>You can get a development edition of Collabora Online 25.04 and try it out yourself right now: <a href="https://www.collaboraonline.com/code/">try
-the development edition</a>.  Collabora intends to continue
-supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
-available in TDF's next release too (26.2).</p>
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/sw-interdependent-redline-improvements3.html">Interdependent tracked changes improvements in Writer, part 3</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Tue 09 September 2025</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 3 minutes</p>
-  </div>
-  <div class="article_text">
-    <p>Writer has some support for interdependent (or hierarchical) tracked changes: e.g. the case when you
-have a delete on top of an insert. See the <a href="https://vmiklos.hu/blog/sw-interdependent-redline-improvements2.html">second
-post</a> for background.</p>
-<p>This work is primarily for <a href="https://www.collaboraonline.com/">Collabora Online</a>, but the feature is
-available in desktop Writer as well.</p>
-<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
-<p>With the already mentioned improvements in place, the area of format redlines with character style
-or direct formatting changes were still lacking: Writer's original model here was just marking a
-text range as "formatted" and then either accept the format redline as-is, or reject reverting back
-to the paragraph style (default formatting), losing the old character style or old direct
-formatting.</p>
-<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
-<p>Here is a sample case of a document where the old character style is Strong (~bold) and the font
-size is 24pt, while the new character style is Quote (~italic) and the font size is 36pt. The rest
-of the document uses no specific character styles and has the font size of 12pt:</p>
-<p><a href="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements3/1-baseline.png"><figure><img src="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements3/1-baseline.png"><figcaption>Interdependent tracked change: improved format, after document load</figcaption></figure></a></p>
-<p>Rejecting that format redline resulted in just the defaults, i.e. no character style and 12pt font
-size:</p>
-<p><a href="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements3/2-edit-old.png"><figure><img src="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements3/2-edit-old.png"><figcaption>Interdependent tracked change: old reject, lost character style / direct format</figcaption></figure></a></p>
-<p>But now we track the old character style &amp; direct format:</p>
-<p><a href="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements3/3-edit-new.png"><figure><img src="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements3/3-edit-new.png"><figcaption>Interdependent tracked change: new reject, handled character style / direct format</figcaption></figure></a></p>
-<p>This required changes in the DOCX import, ODF import and ODF export, too.</p>
-<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
-<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
-<p>As usual, the high-level problem was addressed by a series of small changes. Core side:</p>
-<ul>
-<li><a href="https://git.libreoffice.org/core/commit/7aa34659e2b49bf02a95a17f51e78f3ab9683235">sw: document DocumentRedlineManager</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/da3da0635a30f9b61a913bd7553b5e1278bf260e">sw: document IDocumentRedlineAccess</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/b2919d5b5ee4e057c99219f5541efc388b2d19b7">sw doc model xml dump: show the item set of a format redline</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/d7bf3a17cb27da1a58163e9db657f0a8d8344901">tdf#166319 sw interdependent redlines: fix redo of accept of ins-then-fmt's fmt</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/f66d63da05dbe2f254ffaf428257684a38523f66">tdf#166319 sw interdependent redlines: handle deleting a self ins-then-fmt</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/1ba53f5ebbd57b7baf72240784d18954688a09b9">tdf#166319 sw interdependent redlines: fix redo of reject of del-then-fmt's fmt</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/e545ada3501780ee6552bbfa19954794e0440d46">tdf#167194 sw redline reinstate: fix handling of self-inserts</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/2db0a779944f9496371b3ba68f7494c635ad431d">tdf#167761 sw format redline: register the item set in the autostyle pool</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/b78bdc9eb15fedd22ece76aeb1b43df40caf3b82">tdf#167761 sw format redline: implement ODF export</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/0e21f3b36cbd12787021c3b8ef439aab9a09efdd">tdf#167761 sw format redline, char props: implement ODF import</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/a6d8608595fd1ecfdff35c2003a28589ea1214ad">tdf#167761 sw format redline, char style: implement DOCX import</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/0ba6dd9eb3f342345663b12527a29425675d2078">tdf#167761 sw format redline, char style: implement ODF import</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/43104ad996bc9b292b66d9e605632407cb59c4c6">tdf#167761 sw format redline, char style: fix missing encode in ODF filter</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/c625247680cd5737723154b9a73c45e786611b44">tdf#167761 sw format redline, char style+direct: add ODT export</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/bbebb3908ff9a9c384a475737ead537906517387">tdf#167761 sw format redline, char style+direct: add ODT import</a></li>
 </ul>
 <h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
 <p>You can get a development edition of Collabora Online 25.04 and try it out yourself right now: <a href="https://www.collaboraonline.com/code/">try
