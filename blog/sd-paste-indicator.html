@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/pygments.css">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Miklos Vajna">
+  <meta name="description" content="Posts and writings by Miklos Vajna">
+
+  <link href="https://vmiklos.hu/blog/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking RSS" />
+
+<meta name="keywords" content="en">
+
+  <title>
+    What is Miklos hacking
+&ndash; Better slide paste progress indicator in Collabora Online Impress  </title>
+
+<script type="text/javascript">
+  var _paq = window._paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//analytics.vmiklos.hu/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '1']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <h2><a href="https://vmiklos.hu/blog">What is Miklos hacking</a></h2>
+      <p></p>
+      <ul>
+        <li><a href="/" target="_blank">Root</a></li>
+        <li><a href="https://planet.documentfoundation.org/" target="_blank">LibreOffice Blogs</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://vmiklos.hu/blog">Index</a> &brvbar; <a href="https://vmiklos.hu/blog/archives.html">Archives</a>
+      &brvbar; <a href="https://vmiklos.hu/blog/feeds/all.rss.xml">RSS</a>
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sd-paste-indicator.html">Better slide paste progress indicator in Collabora Online Impress</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Thu 06 August 2026</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <p>Copying slides between Impress documents in <a href="https://www.collaboraonline.com/">Collabora Online</a> was
+reasonably fast already, see <a href="https://vmiklos.hu/blog/sd-faster-slide-copy.html">the previous post</a> for more
+details.</p>
+<p>This post is meant to show how the progress indicator you see while pasting is improved, better
+showing and hiding when the paste is actually in progress.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>Impress copies slides using 3 steps. Our testcase was a 85 slides long slidedeck, pasting that to an
+other presentation took 3 steps: downloading the remote slides data, uploading the slides data to
+the current document and finally executing the paste UI action, which interprets the ODP slide data.
+With enough slides, each step took a bit of visible time:</p>
+<p><a href="https://share.vmiklos.hu/blog/sd-paste-indicator/steps.svg"><figure><img src="https://share.vmiklos.hu/blog/sd-paste-indicator/steps.svg"><figcaption>Collabora Online Impress: bad progress indicator</figcaption></figure></a></p>
+<p>As you can see, the progress indicator stopped after task 2, which was confusing.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>The <a href="https://github.com/CollaboraOnline/online/issues/16013">the issue</a> shows that the problem was
+we had no idea when the paste UI command finished its work. This looked like this visually:</p>
+<p><a href="https://youtu.be/HNOVbHw4Pt0"><figure><img src="https://share.vmiklos.hu/blog/sd-paste-indicator/bad.png"><figcaption>Collabora Online Impress: bad progress indicator in action</figcaption></figure></a></p>
+<p>Note how the progress indicator finishes and only a little later the pasted slides show up.</p>
+<p>In contrast to that, after the fix, the slides show up as soon as the progress indicator hides:</p>
+<p><a href="https://youtu.be/N1I1JXDzwWM"><figure><img src="https://share.vmiklos.hu/blog/sd-paste-indicator/good.png"><figcaption>Collabora Online Impress: good progress indicator</figcaption></figure></a></p>
+<h2 id="one-more-thing">One more thing<a class="headerlink" href="#one-more-thing" title="Permanent link">&para;</a></h2>
+<p>This post is about pasting, but we had the opposite problem around Markdown in Writer: you could
+paste (using the SDK) into Writer, you could also convert to and from Markdown (again, using the
+SDK), but you could not actually open Markdown files. This now also works:</p>
+<p><a href="https://share.vmiklos.hu/blog/sd-paste-indicator/markdown.png"><figure><img src="https://share.vmiklos.hu/blog/sd-paste-indicator/markdown.png"><figcaption>Collabora Online Writer: editing a Markdown file</figcaption></figure></a></p>
+<p>To not break compatibility, a single click in Nextcloud still opens the Markdown file in their JS
+editor, but similar to PDF files, you can use the "..." menu to access additional actions and there
+you can now open the file for editing in Collabora Online as well.</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>As usual, the high-level problem was addressed by a series of small changes:</p>
+<ul>
+<li><a href="https://gerrit.collaboraoffice.com/plugins/gitiles/online/+/9a671594ce19a19dd358b0e27cfc6373d770f799">cool#16013 slide copy: don't terminate paste progress indicator too early</a></li>
+<li><a href="https://gerrit.collaboraoffice.com/plugins/gitiles/online/+/0f56d692d1fa68f4d7d43c6bd275ad9d5356c617">Related: cool#16013 engine sc: make ScInsertContentsDlg async</a></li>
+<li><a href="https://gerrit.collaboraoffice.com/plugins/gitiles/online/+/b0ba3eadd40b73cb4054802db8da468b315e94a6">cool#16018 discovery: add entries for markdown</a></li>
+</ul>
+<p>Nextcloud richdocuments commits:</p>
+<ul>
+<li><a href="https://github.com/nextcloud/richdocuments/commit/7ec1f6c6c0479fcb8c7639e4cdce6418327847cc">feat: Add text/markdown as an optionally supported mime type</a></li>
+</ul>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a development edition of Collabora Online 26.04 and try it out yourself right now: <a href="https://www.collaboraonline.com/code/">try
+the development edition</a>.</p>
+  </div>
+  <div class="article_meta">
+    <p>Category: <a href="https://vmiklos.hu/blog/category/collabora-online.html">collabora-online</a>
+ &ndash; Tags:
+      <a href="https://vmiklos.hu/blog/tag/en.html">en</a>    </p>
+  </div>
+
+
+</article>
+
+
+    <div id="ending_message">
+      <p>&copy; Miklos Vajna. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
+</body>
+</html>

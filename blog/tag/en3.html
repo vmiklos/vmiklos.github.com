@@ -59,6 +59,57 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/editeng-rtf-export-lost-para-style.html">Editeng RTF export: fixing a lost paragraph style</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Wed 04 December 2024</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <p>Impress shape text doesn't have much support for styles, e.g. the default UI in Writer gives you a
+paragraph style dropdown, and you don't get the same in Impress. Still, a paragraph style is
+attached to bullets based on their outline level, and Impress has a View → Outline menu item to give
+you that styled text you can copy. Pasting that to Writer started to lose styles recently and it's
+now fixed to work again.</p>
+<p>This work is primarily for <a href="https://www.collaboraonline.com/">Collabora Online</a>, but the feature is
+available in desktop Impress as well.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>As described in a <a href="https://git.libreoffice.org/core/commit/70d1bd6ee0eba9d6661cd6280566f77a87f2d068">previous
+commit</a>, I had a
+case where lots of not needed paragraph styles were exported to RTF in case an Impress document had
+enough master pages. The idea was to only export actually used paragraph styles, to avoid wasting
+CPU power.</p>
+<p>Turns out filtering out paragraph styles has to happen at two locations:</p>
+<ul>
+<li>in the style table to assign an index to a paragraph style</li>
+<li>when referring to those styles</li>
+</ul>
+<p>The problem was that unused styles were removed from the style table, but not from the style → index
+mapping, so as soon as you had both used and unused paragraph styles, the declared and the referred
+style indexes didn't match anymore.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>Here is a sample paste result in Writer, where you can see that the text doesn't have a custom
+paragraph style:</p>
+<p><a href="https://share.vmiklos.hu/blog/editeng-rtf-export-lost-para-style/old.png"><figure><img src="https://share.vmiklos.hu/blog/editeng-rtf-export-lost-para-style/old.png"><figcaption>Bugdoc: old Writer paste</figcaption></figure></a></p>
+<p>And here is the same paste, now with paragraph styles restored:</p>
+<p><a href="https://share.vmiklos.hu/blog/editeng-rtf-export-lost-para-style/new.png"><figure><img src="https://share.vmiklos.hu/blog/editeng-rtf-export-lost-para-style/new.png"><figcaption>Bugdoc: new Writer paste</figcaption></figure></a></p>
+<p>As you can see, now the pasted text has paragraph styles.</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>The bugfix commit was <a href="https://git.libreoffice.org/core/commit/c8b607b7c0096c58dc5187262bf0133dee728d50">editeng RTF export: fix broken offsets into the para style table</a>.</p>
+<p>The tracking bug was <a href="https://bugs.documentfoundation.org/show_bug.cgi?id=163883">tdf#163883</a>.</p>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a development edition of Collabora Online 24.04 and try it out yourself right now: <a href="https://www.collaboraonline.com/code/">try
+the development edition</a>.  Collabora intends to continue
+supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
+available in TDF's next release too (25.2).</p>
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/sw-textbox-capture.html">Handling page captures for Writer TextBoxes</a></h1>
   </div>
   <div class="article_meta">
@@ -622,77 +673,6 @@ result:</p>
 unstable snapshot</a>.  Collabora
 intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
 of this work will be available in TDF's next release too (24.8).</p>
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/multi-view-programming-challenges.html">Fixing multi-view programming challenges in Calc and elsewhere</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Tue 06 February 2024</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 3 minutes</p>
-  </div>
-  <div class="article_text">
-    <p>This post describes some challenges around having multiple views of one opened document in
-LibreOffice core, when those views belong to LOK views, representing different users, with their
-own language, locale and other view settings.</p>
-<p>This work is primarily for <a href="https://www.collaboraoffice.com/">Collabora Online</a>, but is useful for
-all clients of the LOK API.</p>
-<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
-<p>LOK views are meant to represent separate users, so we need to make sure that when a user sets their
-preferences and trigger an action, then the response to that action goes to the correct view, with
-the correct view settings.</p>
-<p>This is different from the desktop LibreOffice use-case, where multiple windows are still meant to
-share the same user name, language, undo stack and so on.</p>
-<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
-<p>In this post, I would like to present 4 small improvements that recently happened to the LOK API to
-provide this wanted separation of views.</p>
-<p>The first was an <a href="https://github.com/CollaboraOnline/online/issues/7853">issue</a> where two users were
-editing the same document, one busily typing and the other clicked on a link in Calc. What could
-happen sometimes is the link popup appeared for the user who typed, not for the user who clicked on
-the link:</p>
-<p><a href="https://share.vmiklos.hu/blog/multi-view-programming-challenges/2023-12-18-cool-calc-hyprelink-bad-view.png"><figure><img src="https://share.vmiklos.hu/blog/multi-view-programming-challenges/2023-12-18-cool-calc-hyprelink-bad-view.png"><figcaption>Link popup is actually on the left, should be on the right, now fixed</figcaption></figure></a></p>
-<p>This specific problem can be fixed by making sure that link click callbacks are invoked
-synchronously (while the clicking view is still active) and not later, when the current view may or
-may not be the correct one.</p>
-<p>It turns out the same problem (async command dispatch) affects not only hyperlinks, but many other
-cases as well, where we want to stay async, for example, when one dialog would invoke another
-dialog, like the Calc conditional format -&gt; add dialog:</p>
-<p><a href="https://share.vmiklos.hu/blog/multi-view-programming-challenges/2024-01-02-cool-calc-condformat-wrong-view.png"><figure><img src="https://share.vmiklos.hu/blog/multi-view-programming-challenges/2024-01-02-cool-calc-condformat-wrong-view.png"><figcaption>Calc conditional format add dialog appearing on the left, should be on the right, now fixed</figcaption></figure></a></p>
-<p>There you don't want to change async commands into sync commands, because that may mean spinning the
-main loop inside a dialog, resulting in nested main loops. This can be fixed by making sure that
-async commands to be dispatched (sfx2 hints in general) are processed in a way that the current view
-at dispatch &amp; processing is the same, which is now the case.</p>
-<p>The third problem was around wrong language &amp; locale in the status bar:</p>
-<p><a href="https://share.vmiklos.hu/blog/multi-view-programming-challenges/2024-01-04-cool-calc-statusbar-wrong-lang.png"><figure><img src="https://share.vmiklos.hu/blog/multi-view-programming-challenges/2024-01-04-cool-calc-statusbar-wrong-lang.png"><figcaption>Unexpected English strings in localized statubar UI, now fixed</figcaption></figure></a></p>
-<p>This is not simply a problem of missing translation, the trouble was that the status bar update is
-also async and by the time the update happened, the locale of the view on the left was used, for a
-string that appears on the right.</p>
-<p>The way to fix this is to perform the update of toolbars/statusbar/etc (in general: SfxBindings) in
-a way that the language at job schedule time and at UI string creation time is the same.</p>
-<p>The last problem was quite similar, still about bad language on the UI, but this time on the
-sidebar:</p>
-<p><a href="https://share.vmiklos.hu/blog/multi-view-programming-challenges/2024-01-09-cool-calc-sidebar-wrong-lang.png"><figure><img src="https://share.vmiklos.hu/blog/multi-view-programming-challenges/2024-01-09-cool-calc-sidebar-wrong-lang.png"><figcaption>Unexpected English strings in localized sidebar UI, now fixed</figcaption></figure></a></p>
-<p>This is similar to the statusbar case, but the sidebar has its own executor for its async jobs, so
-that needed a fix similar to what the statusbar already had, now done.</p>
-<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
-<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
-<p>As usual, the high-level problem was addressed by a series of small changes:</p>
-<ul>
-<li><a href="https://git.libreoffice.org/core/commit/e83309d97d0bbad131a7fdfd365fb6122d6f415b">cool#7853 sc lok: fix bad view id on hyperlink click</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/ee7ca8e4ea8ed93655f99e77a9e77032ac830c46">cool#7865 sfx2 lok: fix bad view id on async command dispatch</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/51d8a2ef54751403fa707816e27ddb4e7faa8231">cool#7492 sfx2 lok: fix bad view id / statusbar string on async binding update</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/fb7b0b944741e4efae8d92a6e305036aff906c7a">cool#7492 sfx2 lok: just set language/locale on async binding update</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/aaf6ce108e91b1504befe19afcee471e3316ae7a">cool#7492 sfx2 lok: set language/locale on async sidebar update</a></li>
-</ul>
-<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
-<p>You can get the latest Collabora Online Development Edition 23.05 and try it out yourself right now:
-<a href="https://www.collaboraoffice.com/code/quick-tryout-nextcloud-docker/">try the development edition</a>.
-Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
-expect all of this work will be available in TDF's next release too (24.8).</p>
   </div>
 </article>
 

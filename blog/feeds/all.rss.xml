@@ -1,5 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>What is Miklos hacking</title><link>https://vmiklos.hu/blog/</link><description/><atom:link href="https://vmiklos.hu/blog/feeds/all.rss.xml" rel="self"/><lastBuildDate>Fri, 10 Jul 2026 08:36:13 +0200</lastBuildDate><item><title>Faster slide copy in Collabora Online Writer</title><link>https://vmiklos.hu/blog/sd-faster-slide-copy.html</link><description>&lt;p&gt;Copying slides between Impress documents in &lt;a href="https://www.collaboraonline.com/"&gt;Collabora Online&lt;/a&gt; was
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>What is Miklos hacking</title><link>https://vmiklos.hu/blog/</link><description/><atom:link href="https://vmiklos.hu/blog/feeds/all.rss.xml" rel="self"/><lastBuildDate>Thu, 06 Aug 2026 14:29:42 +0200</lastBuildDate><item><title>Better slide paste progress indicator in Collabora Online Impress</title><link>https://vmiklos.hu/blog/sd-paste-indicator.html</link><description>&lt;p&gt;Copying slides between Impress documents in &lt;a href="https://www.collaboraonline.com/"&gt;Collabora Online&lt;/a&gt; was
+reasonably fast already, see &lt;a href="https://vmiklos.hu/blog/sd-faster-slide-copy.html"&gt;the previous post&lt;/a&gt; for more
+details.&lt;/p&gt;
+&lt;p&gt;This post is meant to show how the progress indicator you see while pasting is improved, better
+showing and hiding when the paste is actually in progress.&lt;/p&gt;
+&lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Impress copies slides using 3 steps. Our testcase was a 85 slides long slidedeck, pasting that to an
+other presentation took 3 steps: downloading the remote slides data, uploading the slides data to
+the current document and finally executing the paste UI action, which interprets the ODP slide data.
+With enough slides, each step took a bit of visible time:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sd-paste-indicator/steps.svg"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sd-paste-indicator/steps.svg"&gt;&lt;figcaption&gt;Collabora Online Impress: bad progress indicator&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;As you can see, the progress indicator stopped after task 2, which was confusing.&lt;/p&gt;
+&lt;h2 id="results-so-far"&gt;Results so far&lt;a class="headerlink" href="#results-so-far" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;The &lt;a href="https://github.com/CollaboraOnline/online/issues/16013"&gt;the issue&lt;/a&gt; shows that the problem was
+we had no idea when the paste UI command finished its work. This looked like this visually:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://youtu.be/HNOVbHw4Pt0"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sd-paste-indicator/bad.png"&gt;&lt;figcaption&gt;Collabora Online Impress: bad progress indicator in action&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Note how the progress indicator finishes and only a little later the pasted slides show up.&lt;/p&gt;
+&lt;p&gt;In contrast to that, after the fix, the slides show up as soon as the progress indicator hides:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://youtu.be/N1I1JXDzwWM"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sd-paste-indicator/good.png"&gt;&lt;figcaption&gt;Collabora Online Impress: good progress indicator&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id="one-more-thing"&gt;One more thing&lt;a class="headerlink" href="#one-more-thing" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;This post is about pasting, but we had the opposite problem around Markdown in Writer: you could
+paste (using the SDK) into Writer, you could also convert to and from Markdown (again, using the
+SDK), but you could not actually open Markdown files. This now also works:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sd-paste-indicator/markdown.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sd-paste-indicator/markdown.png"&gt;&lt;figcaption&gt;Collabora Online Writer: editing a Markdown file&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;To not break compatibility, a single click in Nextcloud still opens the Markdown file in their JS
+editor, but similar to PDF files, you can use the "..." menu to access additional actions and there
+you can now open the file for editing in Collabora Online as well.&lt;/p&gt;
+&lt;h2 id="how-is-this-implemented"&gt;How is this implemented?&lt;a class="headerlink" href="#how-is-this-implemented" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;If you would like to know a bit more about how this works, continue reading... :-)&lt;/p&gt;
+&lt;p&gt;As usual, the high-level problem was addressed by a series of small changes:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://gerrit.collaboraoffice.com/plugins/gitiles/online/+/9a671594ce19a19dd358b0e27cfc6373d770f799"&gt;cool#16013 slide copy: don't terminate paste progress indicator too early&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://gerrit.collaboraoffice.com/plugins/gitiles/online/+/0f56d692d1fa68f4d7d43c6bd275ad9d5356c617"&gt;Related: cool#16013 engine sc: make ScInsertContentsDlg async&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://gerrit.collaboraoffice.com/plugins/gitiles/online/+/b0ba3eadd40b73cb4054802db8da468b315e94a6"&gt;cool#16018 discovery: add entries for markdown&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Nextcloud richdocuments commits:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://github.com/nextcloud/richdocuments/commit/7ec1f6c6c0479fcb8c7639e4cdce6418327847cc"&gt;feat: Add text/markdown as an optionally supported mime type&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="want-to-start-using-this"&gt;Want to start using this?&lt;a class="headerlink" href="#want-to-start-using-this" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;You can get a development edition of Collabora Online 26.04 and try it out yourself right now: &lt;a href="https://www.collaboraonline.com/code/"&gt;try
+the development edition&lt;/a&gt;.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Thu, 06 Aug 2026 14:29:42 +0200</pubDate><guid>tag:vmiklos.hu,2026-08-06:/blog/sd-paste-indicator.html</guid><category>collabora-online</category><category>en</category></item><item><title>Faster slide copy in Collabora Online Writer</title><link>https://vmiklos.hu/blog/sd-faster-slide-copy.html</link><description>&lt;p&gt;Copying slides between Impress documents in &lt;a href="https://www.collaboraonline.com/"&gt;Collabora Online&lt;/a&gt; was
 working already, see e.g. &lt;a href="https://www.youtube.com/watch?v=b2sgsvvEnuM"&gt;a feature Friday video&lt;/a&gt; from
 last year for details.&lt;/p&gt;
 &lt;p&gt;This post is meant to detail how we managed to make it about 5 times faster for large presentations
@@ -468,77 +509,4 @@ formatting change:&lt;/p&gt;
 &lt;p&gt;You can get a development edition of Collabora Online 25.04 and try it out yourself right now: &lt;a href="https://www.collaboraonline.com/code/"&gt;try
 the development edition&lt;/a&gt;.  Collabora intends to continue
 supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
-available in TDF's next release too (26.2).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Tue, 04 Nov 2025 08:11:48 +0100</pubDate><guid>tag:vmiklos.hu,2025-11-04:/blog/sw-interdependent-redline-improvements4.html</guid><category>libreoffice</category><category>en</category></item><item><title>Markdown import/export in Writer</title><link>https://vmiklos.hu/blog/sw-markdown-filter.html</link><description>&lt;p&gt;Writer recently got a Markdown import &amp;amp; export filter and there were a number of improvements to
-that.&lt;/p&gt;
-&lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraonline.com/"&gt;Collabora Online&lt;/a&gt;, but the feature is
-available in desktop Writer as well.&lt;/p&gt;
-&lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;Ujjawal Kumar contributed a markdown import to Writer, as part of Google Summer of Code (GSoC) this
-summer. Mike Kaganski of Collabora also created a minimal markdown export in Writer. I looked at the
-feature differences between the two, and filled in various gaps in the markdown export. I also added
-a few general markdown import/export improvements relevant for normal Writer documents, like
-embedded image support.&lt;/p&gt;
-&lt;h2 id="results-so-far"&gt;Results so far&lt;a class="headerlink" href="#results-so-far" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;Here is a sample case of a document using inline code spans:&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-markdown-filter/1-code-baseline.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-markdown-filter/1-code-baseline.png"&gt;&lt;figcaption&gt;Code span: baseline&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Exporting this to markdown &amp;amp; loading back to Writer, the code span was lost:&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-markdown-filter/1-code-old.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-markdown-filter/1-code-old.png"&gt;&lt;figcaption&gt;Code span: old result&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;And now it's preserved:&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-markdown-filter/1-code-new.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-markdown-filter/1-code-new.png"&gt;&lt;figcaption&gt;Code span: new result&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;This also works with code blocks.&lt;/p&gt;
-&lt;p&gt;Second, here is a document with lists:&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-markdown-filter/2-list-baseline.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-markdown-filter/2-list-baseline.png"&gt;&lt;figcaption&gt;Lists: baseline&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Exporting this to markdown &amp;amp; loading back to Writer, the lists were lost:&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-markdown-filter/2-list-old.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-markdown-filter/2-list-old.png"&gt;&lt;figcaption&gt;Lists: old result&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;And now they are preserved:&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-markdown-filter/2-list-new.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-markdown-filter/2-list-new.png"&gt;&lt;figcaption&gt;Lists: new result&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;This also works with nested lists.&lt;/p&gt;
-&lt;p&gt;Third, here is a document with an image:&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-markdown-filter/3-image-baseline.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-markdown-filter/3-image-baseline.png"&gt;&lt;figcaption&gt;Image: baseline&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Exporting this to markdown &amp;amp; loading back to Writer, the image was lost:&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-markdown-filter/3-image-old.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-markdown-filter/3-image-old.png"&gt;&lt;figcaption&gt;Image: old result&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;And now it's preserved:&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-markdown-filter/3-image-new.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-markdown-filter/3-image-new.png"&gt;&lt;figcaption&gt;Image: new result&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;This also works with embedded and anchored images.&lt;/p&gt;
-&lt;p&gt;Fourth, here is a document with a table:&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-markdown-filter/4-table-baseline.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-markdown-filter/4-table-baseline.png"&gt;&lt;figcaption&gt;Table: baseline&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Exporting this to markdown &amp;amp; loading back to Writer, the table was lost:&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-markdown-filter/4-table-old.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-markdown-filter/4-table-old.png"&gt;&lt;figcaption&gt;Table: old result&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;And now it's preserved:&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-markdown-filter/4-table-new.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-markdown-filter/4-table-new.png"&gt;&lt;figcaption&gt;Table: new result&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;This also works with table alignments and nested tables (to the extent the markdown markup allows
-that).&lt;/p&gt;
-&lt;p&gt;Fifth, here is a document with a quote block:&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-markdown-filter/5-quote-baseline.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-markdown-filter/5-quote-baseline.png"&gt;&lt;figcaption&gt;Quote: baseline&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Exporting this to markdown &amp;amp; loading back to Writer, the quote's paragraph indentation was lost:&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-markdown-filter/5-quote-old.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-markdown-filter/5-quote-old.png"&gt;&lt;figcaption&gt;Quote: old result&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;And now it's preserved:&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-markdown-filter/5-quote-new.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-markdown-filter/5-quote-new.png"&gt;&lt;figcaption&gt;Quote: new result&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;h2 id="how-is-this-implemented"&gt;How is this implemented?&lt;a class="headerlink" href="#how-is-this-implemented" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;If you would like to know a bit more about how this works, continue reading... :-)&lt;/p&gt;
-&lt;p&gt;As usual, the high-level problem was addressed by a series of small changes. Core side:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/55393d9cc42b0402362022594b04ab4888257fb7"&gt;desktop lok, doc save: register .md for Markdown&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/959c448e9531a53e068e4cec3a56b0caf0e0d3d1"&gt;sw markdown export: handle code&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/bcef97f29a7126cb3469066de4bacafaae30f86a"&gt;tdf#168152 sw markdown export: handle lists&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/fefd59b58c7d87e034fbf1c45cefa6a87ed09976"&gt;tdf#168172 sw markdown export: handle images&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/f073d733568d3b635ac8b2c3a5081afd679b4915"&gt;tdf#167564 sw markdown export: handle tables&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/c94b0c7ace10f5913aa53b593aa0ccd544df3cc3"&gt;sw markdown export: handle block quote&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/85aa1402c670e8c85949c5aaf01f529a0a59c05b"&gt;tdf#168317 sw markdown export: handle code block&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/5d0022c28b149dcc1db22176e442d130ff8d0279"&gt;sw markdown export: handle table cell adjustment&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/b7bc0e5f3999950d6b5f0d2bdcda2c6cc2f04e61"&gt;tdf#168341 sw markdown filter: handle links on images&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/f63c14c9e45d795c6d5927103181c8d0ede8a34b"&gt;sw markdown export: handle line breaks&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/3a294f97a9b37cc8ff38f76200b5b58879a3a72f"&gt;tdf#168446 sw markdown export: improve image name/description/title handling&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/852d8b06bcecc5c68194fced94e4c7af02086c52"&gt;tdf#167564 sw markdown export: handle multi-para table cells&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/c830c9ab824c8086b2124fec44f834a1d0ae4fa5"&gt;tdf#167564 sw markdown export: handle nested table cells&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/7608d96302652eb48863da441e121e0c61350412"&gt;tdf#168617 sw markdown filter: map tasks to checkbox content controls and back&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/169e1f3b914ac590b3719b8129b4f0913d4da228"&gt;sw markdown filter: import images with 'data:' URLs&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/8d60fcdac9bc79c7b8956ed3cd9e9f518b28c119"&gt;sw markdown filter: export non-linked inline images&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/3c29e1277bda566b4455123a7a53c8f0fc6eda98"&gt;tdf#168662 sw markdown export: extract inline image export functions&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/e0601a598977265c5b05ba397bce04d9689fca4b"&gt;tdf#168662 sw markdown export: handle anchored images&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id="want-to-start-using-this"&gt;Want to start using this?&lt;a class="headerlink" href="#want-to-start-using-this" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;You can get a development edition of Collabora Online 25.04 and try it out yourself right now: &lt;a href="https://www.collaboraonline.com/code/"&gt;try
-the development edition&lt;/a&gt;.  Collabora intends to continue
-supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
-available in TDF's next release too (26.2).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Tue, 07 Oct 2025 08:13:55 +0200</pubDate><guid>tag:vmiklos.hu,2025-10-07:/blog/sw-markdown-filter.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
+available in TDF's next release too (26.2).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Tue, 04 Nov 2025 08:11:48 +0100</pubDate><guid>tag:vmiklos.hu,2025-11-04:/blog/sw-interdependent-redline-improvements4.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>

@@ -59,6 +59,26 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/escaping-within-sphinx-and-mysql.html">Escaping within sphinx and mysql</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Sat 07 March 2009</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>We all know the usual problem with sql escaping, there is even a <a href="http://xkcd.com/327/">comic</a> about it.</p><p>There is an other SQL-related project, <a href="http://www.sphinxsearch.com/">sphinx</a>, which is a quite efficient search indexer (especially for whole word search), but it also needs escaping. Given that in sphinx "foo-bar" means "all records containing foo, but not bar", if you really want a single-word "foo-bar", then you need to use "foo\-bar".</p><p>And that's the fun part, as the escaping order matters a lot. Basically if you escape mysql first and then just insert the sphinx query, then you just created an injection yourself. ;)</p><p>So the <em>final</em> query will look like "foo\\-bar" if you did the escaping in the right order.</p><p>It's also notable that the official sphinx php API seems not escaping the ";" char, which is also a bug, as this way you can modify the search query in the way you want.</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/virtualbox.html">Virtualbox</a></h1>
   </div>
   <div class="article_meta">
@@ -243,44 +263,6 @@ export ORACLE_HOME=~/.oracle/product/10.2.0/client_1/
     Approximate round trip times in milli-seconds:
         Minimum = 0ms, Maximum = 0ms, Average = 0ms
 </pre></p><p>Now I wonder if they just ignore the dot at the end of the hostname or WTF.</p>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/old-bc-bug.html">Old bc bug</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Tue 24 February 2009</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>We had this old #3331 bug, and it turns out that Fedora had an s390 patch that fixed it. Of course the patch name is misleading since it fixed something on x86 as well, so it was the last thing I thought to try... :-)</p><p>I got a reply reply to my libbtctl patch I sent back in last year:</p><p><blockquote>
-On Sat, 2008-12-27 at 18:32 +0100, Miklos Vajna wrote:
-> Hi,
->
-> I recently tried to build libbtctl with mono-2.0 and the build fails
-> because the .pub signatures are no longer supported.
->
-> A similar commit in evolution-sharp's svn:
->
-> <a href="http://svn.gnome.org/viewvc/evolution-sharp?view=revision&amp;revision=191">http://svn.gnome.org/viewvc/evolution-sharp?view=revision&amp;revision=191</a>
->
-> Here is a patch to do the same for libbtctl:
->
-> <a href="http://ftp.frugalware.org/pub/frugalware/frugalware-current/source/gnome-extra/libbtctl/mono2.patch">http://ftp.frugalware.org/pub/frugalware/frugalware-current/source/gnome-extra/libbtctl/mono2.patch</a>
->
-> Of course you can generate your own new key with 'sn -k 1024
-> libbtctl.snk' if you don't want to take the one I use right now.</p><p>Because the patch wasn't in bugzilla, I missed it for the last ever
-release of libbtctl.</p><p>Use bugzilla in the future.</p><p>Cheers
-</blockquote></p><p>Needless to say, there is no libbtctl component in the GNOME bugzilla.</p><p>Yay for bureaucracy!</p>
 </div>
 </div>
 
