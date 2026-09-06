@@ -45,6 +45,7 @@ title: Bookmarks
 - [car parking info](https://nmzrt.hu/szolgaltatasok/parkolas/parkolasi-zonak.html)
 - [puzzle helper](https://bitepito.hu/rejtveny/)
 - [alkohol kalkulator](https://www.alkoholkalkulator.hu/hu/)
+- [gimi felveteli feladatsorok](https://www.oktatas.hu/kozneveles/kozepfoku_felveteli_eljaras/kozponti_feladatsorok)
 
 # imagemagick
 
