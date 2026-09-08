@@ -58,6 +58,37 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sparse-checkout-example-in-git-1-7.html">Sparse checkout example in git 1.7.0</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Sun 14 February 2010</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>Sparse checkout is now part of git-1.7.0. See <a href="http://www.kernel.org/pub/software/scm/git/docs/git-read-tree.html#_sparse_checkout">here</a> on what it is in general. Basically something what svn already knew for years and git did not. And of course git now does it better, since this way it's possible to checkout multiple sub-directories, not just a single one, what svn allows.</p><p>Here is a short example:</p><p><pre>
+$ git clone ~/git/git
+$ cd git
+$ ls|wc -l
+361
+$ git config core.sparsecheckout true
+$ echo ppc/ > .git/info/sparse-checkout
+$ echo perl/ >> .git/info/sparse-checkout
+$ git read-tree -m -u HEAD
+$ ls
+perl/  ppc/
+</pre></p><p>Enjoy! :)</p><p>Update: see the comments, as it has been pointed out the "And of course git now does it better, since this way it's possible to checkout multiple sub-directories, not just a single one, what svn allows." sentence is incorrect; but of course having a similar feature in a distributed VCS is still an improvement. ;)</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/pptp-client-howto-on-linux-on-console.html">pptp client howto on linux on console</a></h1>
   </div>
   <div class="article_meta">
@@ -358,32 +389,6 @@ Change browser.backspace_action to 0 to make backspace to a back (as on Windows)
     <div id="preamble">
 <div class="sectionbody">
 mplayer -vo xv is broken for intel 8xx cards in Frugalware-current since we enabled KMS. They are <a href="http://bugs.freedesktop.org/show_bug.cgi?id=20901">working on it</a>, but till 2.6.32 is stable, I needed an interim solution. The problem is that now the default is -vo x11 which does not scale the movie at all when I enable fullscreen. So -vo gl works fine, and making this default is easy: just add 'vo=gl' to ~/.mplayer/config.
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/erlang-sudo-solver.html">Erlang sudo solver</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Tue 17 November 2009</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>First, sorry I'm not yet publishing any code. It's about there is a race at the uni where the fastest implementation wins, so I don't want to share anything before that ends. It'll end in a month, actually. ;)</p><p>Other than that, it's a generic sudoku solver, it can solve NxN sodukus, not only 9x9 and it handles extra rules. A detailed description is <a href="http://dp.iit.bme.hu/dp09a/dp09a-nhf.html">here</a> (<a href="http://translate.google.com/translate?u=http%3A%2F%2Fdp.iit.bme.hu%2Fdp09a%2Fdp09a-nhf.html&amp;sl=hu&amp;tl=en">gt</a>).</p><p>But of course the purpose of this post is to bookmark a few useful page I found while working on my implementation:</p><p><ul>
-  <li><a href="http://en.wikipedia.org/wiki/Backtracking#Pseudocode">Backtracking pseudocode</a></li>
-  <li><a href="http://en.wikipedia.org/wiki/Algorithmics_of_sudoku#Solving_sudokus_by_backtracking">Solving sudokus by backtracking</a></li>
-  <li><a href="http://www3.erlang.org/documentation/doc-5.5.5/lib/tools-2.5.5/doc/html/fprof.html">Erlang fprof module documentation</a></li>
-</ul></p><p>The important part of the later links is three lines:</p><p><pre>1> fprof:apply(foo, create_file_slow, [junk, 1024]).
-2> fprof:profile().
-3> fprof:analyse().</pre></p><p>That makes profiling Erlang programs really easy, once you get used to the output, which is a bit weird for the first time. :)</p>
 </div>
 </div>
 

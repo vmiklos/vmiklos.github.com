@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/pygments.css">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Miklos Vajna">
+  <meta name="description" content="Posts and writings by Miklos Vajna">
+
+  <link href="https://vmiklos.hu/blog/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking RSS" />
+
+<meta name="keywords" content="en">
+
+  <title>
+    What is Miklos hacking
+&ndash; Markdown copy&paste on the Collabora Online UI  </title>
+
+<script type="text/javascript">
+  var _paq = window._paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//analytics.vmiklos.hu/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '1']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <h2><a href="https://vmiklos.hu/blog">What is Miklos hacking</a></h2>
+      <p></p>
+      <ul>
+        <li><a href="/" target="_blank">Root</a></li>
+        <li><a href="https://planet.documentfoundation.org/" target="_blank">LibreOffice Blogs</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://vmiklos.hu/blog">Index</a> &brvbar; <a href="https://vmiklos.hu/blog/archives.html">Archives</a>
+      &brvbar; <a href="https://vmiklos.hu/blog/feeds/all.rss.xml">RSS</a>
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/cool-markdown-copy.html">Markdown copy&paste on the Collabora Online UI</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Tue 08 September 2026</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <p>Markdown import and export in <a href="https://www.collaboraonline.com/">Collabora Online</a> was an existing
+filter already, see <a href="https://vmiklos.hu/blog/sw-markdown-filter.html">the post from last year</a> for more
+details.</p>
+<p>This post is meant to show how this is now available on the end-user UI, while previously this was
+mostly available for batch conversion and SDK clients only.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>A computer's clipboard can contain data in multiple formats, so it would be logical to read and
+write Markdown with the <code>text/markdown</code> MIME type. Unfortunately most applications just read from
+the <code>text/plain</code> MIME type when non-formatted text is expected. This means writing the dedicated
+markdown slot is not read by anyone and in turn reading from that slot usually returns with no data.</p>
+<p>The idea is to make "copy as markdown" an explicit action on the UI: when the user opts in, then we
+put markdown to the plain text slot on the clipboard, where other software can read it easily. And
+similarly, when you paste special, then you can opt in to interpret the plain text data as markdown.
+This means that data like <code>aaa _bbb_ ccc</code> won't be interpreted as markdown by accident, but if you
+ask for it, you can get your markdown data into Writer easily.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>The <a href="https://github.com/CollaboraOnline/online/issues/16060">the issue</a> shows that first the copy as
+markdown UI was added:</p>
+<p><a href="https://share.vmiklos.hu/blog/cool-markdown-copy/markdown-copy.png"><figure><img src="https://share.vmiklos.hu/blog/cool-markdown-copy/markdown-copy.png"><figcaption>Collabora Online: copy as markdown UI</figcaption></figure></a></p>
+<p>Then the paste spcial dialog needed work in each component. First in Writer:</p>
+<p><a href="https://share.vmiklos.hu/blog/cool-markdown-copy/markdown-paste-writer.png"><figure><img src="https://share.vmiklos.hu/blog/cool-markdown-copy/markdown-paste-writer.png"><figcaption>Collabora Online Writer: paste as markdown UI</figcaption></figure></a></p>
+<p>Then the same in Impress, where we need to work with editengine's model, instead of Writer text:</p>
+<p><a href="https://share.vmiklos.hu/blog/cool-markdown-copy/markdown-paste-impress.png"><figure><img src="https://share.vmiklos.hu/blog/cool-markdown-copy/markdown-paste-impress.png"><figcaption>Collabora Online Impress: paste as markdown UI</figcaption></figure></a></p>
+<p>Finally also in Calc, sill working with editengine's model:</p>
+<p><a href="https://share.vmiklos.hu/blog/cool-markdown-copy/markdown-paste-calc.png"><figure><img src="https://share.vmiklos.hu/blog/cool-markdown-copy/markdown-paste-calc.png"><figcaption>Collabora Online Calc: paste as markdown UI</figcaption></figure></a></p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>As usual, the high-level problem was addressed by a series of small changes:</p>
+<ul>
+<li><a href="https://gerrit.collaboraoffice.com/plugins/gitiles/online/+/865a5bf3604a9a96c753efd0117ccc66c8447dcc">cool#16060 browser, wsd: add a copy-as-markdown UI to Writer</a></li>
+<li><a href="https://gerrit.collaboraoffice.com/plugins/gitiles/online/+/82c2e2f37eaba64d71ca30862279ecd30b889b80">cool#16060 engine kit: add a paste-as-markdown UI to Writer</a></li>
+<li><a href="https://gerrit.collaboraoffice.com/plugins/gitiles/online/+/07ca16bd0032777d8837c6ba577132e060858489">cool#16060 engine kit: add a paste-as-markdown UI to Impress</a></li>
+<li><a href="https://gerrit.collaboraoffice.com/plugins/gitiles/online/+/db032d245409506992105a46be2a11fcecfbcbab">cool#16060 engine kit: add a paste-as-markdown UI to Calc (cell text edit)</a></li>
+<li><a href="https://gerrit.collaboraoffice.com/plugins/gitiles/online/+/b9adeeeeb51f42fb283c48617b508df3ac8160bd">cool#16060 engine sd: keep plain text as default, paste special can opt in for markdown</a></li>
+</ul>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a development edition of Collabora Online 26.04 and try it out yourself right now: <a href="https://www.collaboraonline.com/code/">try
+the development edition</a>.</p>
+  </div>
+  <div class="article_meta">
+    <p>Category: <a href="https://vmiklos.hu/blog/category/collabora-online.html">collabora-online</a>
+ &ndash; Tags:
+      <a href="https://vmiklos.hu/blog/tag/en.html">en</a>    </p>
+  </div>
+
+
+</article>
+
+
+    <div id="ending_message">
+      <p>&copy; Miklos Vajna. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
+</body>
+</html>

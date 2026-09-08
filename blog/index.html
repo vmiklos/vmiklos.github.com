@@ -58,6 +58,58 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/cool-markdown-copy.html">Markdown copy&paste on the Collabora Online UI</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Tue 08 September 2026</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <p>Markdown import and export in <a href="https://www.collaboraonline.com/">Collabora Online</a> was an existing
+filter already, see <a href="https://vmiklos.hu/blog/sw-markdown-filter.html">the post from last year</a> for more
+details.</p>
+<p>This post is meant to show how this is now available on the end-user UI, while previously this was
+mostly available for batch conversion and SDK clients only.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>A computer's clipboard can contain data in multiple formats, so it would be logical to read and
+write Markdown with the <code>text/markdown</code> MIME type. Unfortunately most applications just read from
+the <code>text/plain</code> MIME type when non-formatted text is expected. This means writing the dedicated
+markdown slot is not read by anyone and in turn reading from that slot usually returns with no data.</p>
+<p>The idea is to make "copy as markdown" an explicit action on the UI: when the user opts in, then we
+put markdown to the plain text slot on the clipboard, where other software can read it easily. And
+similarly, when you paste special, then you can opt in to interpret the plain text data as markdown.
+This means that data like <code>aaa _bbb_ ccc</code> won't be interpreted as markdown by accident, but if you
+ask for it, you can get your markdown data into Writer easily.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>The <a href="https://github.com/CollaboraOnline/online/issues/16060">the issue</a> shows that first the copy as
+markdown UI was added:</p>
+<p><a href="https://share.vmiklos.hu/blog/cool-markdown-copy/markdown-copy.png"><figure><img src="https://share.vmiklos.hu/blog/cool-markdown-copy/markdown-copy.png"><figcaption>Collabora Online: copy as markdown UI</figcaption></figure></a></p>
+<p>Then the paste spcial dialog needed work in each component. First in Writer:</p>
+<p><a href="https://share.vmiklos.hu/blog/cool-markdown-copy/markdown-paste-writer.png"><figure><img src="https://share.vmiklos.hu/blog/cool-markdown-copy/markdown-paste-writer.png"><figcaption>Collabora Online Writer: paste as markdown UI</figcaption></figure></a></p>
+<p>Then the same in Impress, where we need to work with editengine's model, instead of Writer text:</p>
+<p><a href="https://share.vmiklos.hu/blog/cool-markdown-copy/markdown-paste-impress.png"><figure><img src="https://share.vmiklos.hu/blog/cool-markdown-copy/markdown-paste-impress.png"><figcaption>Collabora Online Impress: paste as markdown UI</figcaption></figure></a></p>
+<p>Finally also in Calc, sill working with editengine's model:</p>
+<p><a href="https://share.vmiklos.hu/blog/cool-markdown-copy/markdown-paste-calc.png"><figure><img src="https://share.vmiklos.hu/blog/cool-markdown-copy/markdown-paste-calc.png"><figcaption>Collabora Online Calc: paste as markdown UI</figcaption></figure></a></p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>As usual, the high-level problem was addressed by a series of small changes:</p>
+<ul>
+<li><a href="https://gerrit.collaboraoffice.com/plugins/gitiles/online/+/865a5bf3604a9a96c753efd0117ccc66c8447dcc">cool#16060 browser, wsd: add a copy-as-markdown UI to Writer</a></li>
+<li><a href="https://gerrit.collaboraoffice.com/plugins/gitiles/online/+/82c2e2f37eaba64d71ca30862279ecd30b889b80">cool#16060 engine kit: add a paste-as-markdown UI to Writer</a></li>
+<li><a href="https://gerrit.collaboraoffice.com/plugins/gitiles/online/+/07ca16bd0032777d8837c6ba577132e060858489">cool#16060 engine kit: add a paste-as-markdown UI to Impress</a></li>
+<li><a href="https://gerrit.collaboraoffice.com/plugins/gitiles/online/+/db032d245409506992105a46be2a11fcecfbcbab">cool#16060 engine kit: add a paste-as-markdown UI to Calc (cell text edit)</a></li>
+<li><a href="https://gerrit.collaboraoffice.com/plugins/gitiles/online/+/b9adeeeeb51f42fb283c48617b508df3ac8160bd">cool#16060 engine sd: keep plain text as default, paste special can opt in for markdown</a></li>
+</ul>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a development edition of Collabora Online 26.04 and try it out yourself right now: <a href="https://www.collaboraonline.com/code/">try
+the development edition</a>.</p>
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/sd-paste-indicator.html">Better slide paste progress indicator in Collabora Online Impress</a></h1>
   </div>
   <div class="article_meta">
@@ -656,63 +708,6 @@ SDK</a>.</p>
 the development edition</a>.  Collabora intends to continue
 supporting and contributing to LibreOffice, the code is merged so we expect the core of this work
 will be available in TDF's next release too (26.2).</p>
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/sw-interdependent-redline-improvements4.html">Interdependent tracked changes improvements in Writer, part 4: direct accept/reject</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Tue 04 November 2025</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 3 minutes</p>
-  </div>
-  <div class="article_text">
-    <p>Writer has some support for interdependent (or hierarchical) tracked changes: e.g. the case when you
-have a delete on top of an insert. See the <a href="https://vmiklos.hu/blog/sw-interdependent-redline-improvements3.html">third
-post</a> for background.</p>
-<p>This work is primarily for <a href="https://www.collaboraonline.com/">Collabora Online</a>, but the feature is
-available in desktop Writer as well.</p>
-<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
-<p>Interdependent changes mean that the UI shows one type of change on top of another change, e.g.
-formatting on top of insert. Writer knows the priority of each type, so in case you have an insert
-or delete change and on top of that you have a formatting, then the UI will look "through" the
-formatting and work on the underlying insert or delete when you navigate with your cursor to a
-position with multiple changes and you press Accept on the Review tab of the notebookbar.</p>
-<p>Usually this is what you mean, but what if you want to work on the formatting at the top, directly?
-You can now open the Manage Changes dialog using the Manage button on the Review tab of the
-notebookbar and if you go to the formatting change row of the dialog, then pressing Accept there
-will accept the formatting change, not the insert or delete change. This is possible, because the dialog
-gives you a way to precisely select which tracked change you want to work with, even if a specific
-cursor position has multiple tracked changes.</p>
-<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
-<p>Here is a sample <code>ins-then-format.docx</code> document from the core.git testcases, the baseline has an
-insertion, and part of that is covered by an additional formatting change on top:</p>
-<p><a href="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements4/baseline.png"><figure><img src="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements4/baseline.png"><figcaption>Interdependent tracked change: baseline</figcaption></figure></a></p>
-<p>If you just go in the middle of the document and press Accept, that will work with the more
-important insert change, so the result looks like this:</p>
-<p><a href="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements4/default-accept-result.png"><figure><img src="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements4/default-accept-result.png"><figcaption>Interdependent tracked change: default accept result</figcaption></figure></a></p>
-<p>But now you can also open the Manage Changes dialog, to be more specific by directly selecting the
-formatting change:</p>
-<p><a href="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements4/direct-accept.png"><figure><img src="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements4/direct-accept.png"><figcaption>Interdependent tracked change: direct accept via the dialog</figcaption></figure></a></p>
-<p>And when you accept the formatting change directly, the result will be just the insert change:</p>
-<p><a href="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements4/direct-accept-result.png"><figure><img src="https://share.vmiklos.hu/blog/sw-interdependent-redline-improvements4/direct-accept-result.png"><figcaption>Interdependent tracked change: direct accept result</figcaption></figure></a></p>
-<p>You can save and load the results in both DOCX and ODT, as usual.</p>
-<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
-<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
-<p>As usual, the high-level problem was addressed by a series of small changes. Core side:</p>
-<ul>
-<li><a href="https://git.libreoffice.org/core/commit/55640f9f0a4741f8e4b5b98096af822cee71da2c">tdf#166319 sw interdependent redlines: allow accept/reject for fmt on ins/del</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/d04ab0febcf660e87d19574adc08f9f2af75509f">tdf#166319 sw interdependent redlines: fix redo of accept for fmt on ins/del</a></li>
-<li><a href="https://git.libreoffice.org/core/commit/1e3b8177aef8cc3a242cd9fd41d492f2fd89d21e">tdf#166319 sw interdependent redlines: fix redo of direct reject for format</a></li>
-</ul>
-<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
-<p>You can get a development edition of Collabora Online 25.04 and try it out yourself right now: <a href="https://www.collaboraonline.com/code/">try
-the development edition</a>.  Collabora intends to continue
-supporting and contributing to LibreOffice, the code is merged so we expect all of this work will be
-available in TDF's next release too (26.2).</p>
   </div>
 </article>
 

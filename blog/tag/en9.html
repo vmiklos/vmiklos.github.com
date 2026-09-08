@@ -59,6 +59,124 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sw-page-content-bottom-anchor.html">Page-content-bottom vertical relation in Writer</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Wed 10 June 2020</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 3 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>Writer now has support for anchoring shapes relative to the bottom of the page content frame.</p></div>
+<div class="paragraph"><p>First, thanks to our partner <a href="https://www.suse.com/">SUSE</a> for working with
+<a href="https://www.collaboraoffice.com/">Collabora</a> to make this possible.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_motivation">Motivation</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Users sometimes want to specify the vertical position of their shapes in text documents in a way
+that is relative from the bottom of the page content area. Also, this improves consistency,
+specifying a position that is relative from the top of the page content area is already possible.</p></div>
+<div class="paragraph"><p>Alternatively, it is possible to have the same calculated position when positioning from the top of
+the page content area. The downside of this approach is that the position changes when the page
+height changes. So if the user intention is to position a shape 2 cm above the bottom of the page
+content area and the page height changes, the shape has to be manually re-positioned. This manual
+re-positioning is not needed with the new page-content-bottom vertical relation.</p></div>
+<div class="paragraph"><p>For example, if a shape has a height of 10 cm and a 2 cm spacing is wanted between the bottom of the
+shape and the bottom of the page content area, the position can be set to -12 cm, and then the 2 cm
+spacing will be maintained, even after the page height changes.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_results_so_far">Results so far</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Here is how this works in practice:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<a class="image" href="https://youtu.be/X49IbS97axs">
+<img src="https://lh3.googleusercontent.com/3r0eHqOn48OkUPHLGlhWTjPwwkWYWouF3LtMtVTmRITJ9oGHuRW1-COvswp71G7-ySMvZ-fsP8-0R5ELVNmiaN2FCxtFLfnun4OFYmFvmZk-W1UBw4EhJ4P8RAgPHhQtdcmjiCe9Eg=w640" alt="https://lh3.googleusercontent.com/3r0eHqOn48OkUPHLGlhWTjPwwkWYWouF3LtMtVTmRITJ9oGHuRW1-COvswp71G7-ySMvZ-fsP8-0R5ELVNmiaN2FCxtFLfnun4OFYmFvmZk-W1UBw4EhJ4P8RAgPHhQtdcmjiCe9Eg=w640" />
+</a>
+</div>
+<div class="title">Figure 1. Demo of a stable vertical position (relative to the bottom of the page content frame), during a page height change</div>
+</div>
+<div class="paragraph"><p>You can see how the distance of the shape from the bottom is 2 cm, even if the page height changes.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_how_is_this_implemented">How is this implemented?</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+the UNO API now supports a new <code>PAGE_PRINT_AREA_BOTTOM</code> relative orientation
+</p>
+</li>
+<li>
+<p>
+the have the expected layout, <code>SwToContentAnchoredObjectPosition::CalcPosition()</code> now considers
+  this from-bottom anchoring when handling the vertical relative orientation
+</p>
+</li>
+<li>
+<p>
+the DOCX format already had a markup for this:
+</p>
+</li>
+</ul></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">&lt;wp:positionV</span></span> <span style="color: #009900">relativeFrom</span><span style="color: #990000">=</span><span style="color: #FF0000">"bottomMargin"</span><span style="font-weight: bold"><span style="color: #0000FF">&gt;</span></span>
+  <span style="font-weight: bold"><span style="color: #0000FF">&lt;wp:posOffset&gt;</span></span>...<span style="font-weight: bold"><span style="color: #0000FF">&lt;/wp:posOffset&gt;</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">&lt;/wp:positionV&gt;</span></span></tt></pre></div></div>
+<div class="paragraph"><p>now the import/export code maps this markup to the new feature.</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+The UI allows setting a new "Page text area bottom" frame position. It turns out that the UI is
+  quite nice here, it tries to prevent you from setting positions which would be outside the limits
+  of the current page. This logic in <code>SwFEShell::CalcBoundRect()</code> now handles the new relative
+  orientation.
+</p>
+</li>
+<li>
+<p>
+The ODF filter now has a markup to represent the new vertical relation:
+</p>
+</li>
+</ul></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">&lt;style:graphic-properties</span></span> ... <span style="color: #009900">loext:vertical-rel</span><span style="color: #990000">=</span><span style="color: #FF0000">"page-content-bottom"</span> ...<span style="font-weight: bold"><span style="color: #0000FF">/&gt;</span></span></tt></pre></div></div>
+<div class="paragraph"><p>There is a <a href="https://issues.oasis-open.org/browse/OFFICE-4073">proposal</a> to promote this from our
+extension namespace to normal ODF (thanks to Regina for the help there!).</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_want_to_start_using_this">Want to start using this?</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
+<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
+is a major contributor to LibreOffice and all of this work will be available in TDF&#8217;s next release
+too (7.1).</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/sd-pdf-1-6-larger-page-size.html">Export larger pages from Draw using PDF 1.6</a></h1>
   </div>
   <div class="article_meta">
@@ -752,45 +870,6 @@ both DOCX and ODT filters serialize and load this property
 </ul></div>
 <div class="paragraph"><p>All this is available in LibreOffice master (towards 6.4), so you can try it out
 <a href="http://dev-builds.libreoffice.org/daily/master/">right now</a>, if interested.</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/libocon2019.html">Bottom to top, left to right writing direction in Writer conference talk</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Thu 12 September 2019</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://speakerd.s3.amazonaws.com/presentations/d34ea52e0ebc4d2f898b246ef786f741/btlr-locon-almeria-2k19.pdf">
-<img src="https://lh3.googleusercontent.com/7A-ATV-MLBkNG6T7cX7kmq2bd7cgsmUs81plgl1ZXlbQIhonNNWZDFMHB5iMPr3NhtT5S_-TO3HTPLh8mqKfUduGDGEZg0LRwRMZO5POBbqn5133-TDo0FipATD9_hlfFe7J19g9Mw=w640" alt="https://lh3.googleusercontent.com/7A-ATV-MLBkNG6T7cX7kmq2bd7cgsmUs81plgl1ZXlbQIhonNNWZDFMHB5iMPr3NhtT5S_-TO3HTPLh8mqKfUduGDGEZg0LRwRMZO5POBbqn5133-TDo0FipATD9_hlfFe7J19g9Mw=w640" />
-</a>
-</div>
-</div>
-<div class="paragraph"><p>Yesterday I gave a
-<a href="https://conference.libreoffice.org/2019/program/schedule/sept-11th-wednesday/">Bottom to top, left to
-right writing direction in Writer</a> talk at the LibreOffice Conference 2019. The room was
-well-crowded&#8201;&#8212;&#8201;perhaps because it was on the first day and in the largest room. ;-)</p></div>
-<div class="paragraph"><p>It contains some details which are not available in previous btLr blog posts, like what natural
-languages use this direction, how to replace real-world clocks without breaking compatibility and
-more!</p></div>
-<div class="paragraph"><p>I expect quite some other slides from other Collaborans and the wider community will be available on
-<a href="http://planet.documentfoundation.org/">Planet</a>, don&#8217;t miss them.</p></div>
-<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office 6.2 and try the presented feature out yourself
-right now: <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.
-Collabora is a major contributor to LibreOffice and all of this work will be available in TDF&#8217;s next
-release, too (6.4).</p></div>
 </div>
 </div>
 
