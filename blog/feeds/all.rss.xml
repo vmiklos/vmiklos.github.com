@@ -1,5 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>What is Miklos hacking</title><link>https://vmiklos.hu/blog/</link><description/><atom:link href="https://vmiklos.hu/blog/feeds/all.rss.xml" rel="self"/><lastBuildDate>Tue, 08 Sep 2026 16:42:37 +0200</lastBuildDate><item><title>Markdown copy&amp;paste on the Collabora Online UI</title><link>https://vmiklos.hu/blog/cool-markdown-copy.html</link><description>&lt;p&gt;Markdown import and export in &lt;a href="https://www.collaboraonline.com/"&gt;Collabora Online&lt;/a&gt; was an existing
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>What is Miklos hacking</title><link>https://vmiklos.hu/blog/</link><description/><atom:link href="https://vmiklos.hu/blog/feeds/all.rss.xml" rel="self"/><lastBuildDate>Fri, 02 Oct 2026 15:50:18 +0200</lastBuildDate><item><title>Copy&amp;paste for the Impress notes bottom panel in Collabora Online</title><link>https://vmiklos.hu/blog/sd-notes-panel-clipboard.html</link><description>&lt;p&gt;Szymon added a bottom panel for slide notes to &lt;a href="https://www.collaboraonline.com/"&gt;Collabora Online&lt;/a&gt;
+Impress about &lt;a href="https://gerrit.collaboraoffice.com/c/online/+/11685"&gt;2 weeks ago&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;This post is meant to show how clipboard support was implemented for this: both via keyboard and
+notebookbar buttons.&lt;/p&gt;
+&lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Users expect that whenever they make a selection on the UI, they can cut or copy that. And they can
+put the cursor to a position and can paste there. The notes bottom panel in Impress is a special
+area, which is backed by a "content editable" element in the browser and by an "editeng" widget on
+the server, so it's different from the normal document editing canvas where copy&amp;amp;paste used to work
+already in the past.&lt;/p&gt;
+&lt;h2 id="results-so-far"&gt;Results so far&lt;a class="headerlink" href="#results-so-far" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;The &lt;a href="https://github.com/CollaboraOnline/online/issues/16242"&gt;the issue&lt;/a&gt; shows that you can use the
+notebookbar to open a notes panel at the bottom:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sd-notes-panel-clipboard/demo.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sd-notes-panel-clipboard/demo.png"&gt;&lt;figcaption&gt;Collabora Online Impress: notes panel at the bottom&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;But then copy&amp;amp;paste wasn't working at all:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;First I had to fix the Ctrl-X/C/V shortcuts, I could model that after Writer comments, which are
+  also in JavaScript, outside the normal document editing canvas.&lt;/li&gt;
+&lt;li&gt;Then paste via the notebookbar button was a next step, which was a bit more tricky, since once you
+  click on a notebookbar button, the notes panel doesn't have the focus anymore.&lt;/li&gt;
+&lt;li&gt;Finally cut and copy via the notebookbar is now also working, which had to enable these buttons
+  even if the document editing canvas had no selection, but it works at the end.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-is-this-implemented"&gt;How is this implemented?&lt;a class="headerlink" href="#how-is-this-implemented" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;If you would like to know a bit more about how this works, continue reading... :-)&lt;/p&gt;
+&lt;p&gt;As usual, the high-level problem was addressed by a series of small changes:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://gerrit.collaboraoffice.com/plugins/gitiles/online/+/c5b12d0df4313f436485aad0fcf10beffa567130"&gt;cool#16242 browser: handle clipboard shortcuts in the Impress notes bottom panel&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://gerrit.collaboraoffice.com/plugins/gitiles/online/+/06c4285a5fd39577ea0bc4f3bf239b68e19e66e7"&gt;cool#16242 browser: handle paste from notebookbar in the Impress notes bottom panel&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://gerrit.collaboraoffice.com/plugins/gitiles/online/+/ef4ace1c52090202ea2831f13673019eabbcc5ec"&gt;cool#16242 browser: handle cut/copy from notebookbar in the Impress notes bottom panel&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="want-to-start-using-this"&gt;Want to start using this?&lt;a class="headerlink" href="#want-to-start-using-this" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;You can get a development edition of Collabora Online 26.04 and try it out yourself right now: &lt;a href="https://www.collaboraonline.com/code/"&gt;try
+the development edition&lt;/a&gt;.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Fri, 02 Oct 2026 15:50:18 +0200</pubDate><guid>tag:vmiklos.hu,2026-10-02:/blog/sd-notes-panel-clipboard.html</guid><category>collabora-online</category><category>en</category></item><item><title>Markdown copy&amp;paste on the Collabora Online UI</title><link>https://vmiklos.hu/blog/cool-markdown-copy.html</link><description>&lt;p&gt;Markdown import and export in &lt;a href="https://www.collaboraonline.com/"&gt;Collabora Online&lt;/a&gt; was an existing
 filter already, see &lt;a href="https://vmiklos.hu/blog/sw-markdown-filter.html"&gt;the post from last year&lt;/a&gt; for more
 details.&lt;/p&gt;
 &lt;p&gt;This post is meant to show how this is now available on the end-user UI, while previously this was
@@ -440,68 +473,4 @@ formatting.&lt;/p&gt;
 &lt;p&gt;You can get a development edition of Collabora Online 25.04 and try it out yourself right now: &lt;a href="https://www.collaboraonline.com/code/"&gt;try
 the development edition&lt;/a&gt;.  Collabora intends to continue
 supporting and contributing to LibreOffice, the code is merged so we expect the core of this work
-will be available in TDF's next release too (26.2).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Mon, 05 Jan 2026 08:37:39 +0100</pubDate><guid>tag:vmiklos.hu,2026-01-05:/blog/sd-bullet-improvements.html</guid><category>libreoffice</category><category>en</category></item><item><title>Markdown import in Writer: the new template option</title><link>https://vmiklos.hu/blog/sw-markdown-templating.html</link><description>&lt;p&gt;Writer recently got a new markdown import option to take styles from a template, leading to much
-prettier output when converting markdown to PDF, DOCX or ODT.&lt;/p&gt;
-&lt;p&gt;This work is primarily for &lt;a href="https://www.collaboraonline.com/"&gt;Collabora Online&lt;/a&gt;, but the templating
-feature is available in desktop Writer as well.&lt;/p&gt;
-&lt;h2 id="motivation"&gt;Motivation&lt;a class="headerlink" href="#motivation" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;A &lt;a href="https://vmiklos.hu/blog/sw-markdown-filter.html"&gt;previous post&lt;/a&gt; mentioned recent improvements to the
-markdown import/export in Writer.&lt;/p&gt;
-&lt;p&gt;But if you convert some markdown to e.g. PDF, all the headings just have the default look, wouldn't
-it be nice to take your organization template and add colors and other formatting there,
-automatically?&lt;/p&gt;
-&lt;p&gt;Also, wouldn't it be nice if you could paste as markdown in COOL or copy the current selection as
-markdown? Which would enable all sorts of interesting use-cases, like using an external API to turn
-the selection into a summary or translating it to a different language.&lt;/p&gt;
-&lt;h2 id="results-so-far"&gt;Results so far&lt;a class="headerlink" href="#results-so-far" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;Here is a sample input markdown:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="gh"&gt;# heading 1&lt;/span&gt;
-
-body text
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;Here is how it looks like if you template it using the core.git &lt;code&gt;sw/qa/filter/md/data/template.docx&lt;/code&gt;
-sample:&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-markdown-templating/templated.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-markdown-templating/templated.png"&gt;&lt;figcaption&gt;PDF result: templated&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;curl invocation for this:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;curl&lt;span class="w"&gt; &lt;/span&gt;-k&lt;span class="w"&gt; &lt;/span&gt;-F&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;data=@/path/to/test.md&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-F&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;template=@/path/to/template.docx&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-F&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;format=pdf&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-o&lt;span class="w"&gt; &lt;/span&gt;out.pdf&lt;span class="w"&gt; &lt;/span&gt;https://localhost:9980/cool/convert-to
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;Or example desktop command-line:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;soffice&lt;span class="w"&gt; &lt;/span&gt;--infilter&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;Markdown:{&amp;quot;TemplateURL&amp;quot;:{&amp;quot;type&amp;quot;:&amp;quot;string&amp;quot;,&amp;quot;value&amp;quot;:&amp;quot;./template.ott&amp;quot;}}&amp;#39;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;test.md
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;While it would look like this by default:&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://share.vmiklos.hu/blog/sw-markdown-templating/default.png"&gt;&lt;figure&gt;&lt;img src="https://share.vmiklos.hu/blog/sw-markdown-templating/default.png"&gt;&lt;figcaption&gt;PDF result: default&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;The other part is the PostMessage API of COOL, if you want to copy and paste as markdown. What's
-newly possible:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Copy the current selection: set MessageId to &lt;code&gt;Action_Copy&lt;/code&gt; and the value to &lt;code&gt;{"Mimetype": "text/markdown;charset=utf-8"}&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;Paste at the current cursor position: set MessageId to &lt;code&gt;Action_Paste&lt;/code&gt; and the value to
-  something like &lt;code&gt;{"Mimetype": "text/markdown;charset=utf-8", "Data": "foo _bar_ baz"}&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;You can read more about the PostMessage API in the &lt;a href="https://sdk.collaboraonline.com/docs/postmessage_api.html"&gt;COOL
-SDK&lt;/a&gt;.&lt;/p&gt;
-&lt;h2 id="how-is-this-implemented"&gt;How is this implemented?&lt;a class="headerlink" href="#how-is-this-implemented" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;If you would like to know a bit more about how this works, continue reading... :-)&lt;/p&gt;
-&lt;p&gt;As usual, the high-level problem was addressed by a series of small changes. Core side:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/7462639341c043bf72560e0ddfff06e1e8879859"&gt;tdf#169316 sw markdown import: add a TemplateURL parameter&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/6d1312e160ee8c2c0f65b6e0a86333bf3c9c60ce"&gt;tdf#169316 sw markdown import, template: handle non-ODF formats as well&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/64cf69926b7cb6fc94efd792b173ac12aa93cb8f"&gt;cool#13468 sw markdown paste: add UNO command parameter to skip the detection&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://git.libreoffice.org/core/commit/5ae32bee8dfe5b3264debc02276a3eeac7f51021"&gt;Related: tdf#169251 sw markdown export: fix crash on OLE with no graphic&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;Online side:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/5741a8fe91f9fe2969926cf70c8c51f1dd144ad5"&gt;cool#13419 convert-to template option: handle multiple streams in ConvertToPartHandler&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/31109066f2ea2b935cd9d2bc06b5debc6206b41a"&gt;cool#13419 convert-to template option: pass it to doc broker&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/3916a7f82fd6454409b86b9915d33f9f2491a348"&gt;cool#13419 convert-to template option: pass it to the kit process&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/b993c314e1b50aea382a1dac7391a3949e65045b"&gt;cool#13419 convert-to template option: more strict param name, generalize filenames&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/852479accd67880934393f14c4101ad72e9ba806"&gt;cool#13419 convert-to template option: add testcase&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://github.com/collaboraonline/online/commit/81881d58fd537924091a5e2e41d033e91c98c8be"&gt;cool#13468 PostMessage API: allow copying the current text selection&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id="want-to-start-using-this"&gt;Want to start using this?&lt;a class="headerlink" href="#want-to-start-using-this" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;You can get a development edition of Collabora Online 25.04 and try it out yourself right now: &lt;a href="https://www.collaboraonline.com/code/"&gt;try
-the development edition&lt;/a&gt;.  Collabora intends to continue
-supporting and contributing to LibreOffice, the code is merged so we expect the core of this work
-will be available in TDF's next release too (26.2).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Wed, 03 Dec 2025 09:35:36 +0100</pubDate><guid>tag:vmiklos.hu,2025-12-03:/blog/sw-markdown-templating.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>
+will be available in TDF's next release too (26.2).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Mon, 05 Jan 2026 08:37:39 +0100</pubDate><guid>tag:vmiklos.hu,2026-01-05:/blog/sd-bullet-improvements.html</guid><category>libreoffice</category><category>en</category></item></channel></rss>

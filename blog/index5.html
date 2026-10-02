@@ -58,6 +58,128 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sw-floattable4.html">Multi-page floating tables in Writer: from multiple columns to chaining</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Thu 01 June 2023</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 5 minutes</p>
+  </div>
+  <div class="article_text">
+    <p>Writer now has continued steps to handle tables that are both floating and span over multiple pages.</p>
+<p>This work is primarily for <a href="https://www.collaboraoffice.com/">Collabora Online</a>, but is useful on
+the desktop as well. See the <a href="https://vmiklos.hu/blog/sw-floattable3.html">third post</a> for background.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>The previous post finished with crash testing: the interesting subset of that testing tool is to take
+hundreds of thousands of documents and in the Writer case import them into a document model and
+layout them. If any of this crashes, mark that for future investigation. In this post, we'll see
+what else started to work during the past month.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>The feature is enabled by default and now the DOCX/DOC/RTF import makes use of it if. This allows
+stress-testing the layout code with complex user documents, hopefully with the found breakage fixed
+before it would be released in a stable version.</p>
+<p>On the positive side, core.git repository has has 37 files now which are focusing on correct
+handling of floating tables (abbreviated as "floattables").  Also, there are additional tests that
+quickly build a specific multi-page floating table in the memory and do some operation on it, e.g.
+delete the last row and assert what happens.</p>
+<p>Here are some screenshots from the effort so far:</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-floattable4/2023-05-03-floattable-multicol-good-nosplit.png"><figcaption>Floating table inside a multi-column section</figcaption>
+</figure>
+</p>
+<p>The first case is about multi-column sections: in this case Word doesn't try to split them between
+pages. What you can see on the screenshot is that Writer lays out content on the previous page so
+that remaining space is left, but we don't try to split the table between the first and the second
+page, even if there would be space on the first page and even if this means the table overlaps with
+the second column, matching what Word does.</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-floattable4/2023-05-04-floattable-ui-disable-good.png"><figcaption>UI to disable split of a floating table</figcaption>
+</figure>
+</p>
+<p>UI to enable split of floating tables were added quite early: this is a new checkbox on the frame
+properties dialog. However, <em>disabling</em> the split of floating tables was broken, the already
+created layout was not updated to properly move back "follow" fly frames from later pages to the
+current page, which is now fixed.</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-floattable4/2023-05-15-floattable-ui-disable-chain-good.png"><figcaption>Chaining enabled, so no split frames</figcaption>
+</figure>
+</p>
+<p>Writer already had a feature to split content in a frame into multiple frames, but that one required
+creating those frames in the model explicitly, such chaining is a feature that is useful in other
+use-cases and is parallel to multi-page floating tables. The UI now ensures that the user can split
+frames only in case chaining is not used, to avoid confusion.</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-floattable4/2023-05-16-floattable-chain-ui-disable-good.png"><figcaption>Split enabled, so no chaining</figcaption>
+</figure>
+</p>
+<p>This is now also true in the other way around: if split of a floating table is allowed, then we
+disable the frame chaining UI to avoid trouble later.</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-floattable4/2023-05-23-floattable-crash-good-writer.png"><figcaption>The latest crashing document</figcaption>
+</figure>
+</p>
+<p>At this point I went back to crashtesting &amp; crash bugreports, and the latest reported crash was for
+a document that is visible on the above screenshot. This was a bit tricky: it required 3 fixes to
+make it not crash and also a layout loop fix.</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-floattable4/2023-05-24-floattable-nosplit-compat-good-writer-odt.png"><figcaption>Disabling split of frames at a layout level</figcaption>
+</figure>
+</p>
+<p>Next was a mini-feature: even if floating tables normally split across pages by default, Word has a
+document-level compatibility switch to turn this split on or off by default, at a layout level.
+Floating tables from RTF are not split by default, DOC and DOCX split them by default.</p>
+<p>What you can see on this screenshot is that a DOCX document may have this flag enabled, and then you
+allow splitting on the UI / at a document model level, but Writer may still decide to not split
+them, to provide the correct layout.</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-floattable4/2023-05-26-floattable-overlap-bad.png"><figcaption>Overlapping floating tables</figcaption>
+</figure>
+</p>
+<p>The previous post already mentioned the problem area of overlapping tables. A first step in this
+direction is to fix this bug document with Arabic text and 2 overlapping tables, making them
+unreadable.</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-floattable4/2023-05-30-floattable-overlap-good.png"><figcaption>Fixed overlap of floating tables</figcaption>
+</figure>
+</p>
+<p>And in this case here is the fixed version, where reading the table now depends on your language
+skills. :-)</p>
+<p>In this case, the problem was a lost section break of type next page, when a section started with a
+floating table, which is a corner-case.</p>
+<p>And that's where we stand. Certainly more work is needed to fix more unwanted overlapping of
+floating tables, but we get there step by step.</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>As usual, the high-level problem was addressed by a series of small changes:</p>
+<ul>
+<li><a href="https://git.libreoffice.org/core/commit/1c99616f86f7d5b83b91edc225fc95fec227d710">sw floattable, crashtesting: fix PDF export of forum-mso-en3-26783.docx</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/8c78361b05ba3cefe5b0f31f35113f7890fd2296">sw floattable: don't try to set various character properties as table property</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/8c34ed6e8d62c5fe558b11bb91c5405e5bf2798e">sw floattable, crashtesting: fix PDF export of ooo9470-1.doc</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/f7e1cdf951f7f9cbb5822c49b86ba8a77a2fa878">sw floattable: fix UI for turning fly split off</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/61f3c796702f725f2c65b53b79ab7e190d39b6b8">sw floattable: fix UI / property dialog for shape containing table</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/d9cd177b9b08d454882dd77ffeb825a184a1b540">sw floattable: disable UI if the frame is chained already</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/a13264fc7578cbd3267065f4992ded9f7558ec7a">sw floattable: disable chain UI if the frame is allowed to split already</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/4cb6e54a3dcdd771ef76bd98b58f0bf1c4be4c45">sw floattable: fix missing table join when moving master fly to next page</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/632f36cc972116cd8da8245590f74014c22532db">sw floattable: fix legacy max height of split flys with negative vert offset</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/b47401e12d9c45386899df0aa26653bd26c9abd4">sw floattable: fix assert fail when object formatter gets the wrong anchor</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/807ad65661c122a33fccb4fd3453ef92c0e9129d">tdf#155002 sw floattable, split but not yet moved follow: fix GetNextFlyLeaf()</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/08fa2903df1a7cf9a1647fcf967e4c8b57dad793">sw floattable: add a DoNotBreakWrappedTables compat flag</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/f5dc52dc9a068fec3323c3089929a81675b0d1ba">sw floattable: handle <code>&lt;w:doNotBreakWrappedTables&gt;</code> in the DOCX filter</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/63de1ea465ef72ecb8d4a7dcdaf5e92ea875eb00">sw floattable: handle fDontBreakWrappedTables in the DOC filter</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/d785d26a5599d3d546b96958b0f1c6d5ed777a0d">sw floattable: handle \nobrkwrptbl in the RTF filter</a></li>
+<li><a href="https://git.libreoffice.org/core/commit/2a380dba73d57f825128fbada91c7a9fe79e8a06">tdf#150769 sw floattable: fix lost PageDescName if section starts with a table</a></li>
+</ul>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a snapshot / demo of Collabora Office 23.05 and try it out yourself right now: <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try the
+unstable snapshot</a>.  Collabora
+intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
+of this work will be available in TDF's next release too (7.6).</p>
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/sw-floattable3.html">Multi-page floating tables in Writer: from row deletion to page breaks</a></h1>
   </div>
   <div class="article_meta">
@@ -1157,64 +1279,6 @@ other backends (Windows, macOS) could be done, but is future work currently.</p>
 snapshot</a>.  Collabora intends to
 continue supporting and contributing to LibreOffice, the code is merged so we expect all of this
 work will be available in TDF's next release too (7.5).</p>
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/sw-content-controls3.html">Content controls in Writer: the plain text type</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Mon 01 August 2022</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
-  </div>
-  <div class="article_text">
-    <p>Writer now supports a 6th content control type: it is possible to insert a plain text content
-control.</p>
-<p>This work is primarily for <a href="https://www.collaboraoffice.com/">Collabora
-Online</a>, done as a
-<a href="https://vmiklos.hu/blog/hackweek-2021.html">HackWeek</a> project, but the feature is
-fully available in desktop Writer as well.</p>
-<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
-<p>
-<figure><img src="https://share.vmiklos.hu/blog/sw-content-controls3/sw-content-control-plain-text.png"><figcaption>Word-style plain text content control, user interface</figcaption>
-</figure>
-</p>
-<p>Writer users can put a content control around a piece of rich text, see
-<a href="https://vmiklos.hu/blog/sw-content-controls2.html">Content controls in Writer: dropdown, picture and date
-types</a> for the first five types.</p>
-<p>The next step in this journey is plain text: even if one of the big advantages of content controls
-over input fields is that they allow rich formatting, sometimes you want to restrict this. For
-example, if one has to fill in their name, then it makes no sense to mark the family name as bold
-while leaving the given name as non-bold. This would just lead to inconsistent look.</p>
-<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
-<p>There is now a new Form → Content Controls → Insert Plain Text Content Control
-menu item to create a plain text content control. If you try to make a
-selection that is a subset of the text inside the content control and you try
-to format it, the whole text in the content control is formatted to maintain
-the invariant that plain text has no formatting itself, just the formatting of
-the whole content control.</p>
-<p>As usual, you can delete this content control later. You can also load/save it
-to ODT/DOCX and it's preserved.</p>
-<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
-<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
-<p>As usual, the high-level problem was addressed by a series of small changes:</p>
-<ul>
-<li><a href="https://gerrit.libreoffice.org/c/core/+/137263">sw content controls, plain text: add doc model &amp; UNO API</a></li>
-<li><a href="https://gerrit.libreoffice.org/c/core/+/137280">sw content controls, plain text: apply formatting to the entire contents</a></li>
-<li><a href="https://gerrit.libreoffice.org/c/core/+/137340">sw content controls, plain text: add ODT filter</a></li>
-<li><a href="https://gerrit.libreoffice.org/c/core/+/137349">sw: fix heap-use-after-free in SwTextNode::InsertHint()</a></li>
-<li><a href="https://gerrit.libreoffice.org/c/core/+/137398">sw content controls, plain text: add DOCX export</a></li>
-<li><a href="https://gerrit.libreoffice.org/c/core/+/137399">sw content controls, plain text: add DOCX import</a></li>
-<li><a href="https://gerrit.libreoffice.org/c/core/+/137447">sw content controls, plain text: add insert UI</a></li>
-</ul>
-<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
-<p>You can get a snapshot / demo of Collabora Office 22.05 and try it out yourself right now: <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try
-unstable snapshot</a>.  Collabora
-intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF's next release too (7.5).</p>
   </div>
 </article>
 

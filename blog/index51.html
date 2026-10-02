@@ -58,6 +58,39 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/a-few-note-about-rpm.html">a few note about rpm</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Tue 16 December 2008</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 3 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<p>I spent some time today to prepare some rpm packages for an RHEL4 box, it was an interesting experience. To preface to this story is that first I had to do the followings on Frugalware:</p><p><ul>
+  <li>Patch mysql 5.0.37 to add support for the sphinx search engine</li>
+  <li>Make sure about sphinx itself works fine with this (though sadly I haven't had time yet to package sphinx as well).</li>
+</ul></p><p>We have a newer (but compatible, since we still ship 5.0.x) mysql, but a simple git checkout gave me the old buildscript and then the patch applied perfectly.</p><p>Then the plan changed, I needed to do this on an RHEL4 box as well.</p><p>Steps:</p><p><ul>
+  <li>Fix broken up2date config, it seems nobody installed any security update on the box for a long time.</li>
+  <li>Notice that RHEL4 has mysql 4.x, so I had to upgrade it to 5.0.x which was not trivial.</li>
+  <li>After adding the patch to the spec file, I saw that there are a bunch of manual autoconf/automake/autoheader/autowhatever calls, so I did not add a call to mysql's own autogen script. It turned out later that this was a fault, the default autofoo calls did not regenerate all the necessary files, basically they just took a lot of time, but did not really do anything useful. Sigh.</li>
+  <li>Once build was done, I had to rebuild perl's mysql driver and the whole php package because of the major mysql upgrade. Did I say I hate to touch php?</li>
+  <li>And finally the worst was to package sphinx. I used some opensuse spec file, but it turned out to be badly broken on RHEL4. Fixing it was not so problematic, but took a lot of time, because debugging a specfile under RH is a PITA.</li>
+  <li>Let me show a few examples. The equivalent of Fdestdir (the directory which will be tared up after the build is done) is not rm -rf'd before the build starts. So if you have some crap there, your final package will have it.</li>
+  <li>OTOH, Fsrcdir (the directory where the build takes place) <em>is</em> deleted, which means you can't do an incremental build.</li>
+  <li>If you break your pre-uninstall script, you can't easily uninstall a package, even with rpm -e --force --nodeps (you need some magic --no-preun switch, which is not implied by --force).</li>
+  <li>If you say rpm -Uvh foo-2.0.rpm, then sometimes it bails out with an error about it has a file conflict because /bar/baz.so is provided by foo-1.0. What? Doesn't -U stand for <em>upgrade</em>?</li>
+</ul></p><p>Okay, this was enough. I finally finished the task, but I again just can make a "this is so much more efficient with Frugalware" note. ;-)</p><p>And no, I don't like to write about why foo sucks, but both this packaging system (or at least the default settings) a docbook sometimes really sucks.</p>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/date-of-docbook-manpages.html">date of docbook manpages</a></h1>
   </div>
   <div class="article_meta">
@@ -234,26 +267,6 @@ The name of the command is mpost(1), and it's part of the tetex package. I read 
     <div id="preamble">
 <div class="sectionbody">
 I like this feature. It's pretty useful now when I have a homework at the uni where the whole solution should be a single C file. So I just do a texture in Gimp, export it to C, copy&amp;paste it to "the" file, and stop wasting my time trying to create some texture by hand. Yay! :)
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/having-fun-with-boost-1-37.html">Having fun with boost 1.37.0</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Sat 06 December 2008</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>So we decided to upgrade from 1.35.0 to 1.37.0 in Frugalware-current. As usual, there is a <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/boost137/">WIP repo</a> since this won't be finished in one day. Most of the trivial rebuilds are done, but still need to fix up miro, pdfedit and bmpx. Ah and I needed to upgrade libtorrent as well which resulted some problem in btg and qtorrent, though both have some support for the new 0.14.x libtorrent in SVN so most of the work was just to backport those patches.</p><p>A user on #frugalware asks when will we have python-2.6. Not before boost-1.37, I'm sure.</p><p>Side note: It seems I managed not to waste the whole day just because I met and old friend (and drinking beer). It turns out that if I drink 2 beers and sleep 2 hours then I can code without the usual "go to bed early, sleep a lot, then you can work" procedure.</p>
 </div>
 </div>
 

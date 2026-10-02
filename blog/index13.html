@@ -58,6 +58,84 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/pdfium-pathsegment.html">pdfium path segment API for LibreOffice's test needs</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Mon 25 September 2017</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>I recently
+<a href="https://cgit.freedesktop.org/libreoffice/core/commit/?id=da705eff910f512623a689aaf28604270fb8f1c4">fixed</a>
+<a href="https://bugs.documentfoundation.org/show_bug.cgi?id=108963">tdf#108963</a>, which
+is a PDF export bug&#8201;&#8212;&#8201;in case of highlighted and rotated text in e.g.
+Impress, the highlight rectangle in the PDF export was not rotated.</p></div>
+<div class="paragraph"><p>This is how the export result looked like:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://farm5.staticflickr.com/4341/37305427601_db1cfb697e_o.png" alt="https://farm5.staticflickr.com/4341/37305427601_db1cfb697e_o.png" />
+</div>
+</div>
+<div class="paragraph"><p>And this is how it now looks like, after fixing:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="https://farm5.staticflickr.com/4453/37258379126_b20fd39655_o.png" alt="https://farm5.staticflickr.com/4453/37258379126_b20fd39655_o.png" />
+</div>
+</div>
+<div class="paragraph"><p>For a long time the PDF export filter had no tests at all; the current
+approach I introduced is that we parse the PDF export result with pdfium,
+which is an excellent PDF rendering library (I covered it in general in an
+<a href="https://vmiklos.hu/blog/pdfium.html">earlier post</a>).</p></div>
+<div class="paragraph"><p>So given that pdfium knows how that rectangle looks like, we should be able to
+query the details of it from a test as well, correct? It depends. Yes, it&#8217;s
+possible technically, but no, most of the pdfium functionality is actually not
+exposed at its <a href="https://pdfium.googlesource.com/pdfium/+/master/public/">public API</a>.</p></div>
+<div class="paragraph"><p>The current situation is that one could use <code>FPDF_LoadMemDocument()</code>,
+<code>FPDF_LoadPage()</code> to get access to a PDF page, then <code>FPDFPage_CountObject()</code> and
+<code>FPDFPage_GetObject()</code> to iterate over objects on a page. We can filter for the
+relevant object by using <code>FPDFPageObj_GetType()</code> and <code>FPDFPath_GetFillColor()</code>,
+that will give us the only path that has a yellow fill color.</p></div>
+<div class="paragraph"><p>But getting more info about the geometry of the path isn&#8217;t really possible. As
+a workaround I went with <code>FPDFPageObj_GetBounds()</code> for the test, but wouldn&#8217;t it
+be nicer to get the individual segments (the objects that are the children of
+a path) and then get coordinates and other properties of a segment? This is
+what the recent API I added to pdfium now does. It provides the followings:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<code>FPDFPath_CountSegments()</code> gives you the number of segments of a path
+</p>
+</li>
+<li>
+<p>
+<code>FPDFPath_GetPathSegment()</code> gives you a given segment, via a new
+  <code>FPDF_PATHSEGMENT</code> opaque type
+</p>
+</li>
+<li>
+<p>
+you can use <code>FPDFPathSegment_GetPoint()</code> to get the coordinates,
+  <code>FPDFPathSegment_GetType()</code> to get the type (move to, line to, etc.) and
+  <code>FPDFPathSegment_GetClose()</code> to see if the segment closes the current subpath
+  of the path (or not)
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>This means that after the next pdfium update in LibreOffice, PDF export tests
+can nicely assert these properties of paths instead of dubious <em>bounding box
+should be larger after rotation</em> assertions.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/sw-split-section-in-table.html">Split sections inside tables for LibreOffice Writer</a></h1>
   </div>
   <div class="article_meta">
@@ -700,85 +778,6 @@ experience which is worth noting. :-)</p></div>
 <a href="https://bugs.kde.org/show_bug.cgi?id=376574">bug</a> and just 3 days later it got
 fixed!</p></div>
 <div class="paragraph"><p>Thanks to both Oliver for the nagging and to Albert for the actual fix.</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/pdf-video-export.html">LibreOffice PDF export now supports videos</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Thu 16 February 2017</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://farm4.staticflickr.com/3924/32549564340_4d0990cfa4_o.png" alt="https://farm4.staticflickr.com/3924/32549564340_4d0990cfa4_o.png" />
-</div>
-</div>
-<div class="paragraph"><p>PDF supports screen annotations, which means it&#8217;s possible to play embedded
-and linked videos on top of a static image. Given that LibreOffice also
-supports videos, it made sense to add support for this in our PDF export
-filter. First, thanks to <a href="http://www.pmg.be/">PMG</a> who made this work possible. This
-is currently added for Writer and Impress.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_linked_videos">Linked videos</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Linked videos are the situation when the video is not part of the document
-itself, but it&#8217;s located somewhere else, e.g. a http:// location. This is
-helpful if you want to email around a PDF file, and want to avoid sending
-large files when it has video content.</p></div>
-<div class="paragraph"><p><a href="https://bugs.documentfoundation.org/show_bug.cgi?id=104841">tdf#104841</a> is
-about this situation, first I added support for
-<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=9d6a749bc664f1876c938afb9eba4adc9f6ee09a">linked
-videos in Impress</a>, then
-<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=81aef113056270ce65f9dee5fe31b6f60617973c">also</a>
-<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=0e71075bb7379af318482bb3abbb630c58db9ec9">in
-Writer</a>.</p></div>
-<div class="paragraph"><p>The result can be played using Adobe Acrobat Reader&#8201;&#8212;&#8201;for some reason okular
-on Linux is a bit confused about http:// URLs, wants to convert them to
-relative ones, and then fails as of today.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_embedded_videos">Embedded videos</h2>
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://farm3.staticflickr.com/2666/32115175413_ec6f64243a_z.jpg" alt="https://farm3.staticflickr.com/2666/32115175413_ec6f64243a_z.jpg" />
-</div>
-</div>
-<div class="paragraph"><p><a href="https://bugs.documentfoundation.org/show_bug.cgi?id=105093">tdf#105093</a> is the
-embedded video case, this is handy in case you want to create an entirely
-self-contained PDF, where even the video content is inside the PDF file as an
-embedded file.</p></div>
-<div class="paragraph"><p>After
-<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=4ad249af88d15f2c8a09f0721a59d82718fcc201">Impress
-support</a> (and a trick around
-<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=64d80d22851a38eb3f320f4e2b2bdf875da4d8b4">Draw
-vs Impress shapes</a>) the
-<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=46153bdcf2f89e88607dfb0dd0003108796424e9">Writer
-part</a> wasn&#8217;t too complicated.</p></div>
-<div class="paragraph"><p>Regarding the situation around various video containers and codecs, the above
-code is quite agnostic. :-) On the LibreOffice side all we require is to be
-able to extract a key frame from the video to provide a preview image, so e.g.
-on Linux the support depends on what gstreamer plugins you have installed. The
-video content is written to the PDF file as-is, so again if it will work in
-the PDF reader is up to the reader&#8217;s codec support. On Linux e.g. okular uses
-vlc for video playback, so the range of supported formats is quite wide.  The
-same is true on Windows, what I personally tested is LibreOffice&#8217;s VLC backend
-and the embedded QuickTime player in Acrobat Reader.</p></div>
-<div class="paragraph"><p>All of this is available on LibreOffice master towards 5.4.</p></div>
 </div>
 </div>
 

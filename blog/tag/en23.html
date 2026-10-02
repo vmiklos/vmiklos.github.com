@@ -59,6 +59,59 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/mdadm-upgrade.html">mdadm upgrade</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Wed 02 January 2013</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>Even though I spend little of my free time with sysadmin stuff these days, this
+came up recently. A few years ago I hit an issue about <code>mdadm</code> creating too new
+metadata that wasn&#8217;t handled by the installed kernel, so I remembered to use
+<code>--metadata 0.90</code> when creating a new array. Additionally, I preferred using
+<code>cfdisk</code> for partitioning.</p></div>
+<div class="paragraph"><p>It turns out this caused quite some grief when it came to <code>grub2</code>, I wrote about
+this <a href="https://vmiklos.hu/blog/grub2.html">earlier</a>&#8201;&#8212;&#8201;that was about the theory, in a VM. This is
+about the practice. In practice, <code>gparted</code> turned out to be too risky, and I
+choose the following approach to repartition the hard drives (so there is
+enough space for <code>grub2</code>) and upgrade the <code>mdadm</code> metadata.</p></div>
+<div class="paragraph"><p>First, I broke the mirror by removing one leg of the RAID1 array:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>mdadm --manage /dev/md126 --fail /dev/sdd1
+mdadm --manage /dev/md126 --remove /dev/sdd1</code></pre>
+</div></div>
+<div class="paragraph"><p>Then I created a new array (with a single leg) with the new metadata and formatted it:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>fdisk /dev/sdd
+mdadm --create /dev/md125 --metadata=1.0 --level=1 --assume-clean --raid-devices=2 missing /dev/sdd1
+mkfs.ext4 /dev/md125</code></pre>
+</div></div>
+<div class="paragraph"><p>Finally I copied over the live system:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>mkdir /mnt/md125
+mount /dev/md125 /mnt/md125
+rsync --delete -avxP / /mnt/md125
+umount /mnt/md125</code></pre>
+</div></div>
+<div class="paragraph"><p>The rest was easy: I booted a livecd to do the <code>rsync</code> once again (taking a few
+minutes only), and once the system was running from the new array, added the
+leg of the old array to the new one as well&#8201;&#8212;&#8201;and that&#8217;s it.</p></div>
+</div>
+</div>
+
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/recent-contributions-2012.html">Recent contributions</a></h1>
   </div>
   <div class="article_meta">
@@ -885,63 +938,6 @@ comment. Thanks.</p></div>
 <div class="paragraph"><p>Update: the shutdown of the project was
 <a href="https://web.archive.org/web/20251007235917/https://frugalware.org/news/268/">announced</a> on
 2025-10-03.</p></div>
-</div>
-</div>
-
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/lo-sw-comment-range.html">LibreOffice Writer can now attach comments to text ranges</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Fri 10 August 2012</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>More than 10 years ago, a <a href="https://issues.apache.org/ooo/show_bug.cgi?id=5487">bug</a> was
-opened in the OpenOffice.org bugzilla to support this feature. Later this got
-<a href="https://bugs.freedesktop.org/show_bug.cgi?id=38244">imported</a> to LibreOffice&#8217;s
-bugtracker. Now that LibreOffice 3.6 is out, time to talk more about what
-features will show up in 3.7, and this will be one of them:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://wiki.documentfoundation.org/File:Comment-text-range.png">
-<img src="https://wiki.documentfoundation.org/images/thumb/5/5e/Comment-text-range.png/400px-Comment-text-range.png" alt="https://wiki.documentfoundation.org/images/thumb/5/5e/Comment-text-range.png/400px-Comment-text-range.png" />
-</a>
-</div>
-</div>
-<div class="paragraph"><p>Now that it&#8217;s there, let&#8217;s have a look at the details:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-ODF 1.2 already
-  <a href="http://docs.oasis-open.org/office/v1.2/cs01/OpenDocument-v1.2-cs01-part1.html#__RefHeading__1416196_253892949">supports</a>
-  commenting text ranges, but LibreOffice support was missing.
-</p>
-</li>
-<li>
-<p>
-Word already supported it as well, and now LibreOffice RTF/DOCX import/export filters are updated to take care of the new feature.
-</p>
-</li>
-<li>
-<p>
-If I was already messing with comments, I also implemented roundtrip of
-  <a href="http://msdn.microsoft.com/en-us/library/documentformat.openxml.wordprocessing.comment.initials">comment author initials</a> to ODF (see
-  <a href="https://tools.oasis-open.org/issues/browse/OFFICE-3776">proposal</a>), so now if
-  you open a DOCX/RTF file in LibreOffice, save it as ODF, and later save it back
-  to DOCX/RTF, this information won&#8217;t be lost.
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>Finally, one known limitation is that the text range currently can&#8217;t include
-multiple paragraphs&#8201;&#8212;&#8201;something to improve later if necessary.</p></div>
 </div>
 </div>
 

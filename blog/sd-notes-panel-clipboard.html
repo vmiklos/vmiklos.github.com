@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://vmiklos.hu/blog/theme/css/pygments.css">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Miklos Vajna">
+  <meta name="description" content="Posts and writings by Miklos Vajna">
+
+  <link href="https://vmiklos.hu/blog/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="What is Miklos hacking RSS" />
+
+<meta name="keywords" content="en">
+
+  <title>
+    What is Miklos hacking
+&ndash; Copy&paste for the Impress notes bottom panel in Collabora Online  </title>
+
+<script type="text/javascript">
+  var _paq = window._paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//analytics.vmiklos.hu/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '1']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <h2><a href="https://vmiklos.hu/blog">What is Miklos hacking</a></h2>
+      <p></p>
+      <ul>
+        <li><a href="/" target="_blank">Root</a></li>
+        <li><a href="https://planet.documentfoundation.org/" target="_blank">LibreOffice Blogs</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://vmiklos.hu/blog">Index</a> &brvbar; <a href="https://vmiklos.hu/blog/archives.html">Archives</a>
+      &brvbar; <a href="https://vmiklos.hu/blog/feeds/all.rss.xml">RSS</a>
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sd-notes-panel-clipboard.html">Copy&paste for the Impress notes bottom panel in Collabora Online</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Fri 02 October 2026</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <p>Szymon added a bottom panel for slide notes to <a href="https://www.collaboraonline.com/">Collabora Online</a>
+Impress about <a href="https://gerrit.collaboraoffice.com/c/online/+/11685">2 weeks ago</a>.</p>
+<p>This post is meant to show how clipboard support was implemented for this: both via keyboard and
+notebookbar buttons.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>Users expect that whenever they make a selection on the UI, they can cut or copy that. And they can
+put the cursor to a position and can paste there. The notes bottom panel in Impress is a special
+area, which is backed by a "content editable" element in the browser and by an "editeng" widget on
+the server, so it's different from the normal document editing canvas where copy&amp;paste used to work
+already in the past.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>The <a href="https://github.com/CollaboraOnline/online/issues/16242">the issue</a> shows that you can use the
+notebookbar to open a notes panel at the bottom:</p>
+<p><a href="https://share.vmiklos.hu/blog/sd-notes-panel-clipboard/demo.png"><figure><img src="https://share.vmiklos.hu/blog/sd-notes-panel-clipboard/demo.png"><figcaption>Collabora Online Impress: notes panel at the bottom</figcaption></figure></a></p>
+<p>But then copy&amp;paste wasn't working at all:</p>
+<ul>
+<li>First I had to fix the Ctrl-X/C/V shortcuts, I could model that after Writer comments, which are
+  also in JavaScript, outside the normal document editing canvas.</li>
+<li>Then paste via the notebookbar button was a next step, which was a bit more tricky, since once you
+  click on a notebookbar button, the notes panel doesn't have the focus anymore.</li>
+<li>Finally cut and copy via the notebookbar is now also working, which had to enable these buttons
+  even if the document editing canvas had no selection, but it works at the end.</li>
+</ul>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>As usual, the high-level problem was addressed by a series of small changes:</p>
+<ul>
+<li><a href="https://gerrit.collaboraoffice.com/plugins/gitiles/online/+/c5b12d0df4313f436485aad0fcf10beffa567130">cool#16242 browser: handle clipboard shortcuts in the Impress notes bottom panel</a></li>
+<li><a href="https://gerrit.collaboraoffice.com/plugins/gitiles/online/+/06c4285a5fd39577ea0bc4f3bf239b68e19e66e7">cool#16242 browser: handle paste from notebookbar in the Impress notes bottom panel</a></li>
+<li><a href="https://gerrit.collaboraoffice.com/plugins/gitiles/online/+/ef4ace1c52090202ea2831f13673019eabbcc5ec">cool#16242 browser: handle cut/copy from notebookbar in the Impress notes bottom panel</a></li>
+</ul>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a development edition of Collabora Online 26.04 and try it out yourself right now: <a href="https://www.collaboraonline.com/code/">try
+the development edition</a>.</p>
+  </div>
+  <div class="article_meta">
+    <p>Category: <a href="https://vmiklos.hu/blog/category/collabora-online.html">collabora-online</a>
+ &ndash; Tags:
+      <a href="https://vmiklos.hu/blog/tag/en.html">en</a>    </p>
+  </div>
+
+
+</article>
+
+
+    <div id="ending_message">
+      <p>&copy; Miklos Vajna. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
+</body>
+</html>
