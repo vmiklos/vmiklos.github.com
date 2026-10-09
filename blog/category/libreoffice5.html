@@ -158,293 +158,125 @@ of this work will be available in TDF's next release too (7.4).</p>
     <p>Posted on: Wed 01 June 2022</p>
   </div>
   <div class="article_readtime">
-    <p>Estimated read time: 5 minutes</p>
+    <p>Estimated read time: 4 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Writer already had <a href="https://vmiklos.hu/blog/sw-content-controls.html">rich text and checkbox content
-controls</a>: a new way to set properties on a piece of text, primarily for form filling purposes. This
-feature now gained 3 additional types: dropdown, picture and date picker types. This improves
-compatibility with the DOCX format: there are now 5 inline content control types we can now import.</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-content-controls2/feature.png" alt="https://share.vmiklos.hu/blog/sw-content-controls2/feature.png" />
-</div>
-<div class="title">Figure 1. Word-style inline content controls in Writer.</div>
-</div>
-<div class="paragraph"><p>First, thanks to <a href="https://dapsi.ngi.eu/">NGI DAPSI</a> who made this work by
-<a href="https://www.collaboraoffice.com/">Collabora</a> possible.</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-content-controls/eu.png" alt="https://share.vmiklos.hu/blog/sw-content-controls/eu.png" />
-</div>
-<div class="title">Figure 2. This project has received funding from the European Union’s Horizon 2020 research and innovation programme under grant agreement No 871498</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_motivation">Motivation</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Word users expect to be able to import their document to Writer and experience a matching feature
+    <p>Writer already had <a href="https://vmiklos.hu/blog/sw-content-controls.html">rich text and checkbox content
+controls</a>: a new way to set properties on a piece of text,
+primarily for form filling purposes. This feature now gained 3 additional types: dropdown, picture
+and date picker types. This improves compatibility with the DOCX format: there are now 5 inline
+content control types we can now import.</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-content-controls2/feature.png"><figcaption>Word-style inline content controls in Writer.</figcaption>
+</figure>
+</p>
+<p>First, thanks to <a href="https://dapsi.ngi.eu/">NGI DAPSI</a> who made this work by
+<a href="https://www.collaboraoffice.com/">Collabora</a> possible.</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-content-controls/eu.png"><figcaption>This project has received funding from the European Union's Horizon 2020 research and innovation programme under grant agreement No 871498</figcaption>
+</figure>
+</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>Word users expect to be able to import their document to Writer and experience a matching feature
 set: form filling is not an exception. Word provides several content control kinds (inline, block,
-row and cell content controls), this project focuses on inline ("run") content controls.</p></div>
-<div class="paragraph"><p>In the scope of inline content controls, the above linked blog post already described the rich text
-and checkbox types. In this post, we&#8217;ll focus on the new dropdown, picture and date content
-controls.</p></div>
-<div class="paragraph"><p>You might wonder why content controls are useful, since Writer already has form controls and
-fieldmarks, which provide something similar. Here are some benefits:</p></div>
-<div class="ulist"><ul>
+row and cell content controls), this project focuses on inline ("run") content controls.</p>
+<p>In the scope of inline content controls, the above linked blog post already described the rich text
+and checkbox types. In this post, we'll focus on the new dropdown, picture and date content
+controls.</p>
+<p>You might wonder why content controls are useful, since Writer already has form controls and
+fieldmarks, which provide something similar. Here are some benefits:</p>
+<ul>
 <li>
-<p>
-Dropdown content controls have a list of dropdown items. Each item is a display-text and value
+<p>Dropdown content controls have a list of dropdown items. Each item is a display-text and value
   pair, allowing to differentiate between a human-readable string and a machine-readable value.
-  Fieldmarks only handled (machine-readable) values, resulting in document text different from Word.
-</p>
+  Fieldmarks only handled (machine-readable) values, resulting in document text different from Word.</p>
 </li>
 <li>
-<p>
-Picture content controls allow the author of a form to pre-format the image before the filler of
+<p>Picture content controls allow the author of a form to pre-format the image before the filler of
   the form inserts the actual image. Writer already had placeholder fields for images in the past,
-  but that was just text, allowing image format only after insertion of the actual image.
-</p>
+  but that was just text, allowing image format only after insertion of the actual image.</p>
 </li>
 <li>
-<p>
-Date content controls were emulated with Writer fieldmarks in the past, which created trouble
-  during export, since Word itself doesn&#8217;t have a date form-field.
-</p>
+<p>Date content controls were emulated with Writer fieldmarks in the past, which created trouble
+  during export, since Word itself doesn't have a date form-field.</p>
 </li>
-</ul></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_results">Results</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>The feature consists of menu items to insert dropdown/picture/date content controls, and then you
-can interact with the inserted content controls or with their properties:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-content-controls2/menu.png" alt="https://share.vmiklos.hu/blog/sw-content-controls2/menu.png" />
-</div>
-<div class="title">Figure 3. Menu items to insert drop-down, picture and date content controls.</div>
-</div>
-<div class="paragraph"><p>Drop-down content controls show a dropdown button when you&#8217;re inside the content control:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-content-controls2/dropdown.png" alt="https://share.vmiklos.hu/blog/sw-content-controls2/dropdown.png" />
-</div>
-<div class="title">Figure 4. A drop-down content control.</div>
-</div>
-<div class="paragraph"><p>This is similar to dropdown fields, just allows display-text and value pairs, not limited to just
-values.</p></div>
-<div class="paragraph"><p>Picture content controls contain a single as-character image, but you can interact with them: clicking on
-the content control opens the file open dialog to provide a replacement for the placeholder:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-content-controls2/picture.png" alt="https://share.vmiklos.hu/blog/sw-content-controls2/picture.png" />
-</div>
-<div class="title">Figure 5. Picture controls.</div>
-</div>
-<div class="paragraph"><p>And these content controls can be saved to ODT and DOCX.</p></div>
-<div class="paragraph"><p>There is also a content control properties dialog, which allows setting if the content controls are
-in placeholder mode or not:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-content-controls2/properties.png" alt="https://share.vmiklos.hu/blog/sw-content-controls2/properties.png" />
-</div>
-<div class="title">Figure 6. Content control properties.</div>
-</div>
-<div class="paragraph"><p>It has additional widgets for dropdowns. There is UI to create, update or delete these list items:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-content-controls2/properties-inner.png" alt="https://share.vmiklos.hu/blog/sw-content-controls2/properties-inner.png" />
-</div>
-<div class="title">Figure 7. Content control properties inner UI for list items.</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_how_is_this_implemented">How is this implemented?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
-<div class="paragraph"><p>As usual, the high-level problem was addressed by a series of incremental commits:</p></div>
-<div class="ulist"><ul>
-<li>
+</ul>
+<h2 id="results">Results<a class="headerlink" href="#results" title="Permanent link">&para;</a></h2>
+<p>The feature consists of menu items to insert dropdown/picture/date content controls, and then you
+can interact with the inserted content controls or with their properties:</p>
 <p>
-<a href="https://gerrit.libreoffice.org/c/core/+/133742">https://gerrit.libreoffice.org/c/core/+/133742</a> sw content controls, drop-down: add doc model &amp; UNO API
+<figure><img src="https://share.vmiklos.hu/blog/sw-content-controls2/menu.png"><figcaption>Menu items to insert drop-down, picture and date content controls.</figcaption>
+</figure>
 </p>
-</li>
-<li>
+<p>Drop-down content controls show a dropdown button when you're inside the content control:</p>
 <p>
-<a href="https://gerrit.libreoffice.org/c/core/+/133801">https://gerrit.libreoffice.org/c/core/+/133801</a> sw content controls: enable indicator on the RHS of the content control end
+<figure><img src="https://share.vmiklos.hu/blog/sw-content-controls2/dropdown.png"><figcaption>A drop-down content control.</figcaption>
+</figure>
 </p>
-</li>
-<li>
+<p>This is similar to dropdown fields, just allows display-text and value pairs, not limited to just
+values.</p>
+<p>Picture content controls contain a single as-character image, but you can interact with them: clicking on
+the content control opens the file open dialog to provide a replacement for the placeholder:</p>
 <p>
-<a href="https://gerrit.libreoffice.org/c/core/+/133874">https://gerrit.libreoffice.org/c/core/+/133874</a> sw content controls, drop-down: show list items on click
+<figure><img src="https://share.vmiklos.hu/blog/sw-content-controls2/picture.png"><figcaption>Picture controls.</figcaption>
+</figure>
 </p>
-</li>
-<li>
+<p>And these content controls can be saved to ODT and DOCX.</p>
+<p>There is also a content control properties dialog, which allows setting if the content controls are
+in placeholder mode or not:</p>
 <p>
-<a href="https://gerrit.libreoffice.org/c/core/+/133915">https://gerrit.libreoffice.org/c/core/+/133915</a> sw content controls, drop-down: select list item on click
+<figure><img src="https://share.vmiklos.hu/blog/sw-content-controls2/properties.png"><figcaption>Content control properties.</figcaption>
+</figure>
 </p>
-</li>
-<li>
+<p>It has additional widgets for dropdowns. There is UI to create, update or delete these list items:</p>
 <p>
-<a href="https://gerrit.libreoffice.org/c/core/+/134034">https://gerrit.libreoffice.org/c/core/+/134034</a> sw content controls, drop-down: add ODT filter
+<figure><img src="https://share.vmiklos.hu/blog/sw-content-controls2/properties-inner.png"><figcaption>Content control properties inner UI for list items.</figcaption>
+</figure>
 </p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/134041">https://gerrit.libreoffice.org/c/core/+/134041</a> sw content controls: only try to insert placeholders if there is no selection
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/134104">https://gerrit.libreoffice.org/c/core/+/134104</a> sw content controls, drop-down: add DOCX export
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/134143">https://gerrit.libreoffice.org/c/core/+/134143</a> sw content controls, drop-down: add DOCX import
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/134151">https://gerrit.libreoffice.org/c/core/+/134151</a> sw content controls: introduce a word breaking dummy char at the end
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/134215">https://gerrit.libreoffice.org/c/core/+/134215</a> sw content controls, dropdown: add insert UI
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/134239">https://gerrit.libreoffice.org/c/core/+/134239</a> sw content controls: fixes for the ending dummy char
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/134256">https://gerrit.libreoffice.org/c/core/+/134256</a> sw content controls, dropdown: add LOK API
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/134278">https://gerrit.libreoffice.org/c/core/+/134278</a> sw content controls, dropdown: add an initial properties dialog
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/134379">https://gerrit.libreoffice.org/c/core/+/134379</a> sw content controls, dropdown: edit list items in the properties dialog
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/134405">https://gerrit.libreoffice.org/c/core/+/134405</a> sw content controls, dropdown: edit list items: add modify and delete
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/134457">https://gerrit.libreoffice.org/c/core/+/134457</a> sw content controls, picture: add doc model &amp; UNO API
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/134511">https://gerrit.libreoffice.org/c/core/+/134511</a> sw content controls, picture: replace placeholder image on click
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/134538">https://gerrit.libreoffice.org/c/core/+/134538</a> sw content controls, dropdown: disable NOP buttons in the property dialog
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/134595">https://gerrit.libreoffice.org/c/core/+/134595</a> sw content controls, picture: add ODT filter
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/134657">https://gerrit.libreoffice.org/c/core/+/134657</a> sw content controls, picture: add DOCX filter
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/134681">https://gerrit.libreoffice.org/c/core/+/134681</a> sw content controls, picture: add insert UI
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/134750">https://gerrit.libreoffice.org/c/core/+/134750</a> sw content controls, picture: add LOK API
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/134847">https://gerrit.libreoffice.org/c/core/+/134847</a> sw content controls, date: add doc model &amp; UNO API
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/134926">https://gerrit.libreoffice.org/c/core/+/134926</a> sw content controls, date: show a date picker on click
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/134977">https://gerrit.libreoffice.org/c/core/+/134977</a> sw content controls, date: add ODT filter
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/135022">https://gerrit.libreoffice.org/c/core/+/135022</a> sw content controls, picture: add LOK API testcase
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/135033">https://gerrit.libreoffice.org/c/core/+/135033</a> sw content controls, date: add DOCX export
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/135035">https://gerrit.libreoffice.org/c/core/+/135035</a> sw content controls, date: add current date handling
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/135039">https://gerrit.libreoffice.org/c/core/+/135039</a> sw content controls, date: preserve more properties
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/135109">https://gerrit.libreoffice.org/c/core/+/135109</a> sw content controls, date: add DOCX import
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/135153">https://gerrit.libreoffice.org/c/core/+/135153</a> sw content controls, date: add insert UI
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/135214">https://gerrit.libreoffice.org/c/core/+/135214</a> sw content controls, date: add LOK API
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>To make this more interesting, Rashesh Padia of Collabora continued exposing this in Collabora
-Online, see the PR at <a href="https://github.com/CollaboraOnline/online/pull/4803">https://github.com/CollaboraOnline/online/pull/4803</a>.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_want_to_start_using_this">Want to start using this?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office 22.05 and try it out yourself right now:
-<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>As usual, the high-level problem was addressed by a series of incremental commits:</p>
+<ul>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/133742">sw content controls, drop-down: add doc model &amp; UNO API</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/133801">sw content controls: enable indicator on the RHS of the content control end</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/133874">sw content controls, drop-down: show list items on click</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/133915">sw content controls, drop-down: select list item on click</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/134034">sw content controls, drop-down: add ODT filter</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/134041">sw content controls: only try to insert placeholders if there is no selection</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/134104">sw content controls, drop-down: add DOCX export</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/134143">sw content controls, drop-down: add DOCX import</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/134151">sw content controls: introduce a word breaking dummy char at the end</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/134215">sw content controls, dropdown: add insert UI</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/134239">sw content controls: fixes for the ending dummy char</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/134256">sw content controls, dropdown: add LOK API</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/134278">sw content controls, dropdown: add an initial properties dialog</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/134379">sw content controls, dropdown: edit list items in the properties dialog</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/134405">sw content controls, dropdown: edit list items: add modify and delete</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/134457">sw content controls, picture: add doc model &amp; UNO API</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/134511">sw content controls, picture: replace placeholder image on click</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/134538">sw content controls, dropdown: disable NOP buttons in the property dialog</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/134595">sw content controls, picture: add ODT filter</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/134657">sw content controls, picture: add DOCX filter</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/134681">sw content controls, picture: add insert UI</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/134750">sw content controls, picture: add LOK API</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/134847">sw content controls, date: add doc model &amp; UNO API</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/134926">sw content controls, date: show a date picker on click</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/134977">sw content controls, date: add ODT filter</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/135022">sw content controls, picture: add LOK API testcase</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/135033">sw content controls, date: add DOCX export</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/135035">sw content controls, date: add current date handling</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/135039">sw content controls, date: preserve more properties</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/135109">sw content controls, date: add DOCX import</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/135153">sw content controls, date: add insert UI</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/135214">sw content controls, date: add LOK API</a></li>
+</ul>
+<p>To make this more interesting, Rashesh Padia of Collabora continued exposing this in Collabora
+Online, see the PR at https://github.com/CollaboraOnline/online/pull/4803.</p>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a snapshot / demo of Collabora Office 22.05 and try it out yourself right now: <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try
+unstable snapshot</a>.  Collabora
 intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF&#8217;s next release too (7.4).</p></div>
-</div>
-</div>
-
+of this work will be available in TDF's next release too (7.4).</p>
   </div>
 </article>
 <hr />
@@ -459,219 +291,100 @@ of this work will be available in TDF&#8217;s next release too (7.4).</p></div>
     <p>Estimated read time: 4 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Writer now has the start of content controls: a new way to set properties on a piece of text,
+    <p>Writer now has the start of content controls: a new way to set properties on a piece of text,
 primarily for form filling purposes. This feature improves compatibility with the DOCX format:
-inline content control types "rich text" and "checkbox" are the first two types we can now import.</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-content-controls/feature.png" alt="https://share.vmiklos.hu/blog/sw-content-controls/feature.png" />
-</div>
-<div class="title">Figure 1. Word-style inline content controls in Writer.</div>
-</div>
-<div class="paragraph"><p>First, thanks to <a href="https://dapsi.ngi.eu/">NGI DAPSI</a> who made this work by
-<a href="https://www.collaboraoffice.com/">Collabora</a> possible.</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-content-controls/eu.png" alt="https://share.vmiklos.hu/blog/sw-content-controls/eu.png" />
-</div>
-<div class="title">Figure 2. This project has received funding from the European Union’s Horizon 2020 research and innovation programme under grant agreement No 871498</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_motivation">Motivation</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Word users expect to be able to import their document to Writer and experience a matching feature
+inline content control types "rich text" and "checkbox" are the first two types we can now import.</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-content-controls/feature.png"><figcaption>Word-style inline content controls in Writer.</figcaption>
+</figure>
+</p>
+<p>First, thanks to <a href="https://dapsi.ngi.eu/">NGI DAPSI</a> who made this work by
+<a href="https://www.collaboraoffice.com/">Collabora</a> possible.</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-content-controls/eu.png"><figcaption>This project has received funding from the European Union's Horizon 2020 research and innovation programme under grant agreement No 871498</figcaption>
+</figure>
+</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>Word users expect to be able to import their document to Writer and experience a matching feature
 set: form filling is not an exception. Word provides several content control kinds (inline, block,
-row and cell content controls), this project focuses on inline ("run") content controls.</p></div>
-<div class="paragraph"><p>In the scope of inline content controls, the plan is to support rich text, checkbox, dropdown,
+row and cell content controls), this project focuses on inline ("run") content controls.</p>
+<p>In the scope of inline content controls, the plan is to support rich text, checkbox, dropdown,
 picture and date content controls. This blog post presents the already implemented rich text and
-checkbox types.</p></div>
-<div class="paragraph"><p>You might wonder why content controls are useful, since Writer already has form controls and
+checkbox types.</p>
+<p>You might wonder why content controls are useful, since Writer already has form controls and
 fieldmarks, which provide something similar. Here are some properties of content controls, which
-make them incompatible with field-based fillable forms or form controls:</p></div>
-<div class="ulist"><ul>
+make them incompatible with field-based fillable forms or form controls:</p>
+<ul>
 <li>
-<p>
-inline content controls can&#8217;t span over multiple paragraphs, while this is allowed for fieldmarks
-  (bookmark-based fields)
-</p>
+<p>inline content controls can't span over multiple paragraphs, while this is allowed for fieldmarks
+  (bookmark-based fields)</p>
 </li>
 <li>
-<p>
-content controls must be well-formed XML elements, this allows nesting (while Writer fields can&#8217;t
+<p>content controls must be well-formed XML elements, this allows nesting (while Writer fields can't
   be nested), but does not allow the start/end position to be a random place in the document (while
-  this is allowed for fieldmarks, which have separate XML elements for start and end)
-</p>
+  this is allowed for fieldmarks, which have separate XML elements for start and end)</p>
 </li>
 <li>
-<p>
-content controls just have a set of properties, while fieldmarks are supposed to have a field
-  command and a result (with a separator between the two)
-</p>
+<p>content controls just have a set of properties, while fieldmarks are supposed to have a field
+  command and a result (with a separator between the two)</p>
 </li>
 <li>
-<p>
-content controls can contain rich text (full set of character formatting), while Writer fields can
-  only have one character formatting (e.g. half of the field can&#8217;t be bold)
-</p>
+<p>content controls can contain rich text (full set of character formatting), while Writer fields can
+  only have one character formatting (e.g. half of the field can't be bold)</p>
 </li>
-</ul></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_results">Results</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>The feature consists of menu items to insert rich text or checkbox content controls, and then you
-can interact with the inserted content controls:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-content-controls/menu.png" alt="https://share.vmiklos.hu/blog/sw-content-controls/menu.png" />
-</div>
-<div class="title">Figure 3. Menu items to insert rich text and checkbox content controls.</div>
-</div>
-<div class="paragraph"><p>Rich text content controls simply show an indicator when you&#8217;re inside the content control:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-content-controls/rich-text.png" alt="https://share.vmiklos.hu/blog/sw-content-controls/rich-text.png" />
-</div>
-<div class="title">Figure 4. A rich text content control.</div>
-</div>
-<div class="paragraph"><p>This is similar to input fields, just allows rich text content, not limited to plain text.</p></div>
-<div class="paragraph"><p>Checkbox content controls contain a single character, but you can interact with them: clicking on
-the content control toggles the checked state of the checkbox:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-content-controls/checkbox.png" alt="https://share.vmiklos.hu/blog/sw-content-controls/checkbox.png" />
-</div>
-<div class="title">Figure 5. Checkbox content controls.</div>
-</div>
-<div class="paragraph"><p>And these content controls can be saved to ODT and DOCX.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_how_is_this_implemented">How is this implemented?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
-<div class="paragraph"><p>As usual, the high-level problem was addressed by a series of incremental commits:</p></div>
-<div class="ulist"><ul>
-<li>
+</ul>
+<h2 id="results">Results<a class="headerlink" href="#results" title="Permanent link">&para;</a></h2>
+<p>The feature consists of menu items to insert rich text or checkbox content controls, and then you
+can interact with the inserted content controls:</p>
 <p>
-<a href="https://gerrit.libreoffice.org/c/core/+/132291">https://gerrit.libreoffice.org/c/core/+/132291</a> sw content controls: add document model
+<figure><img src="https://share.vmiklos.hu/blog/sw-content-controls/menu.png"><figcaption>Menu items to insert rich text and checkbox content controls.</figcaption>
+</figure>
 </p>
-</li>
-<li>
+<p>Rich text content controls simply show an indicator when you're inside the content control:</p>
 <p>
-<a href="https://gerrit.libreoffice.org/c/core/+/132350">https://gerrit.libreoffice.org/c/core/+/132350</a> sw content controls: add UNO API to insert this
+<figure><img src="https://share.vmiklos.hu/blog/sw-content-controls/rich-text.png"><figcaption>A rich text content control.</figcaption>
+</figure>
 </p>
-</li>
-<li>
+<p>This is similar to input fields, just allows rich text content, not limited to plain text.</p>
+<p>Checkbox content controls contain a single character, but you can interact with them: clicking on
+the content control toggles the checked state of the checkbox:</p>
 <p>
-<a href="https://gerrit.libreoffice.org/c/core/+/132404">https://gerrit.libreoffice.org/c/core/+/132404</a> sw content controls: add UNO API to insert this with custom props
+<figure><img src="https://share.vmiklos.hu/blog/sw-content-controls/checkbox.png"><figcaption>Checkbox content controls.</figcaption>
+</figure>
 </p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/132491">https://gerrit.libreoffice.org/c/core/+/132491</a> sw content controls: include this in the UNO API text portion enum
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/132556">https://gerrit.libreoffice.org/c/core/+/132556</a> sw content controls: add initial layout support
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/132618">https://gerrit.libreoffice.org/c/core/+/132618</a> sw content controls: add overlay to render a border around the text portions
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/132652">https://gerrit.libreoffice.org/c/core/+/132652</a> sw content controls: select the content on click when showing placeholder
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/132717">https://gerrit.libreoffice.org/c/core/+/132717</a> sw content controls: add ODT export
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/132804">https://gerrit.libreoffice.org/c/core/+/132804</a> sw content controls: add ODT import
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/132875">https://gerrit.libreoffice.org/c/core/+/132875</a> sw content controls: add initial DOCX export
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/132944">https://gerrit.libreoffice.org/c/core/+/132944</a> sw content controls, DOCX export: handle SDT end at para end
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/133195">https://gerrit.libreoffice.org/c/core/+/133195</a> sw content controls: add initial DOCX import
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/133241">https://gerrit.libreoffice.org/c/core/+/133241</a> sw content controls: add insert UI
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/133314">https://gerrit.libreoffice.org/c/core/+/133314</a> sw content controls: add LOK API
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/133363">https://gerrit.libreoffice.org/c/core/+/133363</a> sw content controls, checkbox: add document model &amp; UNO API
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/133424">https://gerrit.libreoffice.org/c/core/+/133424</a> sw content controls, checkbox: toggle the checkbox on click
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/133467">https://gerrit.libreoffice.org/c/core/+/133467</a> sw content controls, checkbox: add ODT filter
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/133532">https://gerrit.libreoffice.org/c/core/+/133532</a> sw content controls, checkbox: add DOCX export
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/133588">https://gerrit.libreoffice.org/c/core/+/133588</a> sw content controls, checkbox: add DOCX import
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/133685">https://gerrit.libreoffice.org/c/core/+/133685</a> sw content controls, checkbox: add insert UI
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>To make this even more interesting, Rashesh Padia of Collabora started exposing this in Collabora
-Online, see the PR at <a href="https://github.com/CollaboraOnline/online/pull/4703">https://github.com/CollaboraOnline/online/pull/4703</a>.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_want_to_start_using_this">Want to start using this?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office 2022 and try it out yourself right now:
-<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
+<p>And these content controls can be saved to ODT and DOCX.</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>As usual, the high-level problem was addressed by a series of incremental commits:</p>
+<ul>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/132291">sw content controls: add document model</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/132350">sw content controls: add UNO API to insert this</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/132404">sw content controls: add UNO API to insert this with custom props</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/132491">sw content controls: include this in the UNO API text portion enum</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/132556">sw content controls: add initial layout support</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/132618">sw content controls: add overlay to render a border around the text portions</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/132652">sw content controls: select the content on click when showing placeholder</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/132717">sw content controls: add ODT export</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/132804">sw content controls: add ODT import</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/132875">sw content controls: add initial DOCX export</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/132944">sw content controls, DOCX export: handle SDT end at para end</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/133195">sw content controls: add initial DOCX import</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/133241">sw content controls: add insert UI</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/133314">sw content controls: add LOK API</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/133363">sw content controls, checkbox: add document model &amp; UNO API</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/133424">sw content controls, checkbox: toggle the checkbox on click</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/133467">sw content controls, checkbox: add ODT filter</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/133532">sw content controls, checkbox: add DOCX export</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/133588">sw content controls, checkbox: add DOCX import</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/133685">sw content controls, checkbox: add insert UI</a></li>
+</ul>
+<p>To make this even more interesting, Rashesh Padia of Collabora started exposing this in Collabora
+Online, see the PR at https://github.com/CollaboraOnline/online/pull/4703.</p>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a snapshot / demo of Collabora Office 2022 and try it out yourself right now: <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try
+unstable snapshot</a>.  Collabora
 intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF&#8217;s next release too (7.4).</p></div>
-</div>
-</div>
-
+of this work will be available in TDF's next release too (7.4).</p>
   </div>
 </article>
 <hr />
@@ -686,251 +399,122 @@ of this work will be available in TDF&#8217;s next release too (7.4).</p></div>
     <p>Estimated read time: 4 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Writer now supports what we call clearing breaks: a new property on line breaks which controls where
+    <p>Writer now supports what we call clearing breaks: a new property on line breaks which controls where
 to put the next line in case the line break is at the end of a line which intersects with an
-anchored object. This feature improves compatibility with the DOCX and HTML formats.</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-clearing-break/all-new.png" alt="https://share.vmiklos.hu/blog/sw-clearing-break/all-new.png" />
-</div>
-<div class="title">Figure 1. Word-style "all" clearing in Writer, new result.</div>
-</div>
-<div class="paragraph"><p>First, thanks to <a href="https://dapsi.ngi.eu/">NGI DAPSI</a> who made this work by
-<a href="https://www.collaboraoffice.com/">Collabora</a> possible.</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-clearing-break/eu.png" alt="https://share.vmiklos.hu/blog/sw-clearing-break/eu.png" />
-</div>
-<div class="title">Figure 2. This project has received funding from the European Union’s Horizon 2020 research and innovation programme under grant agreement No 871498</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_motivation">Motivation</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Word users expect to be able to import their documents to Writer and experience high fidelity
+anchored object. This feature improves compatibility with the DOCX and HTML formats.</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-clearing-break/all-new.png"><figcaption>Word-style "all" clearing in Writer, new result.</figcaption>
+</figure>
+</p>
+<p>First, thanks to <a href="https://dapsi.ngi.eu/">NGI DAPSI</a> who made this work by
+<a href="https://www.collaboraoffice.com/">Collabora</a> possible.</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-clearing-break/eu.png"><figcaption>This project has received funding from the European Union's Horizon 2020 research and innovation programme under grant agreement No 871498</figcaption>
+</figure>
+</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>Word users expect to be able to import their documents to Writer and experience high fidelity
 rendering: this means Writer has to support clearing breaks, which instruct the layout to put the
 next line after a line break not necessarily at the next available vertical position, but perhaps
 the next line should "just down" to the next full line, or perhaps just do this partially. (Jump
 down to the next line, so no anchored object causes an additional indentation on the left or right
-side.)</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_results">Results</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>The easiest case is the "none" clearing break, i.e. when it&#8217;s not actually clearing. This looks like this:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-clearing-break/none-new.png" alt="https://share.vmiklos.hu/blog/sw-clearing-break/none-new.png" />
-</div>
-<div class="title">Figure 3. Word-style not clearing break, new result.</div>
-</div>
-<div class="paragraph"><p>This is just a plain line break, and there are no changes here. It used to look like this in the past as well:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-clearing-break/none-old.png" alt="https://share.vmiklos.hu/blog/sw-clearing-break/none-old.png" />
-</div>
-<div class="title">Figure 4. Word-style not clearing break, old result.</div>
-</div>
-<div class="paragraph"><p>And both match the reference rendering:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-clearing-break/none-ref.png" alt="https://share.vmiklos.hu/blog/sw-clearing-break/none-ref.png" />
-</div>
-<div class="title">Figure 5. Word-style not clearing break, reference.</div>
-</div>
-<div class="paragraph"><p>Now, what&#8217;s more interesting is the "all" clearing break, when the next line is placed in a way that
-it&#8217;s a full line. Figure 1 already shows how it now looks like in Writer. Here is how it used to
-look like:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-clearing-break/all-old.png" alt="https://share.vmiklos.hu/blog/sw-clearing-break/all-old.png" />
-</div>
-<div class="title">Figure 6. Word-style "all" clearing break, old result.</div>
-</div>
-<div class="paragraph"><p>Finally you can compare that with the reference:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-clearing-break/all-ref.png" alt="https://share.vmiklos.hu/blog/sw-clearing-break/all-ref.png" />
-</div>
-<div class="title">Figure 7. Word-style "all" clearing break, reference.</div>
-</div>
-<div class="paragraph"><p>This is the most interesting case, and Word still provides UI to insert such breaks, so it
+side.)</p>
+<h2 id="results">Results<a class="headerlink" href="#results" title="Permanent link">&para;</a></h2>
+<p>The easiest case is the "none" clearing break, i.e. when it's not actually clearing. This looks like this:</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-clearing-break/none-new.png"><figcaption>Word-style not clearing break, new result.</figcaption>
+</figure>
+</p>
+<p>This is just a plain line break, and there are no changes here. It used to look like this in the past as well:</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-clearing-break/none-old.png"><figcaption>Word-style not clearing break, old result.</figcaption>
+</figure>
+</p>
+<p>And both match the reference rendering:</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-clearing-break/none-ref.png"><figcaption>Word-style not clearing break, reference.</figcaption>
+</figure>
+</p>
+<p>Now, what's more interesting is the "all" clearing break, when the next line is placed in a way that
+it's a full line. Figure 1 already shows how it now looks like in Writer. Here is how it used to
+look like:</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-clearing-break/all-old.png"><figcaption>Word-style "all" clearing break, old result.</figcaption>
+</figure>
+</p>
+<p>Finally you can compare that with the reference:</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-clearing-break/all-ref.png"><figcaption>Word-style "all" clearing break, reference.</figcaption>
+</figure>
+</p>
+<p>This is the most interesting case, and Word still provides UI to insert such breaks, so it
 frequently appears in documents out there. But there are two other cases, still. The "left" clearing
-break "jumps down", below anchored objects on the left. Here is how it looks now in Writer:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-clearing-break/left-new.png" alt="https://share.vmiklos.hu/blog/sw-clearing-break/left-new.png" />
-</div>
-<div class="title">Figure 8. Word-style "left" clearing break, new result</div>
-</div>
-<div class="paragraph"><p>And this is how it used to look like:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-clearing-break/left-old.png" alt="https://share.vmiklos.hu/blog/sw-clearing-break/left-old.png" />
-</div>
-<div class="title">Figure 9. Word-style "left" clearing break, old result</div>
-</div>
-<div class="paragraph"><p>Finally you can compare that with the reference:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-clearing-break/left-ref.png" alt="https://share.vmiklos.hu/blog/sw-clearing-break/left-ref.png" />
-</div>
-<div class="title">Figure 10. Word-style "left" clearing break, reference</div>
-</div>
-<div class="paragraph"><p>The last case is the mirror of this, when the "right" clearing break "jumps down", below anchored
-objects on the right. Here is how it looks now in Writer:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-clearing-break/right-new.png" alt="https://share.vmiklos.hu/blog/sw-clearing-break/right-new.png" />
-</div>
-<div class="title">Figure 11. Word-style "right" clearing break, new result</div>
-</div>
-<div class="paragraph"><p>And this is how it used to look like:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-clearing-break/right-old.png" alt="https://share.vmiklos.hu/blog/sw-clearing-break/right-old.png" />
-</div>
-<div class="title">Figure 12. Word-style "right" clearing break, old result</div>
-</div>
-<div class="paragraph"><p>Finally you can compare that with the reference:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-clearing-break/right-ref.png" alt="https://share.vmiklos.hu/blog/sw-clearing-break/right-ref.png" />
-</div>
-<div class="title">Figure 13. Word-style "right" clearing break, reference</div>
-</div>
-<div class="paragraph"><p>Other than the layout, there is also user interface for this in both LibreOffice and Collabora Online:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-clearing-break/ui.png" alt="https://share.vmiklos.hu/blog/sw-clearing-break/ui.png" />
-</div>
-<div class="title">Figure 14. Insert break dialog in Collabora Online, with a new option for clearing breaks</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_how_is_this_implemented">How is this implemented?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
-<div class="paragraph"><p>As usual, the high-level problem was addressed by a series of incremental commits:</p></div>
-<div class="ulist"><ul>
-<li>
+break "jumps down", below anchored objects on the left. Here is how it looks now in Writer:</p>
 <p>
-<a href="https://gerrit.libreoffice.org/c/core/+/130687">https://gerrit.libreoffice.org/c/core/+/130687</a> sw clearing breaks: add document model
+<figure><img src="https://share.vmiklos.hu/blog/sw-clearing-break/left-new.png"><figcaption>Word-style "left" clearing break, new result</figcaption>
+</figure>
 </p>
-</li>
-<li>
+<p>And this is how it used to look like:</p>
 <p>
-<a href="https://gerrit.libreoffice.org/c/core/+/130741">https://gerrit.libreoffice.org/c/core/+/130741</a> sw clearing breaks: add UNO API to insert this
+<figure><img src="https://share.vmiklos.hu/blog/sw-clearing-break/left-old.png"><figcaption>Word-style "left" clearing break, old result</figcaption>
+</figure>
 </p>
-</li>
-<li>
+<p>Finally you can compare that with the reference:</p>
 <p>
-<a href="https://gerrit.libreoffice.org/c/core/+/130818">https://gerrit.libreoffice.org/c/core/+/130818</a> sw clearing breaks: add UNO API to insert this with custom clear / char props
+<figure><img src="https://share.vmiklos.hu/blog/sw-clearing-break/left-ref.png"><figcaption>Word-style "left" clearing break, reference</figcaption>
+</figure>
 </p>
-</li>
-<li>
+<p>The last case is the mirror of this, when the "right" clearing break "jumps down", below anchored
+objects on the right. Here is how it looks now in Writer:</p>
 <p>
-<a href="https://gerrit.libreoffice.org/c/core/+/130903">https://gerrit.libreoffice.org/c/core/+/130903</a> sw clearing breaks: include this in the UNO API text portion enum
+<figure><img src="https://share.vmiklos.hu/blog/sw-clearing-break/right-new.png"><figcaption>Word-style "right" clearing break, new result</figcaption>
+</figure>
 </p>
-</li>
-<li>
+<p>And this is how it used to look like:</p>
 <p>
-<a href="https://gerrit.libreoffice.org/c/core/+/130961">https://gerrit.libreoffice.org/c/core/+/130961</a> sw clearing breaks: initial layout support
+<figure><img src="https://share.vmiklos.hu/blog/sw-clearing-break/right-old.png"><figcaption>Word-style "right" clearing break, old result</figcaption>
+</figure>
 </p>
-</li>
-<li>
+<p>Finally you can compare that with the reference:</p>
 <p>
-<a href="https://gerrit.libreoffice.org/c/core/+/131093">https://gerrit.libreoffice.org/c/core/+/131093</a> sw clearing breaks: fix rendering of the line break char itself
+<figure><img src="https://share.vmiklos.hu/blog/sw-clearing-break/right-ref.png"><figcaption>Word-style "right" clearing break, reference</figcaption>
+</figure>
 </p>
-</li>
-<li>
+<p>Other than the layout, there is also user interface for this in both LibreOffice and Collabora Online:</p>
 <p>
-<a href="https://gerrit.libreoffice.org/c/core/+/131167">https://gerrit.libreoffice.org/c/core/+/131167</a> sw clearing breaks: add DOCX import
+<figure><img src="https://share.vmiklos.hu/blog/sw-clearing-break/ui.png"><figcaption>Insert break dialog in Collabora Online, with a new option for clearing breaks</figcaption>
+</figure>
 </p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/131231">https://gerrit.libreoffice.org/c/core/+/131231</a> sw clearing breaks: add DOCX export
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/131297">https://gerrit.libreoffice.org/c/core/+/131297</a> sw clearing breaks: fix layout when the line is empty
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/131346">https://gerrit.libreoffice.org/c/core/+/131346</a> sw clearing breaks: add ODF export
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/131645">https://gerrit.libreoffice.org/c/core/+/131645</a> sw clearing breaks: add ODF import
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/131697">https://gerrit.libreoffice.org/c/core/+/131697</a> sw clearing breaks: add DOC import
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/131732">https://gerrit.libreoffice.org/c/core/+/131732</a> sw clearing breaks: add DOC export
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/131886">https://gerrit.libreoffice.org/c/core/+/131886</a> sw clearing breaks: add RTF filter
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/131924">https://gerrit.libreoffice.org/c/core/+/131924</a> sw clearing breaks: add HTML filter
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/131958">https://gerrit.libreoffice.org/c/core/+/131958</a> sw clearing breaks: add plain text export
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/132024">https://gerrit.libreoffice.org/c/core/+/132024</a> sw clearing breaks: add insert UI
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/132093">https://gerrit.libreoffice.org/c/core/+/132093</a> sw clearing breaks: add clearing indicator during rendering
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/132162">https://gerrit.libreoffice.org/c/core/+/132162</a> sw clearing breaks: add layout support for the left and right cases
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/132317">https://gerrit.libreoffice.org/c/core/+/132317</a> sw clearing breaks: link ODF proposal
-</p>
-</li>
-</ul></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_want_to_start_using_this">Want to start using this?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office 2022 and try it out yourself right now:
-<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>As usual, the high-level problem was addressed by a series of incremental commits:</p>
+<ul>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/130687">sw clearing breaks: add document model</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/130741">sw clearing breaks: add UNO API to insert this</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/130818">sw clearing breaks: add UNO API to insert this with custom clear / char props</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/130903">sw clearing breaks: include this in the UNO API text portion enum</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/130961">sw clearing breaks: initial layout support</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/131093">sw clearing breaks: fix rendering of the line break char itself</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/131167">sw clearing breaks: add DOCX import</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/131231">sw clearing breaks: add DOCX export</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/131297">sw clearing breaks: fix layout when the line is empty</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/131346">sw clearing breaks: add ODF export</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/131645">sw clearing breaks: add ODF import</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/131697">sw clearing breaks: add DOC import</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/131732">sw clearing breaks: add DOC export</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/131886">sw clearing breaks: add RTF filter</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/131924">sw clearing breaks: add HTML filter</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/131958">sw clearing breaks: add plain text export</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/132024">sw clearing breaks: add insert UI</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/132093">sw clearing breaks: add clearing indicator during rendering</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/132162">sw clearing breaks: add layout support for the left and right cases</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/132317">sw clearing breaks: link ODF proposal</a></li>
+</ul>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a snapshot / demo of Collabora Office 2022 and try it out yourself right now: <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try
+unstable snapshot</a>.  Collabora
 intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF&#8217;s next release too (7.4).</p></div>
-</div>
-</div>
-
+of this work will be available in TDF's next release too (7.4).</p>
   </div>
 </article>
 <hr />
@@ -945,172 +529,107 @@ of this work will be available in TDF&#8217;s next release too (7.4).</p></div>
     <p>Estimated read time: 3 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Writer now has a set of improvements to better render Word-style borders around pages, tables and
+    <p>Writer now has a set of improvements to better render Word-style borders around pages, tables and
 paragaphs. This required adjusting how we perform automatic mirroring and also to make sure that
-clipping is done the Word way.</p></div>
-<div class="paragraph"><p>First, thanks <a href="https://www.docmosis.com/">Docmosis</a> and <a href="https://www.tubitak.gov.tr/en">TUBITAK</a> who
-made this work by <a href="https://www.collaboraoffice.com/">Collabora</a> possible.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_motivation">Motivation</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Word users expect to able to import their documents to Writer and experience high fidelity
+clipping is done the Word way.</p>
+<p>First, thanks <a href="https://www.docmosis.com/">Docmosis</a> and <a href="https://www.tubitak.gov.tr/en">TUBITAK</a> who
+made this work by <a href="https://www.collaboraoffice.com/">Collabora</a> possible.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>Word users expect to able to import their documents to Writer and experience high fidelity
 rendering: this means Writer has to support the way page / table / paragraph borders are painted
 according to the OOXML model as well. This is all done conditionally, so existing ODF documents are
-left unchanged.</p></div>
-<div class="paragraph"><p>This is a set of 5 bugfixes, requested by multiple of our customers.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_results">Results</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>First let&#8217;s look at the new render result for page borders:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-page-table-para-border/page-border-new.png" alt="https://share.vmiklos.hu/blog/sw-page-table-para-border/page-border-new.png" />
-</div>
-<div class="title">Figure 1. Word-style page borders, new result</div>
-</div>
-<div class="paragraph"><p>And this is how it used to look like:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-page-table-para-border/page-border-old.png" alt="https://share.vmiklos.hu/blog/sw-page-table-para-border/page-border-old.png" />
-</div>
-<div class="title">Figure 2. Word-style page borders, old result</div>
-</div>
-<div class="paragraph"><p>Finally you can compare that with the reference:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-page-table-para-border/page-border-ref.png" alt="https://share.vmiklos.hu/blog/sw-page-table-para-border/page-border-ref.png" />
-</div>
-<div class="title">Figure 3. Word-style page borders, reference</div>
-</div>
-<div class="paragraph"><p>What you can see here is that the page has a double border: the outer line is thick and the inner
+left unchanged.</p>
+<p>This is a set of 5 bugfixes, requested by multiple of our customers.</p>
+<h2 id="results">Results<a class="headerlink" href="#results" title="Permanent link">&para;</a></h2>
+<p>First let's look at the new render result for page borders:</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-page-table-para-border/page-border-new.png"><figcaption>Word-style page borders, new result</figcaption>
+</figure>
+</p>
+<p>And this is how it used to look like:</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-page-table-para-border/page-border-old.png"><figcaption>Word-style page borders, old result</figcaption>
+</figure>
+</p>
+<p>Finally you can compare that with the reference:</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-page-table-para-border/page-border-ref.png"><figcaption>Word-style page borders, reference</figcaption>
+</figure>
+</p>
+<p>What you can see here is that the page has a double border: the outer line is thick and the inner
 line is thin. The right and bottom border was incorrect as our result was the opposite of the
-reference.</p></div>
-<div class="paragraph"><p>Second, let&#8217;s look at the new render result for table borders:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-page-table-para-border/table-border-new.png" alt="https://share.vmiklos.hu/blog/sw-page-table-para-border/table-border-new.png" />
-</div>
-<div class="title">Figure 4. Word-style table borders, new result</div>
-</div>
-<div class="paragraph"><p>And this is how it used to look like:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-page-table-para-border/table-border-old.png" alt="https://share.vmiklos.hu/blog/sw-page-table-para-border/table-border-old.png" />
-</div>
-<div class="title">Figure 5. Word-style table borders, old result</div>
-</div>
-<div class="paragraph"><p>Finally you can compare that with the reference:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-page-table-para-border/table-border-ref.png" alt="https://share.vmiklos.hu/blog/sw-page-table-para-border/table-border-ref.png" />
-</div>
-<div class="title">Figure 6. Word-style table borders, reference</div>
-</div>
-<div class="paragraph"><p>You can notice a number of problems here:</p></div>
-<div class="ulist"><ul>
-<li>
+reference.</p>
+<p>Second, let's look at the new render result for table borders:</p>
 <p>
-the inner horizontal line at the top table was overrunning, it was even painted between the two
-  lines of the outer double border
+<figure><img src="https://share.vmiklos.hu/blog/sw-page-table-para-border/table-border-new.png"><figcaption>Word-style table borders, new result</figcaption>
+</figure>
 </p>
+<p>And this is how it used to look like:</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-page-table-para-border/table-border-old.png"><figcaption>Word-style table borders, old result</figcaption>
+</figure>
+</p>
+<p>Finally you can compare that with the reference:</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-page-table-para-border/table-border-ref.png"><figcaption>Word-style table borders, reference</figcaption>
+</figure>
+</p>
+<p>You can notice a number of problems here:</p>
+<ul>
+<li>
+<p>the inner horizontal line at the top table was overrunning, it was even painted between the two
+  lines of the outer double border</p>
 </li>
 <li>
-<p>
-the middle table shows how the vertical thick and thin lines of the outer double border was
-  reversed
-</p>
+<p>the middle table shows how the vertical thick and thin lines of the outer double border was
+  reversed</p>
 </li>
 <li>
-<p>
-the bottom table shows how the horizontal tick inner border was not consistent
-</p>
+<p>the bottom table shows how the horizontal tick inner border was not consistent</p>
 </li>
-</ul></div>
-<div class="paragraph"><p>The new render result properly clips the inner border lines, so they don&#8217;t intersect outer borders,
-and the border mirroring (similar to the page borders) is now correct for table borders as well.</p></div>
-<div class="paragraph"><p>Third, let&#8217;s look at the new render result for paragraph borders:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-page-table-para-border/para-border-new.png" alt="https://share.vmiklos.hu/blog/sw-page-table-para-border/para-border-new.png" />
-</div>
-<div class="title">Figure 7. Word-style paragraph borders, new result</div>
-</div>
-<div class="paragraph"><p>And this is how it used to look like:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-page-table-para-border/para-border-old.png" alt="https://share.vmiklos.hu/blog/sw-page-table-para-border/para-border-old.png" />
-</div>
-<div class="title">Figure 8. Word-style paragraph borders, old result</div>
-</div>
-<div class="paragraph"><p>Finally you can compare that with the reference:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-page-table-para-border/para-border-ref.png" alt="https://share.vmiklos.hu/blog/sw-page-table-para-border/para-border-ref.png" />
-</div>
-<div class="title">Figure 9. Word-style paragraph borders, reference</div>
-</div>
-<div class="paragraph"><p>What&#8217;s visible here is that some paragraph inside the table cell had borders defined, but due to how
+</ul>
+<p>The new render result properly clips the inner border lines, so they don't intersect outer borders,
+and the border mirroring (similar to the page borders) is now correct for table borders as well.</p>
+<p>Third, let's look at the new render result for paragraph borders:</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-page-table-para-border/para-border-new.png"><figcaption>Word-style paragraph borders, new result</figcaption>
+</figure>
+</p>
+<p>And this is how it used to look like:</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-page-table-para-border/para-border-old.png"><figcaption>Word-style paragraph borders, old result</figcaption>
+</figure>
+</p>
+<p>Finally you can compare that with the reference:</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-page-table-para-border/para-border-ref.png"><figcaption>Word-style paragraph borders, reference</figcaption>
+</figure>
+</p>
+<p>What's visible here is that some paragraph inside the table cell had borders defined, but due to how
 the reference clips these borders, this border was not visible. That unexpected border is now also
-omitted in Writer.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_how_is_this_implemented">How is this implemented?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
-<div class="paragraph"><p>As usual, the high-level problem was addressed by a series of bugfix changes.</p></div>
-<div class="paragraph"><p>For the page border:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/129281">https://gerrit.libreoffice.org/c/core/+/129281</a> sw: fix swapped inner vs outer border for Word-style right/bottom page borders
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>For the table border:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/128053">https://gerrit.libreoffice.org/c/core/+/128053</a> sw: fix too long inner borders intersecting with outer borders for Word cells
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/128289">https://gerrit.libreoffice.org/c/core/+/128289</a> sw: fix swapped inner vs outer border for Word-style left table borders
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/128383">https://gerrit.libreoffice.org/c/core/+/128383</a> sw: fix swapped inner vs outer border for Word-style bottom table borders
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>For the paragraph border:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/128569">https://gerrit.libreoffice.org/c/core/+/128569</a> sw: fix unexpected paragraph border inside table cells
-</p>
-</li>
-</ul></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_want_to_start_using_this">Want to start using this?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
-<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
-intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF&#8217;s next release too (7.4).</p></div>
-</div>
-</div>
-
+omitted in Writer.</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>As usual, the high-level problem was addressed by a series of bugfix changes.</p>
+<p>For the page border:</p>
+<ul>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/129281">sw: fix swapped inner vs outer border for Word-style right/bottom page borders</a></li>
+</ul>
+<p>For the table border:</p>
+<ul>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/128053">sw: fix too long inner borders intersecting with outer borders for Word cells</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/128289">sw: fix swapped inner vs outer border for Word-style left table borders</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/128383">sw: fix swapped inner vs outer border for Word-style bottom table borders</a></li>
+</ul>
+<p>For the paragraph border:</p>
+<ul>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/128569">sw: fix unexpected paragraph border inside table cells</a></li>
+</ul>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a snapshot / demo of Collabora Office and try it out yourself right now: <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable
+snapshot</a>.  Collabora intends to
+continue supporting and contributing to LibreOffice, the code is merged so we expect all of this
+work will be available in TDF's next release too (7.4).</p>
   </div>
 </article>
 <hr />
@@ -1125,156 +644,97 @@ of this work will be available in TDF&#8217;s next release too (7.4).</p></div>
     <p>Estimated read time: 3 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>The LibreOffice Technology now has much better support for creating custom PDF exports of documents:
+    <p>The LibreOffice Technology now has much better support for creating custom PDF exports of documents:
 options available in the interactive PDF export options dialog are now also possible to set from the
-command-line, and also when using the document conversion feature of
-<a href="https://www.collaboraoffice.com/document-conversion/">Collabora Online</a>.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_motivation">Motivation</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>I was working on a regression that only happens if you export the second and third pages of a
+command-line, and also when using the document conversion feature of <a href="https://www.collaboraoffice.com/document-conversion/">Collabora
+Online</a>.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>I was working on a regression that only happens if you export the second and third pages of a
 document to PDF. While investigating, I needed a quick way to trigger the problematic code-path, and
-clicking through a dialog is not convenient.</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/pdf-convert-to/pdf-export-partial.png" alt="https://share.vmiklos.hu/blog/pdf-convert-to/pdf-export-partial.png" />
-</div>
-<div class="title">Figure 1. UI to specify a partial export to PDF</div>
-</div>
-<div class="paragraph"><p>The PDF export in LibreOffice has a lot of options, but those are only available from extension code
+clicking through a dialog is not convenient.</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/pdf-convert-to/pdf-export-partial.png"><figcaption>UI to specify a partial export to PDF</figcaption>
+</figure>
+</p>
+<p>The PDF export in LibreOffice has a lot of options, but those are only available from extension code
 (using the UNO API) or from the UI dialog. The idea was to expose much of this to the <code>soffice
---convert-to</code> command as well, and if we&#8217;re at it, also to the <code>/cool/convert-to</code> endpoint of
-Online.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_results_so_far">Results so far</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Here are a few examples to show the possibilities:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-Skip the first page of a Draw document:
-</p>
-</li>
-</ul></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>soffice --convert-to 'pdf:draw_pdf_Export:{"PageRange":{"type":"string","value":"2-"}}' test.odg</code></pre>
-</div></div>
-<div class="ulist"><ul>
-<li>
-<p>
-Add watermark:
-</p>
-</li>
-</ul></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>soffice --convert-to 'pdf:draw_pdf_Export:{"TiledWatermark":{"type":"string","value":"draft"}}' test.odg</code></pre>
-</div></div>
-<div class="ulist"><ul>
-<li>
-<p>
-Encrypt the output:
-</p>
-</li>
-</ul></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>soffice --convert-to 'pdf:draw_pdf_Export:{"EncryptFile":{"type":"boolean","value":"true"},"DocumentOpenPassword":{"type":"string","value":"secret"}}' test.odg</code></pre>
-</div></div>
-<div class="ulist"><ul>
-<li>
-<p>
-We default to PDF 1.6, perhaps you want to write PDF 1.5:
-</p>
-</li>
-</ul></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>soffice --convert-to 'pdf:draw_pdf_Export:{"SelectPdfVersion":{"type":"long","value":"15"}}' test.odg</code></pre>
-</div></div>
-<div class="ulist"><ul>
-<li>
-<p>
-Sign the PDF:
-</p>
-</li>
-</ul></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>soffice --convert-to 'pdf:draw_pdf_Export:{"SignPDF":{"type":"boolean","value":"true"},"SignCertificateSubjectName":{"type":"string","value":"CN=..."}}' test.odg</code></pre>
-</div></div>
-<div class="paragraph"><p>And the best is that the same also works in Online, e.g.:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>curl -k -F "data=@3page.odg" -F "format=pdf" -F "options={\"PageRange\":{\"type\":\"string\",\"value\":\"2-\"}}" https://localhost:9980/cool/convert-to &gt; out.pdf</code></pre>
-</div></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_how_is_this_implemented">How is this implemented?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/128643">https://gerrit.libreoffice.org/c/core/+/128643</a> <em>tdf#141340 PDF export: fix hyperlinks on the wrong
-  page with page num range</em> was the use-case that initially motivated to add the feature.
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/128709">https://gerrit.libreoffice.org/c/core/+/128709</a> <em>comphelper: move JsonToPropertyValues() from
-  desktop/</em> was grounding work to use the "convert JSON to a string-any map" functionality we
-  already had in core.git, as part of the LOK API.
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/128849">https://gerrit.libreoffice.org/c/core/+/128849</a> <em>PDF export: allow setting filter data keys from
-  the cmdline</em> is the actual improvement to the PDF exporter
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/128970">https://gerrit.libreoffice.org/c/core/+/128970</a> <em>desktop lok, export options: allow passing through
-  a JSON string as-is</em> is a tweak to let the LOK API also use this
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/129387">https://gerrit.libreoffice.org/c/core/+/129387</a> <em>filter: allow PDF export to sign from the cmdline</em>
-  added the PDF signing as a string option, since referring to a certificate object from the command-line
-  was not possible
-</p>
-</li>
-<li>
-<p>
-<a href="https://github.com/CollaboraOnline/online/pull/4069">https://github.com/CollaboraOnline/online/pull/4069</a> <em>wsd, convert-to: allow specifying filter
-  options as JSON</em> implemented the Online side
-</p>
-</li>
-</ul></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_want_to_start_using_this">Want to start using this?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
-<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
-intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF&#8217;s next release too (7.4).</p></div>
-<div class="paragraph"><p>For the Online side, see the <a href="https://www.collaboraoffice.com/code/">CODE</a> page, the feature is
-present in the current release (2021).</p></div>
-</div>
-</div>
+--convert-to</code> command as well, and if we're at it, also to the <code>/cool/convert-to</code> endpoint of
+Online.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>Here are a few examples to show the possibilities:</p>
+<ul>
+<li>Skip the first page of a Draw document:</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="nx">soffice</span><span class="w"> </span><span class="o">--</span><span class="nx">convert</span><span class="o">-</span><span class="nx">to</span><span class="w"> </span><span class="err">&#39;</span><span class="nx">pdf</span><span class="p">:</span><span class="nx">draw_pdf_Export</span><span class="p">:{</span><span class="s">&quot;PageRange&quot;</span><span class="p">:{</span><span class="s">&quot;type&quot;</span><span class="p">:</span><span class="s">&quot;string&quot;</span><span class="p">,</span><span class="s">&quot;value&quot;</span><span class="p">:</span><span class="s">&quot;2-&quot;</span><span class="p">}}</span><span class="err">&#39;</span><span class="w"> </span><span class="nx">test</span><span class="p">.</span><span class="nx">odg</span>
+</code></pre></div>
 
+<ul>
+<li>Add watermark:</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="nx">soffice</span><span class="w"> </span><span class="o">--</span><span class="nx">convert</span><span class="o">-</span><span class="nx">to</span><span class="w"> </span><span class="err">&#39;</span><span class="nx">pdf</span><span class="p">:</span><span class="nx">draw_pdf_Export</span><span class="p">:{</span><span class="s">&quot;TiledWatermark&quot;</span><span class="p">:{</span><span class="s">&quot;type&quot;</span><span class="p">:</span><span class="s">&quot;string&quot;</span><span class="p">,</span><span class="s">&quot;value&quot;</span><span class="p">:</span><span class="s">&quot;draft&quot;</span><span class="p">}}</span><span class="err">&#39;</span><span class="w"> </span><span class="nx">test</span><span class="p">.</span><span class="nx">odg</span>
+</code></pre></div>
+
+<ul>
+<li>Encrypt the output:</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="nx">soffice</span><span class="w"> </span><span class="o">--</span><span class="nx">convert</span><span class="o">-</span><span class="nx">to</span><span class="w"> </span><span class="err">&#39;</span><span class="nx">pdf</span><span class="p">:</span><span class="nx">draw_pdf_Export</span><span class="p">:{</span><span class="s">&quot;EncryptFile&quot;</span><span class="p">:{</span><span class="s">&quot;type&quot;</span><span class="p">:</span><span class="s">&quot;boolean&quot;</span><span class="p">,</span><span class="s">&quot;value&quot;</span><span class="p">:</span><span class="s">&quot;true&quot;</span><span class="p">},</span><span class="s">&quot;DocumentOpenPassword&quot;</span><span class="p">:{</span><span class="s">&quot;type&quot;</span><span class="p">:</span><span class="s">&quot;string&quot;</span><span class="p">,</span><span class="s">&quot;value&quot;</span><span class="p">:</span><span class="s">&quot;secret&quot;</span><span class="p">}}</span><span class="err">&#39;</span><span class="w"> </span><span class="nx">test</span><span class="p">.</span><span class="nx">odg</span>
+</code></pre></div>
+
+<ul>
+<li>We default to PDF 1.6, perhaps you want to write PDF 1.5:</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="nx">soffice</span><span class="w"> </span><span class="o">--</span><span class="nx">convert</span><span class="o">-</span><span class="nx">to</span><span class="w"> </span><span class="err">&#39;</span><span class="nx">pdf</span><span class="p">:</span><span class="nx">draw_pdf_Export</span><span class="p">:{</span><span class="s">&quot;SelectPdfVersion&quot;</span><span class="p">:{</span><span class="s">&quot;type&quot;</span><span class="p">:</span><span class="s">&quot;long&quot;</span><span class="p">,</span><span class="s">&quot;value&quot;</span><span class="p">:</span><span class="s">&quot;15&quot;</span><span class="p">}}</span><span class="err">&#39;</span><span class="w"> </span><span class="nx">test</span><span class="p">.</span><span class="nx">odg</span>
+</code></pre></div>
+
+<ul>
+<li>Sign the PDF:</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="nx">soffice</span><span class="w"> </span><span class="o">--</span><span class="nx">convert</span><span class="o">-</span><span class="nx">to</span><span class="w"> </span><span class="err">&#39;</span><span class="nx">pdf</span><span class="p">:</span><span class="nx">draw_pdf_Export</span><span class="p">:{</span><span class="s">&quot;SignPDF&quot;</span><span class="p">:{</span><span class="s">&quot;type&quot;</span><span class="p">:</span><span class="s">&quot;boolean&quot;</span><span class="p">,</span><span class="s">&quot;value&quot;</span><span class="p">:</span><span class="s">&quot;true&quot;</span><span class="p">},</span><span class="s">&quot;SignCertificateSubjectName&quot;</span><span class="p">:{</span><span class="s">&quot;type&quot;</span><span class="p">:</span><span class="s">&quot;string&quot;</span><span class="p">,</span><span class="s">&quot;value&quot;</span><span class="p">:</span><span class="s">&quot;CN=...&quot;</span><span class="p">}}</span><span class="err">&#39;</span><span class="w"> </span><span class="nx">test</span><span class="p">.</span><span class="nx">odg</span>
+</code></pre></div>
+
+<p>And the best is that the same also works in Online, e.g.:</p>
+<div class="highlight"><pre><span></span><code><span class="n">curl</span><span class="w"> </span><span class="o">-</span><span class="n">k</span><span class="w"> </span><span class="o">-</span><span class="n">F</span><span class="w"> </span><span class="s">&quot;data=@3page.odg&quot;</span><span class="w"> </span><span class="o">-</span><span class="n">F</span><span class="w"> </span><span class="s">&quot;format=pdf&quot;</span><span class="w"> </span><span class="o">-</span><span class="n">F</span><span class="w"> </span><span class="s">&quot;options={</span><span class="se">\&quot;</span><span class="s">PageRange</span><span class="se">\&quot;</span><span class="s">:{</span><span class="se">\&quot;</span><span class="s">type</span><span class="se">\&quot;</span><span class="s">:</span><span class="se">\&quot;</span><span class="s">string</span><span class="se">\&quot;</span><span class="s">,</span><span class="se">\&quot;</span><span class="s">value</span><span class="se">\&quot;</span><span class="s">:</span><span class="se">\&quot;</span><span class="s">2-</span><span class="se">\&quot;</span><span class="s">}}&quot;</span><span class="w"> </span><span class="n">https</span><span class="o">:</span><span class="c1">//localhost:9980/cool/convert-to &gt; out.pdf</span>
+</code></pre></div>
+
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<ul>
+<li>
+<p><a href="https://gerrit.libreoffice.org/c/core/+/128643">tdf#141340 PDF export: fix hyperlinks on the wrong page with page num
+  range</a> was the use-case that initially motivated to
+  add the feature.</p>
+</li>
+<li>
+<p><a href="https://gerrit.libreoffice.org/c/core/+/128709">comphelper: move JsonToPropertyValues() from
+  desktop/</a> was grounding work to use the "convert
+  JSON to a string-any map" functionality we already had in core.git, as part of the LOK API.</p>
+</li>
+<li>
+<p><a href="https://gerrit.libreoffice.org/c/core/+/128849">PDF export: allow setting filter data keys from the
+  cmdline</a> is the actual improvement to the PDF
+  exporter</p>
+</li>
+<li>
+<p><a href="https://gerrit.libreoffice.org/c/core/+/128970">desktop lok, export options: allow passing through a JSON string
+  as-is</a> is a tweak to let the LOK API also use this</p>
+</li>
+<li>
+<p><a href="https://gerrit.libreoffice.org/c/core/+/129387">filter: allow PDF export to sign from the
+  cmdline</a> added the PDF signing as a string option,
+  since referring to a certificate object from the command-line was not possible</p>
+</li>
+<li>
+<p><a href="https://github.com/CollaboraOnline/online/pull/4069">wsd, convert-to: allow specifying filter options as
+  JSON</a> implemented the Online side</p>
+</li>
+</ul>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a snapshot / demo of Collabora Office and try it out yourself right now: <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable
+snapshot</a>.  Collabora intends to
+continue supporting and contributing to LibreOffice, the code is merged so we expect all of this work
+will be available in TDF's next release too (7.4).</p>
+<p>For the Online side, see the <a href="https://www.collaboraoffice.com/code/">CODE</a> page, the feature is
+present in the current release (2021).</p>
   </div>
 </article>
 <hr />
@@ -1286,237 +746,85 @@ present in the current release (2021).</p></div>
     <p>Posted on: Thu 06 January 2022</p>
   </div>
   <div class="article_readtime">
-    <p>Estimated read time: 5 minutes</p>
+    <p>Estimated read time: 4 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Impress now has the start of document theme support: it is possible to define a document theme on
-master pages and you can refer to the theme colors from shape text (including effects).</p></div>
-<div class="paragraph"><p>First, thanks to our partner <a href="https://www.suse.com/">SUSE</a> for working with
-<a href="https://www.collaboraoffice.com/">Collabora</a> to make this possible.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_motivation">Motivation</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>PowerPoint users can attach a set of colors (and fonts, formattings) to master pages, and then refer
+    <p>Impress now has the start of document theme support: it is possible to define a document theme on
+master pages and you can refer to the theme colors from shape text (including effects).</p>
+<p>First, thanks to our partner <a href="https://www.suse.com/">SUSE</a> for working with
+<a href="https://www.collaboraoffice.com/">Collabora</a> to make this possible.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>PowerPoint users can attach a set of colors (and fonts, formattings) to master pages, and then refer
 to these in shape text, shape fill, shape geometry. You can even make the original color lighter and
-darker. These effects are preserved when you change the theme colors.</p></div>
-<div class="paragraph"><p>This is a larger feature, this blog post shows how theme colors can be defined and how to refer to
-those colors from Impress shape text. The rest of the feature is to be done in follow-up steps.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_results_so_far">Results so far</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Here is a demo that shows how it works:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://youtu.be/4QeN58AkuxE">
-<img src="https://share.vmiklos.hu/blog/sd-theme-shape-text/sd-theme-shape-text.png" alt="https://share.vmiklos.hu/blog/sd-theme-shape-text/sd-theme-shape-text.png" />
-</a>
-</div>
-<div class="title">Figure 1. Demo of theme support in Impress shape text</div>
-</div>
-<div class="paragraph"><p>In other words, it consists of 2 parts on the UI:</p></div>
-<div class="ulist"><ul>
+darker. These effects are preserved when you change the theme colors.</p>
+<p>This is a larger feature, this blog post shows how theme colors can be defined and how to refer to
+those colors from Impress shape text. The rest of the feature is to be done in follow-up steps.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>Here is a demo that shows how it works:</p>
+<p><a href="https://youtu.be/4QeN58AkuxE"><figure><img src="https://share.vmiklos.hu/blog/sd-theme-shape-text/sd-theme-shape-text.png"><figcaption>Demo of theme support in Impress shape text</figcaption></figure></a></p>
+<p>In other words, it consists of 2 parts on the UI:</p>
+<ul>
 <li>
-<p>
-You can define theme colors once you click on "Master View" in Impress, and then select the Slide
-  &#8594; Slide properties menu item, and there choosing the new Theme tab. You can e.g. make "accent1"
-  blue, "accent2" orange, and so on.
-</p>
+<p>You can define theme colors once you click on "Master View" in Impress, and then select the Slide
+  -&gt; Slide properties menu item, and there choosing the new Theme tab. You can e.g. make "accent1"
+  blue, "accent2" orange, and so on.</p>
 </li>
 <li>
-<p>
-Then you can refer to these theme colors. Select some shape text, and then either use Format &#8594;
-  Character &#8594; Font effects &#8594; Font color &#8594; Theme colors or use the sidebar to set the font color.
-</p>
+<p>Then you can refer to these theme colors. Select some shape text, and then either use Format -&gt;
+  Character -&gt; Font effects -&gt; Font color -&gt; Theme colors or use the sidebar to set the font color.</p>
 </li>
-</ul></div>
-<div class="paragraph"><p>This later shows a grid of colors: each column is one theme color and then the column offers various
-lighter and darker variants of the color.</p></div>
-<div class="paragraph"><p>And the important bit: if you later change theme colors, then the color of shape text (using theme
-colors) is updated, even the effects (lighter or darker variants) are preserved.</p></div>
-<div class="paragraph"><p>To set expectations, this only works for shape text for now, and only in Impress, as a start.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_how_is_this_implemented">How is this implemented?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
-<div class="paragraph"><p>As usual, the high-level problem was addressed by a series of small changes. The first step was to
+</ul>
+<p>This later shows a grid of colors: each column is one theme color and then the column offers various
+lighter and darker variants of the color.</p>
+<p>And the important bit: if you later change theme colors, then the color of shape text (using theme
+colors) is updated, even the effects (lighter or darker variants) are preserved.</p>
+<p>To set expectations, this only works for shape text for now, and only in Impress, as a start.</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>As usual, the high-level problem was addressed by a series of small changes. The first step was to
 upstream work by <a href="https://tomazvajngerl.blogspot.com/">Tomaž Vajngerl</a> and <a href="https://quwex.com/">Sarper
-Akdemir</a> from the <code>feature/themesupport2</code> feature branch:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/125296">https://gerrit.libreoffice.org/c/core/+/125296</a> Theme color and tint/shade attribute for SvxColorItem
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/125304">https://gerrit.libreoffice.org/c/core/+/125304</a> Support reading back theme color from an ooxml document
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/125313">https://gerrit.libreoffice.org/c/core/+/125313</a> make colorsets work outside of styles and with direct formatting
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/125394">https://gerrit.libreoffice.org/c/core/+/125394</a> expose the SvxColorItem theme related uno for draw/impress
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/125404">https://gerrit.libreoffice.org/c/core/+/125404</a> implement initial pptx theme color import
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/125414">https://gerrit.libreoffice.org/c/core/+/125414</a> rename getSchemeName getSchemeIndex to remove ambiguity
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/125426">https://gerrit.libreoffice.org/c/core/+/125426</a> implement color tint or shade import for pptx
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/125436">https://gerrit.libreoffice.org/c/core/+/125436</a> introduce XColorSetsManager interface
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/125477">https://gerrit.libreoffice.org/c/core/+/125477</a> import pptx color schemes as color sets
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>The rest of the work was to go through the usual stages of document model, UNO API, rendering,
-ODP/PPTX filter and UI work to complete the work started on the branch:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/125532">https://gerrit.libreoffice.org/c/core/+/125532</a> PPTX import: handle &lt;a:clrScheme name="&#8230;"&gt;
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/125651">https://gerrit.libreoffice.org/c/core/+/125651</a> PPTX: implement native handling of &lt;a:clrScheme&gt; children
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/125684">https://gerrit.libreoffice.org/c/core/+/125684</a> PPTX import: implement native handling of a color&#8217;s luminance modulation
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/125749">https://gerrit.libreoffice.org/c/core/+/125749</a> PPTX import: implement native handling of a color&#8217;s luminance offset
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/126011">https://gerrit.libreoffice.org/c/core/+/126011</a> tools Color: implement MSO-style luminance modulation/offset filter
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/126082">https://gerrit.libreoffice.org/c/core/+/126082</a> svx: update objects of pages of a master page when the theme changes
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/126164">https://gerrit.libreoffice.org/c/core/+/126164</a> PPTX export: write the theme for the master pages from the doc model
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/126215">https://gerrit.libreoffice.org/c/core/+/126215</a> PPTX export: handle theme colors from the doc model for shape text
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/126270">https://gerrit.libreoffice.org/c/core/+/126270</a> svx: consider color effects when updating objects for theme changes
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/126400">https://gerrit.libreoffice.org/c/core/+/126400</a> PPTX export: handle theme color of shape text with effects
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/126466">https://gerrit.libreoffice.org/c/core/+/126466</a> ODP export: write the theme of a master page
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/126502">https://gerrit.libreoffice.org/c/core/+/126502</a> ODP import: handle theme of master pages
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/126566">https://gerrit.libreoffice.org/c/core/+/126566</a> ODP import/export: refer to theme from shape text color
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/126722">https://gerrit.libreoffice.org/c/core/+/126722</a> ODP import/export: refer to theme from shape text color with effects
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/126798">https://gerrit.libreoffice.org/c/core/+/126798</a> sd: add initial theme UI for master slides
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/126850">https://gerrit.libreoffice.org/c/core/+/126850</a> sd theme: add UI to set/get the name of a color set
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/126905">https://gerrit.libreoffice.org/c/core/+/126905</a> sd theme: add UI to set individual colors of a color set
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/126994">https://gerrit.libreoffice.org/c/core/+/126994</a> sd theme: add a "theme" palette to the color picker
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/127135">https://gerrit.libreoffice.org/c/core/+/127135</a> sd theme: allow setting the color&#8217;s theme index in the chardlg
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/127211">https://gerrit.libreoffice.org/c/core/+/127211</a> sd theme: allow setting color effects in the chardlg
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/127304">https://gerrit.libreoffice.org/c/core/+/127304</a> sd theme: allow setting color effects in the sidebar
-</p>
-</li>
-</ul></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_want_to_start_using_this">Want to start using this?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
-<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
-intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF&#8217;s next release too (7.4).</p></div>
-</div>
-</div>
-
+Akdemir</a> from the <code>feature/themesupport2</code> feature branch:</p>
+<ul>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/125296">Theme color and tint/shade attribute for SvxColorItem</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/125304">Support reading back theme color from an ooxml document</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/125313">make colorsets work outside of styles and with direct formatting</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/125394">expose the SvxColorItem theme related uno for draw/impress</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/125404">implement initial pptx theme color import</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/125414">rename getSchemeName getSchemeIndex to remove ambiguity</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/125426">implement color tint or shade import for pptx</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/125436">introduce XColorSetsManager interface</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/125477">import pptx color schemes as color sets</a></li>
+</ul>
+<p>The rest of the work was to go through the usual stages of document model, UNO API, rendering,
+ODP/PPTX filter and UI work to complete the work started on the branch:</p>
+<ul>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/125532">PPTX import: handle <a:clrScheme name="..."></a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/125651">PPTX: implement native handling of <a:clrScheme> children</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/125684">PPTX import: implement native handling of a color's luminance modulation</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/125749">PPTX import: implement native handling of a color's luminance offset</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/126011">tools Color: implement MSO-style luminance modulation/offset filter</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/126082">svx: update objects of pages of a master page when the theme changes</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/126164">PPTX export: write the theme for the master pages from the doc model</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/126215">PPTX export: handle theme colors from the doc model for shape text</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/126270">svx: consider color effects when updating objects for theme changes</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/126400">PPTX export: handle theme color of shape text with effects</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/126466">ODP export: write the theme of a master page</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/126502">ODP import: handle theme of master pages</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/126566">ODP import/export: refer to theme from shape text color</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/126722">ODP import/export: refer to theme from shape text color with effects</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/126798">sd: add initial theme UI for master slides</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/126850">sd theme: add UI to set/get the name of a color set</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/126905">sd theme: add UI to set individual colors of a color set</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/126994">sd theme: add a "theme" palette to the color picker</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/127135">sd theme: allow setting the color's theme index in the chardlg</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/127211">sd theme: allow setting color effects in the chardlg</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/127304">sd theme: allow setting color effects in the sidebar</a></li>
+</ul>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a snapshot / demo of Collabora Office and try it out yourself right now: <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable
+snapshot</a>.  Collabora intends to
+continue supporting and contributing to LibreOffice, the code is merged so we expect all of this
+work will be available in TDF's next release too (7.4).</p>
   </div>
 </article>
 <hr />
