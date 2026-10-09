@@ -17,7 +17,7 @@ fully available in desktop Impress as well.
 PowerPoint users can attach a set of colors (and fonts, etc.) to master pages, and then refer to
 these in many areas, like shape text or shape fill. It was already possible to define theme colors
 and refer to them from shape text (see [Start of document themes in Impress: shape
-text]({filename}/2022/sd-theme-shape-text.adoc) for details).
+text]({filename}/2022/sd-theme-shape-text.md) for details).
 
 The next step in this journey is shape fill: if your shape is filled with some color, it can be a
 theme color, as visible on the above screenshot. One interesting aspect of this is that the default
