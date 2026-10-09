@@ -18,7 +18,7 @@ fully available in desktop Writer as well.
 
 Writer users can put a content control around a piece of rich text, see
 [Content controls in Writer: dropdown, picture and date
-types]({filename}/2022/sw-content-controls2.adoc) for the first five types.
+types]({filename}/2022/sw-content-controls2.md) for the first five types.
 
 The next step in this journey is plain text: even if one of the big advantages of content controls
 over input fields is that they allow rich formatting, sometimes you want to restrict this. For
