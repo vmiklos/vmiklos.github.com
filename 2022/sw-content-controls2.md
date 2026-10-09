@@ -5,7 +5,7 @@ Tags: en
 Date: 2022-06-01T09:09:20+02:00
 
 Writer already had [rich text and checkbox content
-controls]({filename}/2022/sw-content-controls.adoc): a new way to set properties on a piece of text,
+controls]({filename}/2022/sw-content-controls.md): a new way to set properties on a piece of text,
 primarily for form filling purposes. This feature now gained 3 additional types: dropdown, picture
 and date picker types. This improves compatibility with the DOCX format: there are now 5 inline
 content control types we can now import.
