@@ -27,7 +27,7 @@ AUTHOR_FEED_RSS = None
 
 # Blogroll.
 LINKS = (('Root', '/'),
-         ('LibreOffice Blogs', 'https://planet.documentfoundation.org/'),)
+         ('Office Dev Blogs', 'https://www.collaboraonline.com/developer-blogs/'),)
 
 # Default is to disable pagination.
 DEFAULT_PAGINATION = 10
