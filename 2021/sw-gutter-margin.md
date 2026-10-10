@@ -1,9 +1,8 @@
-= Gutter margin in Writer
-
-:slug: sw-gutter-margin
-:category: libreoffice
-:tags: en
-:date: 2021-02-12T09:25:04+01:00
+Title: Gutter margin in Writer
+Slug: sw-gutter-margin
+Category: libreoffice
+Tags: en
+Date: 2021-02-12T09:25:04+01:00
 
 The page gutter defines the amount of extra space added to the specified margin (typically left),
 above any existing margin values.
@@ -12,48 +11,44 @@ Writer now has much better support for gutter margins: not only this margin type
 explicitly, it's also possible to select if the gutter should be on the left or on the top, and it
 works with mirrored margins as well.
 
-This work is primarily for https://www.collaboraoffice.com/[Collabora Online], but the feature is
+This work is primarily for [Collabora Online](https://www.collaboraoffice.com/), but the feature is
 fully available in desktop Writer as well.
 
-== Motivation
+## Motivation
 
 Word has a gutter margin feature, and we saw that some UI-level
-https://github.com/OSSII/oxool-community/commit/a7e0dec2fad7e6c63e8951875bb28ac015f736a0[workaround]
+[workaround](https://github.com/OSSII/oxool-community/commit/a7e0dec2fad7e6c63e8951875bb28ac015f736a0)
 appeared to have something similar based on the LibreOffice technology. We thought it's much better
 to impelement this properly, so that the result is interoperable with Word, and also available both
 in Online and on the desktop.
 
-== Results so far
+## Results so far
 
 This is how the UI looks like in Online:
 
-.New UI in Online
-image::https://share.vmiklos.hu/blog/sw-gutter-margin/online.png[align="center"]
+![New UI in Online](https://share.vmiklos.hu/blog/sw-gutter-margin/online.png)
 
 This is how the new render result looks like:
 
-.New render result in Writer
-image::https://share.vmiklos.hu/blog/sw-gutter-margin/new.png[align="center"]
+![New render result in Writer](https://share.vmiklos.hu/blog/sw-gutter-margin/new.png)
 
 Matching the reference rendering:
 
-.Reference render result
-image::https://share.vmiklos.hu/blog/sw-gutter-margin/ref.png[align="center"]
+![Reference render result](https://share.vmiklos.hu/blog/sw-gutter-margin/ref.png)
 
 While the gutter was just missing previously:
 
-.Old render result in Writer
-image::https://share.vmiklos.hu/blog/sw-gutter-margin/old.png[align="center"]
+![Old render result in Writer](https://share.vmiklos.hu/blog/sw-gutter-margin/old.png)
 
 You can see that the gutter margin is now handled properly.
 
-== How is this implemented?
+## How is this implemented?
 
 If you would like to know a bit more about how this works, continue reading... :-)
 
 As usual, the high-level problem was addressed by a series of incremental development steps:
 
-// git log --author=vmiklos --since=2021-01-01 --grep 'sw page gutter margin' --pretty=oneline --reverse
+<!-- git log --author=vmiklos --since=2021-01-01 --grep 'sw page gutter margin' --pretty=oneline --reverse -->
 
 - First, we added a new "gutter" margin type (length) and a gutter position (left or top) to the
   document model & UNO API.
@@ -76,20 +71,17 @@ As usual, the high-level problem was addressed by a series of incremental develo
 - Brief help has been added for these new UI controls and submitting an ODF extension proposal to
   OASIS is in progress to standardize the so far LO-specific markup:
 
-[source,xml]
-----
+```xml
 <style:page-layout-properties loext:margin-gutter="1.27cm">
-----
+```
 
 With these, it's now possible to add, modify, render and delete gutter margins for your documents,
 while preserving them during ODT and DOCX import/export, without introducing any weird fake line
 shapes.
 
-== Want to start using this?
+## Want to start using this?
 
-You can get a snapshot / demo of Collabora Office and try it out yourself right now:
-https://www.collaboraoffice.com/collabora-office-latest-snapshot/[try unstable snapshot].  Collabora
-intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF's next release too (7.2).
-
-// vim: ft=asciidoc
+You can get a snapshot / demo of Collabora Office and try it out yourself right now: [try unstable
+snapshot](https://www.collaboraoffice.com/collabora-office-latest-snapshot/).  Collabora intends to
+continue supporting and contributing to LibreOffice, the code is merged so we expect all of this
+work will be available in TDF's next release too (7.2).

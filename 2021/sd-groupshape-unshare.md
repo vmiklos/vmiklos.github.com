@@ -1,22 +1,20 @@
-= Unshare shape properties for the same type before insertion in Impress
-
-:slug: sd-groupshape-unshare
-:category: libreoffice
-:tags: en
-:date: 2021-08-30T08:51:10+02:00
+Title: Unshare shape properties for the same type before insertion in Impress
+Slug: sd-groupshape-unshare
+Category: libreoffice
+Tags: en
+Date: 2021-08-30T08:51:10+02:00
 
 Shape properties were shared by shape type (e.g. shared between group shapes) before insertion into
 a document model in Impress. This is now fixed: the property names and types are still shared to
 help performance, but their values are no longer shared. This helps matching the user expectation
 that separate opened documents don't share information with each other.
 
-First, thanks to our partner https://www.suse.com/[SUSE] for working with
-https://www.collaboraoffice.com/[Collabora] to make this possible.
+First, thanks to our partner [SUSE](https://www.suse.com/) for working with
+[Collabora](https://www.collaboraoffice.com/) to make this possible.
 
-== Motivation
+## Motivation
 
-I was working on a testcase for
-https://bugs.documentfoundation.org/show_bug.cgi?id=132696[tdf#132696] when I noticed that the
+I was working on a testcase for [tdf#132696](https://bugs.documentfoundation.org/show_bug.cgi?id=132696) when I noticed that the
 existing CppunitTest_oox_drawingml testsuite runs fine before my changes, also a newly added
 testGroupShapeSmartArt testcase runs fine in isolation, but if I run the whole testsuite, then it
 breaks.
@@ -30,7 +28,7 @@ Further investigation revealed that in case testGroupShapeSmartArt is executed f
 
 And at this point information from the first document is leaked to the second document, even if the
 first document was already closed by the time we performed the save. It turns out the root cause was
-https://bz.apache.org/ooo/show_bug.cgi?id=114206[i#114206] (reported in 2010), i.e. group shapes
+[i#114206](https://bz.apache.org/ooo/show_bug.cgi?id=114206) (reported in 2010), i.e. group shapes
 shared their property values till they got inserted to the document model. The first document import
 did not consume pending SmartArt properties on a to-be-inserted group shape, the second import was
 looking for pending properties, found them. And then the second document's save wrote those pending
@@ -38,32 +36,27 @@ properties to the file, leading to this unexpected leak.
 
 Here is how the first document looks like, containing the blue rectangles (a SmartArt):
 
-.First document with a SmartArt
-image::https://share.vmiklos.hu/blog/sd-groupshape-unshare/first.png[align="center"]
+![First document with a SmartArt](https://share.vmiklos.hu/blog/sd-groupshape-unshare/first.png)
 
 Here is how the second document looks like, without a SmartArt:
 
-.Second document after loading, no SmartArt
-image::https://share.vmiklos.hu/blog/sd-groupshape-unshare/second.png[align="center"]
+![Second document after loading, no SmartArt](https://share.vmiklos.hu/blog/sd-groupshape-unshare/second.png)
 
 And here is how the second document looks, after saving to PPTX and reloading:
 
-.Second document after reloading, with a SmartArt
-image::https://share.vmiklos.hu/blog/sd-groupshape-unshare/second-saved.png[align="center"]
+![Second document after reloading, with a SmartArt](https://share.vmiklos.hu/blog/sd-groupshape-unshare/second-saved.png)
 
-== Results so far
+## Results so far
 
-The https://git.libreoffice.org/core/commit/c6f25506b02fbd2a087b7e790283921bf8550206[fix] is to
+The [fix](https://git.libreoffice.org/core/commit/c6f25506b02fbd2a087b7e790283921bf8550206) is to
 split out part of `SvxItemPropertySet` to a separate class, so that we can keep sharing
 `SvxItemPropertySet` between multiple instances of the same shape type (describing the name and type
 of the various properties), while introducing a new `SvxItemPropertySetUsrAnys` that is specific to
 each not-yet-inserted shape. This way each pending shape is independent, and in case they are not
 inserted to the document model later, that results in no side-effects.
 
-== Want to start using this?
+## Want to start using this?
 
 Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
 expect all of this work will be available in TDF's
-http://dev-builds.libreoffice.org/daily/master/[next release] (7.3).
-
-// vim: ft=asciidoc
+[next release](http://dev-builds.libreoffice.org/daily/master/) (7.3).

@@ -9,7 +9,7 @@ control.
 
 This work is primarily for [Collabora
 Online](https://www.collaboraoffice.com/), done as a
-[HackWeek]({filename}/2021/hackweek-2021.adoc) project, but the feature is
+[HackWeek]({filename}/2021/hackweek-2021.md) project, but the feature is
 fully available in desktop Writer as well.
 
 ## Motivation

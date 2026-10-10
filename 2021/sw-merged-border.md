@@ -1,18 +1,17 @@
-= Improving borders of merged table cells in Writer
-
-:slug: sw-merged-border
-:category: libreoffice
-:tags: en
-:date: 2021-04-14T09:00:17+02:00
+Title: Improving borders of merged table cells in Writer
+Slug: sw-merged-border
+Category: libreoffice
+Tags: en
+Date: 2021-04-14T09:00:17+02:00
 
 Writer now has better
-https://git.libreoffice.org/core/commit/66ac8e60896f6306bed8fbb34606fd14474f19ce[support] for
+[support](https://git.libreoffice.org/core/commit/66ac8e60896f6306bed8fbb34606fd14474f19ce) for
 Word-compatible border rending when it comes to vertically merged cells in tables.
 
-First, thanks https://www.docmosis.com/[Docmosis] who made this work by
-https://www.collaboraoffice.com/[Collabora] possible.
+First, thanks [Docmosis](https://www.docmosis.com/) who made this work by
+[Collabora](https://www.collaboraoffice.com/) possible.
 
-== Motivation
+## Motivation
 
 Both Word and Writer allow specifying borders for any kind of table cells. When the user creates a
 vertically merged cell, there is a covering cell and there is one or more covered table cells.
@@ -25,29 +24,26 @@ The Word approach is to render the cell borders as if there would be no vertical
 the properties of the covered cell. This has the benefit that merging the content of cells
 vertically doesn't change the border rendering, but it also requires more complex code for painting.
 
-== Results so far
+## Results so far
 
 Writer can now detect that your tables originate from Word formats and render table borders the Word way in that case.
 
 Here is how the new rendering result look like:
 
-.Writer rendering in compatibility mode, new output
-image::https://share.vmiklos.hu/blog/sw-merged-border/new.png[align="center"]
+![Writer rendering in compatibility mode, new output](https://share.vmiklos.hu/blog/sw-merged-border/new.png)
 
 And here is how it used to look like:
 
-.Writer rendering in compatibility mode, old output
-image::https://share.vmiklos.hu/blog/sw-merged-border/old.png[align="center"]
+![Writer rendering in compatibility mode, old output](https://share.vmiklos.hu/blog/sw-merged-border/old.png)
 
 And finally the reference rendering is:
 
-.Writer rendering in compatibility mode, reference output
-image::https://share.vmiklos.hu/blog/sw-merged-border/ref.png[align="center"]
+![Writer rendering in compatibility mode, reference output](https://share.vmiklos.hu/blog/sw-merged-border/ref.png)
 
 You can see that the B4 and B5 cells are covered, they had some unwanted border on their left side
 and this is now gone.
 
-== How is this implemented?
+## How is this implemented?
 
 If you would like to know a bit more about how this works, continue reading... :-)
 
@@ -66,10 +62,8 @@ If you would like to know a bit more about how this works, continue reading... :
   vertical positions of border points: we can check that all the positions belong to the 1st, 2nd or
   3rd rows, and not to a row below them
 
-== Want to start using this?
+## Want to start using this?
 
 Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
 expect all of this work will be available in TDF's
-http://dev-builds.libreoffice.org/daily/master/[next release] (7.2).
-
-// vim: ft=asciidoc
+[next release](http://dev-builds.libreoffice.org/daily/master/) (7.2).

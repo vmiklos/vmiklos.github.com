@@ -1,9 +1,8 @@
-= Writer line heights: removing a 16bit limit
-
-:slug: sw-line-height
-:category: libreoffice
-:tags: en
-:date: 2021-06-10T10:25:51+02:00
+Title: Writer line heights: removing a 16bit limit
+Slug: sw-line-height
+Category: libreoffice
+Tags: en
+Date: 2021-06-10T10:25:51+02:00
 
 Line heights in Writer are typically defined in points on the UI (e.g. 12pt), though they are
 measured in twips internally (1 point is 20 twips). This height was stored in a 16bit unsigned
@@ -11,10 +10,10 @@ integer, so the maximum allowed height was 65536 twips, around 116 cm.
 
 Now we track line heights with 32 bits ints, so this limitation is practically removed.
 
-First, thanks https://vector.com/[Vector] who made this work by
-https://www.collaboraoffice.com/[Collabora] possible.
+First, thanks [Vector](https://vector.com/) who made this work by
+[Collabora](https://www.collaboraoffice.com/) possible.
 
-== Motivation
+## Motivation
 
 Once you insert an image to a Writer document, you can customize its anchor type. The as-char
 anchor type is handy if you don't want text to flow around the image. This has the side effect that
@@ -22,14 +21,13 @@ a large image significantly increases the nominal height of a line. The problema
 image height of 118.9 cm (46.81 inch), so the unsigned integer used to represent its height wrapped
 around, leading to an incorrect layout.
 
-== Results so far
+## Results so far
 
 Now it looks like the way you would expect it:
 
-.Writer as-char image with height that is larger than 65k twips
-image::https://share.vmiklos.hu/blog/sw-line-height/sw-line-height.png[align="center"]
+![Writer as-char image with height that is larger than 65k twips](https://share.vmiklos.hu/blog/sw-line-height/sw-line-height.png)
 
-== How is this implemented?
+## How is this implemented?
 
 If you would like to know a bit more about how this works, continue reading... :-)
 
@@ -37,23 +35,18 @@ As usual, the end goal was reached via a set of incremental commits:
 
 - The very first integer truncation was found using gdb, manually. At that point it was clear that
   some tool to catch the problematic places would accelerate development. First
-  link:$$https://gerrit.libreoffice.org/c/core/+/115948$$[sw: replace most static_cast<sal_uInt16>()
-  calls with o3tl::narrowing()] prepared Writer code so that sanitizers can flag the interesting code
+  [sw: replace most static_cast<sal_uInt16>() calls with o3tl::narrowing()](https://gerrit.libreoffice.org/c/core/+/115948) prepared Writer code so that sanitizers can flag the interesting code
   locations when using `-fsanitize=implicit-unsigned-integer-truncation
   -fsanitize=implicit-signed-integer-truncation`. This is important, as conversion with
   `static_cast<>` counts as an explicit integer conversion, and sanitizers can't flag such
   conversions.
 
-- Then link:$$https://gerrit.libreoffice.org/c/core/+/115873$$[sw: allow the height of a line to be
-  larger than 65536 twips] took care of the height part.
+- Then [sw: allow the height of a line to be larger than 65536 twips](https://gerrit.libreoffice.org/c/core/+/115873) took care of the height part.
 
-- Finally link:$$https://gerrit.libreoffice.org/c/core/+/116835$$[sw: allow the width of a line
-  portion to be larger than 65536 twips] fixed the width part.
+- Finally [sw: allow the width of a line portion to be larger than 65536 twips](https://gerrit.libreoffice.org/c/core/+/116835) fixed the width part.
 
-== Want to start using this?
+## Want to start using this?
 
 Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
 expect all of this work will be available in TDF's
-http://dev-builds.libreoffice.org/daily/master/[next release] (7.2).
-
-// vim: ft=asciidoc
+[next release](http://dev-builds.libreoffice.org/daily/master/) (7.2).

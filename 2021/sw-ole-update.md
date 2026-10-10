@@ -1,9 +1,8 @@
-= Writer embedded objects: reliably update object previews
-
-:slug: sw-ole-update
-:category: libreoffice
-:tags: en
-:date: 2021-12-15T09:23:28+01:00
+Title: Writer embedded objects: reliably update object previews
+Slug: sw-ole-update
+Category: libreoffice
+Tags: en
+Date: 2021-12-15T09:23:28+01:00
 
 Embedded objects in Writer consist of a native data part and a preview part. Until now, there was no
 way to force the update of the preview part in case it was empty.
@@ -12,10 +11,10 @@ Now the Tools -> Update -> Update all menu item updates such previews as well. T
 useful if you manipulate the ZIP/XML document directly to insert native data, then load it into
 Writer to generate a preview.
 
-First, thanks https://vector.com/[Vector] who made this work by
-https://www.collaboraoffice.com/[Collabora] possible.
+First, thanks [Vector](https://vector.com/) who made this work by
+[Collabora](https://www.collaboraoffice.com/) possible.
 
-== Motivation
+## Motivation
 
 The Update all menu item already updates all sorts of generated content: fields, table of contents,
 charts, the document layout, but not the preview of embedded objects. You could work this around by
@@ -23,24 +22,21 @@ double-clicking on the embedded object to re-generate the preview, but doing thi
 larger document is not efficient. This is especially useful for hand-crafted documents which have
 proper native data, but no preview image yet.
 
-== Results so far
+## Results so far
 
 Here is how an embedded object without a preview looks like:
 
-.Writer embedded object with no preview
-image::https://share.vmiklos.hu/blog/sw-ole-update/old.png[align="center"]
+![Writer embedded object with no preview](https://share.vmiklos.hu/blog/sw-ole-update/old.png)
 
 Now using the Update all menu item turns a sample document into this preview:
 
-.Writer embedded object with a preview
-image::https://share.vmiklos.hu/blog/sw-ole-update/new.png[align="center"]
+![Writer embedded object with a preview](https://share.vmiklos.hu/blog/sw-ole-update/new.png)
 
-== How is this implemented?
+## How is this implemented?
 
 If you would like to know a bit more about how this works, continue reading... :-)
 
-link:$$https://gerrit.libreoffice.org/c/core/+/126253$$[sw: update previews of OLE objects on
-"update all"] is the change implementing this small feature. It works by:
+[sw: update previews of OLE objects on "update all"](https://gerrit.libreoffice.org/c/core/+/126253) is the change implementing this small feature. It works by:
 
 - Iterating over the frame formats ("special" formats) of the document
 
@@ -55,10 +51,8 @@ link:$$https://gerrit.libreoffice.org/c/core/+/126253$$[sw: update previews of O
 
 - Finally notify the OLE node that the preview was updated, so the necessary repaint can happen
 
-== Want to start using this?
+## Want to start using this?
 
 Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
 expect all of this work will be available in TDF's
-http://dev-builds.libreoffice.org/daily/master/[next release] (7.4).
-
-// vim: ft=asciidoc
+[next release](http://dev-builds.libreoffice.org/daily/master/) (7.4).
