@@ -157,7 +157,7 @@ as real signing never needs a custom value there, this is just for testing.
 
 The last part of this electronic signing effort was to expose visual singing in COOL, something that
 was added to LibreOffice Draw back in 2020, see this [earlier blog
-post]({filename}/2020/sd-visible-pdf-sign.adoc).
+post]({filename}/2020/sd-visible-pdf-sign.md).
 
 First this was exposed in COOL with digital signing, in a way that the current page gets a signature
 widget inserted at the page center and then the user can move that signature widget to the desired

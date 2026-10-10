@@ -4,7 +4,7 @@ Category: libreoffice
 Tags: en
 Date: 2021-04-09T14:48:14+02:00
 
-As mentioned in a [previous]({filename}/2020/hackweek-2020.adoc) such report, a hack week is when
+As mentioned in a [previous]({filename}/2020/hackweek-2020.md) such report, a hack week is when
 we are allowed to hack on anything we want in LibreOffice / Collabora Office / Collabora Online for
 a few days at [Collabora](https://www.collaboraoffice.com/). I used this time to implement core
 support for RTL gutter margin in Writer.

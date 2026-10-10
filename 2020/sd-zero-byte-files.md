@@ -1,17 +1,15 @@
-= Detecting 0-byte files based on extension in Impress and elsewhere
-
-:slug: sd-zero-byte-files
-:category: libreoffice
-:tags: en
-:date: 2020-11-13T08:50:19+01:00
+Title: Detecting 0-byte files based on extension in Impress and elsewhere
+Slug: sd-zero-byte-files
+Category: libreoffice
+Tags: en
+Date: 2020-11-13T08:50:19+01:00
 
 Impress (and Writer and Calc) now has support for detecting 0-byte files on open/import based on
 their extension. This builds on top of the
-link:|filename|/2020/sw-locale-independent-templates.adoc[previous language-independent template
-improvements]. This means that e.g. a 0-byte PPTX file will open as an empty Impress presentation,
-not in Writer.
+[previous language-independent template improvements]({filename}/2020/sw-locale-independent-templates.md).
+This means that e.g. a 0-byte PPTX file will open as an empty Impress presentation, not in Writer.
 
-== Motivation
+## Motivation
 
 We regularly see customers wanting minimal templates, which are language independent and have no
 content. Such files are handy if your workflow is to first name an empty document (create it) and
@@ -24,30 +22,28 @@ in Writer, not matching the user expectations.
 Instead of explaining the problem to people again and again (that a literally empty PPTX file is not
 a PPTX template), there is value in just adapting the code instead to "do what I mean".
 
-== Results so far
+## Results so far
 
 An empty PPTX file is now handled like this:
 
-.Empty PPTX file opening in Impress
-image::https://lh3.googleusercontent.com/zk3b0f2Rx3t5vFVuKiimujSJWYwPNH05PCf5Indih3OwMDeBrOUH1X7N22PO46kIbxTVzI0V3IV-bE0sMycTHGj2eRqKT6K7eQkZ0Py9QVCPIhV0pdKdGPLGH08xpw72wFQ-3eGyX4k=w1920[align="center"]
+![Empty PPTX file opening in Impress](https://lh3.googleusercontent.com/zk3b0f2Rx3t5vFVuKiimujSJWYwPNH05PCf5Indih3OwMDeBrOUH1X7N22PO46kIbxTVzI0V3IV-bE0sMycTHGj2eRqKT6K7eQkZ0Py9QVCPIhV0pdKdGPLGH08xpw72wFQ-3eGyX4k=w1920)
 
 You can see this is no longer opening in Writer as plain text but in Impress, which is clearly a
 less surprising behavior.
 
 Here is what happens if you open an empty DOTX (template):
 
-.Empty DOTX file creates a new Writer document
-image::https://lh3.googleusercontent.com/cVB_kK2wDyNIJjLt9v9UcNS4AagRCifwBofp70mHfNVzopvrN1cxcsVLhWfEArhab_PwSFkAvLlMUS1witevRcKeEn9UXYtw5o4VeGSztvnNUi6YMtR3t2DUIu1k2LLOUhnpckAnrwQ=w1920[align="center"]
+![Empty DOTX file creates a new Writer document](https://lh3.googleusercontent.com/cVB_kK2wDyNIJjLt9v9UcNS4AagRCifwBofp70mHfNVzopvrN1cxcsVLhWfEArhab_PwSFkAvLlMUS1witevRcKeEn9UXYtw5o4VeGSztvnNUi6YMtR3t2DUIu1k2LLOUhnpckAnrwQ=w1920)
 
 You can see that it is even recognized that this is a template format, so a new document is created,
 not the template itself is opened for editing.
 
-== How is this implemented?
+## How is this implemented?
 
 If you would like to know a bit more about how this works, continue reading... :-)
 
 You can see the code change in
-https://git.libreoffice.org/core/commit/ada07f303e7cd1e39c73abe0741aefe7d9d73a57[this commit].
+[this commit](https://git.libreoffice.org/core/commit/ada07f303e7cd1e39c73abe0741aefe7d9d73a57).
 First, we restrict this trick to file URLs, and also to empty files.
 
 Second, we look at the extension of the file and try to match an import filter that usually handles
@@ -61,11 +57,9 @@ is expected to be a valid ZIP file.) This is important, because we want to avoid
 every file filter to not fail for empty file content -- instead we want to handle this centrally, at
 a single place.
 
-== Want to start using this?
+## Want to start using this?
 
-You can get a snapshot / demo of Collabora Office and try it out yourself right now:
-https://www.collaboraoffice.com/collabora-office-latest-snapshot/[try unstable snapshot].  Collabora
-intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF's next release too (7.1).
-
-// vim: ft=asciidoc
+You can get a snapshot / demo of Collabora Office and try it out yourself right now: [try unstable
+snapshot](https://www.collaboraoffice.com/collabora-office-latest-snapshot/).  Collabora intends to
+continue supporting and contributing to LibreOffice, the code is merged so we expect all of this
+work will be available in TDF's next release too (7.1).

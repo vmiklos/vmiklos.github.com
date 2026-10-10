@@ -1,19 +1,18 @@
-= Export larger pages from Draw using PDF 1.6
-
-:slug: sd-pdf-1-6-larger-page-size
-:category: libreoffice
-:tags: en
-:date: 2020-05-08T09:02:33+02:00
+Title: Export larger pages from Draw using PDF 1.6
+Slug: sd-pdf-1-6-larger-page-size
+Category: libreoffice
+Tags: en
+Date: 2020-05-08T09:02:33+02:00
 
 Draw/Impress now has
-https://git.libreoffice.org/core/commit/4830592b780833cf5eee2aef30bc9c5d444dfb24[support] for
+[support](https://git.libreoffice.org/core/commit/4830592b780833cf5eee2aef30bc9c5d444dfb24) for
 exporting larger page sizes into PDF. The previous limit was 200 " (508 cm), and now practically
 there is no such limit.
 
-First, thanks https://vector.com/[Vector] who made this work by
-https://www.collaboraoffice.com/[Collabora] possible.
+First, thanks [Vector](https://vector.com/) who made this work by
+[Collabora](https://www.collaboraoffice.com/) possible.
 
-== Motivation
+## Motivation
 
 You can use Draw with a document which has a single page, which more or less acts as a canvas with
 unlimited size to handle vector graphics. The current limit of such a canvas in size is 600 x 600
@@ -29,16 +28,15 @@ Another use-case can be a large sheet in Calc, exporting it to a single PDF page
 around easily on a touch device. If you have enough rows, then getting rid of this limit is helpful
 to deal with the large page height.
 
-== Results so far
+## Results so far
 
 Here is how a large page looks like now in Draw and then in Adobe Reader:
 
-.Export of 6m-wide.odg to PDF
-image::https://lh3.googleusercontent.com/wfVdQklYbX9mpfNG0hk_A0-I495Nsu4r8Twokq_ZZR3Z0IondP33BDE_XjGFsNfucDJ9kVpDps_J_tcQATKhwJxAFeZn6hS1NN7i5BVlS9UBroUIGrJU1TiwqDB88k6HpMbnK9x9gQ=w640[align="center",link="https://youtu.be/HtHq23MbYDs"]
+[![Export of 6m-wide.odg to PDF](https://lh3.googleusercontent.com/wfVdQklYbX9mpfNG0hk_A0-I495Nsu4r8Twokq_ZZR3Z0IondP33BDE_XjGFsNfucDJ9kVpDps_J_tcQATKhwJxAFeZn6hS1NN7i5BVlS9UBroUIGrJU1TiwqDB88k6HpMbnK9x9gQ=w640)](https://youtu.be/HtHq23MbYDs)
 
 You can see how both Draw and Adobe Reader show that the page width is larger than 200 ".
 
-== How is this implemented?
+## How is this implemented?
 
 If you would like to know a bit more about how this works, continue reading... :-)
 
@@ -50,19 +48,18 @@ If you would like to know a bit more about how this works, continue reading... :
 
 Here is how the PDF markup looks like for a 600 cm wide page:
 
-// This doesn't work:
-//
-// [source,pdf]
-// ----
-// 1 0 obj
-// <</Type/Page/Parent 4 0 R/Resources 11 0 R/MediaBox[0 0 8503.93700787402 396]
-// /UserUnit 2/Group<</S/Transparency/CS/DeviceRGB/I true>>/Contents 2 0 R>>
-// endobj
-// ----
-//
-// So use vim's `:TOhtml` instead, with `:set bg=` (don't assume dark bg) and `:let g:html_use_css = 0`:
+<!-- This doesn't work: -->
+<!-- -->
+<!-- [source,pdf] -->
+<!-- ---- -->
+<!-- 1 0 obj -->
+<!-- <</Type/Page/Parent 4 0 R/Resources 11 0 R/MediaBox[0 0 8503.93700787402 396] -->
+<!-- /UserUnit 2/Group<</S/Transparency/CS/DeviceRGB/I true>>/Contents 2 0 R>> -->
+<!-- endobj -->
+<!-- ---- -->
+<!-- -->
+<!-- So use vim's `:TOhtml` instead, with `:set bg=` (don't assume dark bg) and `:let g:html_use_css = 0`: -->
 
-++++
 <div class="listingblock">
 <div class="content">
 <pre><code><font face="monospace"><font color="#ff00ff">1</font>&nbsp;<font color="#ff00ff">0</font>&nbsp;<font color="#2e8b57"><b>obj</b></font>
@@ -71,16 +68,12 @@ Here is how the PDF markup looks like for a 600 cm wide page:
 <font color="#2e8b57"><b>endobj</b></font>
 </font></code></pre>
 </div></div>
-++++
 
 Notice how we still avoid values larger than 14 400, but now the UserUnit says that 1 unit means 2
 points.
 
-== Want to start using this?
+## Want to start using this?
 
-You can get a snapshot / demo of Collabora Office and try it out yourself right now:
-https://www.collaboraoffice.com/collabora-office-latest-snapshot/[try unstable snapshot].  Collabora
-is a major contributor to LibreOffice and all of this work will be available in TDF's next release
-too (7.0).
-
-// vim: ft=asciidoc
+You can get a snapshot / demo of Collabora Office and try it out yourself right now: [try unstable
+snapshot](https://www.collaboraoffice.com/collabora-office-latest-snapshot/).  Collabora is a major
+contributor to LibreOffice and all of this work will be available in TDF's next release too (7.0).

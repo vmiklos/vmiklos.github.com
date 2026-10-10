@@ -1,19 +1,20 @@
-= Effecting code review and backporting for Collabora Online
-
-:slug: cool-g-review-backport
-:category: collabora-online
-:tags: en
-:date: 2020-12-02T10:23:39+01:00
+Title: Effecting code review and backporting for Collabora Online
+Slug: cool-g-review-backport
+Category: collabora-online
+Tags: en
+Date: 2020-12-02T10:23:39+01:00
 
 Collabora Online now has a `./g`
-https://github.com/CollaboraOnline/online/blob/a4becf39abc3228fa899f71ff284d41c3c199627/g[script]
+[script](https://github.com/CollaboraOnline/online/blob/a4becf39abc3228fa899f71ff284d41c3c199627/g)
 that tries to bring some of the Gerrit-based review benefits to a workflow based on GitHub.
 
-== Motivation
+## Motivation
 
-Collabora Online is on GitHub, but https://git.libreoffice.org/core[core.git] is still on Gerrit, so it made sense to spend some time on a small shell script that gives you review and backport experience that is closer to Gerrit than the stock GitHub workflow.
+Collabora Online is on GitHub, but [core.git](https://git.libreoffice.org/core) is still on Gerrit,
+so it made sense to spend some time on a small shell script that gives you review and backport
+experience that is closer to Gerrit than the stock GitHub workflow.
 
-== How we use GitHub
+## How we use GitHub
 
 Most Online committers push their code for review directly to `online.git`, to private namespaced
 branches, like `private/kendy/master`, then a pull request can be created to get commits from that
@@ -33,64 +34,62 @@ On the other hand, we're interested in GitHub's ability to have multiple commits
 forces to have one commit per change. The GitHub way encourages developers to split changes into
 more commits, now that the review and CI cost won't increase just due to such splits.
 
-== Submit for review
+## Submit for review
 
 The happy path is when you have one or more local commits and you want to submit it for review. In
 this case now you can do:
 
-----
+```
 ./g review
-----
+```
 
 And the script will figure out that you want to push your local branch to a remote branch like
 `private/kendy/master` and also create a pull request for you, printing its URL.
 
 In case that branch already exists then you need to specify a name:
 
-----
+```
 ./g review myhack
-----
+```
 
 So parallel reviews are possible, but only the first gets an inferred name. Both cases need no
-clicking in a browser, thanks to https://github.com/cli/cli[gh].
+clicking in a browser, thanks to [gh](https://github.com/cli/cli).
 
-== Submit a backport
+## Submit a backport
 
 The easiest case is when you can assume that the master branch and the distro branch is so close to
 each other that there won't be conflicts to be resolved. In that case, you can do:
 
-----
+```
 ./g backport distro/collabora/co-6-4 790
-----
+```
 
-to pick all commits from https://github.com/collaboraonline/online/pull/790[PR 790] (which is already
+to pick all commits from [PR 790](https://github.com/collaboraonline/online/pull/790) (which is already
 merged to master) to a distro branch.
 
 Again, you can have multiple backports in progress, e.g. you can do:
 
-----
+```
 ./g backport distro/collabora/co-6-4 790 myhack
-----
+```
 
 If the default name is already used. The backport syntax is a bit longer, so you can always just
 type `./g backport` and you'll get the usage.
 
 This second command is a bit more complicated, as `gh` has no trivial way to expose what is the
 commit range of a PR. But there is `gh api graphql` which can do arbitrary
-https://docs.github.com/en/free-pro-team@latest/graphql[GraphQL] queries, which provide this
+[GraphQL](https://docs.github.com/en/free-pro-team@latest/graphql) queries, which provide this
 information. At this stage it may make sense to just rewrite the whole `./g` script in e.g. Python,
-but till that happens, we parse the output of the query using https://stedolan.github.io/jq/[jq].
+but till that happens, we parse the output of the query using [jq](https://stedolan.github.io/jq/).
 
 Finally, if you do have conflicts or you want a local build test / manual test before submitting,
 you can always check out the distro branch manually, cherry-pick there and use plain `./g review` to
 submit your backport for review.
 
-== Want to start using this?
+## Want to start using this?
 
-You can go to the https://collaboraonline.github.io/[Collabora Online] community website and see how
-to build the code. Then you may want to solve an
-https://github.com/CollaboraOnline/online/issues?q=is%3Aissue+is%3Aopen+label%3A%22Easy+Hack%22[easy
-hack], finally submit your commit for review either by using the above method or whichever way you
-prefer contributing to GitHub projects.
-
-// vim: ft=asciidoc
+You can go to the [Collabora Online](https://collaboraonline.github.io/) community website and see how
+to build the code. Then you may want to solve an [easy
+hack](https://github.com/CollaboraOnline/online/issues?q=is%3Aissue+is%3Aopen+label%3A%22Easy+Hack%22),
+finally submit your commit for review either by using the above method or whichever way you prefer
+contributing to GitHub projects.

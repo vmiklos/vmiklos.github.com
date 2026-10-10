@@ -1,16 +1,15 @@
-= Page-content-bottom vertical relation in Writer
-
-:slug: sw-page-content-bottom-anchor
-:category: libreoffice
-:tags: en
-:date: 2020-06-10T09:12:45+02:00
+Title: Page-content-bottom vertical relation in Writer
+Slug: sw-page-content-bottom-anchor
+Category: libreoffice
+Tags: en
+Date: 2020-06-10T09:12:45+02:00
 
 Writer now has support for anchoring shapes relative to the bottom of the page content frame.
 
-First, thanks to our partner https://www.suse.com/[SUSE] for working with
-https://www.collaboraoffice.com/[Collabora] to make this possible.
+First, thanks to our partner [SUSE](https://www.suse.com/) for working with
+[Collabora](https://www.collaboraoffice.com/) to make this possible.
 
-== Motivation
+## Motivation
 
 Users sometimes want to specify the vertical position of their shapes in text documents in a way
 that is relative from the bottom of the page content area. Also, this improves consistency,
@@ -26,20 +25,19 @@ For example, if a shape has a height of 10 cm and a 2 cm spacing is wanted betwe
 shape and the bottom of the page content area, the position can be set to -12 cm, and then the 2 cm
 spacing will be maintained, even after the page height changes.
 
-== Results so far
+## Results so far
 
 Here is how this works in practice:
 
-.Demo of a stable vertical position (relative to the bottom of the page content frame), during a page height change
-image::https://lh3.googleusercontent.com/3r0eHqOn48OkUPHLGlhWTjPwwkWYWouF3LtMtVTmRITJ9oGHuRW1-COvswp71G7-ySMvZ-fsP8-0R5ELVNmiaN2FCxtFLfnun4OFYmFvmZk-W1UBw4EhJ4P8RAgPHhQtdcmjiCe9Eg=w640[align="center",link="https://youtu.be/X49IbS97axs"]
+[![Demo of a stable vertical position (relative to the bottom of the page content frame), during a page height change](https://lh3.googleusercontent.com/3r0eHqOn48OkUPHLGlhWTjPwwkWYWouF3LtMtVTmRITJ9oGHuRW1-COvswp71G7-ySMvZ-fsP8-0R5ELVNmiaN2FCxtFLfnun4OFYmFvmZk-W1UBw4EhJ4P8RAgPHhQtdcmjiCe9Eg=w640)](https://youtu.be/X49IbS97axs)
 
 You can see how the distance of the shape from the bottom is 2 cm, even if the page height changes.
 
-== How is this implemented?
+## How is this implemented?
 
 If you would like to know a bit more about how this works, continue reading... :-)
 
-// commit prefix: 'sw from-bottom relative orientation:'
+<!-- commit prefix: 'sw from-bottom relative orientation:' -->
 
 - the UNO API now supports a new `PAGE_PRINT_AREA_BOTTOM` relative orientation
 
@@ -48,12 +46,11 @@ If you would like to know a bit more about how this works, continue reading... :
 
 - the DOCX format already had a markup for this:
 
-[source,xml]
-----
+```xml
 <wp:positionV relativeFrom="bottomMargin">
   <wp:posOffset>...</wp:posOffset>
 </wp:positionV>
-----
+```
 
 now the import/export code maps this markup to the new feature.
 
@@ -64,19 +61,16 @@ now the import/export code maps this markup to the new feature.
 
 - The ODF filter now has a markup to represent the new vertical relation:
 
-[source,xml]
-----
+```xml
 <style:graphic-properties ... loext:vertical-rel="page-content-bottom" .../>
-----
+```
 
-There is a https://issues.oasis-open.org/browse/OFFICE-4073[proposal] to promote this from our
+There is a [proposal](https://issues.oasis-open.org/browse/OFFICE-4073) to promote this from our
 extension namespace to normal ODF (thanks to Regina for the help there!).
 
-== Want to start using this?
+## Want to start using this?
 
 You can get a snapshot / demo of Collabora Office and try it out yourself right now:
-https://www.collaboraoffice.com/collabora-office-latest-snapshot/[try unstable snapshot].  Collabora
+[try unstable snapshot](https://www.collaboraoffice.com/collabora-office-latest-snapshot/).  Collabora
 is a major contributor to LibreOffice and all of this work will be available in TDF's next release
 too (7.1).
-
-// vim: ft=asciidoc

@@ -1,0 +1,49 @@
+Title: Improved rotated text handling in Writer's table rows with automatic height
+Slug: sw-autorowheight-rotatedtext
+Category: libreoffice
+Tags: en
+Date: 2020-01-24T09:37:19+01:00
+
+Writer now has better support for rotated text in tables containing rows with automatic height. This
+post also presents two related fixes.
+
+First, thanks [Otevřená města](https://www.otevrenamesta.cz/) who made this work by
+[Collabora](https://www.collaboraoffice.com/) possible.
+
+Before diving into improved rotated text handling, first a continuous section break import problem
+([tdf#128605](https://bugs.documentfoundation.org/show_bug.cgi?id=128605)) was fixed: this was a case
+when we created a new page style, but only a new section was intended. Here is how the fix looks:
+
+![Importing continuous section break, fixed](https://lh3.googleusercontent.com/ycsIqjpdm5t2n9FQQhKBbWobpsX2cQ0s-ugLn970XwuGafzL79HzNVly6dYUpLMhTQmZq8Aa36kaGIfWfk-MzYmuSr92zhRUxFk1aNqwDOnTy1cyyrRzCguuvp-Wd3LD8XXzo_Aurg=w640)
+
+![Importing continuous section break, original](https://lh3.googleusercontent.com/jLUVDTY3Z6-IWVCmSfia7ue_aSpXSG7YJK2WqhRCfJkdTgA3cVFRh8TiYZwKRut7vvC0yFkdGBzl9Wpv2auZpg6d84nmDI1gVHBZPmWsf_YA-5qD-SF8Uf2lBG7NOu9RcidR1bQ0ng=w640)
+
+![Importing continuous section break, reference](https://lh3.googleusercontent.com/izfhxSHtYg_QmeJdIY_NnX5uiaRsmDHQoPlAsofQSaLJERNzVq_gkOMShR-fzckvAd6E5D-ZEMbr41Db2PEMeUZA8gL-oqJsvf_3PytuxJhL95wz4Fsh-2JakWefx4Tes2MoHlFWWw=w640)
+
+What you can see is that the continuous section break used to result in an unwanted page break, and
+this is gone now.
+
+Regarding the actual rotated text handling
+([tdf#128611](https://bugs.documentfoundation.org/show_bug.cgi?id=128611)), there were two problems
+there:
+
+- There was a missing flip handling for line shapes
+
+- Poor layout of rotated text in table cells with automatic height
+
+Here is how the fix looks like:
+
+![Rotated text in table cells with auto height, fixed (both flip of line and text layout)](https://lh3.googleusercontent.com/GFCNQDcvXsN2w1ADVo10H16FUOYB8i6jBTrPad0r6qa8nt8PmDBDD1oiDfG9Zs9_3eVqdyB-O-u6oWIBAujcyso2utvnDpdE4Bs2PykeJkbh0vSYMZDSIKsjv7vI06j9HUCru2Z19w=w640)
+
+![Rotated text in table cells with auto height, fixed (only flip of line so far)](https://lh3.googleusercontent.com/IqsWjKbTD03_wnvUMUe_QK1pqdTfZKizoNEHRQDQuvpw_O8mrEQ8AgNk_2qbP49QUpezknqHDxnhn0eYDpfZL833dXaClRPD1e4_wxuTj5mTRTeEgioBCX0djcWa5vNSRdPmnalphA=w640)
+
+![Rotated text in table cells with auto height, original](https://lh3.googleusercontent.com/2Tkkj7oz9Bm9ckPs5lTGwAGBRokEJ0MWxfqrbqu6afp6Xm1I77zft8riW-kTxKo4kJsO6bwMtaZb0XNToFssEc1kkZuzm0qk0H4eLU-xk8DOd-e5eVMtNR6cYD_1FRDWbCIYok1oJg=w640)
+
+![Rotated text in table cells with auto height, reference](https://lh3.googleusercontent.com/m3X4dGiUTsFBnVwQhiEpcAQYGAJ_8vbKN93jivrcsKcCvjaornrk0upCvsTmck1e39XISyuYNc47BF1tuyrskoWLuMhpegtbyPh1KjBD7_wD-oLueaaLbjYnrgReSRkS5krvK1y4LQ=w640)
+
+What you can see is that the line clearing the table cell had a vertical flip, which was lost on
+import. Also, the rotated text in the "row heading" cells was broken into multiple columns. Both are
+fixed now.
+
+All this is available in LibreOffice master (towards 6.4), so you can try it out
+[right now](http://dev-builds.libreoffice.org/daily/master/), if interested.

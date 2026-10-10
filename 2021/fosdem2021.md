@@ -7,7 +7,7 @@ Date: 2021-02-08T17:17:13+01:00
 [![Slides of the talk](https://share.vmiklos.hu/blog/fosdem2021/slides.png)](https://mautic.productivity.collabora.co.uk/asset/151:fosdem21-pdfiumsig-fosdem-online-2k21pdf)
 
 The next step in the recent [PDFium-based signature
-verification story]({filename}/2020/pdfium-sign-verify.adoc) is my [Handling PDF digital signatures
+verification story]({filename}/2020/pdfium-sign-verify.md) is my [Handling PDF digital signatures
 in LibreOffice with PDFium](https://fosdem.org/2021/schedule/event/lo_pdfsignatures/) talk at FOSDEM
 2021, in the [LibreOffice devroom](https://fosdem.org/2021/schedule/track/libreoffice/)
 ([pre-recorded video](https://www.youtube.com/watch?v=njoHDY47mnA)). The talk gives you an overview of

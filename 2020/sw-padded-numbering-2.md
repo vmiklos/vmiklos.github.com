@@ -1,18 +1,17 @@
-= Padded numbering in Writer, part 2
+Title: Padded numbering in Writer, part 2
+Slug: sw-padded-numbering-2
+Category: libreoffice
+Tags: en
+Date: 2020-04-08T14:01:44+02:00
 
-:slug: sw-padded-numbering-2
-:category: libreoffice
-:tags: en
-:date: 2020-04-08T14:01:44+02:00
+I already [posted]({filename}/2020/hackweek-2020.md) about the start of padded numbering support in
+Writer, there the focus was to insert '0' characters to pad up the result to 2 characters. Let's see
+how that got extended in the recent past...
 
-I already link:|filename|/2020/hackweek-2020.adoc[posted] about the start of padded numbering
-support in Writer, there the focus was to insert '0' characters to pad up the result to 2
-characters. Let's see how that got extended in the recent past...
-
-First, thanks Nicolas Christener who made this work by https://www.collaboraoffice.com/[Collabora]
+First, thanks Nicolas Christener who made this work by [Collabora](https://www.collaboraoffice.com/)
 possible.
 
-== Motivation
+## Motivation
 
 Padded numbering is a style where you insert 0 characters in front of an otherwise normal (Arabic)
 numbering, making sure that the result always has at least N characters. Up to now, you had to
@@ -21,16 +20,15 @@ number your content manually to have this effect, while Word supports this featu
 OOXML supports padding up to 2, 3, 4 and 5 characters. The news is now now it's possible to not only
 pad up to 2 characters, but also to any number between 2 and 5.
 
-== Results so far
+## Results so far
 
 Here is how the current rendering of padded numbering looks like, with a custom prefix and suffix:
 
-.numbering-padded4.docx, current rendering
-image::https://lh3.googleusercontent.com/JHqkVdHkLLkFV1Mrh5jR1FFqq8PvU3lmjuOrl6SwBnM-ygsbugL-FccMHIod9Uyj2-hAyADRX7VwozUHgzBTZTdo72FB_nuHzEH-iQngSl5ND0o6h1sZDTs1uv8H5cLNv0cHDgRv2A=w640[align="center"]
+![numbering-padded4.docx, current rendering](https://lh3.googleusercontent.com/JHqkVdHkLLkFV1Mrh5jR1FFqq8PvU3lmjuOrl6SwBnM-ygsbugL-FccMHIod9Uyj2-hAyADRX7VwozUHgzBTZTdo72FB_nuHzEH-iQngSl5ND0o6h1sZDTs1uv8H5cLNv0cHDgRv2A=w640)
 
 You can see how 0 is inserted before 999, but not before 1000 as this is the pad-to-4 case.
 
-== How is this implemented?
+## How is this implemented?
 
 If you would like to know a bit more about how this works, continue reading... :-)
 
@@ -43,15 +41,13 @@ If you would like to know a bit more about how this works, continue reading... :
 
 Here is how the pad-to-2 markup looks like:
 
-[source,xml]
-----
+```xml
       <w:numFmt w:val="decimalZero"/>
-----
+```
 
 And here is how you define pad-to-3:
 
-[source,xml]
-----
+```xml
       <mc:AlternateContent>
         <mc:Choice Requires="w14">
           <w:numFmt w:val="custom" w:format="001, 002, 003, ..."/>
@@ -60,21 +56,18 @@ And here is how you define pad-to-3:
           <w:numFmt w:val="decimal"/>
         </mc:Fallback>
       </mc:AlternateContent>
-----
+```
 
-- This required taking the `w14` branch when we hit such a conditional, we used to read the fallback
-  branch previously.
+- This required taking the `w14` branch when we hit such a conditional, we used to read the fallback branch previously.
 
-- This required mapping the data of the `<w:numFmt>` XML element not to an enumeration value, but to
-  a pair of objects: the numbering format's value and format.
+- This required mapping the data of the `<w:numFmt>` XML element not to an enumeration value, but to a pair of objects: the numbering format's value and format.
 
-The rest was reasonably straightforward, since the actual padding implementation just had to be generalized.
+The rest was reasonably straightforward, since the actual padding implementation just had to be
+generalized.
 
-== Want to start using this?
+## Want to start using this?
 
 You can get a snapshot / demo of Collabora Office and try it out yourself right now:
-https://www.collaboraoffice.com/collabora-office-latest-snapshot/[try unstable snapshot].  Collabora
+[try unstable snapshot](https://www.collaboraoffice.com/collabora-office-latest-snapshot/).  Collabora
 is a major contributor to LibreOffice and all of this work will be available in TDF's next release
 too (7.0).
-
-// vim: ft=asciidoc
