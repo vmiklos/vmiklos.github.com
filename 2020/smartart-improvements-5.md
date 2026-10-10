@@ -6,7 +6,7 @@ Date: 2020-08-19T09:24:04+02:00
 
 Impress now has support for considering rules next to constraints when it comes to lay out
 SmartArt graphics from PPTX files. This builds on top of the
-[previous improvements]({filename}/2019/smartart-improvements-4.adoc) around SmartArt support.
+[previous improvements]({filename}/2019/smartart-improvements-4.md) around SmartArt support.
 
 First, thanks to our partner [SUSE](https://www.suse.com/) for working with
 [Collabora](https://www.collaboraoffice.com/) to make this possible.

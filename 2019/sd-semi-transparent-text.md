@@ -1,0 +1,27 @@
+Title: Semi-transparent text in Draw/Impress
+Slug: sd-semi-transparent-text
+Category: libreoffice
+Tags: en
+Date: 2019-12-20T09:39:17+01:00
+
+Draw/Impress now has
+[support](https://git.libreoffice.org/core/commits/3e5bedbb6910053c0cee4112cd382fbd035c9832..6dbb317ebec681d236c6ce354f581108fd814f7b)
+for semi-transparent shape text, next to the existing transparency support in the context of shape
+fill colors and shape border colors.
+
+First, thanks [Vector](https://vector.com/) who made this work by
+[Collabora](https://www.collaboraoffice.com/) possible.
+
+Here is how it looks:
+
+![Semi-transparent text in Draw](https://lh3.googleusercontent.com/FJ55-BJ_Mc75TiyrPYuvtOscHOqFp81sEI4SfJvybPzaXG5Y2n4mIoLRzkXydEEmtEf--l9s_h-L4CyYjuGpTyOngOTi8YAzIFp8bQBEn0k2DWsRzJHLdfttf74wTbdPgZUzgSnOYQ=w640)
+
+What you can see is that next to the existing character color, now you can also set a transparency
+percentage to decide if the text should be entirely transparent, entirely opaque or something
+between the two.
+
+The primary focus was Draw in this case, but this also helps PPTX support, as the importer/exporter
+now handles this for Impress documents as well.
+
+All this is available in LibreOffice master (towards 6.5), so you can try it out
+[right now](http://dev-builds.libreoffice.org/daily/master/), if interested.

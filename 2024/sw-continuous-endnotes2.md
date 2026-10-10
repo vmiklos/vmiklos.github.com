@@ -12,7 +12,7 @@ fully available in desktop Writer as well.
 
 ## Motivation
 
-As described in a [previous post]({filename}/2019/sw-continuous-endnotes.adoc), Writer already had
+As described in a [previous post]({filename}/2019/sw-continuous-endnotes.md), Writer already had
 minimal support for not rendering endnotes on a separate endnote page, but it was not mature enough
 to enable is by default for DOCX files.
 

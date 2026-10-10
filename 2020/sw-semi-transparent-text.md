@@ -6,7 +6,7 @@ Date: 2020-02-26T11:25:31+01:00
 
 ## The problem
 
-Last year I [posted]({filename}/2019/sd-semi-transparent-text.adoc) about work to have
+Last year I [posted]({filename}/2019/sd-semi-transparent-text.md) about work to have
 semi-transparent rendering of not only shape fill and shape borders, but also shape text in Draw.
 Now the same semi-transparent text feature is available in Writer as well. This improves
 compatibility with Word, which supports the same feature in its DOCX format. You can access the new

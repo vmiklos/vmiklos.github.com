@@ -1,23 +1,23 @@
-= btLr text direction in Writer, part 4
+Title: btLr text direction in Writer, part 4
+Slug: btlr-text-direction-in-writer-4
+Category: libreoffice
+Tags: en
+Date: 2019-08-16T09:24:45+02:00
 
-:slug: btlr-text-direction-in-writer-4
-:category: libreoffice
-:tags: en
-:date: 2019-08-16T09:24:45+02:00
+## The problem
 
-== The problem
+<!-- From <https://www.publicdomainpictures.net/en/view-image.php?image=263544>. -->
 
-// From <https://www.publicdomainpictures.net/en/view-image.php?image=263544>.
-image::https://lh3.googleusercontent.com/meDrX3a3jwfCHpHSpQfS7Tqvy7Cxaumoo5RlnjJ7Qj0fhDgPXeOv7FgRn4Xqesv8IWW3feCV-_lhWOyzZo9ZD5yaxkBrYxd9doRm9x8BJAAdu3QQ1Jj6MIiy5q5FO_d2v5YSbsBUvg=w320[align="center"]
+![btlr in a table cell](https://lh3.googleusercontent.com/meDrX3a3jwfCHpHSpQfS7Tqvy7Cxaumoo5RlnjJ7Qj0fhDgPXeOv7FgRn4Xqesv8IWW3feCV-_lhWOyzZo9ZD5yaxkBrYxd9doRm9x8BJAAdu3QQ1Jj6MIiy5q5FO_d2v5YSbsBUvg=w320)
 
 I already wrote about the btLr text direction in the context of Writer table cells as a result of a
-Collabora hack week (link:|filename|/2019/hackweek-2019.adoc[part 1],
-link:|filename|/2019/btlr-text-direction-in-writer-2.adoc[part 2],
-link:|filename|/2019/btlr-text-direction-in-writer-3.adoc[part 3]). This post is meant to be the
-final one (for now), given that both table cells and shapes / text frames are now working nicely
-with all major formats.
+Collabora hack week ([part 1]({filename}/2019/hackweek-2019.md),
+[part 2]({filename}/2019/btlr-text-direction-in-writer-2.md),
+[part 3]({filename}/2019/btlr-text-direction-in-writer-3.md)). This post is meant to be the final one
+(for now), given that both table cells and shapes / text frames are now working nicely with all
+major formats.
 
-== The result
+## The result
 
 The first topic is that whenever I looked at supporting the new bottom-to-top, left-to-right
 direction, I always first checked if the more common top-to-bottom, right-to-left direction is
@@ -48,20 +48,20 @@ With these sorted out, I think the topic of table cells and shapes / text frames
 reasonably well. ODF could do the btLr writing direction for sections and pages as well, but I don't
 see that as a priority. And hey, Word doesn't support them, either. :-)
 
-== Want to start using this?
+## Want to start using this?
 
-// Commits:
-//  - sw btlr writing mode: implement TextFrame tbrl export to drawingML (week 24, 2019
-//  - sw btlr writing mode: fix tbrl import from VML (week 25, 2019)
-//  - sw btlr writing mode: handle import from VML (week 27, 2019)
-//  - sw btlr writing mode: remove not needed checkFrameBtlr() in the DOCX export (week 29, 2019)
-//  - sw btlr writing mode: DOCX export of Writer textframes (week 30, 2019)
-//  - sw btlr writing mode: RTF filter of Writer tbrl textframes (week 31, 2019)
-//  - sw btlr writing mode: handle DOC export of textframes (week 32, 2019)
-//  - sw btlr writing mode: RTF filter of Writer textframes (week 33, 2019)
-//  git mylog --grep btlr --pretty=oneline 9c945cdbe170104cbacafa2c37babec5210b9ca2..
+<!-- Commits: -->
+<!--  - sw btlr writing mode: implement TextFrame tbrl export to drawingML (week 24, 2019) -->
+<!--  - sw btlr writing mode: fix tbrl import from VML (week 25, 2019) -->
+<!--  - sw btlr writing mode: handle import from VML (week 27, 2019) -->
+<!--  - sw btlr writing mode: remove not needed checkFrameBtlr() in the DOCX export (week 29, 2019) -->
+<!--  - sw btlr writing mode: DOCX export of Writer textframes (week 30, 2019) -->
+<!--  - sw btlr writing mode: RTF filter of Writer tbrl textframes (week 31, 2019) -->
+<!--  - sw btlr writing mode: handle DOC export of textframes (week 32, 2019) -->
+<!--  - sw btlr writing mode: RTF filter of Writer textframes (week 33, 2019) -->
+<!--  git mylog --grep btlr --pretty=oneline 9c945cdbe170104cbacafa2c37babec5210b9ca2.. -->
 
 You can get a snapshot / demo of Collabora Office and try it out yourself right now:
-https://www.collaboraoffice.com/collabora-office-latest-snapshot/[try unstable snapshot].  Collabora
+[try unstable snapshot](https://www.collaboraoffice.com/collabora-office-latest-snapshot/).  Collabora
 is a major contributor to LibreOffice and all of this work will be available in TDF's next release,
 too (6.4).

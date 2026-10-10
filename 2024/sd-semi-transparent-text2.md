@@ -12,7 +12,7 @@ available in desktop Impress as well.
 
 ## Motivation
 
-As described in a [previous post]({filename}/2019/sd-semi-transparent-text.adoc), Impress already
+As described in a [previous post]({filename}/2019/sd-semi-transparent-text.md), Impress already
 had the capability to have semi-transparent shape text, but the SVG export of this for the case when
 not all paragraphs have the same setting was broken.
 
