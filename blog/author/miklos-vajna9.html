@@ -65,118 +65,73 @@
     <p>Posted on: Mon 20 July 2020</p>
   </div>
   <div class="article_readtime">
-    <p>Estimated read time: 3 minutes</p>
+    <p>Estimated read time: 2 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Draw now has support for adding visible signatures to an existing PDF file. This is in contrast with
-the <a href="https://vmiklos.hu/blog/pdf-sign.html">old functionality</a> which was limited to invisible signatures.</p></div>
-<div class="paragraph"><p>First, thanks to the Dutch Ministry of Defense in cooperation with <a href="http://nouenoff.nl/">Nou&amp;Off</a> who
-made this work by <a href="https://www.collaboraoffice.com/">Collabora</a> possible.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_motivation">Motivation</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>The PDF format allows assigning a shape (a form xobject) to a digital signature in the PDF file, and
+    <p>Draw now has support for adding visible signatures to an existing PDF file. This is in contrast with
+the <a href="https://vmiklos.hu/blog/pdf-sign.html">old functionality</a> which was limited to invisible signatures.</p>
+<p>First, thanks to the Dutch Ministry of Defense in cooperation with <a href="http://nouenoff.nl/">Nou&amp;Off</a> who
+made this work by <a href="https://www.collaboraoffice.com/">Collabora</a> possible.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>The PDF format allows assigning a shape (a form xobject) to a digital signature in the PDF file, and
 if you use e.g. Adobe Acrobat, then it fills this shape with some visible information about the
 digital signature. Draw used to write a placeholder widget there (a 0x0-sized rectangle on the first
-page, at position 0x0). This is valid, but it&#8217;s not close to real-world signatures, where signing
-has a visual effect as well.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_results_so_far">Results so far</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Here is how this works in practice:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://youtu.be/tPAOXr2UH0M">
-<img src="https://lh3.googleusercontent.com/IDjXX1VwAvlFi1ug9pUSYLwakUyPn2YiMachx7DdiG5Jershph28sFOCWgSuQ6WbfgGdpMcnngjipnetuCBXiOMUR-OqTPO4rlikLXFJtc1WEtQoczPmQDLIXTpPcQD__0WI0T87Cw=w640" alt="https://lh3.googleusercontent.com/IDjXX1VwAvlFi1ug9pUSYLwakUyPn2YiMachx7DdiG5Jershph28sFOCWgSuQ6WbfgGdpMcnngjipnetuCBXiOMUR-OqTPO4rlikLXFJtc1WEtQoczPmQDLIXTpPcQD__0WI0T87Cw=w640" />
-</a>
-</div>
-<div class="title">Figure 1. Demo of adding a visible signature to an existing PDF file in Draw</div>
-</div>
-<div class="paragraph"><p>You can see how the 2 added signatures are visible and Adobe Acrobat confirms they are valid, too.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_how_is_this_implemented">How is this implemented?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
-<div class="ulist"><ul>
+page, at position 0x0). This is valid, but it's not close to real-world signatures, where signing
+has a visual effect as well.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>Here is how this works in practice:</p>
+<p><a href="https://youtu.be/tPAOXr2UH0M"><figure><img src="https://lh3.googleusercontent.com/IDjXX1VwAvlFi1ug9pUSYLwakUyPn2YiMachx7DdiG5Jershph28sFOCWgSuQ6WbfgGdpMcnngjipnetuCBXiOMUR-OqTPO4rlikLXFJtc1WEtQoczPmQDLIXTpPcQD__0WI0T87Cw=w640"><figcaption>Demo of adding a visible signature to an existing PDF file in Draw</figcaption></figure></a></p>
+<p>You can see how the 2 added signatures are visible and Adobe Acrobat confirms they are valid, too.</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<ul>
 <li>
-<p>
-Signature lines were already working in Writer and Calc, this effort brings them to Draw,
-  improving consistency.
-</p>
+<p>Signature lines were already working in Writer and Calc, this effort brings them to Draw,
+  improving consistency.</p>
 </li>
 <li>
-<p>
-Signing existing PDFs were already possible, this allows adding a visible signature with the
+<p>Signing existing PDFs were already possible, this allows adding a visible signature with the
   correct markup. This is important for automated processing of PDFs, maybe even helps
-  accessibility. (I think DocuSign doesn&#8217;t get this right currently.)
-</p>
+  accessibility. (I think DocuSign doesn't get this right currently.)</p>
 </li>
 <li>
-<p>
-This uses the existing "export selected shape to PDF" code to produce that object, so it&#8217;s not a
-  bitmap, but a scalable format. (As I know, DocuSign doesn&#8217;t do this, either.)
-</p>
+<p>This uses the existing "export selected shape to PDF" code to produce that object, so it's not a
+  bitmap, but a scalable format. (As I know, DocuSign doesn't do this, either.)</p>
 </li>
 <li>
-<p>
-If you didn&#8217;t get the signature rectangle right for the first time, you can still move and resize
-  it before the actual signing happens (Acrobat doesn&#8217;t support this currently, I believe.)
-</p>
+<p>If you didn't get the signature rectangle right for the first time, you can still move and resize
+  it before the actual signing happens (Acrobat doesn't support this currently, I believe.)</p>
 </li>
 <li>
-<p>
-The generated object is locale-aware when it comes to the actual signature string and date format.
-</p>
+<p>The generated object is locale-aware when it comes to the actual signature string and date format.</p>
 </li>
 <li>
-<p>
-The feature works for multiple signatures and multiple pages as well.
-</p>
+<p>The feature works for multiple signatures and multiple pages as well.</p>
 </li>
-</ul></div>
-<div class="ulist"><ul>
-<li>
-<p>
-The final step was
-  <a href="https://git.libreoffice.org/core/commit/9b7a890fd59744459692d7f66402c6bdd25acec4">this commit</a>,
-  with much more grounding before that one.
-</p>
-</li>
-<li>
-<p>
-Note that the signing is a two step process: first you draw the signature rectangle and optionally
-  finalize its position / size, and only then you use the <em>Finish Signing</em> button on the infobar to
-trigger the actual signing:
-</p>
-</li>
-</ul></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/TMPrD20O0PvPLB7Uru_mmxfeQTaWhJwNQ80jgLj23TWLNqkm44Ww8F9Azce0sEN1TzmjmmVW7MvHZTwtR6Us2H7qpzOSC07CQ0p_myEsM1WRQOToAEus0vsgpTh1yeD65YemFQvv_A=w640" alt="https://lh3.googleusercontent.com/TMPrD20O0PvPLB7Uru_mmxfeQTaWhJwNQ80jgLj23TWLNqkm44Ww8F9Azce0sEN1TzmjmmVW7MvHZTwtR6Us2H7qpzOSC07CQ0p_myEsM1WRQOToAEus0vsgpTh1yeD65YemFQvv_A=w640" />
-</div>
-<div class="title">Figure 2. After drawing a signature rectangle, before finishing the signing.</div>
-</div>
-<div class="paragraph"><p>If you use a HW-based certificate, this second step will ask for your certificate PIN.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_want_to_start_using_this">Want to start using this?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
-<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
-is a major contributor to LibreOffice and all of this work will be available in TDF&#8217;s next release
-too (7.1).</p></div>
-</div>
-</div>
+</ul>
+<!-- commit prefix: 'sd signature line:' -->
 
+<ul>
+<li>
+<p>The final step was
+  <a href="https://git.libreoffice.org/core/commit/9b7a890fd59744459692d7f66402c6bdd25acec4">this commit</a>,
+  with much more grounding before that one.</p>
+</li>
+<li>
+<p>Note that the signing is a two step process: first you draw the signature rectangle and optionally
+  finalize its position / size, and only then you use the 'Finish Signing' button on the infobar to
+  trigger the actual signing:</p>
+</li>
+</ul>
+<p>
+<figure><img src="https://lh3.googleusercontent.com/TMPrD20O0PvPLB7Uru_mmxfeQTaWhJwNQ80jgLj23TWLNqkm44Ww8F9Azce0sEN1TzmjmmVW7MvHZTwtR6Us2H7qpzOSC07CQ0p_myEsM1WRQOToAEus0vsgpTh1yeD65YemFQvv_A=w640"><figcaption>After drawing a signature rectangle, before finishing the signing.</figcaption>
+</figure>
+</p>
+<p>If you use a HW-based certificate, this second step will ask for your certificate PIN.</p>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a snapshot / demo of Collabora Office and try it out yourself right now: <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable
+snapshot</a>.  Collabora is a major
+contributor to LibreOffice and all of this work will be available in TDF's next release too (7.1).</p>
   </div>
 </article>
 <hr />
@@ -191,110 +146,68 @@ too (7.1).</p></div>
     <p>Estimated read time: 3 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Writer now has support for anchoring shapes relative to the bottom of the page content frame.</p></div>
-<div class="paragraph"><p>First, thanks to our partner <a href="https://www.suse.com/">SUSE</a> for working with
-<a href="https://www.collaboraoffice.com/">Collabora</a> to make this possible.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_motivation">Motivation</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Users sometimes want to specify the vertical position of their shapes in text documents in a way
+    <p>Writer now has support for anchoring shapes relative to the bottom of the page content frame.</p>
+<p>First, thanks to our partner <a href="https://www.suse.com/">SUSE</a> for working with
+<a href="https://www.collaboraoffice.com/">Collabora</a> to make this possible.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>Users sometimes want to specify the vertical position of their shapes in text documents in a way
 that is relative from the bottom of the page content area. Also, this improves consistency,
-specifying a position that is relative from the top of the page content area is already possible.</p></div>
-<div class="paragraph"><p>Alternatively, it is possible to have the same calculated position when positioning from the top of
+specifying a position that is relative from the top of the page content area is already possible.</p>
+<p>Alternatively, it is possible to have the same calculated position when positioning from the top of
 the page content area. The downside of this approach is that the position changes when the page
 height changes. So if the user intention is to position a shape 2 cm above the bottom of the page
 content area and the page height changes, the shape has to be manually re-positioned. This manual
-re-positioning is not needed with the new page-content-bottom vertical relation.</p></div>
-<div class="paragraph"><p>For example, if a shape has a height of 10 cm and a 2 cm spacing is wanted between the bottom of the
+re-positioning is not needed with the new page-content-bottom vertical relation.</p>
+<p>For example, if a shape has a height of 10 cm and a 2 cm spacing is wanted between the bottom of the
 shape and the bottom of the page content area, the position can be set to -12 cm, and then the 2 cm
-spacing will be maintained, even after the page height changes.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_results_so_far">Results so far</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Here is how this works in practice:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://youtu.be/X49IbS97axs">
-<img src="https://lh3.googleusercontent.com/3r0eHqOn48OkUPHLGlhWTjPwwkWYWouF3LtMtVTmRITJ9oGHuRW1-COvswp71G7-ySMvZ-fsP8-0R5ELVNmiaN2FCxtFLfnun4OFYmFvmZk-W1UBw4EhJ4P8RAgPHhQtdcmjiCe9Eg=w640" alt="https://lh3.googleusercontent.com/3r0eHqOn48OkUPHLGlhWTjPwwkWYWouF3LtMtVTmRITJ9oGHuRW1-COvswp71G7-ySMvZ-fsP8-0R5ELVNmiaN2FCxtFLfnun4OFYmFvmZk-W1UBw4EhJ4P8RAgPHhQtdcmjiCe9Eg=w640" />
-</a>
-</div>
-<div class="title">Figure 1. Demo of a stable vertical position (relative to the bottom of the page content frame), during a page height change</div>
-</div>
-<div class="paragraph"><p>You can see how the distance of the shape from the bottom is 2 cm, even if the page height changes.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_how_is_this_implemented">How is this implemented?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
-<div class="ulist"><ul>
+spacing will be maintained, even after the page height changes.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>Here is how this works in practice:</p>
+<p><a href="https://youtu.be/X49IbS97axs"><figure><img src="https://lh3.googleusercontent.com/3r0eHqOn48OkUPHLGlhWTjPwwkWYWouF3LtMtVTmRITJ9oGHuRW1-COvswp71G7-ySMvZ-fsP8-0R5ELVNmiaN2FCxtFLfnun4OFYmFvmZk-W1UBw4EhJ4P8RAgPHhQtdcmjiCe9Eg=w640"><figcaption>Demo of a stable vertical position (relative to the bottom of the page content frame), during a page height change</figcaption></figure></a></p>
+<p>You can see how the distance of the shape from the bottom is 2 cm, even if the page height changes.</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<!-- commit prefix: 'sw from-bottom relative orientation:' -->
+
+<ul>
 <li>
-<p>
-the UNO API now supports a new <code>PAGE_PRINT_AREA_BOTTOM</code> relative orientation
-</p>
+<p>the UNO API now supports a new <code>PAGE_PRINT_AREA_BOTTOM</code> relative orientation</p>
 </li>
 <li>
-<p>
-the have the expected layout, <code>SwToContentAnchoredObjectPosition::CalcPosition()</code> now considers
-  this from-bottom anchoring when handling the vertical relative orientation
-</p>
+<p>the have the expected layout, <code>SwToContentAnchoredObjectPosition::CalcPosition()</code> now considers
+  this from-bottom anchoring when handling the vertical relative orientation</p>
 </li>
 <li>
-<p>
-the DOCX format already had a markup for this:
-</p>
+<p>the DOCX format already had a markup for this:</p>
 </li>
-</ul></div>
-<div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight
-by Lorenzo Bettini
-http://www.lorenzobettini.it
-http://www.gnu.org/software/src-highlite -->
-<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">&lt;wp:positionV</span></span> <span style="color: #009900">relativeFrom</span><span style="color: #990000">=</span><span style="color: #FF0000">"bottomMargin"</span><span style="font-weight: bold"><span style="color: #0000FF">&gt;</span></span>
-  <span style="font-weight: bold"><span style="color: #0000FF">&lt;wp:posOffset&gt;</span></span>...<span style="font-weight: bold"><span style="color: #0000FF">&lt;/wp:posOffset&gt;</span></span>
-<span style="font-weight: bold"><span style="color: #0000FF">&lt;/wp:positionV&gt;</span></span></tt></pre></div></div>
-<div class="paragraph"><p>now the import/export code maps this markup to the new feature.</p></div>
-<div class="ulist"><ul>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;wp:positionV</span><span class="w"> </span><span class="na">relativeFrom=</span><span class="s">&quot;bottomMargin&quot;</span><span class="nt">&gt;</span>
+<span class="w">  </span><span class="nt">&lt;wp:posOffset&gt;</span>...<span class="nt">&lt;/wp:posOffset&gt;</span>
+<span class="nt">&lt;/wp:positionV&gt;</span>
+</code></pre></div>
+
+<p>now the import/export code maps this markup to the new feature.</p>
+<ul>
 <li>
-<p>
-The UI allows setting a new "Page text area bottom" frame position. It turns out that the UI is
+<p>The UI allows setting a new "Page text area bottom" frame position. It turns out that the UI is
   quite nice here, it tries to prevent you from setting positions which would be outside the limits
   of the current page. This logic in <code>SwFEShell::CalcBoundRect()</code> now handles the new relative
-  orientation.
-</p>
+  orientation.</p>
 </li>
 <li>
-<p>
-The ODF filter now has a markup to represent the new vertical relation:
-</p>
+<p>The ODF filter now has a markup to represent the new vertical relation:</p>
 </li>
-</ul></div>
-<div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight
-by Lorenzo Bettini
-http://www.lorenzobettini.it
-http://www.gnu.org/software/src-highlite -->
-<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">&lt;style:graphic-properties</span></span> ... <span style="color: #009900">loext:vertical-rel</span><span style="color: #990000">=</span><span style="color: #FF0000">"page-content-bottom"</span> ...<span style="font-weight: bold"><span style="color: #0000FF">/&gt;</span></span></tt></pre></div></div>
-<div class="paragraph"><p>There is a <a href="https://issues.oasis-open.org/browse/OFFICE-4073">proposal</a> to promote this from our
-extension namespace to normal ODF (thanks to Regina for the help there!).</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_want_to_start_using_this">Want to start using this?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
-<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
-is a major contributor to LibreOffice and all of this work will be available in TDF&#8217;s next release
-too (7.1).</p></div>
-</div>
-</div>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;style:graphic-properties</span><span class="w"> </span><span class="err">...</span><span class="w"> </span><span class="na">loext:vertical-rel=</span><span class="s">&quot;page-content-bottom&quot;</span><span class="w"> </span><span class="err">...</span><span class="nt">/&gt;</span>
+</code></pre></div>
 
+<p>There is a <a href="https://issues.oasis-open.org/browse/OFFICE-4073">proposal</a> to promote this from our
+extension namespace to normal ODF (thanks to Regina for the help there!).</p>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
+<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
+is a major contributor to LibreOffice and all of this work will be available in TDF's next release
+too (7.1).</p>
   </div>
 </article>
 <hr />
@@ -309,66 +222,53 @@ too (7.1).</p></div>
     <p>Estimated read time: 2 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Draw/Impress now has
+    <p>Draw/Impress now has
 <a href="https://git.libreoffice.org/core/commit/4830592b780833cf5eee2aef30bc9c5d444dfb24">support</a> for
 exporting larger page sizes into PDF. The previous limit was 200 " (508 cm), and now practically
-there is no such limit.</p></div>
-<div class="paragraph"><p>First, thanks <a href="https://vector.com/">Vector</a> who made this work by
-<a href="https://www.collaboraoffice.com/">Collabora</a> possible.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_motivation">Motivation</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>You can use Draw with a document which has a single page, which more or less acts as a canvas with
+there is no such limit.</p>
+<p>First, thanks <a href="https://vector.com/">Vector</a> who made this work by
+<a href="https://www.collaboraoffice.com/">Collabora</a> possible.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>You can use Draw with a document which has a single page, which more or less acts as a canvas with
 unlimited size to handle vector graphics. The current limit of such a canvas in size is 600 x 600
-cm. (And that can be increased further if there is demand without too large problems.)</p></div>
-<div class="paragraph"><p>Exporting such a document to PDF is a different matter, though. The specification (up to, and
+cm. (And that can be increased further if there is demand without too large problems.)</p>
+<p>Exporting such a document to PDF is a different matter, though. The specification (up to, and
 including version 1.5) says that the unit to specify sizes is points, and the maximum allowed value
 is 14 400. This means that there is no markup to describe that your page is 600 cm wide. PDF 1.6
 (and newer versions) introduce a <code>UserUnit</code> markup to allow unlimited page size, and now Draw (and
-other apps) can use this to describe the increased size.</p></div>
-<div class="paragraph"><p>Another use-case can be a large sheet in Calc, exporting it to a single PDF page, so you can pan
+other apps) can use this to describe the increased size.</p>
+<p>Another use-case can be a large sheet in Calc, exporting it to a single PDF page, so you can pan
 around easily on a touch device. If you have enough rows, then getting rid of this limit is helpful
-to deal with the large page height.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_results_so_far">Results so far</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Here is how a large page looks like now in Draw and then in Adobe Reader:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://youtu.be/HtHq23MbYDs">
-<img src="https://lh3.googleusercontent.com/wfVdQklYbX9mpfNG0hk_A0-I495Nsu4r8Twokq_ZZR3Z0IondP33BDE_XjGFsNfucDJ9kVpDps_J_tcQATKhwJxAFeZn6hS1NN7i5BVlS9UBroUIGrJU1TiwqDB88k6HpMbnK9x9gQ=w640" alt="https://lh3.googleusercontent.com/wfVdQklYbX9mpfNG0hk_A0-I495Nsu4r8Twokq_ZZR3Z0IondP33BDE_XjGFsNfucDJ9kVpDps_J_tcQATKhwJxAFeZn6hS1NN7i5BVlS9UBroUIGrJU1TiwqDB88k6HpMbnK9x9gQ=w640" />
-</a>
-</div>
-<div class="title">Figure 1. Export of 6m-wide.odg to PDF</div>
-</div>
-<div class="paragraph"><p>You can see how both Draw and Adobe Reader show that the page width is larger than 200 ".</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_how_is_this_implemented">How is this implemented?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
-<div class="ulist"><ul>
+to deal with the large page height.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>Here is how a large page looks like now in Draw and then in Adobe Reader:</p>
+<p><a href="https://youtu.be/HtHq23MbYDs"><figure><img src="https://lh3.googleusercontent.com/wfVdQklYbX9mpfNG0hk_A0-I495Nsu4r8Twokq_ZZR3Z0IondP33BDE_XjGFsNfucDJ9kVpDps_J_tcQATKhwJxAFeZn6hS1NN7i5BVlS9UBroUIGrJU1TiwqDB88k6HpMbnK9x9gQ=w640"><figcaption>Export of 6m-wide.odg to PDF</figcaption></figure></a></p>
+<p>You can see how both Draw and Adobe Reader show that the page width is larger than 200 ".</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<ul>
 <li>
-<p>
-The PDF export already converts from an internal unit (e.g. Draw uses 100th millimeters, Writer
-  uses twips) to PDF&#8217;s unit
-</p>
+<p>The PDF export already converts from an internal unit (e.g. Draw uses 100th millimeters, Writer
+  uses twips) to PDF's unit</p>
 </li>
 <li>
-<p>
-The trick is that now PDF&#8217;s unit is no longer points all the time, but we can dynamically switch
-  to a larger unit as needed.
-</p>
+<p>The trick is that now PDF's unit is no longer points all the time, but we can dynamically switch
+  to a larger unit as needed.</p>
 </li>
-</ul></div>
-<div class="paragraph"><p>Here is how the PDF markup looks like for a 600 cm wide page:</p></div>
+</ul>
+<p>Here is how the PDF markup looks like for a 600 cm wide page:</p>
+<!-- This doesn't work: -->
+<!-- -->
+<!-- [source,pdf] -->
+<!-- ---- -->
+<!-- 1 0 obj -->
+<!-- <</Type/Page/Parent 4 0 R/Resources 11 0 R/MediaBox[0 0 8503.93700787402 396] -->
+<!-- /UserUnit 2/Group<</S/Transparency/CS/DeviceRGB/I true>>/Contents 2 0 R>> -->
+<!-- endobj -->
+<!-- ---- -->
+<!-- -->
+<!-- So use vim's `:TOhtml` instead, with `:set bg=` (don't assume dark bg) and `:let g:html_use_css = 0`: -->
+
 <div class="listingblock">
 <div class="content">
 <pre><code><font face="monospace"><font color="#ff00ff">1</font>&nbsp;<font color="#ff00ff">0</font>&nbsp;<font color="#2e8b57"><b>obj</b></font>
@@ -377,20 +277,13 @@ The trick is that now PDF&#8217;s unit is no longer points all the time, but we 
 <font color="#2e8b57"><b>endobj</b></font>
 </font></code></pre>
 </div></div>
-<div class="paragraph"><p>Notice how we still avoid values larger than 14 400, but now the UserUnit says that 1 unit means 2
-points.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_want_to_start_using_this">Want to start using this?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
-<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
-is a major contributor to LibreOffice and all of this work will be available in TDF&#8217;s next release
-too (7.0).</p></div>
-</div>
-</div>
 
+<p>Notice how we still avoid values larger than 14 400, but now the UserUnit says that 1 unit means 2
+points.</p>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a snapshot / demo of Collabora Office and try it out yourself right now: <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable
+snapshot</a>.  Collabora is a major
+contributor to LibreOffice and all of this work will be available in TDF's next release too (7.0).</p>
   </div>
 </article>
 <hr />
@@ -405,105 +298,67 @@ too (7.0).</p></div>
     <p>Estimated read time: 2 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>I already <a href="https://vmiklos.hu/blog/hackweek-2020.html">posted</a> about the start of padded numbering
-support in Writer, there the focus was to insert <em>0</em> characters to pad up the result to 2
-characters. Let&#8217;s see how that got extended in the recent past&#8230;</p></div>
-<div class="paragraph"><p>First, thanks Nicolas Christener who made this work by <a href="https://www.collaboraoffice.com/">Collabora</a>
-possible.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_motivation">Motivation</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Padded numbering is a style where you insert 0 characters in front of an otherwise normal (Arabic)
+    <p>I already <a href="https://vmiklos.hu/blog/hackweek-2020.html">posted</a> about the start of padded numbering support in
+Writer, there the focus was to insert '0' characters to pad up the result to 2 characters. Let's see
+how that got extended in the recent past...</p>
+<p>First, thanks Nicolas Christener who made this work by <a href="https://www.collaboraoffice.com/">Collabora</a>
+possible.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>Padded numbering is a style where you insert 0 characters in front of an otherwise normal (Arabic)
 numbering, making sure that the result always has at least N characters. Up to now, you had to
-number your content manually to have this effect, while Word supports this feature.</p></div>
-<div class="paragraph"><p>OOXML supports padding up to 2, 3, 4 and 5 characters. The news is now now it&#8217;s possible to not only
-pad up to 2 characters, but also to any number between 2 and 5.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_results_so_far">Results so far</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Here is how the current rendering of padded numbering looks like, with a custom prefix and suffix:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/JHqkVdHkLLkFV1Mrh5jR1FFqq8PvU3lmjuOrl6SwBnM-ygsbugL-FccMHIod9Uyj2-hAyADRX7VwozUHgzBTZTdo72FB_nuHzEH-iQngSl5ND0o6h1sZDTs1uv8H5cLNv0cHDgRv2A=w640" alt="https://lh3.googleusercontent.com/JHqkVdHkLLkFV1Mrh5jR1FFqq8PvU3lmjuOrl6SwBnM-ygsbugL-FccMHIod9Uyj2-hAyADRX7VwozUHgzBTZTdo72FB_nuHzEH-iQngSl5ND0o6h1sZDTs1uv8H5cLNv0cHDgRv2A=w640" />
-</div>
-<div class="title">Figure 1. numbering-padded4.docx, current rendering</div>
-</div>
-<div class="paragraph"><p>You can see how 0 is inserted before 999, but not before 1000 as this is the pad-to-4 case.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_how_is_this_implemented">How is this implemented?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
-<div class="ulist"><ul>
-<li>
+number your content manually to have this effect, while Word supports this feature.</p>
+<p>OOXML supports padding up to 2, 3, 4 and 5 characters. The news is now now it's possible to not only
+pad up to 2 characters, but also to any number between 2 and 5.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>Here is how the current rendering of padded numbering looks like, with a custom prefix and suffix:</p>
 <p>
-Padding to a custom number is not something that works in general, because both ODF and OOXML has
+<figure><img src="https://lh3.googleusercontent.com/JHqkVdHkLLkFV1Mrh5jR1FFqq8PvU3lmjuOrl6SwBnM-ygsbugL-FccMHIod9Uyj2-hAyADRX7VwozUHgzBTZTdo72FB_nuHzEH-iQngSl5ND0o6h1sZDTs1uv8H5cLNv0cHDgRv2A=w640"><figcaption>numbering-padded4.docx, current rendering</figcaption>
+</figure>
+</p>
+<p>You can see how 0 is inserted before 999, but not before 1000 as this is the pad-to-4 case.</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<ul>
+<li>
+<p>Padding to a custom number is not something that works in general, because both ODF and OOXML has
   a separate number format for each padding. So Writer supports the 4 cases Word supports, but (for
-  now) not more.
-</p>
+  now) not more.</p>
 </li>
 <li>
-<p>
-Padding to 3 or more is more complicated than pad to 2, because OOXML has different markups for
-  them.
-</p>
+<p>Padding to 3 or more is more complicated than pad to 2, because OOXML has different markups for
+  them.</p>
 </li>
-</ul></div>
-<div class="paragraph"><p>Here is how the pad-to-2 markup looks like:</p></div>
-<div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight
-by Lorenzo Bettini
-http://www.lorenzobettini.it
-http://www.gnu.org/software/src-highlite -->
-<pre><tt>      <span style="font-weight: bold"><span style="color: #0000FF">&lt;w:numFmt</span></span> <span style="color: #009900">w:val</span><span style="color: #990000">=</span><span style="color: #FF0000">"decimalZero"</span><span style="font-weight: bold"><span style="color: #0000FF">/&gt;</span></span></tt></pre></div></div>
-<div class="paragraph"><p>And here is how you define pad-to-3:</p></div>
-<div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight
-by Lorenzo Bettini
-http://www.lorenzobettini.it
-http://www.gnu.org/software/src-highlite -->
-<pre><tt>      <span style="font-weight: bold"><span style="color: #0000FF">&lt;mc:AlternateContent&gt;</span></span>
-        <span style="font-weight: bold"><span style="color: #0000FF">&lt;mc:Choice</span></span> <span style="color: #009900">Requires</span><span style="color: #990000">=</span><span style="color: #FF0000">"w14"</span><span style="font-weight: bold"><span style="color: #0000FF">&gt;</span></span>
-          <span style="font-weight: bold"><span style="color: #0000FF">&lt;w:numFmt</span></span> <span style="color: #009900">w:val</span><span style="color: #990000">=</span><span style="color: #FF0000">"custom"</span> <span style="color: #009900">w:format</span><span style="color: #990000">=</span><span style="color: #FF0000">"001, 002, 003, ..."</span><span style="font-weight: bold"><span style="color: #0000FF">/&gt;</span></span>
-        <span style="font-weight: bold"><span style="color: #0000FF">&lt;/mc:Choice&gt;</span></span>
-        <span style="font-weight: bold"><span style="color: #0000FF">&lt;mc:Fallback&gt;</span></span>
-          <span style="font-weight: bold"><span style="color: #0000FF">&lt;w:numFmt</span></span> <span style="color: #009900">w:val</span><span style="color: #990000">=</span><span style="color: #FF0000">"decimal"</span><span style="font-weight: bold"><span style="color: #0000FF">/&gt;</span></span>
-        <span style="font-weight: bold"><span style="color: #0000FF">&lt;/mc:Fallback&gt;</span></span>
-      <span style="font-weight: bold"><span style="color: #0000FF">&lt;/mc:AlternateContent&gt;</span></span></tt></pre></div></div>
-<div class="ulist"><ul>
-<li>
-<p>
-This required taking the <code>w14</code> branch when we hit such a conditional, we used to read the fallback
-  branch previously.
-</p>
-</li>
-<li>
-<p>
-This required mapping the data of the <code>&lt;w:numFmt&gt;</code> XML element not to an enumeration value, but to
-  a pair of objects: the numbering format&#8217;s value and format.
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>The rest was reasonably straightforward, since the actual padding implementation just had to be generalized.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_want_to_start_using_this">Want to start using this?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
-<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
-is a major contributor to LibreOffice and all of this work will be available in TDF&#8217;s next release
-too (7.0).</p></div>
-</div>
-</div>
+</ul>
+<p>Here is how the pad-to-2 markup looks like:</p>
+<div class="highlight"><pre><span></span><code><span class="w">      </span><span class="nt">&lt;w:numFmt</span><span class="w"> </span><span class="na">w:val=</span><span class="s">&quot;decimalZero&quot;</span><span class="nt">/&gt;</span>
+</code></pre></div>
 
+<p>And here is how you define pad-to-3:</p>
+<div class="highlight"><pre><span></span><code><span class="w">      </span><span class="nt">&lt;mc:AlternateContent&gt;</span>
+<span class="w">        </span><span class="nt">&lt;mc:Choice</span><span class="w"> </span><span class="na">Requires=</span><span class="s">&quot;w14&quot;</span><span class="nt">&gt;</span>
+<span class="w">          </span><span class="nt">&lt;w:numFmt</span><span class="w"> </span><span class="na">w:val=</span><span class="s">&quot;custom&quot;</span><span class="w"> </span><span class="na">w:format=</span><span class="s">&quot;001, 002, 003, ...&quot;</span><span class="nt">/&gt;</span>
+<span class="w">        </span><span class="nt">&lt;/mc:Choice&gt;</span>
+<span class="w">        </span><span class="nt">&lt;mc:Fallback&gt;</span>
+<span class="w">          </span><span class="nt">&lt;w:numFmt</span><span class="w"> </span><span class="na">w:val=</span><span class="s">&quot;decimal&quot;</span><span class="nt">/&gt;</span>
+<span class="w">        </span><span class="nt">&lt;/mc:Fallback&gt;</span>
+<span class="w">      </span><span class="nt">&lt;/mc:AlternateContent&gt;</span>
+</code></pre></div>
+
+<ul>
+<li>
+<p>This required taking the <code>w14</code> branch when we hit such a conditional, we used to read the fallback branch previously.</p>
+</li>
+<li>
+<p>This required mapping the data of the <code>&lt;w:numFmt&gt;</code> XML element not to an enumeration value, but to a pair of objects: the numbering format's value and format.</p>
+</li>
+</ul>
+<p>The rest was reasonably straightforward, since the actual padding implementation just had to be
+generalized.</p>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
+<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
+is a major contributor to LibreOffice and all of this work will be available in TDF's next release
+too (7.0).</p>
   </div>
 </article>
 <hr />
@@ -518,143 +373,83 @@ too (7.0).</p></div>
     <p>Estimated read time: 3 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>As mentioned in a <a href="https://vmiklos.hu/blog/hackweek-2016.html">previous</a> such report, a hack week is when
+    <p>As mentioned in a <a href="https://vmiklos.hu/blog/hackweek-2016.html">previous</a> such report, a hack week is when
 we are allowed to hack on anything we want in LibreOffice for a few days at
 <a href="https://www.collaboraoffice.com/">Collabora</a>. I used this time to implement core support for padded
-numbering in Writer.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_motivation">Motivation</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Padded numbering is a style where you insert 0 characters in front of an otherwise normal (Arabic)
+numbering in Writer.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>Padded numbering is a style where you insert 0 characters in front of an otherwise normal (Arabic)
 numbering, making sure that the result always has at least N characters. Up to now, you had to
-number your content manually to have this effect, while Word supports this feature.</p></div>
-<div class="paragraph"><p>OOXML supports padding up to 2, 3, 4 and 5 characters. Padding up to 2 characters is the older
-feature, supported in DOC and RTF as well, so I focused on that piece.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_results_so_far">Results so far</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Here is how the current, the baseline and the reference rendering of padded numbering looks like:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/n-XvNw0xPkBK_u9eqVraa7meGxYPX8dpKtfmHkN54y60x5HvUhQBouGEnfLX3XjzQFDjG7oWhCGVvFLnINneGZwDIjB8FW1hgwYSEpWrt3kniLGeKNFAfpa_Y9NGHNadj50ecy3FVw=s300-p-k" alt="https://lh3.googleusercontent.com/n-XvNw0xPkBK_u9eqVraa7meGxYPX8dpKtfmHkN54y60x5HvUhQBouGEnfLX3XjzQFDjG7oWhCGVvFLnINneGZwDIjB8FW1hgwYSEpWrt3kniLGeKNFAfpa_Y9NGHNadj50ecy3FVw=s300-p-k" />
-</div>
-<div class="title">Figure 1. numbering-padded2.docx, current</div>
-</div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/BgSZhU4WNkwTvOejqbfaKSiEQUudnDCUeVaQ62xPETwzhP0-FUPsBZMrUrgwhfi3fSou3YIQ_Yb0tuDzJmeIxHk2LhOpS9ENvxwLCr3-aCn4rIS0e9vYOh2__cHAvP82-MUJzQS-Zg=s300-p-k" alt="https://lh3.googleusercontent.com/BgSZhU4WNkwTvOejqbfaKSiEQUudnDCUeVaQ62xPETwzhP0-FUPsBZMrUrgwhfi3fSou3YIQ_Yb0tuDzJmeIxHk2LhOpS9ENvxwLCr3-aCn4rIS0e9vYOh2__cHAvP82-MUJzQS-Zg=s300-p-k" />
-</div>
-<div class="title">Figure 2. numbering-padded2.docx, baseline</div>
-</div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/TXI-klcS5xzPUX0SaV_iqhweMcUX0aN1rc7rwwAbKdulmPYZ6wcYqcQTO94aHGZl_p4FuVSt_drCI1blKRHLupNjC6j08GjdppbkJ8o72xNmjpV_X2_LcPUgZmOfGBeUJRhDKptxqg=s300-p-k" alt="https://lh3.googleusercontent.com/TXI-klcS5xzPUX0SaV_iqhweMcUX0aN1rc7rwwAbKdulmPYZ6wcYqcQTO94aHGZl_p4FuVSt_drCI1blKRHLupNjC6j08GjdppbkJ8o72xNmjpV_X2_LcPUgZmOfGBeUJRhDKptxqg=s300-p-k" />
-</div>
-<div class="title">Figure 3. numbering-padded2.docx, reference</div>
-</div>
-<div class="paragraph"><p>You can see how 0 is inserted before 1..9, but not before 10.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_how_is_this_implemented">How is this implemented?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
-<div class="ulist"><ul>
-<li>
+number your content manually to have this effect, while Word supports this feature.</p>
+<p>OOXML supports padding up to 2, 3, 4 and 5 characters. Padding up to 2 characters is the older
+feature, supported in DOC and RTF as well, so I focused on that piece.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>Here is how the current, the baseline and the reference rendering of padded numbering looks like:</p>
 <p>
-<a href="https://git.libreoffice.org/core/commit/6b80bd446de4bf19df3a9b124881e1fe12402ca8">sw padded
-  numbering: add doc model and UNO API</a> introduced <code>ARABIC_ZERO</code> externally and
-  <code>SVX_NUM_ARABIC_ZERO</code> internally
+<figure><img src="https://lh3.googleusercontent.com/n-XvNw0xPkBK_u9eqVraa7meGxYPX8dpKtfmHkN54y60x5HvUhQBouGEnfLX3XjzQFDjG7oWhCGVvFLnINneGZwDIjB8FW1hgwYSEpWrt3kniLGeKNFAfpa_Y9NGHNadj50ecy3FVw=s300-p-k"><figcaption>numbering-padded2.docx, current</figcaption>
+</figure>
 </p>
+<p>
+<figure><img src="https://lh3.googleusercontent.com/BgSZhU4WNkwTvOejqbfaKSiEQUudnDCUeVaQ62xPETwzhP0-FUPsBZMrUrgwhfi3fSou3YIQ_Yb0tuDzJmeIxHk2LhOpS9ENvxwLCr3-aCn4rIS0e9vYOh2__cHAvP82-MUJzQS-Zg=s300-p-k"><figcaption>numbering-padded2.docx, baseline</figcaption>
+</figure>
+</p>
+<p>
+<figure><img src="https://lh3.googleusercontent.com/TXI-klcS5xzPUX0SaV_iqhweMcUX0aN1rc7rwwAbKdulmPYZ6wcYqcQTO94aHGZl_p4FuVSt_drCI1blKRHLupNjC6j08GjdppbkJ8o72xNmjpV_X2_LcPUgZmOfGBeUJRhDKptxqg=s300-p-k"><figcaption>numbering-padded2.docx, reference</figcaption>
+</figure>
+</p>
+<p>You can see how 0 is inserted before 1..9, but not before 10.</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<ul>
+<li>
+<p><a href="https://git.libreoffice.org/core/commit/6b80bd446de4bf19df3a9b124881e1fe12402ca8">sw padded numbering: add doc model and UNO API</a> introduced <code>ARABIC_ZERO</code> externally and
+  <code>SVX_NUM_ARABIC_ZERO</code> internally</p>
 </li>
 <li>
-<p>
-<a href="https://git.libreoffice.org/core/commit/642b7706101a991efc7e312f59dece640d8bfb60">sw padded
-  numbering: add layout</a> implements the actual padding in a new <code>lcl_formatArabicZero()</code> function
-</p>
+<p><a href="https://git.libreoffice.org/core/commit/642b7706101a991efc7e312f59dece640d8bfb60">sw padded numbering: add layout</a> implements the actual padding in a new <code>lcl_formatArabicZero()</code> function</p>
 </li>
 <li>
-<p>
-<a href="https://git.libreoffice.org/core/commit/7a8450c3ecf1a8000cb37981c981fdd55d196df4">sw padded
-  numbering: add ODF filter</a> decides how this handled for ODF import/export; the spec needs no
-  extension in this case
-</p>
+<p><a href="https://git.libreoffice.org/core/commit/7a8450c3ecf1a8000cb37981c981fdd55d196df4">sw padded numbering: add ODF filter</a> decides how this handled for ODF import/export; the spec needs no
+  extension in this case</p>
 </li>
 <li>
-<p>
-<a href="https://git.libreoffice.org/core/commit/5435ea2afc5da5633a440f2f06d79265bcbb040c">sw padded
-  numbering: add DOCX filter</a> implements OOXML paragraph numbering
-</p>
+<p><a href="https://git.libreoffice.org/core/commit/5435ea2afc5da5633a440f2f06d79265bcbb040c">sw padded numbering: add DOCX filter</a> implements OOXML paragraph numbering</p>
 </li>
 <li>
-<p>
-<a href="https://git.libreoffice.org/core/commit/a8a5fc175a8af2bf3750497d7ebe2c8ea9176981">sw padded
-  numbering: add DOC filter</a> implements [MS-DOC] paragraph numbering
-</p>
+<p><a href="https://git.libreoffice.org/core/commit/a8a5fc175a8af2bf3750497d7ebe2c8ea9176981">sw padded numbering: add DOC filter</a> implements [MS-DOC] paragraph numbering</p>
 </li>
 <li>
-<p>
-<a href="https://git.libreoffice.org/core/commit/dc05428405fb96f28b2d7c7bcfa9033f3f5248a3">sw padded
-  numbering: add RTF export</a> doesn&#8217;t touch RTF import, which worked out of the box, due to code
-  sharing with DOCX import
-</p>
+<p><a href="https://git.libreoffice.org/core/commit/dc05428405fb96f28b2d7c7bcfa9033f3f5248a3">sw padded numbering: add RTF export</a> doesn't touch RTF import, which worked out of the box, due to code
+  sharing with DOCX import</p>
 </li>
-</ul></div>
-<div class="paragraph"><p>Then I found that footnote numbering needs explicit handling, so added support for padding in that
-case as well:</p></div>
-<div class="ulist"><ul>
+</ul>
+<p>Then I found that footnote numbering needs explicit handling, so added support for padding in that
+case as well:</p>
+<ul>
 <li>
-<p>
-<a href="https://git.libreoffice.org/core/commit/3ea32f2b6cbe515353218bc1f3d5746ca66f6a5a">sw padded
-  numbering: add DOCX footnote export</a> reuses the same markup, just in a different context
-</p>
+<p><a href="https://git.libreoffice.org/core/commit/3ea32f2b6cbe515353218bc1f3d5746ca66f6a5a">sw padded numbering: add DOCX footnote export</a> reuses the same markup, just in a different context</p>
 </li>
 <li>
-<p>
-<a href="https://git.libreoffice.org/core/commit/5c7d0c5bafd244f1bfb3930e0229f1f3f2371c82">sw padded
-  numbering: add DOC footnote filter</a> fixed custom number formatting for DOC footnote export in general
-</p>
+<p><a href="https://git.libreoffice.org/core/commit/5c7d0c5bafd244f1bfb3930e0229f1f3f2371c82">sw padded numbering: add DOC footnote filter</a> fixed custom number formatting for DOC footnote export in general</p>
 </li>
-</ul></div>
-<div class="paragraph"><p>Finally I had a little bit of remaining time, so I extended support for the recently added Chicago numbering:</p></div>
-<div class="ulist"><ul>
+</ul>
+<p>Finally I had a little bit of remaining time, so I extended support for the recently added Chicago numbering:</p>
+<ul>
 <li>
-<p>
-<a href="https://git.libreoffice.org/core/commit/ddbad5612e4322665bc70f4a026e5b052bcaf344">sw chicago
-  numbering: add DOCX footnote export</a> builds on top of the existing paragraph numbering support
-</p>
+<p><a href="https://git.libreoffice.org/core/commit/ddbad5612e4322665bc70f4a026e5b052bcaf344">sw chicago numbering: add DOCX footnote export</a> builds on top of the existing paragraph numbering support</p>
 </li>
 <li>
-<p>
-<a href="https://git.libreoffice.org/core/commit/9a1dd2e242794b4f26d207efc80a2f5bc088ab7c">sw chicago
-  numbering: add DOC footnote export</a> only touches footnotes, as this type is not supported for paragraphs
-</p>
+<p><a href="https://git.libreoffice.org/core/commit/9a1dd2e242794b4f26d207efc80a2f5bc088ab7c">sw chicago numbering: add DOC footnote export</a> only touches footnotes, as this type is not supported for paragraphs</p>
 </li>
 <li>
-<p>
-<a href="https://git.libreoffice.org/core/commit/4ba09be7e260ce2a79a23465db7b2837422cde30">sw chicago
-  numbering: add RTF footnote export</a> fixed custom number formatting for RTF footnote export in general
-</p>
+<p><a href="https://git.libreoffice.org/core/commit/4ba09be7e260ce2a79a23465db7b2837422cde30">sw chicago numbering: add RTF footnote export</a> fixed custom number formatting for RTF footnote export in general</p>
 </li>
-</ul></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_future_work">Future work</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Padding up to 3, 4 and 5 characters would be possible to do, but it&#8217;s DOCX-only, and uses a
-different markup, planned to be done later.</p></div>
-<div class="paragraph"><p>All this is available in master (towards LibreOffice 7.0), so you can grab a
-<a href="http://dev-builds.libreoffice.org/daily/master/">daily build</a> and try it out right now. :-)</p></div>
-</div>
-</div>
-
+</ul>
+<h2 id="future-work">Future work<a class="headerlink" href="#future-work" title="Permanent link">&para;</a></h2>
+<p>Padding up to 3, 4 and 5 characters would be possible to do, but it's DOCX-only, and uses a
+different markup, planned to be done later.</p>
+<p>All this is available in master (towards LibreOffice 7.0), so you can grab a
+<a href="http://dev-builds.libreoffice.org/daily/master/">daily build</a> and try it out right now. :-)</p>
   </div>
 </article>
 <hr />
@@ -669,50 +464,33 @@ different markup, planned to be done later.</p></div>
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div class="sect1">
-<h2 id="_the_problem">The problem</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Last year I <a href="https://vmiklos.hu/blog/sd-semi-transparent-text.html">posted</a> about work to have
+    <h2 id="the-problem">The problem<a class="headerlink" href="#the-problem" title="Permanent link">&para;</a></h2>
+<p>Last year I <a href="https://vmiklos.hu/blog/sd-semi-transparent-text.html">posted</a> about work to have
 semi-transparent rendering of not only shape fill and shape borders, but also shape text in Draw.
 Now the same semi-transparent text feature is available in Writer as well. This improves
 compatibility with Word, which supports the same feature in its DOCX format. You can access the new
-option in the Format &#8594; Character dialog.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_result">Result</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Here is how the new, old and reference rendering looks like:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/oifzSVcdmKhomkQQKy4CNnPmamHtoo9CwRsbg9_ekbeK9Ov_4dFrzrJrYmDLHZNm-IvsoYNy8YfSs5kp4yEA42jybRO-8P-YKI8fYRu5ColRbzFHQBotP4MvkjanZG7JX9vP8Mcnnw=w640" alt="https://lh3.googleusercontent.com/oifzSVcdmKhomkQQKy4CNnPmamHtoo9CwRsbg9_ekbeK9Ov_4dFrzrJrYmDLHZNm-IvsoYNy8YfSs5kp4yEA42jybRO-8P-YKI8fYRu5ColRbzFHQBotP4MvkjanZG7JX9vP8Mcnnw=w640" />
-</div>
-<div class="title">Figure 1. Semi-transparent text in Writer, new rendering</div>
-</div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/RxtyxxIdrW14TtN30cf37e7RNHwnQpxlX-zhjhpWrggjStEERXvUnH7eDv8acM_8DcySNpnvpz5yWdwO12_cmQ6ZyCo4-fpIOdd3x9Q8SAXxAwuyMhfmjzhvS9VDBps8tQX-xB70RA=w640" alt="https://lh3.googleusercontent.com/RxtyxxIdrW14TtN30cf37e7RNHwnQpxlX-zhjhpWrggjStEERXvUnH7eDv8acM_8DcySNpnvpz5yWdwO12_cmQ6ZyCo4-fpIOdd3x9Q8SAXxAwuyMhfmjzhvS9VDBps8tQX-xB70RA=w640" />
-</div>
-<div class="title">Figure 2. Semi-transparent text in Writer, old rendering</div>
-</div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/6rkCyXnzfiVN96D1h8PiKSIva1ydRFQXzUbXbbLC-9plXOUJnMRHZT2ba4eKt7W1wqfL3vscVgE1-QB5ztbp2uqSmguOALV8wyZDnCF4LPlyHSbVEm5atwZvf29w3PzRmjy11aQahA=w640" alt="https://lh3.googleusercontent.com/6rkCyXnzfiVN96D1h8PiKSIva1ydRFQXzUbXbbLC-9plXOUJnMRHZT2ba4eKt7W1wqfL3vscVgE1-QB5ztbp2uqSmguOALV8wyZDnCF4LPlyHSbVEm5atwZvf29w3PzRmjy11aQahA=w640" />
-</div>
-<div class="title">Figure 3. Semi-transparent text in Writer, reference rendering</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_want_to_start_using_this">Want to start using this?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
-<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
-is a major contributor to LibreOffice and all of this work will be available in TDF&#8217;s next release
-too (7.0).</p></div>
-</div>
-</div>
+option in the Format -&gt; Character dialog.</p>
+<h2 id="result">Result<a class="headerlink" href="#result" title="Permanent link">&para;</a></h2>
+<p>Here is how the new, old and reference rendering looks like:</p>
+<p>
+<figure><img src="https://lh3.googleusercontent.com/oifzSVcdmKhomkQQKy4CNnPmamHtoo9CwRsbg9_ekbeK9Ov_4dFrzrJrYmDLHZNm-IvsoYNy8YfSs5kp4yEA42jybRO-8P-YKI8fYRu5ColRbzFHQBotP4MvkjanZG7JX9vP8Mcnnw=w640"><figcaption>Semi-transparent text in Writer, new rendering</figcaption>
+</figure>
+</p>
+<p>
+<figure><img src="https://lh3.googleusercontent.com/RxtyxxIdrW14TtN30cf37e7RNHwnQpxlX-zhjhpWrggjStEERXvUnH7eDv8acM_8DcySNpnvpz5yWdwO12_cmQ6ZyCo4-fpIOdd3x9Q8SAXxAwuyMhfmjzhvS9VDBps8tQX-xB70RA=w640"><figcaption>Semi-transparent text in Writer, old rendering</figcaption>
+</figure>
+</p>
+<p>
+<figure><img src="https://lh3.googleusercontent.com/6rkCyXnzfiVN96D1h8PiKSIva1ydRFQXzUbXbbLC-9plXOUJnMRHZT2ba4eKt7W1wqfL3vscVgE1-QB5ztbp2uqSmguOALV8wyZDnCF4LPlyHSbVEm5atwZvf29w3PzRmjy11aQahA=w640"><figcaption>Semi-transparent text in Writer, reference rendering</figcaption>
+</figure>
+</p>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<!-- git log --grep 'sw.*semi-transparent text' -->
 
+<p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
+<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
+is a major contributor to LibreOffice and all of this work will be available in TDF's next release
+too (7.0).</p>
   </div>
 </article>
 <hr />
@@ -727,83 +505,60 @@ too (7.0).</p></div>
     <p>Estimated read time: 2 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Writer now has better support for rotated text in tables containing rows with automatic height. This
-post also presents two related fixes.</p></div>
-<div class="paragraph"><p>First, thanks <a href="https://www.otevrenamesta.cz/">Otevřená města</a> who made this work by
-<a href="https://www.collaboraoffice.com/">Collabora</a> possible.</p></div>
-<div class="paragraph"><p>Before diving into improved rotated text handling, first a continuous section break import problem
+    <p>Writer now has better support for rotated text in tables containing rows with automatic height. This
+post also presents two related fixes.</p>
+<p>First, thanks <a href="https://www.otevrenamesta.cz/">Otevřená města</a> who made this work by
+<a href="https://www.collaboraoffice.com/">Collabora</a> possible.</p>
+<p>Before diving into improved rotated text handling, first a continuous section break import problem
 (<a href="https://bugs.documentfoundation.org/show_bug.cgi?id=128605">tdf#128605</a>) was fixed: this was a case
-when we created a new page style, but only a new section was intended. Here is how the fix looks:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/ycsIqjpdm5t2n9FQQhKBbWobpsX2cQ0s-ugLn970XwuGafzL79HzNVly6dYUpLMhTQmZq8Aa36kaGIfWfk-MzYmuSr92zhRUxFk1aNqwDOnTy1cyyrRzCguuvp-Wd3LD8XXzo_Aurg=w640" alt="https://lh3.googleusercontent.com/ycsIqjpdm5t2n9FQQhKBbWobpsX2cQ0s-ugLn970XwuGafzL79HzNVly6dYUpLMhTQmZq8Aa36kaGIfWfk-MzYmuSr92zhRUxFk1aNqwDOnTy1cyyrRzCguuvp-Wd3LD8XXzo_Aurg=w640" />
-</div>
-<div class="title">Figure 1. Importing continuous section break, fixed</div>
-</div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/jLUVDTY3Z6-IWVCmSfia7ue_aSpXSG7YJK2WqhRCfJkdTgA3cVFRh8TiYZwKRut7vvC0yFkdGBzl9Wpv2auZpg6d84nmDI1gVHBZPmWsf_YA-5qD-SF8Uf2lBG7NOu9RcidR1bQ0ng=w640" alt="https://lh3.googleusercontent.com/jLUVDTY3Z6-IWVCmSfia7ue_aSpXSG7YJK2WqhRCfJkdTgA3cVFRh8TiYZwKRut7vvC0yFkdGBzl9Wpv2auZpg6d84nmDI1gVHBZPmWsf_YA-5qD-SF8Uf2lBG7NOu9RcidR1bQ0ng=w640" />
-</div>
-<div class="title">Figure 2. Importing continuous section break, original</div>
-</div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/izfhxSHtYg_QmeJdIY_NnX5uiaRsmDHQoPlAsofQSaLJERNzVq_gkOMShR-fzckvAd6E5D-ZEMbr41Db2PEMeUZA8gL-oqJsvf_3PytuxJhL95wz4Fsh-2JakWefx4Tes2MoHlFWWw=w640" alt="https://lh3.googleusercontent.com/izfhxSHtYg_QmeJdIY_NnX5uiaRsmDHQoPlAsofQSaLJERNzVq_gkOMShR-fzckvAd6E5D-ZEMbr41Db2PEMeUZA8gL-oqJsvf_3PytuxJhL95wz4Fsh-2JakWefx4Tes2MoHlFWWw=w640" />
-</div>
-<div class="title">Figure 3. Importing continuous section break, reference</div>
-</div>
-<div class="paragraph"><p>What you can see is that the continuous section break used to result in an unwanted page break, and
-this is gone now.</p></div>
-<div class="paragraph"><p>Regarding the actual rotated text handling
+when we created a new page style, but only a new section was intended. Here is how the fix looks:</p>
+<p>
+<figure><img src="https://lh3.googleusercontent.com/ycsIqjpdm5t2n9FQQhKBbWobpsX2cQ0s-ugLn970XwuGafzL79HzNVly6dYUpLMhTQmZq8Aa36kaGIfWfk-MzYmuSr92zhRUxFk1aNqwDOnTy1cyyrRzCguuvp-Wd3LD8XXzo_Aurg=w640"><figcaption>Importing continuous section break, fixed</figcaption>
+</figure>
+</p>
+<p>
+<figure><img src="https://lh3.googleusercontent.com/jLUVDTY3Z6-IWVCmSfia7ue_aSpXSG7YJK2WqhRCfJkdTgA3cVFRh8TiYZwKRut7vvC0yFkdGBzl9Wpv2auZpg6d84nmDI1gVHBZPmWsf_YA-5qD-SF8Uf2lBG7NOu9RcidR1bQ0ng=w640"><figcaption>Importing continuous section break, original</figcaption>
+</figure>
+</p>
+<p>
+<figure><img src="https://lh3.googleusercontent.com/izfhxSHtYg_QmeJdIY_NnX5uiaRsmDHQoPlAsofQSaLJERNzVq_gkOMShR-fzckvAd6E5D-ZEMbr41Db2PEMeUZA8gL-oqJsvf_3PytuxJhL95wz4Fsh-2JakWefx4Tes2MoHlFWWw=w640"><figcaption>Importing continuous section break, reference</figcaption>
+</figure>
+</p>
+<p>What you can see is that the continuous section break used to result in an unwanted page break, and
+this is gone now.</p>
+<p>Regarding the actual rotated text handling
 (<a href="https://bugs.documentfoundation.org/show_bug.cgi?id=128611">tdf#128611</a>), there were two problems
-there:</p></div>
-<div class="ulist"><ul>
+there:</p>
+<ul>
 <li>
-<p>
-There was a missing flip handling for line shapes
-</p>
+<p>There was a missing flip handling for line shapes</p>
 </li>
 <li>
-<p>
-Poor layout of rotated text in table cells with automatic height
-</p>
+<p>Poor layout of rotated text in table cells with automatic height</p>
 </li>
-</ul></div>
-<div class="paragraph"><p>Here is how the fix looks like:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/GFCNQDcvXsN2w1ADVo10H16FUOYB8i6jBTrPad0r6qa8nt8PmDBDD1oiDfG9Zs9_3eVqdyB-O-u6oWIBAujcyso2utvnDpdE4Bs2PykeJkbh0vSYMZDSIKsjv7vI06j9HUCru2Z19w=w640" alt="https://lh3.googleusercontent.com/GFCNQDcvXsN2w1ADVo10H16FUOYB8i6jBTrPad0r6qa8nt8PmDBDD1oiDfG9Zs9_3eVqdyB-O-u6oWIBAujcyso2utvnDpdE4Bs2PykeJkbh0vSYMZDSIKsjv7vI06j9HUCru2Z19w=w640" />
-</div>
-<div class="title">Figure 4. Rotated text in table cells with auto height, fixed (both flip of line and text layout)</div>
-</div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/IqsWjKbTD03_wnvUMUe_QK1pqdTfZKizoNEHRQDQuvpw_O8mrEQ8AgNk_2qbP49QUpezknqHDxnhn0eYDpfZL833dXaClRPD1e4_wxuTj5mTRTeEgioBCX0djcWa5vNSRdPmnalphA=w640" alt="https://lh3.googleusercontent.com/IqsWjKbTD03_wnvUMUe_QK1pqdTfZKizoNEHRQDQuvpw_O8mrEQ8AgNk_2qbP49QUpezknqHDxnhn0eYDpfZL833dXaClRPD1e4_wxuTj5mTRTeEgioBCX0djcWa5vNSRdPmnalphA=w640" />
-</div>
-<div class="title">Figure 5. Rotated text in table cells with auto height, fixed (only flip of line so far)</div>
-</div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/2Tkkj7oz9Bm9ckPs5lTGwAGBRokEJ0MWxfqrbqu6afp6Xm1I77zft8riW-kTxKo4kJsO6bwMtaZb0XNToFssEc1kkZuzm0qk0H4eLU-xk8DOd-e5eVMtNR6cYD_1FRDWbCIYok1oJg=w640" alt="https://lh3.googleusercontent.com/2Tkkj7oz9Bm9ckPs5lTGwAGBRokEJ0MWxfqrbqu6afp6Xm1I77zft8riW-kTxKo4kJsO6bwMtaZb0XNToFssEc1kkZuzm0qk0H4eLU-xk8DOd-e5eVMtNR6cYD_1FRDWbCIYok1oJg=w640" />
-</div>
-<div class="title">Figure 6. Rotated text in table cells with auto height, original</div>
-</div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/m3X4dGiUTsFBnVwQhiEpcAQYGAJ_8vbKN93jivrcsKcCvjaornrk0upCvsTmck1e39XISyuYNc47BF1tuyrskoWLuMhpegtbyPh1KjBD7_wD-oLueaaLbjYnrgReSRkS5krvK1y4LQ=w640" alt="https://lh3.googleusercontent.com/m3X4dGiUTsFBnVwQhiEpcAQYGAJ_8vbKN93jivrcsKcCvjaornrk0upCvsTmck1e39XISyuYNc47BF1tuyrskoWLuMhpegtbyPh1KjBD7_wD-oLueaaLbjYnrgReSRkS5krvK1y4LQ=w640" />
-</div>
-<div class="title">Figure 7. Rotated text in table cells with auto height, reference</div>
-</div>
-<div class="paragraph"><p>What you can see is that the line clearing the table cell had a vertical flip, which was lost on
+</ul>
+<p>Here is how the fix looks like:</p>
+<p>
+<figure><img src="https://lh3.googleusercontent.com/GFCNQDcvXsN2w1ADVo10H16FUOYB8i6jBTrPad0r6qa8nt8PmDBDD1oiDfG9Zs9_3eVqdyB-O-u6oWIBAujcyso2utvnDpdE4Bs2PykeJkbh0vSYMZDSIKsjv7vI06j9HUCru2Z19w=w640"><figcaption>Rotated text in table cells with auto height, fixed (both flip of line and text layout)</figcaption>
+</figure>
+</p>
+<p>
+<figure><img src="https://lh3.googleusercontent.com/IqsWjKbTD03_wnvUMUe_QK1pqdTfZKizoNEHRQDQuvpw_O8mrEQ8AgNk_2qbP49QUpezknqHDxnhn0eYDpfZL833dXaClRPD1e4_wxuTj5mTRTeEgioBCX0djcWa5vNSRdPmnalphA=w640"><figcaption>Rotated text in table cells with auto height, fixed (only flip of line so far)</figcaption>
+</figure>
+</p>
+<p>
+<figure><img src="https://lh3.googleusercontent.com/2Tkkj7oz9Bm9ckPs5lTGwAGBRokEJ0MWxfqrbqu6afp6Xm1I77zft8riW-kTxKo4kJsO6bwMtaZb0XNToFssEc1kkZuzm0qk0H4eLU-xk8DOd-e5eVMtNR6cYD_1FRDWbCIYok1oJg=w640"><figcaption>Rotated text in table cells with auto height, original</figcaption>
+</figure>
+</p>
+<p>
+<figure><img src="https://lh3.googleusercontent.com/m3X4dGiUTsFBnVwQhiEpcAQYGAJ_8vbKN93jivrcsKcCvjaornrk0upCvsTmck1e39XISyuYNc47BF1tuyrskoWLuMhpegtbyPh1KjBD7_wD-oLueaaLbjYnrgReSRkS5krvK1y4LQ=w640"><figcaption>Rotated text in table cells with auto height, reference</figcaption>
+</figure>
+</p>
+<p>What you can see is that the line clearing the table cell had a vertical flip, which was lost on
 import. Also, the rotated text in the "row heading" cells was broken into multiple columns. Both are
-fixed now.</p></div>
-<div class="paragraph"><p>All this is available in LibreOffice master (towards 6.4), so you can try it out
-<a href="http://dev-builds.libreoffice.org/daily/master/">right now</a>, if interested.</p></div>
-</div>
-</div>
-
+fixed now.</p>
+<p>All this is available in LibreOffice master (towards 6.4), so you can try it out
+<a href="http://dev-builds.libreoffice.org/daily/master/">right now</a>, if interested.</p>
   </div>
 </article>
 <hr />

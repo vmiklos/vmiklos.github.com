@@ -68,83 +68,44 @@
     <p>Estimated read time: 2 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Draw now has much better support for detecting unsigned incremental updates between signatures at
+    <p>Draw now has much better support for detecting unsigned incremental updates between signatures at
 the end of PDF documents. We now also make sure that incremental updates introduced for adding
-signatures really just add annotations and don&#8217;t change the actual content.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_motivation">Motivation</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>There has been a recent <a href="https://pdf-insecurity.org/signature-shadow/evaluation_2020.html">evaluation</a>
-of PDF signature verification, which included Draw. While we got a checkmark on their Shadow Hide
-test, their Shadow Replace test found conditional problems and their Shadow Hide-and-Replace test
-was not happy, either.</p></div>
-<div class="paragraph"><p>So time to look at what are those corner-cases and how the situation can be improved, so people keep
-trusting that if Draw says a signature is valid, it&#8217;s indeed valid.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_results_so_far">Results so far</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>There were 4 incremental improvements in this area:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/99361">detect unsigned incremental update between
-  signatures</a>
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/101712">fix infobar vs signature dialog inconsistency</a>
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/101926">avoid saying OK when the signature is partial</a>
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/102057">pdf incremental updates that are non-commenting are
-  invalid</a>
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>These were enough so that talking to the authors of that evaluation now confirmed that these
-problems are all gone.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_how_is_this_implemented">How is this implemented?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
-<div class="paragraph"><p>PDF signature verification works by using a custom PDF tokenizer. You can read about that code in
+signatures really just add annotations and don't change the actual content.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>There has been a recent
+<a href="https://pdf-insecurity.org/signature-shadow/evaluation_2020.html">evaluation</a> of PDF signature
+verification, which included Draw. While we got a checkmark on their Shadow Hide test, their Shadow
+Replace test found conditional problems and their Shadow Hide-and-Replace test was not happy, either.</p>
+<p>So time to look at what are those corner-cases and how the situation can be improved, so people keep
+trusting that if Draw says a signature is valid, it's indeed valid.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>There were 4 incremental improvements in this area:</p>
+<ul>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/99361">detect unsigned incremental update between signatures</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/101712">fix infobar vs signature dialog inconsistency</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/101926">avoid saying OK when the signature is partial</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/102057">pdf incremental updates that are non-commenting are invalid</a></li>
+</ul>
+<p>These were enough so that talking to the authors of that evaluation now confirmed that these
+problems are all gone.</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>PDF signature verification works by using a custom PDF tokenizer. You can read about that code in
 the PDF tokenizer section of <a href="https://vmiklos.hu/blog/pdf-sign.html">this post</a>. The bottom line is that
-we now have both PDFium and this custom tokenizer, somewhat duplicating the functionality.</p></div>
-<div class="paragraph"><p>After talking to the PDFium developers (see the relevant
-<a href="https://groups.google.com/g/pdfium/c/Z0fC8Fg3yek/m/IE6yD066AAAJ">mailing list thread</a>), there were
-open regarding adding all the high level API to allow PDF signature verification based on PDFium,
-and not via our own tokenizer. See
-<a href="https://pdfium.googlesource.com/pdfium/+/refs/heads/master/public/fpdf_signature.h">this
-header file</a> for the set of relevant APIs added. A combinations of those allowed to
+we now have both PDFium and this custom tokenizer, somewhat duplicating the functionality.</p>
+<p>After talking to the PDFium developers (see the relevant <a href="https://groups.google.com/g/pdfium/c/Z0fC8Fg3yek/m/IE6yD066AAAJ">mailing list
+thread</a>), there were open regarding
+adding all the high level API to allow PDF signature verification based on PDFium, and not via our
+own tokenizer. See <a href="https://pdfium.googlesource.com/pdfium/+/refs/heads/master/public/fpdf_signature.h">this header
+file</a> for the
+set of relevant APIs added. A combinations of those allowed to
 <a href="https://gerrit.libreoffice.org/c/core/+/105766">adapt</a> the code on our side and use PDFium for
-signature verification, not the own tokanizer.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_want_to_start_using_this">Want to start using this?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
-<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
-intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF&#8217;s next release too (7.1).</p></div>
-</div>
-</div>
-
+signature verification, not the own tokanizer.</p>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a snapshot / demo of Collabora Office and try it out yourself right now: <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable
+snapshot</a>.  Collabora intends to
+continue supporting and contributing to LibreOffice, the code is merged so we expect all of this
+work will be available in TDF's next release too (7.1).</p>
   </div>
   <div class="article_meta">
     <p>Category: <a href="https://vmiklos.hu/blog/category/libreoffice.html">libreoffice</a>

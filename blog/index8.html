@@ -166,83 +166,44 @@ work will be available in TDF's next release too (7.2).</p>
     <p>Estimated read time: 2 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Draw now has much better support for detecting unsigned incremental updates between signatures at
+    <p>Draw now has much better support for detecting unsigned incremental updates between signatures at
 the end of PDF documents. We now also make sure that incremental updates introduced for adding
-signatures really just add annotations and don&#8217;t change the actual content.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_motivation">Motivation</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>There has been a recent <a href="https://pdf-insecurity.org/signature-shadow/evaluation_2020.html">evaluation</a>
-of PDF signature verification, which included Draw. While we got a checkmark on their Shadow Hide
-test, their Shadow Replace test found conditional problems and their Shadow Hide-and-Replace test
-was not happy, either.</p></div>
-<div class="paragraph"><p>So time to look at what are those corner-cases and how the situation can be improved, so people keep
-trusting that if Draw says a signature is valid, it&#8217;s indeed valid.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_results_so_far">Results so far</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>There were 4 incremental improvements in this area:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/99361">detect unsigned incremental update between
-  signatures</a>
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/101712">fix infobar vs signature dialog inconsistency</a>
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/101926">avoid saying OK when the signature is partial</a>
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/102057">pdf incremental updates that are non-commenting are
-  invalid</a>
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>These were enough so that talking to the authors of that evaluation now confirmed that these
-problems are all gone.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_how_is_this_implemented">How is this implemented?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
-<div class="paragraph"><p>PDF signature verification works by using a custom PDF tokenizer. You can read about that code in
+signatures really just add annotations and don't change the actual content.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>There has been a recent
+<a href="https://pdf-insecurity.org/signature-shadow/evaluation_2020.html">evaluation</a> of PDF signature
+verification, which included Draw. While we got a checkmark on their Shadow Hide test, their Shadow
+Replace test found conditional problems and their Shadow Hide-and-Replace test was not happy, either.</p>
+<p>So time to look at what are those corner-cases and how the situation can be improved, so people keep
+trusting that if Draw says a signature is valid, it's indeed valid.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>There were 4 incremental improvements in this area:</p>
+<ul>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/99361">detect unsigned incremental update between signatures</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/101712">fix infobar vs signature dialog inconsistency</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/101926">avoid saying OK when the signature is partial</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/102057">pdf incremental updates that are non-commenting are invalid</a></li>
+</ul>
+<p>These were enough so that talking to the authors of that evaluation now confirmed that these
+problems are all gone.</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>PDF signature verification works by using a custom PDF tokenizer. You can read about that code in
 the PDF tokenizer section of <a href="https://vmiklos.hu/blog/pdf-sign.html">this post</a>. The bottom line is that
-we now have both PDFium and this custom tokenizer, somewhat duplicating the functionality.</p></div>
-<div class="paragraph"><p>After talking to the PDFium developers (see the relevant
-<a href="https://groups.google.com/g/pdfium/c/Z0fC8Fg3yek/m/IE6yD066AAAJ">mailing list thread</a>), there were
-open regarding adding all the high level API to allow PDF signature verification based on PDFium,
-and not via our own tokenizer. See
-<a href="https://pdfium.googlesource.com/pdfium/+/refs/heads/master/public/fpdf_signature.h">this
-header file</a> for the set of relevant APIs added. A combinations of those allowed to
+we now have both PDFium and this custom tokenizer, somewhat duplicating the functionality.</p>
+<p>After talking to the PDFium developers (see the relevant <a href="https://groups.google.com/g/pdfium/c/Z0fC8Fg3yek/m/IE6yD066AAAJ">mailing list
+thread</a>), there were open regarding
+adding all the high level API to allow PDF signature verification based on PDFium, and not via our
+own tokenizer. See <a href="https://pdfium.googlesource.com/pdfium/+/refs/heads/master/public/fpdf_signature.h">this header
+file</a> for the
+set of relevant APIs added. A combinations of those allowed to
 <a href="https://gerrit.libreoffice.org/c/core/+/105766">adapt</a> the code on our side and use PDFium for
-signature verification, not the own tokanizer.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_want_to_start_using_this">Want to start using this?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
-<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
-intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF&#8217;s next release too (7.1).</p></div>
-</div>
-</div>
-
+signature verification, not the own tokanizer.</p>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a snapshot / demo of Collabora Office and try it out yourself right now: <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable
+snapshot</a>.  Collabora intends to
+continue supporting and contributing to LibreOffice, the code is merged so we expect all of this
+work will be available in TDF's next release too (7.1).</p>
   </div>
 </article>
 <hr />
@@ -257,97 +218,70 @@ of this work will be available in TDF&#8217;s next release too (7.1).</p></div>
     <p>Estimated read time: 3 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Collabora Online now has a <code>./g</code>
+    <p>Collabora Online now has a <code>./g</code>
 <a href="https://github.com/CollaboraOnline/online/blob/a4becf39abc3228fa899f71ff284d41c3c199627/g">script</a>
-that tries to bring some of the Gerrit-based review benefits to a workflow based on GitHub.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_motivation">Motivation</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Collabora Online is on GitHub, but <a href="https://git.libreoffice.org/core">core.git</a> is still on Gerrit, so it made sense to spend some time on a small shell script that gives you review and backport experience that is closer to Gerrit than the stock GitHub workflow.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_how_we_use_github">How we use GitHub</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Most Online committers push their code for review directly to <code>online.git</code>, to private namespaced
+that tries to bring some of the Gerrit-based review benefits to a workflow based on GitHub.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>Collabora Online is on GitHub, but <a href="https://git.libreoffice.org/core">core.git</a> is still on Gerrit,
+so it made sense to spend some time on a small shell script that gives you review and backport
+experience that is closer to Gerrit than the stock GitHub workflow.</p>
+<h2 id="how-we-use-github">How we use GitHub<a class="headerlink" href="#how-we-use-github" title="Permanent link">&para;</a></h2>
+<p>Most Online committers push their code for review directly to <code>online.git</code>, to private namespaced
 branches, like <code>private/kendy/master</code>, then a pull request can be created to get commits from that
-branch into master after CI, review, etc. This workflow has the benefit that you don&#8217;t have to deal
-with the complexity of multiple repos.</p></div>
-<div class="paragraph"><p>Next to master, there are distro branches like <code>distro/collabora/co-6-4</code>, we may or may not want to
-backport the contents of a PR to that stable branch.</p></div>
-<div class="paragraph"><p>It&#8217;s important that Gerrit used to have a <code>git review</code> command to just submit your changes for
+branch into master after CI, review, etc. This workflow has the benefit that you don't have to deal
+with the complexity of multiple repos.</p>
+<p>Next to master, there are distro branches like <code>distro/collabora/co-6-4</code>, we may or may not want to
+backport the contents of a PR to that stable branch.</p>
+<p>It's important that Gerrit used to have a <code>git review</code> command to just submit your changes for
 review, without asking anything. That explains why the stock GitHub workflow where you need to name
 the source branch of your PR feels unnecessary complexity. Creating the PR by visiting a webpage is
 again something we want to avoid. Not to mention open questions like should you delete your source
-branch after a PR is merged? Should you delete your source repo?</p></div>
-<div class="paragraph"><p>On the other hand, we&#8217;re interested in GitHub&#8217;s ability to have multiple commits in a PR: Gerrit
+branch after a PR is merged? Should you delete your source repo?</p>
+<p>On the other hand, we're interested in GitHub's ability to have multiple commits in a PR: Gerrit
 forces to have one commit per change. The GitHub way encourages developers to split changes into
-more commits, now that the review and CI cost won&#8217;t increase just due to such splits.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_submit_for_review">Submit for review</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>The happy path is when you have one or more local commits and you want to submit it for review. In
-this case now you can do:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>./g review</code></pre>
-</div></div>
-<div class="paragraph"><p>And the script will figure out that you want to push your local branch to a remote branch like
-<code>private/kendy/master</code> and also create a pull request for you, printing its URL.</p></div>
-<div class="paragraph"><p>In case that branch already exists then you need to specify a name:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>./g review myhack</code></pre>
-</div></div>
-<div class="paragraph"><p>So parallel reviews are possible, but only the first gets an inferred name. Both cases need no
-clicking in a browser, thanks to <a href="https://github.com/cli/cli">gh</a>.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_submit_a_backport">Submit a backport</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>The easiest case is when you can assume that the master branch and the distro branch is so close to
-each other that there won&#8217;t be conflicts to be resolved. In that case, you can do:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>./g backport distro/collabora/co-6-4 790</code></pre>
-</div></div>
-<div class="paragraph"><p>to pick all commits from <a href="https://github.com/collaboraonline/online/pull/790">PR 790</a> (which is already
-merged to master) to a distro branch.</p></div>
-<div class="paragraph"><p>Again, you can have multiple backports in progress, e.g. you can do:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>./g backport distro/collabora/co-6-4 790 myhack</code></pre>
-</div></div>
-<div class="paragraph"><p>If the default name is already used. The backport syntax is a bit longer, so you can always just
-type <code>./g backport</code> and you&#8217;ll get the usage.</p></div>
-<div class="paragraph"><p>This second command is a bit more complicated, as <code>gh</code> has no trivial way to expose what is the
+more commits, now that the review and CI cost won't increase just due to such splits.</p>
+<h2 id="submit-for-review">Submit for review<a class="headerlink" href="#submit-for-review" title="Permanent link">&para;</a></h2>
+<p>The happy path is when you have one or more local commits and you want to submit it for review. In
+this case now you can do:</p>
+<div class="highlight"><pre><span></span><code>./g review
+</code></pre></div>
+
+<p>And the script will figure out that you want to push your local branch to a remote branch like
+<code>private/kendy/master</code> and also create a pull request for you, printing its URL.</p>
+<p>In case that branch already exists then you need to specify a name:</p>
+<div class="highlight"><pre><span></span><code>./g review myhack
+</code></pre></div>
+
+<p>So parallel reviews are possible, but only the first gets an inferred name. Both cases need no
+clicking in a browser, thanks to <a href="https://github.com/cli/cli">gh</a>.</p>
+<h2 id="submit-a-backport">Submit a backport<a class="headerlink" href="#submit-a-backport" title="Permanent link">&para;</a></h2>
+<p>The easiest case is when you can assume that the master branch and the distro branch is so close to
+each other that there won't be conflicts to be resolved. In that case, you can do:</p>
+<div class="highlight"><pre><span></span><code>./g backport distro/collabora/co-6-4 790
+</code></pre></div>
+
+<p>to pick all commits from <a href="https://github.com/collaboraonline/online/pull/790">PR 790</a> (which is already
+merged to master) to a distro branch.</p>
+<p>Again, you can have multiple backports in progress, e.g. you can do:</p>
+<div class="highlight"><pre><span></span><code>./g backport distro/collabora/co-6-4 790 myhack
+</code></pre></div>
+
+<p>If the default name is already used. The backport syntax is a bit longer, so you can always just
+type <code>./g backport</code> and you'll get the usage.</p>
+<p>This second command is a bit more complicated, as <code>gh</code> has no trivial way to expose what is the
 commit range of a PR. But there is <code>gh api graphql</code> which can do arbitrary
 <a href="https://docs.github.com/en/free-pro-team@latest/graphql">GraphQL</a> queries, which provide this
 information. At this stage it may make sense to just rewrite the whole <code>./g</code> script in e.g. Python,
-but till that happens, we parse the output of the query using <a href="https://stedolan.github.io/jq/">jq</a>.</p></div>
-<div class="paragraph"><p>Finally, if you do have conflicts or you want a local build test / manual test before submitting,
+but till that happens, we parse the output of the query using <a href="https://stedolan.github.io/jq/">jq</a>.</p>
+<p>Finally, if you do have conflicts or you want a local build test / manual test before submitting,
 you can always check out the distro branch manually, cherry-pick there and use plain <code>./g review</code> to
-submit your backport for review.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_want_to_start_using_this">Want to start using this?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>You can go to the <a href="https://collaboraonline.github.io/">Collabora Online</a> community website and see how
-to build the code. Then you may want to solve an
-<a href="https://github.com/CollaboraOnline/online/issues?q=is%3Aissue+is%3Aopen+label%3A%22Easy+Hack%22">easy
-hack</a>, finally submit your commit for review either by using the above method or whichever way you
-prefer contributing to GitHub projects.</p></div>
-</div>
-</div>
-
+submit your backport for review.</p>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can go to the <a href="https://collaboraonline.github.io/">Collabora Online</a> community website and see how
+to build the code. Then you may want to solve an <a href="https://github.com/CollaboraOnline/online/issues?q=is%3Aissue+is%3Aopen+label%3A%22Easy+Hack%22">easy
+hack</a>,
+finally submit your commit for review either by using the above method or whichever way you prefer
+contributing to GitHub projects.</p>
   </div>
 </article>
 <hr />
@@ -362,98 +296,58 @@ prefer contributing to GitHub projects.</p></div>
     <p>Estimated read time: 2 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Writer now has much better support for preserving the cached result of fields in documents. This is
+    <p>Writer now has much better support for preserving the cached result of fields in documents. This is
 especially beneficial for Word formats where the input document may have a field result which is not
-only a cache, but re-calculating the formula would yield a different result, even in Word.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_motivation">Motivation</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>A Collabora Office customer gave us a DOCX document, which is essentially a calendar for planned IT
+only a cache, but re-calculating the formula would yield a different result, even in Word.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>A Collabora Office customer gave us a DOCX document, which is essentially a calendar for planned IT
 maintenance windows at some organization. These calendars are tables with fields in it. The document
 is halfway through towards changing it to a newer year: the formulas are already changed to
-calculate a newer year, but all the cached field results are still for the old year.</p></div>
-<div class="paragraph"><p>The request was to keep showing these results and not throw them away during save, either. Their
+calculate a newer year, but all the cached field results are still for the old year.</p>
+<p>The request was to keep showing these results and not throw them away during save, either. Their
 primary workflow is to fill the calendar with manual entries, not to tweak the calendar layout
-itself.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_results_so_far">Results so far</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>The calendar now looks like this:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/6o7pvix-dJ9QhCX65FUkWeQZ60B89sHqDpBvd7WVRLtAzBW1323odrQ13aV_CgEFvgh7Iee-ePq95oPOf1Q-jMxvX1MBsz9FhgKd9vymyrdMBIZbF459hNKE1dM4XLcwXkGYh8ksmok=w1920" alt="https://lh3.googleusercontent.com/6o7pvix-dJ9QhCX65FUkWeQZ60B89sHqDpBvd7WVRLtAzBW1323odrQ13aV_CgEFvgh7Iee-ePq95oPOf1Q-jMxvX1MBsz9FhgKd9vymyrdMBIZbF459hNKE1dM4XLcwXkGYh8ksmok=w1920" />
-</div>
-<div class="title">Figure 1. New render result in Writer</div>
-</div>
-<div class="paragraph"><p>Matching the reference rendering:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/GJd2zcnspXDb7Wa2p32TInf9C8MAgt92h3G6PYuUwUvpQi5f3AdRbl5yGq8FN7kUPMcZwuFpohTKmX33s8u-AxFSO9rZFgH4X-fwrg8jShtJoA1KyGws_-ymUvINmK-5xo2_hd7YmLI=w1920" alt="https://lh3.googleusercontent.com/GJd2zcnspXDb7Wa2p32TInf9C8MAgt92h3G6PYuUwUvpQi5f3AdRbl5yGq8FN7kUPMcZwuFpohTKmX33s8u-AxFSO9rZFgH4X-fwrg8jShtJoA1KyGws_-ymUvINmK-5xo2_hd7YmLI=w1920" />
-</div>
-<div class="title">Figure 2. Reference render result</div>
-</div>
-<div class="paragraph"><p>While it looked like a broken calendar previously:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/bpOVqcZX2CcKouuADNyPx1PMyI3I6CyjIDIAnUbylsT-ZimxSkPcUaRbMDd8MzHlG3Uqw2d-TunD4m7U4DUlm_O_esJt6CAY-H7Z5tdQxZ6q_MYxgJphutr_-JRVYh8uLmspiiI532U=w1920" alt="https://lh3.googleusercontent.com/bpOVqcZX2CcKouuADNyPx1PMyI3I6CyjIDIAnUbylsT-ZimxSkPcUaRbMDd8MzHlG3Uqw2d-TunD4m7U4DUlm_O_esJt6CAY-H7Z5tdQxZ6q_MYxgJphutr_-JRVYh8uLmspiiI532U=w1920" />
-</div>
-<div class="title">Figure 3. Old render result in Writer</div>
-</div>
-<div class="paragraph"><p>You can see that the day numbers were broken previously and now they line up properly.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_how_is_this_implemented">How is this implemented?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
-<div class="paragraph"><p>As usual, the high-level problem was addressed by a series of small fixes:</p></div>
-<div class="ulist"><ul>
-<li>
+itself.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>The calendar now looks like this:</p>
 <p>
-<a href="https://gerrit.libreoffice.org/c/core/+/105596">DOCX import: don&#8217;t throw away cached value of
-  SwHiddenTextField</a> fixes a caching problem which was working for DOC already
+<figure><img src="https://lh3.googleusercontent.com/6o7pvix-dJ9QhCX65FUkWeQZ60B89sHqDpBvd7WVRLtAzBW1323odrQ13aV_CgEFvgh7Iee-ePq95oPOf1Q-jMxvX1MBsz9FhgKd9vymyrdMBIZbF459hNKE1dM4XLcwXkGYh8ksmok=w1920"><figcaption>New render result in Writer</figcaption>
+</figure>
 </p>
+<p>Matching the reference rendering:</p>
+<p>
+<figure><img src="https://lh3.googleusercontent.com/GJd2zcnspXDb7Wa2p32TInf9C8MAgt92h3G6PYuUwUvpQi5f3AdRbl5yGq8FN7kUPMcZwuFpohTKmX33s8u-AxFSO9rZFgH4X-fwrg8jShtJoA1KyGws_-ymUvINmK-5xo2_hd7YmLI=w1920"><figcaption>Reference render result</figcaption>
+</figure>
+</p>
+<p>While it looked like a broken calendar previously:</p>
+<p>
+<figure><img src="https://lh3.googleusercontent.com/bpOVqcZX2CcKouuADNyPx1PMyI3I6CyjIDIAnUbylsT-ZimxSkPcUaRbMDd8MzHlG3Uqw2d-TunD4m7U4DUlm_O_esJt6CAY-H7Z5tdQxZ6q_MYxgJphutr_-JRVYh8uLmspiiI532U=w1920"><figcaption>Old render result in Writer</figcaption>
+</figure>
+</p>
+<p>You can see that the day numbers were broken previously and now they line up properly.</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>As usual, the high-level problem was addressed by a series of small fixes:</p>
+<ul>
+<li>
+<p><a href="https://gerrit.libreoffice.org/c/core/+/105596">DOCX import: don't throw away cached value of SwHiddenTextField</a> fixes a caching problem which was working for DOC already</p>
 </li>
 <li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/105639">DOCX import: fix lost cached result inside an IF
-  field</a> fixes caching in the context of nested IF fields (Writer in general has limited support for nested fields)
-</p>
+<p><a href="https://gerrit.libreoffice.org/c/core/+/105639">DOCX import: fix lost cached result inside an IF field</a> fixes caching in the context of nested IF fields (Writer in general has limited support for nested fields)</p>
 </li>
 <li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/105783">DOCX import: lost cached result of fields: fix
-  leading whitespace</a> fixes whitespace handling while caching
-</p>
+<p><a href="https://gerrit.libreoffice.org/c/core/+/105783">DOCX import: lost cached result of fields: fix leading whitespace</a> fixes whitespace handling while caching</p>
 </li>
 <li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/105798">DOCX export: handle conditional fields</a> adds an
-  initial implementation of conditional fields in the DOCX export, which was completely missing
-  previously.
-</p>
+<p><a href="https://gerrit.libreoffice.org/c/core/+/105798">DOCX export: handle conditional fields</a> adds an initial implementation of conditional fields in the DOCX export, which was completely missing previously.</p>
 </li>
-</ul></div>
-<div class="paragraph"><p>With these, it&#8217;s now possible to edit these calendars, without breaking the fields which provide the
-day numbers.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_want_to_start_using_this">Want to start using this?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
+</ul>
+<p>With these, it's now possible to edit these calendars, without breaking the fields which provide the
+day numbers.</p>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
 <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
 intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF&#8217;s next release too (7.1).</p></div>
-</div>
-</div>
-
+of this work will be available in TDF's next release too (7.1).</p>
   </div>
 </article>
 <hr />
@@ -468,80 +362,54 @@ of this work will be available in TDF&#8217;s next release too (7.1).</p></div>
     <p>Estimated read time: 3 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Impress (and Writer and Calc) now has support for detecting 0-byte files on open/import based on
+    <p>Impress (and Writer and Calc) now has support for detecting 0-byte files on open/import based on
 their extension. This builds on top of the
-<a href="https://vmiklos.hu/blog/sw-locale-independent-templates.html">previous language-independent template
-improvements</a>. This means that e.g. a 0-byte PPTX file will open as an empty Impress presentation,
-not in Writer.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_motivation">Motivation</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>We regularly see customers wanting minimal templates, which are language independent and have no
+<a href="https://vmiklos.hu/blog/sw-locale-independent-templates.html">previous language-independent template improvements</a>.
+This means that e.g. a 0-byte PPTX file will open as an empty Impress presentation, not in Writer.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>We regularly see customers wanting minimal templates, which are language independent and have no
 content. Such files are handy if your workflow is to first name an empty document (create it) and
 only then edit it (and not the other way around: first create the document, then save it by giving
-it a name). This is easy for <code>.txt</code> files: if it&#8217;s zero bytes, it&#8217;s empty. But then this approach is
+it a name). This is easy for <code>.txt</code> files: if it's zero bytes, it's empty. But then this approach is
 also expected to work for other file formats as well, where our original approach was more
-technical: if it&#8217;s an empty file, that that can be only plain text, so we (almost) always opened it
-in Writer, not matching the user expectations.</p></div>
-<div class="paragraph"><p>Instead of explaining the problem to people again and again (that a literally empty PPTX file is not
-a PPTX template), there is value in just adapting the code instead to "do what I mean".</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_results_so_far">Results so far</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>An empty PPTX file is now handled like this:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/zk3b0f2Rx3t5vFVuKiimujSJWYwPNH05PCf5Indih3OwMDeBrOUH1X7N22PO46kIbxTVzI0V3IV-bE0sMycTHGj2eRqKT6K7eQkZ0Py9QVCPIhV0pdKdGPLGH08xpw72wFQ-3eGyX4k=w1920" alt="https://lh3.googleusercontent.com/zk3b0f2Rx3t5vFVuKiimujSJWYwPNH05PCf5Indih3OwMDeBrOUH1X7N22PO46kIbxTVzI0V3IV-bE0sMycTHGj2eRqKT6K7eQkZ0Py9QVCPIhV0pdKdGPLGH08xpw72wFQ-3eGyX4k=w1920" />
-</div>
-<div class="title">Figure 1. Empty PPTX file opening in Impress</div>
-</div>
-<div class="paragraph"><p>You can see this is no longer opening in Writer as plain text but in Impress, which is clearly a
-less surprising behavior.</p></div>
-<div class="paragraph"><p>Here is what happens if you open an empty DOTX (template):</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/cVB_kK2wDyNIJjLt9v9UcNS4AagRCifwBofp70mHfNVzopvrN1cxcsVLhWfEArhab_PwSFkAvLlMUS1witevRcKeEn9UXYtw5o4VeGSztvnNUi6YMtR3t2DUIu1k2LLOUhnpckAnrwQ=w1920" alt="https://lh3.googleusercontent.com/cVB_kK2wDyNIJjLt9v9UcNS4AagRCifwBofp70mHfNVzopvrN1cxcsVLhWfEArhab_PwSFkAvLlMUS1witevRcKeEn9UXYtw5o4VeGSztvnNUi6YMtR3t2DUIu1k2LLOUhnpckAnrwQ=w1920" />
-</div>
-<div class="title">Figure 2. Empty DOTX file creates a new Writer document</div>
-</div>
-<div class="paragraph"><p>You can see that it is even recognized that this is a template format, so a new document is created,
-not the template itself is opened for editing.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_how_is_this_implemented">How is this implemented?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
-<div class="paragraph"><p>You can see the code change in
+technical: if it's an empty file, that that can be only plain text, so we (almost) always opened it
+in Writer, not matching the user expectations.</p>
+<p>Instead of explaining the problem to people again and again (that a literally empty PPTX file is not
+a PPTX template), there is value in just adapting the code instead to "do what I mean".</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>An empty PPTX file is now handled like this:</p>
+<p>
+<figure><img src="https://lh3.googleusercontent.com/zk3b0f2Rx3t5vFVuKiimujSJWYwPNH05PCf5Indih3OwMDeBrOUH1X7N22PO46kIbxTVzI0V3IV-bE0sMycTHGj2eRqKT6K7eQkZ0Py9QVCPIhV0pdKdGPLGH08xpw72wFQ-3eGyX4k=w1920"><figcaption>Empty PPTX file opening in Impress</figcaption>
+</figure>
+</p>
+<p>You can see this is no longer opening in Writer as plain text but in Impress, which is clearly a
+less surprising behavior.</p>
+<p>Here is what happens if you open an empty DOTX (template):</p>
+<p>
+<figure><img src="https://lh3.googleusercontent.com/cVB_kK2wDyNIJjLt9v9UcNS4AagRCifwBofp70mHfNVzopvrN1cxcsVLhWfEArhab_PwSFkAvLlMUS1witevRcKeEn9UXYtw5o4VeGSztvnNUi6YMtR3t2DUIu1k2LLOUhnpckAnrwQ=w1920"><figcaption>Empty DOTX file creates a new Writer document</figcaption>
+</figure>
+</p>
+<p>You can see that it is even recognized that this is a template format, so a new document is created,
+not the template itself is opened for editing.</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>You can see the code change in
 <a href="https://git.libreoffice.org/core/commit/ada07f303e7cd1e39c73abe0741aefe7d9d73a57">this commit</a>.
-First, we restrict this trick to file URLs, and also to empty files.</p></div>
-<div class="paragraph"><p>Second, we look at the extension of the file and try to match an import filter that usually handles
+First, we restrict this trick to file URLs, and also to empty files.</p>
+<p>Second, we look at the extension of the file and try to match an import filter that usually handles
 that extension. This helps, because then nominally the correct filter will be used for the import,
 so save will not ask for a filename (as it happens for new documents), but it will know what target
-filename and export filter to use.</p></div>
-<div class="paragraph"><p>Finally we need to avoid actually invoking the import filter, because no file content is not
+filename and export filter to use.</p>
+<p>Finally we need to avoid actually invoking the import filter, because no file content is not
 something an import filter has to handle if its filter detection would reject the file. (E.g. PPTX
 is expected to be a valid ZIP file.) This is important, because we want to avoid touching each &amp;
-every file filter to not fail for empty file content&#8201;&#8212;&#8201;instead we want to handle this centrally, at
-a single place.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_want_to_start_using_this">Want to start using this?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
-<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
-intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF&#8217;s next release too (7.1).</p></div>
-</div>
-</div>
-
+every file filter to not fail for empty file content -- instead we want to handle this centrally, at
+a single place.</p>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a snapshot / demo of Collabora Office and try it out yourself right now: <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable
+snapshot</a>.  Collabora intends to
+continue supporting and contributing to LibreOffice, the code is merged so we expect all of this
+work will be available in TDF's next release too (7.1).</p>
   </div>
 </article>
 <hr />
@@ -556,29 +424,19 @@ of this work will be available in TDF&#8217;s next release too (7.1).</p></div>
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://files.speakerdeck.com/presentations/eae85c2ac9d443708bda7ca26b3f5a6f/pdf-visible-sign-loconf-online-2k20.pdf">
-<img src="https://lh3.googleusercontent.com/4cDltVS1u4m8FWC9Bb54TWILfzrFEXKNUcKKE6cxTIzsDWbX4SXPNw6JM01eLVzyqSqsyWhukcXXWmlJthx9q8tdbqO1LfO8FQECzBcEK3ZQl1lCXdpoAFGKZn_H9sNy0QLgNpPox_w=w1920" alt="https://lh3.googleusercontent.com/4cDltVS1u4m8FWC9Bb54TWILfzrFEXKNUcKKE6cxTIzsDWbX4SXPNw6JM01eLVzyqSqsyWhukcXXWmlJthx9q8tdbqO1LfO8FQECzBcEK3ZQl1lCXdpoAFGKZn_H9sNy0QLgNpPox_w=w1920" />
-</a>
-</div>
-</div>
-<div class="paragraph"><p>Today I gave a <a href="https://events.opensuse.org/conferences/oSLO/program/proposals/3187/">OOXML / PDF
-Digital Signing in Draw and elsewhere</a> talk at the LibreOffice Conference 2020. The (virtual) room
-was well-crowded&#8201;&#8212;&#8201;somehow people find digital signatures interesting. ;-)</p></div>
-<div class="paragraph"><p>It contains an overview of the ODF/OOXML/PDF signing feature set and also details the latest
-improvements, like visible PDF signing.</p></div>
-<div class="paragraph"><p>I expect quite some other slides from other Collaborans and the wider community will be available on
-<a href="http://planet.documentfoundation.org/">Planet</a>, don&#8217;t miss them.</p></div>
-<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office and try the presented features out yourself right
+    <p><a href="https://files.speakerdeck.com/presentations/eae85c2ac9d443708bda7ca26b3f5a6f/pdf-visible-sign-loconf-online-2k20.pdf"><figure><img src="https://lh3.googleusercontent.com/4cDltVS1u4m8FWC9Bb54TWILfzrFEXKNUcKKE6cxTIzsDWbX4SXPNw6JM01eLVzyqSqsyWhukcXXWmlJthx9q8tdbqO1LfO8FQECzBcEK3ZQl1lCXdpoAFGKZn_H9sNy0QLgNpPox_w=w1920"><figcaption>Slides of the talk</figcaption></figure></a></p>
+<p>Today I gave a <a href="https://events.opensuse.org/conferences/oSLO/program/proposals/3187/">OOXML / PDF Digital Signing in Draw and
+elsewhere</a> talk at the
+LibreOffice Conference 2020. The (virtual) room was well-crowded -- somehow people find digital
+signatures interesting. ;-)</p>
+<p>It contains an overview of the ODF/OOXML/PDF signing feature set and also details the latest
+improvements, like visible PDF signing.</p>
+<p>I expect quite some other slides from other Collaborans and the wider community will be available on
+<a href="http://planet.documentfoundation.org/">Planet</a>, don't miss them.</p>
+<p>You can get a snapshot / demo of Collabora Office and try the presented features out yourself right
 now: <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.
 Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
-expect all of this work will be available in TDF&#8217;s next release too (7.1).</p></div>
-</div>
-</div>
-
+expect all of this work will be available in TDF's next release too (7.1).</p>
   </div>
 </article>
 <hr />
@@ -593,153 +451,96 @@ expect all of this work will be available in TDF&#8217;s next release too (7.1).
     <p>Estimated read time: 3 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Impress now has support for an improved auto-fit-of-text layout across multiple shapes, also the
+    <p>Impress now has support for an improved auto-fit-of-text layout across multiple shapes, also the
 snake algorithm now handles width requests from constraints much better for SmartArt graphics from
 PPTX files. This builds on top of the <a href="https://vmiklos.hu/blog/smartart-improvements-5.html">previous
-improvements</a> around SmartArt support.</p></div>
-<div class="paragraph"><p>First, thanks to our partner <a href="https://www.suse.com/">SUSE</a> for working with
-<a href="https://www.collaboraoffice.com/">Collabora</a> to make this possible.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_motivation">Motivation</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>SmartArt allows declaring your content and requirements for a graphic, then the layout will take
+improvements</a> around SmartArt support.</p>
+<p>First, thanks to our partner <a href="https://www.suse.com/">SUSE</a> for working with
+<a href="https://www.collaboraoffice.com/">Collabora</a> to make this possible.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>SmartArt allows declaring your content and requirements for a graphic, then the layout will take
 care of arranging that in a suitable way. It is allowed to ask for an automatic font size, which is
 small enough so that all the content fits into the shape. At the same time, you can ask that the
 font size is the same in multiple shapes. Impress lacked the ability to do the latter, leading to
-different font sizes in different shapes, all automatic inside a single shape.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_results_so_far">Results so far</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Here is how the automatic text scaling across multiple shapes works in practice:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/5f-rH0nKGed-6GhBn3bAOMH6sVUeZUeqt2TsFydVSFlL_185Hj6BjNkchKn7DVKpAQmRsg6bGNwKyBIN9bR1sRYacqcKnLYOeqasGZB2IWRohN8mtgFG9aNN_k5ofC_ZqunSeHqIYTc=w640" alt="https://lh3.googleusercontent.com/5f-rH0nKGed-6GhBn3bAOMH6sVUeZUeqt2TsFydVSFlL_185Hj6BjNkchKn7DVKpAQmRsg6bGNwKyBIN9bR1sRYacqcKnLYOeqasGZB2IWRohN8mtgFG9aNN_k5ofC_ZqunSeHqIYTc=w640" />
-</div>
-<div class="title">Figure 1. Autofit synchronization, new output</div>
-</div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/lncpRp13-vUBJH5Kt4ccYHMULGQ8U1Qw8v5z7LmRSE9bv6yjukFMfuiJolCKbVOpjT-85zw_BQMj72dKJLVnMI242CQlIxR7tDUbhBuVaYDuGPRVnAqhCsGbDmGLmyu-7ueA39kNXIg=w640" alt="https://lh3.googleusercontent.com/lncpRp13-vUBJH5Kt4ccYHMULGQ8U1Qw8v5z7LmRSE9bv6yjukFMfuiJolCKbVOpjT-85zw_BQMj72dKJLVnMI242CQlIxR7tDUbhBuVaYDuGPRVnAqhCsGbDmGLmyu-7ueA39kNXIg=w640" />
-</div>
-<div class="title">Figure 2. Autofit synchronization, old output</div>
-</div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/Go9LGPftmbtFnQXgzxITJVLhEVJF1B13Ge3PGbyKPNEzCJ2zi2DfYBMak92v127PJGYyzjL8V9fTh8Fb_vZXpAdBrBRQizd2onXM8dBka38BkBEi2FE8UP3JCPecKN1m9u8fR591GMM=w640" alt="https://lh3.googleusercontent.com/Go9LGPftmbtFnQXgzxITJVLhEVJF1B13Ge3PGbyKPNEzCJ2zi2DfYBMak92v127PJGYyzjL8V9fTh8Fb_vZXpAdBrBRQizd2onXM8dBka38BkBEi2FE8UP3JCPecKN1m9u8fR591GMM=w640" />
-</div>
-<div class="title">Figure 3. Autofit synchronization, reference output</div>
-</div>
-<div class="paragraph"><p>You can see how the old output used to have unexpected large text in shape A, but now has the same
+different font sizes in different shapes, all automatic inside a single shape.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>Here is how the automatic text scaling across multiple shapes works in practice:</p>
+<p>
+<figure><img src="https://lh3.googleusercontent.com/5f-rH0nKGed-6GhBn3bAOMH6sVUeZUeqt2TsFydVSFlL_185Hj6BjNkchKn7DVKpAQmRsg6bGNwKyBIN9bR1sRYacqcKnLYOeqasGZB2IWRohN8mtgFG9aNN_k5ofC_ZqunSeHqIYTc=w640"><figcaption>Autofit synchronization, new output</figcaption>
+</figure>
+</p>
+<p>
+<figure><img src="https://lh3.googleusercontent.com/lncpRp13-vUBJH5Kt4ccYHMULGQ8U1Qw8v5z7LmRSE9bv6yjukFMfuiJolCKbVOpjT-85zw_BQMj72dKJLVnMI242CQlIxR7tDUbhBuVaYDuGPRVnAqhCsGbDmGLmyu-7ueA39kNXIg=w640"><figcaption>Autofit synchronization, old output</figcaption>
+</figure>
+</p>
+<p>
+<figure><img src="https://lh3.googleusercontent.com/Go9LGPftmbtFnQXgzxITJVLhEVJF1B13Ge3PGbyKPNEzCJ2zi2DfYBMak92v127PJGYyzjL8V9fTh8Fb_vZXpAdBrBRQizd2onXM8dBka38BkBEi2FE8UP3JCPecKN1m9u8fR591GMM=w640"><figcaption>Autofit synchronization, reference output</figcaption>
+</figure>
+</p>
+<p>You can see how the old output used to have unexpected large text in shape A, but now has the same
 text size as shape B. This is not applied unconditionally, shape C can request to have an
-independent, fixed font size.</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/7IBC-z9NfhP0mjutFPQLPN312AH5Jch6Gss-75kROjLksQ3MnSZnhTodrPDJBm3MmkcQ-rHKvzozgB1O8j8rDBJEkzCf9vgmgrSYa3kH7GqnDS0BgBnlSOWC0GQxVBCIMYX0-Blf_F8=w640" alt="https://lh3.googleusercontent.com/7IBC-z9NfhP0mjutFPQLPN312AH5Jch6Gss-75kROjLksQ3MnSZnhTodrPDJBm3MmkcQ-rHKvzozgB1O8j8rDBJEkzCf9vgmgrSYa3kH7GqnDS0BgBnlSOWC0GQxVBCIMYX0-Blf_F8=w640" />
-</div>
-<div class="title">Figure 4. Snake rows, new output</div>
-</div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/4y0pEF3utBcpXMcCsrvrkvnNCdKKyhVlwejiwsI6cMUrA1nV4u1VuE4l1Xhuw60jQYrkeQD54Y0JuB4NR571kwtluUGceclQPZPcYITEyqf0GF1Y7fr_GXNnSRCtnXO1jjtcO_nSLS0=w640" alt="https://lh3.googleusercontent.com/4y0pEF3utBcpXMcCsrvrkvnNCdKKyhVlwejiwsI6cMUrA1nV4u1VuE4l1Xhuw60jQYrkeQD54Y0JuB4NR571kwtluUGceclQPZPcYITEyqf0GF1Y7fr_GXNnSRCtnXO1jjtcO_nSLS0=w640" />
-</div>
-<div class="title">Figure 5. Snake rows, old output</div>
-</div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/JqIugvyKapfY6Hw0bs7OtWMJ2sj5mdFOv8ebJwZac_BgmuJXKyHxDUdzCj0xZl9zcksXDjdqthce1xrHJzZdGG_024CLbVBSoCmR-X_qFxdWupFwXBa281LId18qezAU80vuT69kGl0=w640" alt="https://lh3.googleusercontent.com/JqIugvyKapfY6Hw0bs7OtWMJ2sj5mdFOv8ebJwZac_BgmuJXKyHxDUdzCj0xZl9zcksXDjdqthce1xrHJzZdGG_024CLbVBSoCmR-X_qFxdWupFwXBa281LId18qezAU80vuT69kGl0=w640" />
-</div>
-<div class="title">Figure 6. Snake rows, reference output</div>
-</div>
-<div class="paragraph"><p>You can see that the old output laid shapes all over the place, while the new output puts them to a
+independent, fixed font size.</p>
+<p>
+<figure><img src="https://lh3.googleusercontent.com/7IBC-z9NfhP0mjutFPQLPN312AH5Jch6Gss-75kROjLksQ3MnSZnhTodrPDJBm3MmkcQ-rHKvzozgB1O8j8rDBJEkzCf9vgmgrSYa3kH7GqnDS0BgBnlSOWC0GQxVBCIMYX0-Blf_F8=w640"><figcaption>Snake rows, new output</figcaption>
+</figure>
+</p>
+<p>
+<figure><img src="https://lh3.googleusercontent.com/4y0pEF3utBcpXMcCsrvrkvnNCdKKyhVlwejiwsI6cMUrA1nV4u1VuE4l1Xhuw60jQYrkeQD54Y0JuB4NR571kwtluUGceclQPZPcYITEyqf0GF1Y7fr_GXNnSRCtnXO1jjtcO_nSLS0=w640"><figcaption>Snake rows, old output</figcaption>
+</figure>
+</p>
+<p>
+<figure><img src="https://lh3.googleusercontent.com/JqIugvyKapfY6Hw0bs7OtWMJ2sj5mdFOv8ebJwZac_BgmuJXKyHxDUdzCj0xZl9zcksXDjdqthce1xrHJzZdGG_024CLbVBSoCmR-X_qFxdWupFwXBa281LId18qezAU80vuT69kGl0=w640"><figcaption>Snake rows, reference output</figcaption>
+</figure>
+</p>
+<p>You can see that the old output laid shapes all over the place, while the new output puts them to a
 3 by 2 matrix. The reason this works is because now we parse width requests from constraints
 correctly. This means we give spacings a smaller width, real shapes a larger width, so the content
-fits in less rows and the layout looks like a grid, matching the reference rendering.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_how_is_this_implemented">How is this implemented?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
-<div class="paragraph"><p>As for the autofit synchronization:</p></div>
-<div class="ulist"><ul>
+fits in less rows and the layout looks like a grid, matching the reference rendering.</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>As for the autofit synchronization:</p>
+<ul>
 <li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/102266">svx UNO API for shapes: expose what scaling factor
-  is used for autofit scaling</a> made it possible to know what is a good scaling factor for one shape
-</p>
+<p><a href="https://gerrit.libreoffice.org/c/core/+/102266">svx UNO API for shapes: expose what scaling factor is used for autofit scaling</a> made it possible to know what is a good scaling factor for one shape</p>
 </li>
 <li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/102324">svx UNO API for shapes: allow setting a max factor
-  for autofit text scale</a> made it possible to set the scaling factor, overriding what it would
+<p><a href="https://gerrit.libreoffice.org/c/core/+/102324">svx UNO API for shapes: allow setting a max factor for autofit text scale</a> made it possible to set the scaling factor, overriding what it would
   calculate by itself. This is a trade-off: setting the scaling factor on the shape inside the
-  document model has the benefit that the importer doesn&#8217;t duplicate any text measuring code. The cost
-  is that now there is an UNO property that you can set, but the value of that won&#8217;t be retained if
-  you save to ODF and load the document back. At least not currently
-</p>
+  document model has the benefit that the importer doesn't duplicate any text measuring code. The cost
+  is that now there is an UNO property that you can set, but the value of that won't be retained if
+  you save to ODF and load the document back. At least not currently</p>
 </li>
 <li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/102490">oox smartart: add support for syncing font heights
-  of multiple shapes</a> is the SmartArt code to use the above mentioned building blocks
-</p>
+<p><a href="https://gerrit.libreoffice.org/c/core/+/102490">oox smartart: add support for syncing font heights of multiple shapes</a> is the SmartArt code to use the above mentioned building blocks</p>
 </li>
 <li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/102689">oox smartart: handle &lt;dgm:prSet &#8230; custT="1"/&gt;</a>
-  made it possible to not perform auto-scaling for certain shapes, if they request so
-</p>
+<p><a href="https://gerrit.libreoffice.org/c/core/+/102689">oox smartart: handle <code>&lt;dgm:prSet ... custT="1"/&gt;</code></a> made it possible to not perform auto-scaling for certain shapes, if they request so</p>
 </li>
-</ul></div>
-<div class="paragraph"><p>Beyond that, for the snake rows:</p></div>
-<div class="ulist"><ul>
+</ul>
+<p>Beyond that, for the snake rows:</p>
+<ul>
 <li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/103411">oox smartart: snake algo: consider child&#8217;s aspect
-  ratio request for cols/rows</a> started to improve the grid calculation, so less vertical space is
-  needed
-</p>
+<p><a href="https://gerrit.libreoffice.org/c/core/+/103411">oox smartart: snake algo: consider child's aspect ratio request for cols/rows</a> started to improve the grid calculation, so less vertical space is
+  needed</p>
 </li>
 <li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/103594">oox smartart: snake algo: start parsing relative
-  width constraints</a> allows differentiating between space items on a snake path (small width) and
-  shape items, which typically have a larger width
-</p>
+<p><a href="https://gerrit.libreoffice.org/c/core/+/103594">oox smartart: snake algo: start parsing relative width constraints</a> allows differentiating between space items on a snake path (small width) and
+  shape items, which typically have a larger width</p>
 </li>
 <li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/103629">oox smartart: snake algo: apply constraints on
-  child shape widths</a> uses the information collected in the previous step, so the sample document is
-  requesting the expected 3 by 2 grid
-</p>
+<p><a href="https://gerrit.libreoffice.org/c/core/+/103629">oox smartart: snake algo: apply constraints on child shape widths</a> uses the information collected in the previous step, so the sample document is
+  requesting the expected 3 by 2 grid</p>
 </li>
 <li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/103680">oox smartart: snake algo: make sure child shape
-  height stays within parent</a> finally makes sure that the content is not falling off the slide,
-  which would make it impossible to read when projecting
-</p>
+<p><a href="https://gerrit.libreoffice.org/c/core/+/103680">oox smartart: snake algo: make sure child shape height stays within parent</a> finally makes sure that the content is not falling off the slide,
+  which would make it impossible to read when projecting</p>
 </li>
-</ul></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_want_to_start_using_this">Want to start using this?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
-<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
-intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF&#8217;s next release too (7.1).</p></div>
-</div>
-</div>
-
+</ul>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a snapshot / demo of Collabora Office and try it out yourself right now: <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable
+snapshot</a>.  Collabora intends to
+continue supporting and contributing to LibreOffice, the code is merged so we expect all of this
+work will be available in TDF's next release too (7.1).</p>
   </div>
 </article>
 <hr />
@@ -754,54 +555,39 @@ of this work will be available in TDF&#8217;s next release too (7.1).</p></div>
     <p>Estimated read time: 2 minutes</p>
   </div>
   <div class="article_text">
-    <div class="sect1">
-<h2 id="_the_problem">The problem</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Users create new documents in various ways. When they do so in Online or via Windows Explorer&#8217;s
-context menu (New &#8594; &#8230;) then actual templates are not involved in the process, technically. What
+    <h2 id="the-problem">The problem<a class="headerlink" href="#the-problem" title="Permanent link">&para;</a></h2>
+<p>Users create new documents in various ways. When they do so in Online or via Windows Explorer's
+context menu (New -&gt; ...) then actual templates are not involved in the process, technically. What
 happens instead is that there is a plain empty Writer (or Calc, Impress) document that gets copied.
 The reason for this is that by the time the document gets created, the WOPI-like protocol or Windows
-Explorer doesn&#8217;t have a running soffice process to create a document instance from a template: it&#8217;ll
-just copy a file.</p></div>
-<div class="paragraph"><p>With that aside, users expect that when they create new documents, the language of their new
+Explorer doesn't have a running soffice process to create a document instance from a template: it'll
+just copy a file.</p>
+<p>With that aside, users expect that when they create new documents, the language of their new
 document matches the locale of Writer itself. This conflicts with the idea that languages in the
 documents are explicit, so if a German users writes a piece of German text, the spellcheck passes
 and the next user is English, then the text should remain German, not introducing new spellcheck
-errors.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_result">Result</h2>
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/OnDdNBGLsYhicnEbt_G6XW3Tmrn17XUT4XyBczgm0eETha9ZQ0y62t74QxeUFi3BfzfZrbBzZaMikglblqQBqTnWdYQzEQ72iBh3gZMHb9akFpQRVztOW7_0pK1Uyn9fvaNhLfugHfQ=w640" alt="https://lh3.googleusercontent.com/OnDdNBGLsYhicnEbt_G6XW3Tmrn17XUT4XyBczgm0eETha9ZQ0y62t74QxeUFi3BfzfZrbBzZaMikglblqQBqTnWdYQzEQ72iBh3gZMHb9akFpQRVztOW7_0pK1Uyn9fvaNhLfugHfQ=w640" />
-</div>
-<div class="title">Figure 1. Locale-indepentent Writer template</div>
-</div>
-<div class="paragraph"><p>The solution to this problem is what <a href="https://gerrit.libreoffice.org/c/core/+/100899">Mike</a>
-and <a href="https://gerrit.libreoffice.org/c/core/+/101195">Ezinne</a> implemented: make these
-"templates" minimal, so they don&#8217;t refer to any language. Then Calc or Impress will fill the
-language from the locale of the soffice process and it&#8217;ll be part of the document on the first save.
-This solves the problem of multi-language templates while it does not break the spellcheck use-case.</p></div>
-<div class="paragraph"><p>Andras <a href="https://gerrit.libreoffice.org/c/online/+/102239">copied</a> the same templates to various Online
-integrations to have the same problem solved in that use-case as well.</p></div>
-<div class="paragraph"><p>Writer was still problematic, though. <a href="https://gerrit.libreoffice.org/c/core/+/102051">sw: default to
-UI locale when language is missing</a> now fixes this. You can see on the above screenshot that the
-stock soffice.odt was opened with a Hungarian locale and the status bar shows that the document
-language is Hungarian, not the confusing "multiple languages", as before.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_want_to_start_using_this">Want to start using this?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
+errors.</p>
+<h2 id="result">Result<a class="headerlink" href="#result" title="Permanent link">&para;</a></h2>
+<p>
+<figure><img src="https://lh3.googleusercontent.com/OnDdNBGLsYhicnEbt_G6XW3Tmrn17XUT4XyBczgm0eETha9ZQ0y62t74QxeUFi3BfzfZrbBzZaMikglblqQBqTnWdYQzEQ72iBh3gZMHb9akFpQRVztOW7_0pK1Uyn9fvaNhLfugHfQ=w640"><figcaption>Locale-indepentent Writer template</figcaption>
+</figure>
+</p>
+<p>The solution to this problem is what <a href="https://gerrit.libreoffice.org/c/core/+/100899">Mike</a> and
+<a href="https://gerrit.libreoffice.org/c/core/+/101195">Ezinne</a> implemented: make these "templates"
+minimal, so they don't refer to any language. Then Calc or Impress will fill the language from the
+locale of the soffice process and it'll be part of the document on the first save. This solves the
+problem of multi-language templates while it does not break the spellcheck use-case.</p>
+<p>Andras <a href="https://gerrit.libreoffice.org/c/online/+/102239">copied</a> the same templates to various
+Online integrations to have the same problem solved in that use-case as well.</p>
+<p>Writer was still problematic, though. <a href="https://gerrit.libreoffice.org/c/core/+/102051">sw: default to UI locale when language is
+missing</a> now fixes this. You can see on the above
+screenshot that the stock soffice.odt was opened with a Hungarian locale and the status bar shows
+that the document language is Hungarian, not the confusing "multiple languages", as before.</p>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
 <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
-is a major contributor to LibreOffice and all of this work will be available in TDF&#8217;s next release
-too (7.1).</p></div>
-</div>
-</div>
-
+is a major contributor to LibreOffice and all of this work will be available in TDF's next release
+too (7.1).</p>
   </div>
 </article>
 <hr />
@@ -816,113 +602,72 @@ too (7.1).</p></div>
     <p>Estimated read time: 3 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Impress now has support for considering rules next to constraints when it comes to lay out
+    <p>Impress now has support for considering rules next to constraints when it comes to lay out
 SmartArt graphics from PPTX files. This builds on top of the
-<a href="https://vmiklos.hu/blog/smartart-improvements-4.html">previous improvements</a> around SmartArt support.</p></div>
-<div class="paragraph"><p>First, thanks to our partner <a href="https://www.suse.com/">SUSE</a> for working with
-<a href="https://www.collaboraoffice.com/">Collabora</a> to make this possible.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_motivation">Motivation</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>SmartArt allows declaring your content and requirements for a graphic, then the layout will take
+<a href="https://vmiklos.hu/blog/smartart-improvements-4.html">previous improvements</a> around SmartArt support.</p>
+<p>First, thanks to our partner <a href="https://www.suse.com/">SUSE</a> for working with
+<a href="https://www.collaboraoffice.com/">Collabora</a> to make this possible.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>SmartArt allows declaring your content and requirements for a graphic, then the layout will take
 care of arranging that in a suitable way. It is allowed to declare conflicting requirements, and
 rules can specify how to resolve those conflicts. The below example document has shape widths
 defined in a way that multiple child shapes wants to have a width of 100%, but simply scaling down
 all child shapes does not give a correct result. Rules define what to scale down and what to leave
-unchanged.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_results_so_far">Results so far</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Here is how this works in practice:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/_AL6ARVsbgdaovqKPxr0n0I1kSn2zX_5xGg5y_4M8whkT6K0-mXIsGXeYI2Uo6u2YQAVwfLtbfy8XeYHggaPWpIHV4yaA4CaaIFUK4LQLRbV-JIbhy9A-Xz5JEEbcXp3TRWK4CzVcl0=w640" alt="https://lh3.googleusercontent.com/_AL6ARVsbgdaovqKPxr0n0I1kSn2zX_5xGg5y_4M8whkT6K0-mXIsGXeYI2Uo6u2YQAVwfLtbfy8XeYHggaPWpIHV4yaA4CaaIFUK4LQLRbV-JIbhy9A-Xz5JEEbcXp3TRWK4CzVcl0=w640" />
-</div>
-<div class="title">Figure 1. Linear layout with multiple 100% width shapes, new output</div>
-</div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/UmK7-j0WxUHamDA-g3FepAOYYgbD5LJJhssleqv2jLnfXX-62fP82uA_5t__9HOQWIZfJUl6hoZVVQX5-LuIdOxz2M0HS90zcaoov_SbxQHuv4DN48be8dZkvySb_QtAbmNOTcMpJ5c=w640" alt="https://lh3.googleusercontent.com/UmK7-j0WxUHamDA-g3FepAOYYgbD5LJJhssleqv2jLnfXX-62fP82uA_5t__9HOQWIZfJUl6hoZVVQX5-LuIdOxz2M0HS90zcaoov_SbxQHuv4DN48be8dZkvySb_QtAbmNOTcMpJ5c=w640" />
-</div>
-<div class="title">Figure 2. Linear layout with multiple 100% width shapes, old output</div>
-</div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/i2ScJOwjQfQeeFrw-yu6EQt67nt5Xx7o325WnaOeprXH4jc_CPLuXt0Mwb2iiT9rBamjooEA271HY48P6v8ieuWMUcoSq5HTjMsJkJnUOcrCrF_7uutebYGfO2WOZzAJRh6k-ibbglc=w640" alt="https://lh3.googleusercontent.com/i2ScJOwjQfQeeFrw-yu6EQt67nt5Xx7o325WnaOeprXH4jc_CPLuXt0Mwb2iiT9rBamjooEA271HY48P6v8ieuWMUcoSq5HTjMsJkJnUOcrCrF_7uutebYGfO2WOZzAJRh6k-ibbglc=w640" />
-</div>
-<div class="title">Figure 3. Linear layout with multiple 100% width shapes, reference output</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_how_is_this_implemented">How is this implemented?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
-<div class="ulist"><ul>
-<li>
+unchanged.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>Here is how this works in practice:</p>
 <p>
-The initial heavy-lifting is done in
+<figure><img src="https://lh3.googleusercontent.com/_AL6ARVsbgdaovqKPxr0n0I1kSn2zX_5xGg5y_4M8whkT6K0-mXIsGXeYI2Uo6u2YQAVwfLtbfy8XeYHggaPWpIHV4yaA4CaaIFUK4LQLRbV-JIbhy9A-Xz5JEEbcXp3TRWK4CzVcl0=w640"><figcaption>Linear layout with multiple 100% width shapes, new output</figcaption>
+</figure>
+</p>
+<p>
+<figure><img src="https://lh3.googleusercontent.com/UmK7-j0WxUHamDA-g3FepAOYYgbD5LJJhssleqv2jLnfXX-62fP82uA_5t__9HOQWIZfJUl6hoZVVQX5-LuIdOxz2M0HS90zcaoov_SbxQHuv4DN48be8dZkvySb_QtAbmNOTcMpJ5c=w640"><figcaption>Linear layout with multiple 100% width shapes, old output</figcaption>
+</figure>
+</p>
+<p>
+<figure><img src="https://lh3.googleusercontent.com/i2ScJOwjQfQeeFrw-yu6EQt67nt5Xx7o325WnaOeprXH4jc_CPLuXt0Mwb2iiT9rBamjooEA271HY48P6v8ieuWMUcoSq5HTjMsJkJnUOcrCrF_7uutebYGfO2WOZzAJRh6k-ibbglc=w640"><figcaption>Linear layout with multiple 100% width shapes, reference output</figcaption>
+</figure>
+</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<ul>
+<li>
+<p>The initial heavy-lifting is done in
   <a href="https://git.libreoffice.org/core/commit/6ca5412bac9e3da5cd20f315fc853c7733f10858">this commit</a>,
-  which parses the rules from the XML input.
-</p>
+  which parses the rules from the XML input.</p>
 </li>
 <li>
-<p>
-Then once we had rule info around, the linear algorithm was improved to scale down child shapes
-  based on rules (and not just all of them, equally).
-</p>
+<p>Then once we had rule info around, the linear algorithm was improved to scale down child shapes
+  based on rules (and not just all of them, equally).</p>
 </li>
 <li>
-<p>
-Then it was necessary to scale spacings (between child shapes) based on rules as well.
-</p>
+<p>Then it was necessary to scale spacings (between child shapes) based on rules as well.</p>
 </li>
 <li>
-<p>
-It was also needed to limit the height request of a shape, since they should not leave the canvas
-  of the SmartArt.
-</p>
+<p>It was also needed to limit the height request of a shape, since they should not leave the canvas
+  of the SmartArt.</p>
 </li>
 <li>
-<p>
-Finally it was necessary to support the "top" child order. This can be declared using the
-  following markup:
-</p>
+<p>Finally it was necessary to support the "top" child order. This can be declared using the
+  following markup:</p>
 </li>
-</ul></div>
-<div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight
-by Lorenzo Bettini
-http://www.lorenzobettini.it
-http://www.gnu.org/software/src-highlite -->
-<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">&lt;dgm:layoutNode</span></span> ... <span style="color: #009900">chOrder</span><span style="color: #990000">=</span><span style="color: #FF0000">"t"</span><span style="font-weight: bold"><span style="color: #0000FF">&gt;</span></span></tt></pre></div></div>
-<div class="paragraph"><p>This declares that an earlier shape in a linear layout is on top of a later shapes, not the
+</ul>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;dgm:layoutNode</span><span class="w"> </span><span class="err">...</span><span class="w"> </span><span class="na">chOrder=</span><span class="s">&quot;t&quot;</span><span class="nt">&gt;</span>
+</code></pre></div>
+
+<p>This declares that an earlier shape in a linear layout is on top of a later shapes, not the
 opposite. The default is that newer shapes are on top of older shapes. This is not a visible
 problem usually, but once you start using negative widths in a linear layout, you can have
 overlapping shapes. The above example has 3 text shapes, which are overlapping with the "background"
 arrow shape. This is expressed by having 100% width for child shapes (OK to scale down), then a
 -100% width for a dummy shape (not scaling) and finally a 100% width for the background arrow (not
-scaling).</p></div>
-<div class="paragraph"><p>All in all, now the background arrow shape has a good position and size, and the text on the arrow
-is readable.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_want_to_start_using_this">Want to start using this?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
-<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
-is a major contributor to LibreOffice and all of this work will be available in TDF&#8217;s next release
-too (7.1).</p></div>
-</div>
-</div>
-
+scaling).</p>
+<p>All in all, now the background arrow shape has a good position and size, and the text on the arrow
+is readable.</p>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a snapshot / demo of Collabora Office and try it out yourself right now: <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable
+snapshot</a>.  Collabora is a major
+contributor to LibreOffice and all of this work will be available in TDF's next release too (7.1).</p>
   </div>
 </article>
 

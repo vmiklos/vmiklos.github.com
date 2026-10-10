@@ -68,110 +68,68 @@
     <p>Estimated read time: 3 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Writer now has support for anchoring shapes relative to the bottom of the page content frame.</p></div>
-<div class="paragraph"><p>First, thanks to our partner <a href="https://www.suse.com/">SUSE</a> for working with
-<a href="https://www.collaboraoffice.com/">Collabora</a> to make this possible.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_motivation">Motivation</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Users sometimes want to specify the vertical position of their shapes in text documents in a way
+    <p>Writer now has support for anchoring shapes relative to the bottom of the page content frame.</p>
+<p>First, thanks to our partner <a href="https://www.suse.com/">SUSE</a> for working with
+<a href="https://www.collaboraoffice.com/">Collabora</a> to make this possible.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>Users sometimes want to specify the vertical position of their shapes in text documents in a way
 that is relative from the bottom of the page content area. Also, this improves consistency,
-specifying a position that is relative from the top of the page content area is already possible.</p></div>
-<div class="paragraph"><p>Alternatively, it is possible to have the same calculated position when positioning from the top of
+specifying a position that is relative from the top of the page content area is already possible.</p>
+<p>Alternatively, it is possible to have the same calculated position when positioning from the top of
 the page content area. The downside of this approach is that the position changes when the page
 height changes. So if the user intention is to position a shape 2 cm above the bottom of the page
 content area and the page height changes, the shape has to be manually re-positioned. This manual
-re-positioning is not needed with the new page-content-bottom vertical relation.</p></div>
-<div class="paragraph"><p>For example, if a shape has a height of 10 cm and a 2 cm spacing is wanted between the bottom of the
+re-positioning is not needed with the new page-content-bottom vertical relation.</p>
+<p>For example, if a shape has a height of 10 cm and a 2 cm spacing is wanted between the bottom of the
 shape and the bottom of the page content area, the position can be set to -12 cm, and then the 2 cm
-spacing will be maintained, even after the page height changes.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_results_so_far">Results so far</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Here is how this works in practice:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://youtu.be/X49IbS97axs">
-<img src="https://lh3.googleusercontent.com/3r0eHqOn48OkUPHLGlhWTjPwwkWYWouF3LtMtVTmRITJ9oGHuRW1-COvswp71G7-ySMvZ-fsP8-0R5ELVNmiaN2FCxtFLfnun4OFYmFvmZk-W1UBw4EhJ4P8RAgPHhQtdcmjiCe9Eg=w640" alt="https://lh3.googleusercontent.com/3r0eHqOn48OkUPHLGlhWTjPwwkWYWouF3LtMtVTmRITJ9oGHuRW1-COvswp71G7-ySMvZ-fsP8-0R5ELVNmiaN2FCxtFLfnun4OFYmFvmZk-W1UBw4EhJ4P8RAgPHhQtdcmjiCe9Eg=w640" />
-</a>
-</div>
-<div class="title">Figure 1. Demo of a stable vertical position (relative to the bottom of the page content frame), during a page height change</div>
-</div>
-<div class="paragraph"><p>You can see how the distance of the shape from the bottom is 2 cm, even if the page height changes.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_how_is_this_implemented">How is this implemented?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
-<div class="ulist"><ul>
+spacing will be maintained, even after the page height changes.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>Here is how this works in practice:</p>
+<p><a href="https://youtu.be/X49IbS97axs"><figure><img src="https://lh3.googleusercontent.com/3r0eHqOn48OkUPHLGlhWTjPwwkWYWouF3LtMtVTmRITJ9oGHuRW1-COvswp71G7-ySMvZ-fsP8-0R5ELVNmiaN2FCxtFLfnun4OFYmFvmZk-W1UBw4EhJ4P8RAgPHhQtdcmjiCe9Eg=w640"><figcaption>Demo of a stable vertical position (relative to the bottom of the page content frame), during a page height change</figcaption></figure></a></p>
+<p>You can see how the distance of the shape from the bottom is 2 cm, even if the page height changes.</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<!-- commit prefix: 'sw from-bottom relative orientation:' -->
+
+<ul>
 <li>
-<p>
-the UNO API now supports a new <code>PAGE_PRINT_AREA_BOTTOM</code> relative orientation
-</p>
+<p>the UNO API now supports a new <code>PAGE_PRINT_AREA_BOTTOM</code> relative orientation</p>
 </li>
 <li>
-<p>
-the have the expected layout, <code>SwToContentAnchoredObjectPosition::CalcPosition()</code> now considers
-  this from-bottom anchoring when handling the vertical relative orientation
-</p>
+<p>the have the expected layout, <code>SwToContentAnchoredObjectPosition::CalcPosition()</code> now considers
+  this from-bottom anchoring when handling the vertical relative orientation</p>
 </li>
 <li>
-<p>
-the DOCX format already had a markup for this:
-</p>
+<p>the DOCX format already had a markup for this:</p>
 </li>
-</ul></div>
-<div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight
-by Lorenzo Bettini
-http://www.lorenzobettini.it
-http://www.gnu.org/software/src-highlite -->
-<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">&lt;wp:positionV</span></span> <span style="color: #009900">relativeFrom</span><span style="color: #990000">=</span><span style="color: #FF0000">"bottomMargin"</span><span style="font-weight: bold"><span style="color: #0000FF">&gt;</span></span>
-  <span style="font-weight: bold"><span style="color: #0000FF">&lt;wp:posOffset&gt;</span></span>...<span style="font-weight: bold"><span style="color: #0000FF">&lt;/wp:posOffset&gt;</span></span>
-<span style="font-weight: bold"><span style="color: #0000FF">&lt;/wp:positionV&gt;</span></span></tt></pre></div></div>
-<div class="paragraph"><p>now the import/export code maps this markup to the new feature.</p></div>
-<div class="ulist"><ul>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;wp:positionV</span><span class="w"> </span><span class="na">relativeFrom=</span><span class="s">&quot;bottomMargin&quot;</span><span class="nt">&gt;</span>
+<span class="w">  </span><span class="nt">&lt;wp:posOffset&gt;</span>...<span class="nt">&lt;/wp:posOffset&gt;</span>
+<span class="nt">&lt;/wp:positionV&gt;</span>
+</code></pre></div>
+
+<p>now the import/export code maps this markup to the new feature.</p>
+<ul>
 <li>
-<p>
-The UI allows setting a new "Page text area bottom" frame position. It turns out that the UI is
+<p>The UI allows setting a new "Page text area bottom" frame position. It turns out that the UI is
   quite nice here, it tries to prevent you from setting positions which would be outside the limits
   of the current page. This logic in <code>SwFEShell::CalcBoundRect()</code> now handles the new relative
-  orientation.
-</p>
+  orientation.</p>
 </li>
 <li>
-<p>
-The ODF filter now has a markup to represent the new vertical relation:
-</p>
+<p>The ODF filter now has a markup to represent the new vertical relation:</p>
 </li>
-</ul></div>
-<div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight
-by Lorenzo Bettini
-http://www.lorenzobettini.it
-http://www.gnu.org/software/src-highlite -->
-<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">&lt;style:graphic-properties</span></span> ... <span style="color: #009900">loext:vertical-rel</span><span style="color: #990000">=</span><span style="color: #FF0000">"page-content-bottom"</span> ...<span style="font-weight: bold"><span style="color: #0000FF">/&gt;</span></span></tt></pre></div></div>
-<div class="paragraph"><p>There is a <a href="https://issues.oasis-open.org/browse/OFFICE-4073">proposal</a> to promote this from our
-extension namespace to normal ODF (thanks to Regina for the help there!).</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_want_to_start_using_this">Want to start using this?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
-<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
-is a major contributor to LibreOffice and all of this work will be available in TDF&#8217;s next release
-too (7.1).</p></div>
-</div>
-</div>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;style:graphic-properties</span><span class="w"> </span><span class="err">...</span><span class="w"> </span><span class="na">loext:vertical-rel=</span><span class="s">&quot;page-content-bottom&quot;</span><span class="w"> </span><span class="err">...</span><span class="nt">/&gt;</span>
+</code></pre></div>
 
+<p>There is a <a href="https://issues.oasis-open.org/browse/OFFICE-4073">proposal</a> to promote this from our
+extension namespace to normal ODF (thanks to Regina for the help there!).</p>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
+<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
+is a major contributor to LibreOffice and all of this work will be available in TDF's next release
+too (7.1).</p>
   </div>
   <div class="article_meta">
     <p>Category: <a href="https://vmiklos.hu/blog/category/libreoffice.html">libreoffice</a>
