@@ -141,91 +141,61 @@ build</a> and try it out right now. :-)</p>
     <p>Estimated read time: 2 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>I recently <a href="https://vmiklos.hu/blog/smartart-improvements.html">dived into</a> the SmartArt
-support of LibreOffice, which is the component responsible for displaying
-complex diagrams from PPTX. I focused especially on the case when only
-document model and the layout constraints are given, not a pre-rendered
-result.</p></div>
-<div class="paragraph"><p>First, thanks to our partner <a href="https://www.suse.com/">SUSE</a> for working with
-<a href="https://www.collaboraoffice.com/">Collabora</a> to make this possible.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_accent_process">Accent Process</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>In this post I would like to present the progress regarding the Accent Process
-preset, available in PowerPoint&#8201;&#8212;&#8201;which is used in many documents.</p></div>
-<div class="paragraph"><p>This exposed several shortcomings of the current diagram layout we have in LibreOffice:</p></div>
-<div class="ulist"><ul>
+    <p>I recently <a href="https://vmiklos.hu/blog/smartart-improvements.html">dived into</a> the SmartArt support of
+LibreOffice, which is the component responsible for displaying complex diagrams from PPTX. I focused
+especially on the case when only document model and the layout constraints are given, not a
+pre-rendered result.</p>
+<p>First, thanks to our partner <a href="https://www.suse.com/">SUSE</a> for working with
+<a href="https://www.collaboraoffice.com/">Collabora</a> to make this possible.</p>
+<h2 id="accent-process">Accent Process<a class="headerlink" href="#accent-process" title="Permanent link">&para;</a></h2>
+<p>In this post I would like to present the progress regarding the Accent Process preset, available in
+PowerPoint -- which is used in many documents.</p>
+<p>This exposed several shortcomings of the current diagram layout we have in LibreOffice:</p>
+<ul>
 <li>
-<p>
-Values are not read from constraints (there was a reason for this, they can
-  be complex, given that depending on the context, the unit is points or
-  millimeters and the unit is always implicit).
-</p>
+<p>Values are not read from constraints (there was a reason for this, they can be complex, given that
+  depending on the context, the unit is points or millimeters and the unit is always implicit).</p>
 </li>
 <li>
-<p>
-ZOrder offsets were ignored.
-</p>
+<p>ZOrder offsets were ignored.</p>
 </li>
 <li>
-<p>
-Linear algorithm did not take size from constraints when it came to
-  recursing into child algorithms.
-</p>
+<p>Linear algorithm did not take size from constraints when it came to recursing into child
+  algorithms.</p>
 </li>
 <li>
-<p>
-Data point assumed that all text for it is a single "run" (i.e. either all
-  text is bold or nothing, not half of it).
-</p>
+<p>Data point assumed that all text for it is a single "run" (i.e. either all text is bold or
+  nothing, not half of it).</p>
 </li>
 <li>
-<p>
-<code>followSib</code> axis was not implemented for <code>forEach</code>, so when you have arrow
-  shapes between objects, we created <code>N</code> arrows, not <code>N - 1</code> ones.
-</p>
+<p><code>followSib</code> axis was not implemented for <code>forEach</code>, so when you have arrow shapes between objects,
+  we created <code>N</code> arrows, not <code>N - 1</code> ones.</p>
 </li>
 <li>
-<p>
-Connectors were created as invisible shapes and had the wrong width/height
-  aspect.
-</p>
+<p>Connectors were created as invisible shapes and had the wrong width/height aspect.</p>
 </li>
-</ul></div>
-<div class="paragraph"><p>With all these fixed, we reach a much better state for handling accent
-process.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_results_so_far">Results so far</h2>
-<div class="sectionbody">
-<div class="paragraph"><p><a href="https://cgit.freedesktop.org/libreoffice/core/tree/sd/qa/unit/data/pptx/smartart-accent-process.pptx">smartart-accent-process.pptx</a>
-is what I used for testing of this work.</p></div>
-<div class="paragraph"><p>Here is how the baseline, the current and the reference rendering of the test documents look like:</p></div>
-<div style="text-align: center">
-<img src="https://lh3.googleusercontent.com/e4uMwQRLHPsvVTwvnnwkyEIMmE0L-Piv55XreEW9wmA3y29348TWxgUbaCkYGBz-yXf8D55rhEC6Y3-kAp6BbLxNadWQfcxuUB57Z8dXFYPmlw8kjTPcOXNpqeZFKyBvtPiI7eSBhQ=w2400" style="max-width: 100%;"/>
-<p>smartart-accent-process.pptx, baseline</p>
-</div>
-<div style="text-align: center">
-<img src="https://lh3.googleusercontent.com/12c8vCrucm23guXlwYvj51MwAYOsePn7znwKBPq9qFzlgPx9XUTyX0wDcUgb0PR9tFVyTKoZPNXkhEur5Nqp7aosUCDuTVXE6yNj-58x3yLudJdqOnionMab6L-5wZ0rLvn1-bg5zA=w2400" style="max-width: 100%;"/>
-<p>smartart-accent-process.pptx, current</p>
-</div>
-<div style="text-align: center">
-<img src="https://lh3.googleusercontent.com/FBDUqsXyyBI6-abopLSrzHEYbm4YHHZwxFWxnfUsTO0dwl17HdP6sBcKzW_BvTjMWiRuPX6HC1I7aEOcHzeiZBzE-EnJZ_3fkfaOzxDHtiIc0QoFe9T4V9K3jq9_yRkNELx2tEQYpA=w2400" style="max-width: 100%;"/>
-<p>smartart-accent-process.pptx, reference</p>
-</div>
-<div class="paragraph"><p>This is not not perfect yet, but it&#8217;s clearly a large improvement, all text is
-now readable from the diagram!</p></div>
-<div class="paragraph"><p>All this is available in master (towards LibreOffice 6.3), so you can grab a
-<a href="http://dev-builds.libreoffice.org/daily/master/">daily build</a> and try it out
-right now. :-)</p></div>
-</div>
-</div>
-
+</ul>
+<p>With all these fixed, we reach a much better state for handling accent process.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p><a href="https://cgit.freedesktop.org/libreoffice/core/tree/sd/qa/unit/data/pptx/smartart-accent-process.pptx">smartart-accent-process.pptx</a>
+is what I used for testing of this work.</p>
+<p>Here is how the baseline, the current and the reference rendering of the test documents look like:</p>
+<p>
+<figure><img src="https://lh3.googleusercontent.com/e4uMwQRLHPsvVTwvnnwkyEIMmE0L-Piv55XreEW9wmA3y29348TWxgUbaCkYGBz-yXf8D55rhEC6Y3-kAp6BbLxNadWQfcxuUB57Z8dXFYPmlw8kjTPcOXNpqeZFKyBvtPiI7eSBhQ=w2400"><figcaption>smartart-accent-process.pptx, baseline</figcaption>
+</figure>
+</p>
+<p>
+<figure><img src="https://lh3.googleusercontent.com/12c8vCrucm23guXlwYvj51MwAYOsePn7znwKBPq9qFzlgPx9XUTyX0wDcUgb0PR9tFVyTKoZPNXkhEur5Nqp7aosUCDuTVXE6yNj-58x3yLudJdqOnionMab6L-5wZ0rLvn1-bg5zA=w2400"><figcaption>smartart-accent-process.pptx, current</figcaption>
+</figure>
+</p>
+<p>
+<figure><img src="https://lh3.googleusercontent.com/FBDUqsXyyBI6-abopLSrzHEYbm4YHHZwxFWxnfUsTO0dwl17HdP6sBcKzW_BvTjMWiRuPX6HC1I7aEOcHzeiZBzE-EnJZ_3fkfaOzxDHtiIc0QoFe9T4V9K3jq9_yRkNELx2tEQYpA=w2400"><figcaption>smartart-accent-process.pptx, reference</figcaption>
+</figure>
+</p>
+<p>This is not not perfect yet, but it's clearly a large improvement, all text is now readable from the
+diagram!</p>
+<p>All this is available in master (towards LibreOffice 6.3), so you can grab a <a href="http://dev-builds.libreoffice.org/daily/master/">daily
+build</a> and try it out right now. :-)</p>
   </div>
 </article>
 <hr />
@@ -240,111 +210,63 @@ right now. :-)</p></div>
     <p>Estimated read time: 2 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>I recently dived into the SmartArt support of LibreOffice, which is the
-component responsible for displaying complex diagrams from PPTX, especially in
-case only document model and the layout constraints are given, not a
-pre-rendered result.</p></div>
-<div class="paragraph"><p>First, thanks to our partner <a href="https://www.suse.com/">SUSE</a> for working with
-<a href="https://www.collaboraoffice.com/">Collabora</a> to make this possible.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_the_problem">The problem</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>There are several ones. :-) If you are just interested in high quality viewing
-of PPTX files, then your problem started with PowerPoint 2007 not writing a
-pre-rendered drawingML markup of the diagram to the files, only PowerPoint
-2010 started behaving like this. Additionally, if a diagram is not edited,
-then re-saving with PowerPoint 2010 doesn&#8217;t seem to generate the drawingML
-markup, either. This means that data + constraints cases are quite frequent
-even today.</p></div>
-<div class="paragraph"><p>Also, one day Impress should be able to actually edit these SmartArts as well,
-so having the knowledge how to lay out SmartArt (even if it&#8217;s import-time-only
-at the moment) is a good thing.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_results_so_far">Results so far</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>I always write cppunit tests when I work on filter code (in this case OOXML), so
-far all fixes were visible in just two test files:
+    <p>I recently dived into the SmartArt support of LibreOffice, which is the component responsible for
+displaying complex diagrams from PPTX, especially in case only document model and the layout
+constraints are given, not a pre-rendered result.</p>
+<p>First, thanks to our partner <a href="https://www.suse.com/">SUSE</a> for working with
+<a href="https://www.collaboraoffice.com/">Collabora</a> to make this possible.</p>
+<h2 id="the-problem">The problem<a class="headerlink" href="#the-problem" title="Permanent link">&para;</a></h2>
+<p>There are several ones. :-) If you are just interested in high quality viewing of PPTX files, then
+your problem started with PowerPoint 2007 not writing a pre-rendered drawingML markup of the diagram
+to the files, only PowerPoint 2010 started behaving like this. Additionally, if a diagram is not
+edited, then re-saving with PowerPoint 2010 doesn't seem to generate the drawingML markup, either.
+This means that data + constraints cases are quite frequent even today.</p>
+<p>Also, one day Impress should be able to actually edit these SmartArts as well, so having the
+knowledge how to lay out SmartArt (even if it's import-time-only at the moment) is a good thing.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>I always write cppunit tests when I work on filter code (in this case OOXML), so far all fixes were
+visible in just two test files:
 <a href="https://cgit.freedesktop.org/libreoffice/core/tree/sd/qa/unit/data/pptx/smartart-vertial-box-list.pptx">smartart-vertial-box-list.pptx</a>
 and
-<a href="https://cgit.freedesktop.org/libreoffice/core/tree/sd/qa/unit/data/pptx/vertical-bracket-list.pptx">vertical-bracket-list.pptx</a>.</p></div>
-<div class="paragraph"><p>Here is how the baseline, the current and the reference rendering of these test documents look like:</p></div>
-<div style="text-align: center">
-<img src="https://farm2.staticflickr.com/1924/45683201352_52e22af9dc_z.jpg"/>
-<p>smartart-vertial-box-list.pptx, baseline</p>
-</div>
-<div style="text-align: center">
-<img src="https://farm5.staticflickr.com/4912/45683200942_8005cd433d_z.jpg"/>
-<p>smartart-vertial-box-list.pptx, current</p>
-</div>
-<div style="text-align: center">
-<img src="https://farm2.staticflickr.com/1976/45683201252_edd6eddea4_z.jpg"/>
-<p>smartart-vertial-box-list.pptx, reference</p>
-</div>
-<div style="text-align: center">
-<img src="https://farm2.staticflickr.com/1951/45683201002_4c93cc831c_z.jpg"/>
-<p>vertical-bracket-list.pptx, baseline</p>
-</div>
-<div style="text-align: center">
-<img src="https://farm5.staticflickr.com/4876/45008491984_61f25e21ca_z.jpg"/>
-<p>vertical-bracket-list.pptx, current</p>
-</div>
-<div style="text-align: center">
-<img src="https://farm2.staticflickr.com/1911/45683201082_3022aa8fe5_z.jpg"/>
-<p>vertical-bracket-list.pptx, reference</p>
-</div>
-<div class="paragraph"><p>In terms of code commits, the fixes are split into several ones:</p></div>
-<div class="ulist"><ul>
-<li>
+<a href="https://cgit.freedesktop.org/libreoffice/core/tree/sd/qa/unit/data/pptx/vertical-bracket-list.pptx">vertical-bracket-list.pptx</a>.</p>
+<p>Here is how the baseline, the current and the reference rendering of these test documents look like:</p>
 <p>
-<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=e49c42d17f50c8b0cac9db08dedc375dd5aa8a98">oox
-  smartart, vertical bracket list: fix node counter condition</a>
+<figure><img src="https://farm2.staticflickr.com/1924/45683201352_52e22af9dc_z.jpg"><figcaption>smartart-vertial-box-list.pptx, baseline</figcaption>
+</figure>
 </p>
-</li>
-<li>
 <p>
-<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=397b64afc62a5632a6648598558a4d2c3ca0d283">oox
-  smartart, linear layout: take horizontal position from constraints</a>
+<figure><img src="https://farm5.staticflickr.com/4912/45683200942_8005cd433d_z.jpg"><figcaption>smartart-vertial-box-list.pptx, current</figcaption>
+</figure>
 </p>
-</li>
-<li>
 <p>
-<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=b083b0808121d19f398a9f6ead195ae7e14ed047">oox
-  smartart, linear layout: take width from constraints</a>
+<figure><img src="https://farm2.staticflickr.com/1976/45683201252_edd6eddea4_z.jpg"><figcaption>smartart-vertial-box-list.pptx, reference</figcaption>
+</figure>
 </p>
-</li>
-<li>
 <p>
-<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=923061d17d4b5b8bf0d4a8111b270c99a7c649a9">oox
-  smartart: work towards accessing parent constraints</a>
+<figure><img src="https://farm2.staticflickr.com/1951/45683201002_4c93cc831c_z.jpg"><figcaption>vertical-bracket-list.pptx, baseline</figcaption>
+</figure>
 </p>
-</li>
-<li>
 <p>
-<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=b61d2784271bf8b042642c378f50e8b446682548">oox
-  smartart: fix width of shapes with agl=lin, linDir=fromT</a>
+<figure><img src="https://farm5.staticflickr.com/4876/45008491984_61f25e21ca_z.jpg"><figcaption>vertical-bracket-list.pptx, current</figcaption>
+</figure>
 </p>
-</li>
-<li>
 <p>
-<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=a7e86beb00e9635ea4556ef4f8f8e24ff9965391">oox:
-  ignore SmartArt "fallback" with empty shape list</a>
+<figure><img src="https://farm2.staticflickr.com/1911/45683201082_3022aa8fe5_z.jpg"><figcaption>vertical-bracket-list.pptx, reference</figcaption>
+</figure>
 </p>
-</li>
-</ul></div>
-<div class="paragraph"><p>Clearly the results are not perfect yet, but in both cases nothing was
-visible, and now all text is readable, so we&#8217;re moving in the right direction!</p></div>
-<div class="paragraph"><p>All this is available in master (towards LibreOffice 6.2), so you can grab a
-<a href="http://dev-builds.libreoffice.org/daily/master/">daily build</a> and try it out
-right now. :-)</p></div>
-</div>
-</div>
-
+<p>In terms of code commits, the fixes are split into several ones:</p>
+<ul>
+<li><a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=e49c42d17f50c8b0cac9db08dedc375dd5aa8a98">oox smartart, vertical bracket list: fix node counter condition</a></li>
+<li><a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=397b64afc62a5632a6648598558a4d2c3ca0d283">oox smartart, linear layout: take horizontal position from constraints</a></li>
+<li><a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=b083b0808121d19f398a9f6ead195ae7e14ed047">oox smartart, linear layout: take width from constraints</a></li>
+<li><a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=923061d17d4b5b8bf0d4a8111b270c99a7c649a9">oox smartart: work towards accessing parent constraints</a></li>
+<li><a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=b61d2784271bf8b042642c378f50e8b446682548">oox smartart: fix width of shapes with agl=lin, linDir=fromT</a></li>
+<li><a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=a7e86beb00e9635ea4556ef4f8f8e24ff9965391">oox: ignore SmartArt "fallback" with empty shape list</a></li>
+</ul>
+<p>Clearly the results are not perfect yet, but in both cases nothing was visible, and now all text is
+readable, so we're moving in the right direction!</p>
+<p>All this is available in master (towards LibreOffice 6.2), so you can grab a <a href="http://dev-builds.libreoffice.org/daily/master/">daily
+build</a> and try it out right now. :-)</p>
   </div>
 </article>
 <hr />
@@ -359,22 +281,9 @@ right now. :-)</p></div>
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://speakerd.s3.amazonaws.com/presentations/6d1f7938f02f40da9a04bd2ce24b0940/vcllayout-locon-tirana-2k19.pdf">
-<img src="https://farm2.staticflickr.com/1914/44115509595_ab58bf01f5_z.jpg" alt="https://farm2.staticflickr.com/1914/44115509595_ab58bf01f5_z.jpg" />
-</a>
-</div>
-</div>
-<div class="paragraph"><p>Last Friday I gave a
-<a href="https://conference.libreoffice.org/2018/the-program/sept-18th-friday/">Text
-layout performance</a> lightning talk at LibreOffice Conference 2018. Click on
-the image to get the hybrid PDF slides!</p></div>
-</div>
-</div>
-
+    <p><a href="https://speakerd.s3.amazonaws.com/presentations/6d1f7938f02f40da9a04bd2ce24b0940/vcllayout-locon-tirana-2k19.pdf"><figure><img src="https://farm2.staticflickr.com/1914/44115509595_ab58bf01f5_z.jpg"><figcaption>Slides of the talk</figcaption></figure></a></p>
+<p>Last Friday I gave a <a href="https://conference.libreoffice.org/2018/the-program/sept-18th-friday/">Text layout performance</a>
+lightning talk at LibreOffice Conference 2018. Click on the image to get the hybrid PDF slides!</p>
   </div>
 </article>
 <hr />
@@ -389,25 +298,13 @@ the image to get the hybrid PDF slides!</p></div>
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://speakerd.s3.amazonaws.com/presentations/a33d7c215e7f493ab1711c614413f6db/reqif-locon-tirana-2k19.pdf">
-<img src="https://farm2.staticflickr.com/1939/44246333744_a805435168_z.jpg" alt="https://farm2.staticflickr.com/1939/44246333744_a805435168_z.jpg" />
-</a>
-</div>
-</div>
-<div class="paragraph"><p>Earlier today I gave an
-<a href="https://conference.libreoffice.org/2018/the-program/sept-18th-friday/">Editing
-ReqIF-XHTML fragments with Writer</a> talk at LibreOffice Conference 2018. The
-room was well-crowded&#8201;&#8212;&#8201;perhaps because the previous talk was about OOXML
-interoperability. ;-)</p></div>
-<div class="paragraph"><p>I expect quite some other slides will be available on
-<a href="http://planet.documentfoundation.org/">Planet</a>, don&#8217;t miss them.</p></div>
-</div>
-</div>
-
+    <p><a href="https://speakerd.s3.amazonaws.com/presentations/a33d7c215e7f493ab1711c614413f6db/reqif-locon-tirana-2k19.pdf"><figure><img src="https://farm2.staticflickr.com/1939/44246333744_a805435168_z.jpg"><figcaption>Slides of the talk</figcaption></figure></a></p>
+<p>Earlier today I gave an <a href="https://conference.libreoffice.org/2018/the-program/sept-18th-friday/">Editing ReqIF-XHTML fragments with
+Writer</a> talk at LibreOffice
+Conference 2018. The room was well-crowded -- perhaps because the previous talk was about OOXML
+interoperability. ;-)</p>
+<p>I expect quite some other slides will be available on
+<a href="http://planet.documentfoundation.org/">Planet</a>, don't miss them.</p>
   </div>
 </article>
 <hr />
@@ -422,23 +319,15 @@ interoperability. ;-)</p></div>
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>I created a toy project to experiment with a few technologies I wanted to try
-out (<a href="https://cmake.org/">cmake</a>,
-<a href="https://github.com/google/googletest">googletest</a>,
+    <p>I created a toy project to experiment with a few technologies I wanted to try out
+(<a href="https://cmake.org/">cmake</a>, <a href="https://github.com/google/googletest">googletest</a>,
 <a href="https://www.aleksey.com/xmlsec/">xmlsec</a> outside LibreOffice,
-<a href="https://libzip.org/">libzip</a> and <a href="https://www.appveyor.com/">AppVeyor</a>). The
-result is a tool with a similar interface as pdfsig from poppler (for PDF
-files), just for ODF: a cmdline executable to verify the digital signature(s)
-in an ODF document.</p></div>
-<div class="paragraph"><p>The <a href="https://github.com/vmiklos/odfsig">source code</a> now has CI on Linux and
-Windows, so perhaps in a shape that is interesting for others to have a look
-as well. And if not, then no problem, it was interesting to put together these
-building blocks and see them working as expected. :-)</p></div>
-</div>
-</div>
-
+<a href="https://libzip.org/">libzip</a> and <a href="https://www.appveyor.com/">AppVeyor</a>). The result is a tool with
+a similar interface as pdfsig from poppler (for PDF files), just for ODF: a cmdline executable to
+verify the digital signature(s) in an ODF document.</p>
+<p>The <a href="https://github.com/vmiklos/odfsig">source code</a> now has CI on Linux and Windows, so perhaps in
+a shape that is interesting for others to have a look as well. And if not, then no problem, it was
+interesting to put together these building blocks and see them working as expected. :-)</p>
   </div>
 </article>
 <hr />
@@ -453,44 +342,28 @@ building blocks and see them working as expected. :-)</p></div>
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>I used to have a hackish setup to trigger address book in the form of code
-completion from vim, when mutt starts it. I recently migrated the last part of
-it from python2, so it&#8217;s now in a relatively consistent state. On a boring
-flight trip I finally got around to summarize how it works, perhaps it&#8217;s
-useful to someone else as well. :-)</p></div>
-<div class="paragraph"><p>By multiple sources, I mean Google Contacts for my private account, and LDAP
-for work-related accounts. I have one script for each to have a local backup:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-<a href="http://github.com/vmiklos/vmexam/tree/master/google/contacts/backup">google/contacts/backup</a>
-  backs up Google Contacts to <code>$HOME/.google-contacts/</code>
-</p>
-</li>
-<li>
-<p>
-<a href="https://github.com/vmiklos/vmexam/blob/master/ldap/contacts/backup">ldap/contacts/backup</a>
-  backs up from an LDAP source to <code>$HOME/.ldap-contacts/</code>
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>Then comes
-<a href="https://github.com/vmiklos/vmexam/blob/master/mutt/contacts/search">mutt/contacts/search</a>,
-which can read these backups from <code>$HOME/.mutt/contacts/</code> (you can create
-symlinks to decide which backup should be included in the search results).</p></div>
-<div class="paragraph"><p>The rest is just a short
-<a href="https://github.com/vmiklos/vmexam/blob/master/mutt/contacts/search.vim">search.vim</a>
-that integrates the search script into vim, so when mutt starts it with
-<code>ft=mail</code>, the search script is invoked when you start typing and you press
-Ctrl-X Ctrl-O (trigger code completion).</p></div>
-<div class="paragraph"><p>And that&#8217;s it, I can start typing mails to friends and customers even without
-network connectivity, without manually maintaining an own address book just
-for mutt!</p></div>
-</div>
-</div>
-
+    <p>I used to have a hackish setup to trigger address book in the form of code completion from vim,
+when mutt starts it. I recently migrated the last part of it from python2, so it's now in a
+relatively consistent state. On a boring flight trip I finally got around to summarize how it works,
+perhaps it's useful to someone else as well. :-)</p>
+<p>By multiple sources, I mean Google Contacts for my private account, and LDAP for work-related
+accounts. I have one script for each to have a local backup:</p>
+<ul>
+<li><a href="http://github.com/vmiklos/vmexam/tree/master/google/contacts/backup">google/contacts/backup</a>
+  backs up Google Contacts to <code>$HOME/.google-contacts/</code></li>
+<li><a href="https://github.com/vmiklos/vmexam/blob/master/ldap/contacts/backup">ldap/contacts/backup</a>
+  backs up from an LDAP source to <code>$HOME/.ldap-contacts/</code></li>
+</ul>
+<p>Then comes
+<a href="https://github.com/vmiklos/vmexam/blob/master/mutt/contacts/search">mutt/contacts/search</a>, which
+can read these backups from <code>$HOME/.mutt/contacts/</code> (you can create symlinks to decide which backup
+should be included in the search results).</p>
+<p>The rest is just a short
+<a href="https://github.com/vmiklos/vmexam/blob/master/mutt/contacts/search.vim">search.vim</a> that
+integrates the search script into vim, so when mutt starts it with <code>ft=mail</code>, the search script is
+invoked when you start typing and you press Ctrl-X Ctrl-O (trigger code completion).</p>
+<p>And that's it, I can start typing mails to friends and customers even without network connectivity,
+without manually maintaining an own address book just for mutt!</p>
   </div>
 </article>
 <hr />
@@ -505,48 +378,31 @@ for mutt!</p></div>
     <p>Estimated read time: 2 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://farm2.staticflickr.com/1859/43598513125_55bed46184_o.png" alt="https://farm2.staticflickr.com/1859/43598513125_55bed46184_o.png" />
-</div>
-</div>
-<div class="paragraph"><p>Background: I was benchmarking Online vs jodconverter vs unoconv the other day
-for Collabora&#8217;s <a href="https://www.collaboraoffice.com/document-conversion/">document
-conversion</a> page. One problem with measuring unoconv performance was that it
-provided no ways to run multiple <code>unoconv</code> processes in parallel, while the
-underlying <code>soffice</code> binary obviously allows this.</p></div>
-<div class="paragraph"><p>So while <code>unoconv</code> is not capable of launching the <code>soffice</code> process in a chroot
-(improves security), nor is capable of forking an already pre-initialized
-<code>soffice</code> process (improves performance, both are things Online can do for you),
-there is no real reason why you should not be able to run multiple <code>unoconv</code>
-processes in parallel. The previously mentioned benchmarking would be quite
-unfair if even this kind of multiprocessing would be ignored, but unoconv had
-no way to specify a custom user profile, which has to be different for each
-<code>soffice</code> process.</p></div>
-<div class="paragraph"><p>So I filed a <a href="https://github.com/dagwieers/unoconv/pull/451">GitHub pull
-request</a> on 1st Jun, and finally it was merged on 10th Aug.</p></div>
-<div class="paragraph"><p>Here is how you can use it for example:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>unoconv --user-profile /tmp/tmpf_yreswi -f pdf --port 2002 test.txt</code></pre>
-</div></div>
-<div class="admonitionblock">
-<table><tr>
-<td class="icon">
-<div class="title">Note</div>
-</td>
-<td class="content">It&#8217;s your responsibility to give --port a unique value, but that&#8217;s not
-too hard: if you use a thread pool to launch the <code>unoconv</code> processes, then you
-can add the thread index to a base port and that will give you a unique port.</td>
-</tr></table>
-</div>
-<div class="paragraph"><p>So this is available in unoconv master (towards unoconv 0.8.2+1), you can grab
-the sources from git and try it out right now. :-)</p></div>
-</div>
-</div>
+    <p>
+<figure><img src="https://farm2.staticflickr.com/1859/43598513125_55bed46184_o.png"><figcaption>unoconv in a terminal</figcaption>
+</figure>
+</p>
+<p>Background: I was benchmarking Online vs jodconverter vs unoconv the other day for Collabora's
+<a href="https://www.collaboraoffice.com/document-conversion/">document conversion</a> page. One problem with
+measuring unoconv performance was that it provided no ways to run multiple <code>unoconv</code> processes in
+parallel, while the underlying <code>soffice</code> binary obviously allows this.</p>
+<p>So while <code>unoconv</code> is not capable of launching the <code>soffice</code> process in a chroot (improves security),
+nor is capable of forking an already pre-initialized <code>soffice</code> process (improves performance, both
+are things Online can do for you), there is no real reason why you should not be able to run
+multiple <code>unoconv</code> processes in parallel. The previously mentioned benchmarking would be quite
+unfair if even this kind of multiprocessing would be ignored, but unoconv had no way to specify a
+custom user profile, which has to be different for each <code>soffice</code> process.</p>
+<p>So I filed a <a href="https://github.com/dagwieers/unoconv/pull/451">GitHub pull request</a> on 1st Jun, and
+finally it was merged on 10th Aug.</p>
+<p>Here is how you can use it for example:</p>
+<div class="highlight"><pre><span></span><code>unoconv --user-profile /tmp/tmpf_yreswi -f pdf --port 2002 test.txt
+</code></pre></div>
 
+<p><strong>NOTE:</strong> It's your responsibility to give --port a unique value, but that's not too hard: if you
+use a thread pool to launch the <code>unoconv</code> processes, then you can add the thread index to a base
+port and that will give you a unique port.</p>
+<p>So this is available in unoconv master (towards unoconv 0.8.2+1), you can grab the sources from git
+and try it out right now. :-)</p>
   </div>
 </article>
 <hr />
@@ -561,107 +417,74 @@ the sources from git and try it out right now. :-)</p></div>
     <p>Estimated read time: 3 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://farm2.staticflickr.com/1793/43859007612_ca207fed0f_o.png" alt="https://farm2.staticflickr.com/1793/43859007612_ca207fed0f_o.png" />
-</div>
-</div>
-<div class="paragraph"><p>I worked on two small features to extend the public (UNO) API of LibreOffice.
-First, thanks to <a href="https://vector.com/">Vector</a> for funding
-<a href="https://www.collaboraoffice.com/">Collabora</a> to make this possible.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_aliased_paths_and_text_in_the_png_export_for_draw">Aliased paths and text in the PNG export for Draw</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>The UNO API of Draw allows you to build quite complex and custom shapes, but
-you may want to export the rendered result to a bitmap for testing purposes,
-so you can assert that the actual result matches a reference one.</p></div>
-<div class="paragraph"><p>One problem in this area is anti-aliasing, which can easily differ between
-machines. Given that normally aliased rendering is ugly, there is now a way to
-enable AA, but disable it just during a single invocation of the PNG exporter.</p></div>
-<div class="paragraph"><p>The above picture shows how the AA result looks like. You could write a Basic
-macro like this to trigger the PNG export from Draw:</p></div>
-<div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight
-by Lorenzo Bettini
-http://www.lorenzobettini.it
-http://www.gnu.org/software/src-highlite -->
-<pre><tt>xExporter <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">createUnoService</span></span><span style="color: #990000">(</span><span style="color: #FF0000">"com.sun.star.drawing.GraphicExportFilter"</span><span style="color: #990000">)</span>
-xExporter<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">SetSourceDocument</span></span><span style="color: #990000">(</span>ThisComponent<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">DrawPages</span></span><span style="color: #990000">(</span><span style="color: #993399">0</span><span style="color: #990000">))</span>
-<span style="font-weight: bold"><span style="color: #0000FF">Dim</span></span> <span style="font-weight: bold"><span style="color: #000000">aArgs</span></span><span style="color: #990000">(</span><span style="color: #993399">1</span><span style="color: #990000">)</span> As new com<span style="color: #990000">.</span>sun<span style="color: #990000">.</span>star<span style="color: #990000">.</span>beans<span style="color: #990000">.</span>PropertyValue
-<span style="font-weight: bold"><span style="color: #000000">aArgs</span></span><span style="color: #990000">(</span><span style="color: #993399">0</span><span style="color: #990000">).</span>Name  <span style="color: #990000">=</span> <span style="color: #FF0000">"URL"</span>
-<span style="font-weight: bold"><span style="color: #000000">aArgs</span></span><span style="color: #990000">(</span><span style="color: #993399">0</span><span style="color: #990000">).</span>Value <span style="color: #990000">=</span> <span style="color: #FF0000">"file:///tmp/debug/aa.png"</span>
-<span style="font-weight: bold"><span style="color: #000000">aArgs</span></span><span style="color: #990000">(</span><span style="color: #993399">1</span><span style="color: #990000">).</span>Name  <span style="color: #990000">=</span> <span style="color: #FF0000">"MediaType"</span>
-<span style="font-weight: bold"><span style="color: #000000">aArgs</span></span><span style="color: #990000">(</span><span style="color: #993399">1</span><span style="color: #990000">).</span>Value <span style="color: #990000">=</span> <span style="color: #FF0000">"image/png"</span>
-xExporter<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">filter</span></span><span style="color: #990000">(</span><span style="font-weight: bold"><span style="color: #000000">aArgs</span></span><span style="color: #990000">())</span></tt></pre></div></div>
-<div class="paragraph"><p>Let&#8217;s see how it looks like if you turn AA off:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://farm2.staticflickr.com/1832/43859007522_aeb4516f02_o.png" alt="https://farm2.staticflickr.com/1832/43859007522_aeb4516f02_o.png" />
-</div>
-</div>
-<div class="paragraph"><p>You just need to specify a new <code>Antialiasing</code> key under <code>FilterData</code>:</p></div>
-<div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight
-by Lorenzo Bettini
-http://www.lorenzobettini.it
-http://www.gnu.org/software/src-highlite -->
-<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">Dim</span></span> <span style="font-weight: bold"><span style="color: #000000">aFilterData</span></span><span style="color: #990000">(</span><span style="color: #993399">0</span><span style="color: #990000">)</span> As new com<span style="color: #990000">.</span>sun<span style="color: #990000">.</span>star<span style="color: #990000">.</span>beans<span style="color: #990000">.</span>PropertyValue
-<span style="font-weight: bold"><span style="color: #000000">aFilterData</span></span><span style="color: #990000">(</span><span style="color: #993399">0</span><span style="color: #990000">).</span>Name <span style="color: #990000">=</span> <span style="color: #FF0000">"AntiAliasing"</span>
-<span style="font-weight: bold"><span style="color: #000000">aFilterData</span></span><span style="color: #990000">(</span><span style="color: #993399">0</span><span style="color: #990000">).</span>Value <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #0000FF">False</span></span>
-xExporter <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">createUnoService</span></span><span style="color: #990000">(</span><span style="color: #FF0000">"com.sun.star.drawing.GraphicExportFilter"</span><span style="color: #990000">)</span>
-xExporter<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">SetSourceDocument</span></span><span style="color: #990000">(</span>ThisComponent<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">DrawPages</span></span><span style="color: #990000">(</span><span style="color: #993399">0</span><span style="color: #990000">))</span>
-<span style="font-weight: bold"><span style="color: #0000FF">Dim</span></span> <span style="font-weight: bold"><span style="color: #000000">aArgs</span></span><span style="color: #990000">(</span><span style="color: #993399">2</span><span style="color: #990000">)</span> As new com<span style="color: #990000">.</span>sun<span style="color: #990000">.</span>star<span style="color: #990000">.</span>beans<span style="color: #990000">.</span>PropertyValue
-<span style="font-weight: bold"><span style="color: #000000">aArgs</span></span><span style="color: #990000">(</span><span style="color: #993399">0</span><span style="color: #990000">).</span>Name  <span style="color: #990000">=</span> <span style="color: #FF0000">"URL"</span>
-<span style="font-weight: bold"><span style="color: #000000">aArgs</span></span><span style="color: #990000">(</span><span style="color: #993399">0</span><span style="color: #990000">).</span>Value <span style="color: #990000">=</span> <span style="color: #FF0000">"file:///tmp/debug/non-aa.png"</span>
-<span style="font-weight: bold"><span style="color: #000000">aArgs</span></span><span style="color: #990000">(</span><span style="color: #993399">1</span><span style="color: #990000">).</span>Name  <span style="color: #990000">=</span> <span style="color: #FF0000">"FilterData"</span>
-<span style="font-weight: bold"><span style="color: #000000">aArgs</span></span><span style="color: #990000">(</span><span style="color: #993399">1</span><span style="color: #990000">).</span>Value <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">aFilterData</span></span><span style="color: #990000">()</span>
-<span style="font-weight: bold"><span style="color: #000000">aArgs</span></span><span style="color: #990000">(</span><span style="color: #993399">2</span><span style="color: #990000">).</span>Name  <span style="color: #990000">=</span> <span style="color: #FF0000">"MediaType"</span>
-<span style="font-weight: bold"><span style="color: #000000">aArgs</span></span><span style="color: #990000">(</span><span style="color: #993399">2</span><span style="color: #990000">).</span>Value <span style="color: #990000">=</span> <span style="color: #FF0000">"image/png"</span>
-xExporter<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">filter</span></span><span style="color: #990000">(</span><span style="font-weight: bold"><span style="color: #000000">aArgs</span></span><span style="color: #990000">())</span></tt></pre></div></div>
-<div class="paragraph"><p>You can imagine which rendering result is easier to debug when the reference
-and the actual bitmap doesn&#8217;t match. ;-)</p></div>
-<div class="admonitionblock">
-<table><tr>
-<td class="icon">
-<div class="title">Note</div>
-</td>
-<td class="content">This feature is available for other bitmap formats as well, PNG is only
-an example.</td>
-</tr></table>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_default_character_style_in_writer">Default character style in Writer</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>In most cases you don&#8217;t really need a default character style: if you&#8217;re fine
-with a default, then the default paragraph style should be enough for your
-needs. In general, paragraph styles can contain character properties, so if
-the default is fine for you, you just don&#8217;t set a character style.</p></div>
-<div class="paragraph"><p>However, there is an exception to all rules. If you want to reset the current
-character style, it makes sense to just set the <code>CharStyleName</code> property to a
-default value, especially since this works with paragraph styles already.</p></div>
-<div class="paragraph"><p>Now you can write C++ code like this (see
-<a href="https://cgit.freedesktop.org/libreoffice/core/tree/sw/qa/extras/unowriter/unowriter.cxx">SwUnoWriter::testDefaultCharStyle()</a>
-for a full example):</p></div>
-<div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight
-by Lorenzo Bettini
-http://www.lorenzobettini.it
-http://www.gnu.org/software/src-highlite -->
-<pre><tt>xCursorProps<span style="color: #990000">-&gt;</span><span style="font-weight: bold"><span style="color: #000000">setPropertyValue</span></span><span style="color: #990000">(</span><span style="color: #FF0000">"CharStyleName"</span><span style="color: #990000">,</span> uno<span style="color: #990000">::</span><span style="font-weight: bold"><span style="color: #000000">makeAny</span></span><span style="color: #990000">(</span><span style="font-weight: bold"><span style="color: #000000">OUString</span></span><span style="color: #990000">(</span><span style="color: #FF0000">"Standard"</span><span style="color: #990000">)));</span></tt></pre></div></div>
-<div class="paragraph"><p>And it&#8217;ll be handled as <code>Default Style</code> in English builds, or their localized
-versions in a non-English UI.</p></div>
-<div class="paragraph"><p>All this is available in master (towards LibreOffice 6.2), or you can grab a
-<a href="http://dev-builds.libreoffice.org/daily/master/">daily build</a> and try it out
-right now. :-)</p></div>
-</div>
-</div>
+    <p>
+<figure><img src="https://farm2.staticflickr.com/1793/43859007612_ca207fed0f_o.png"><figcaption>Anti-aliased PNG export result</figcaption>
+</figure>
+</p>
+<p>I worked on two small features to extend the public (UNO) API of LibreOffice. First, thanks to
+<a href="https://vector.com/">Vector</a> for funding <a href="https://www.collaboraoffice.com/">Collabora</a> to make this
+possible.</p>
+<h2 id="aliased-paths-and-text-in-the-png-export-for-draw">Aliased paths and text in the PNG export for Draw<a class="headerlink" href="#aliased-paths-and-text-in-the-png-export-for-draw" title="Permanent link">&para;</a></h2>
+<p>The UNO API of Draw allows you to build quite complex and custom shapes, but you may want to export
+the rendered result to a bitmap for testing purposes, so you can assert that the actual result
+matches a reference one.</p>
+<p>One problem in this area is anti-aliasing, which can easily differ between machines. Given that
+normally aliased rendering is ugly, there is now a way to enable AA, but disable it just during a
+single invocation of the PNG exporter.</p>
+<p>The above picture shows how the AA result looks like. You could write a Basic macro like this to
+trigger the PNG export from Draw:</p>
+<div class="highlight"><pre><span></span><code>xExporter = createUnoService(&quot;com.sun.star.drawing.GraphicExportFilter&quot;)
+xExporter.SetSourceDocument(ThisComponent.DrawPages(0))
+Dim aArgs(1) As new com.sun.star.beans.PropertyValue
+aArgs(0).Name  = &quot;URL&quot;
+aArgs(0).Value = &quot;file:///tmp/debug/aa.png&quot;
+aArgs(1).Name  = &quot;MediaType&quot;
+aArgs(1).Value = &quot;image/png&quot;
+xExporter.filter(aArgs())
+</code></pre></div>
 
+<p>Let's see how it looks like if you turn AA off:</p>
+<p>
+<figure><img src="https://farm2.staticflickr.com/1832/43859007522_aeb4516f02_o.png"><figcaption>Aliased (AA off) PNG export result</figcaption>
+</figure>
+</p>
+<p>You just need to specify a new <code>Antialiasing</code> key under <code>FilterData</code>:</p>
+<div class="highlight"><pre><span></span><code>Dim aFilterData(0) As new com.sun.star.beans.PropertyValue
+aFilterData(0).Name = &quot;AntiAliasing&quot;
+aFilterData(0).Value = False
+xExporter = createUnoService(&quot;com.sun.star.drawing.GraphicExportFilter&quot;)
+xExporter.SetSourceDocument(ThisComponent.DrawPages(0))
+Dim aArgs(2) As new com.sun.star.beans.PropertyValue
+aArgs(0).Name  = &quot;URL&quot;
+aArgs(0).Value = &quot;file:///tmp/debug/non-aa.png&quot;
+aArgs(1).Name  = &quot;FilterData&quot;
+aArgs(1).Value = aFilterData()
+aArgs(2).Name  = &quot;MediaType&quot;
+aArgs(2).Value = &quot;image/png&quot;
+xExporter.filter(aArgs())
+</code></pre></div>
+
+<p>You can imagine which rendering result is easier to debug when the reference and the actual bitmap
+doesn't match. ;-)</p>
+<p><strong>NOTE:</strong> This feature is available for other bitmap formats as well, PNG is only an example.</p>
+<h2 id="default-character-style-in-writer">Default character style in Writer<a class="headerlink" href="#default-character-style-in-writer" title="Permanent link">&para;</a></h2>
+<p>In most cases you don't really need a default character style: if you're fine with a default, then
+the default paragraph style should be enough for your needs. In general, paragraph styles can
+contain character properties, so if the default is fine for you, you just don't set a character
+style.</p>
+<p>However, there is an exception to all rules. If you want to reset the current character style, it
+makes sense to just set the <code>CharStyleName</code> property to a default value, especially since this
+works with paragraph styles already.</p>
+<p>Now you can write C++ code like this (see
+<a href="https://cgit.freedesktop.org/libreoffice/core/tree/sw/qa/extras/unowriter/unowriter.cxx">SwUnoWriter::testDefaultCharStyle()</a>
+for a full example):</p>
+<div class="highlight"><pre><span></span><code><span class="n">xCursorProps</span><span class="o">-&gt;</span><span class="n">setPropertyValue</span><span class="p">(</span><span class="s">&quot;CharStyleName&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">uno</span><span class="o">::</span><span class="n">makeAny</span><span class="p">(</span><span class="n">OUString</span><span class="p">(</span><span class="s">&quot;Standard&quot;</span><span class="p">)));</span>
+</code></pre></div>
+
+<p>And it'll be handled as <code>Default Style</code> in English builds, or their localized versions in a
+non-English UI.</p>
+<p>All this is available in master (towards LibreOffice 6.2), or you can grab a <a href="http://dev-builds.libreoffice.org/daily/master/">daily
+build</a> and try it out right now. :-)</p>
   </div>
 </article>
 <hr />
@@ -676,114 +499,70 @@ right now. :-)</p></div>
     <p>Estimated read time: 2 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>I wrote about ECDSA handling in LibreOffice
-<a href="https://vmiklos.hu/blog/xmlsec-nss-ecdsa.html">last year</a>, back then the target
-was to be able to verify signatures using the ECDSA algorithm on Linux.</p></div>
-<div class="paragraph"><p>Lots of things happened since then, this post is meant to summarize those
-improvements. My personal motivation is that Hungarian eID cards come with a
-gov-trusted ECDSA (x509) cert, so handling those in LibreOffice would be nice.
-My goals were:</p></div>
-<div class="ulist"><ul>
+    <p>I wrote about ECDSA handling in LibreOffice
+<a href="https://vmiklos.hu/blog/xmlsec-nss-ecdsa.html">last year</a>, back then the target was to be able to
+verify signatures using the ECDSA algorithm on Linux.</p>
+<p>Lots of things happened since then, this post is meant to summarize those improvements. My personal
+motivation is that Hungarian eID cards come with a gov-trusted ECDSA (x509) cert, so handling those
+in LibreOffice would be nice. My goals were:</p>
+<ul>
+<li>platforms: handling Windows as well, not only Linux/macOS</li>
+<li>operations: handling signing as well, not only verification</li>
+<li>formats: cover all of ODF, OOXML and PDF</li>
+</ul>
+<p>Let's see what has happened:</p>
+<ul>
 <li>
-<p>
-platforms: handling Windows as well, not only Linux/macOS
-</p>
+<p>Linux, ODF, sign: we had hardcoded RSA algorithm when generating a signature, now we infer the
+  sign algorithm from the signing cert algorithm
+  (<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=fd1bc178b02e05cd12ec784ff87f5c97069bc5f5">commit</a>)</p>
 </li>
 <li>
-<p>
-operations: handling signing as well, not only verification
-</p>
+<p>Linux, OOXML, sign: same problem with hardcoded RSA
+  (<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=6b1b8ef51b752f9711d6581283d6c515d3c50d9b">commit</a>)</p>
 </li>
 <li>
-<p>
-formats: cover all of ODF, OOXML and PDF
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>Let&#8217;s see what has happened:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-Linux, ODF, sign: we had hardcoded RSA algorithm when generating a signature, now
-  we infer the sign algorithm from the signing cert algorithm
-  (<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=fd1bc178b02e05cd12ec784ff87f5c97069bc5f5">commit</a>)
-</p>
-</li>
-<li>
-<p>
-Linux, OOXML, sign: same problem with hardcoded RSA
-  (<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=6b1b8ef51b752f9711d6581283d6c515d3c50d9b">commit</a>)
-</p>
-</li>
-<li>
-<p>
-Windows, PDF, sign: the certificate chooser had to be ported to from
-  CryptoAPI to
+<p>Windows, PDF, sign: the certificate chooser had to be ported to from CryptoAPI to
   <a href="https://docs.microsoft.com/en-us/windows/desktop/SecCNG/cng-portal">CNG</a>
-  (<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=93e33ba279e837356e157745177d7f6061d442b7">commit</a>)
-</p>
+  (<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=93e33ba279e837356e157745177d7f6061d442b7">commit</a>)</p>
 </li>
 <li>
-<p>
-Windows, ODF, verify / sign: this was the largest problem, this required a
-  whole new libxmlsec backend
+<p>Windows, ODF, verify / sign: this was the largest problem, this required a whole new libxmlsec
+  backend
   (<a href="https://github.com/lsh123/xmlsec/tree/master/include/xmlsec/mscng">interface</a>,
-  <a href="https://github.com/lsh123/xmlsec/tree/master/src/mscng">implementation</a>, all in
-  C90) and also required conditionally using that new backend in LibreOffice
-  (<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=71d02f5b6ca78935df3d09ec0a5817f5870b056e">commit</a>)
-</p>
+  <a href="https://github.com/lsh123/xmlsec/tree/master/src/mscng">implementation</a>, all in C90) and also
+  required conditionally using that new backend in LibreOffice
+  (<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=71d02f5b6ca78935df3d09ec0a5817f5870b056e">commit</a>)</p>
 </li>
 <li>
-<p>
-Windows, OOXML, sign: this was almost functional, except that the UI
-  recently regressed, now fixed
-  (<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=02119ce226ef7c1fcf419aa0933aa95381ee309b">commit</a>)
-</p>
+<p>Windows, OOXML, sign: this was almost functional, except that the UI recently regressed, now fixed
+  (<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=02119ce226ef7c1fcf419aa0933aa95381ee309b">commit</a>)</p>
 </li>
 <li>
-<p>
-Finally now that everything is ported on Windows to use CNG, I could enable
-  it by default yesterday.
-</p>
+<p>Finally now that everything is ported on Windows to use CNG, I could enable it by default yesterday.</p>
 </li>
-</ul></div>
-<div class="paragraph"><p>I could test hardware-based signing after this, which was fine out of the box
-on both platforms. Some screenshots:</p></div>
-<div class="ulist"><ul>
-<li>
+</ul>
+<p>I could test hardware-based signing after this, which was fine out of the box on both platforms.
+Some screenshots:</p>
+<ul>
+<li>Linux:</li>
+</ul>
 <p>
-Linux:
+<figure><img src="https://farm2.staticflickr.com/1784/29321634078_8818b2d7ba_o.png"><figcaption>Linux, hardwared-based signing</figcaption>
+</figure>
 </p>
-</li>
-</ul></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://farm2.staticflickr.com/1784/29321634078_8818b2d7ba_o.png" alt="https://farm2.staticflickr.com/1784/29321634078_8818b2d7ba_o.png" />
-</div>
-</div>
-<div class="ulist"><ul>
-<li>
+<ul>
+<li>Windows:</li>
+</ul>
 <p>
-Windows:
+<figure><img src="https://farm1.staticflickr.com/927/42288765505_db72ee48f2_o.png"><figcaption>Windows, hardwared-based signing</figcaption>
+</figure>
 </p>
-</li>
-</ul></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://farm1.staticflickr.com/927/42288765505_db72ee48f2_o.png" alt="https://farm1.staticflickr.com/927/42288765505_db72ee48f2_o.png" />
-</div>
-</div>
-<div class="paragraph"><p>(There is no reason why this would not work on macOS, but I did not test that.)</p></div>
-<div class="paragraph"><p>Thanks Gabor Kelemen who helped me to get a sane card reader that has
-reasonable driver support on Linux.</p></div>
-<div class="paragraph"><p>All this is available in master (towards LibreOffice 6.2), or you can grab a
-<a href="http://dev-builds.libreoffice.org/daily/master/">daily build</a> and try it out
-right now. :-)</p></div>
-</div>
-</div>
-
+<p>(There is no reason why this would not work on macOS, but I did not test that.)</p>
+<p>Thanks Gabor Kelemen who helped me to get a sane card reader that has reasonable driver support on
+Linux.</p>
+<p>All this is available in master (towards LibreOffice 6.2), or you can grab a <a href="http://dev-builds.libreoffice.org/daily/master/">daily
+build</a> and try it out right now. :-)</p>
   </div>
 </article>
 

@@ -65,41 +65,32 @@
     <p>Posted on: Fri 04 May 2018</p>
   </div>
   <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
+    <p>Estimated read time: 2 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>I worked on improving document load performance of Microsoft formats in
-general, and DOC/DOCX in particular in LibreOffice recently. First, thanks to
-<a href="https://www.documentfoundation.org/">TDF</a> and users that support the foundation
-by providing donations for funding <a href="https://www.collaboraoffice.com/">Collabora</a>
-to make this possible.</p></div>
-<div class="paragraph"><p>I built on top of the
-<a href="https://tomazvajngerl.blogspot.com/2018/04/improving-image-handling-in-libreoffice.html">great
-work of Tomaz</a>, focusing on these secondary, but important formats.</p></div>
-<div class="paragraph"><p>The idea is that if you load an Microsoft binary or OOXML file, it should not
-be necessary to parse all images at load time, it&#8217;s enough to lazy read it
-when we first render e.g. a Writer page containing that image.</p></div>
-<div class="paragraph"><p>The focus here was documents containing large images. I tested with an
-<a href="https://www.theverge.com/2012/1/25/2732264/nasas-64-megapixel-photo-of-earth">Earth
-photo</a> of size 8000x8000 pixels from NASA, making little modifications to it,
-so each picture has a different checksum, embedding them into a binary DOC file.</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://farm1.staticflickr.com/980/41838412652_c1cbefcfc1_o.png" alt="https://farm1.staticflickr.com/980/41838412652_c1cbefcfc1_o.png" />
-</div>
-</div>
-<div class="paragraph"><p>I measured the time from the <code>soffice</code> process startup to rendering the first
-page. We defer the work of loading most images now, as you can see on the
-chart. In contrast, we used to decompress all images on file import in the
-past. This means the new cost for e.g. 4 images is 37% of the original.</p></div>
-<div class="paragraph"><p>All this is available in master (towards LibreOffice 6.1), or you can grab a
-<a href="http://dev-builds.libreoffice.org/daily/master/">daily build</a> and try it out
-right now. :-)</p></div>
-</div>
-</div>
-
+    <p>I worked on improving document load performance of Microsoft formats in general, and DOC/DOCX in
+particular in LibreOffice recently. First, thanks to <a href="https://www.documentfoundation.org/">TDF</a> and
+users that support the foundation by providing donations for funding
+<a href="https://www.collaboraoffice.com/">Collabora</a> to make this possible.</p>
+<p>I built on top of the <a href="https://tomazvajngerl.blogspot.com/2018/04/improving-image-handling-in-libreoffice.html">great work of
+Tomaz</a>, focusing
+on these secondary, but important formats.</p>
+<p>The idea is that if you load an Microsoft binary or OOXML file, it should not be necessary to parse
+all images at load time, it's enough to lazy read it when we first render e.g. a Writer page
+containing that image.</p>
+<p>The focus here was documents containing large images. I tested with an <a href="https://www.theverge.com/2012/1/25/2732264/nasas-64-megapixel-photo-of-earth">Earth
+photo</a> of size
+8000x8000 pixels from NASA, making little modifications to it, so each picture has a different
+checksum, embedding them into a binary DOC file.</p>
+<p>
+<figure><img src="https://farm1.staticflickr.com/980/41838412652_c1cbefcfc1_o.png"><figcaption>Time to load a binary DOC file with 4 large images</figcaption>
+</figure>
+</p>
+<p>I measured the time from the <code>soffice</code> process startup to rendering the first page. We defer the
+work of loading most images now, as you can see on the chart. In contrast, we used to decompress all
+images on file import in the past. This means the new cost for e.g. 4 images is 37% of the original.</p>
+<p>All this is available in master (towards LibreOffice 6.1), or you can grab a <a href="http://dev-builds.libreoffice.org/daily/master/">daily
+build</a> and try it out right now. :-)</p>
   </div>
   <div class="article_meta">
     <p>Category: <a href="https://vmiklos.hu/blog/category/libreoffice.html">libreoffice</a>

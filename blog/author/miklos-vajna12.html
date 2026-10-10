@@ -68,104 +68,53 @@
     <p>Estimated read time: 2 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://youtu.be/hesL0TWZ5JQ">
-<img src="https://farm2.staticflickr.com/1752/28703474708_bde744fb13_o.png" alt="https://farm2.staticflickr.com/1752/28703474708_bde744fb13_o.png" />
-</a>
-</div>
-</div>
-<div class="paragraph"><p>I worked on a small feature to use Writer as an editor for the XHTML fragments
-inside
-<a href="https://en.wikipedia.org/wiki/Requirements_Interchange_Format">Requirements
-Interchange Format</a> (ReqIF) files.  First, thanks to
-<a href="https://vector.com/">Vector</a> for funding
-<a href="https://www.collaboraoffice.com/">Collabora</a> to make this possible.</p></div>
-<div class="paragraph"><p>Writer already supported XHTML import and export before (see my
-<a href="http://vmiklos.hu/blog/odt-xhtml-performance.html">previous post</a>) as a special
-mode of the HTML filter, this work builds on top of that. The main speciality
-around XHTML as used for fragments inside a ReqIF file is embedded objects.</p></div>
-<div class="paragraph"><p>The special mode to opt-in for ReqIF-XHTML behavior can actived like this:</p></div>
-<div class="ulist"><ul>
+    <p><a href="https://youtu.be/hesL0TWZ5JQ"><figure><img src="https://farm2.staticflickr.com/1752/28703474708_bde744fb13_o.png"><figcaption>Demo of editing ReqIF-XHTML fragments in Writer</figcaption></figure></a></p>
+<p>I worked on a small feature to use Writer as an editor for the XHTML fragments inside <a href="https://en.wikipedia.org/wiki/Requirements_Interchange_Format">Requirements
+Interchange Format</a> (ReqIF) files.
+First, thanks to <a href="https://vector.com/">Vector</a> for funding
+<a href="https://www.collaboraoffice.com/">Collabora</a> to make this possible.</p>
+<p>Writer already supported XHTML import and export before (see my <a href="http://vmiklos.hu/blog/odt-xhtml-performance.html">previous
+post</a>) as a special mode of the HTML filter, this
+work builds on top of that. The main speciality around XHTML as used for fragments inside a ReqIF
+file is embedded objects.</p>
+<p>The special mode to opt-in for ReqIF-XHTML behavior can actived like this:</p>
+<ul>
+<li>during import: <code>--infilter="HTML (StarWriter):xhtmlns=reqif-xhtml"</code></li>
+<li>during export: <code>-convert-to "xhtml:HTML (StarWriter):xhtmlns=reqif-xhtml"</code></li>
+</ul>
+<p>Three different cases are handled:</p>
+<ol>
 <li>
-<p>
-during import: <code>--infilter="HTML (StarWriter):xhtmlns=reqif-xhtml"</code>
-</p>
+<p>Image with native data we don't understand and just preserve.</p>
 </li>
 <li>
-<p>
-during export: <code>-convert-to "xhtml:HTML (StarWriter):xhtmlns=reqif-xhtml"</code>
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>Three different cases are handled:</p></div>
-<div class="olist arabic"><ol class="arabic">
-<li>
-<p>
-Image with native data we don&#8217;t understand and just preserve.
-</p>
+<p>Image with OLE2 data, which we hand out to external applications (at least on Windows). On the
+   above video this is an embedded PPSX file, handled by PowerPoint.</p>
 </li>
 <li>
-<p>
-Image with OLE2 data, which we hand out to external applications (at least
-on Windows). On the above video this is an embedded PPSX file, handled by PowerPoint.
-</p>
+<p>Image with ODF data, which we handle internally. This is a Draw document on the above video.</p>
 </li>
-<li>
-<p>
-Image with ODF data, which we handle internally. This is a Draw document on the above video.
-</p>
-</li>
-</ol></div>
-<div class="paragraph"><p>Regarding how it works, the import is a series of unwrapping containers till
-you get to the real data and the export is the opposite of this. Here are the layers:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-Larger ReqIF files have the <code>.reqifz</code> extension, and are ZIP files
-  containing an XML file, having the XHTML fragments. This is not relevant for
-  this post, as Writer assumes that extracting the XHTML fragment from ReqIF is
-  done before you load the content into Writer.
-</p>
-</li>
-<li>
-<p>
-XHTML always has a PNG image for the object, and optionally it has RTF as
-  native data for the object.
-</p>
-</li>
-<li>
-<p>
-The RTF file is a fragment, containing just an embedded OLE1 container.
-</p>
-</li>
-<li>
-<p>
-The OLE1 container is just a wrapper around the real OLE2 container.
-</p>
-</li>
-<li>
-<p>
-The OLE2 container either has the data directly or MSO has a convention on
-  how to include OOXML files in it (see the PPSX example above), and we handle
-  that.
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>On export we do the opposite: save the file, put it into OLE2, then into OLE1,
-then into RTF, finally into XHTML.</p></div>
-<div class="paragraph"><p>There is no specification on how to put ODF files into OLE2, so I extracted
-the relevant code from LibreOffice&#8217;s binary MSO filters and now the Writer
-HTML filter uses that as well. This avoids code duplication and also could
-avoid inventing some new markup this way.</p></div>
-<div class="paragraph"><p>All this is available in master (towards LibreOffice 6.2), or you can grab a
-<a href="http://dev-builds.libreoffice.org/daily/master/">daily build</a> and try it out
-right now. :-)</p></div>
-</div>
-</div>
-
+</ol>
+<p>Regarding how it works, the import is a series of unwrapping containers till you get to the real
+data and the export is the opposite of this. Here are the layers:</p>
+<ul>
+<li>Larger ReqIF files have the <code>.reqifz</code> extension, and are ZIP files containing an XML file, having
+  the XHTML fragments. This is not relevant for this post, as Writer assumes that extracting the
+  XHTML fragment from ReqIF is done before you load the content into Writer.</li>
+<li>XHTML always has a PNG image for the object, and optionally it has RTF as native data for the
+  object.</li>
+<li>The RTF file is a fragment, containing just an embedded OLE1 container.</li>
+<li>The OLE1 container is just a wrapper around the real OLE2 container.</li>
+<li>The OLE2 container either has the data directly or MSO has a convention on how to include OOXML
+  files in it (see the PPSX example above), and we handle that.</li>
+</ul>
+<p>On export we do the opposite: save the file, put it into OLE2, then into OLE1, then into RTF,
+finally into XHTML.</p>
+<p>There is no specification on how to put ODF files into OLE2, so I extracted the relevant code from
+LibreOffice's binary MSO filters and now the Writer HTML filter uses that as well. This avoids code
+duplication and also could avoid inventing some new markup this way.</p>
+<p>All this is available in master (towards LibreOffice 6.2), or you can grab a <a href="http://dev-builds.libreoffice.org/daily/master/">daily
+build</a> and try it out right now. :-)</p>
   </div>
 </article>
 <hr />
@@ -177,41 +126,32 @@ right now. :-)</p></div>
     <p>Posted on: Fri 04 May 2018</p>
   </div>
   <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
+    <p>Estimated read time: 2 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>I worked on improving document load performance of Microsoft formats in
-general, and DOC/DOCX in particular in LibreOffice recently. First, thanks to
-<a href="https://www.documentfoundation.org/">TDF</a> and users that support the foundation
-by providing donations for funding <a href="https://www.collaboraoffice.com/">Collabora</a>
-to make this possible.</p></div>
-<div class="paragraph"><p>I built on top of the
-<a href="https://tomazvajngerl.blogspot.com/2018/04/improving-image-handling-in-libreoffice.html">great
-work of Tomaz</a>, focusing on these secondary, but important formats.</p></div>
-<div class="paragraph"><p>The idea is that if you load an Microsoft binary or OOXML file, it should not
-be necessary to parse all images at load time, it&#8217;s enough to lazy read it
-when we first render e.g. a Writer page containing that image.</p></div>
-<div class="paragraph"><p>The focus here was documents containing large images. I tested with an
-<a href="https://www.theverge.com/2012/1/25/2732264/nasas-64-megapixel-photo-of-earth">Earth
-photo</a> of size 8000x8000 pixels from NASA, making little modifications to it,
-so each picture has a different checksum, embedding them into a binary DOC file.</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://farm1.staticflickr.com/980/41838412652_c1cbefcfc1_o.png" alt="https://farm1.staticflickr.com/980/41838412652_c1cbefcfc1_o.png" />
-</div>
-</div>
-<div class="paragraph"><p>I measured the time from the <code>soffice</code> process startup to rendering the first
-page. We defer the work of loading most images now, as you can see on the
-chart. In contrast, we used to decompress all images on file import in the
-past. This means the new cost for e.g. 4 images is 37% of the original.</p></div>
-<div class="paragraph"><p>All this is available in master (towards LibreOffice 6.1), or you can grab a
-<a href="http://dev-builds.libreoffice.org/daily/master/">daily build</a> and try it out
-right now. :-)</p></div>
-</div>
-</div>
-
+    <p>I worked on improving document load performance of Microsoft formats in general, and DOC/DOCX in
+particular in LibreOffice recently. First, thanks to <a href="https://www.documentfoundation.org/">TDF</a> and
+users that support the foundation by providing donations for funding
+<a href="https://www.collaboraoffice.com/">Collabora</a> to make this possible.</p>
+<p>I built on top of the <a href="https://tomazvajngerl.blogspot.com/2018/04/improving-image-handling-in-libreoffice.html">great work of
+Tomaz</a>, focusing
+on these secondary, but important formats.</p>
+<p>The idea is that if you load an Microsoft binary or OOXML file, it should not be necessary to parse
+all images at load time, it's enough to lazy read it when we first render e.g. a Writer page
+containing that image.</p>
+<p>The focus here was documents containing large images. I tested with an <a href="https://www.theverge.com/2012/1/25/2732264/nasas-64-megapixel-photo-of-earth">Earth
+photo</a> of size
+8000x8000 pixels from NASA, making little modifications to it, so each picture has a different
+checksum, embedding them into a binary DOC file.</p>
+<p>
+<figure><img src="https://farm1.staticflickr.com/980/41838412652_c1cbefcfc1_o.png"><figcaption>Time to load a binary DOC file with 4 large images</figcaption>
+</figure>
+</p>
+<p>I measured the time from the <code>soffice</code> process startup to rendering the first page. We defer the
+work of loading most images now, as you can see on the chart. In contrast, we used to decompress all
+images on file import in the past. This means the new cost for e.g. 4 images is 37% of the original.</p>
+<p>All this is available in master (towards LibreOffice 6.1), or you can grab a <a href="http://dev-builds.libreoffice.org/daily/master/">daily
+build</a> and try it out right now. :-)</p>
   </div>
 </article>
 <hr />
@@ -226,66 +166,48 @@ right now. :-)</p></div>
     <p>Estimated read time: 2 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div style="text-align: center; font-size: 0.6em;">
-<img src="https://farm1.staticflickr.com/873/27489617988_4c2ce3fd59_z.jpg"/>
-<p>(via <a href="https://twitter.com/Sweet5hark/status/982560887927197696">Sweet5hark</a>)</p>
-</div>
-<div class="paragraph"><p>I arrived home from Hamburg yesterday where I participated in the
-<a href="https://wiki.documentfoundation.org/Hackfest/Hamburg2018">LibreOffice hackfest</a>
-over the weekend as a mentor.  First, thanks to The Document Foundation&#8201;&#8212;&#8201;and
-all the <a href="https://www.libreoffice.org/donate">donors</a> for funding Collabora to
-make this possible.</p></div>
-<div class="paragraph"><p>There were a few topics I mentored:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-Patrick was interested fixing
-  <a href="https://bugs.documentfoundation.org/show_bug.cgi?id=116486">tdf#116486</a>,
-  which required some background knowledge on the Writer document model and
-  layout, so we explored the relevant details together towards providing an
-  actual patch for the bug.
+    <p>
+<figure><img src="https://farm1.staticflickr.com/873/27489617988_4c2ce3fd59_z.jpg"><figcaption>(via Sweet5hark)</figcaption>
+</figure>
 </p>
+<p>I arrived home from Hamburg yesterday where I participated in the <a href="https://wiki.documentfoundation.org/Hackfest/Hamburg2018">LibreOffice
+hackfest</a> over the weekend as a mentor.
+First, thanks to The Document Foundation -- and all the <a href="https://www.libreoffice.org/donate">donors</a>
+for funding Collabora to make this possible.</p>
+<p>There were a few topics I mentored:</p>
+<ul>
+<li>
+<p>Patrick was interested fixing
+  <a href="https://bugs.documentfoundation.org/show_bug.cgi?id=116486">tdf#116486</a>, which required some
+  background knowledge on the Writer document model and layout, so we explored the relevant details
+  together towards providing an actual patch for the bug.</p>
 </li>
 <li>
-<p>
-Nithin wanted to fix
-  <a href="https://bugs.documentfoundation.org/show_bug.cgi?id=112384">tdf#112384</a>,
-  which turned out to be an ideal task for a hackfest. On one hand, the scope is
-  limited so that you can implement this mini-feature over a weekened. On the
-  other hand, it required touching various parts of Writer (UI, document model,
-  UNO API, ODF filter), so it allowed seeing the process of adding a new
-  feature. The <a href="https://gerrit.libreoffice.org/52561">patch</a> is merged to master.
-</p>
+<p>Nithin wanted to fix
+  <a href="https://bugs.documentfoundation.org/show_bug.cgi?id=112384">tdf#112384</a>, which turned out to be an
+  ideal task for a hackfest. On one hand, the scope is limited so that you can implement this
+  mini-feature over a weekened. On the other hand, it required touching various parts of Writer (UI,
+  document model, UNO API, ODF filter), so it allowed seeing the process of adding a new feature.
+  The <a href="https://gerrit.libreoffice.org/52561">patch</a> is merged to master.</p>
 </li>
 <li>
-<p>
-Linus looked for a task that is relatively easy, still useful, we looked at
-  <a href="https://bugs.documentfoundation.org/show_bug.cgi?id=42949">tdf#42949</a>, and he
-  identified and removed a number of unused includes himself. This should
-  especially help with slow incremental builds. Again, the
-  <a href="https://gerrit.libreoffice.org/52594">patch</a> is already in master.
-</p>
+<p>Linus looked for a task that is relatively easy, still useful, we looked at
+  <a href="https://bugs.documentfoundation.org/show_bug.cgi?id=42949">tdf#42949</a>, and he identified and
+  removed a number of unused includes himself. This should especially help with slow incremental
+  builds. Again, the <a href="https://gerrit.libreoffice.org/52594">patch</a> is already in master.</p>
 </li>
 <li>
-<p>
-Zdeněk (raal) wanted to write a uitest for
-  <a href="https://bugs.documentfoundation.org/show_bug.cgi?id=106280">tdf#106280</a> so we
-  were figuring out together how to select images from pyuno and how to avoid
-  using graphic URLs in uitests in general.
-</p>
+<p>Zdeněk (raal) wanted to write a uitest for
+  <a href="https://bugs.documentfoundation.org/show_bug.cgi?id=106280">tdf#106280</a> so we were figuring out
+  together how to select images from pyuno and how to avoid using graphic URLs in uitests in
+  general.</p>
 </li>
-</ul></div>
-<div class="paragraph"><p>The full list of achievements is
-<a href="https://wiki.documentfoundation.org/Hackfest/Hamburg2018#Achievements">on the
-wiki</a>, if you were at the hackfest and you did not contribute to that section,
-please write a line about what did you hack on. :-)</p></div>
-<div class="paragraph"><p>Finally, thanks for the organizers and the sponsors of the hackfest, it was a
-really great event!</p></div>
-</div>
-</div>
-
+</ul>
+<p>The full list of achievements is <a href="https://wiki.documentfoundation.org/Hackfest/Hamburg2018#Achievements">on the
+wiki</a>, if you were at the
+hackfest and you did not contribute to that section, please write a line about what did you hack on.
+:-)</p>
+<p>Finally, thanks for the organizers and the sponsors of the hackfest, it was a really great event!</p>
   </div>
 </article>
 <hr />
@@ -300,106 +222,54 @@ really great event!</p></div>
     <p>Estimated read time: 2 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>I worked on improving the ODT ↔ XHTML conversion performance for simple
-documents in LibreOffice recently.  First, thanks to
-<a href="https://vector.com/">Vector</a> for funding
-<a href="https://www.collaboraoffice.com/">Collabora</a> to make this possible.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_odt_8594_xhtml_conversion">ODT &#8594; XHTML conversion</h2>
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://farm5.staticflickr.com/4605/26697712598_2ace3f45a3_o.png" alt="https://farm5.staticflickr.com/4605/26697712598_2ace3f45a3_o.png" />
-</div>
-</div>
-<div class="paragraph"><p>The focus here was <strong>really</strong> simple documents, like just one sentence with
-minimal formatting. The use-case is to have thousands of these simple
-documents, only a minority containing complex formatting, the rest is just
-that simple.</p></div>
-<div class="paragraph"><p>Performance work usually focuses on one specific complex feature, e.g. lots of
-bookmarks, lots of document-level user-defined metadata, and so on&#8201;&#8212;&#8201;this way
-there were room for improvements when it comes to trivial documents.</p></div>
-<div class="paragraph"><p>I managed to reduce the cost of the conversion to the <em>fifth of the original</em>
-cost in both directions&#8201;&#8212;&#8201;the chart above shows the impact of my work for
-the ODT &#8594; XHTML direction. The steps that helped:</p></div>
-<div class="ulist"><ul>
-<li>
+    <p>I worked on improving the ODT ↔ XHTML conversion performance for simple documents in LibreOffice
+recently.  First, thanks to <a href="https://vector.com/">Vector</a> for funding
+<a href="https://www.collaboraoffice.com/">Collabora</a> to make this possible.</p>
+<h2 id="odt-xhtml-conversion">ODT -&gt; XHTML conversion<a class="headerlink" href="#odt-xhtml-conversion" title="Permanent link">&para;</a></h2>
 <p>
-Recognize <code>XHTML</code> as a value for the <code>FilterOptions</code> key in the <code>HTML
-  (StarWriter)</code> export filter, this way avoid the need to go via XSLT, which
-  would be expensive.
+<figure><img src="https://farm5.staticflickr.com/4605/26697712598_2ace3f45a3_o.png"><figcaption>ODT -&gt; XHTML conversion time savings</figcaption>
+</figure>
 </p>
-</li>
-<li>
+<p>The focus here was <em>really</em> simple documents, like just one sentence with minimal formatting. The
+use-case is to have thousands of these simple documents, only a minority containing complex
+formatting, the rest is just that simple.</p>
+<p>Performance work usually focuses on one specific complex feature, e.g. lots of bookmarks, lots of
+document-level user-defined metadata, and so on -- this way there were room for improvements when it
+comes to trivial documents.</p>
+<p>I managed to reduce the cost of the conversion to the <em>fifth of the original</em> cost in both directions
+-- the chart above shows the impact of my work for the ODT -&gt; XHTML direction. The steps that helped:</p>
+<ul>
+<li>Recognize <code>XHTML</code> as a value for the <code>FilterOptions</code> key in the <code>HTML (StarWriter)</code> export filter,
+  this way avoid the need to go via XSLT, which would be expensive.</li>
+<li>Add a new <code>NoFileSync</code> flag to the <code>frame::XStorable::storeToURL()</code> API, so that if you know you'll
+  read the result after the conversion finished, you can avoid an expensive <code>fsync()</code> call for each
+  and every file, which helps HDDs a lot, while means no overhead for SSDs.</li>
+<li>If you know your input format already, then specifying an explicit <code>FilterName</code> key for the
+  <code>frame::XComponentLoader::loadComponentFromURL()</code> API helps not spending time to detect the file
+  format you already know.</li>
+</ul>
+<p>Note that the XHTML mode for the Writer HTML export is still a work in progress, but it already
+produces valid output for such simple documents.</p>
+<h2 id="xhtml-odt-conversion">XHTML -&gt; ODT conversion<a class="headerlink" href="#xhtml-odt-conversion" title="Permanent link">&para;</a></h2>
 <p>
-Add a new <code>NoFileSync</code> flag to the <code>frame::XStorable::storeToURL()</code> API, so
-  that if you know you&#8217;ll read the result after the conversion finished, you
-  can avoid an expensive <code>fsync()</code> call for each and every file, which helps
-  HDDs a lot, while means no overhead for SSDs.
+<figure><img src="https://farm5.staticflickr.com/4608/39674632615_de78265c7f_o.png"><figcaption>XHTML -&gt; ODT conversion time savings</figcaption>
+</figure>
 </p>
-</li>
-<li>
-<p>
-If you know your input format already, then specifying an explicit
-  <code>FilterName</code> key for the <code>frame::XComponentLoader::loadComponentFromURL()</code>
-  API helps not spending time to detect the file format you already know.
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>Note that the XHTML mode for the Writer HTML export is still a work in
-progress, but it already produces valid output for such simple documents.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_xhtml_8594_odt_conversion">XHTML &#8594; ODT conversion</h2>
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://farm5.staticflickr.com/4608/39674632615_de78265c7f_o.png" alt="https://farm5.staticflickr.com/4608/39674632615_de78265c7f_o.png" />
-</div>
-</div>
-<div class="paragraph"><p>The chart above shows the results of my work for the XHTML &#8594; ODT direction.
-The steps to get to the final reduced cost were:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-The new <code>NoFileSync</code> flag, as mentioned previously.
-</p>
-</li>
-<li>
-<p>
-A new <code>NoThumbnail</code> flag, which is useful if the ODT will be part of a next
-  step in the pipeline and you know that the thumbnail image won&#8217;t be used anyway.
-</p>
-</li>
-<li>
-<p>
-The default table autoformat definitions in Writer are now
+<p>The chart above shows the results of my work for the XHTML -&gt; ODT direction. The steps to get to the
+final reduced cost were:</p>
+<ul>
+<li>The new <code>NoFileSync</code> flag, as mentioned previously.</li>
+<li>A new <code>NoThumbnail</code> flag, which is useful if the ODT will be part of a next step in the pipeline
+  and you know that the thumbnail image won't be used anyway.</li>
+<li>The default table autoformat definitions in Writer are now
   <a href="https://cgit.freedesktop.org/libreoffice/core/commit/?id=53ef918a6839c8d587dec1bb635e6b39397c53d0">lazy-loaded</a>.
-  (This is my favorite one, you don&#8217;t have to opt-in for this, so everyone
-  benefits.)
-</p>
-</li>
-<li>
-<p>
-A new <code>HiddenForConversion</code> flag for
-  <code>frame::XComponentLoader::loadComponentFromURL()</code>, which means we don&#8217;t lay
-  out the UI elements (toolbars, sidebar, status bar, etc.) when we know the
-  purpose of the document load is only to save the document model in an other
-  format.
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>All this is available in master (towards LibreOffice 6.1), or you can grab a
-<a href="http://dev-builds.libreoffice.org/daily/master/">daily build</a> and try it out
-right now. :-)</p></div>
-</div>
-</div>
-
+  (This is my favorite one, you don't have to opt-in for this, so everyone benefits.)</li>
+<li>A new <code>HiddenForConversion</code> flag for <code>frame::XComponentLoader::loadComponentFromURL()</code>, which
+  means we don't lay out the UI elements (toolbars, sidebar, status bar, etc.) when we know the
+  purpose of the document load is only to save the document model in an other format.</li>
+</ul>
+<p>All this is available in master (towards LibreOffice 6.1), or you can grab a <a href="http://dev-builds.libreoffice.org/daily/master/">daily
+build</a> and try it out right now. :-)</p>
   </div>
 </article>
 <hr />
@@ -414,26 +284,14 @@ right now. :-)</p></div>
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://speakerd.s3.amazonaws.com/presentations/540497a4ac8443d2a42c92dd0ee1d298/epub-fosdem-brussels-2k18.pdf">
-<img src="https://farm5.staticflickr.com/4613/39363415464_1ed88d85f3_z.jpg" alt="https://farm5.staticflickr.com/4613/39363415464_1ed88d85f3_z.jpg" />
-</a>
-</div>
-</div>
-<div class="paragraph"><p>Yesterday I gave an
-<a href="https://fosdem.org/2018/schedule/event/ode_epub_export/">EPUB export in
-LibreOffice Writer FOSDEM</a> talk at FOSDEM 2018, in the
-<a href="https://fosdem.org/2018/schedule/track/open_document_editors/">Open document
-editors developer room</a>. The room was well-crowded&#8201;&#8212;&#8201;perhaps because the next
-talk was about LibreOffice/Collabora Online. ;-)</p></div>
-<div class="paragraph"><p>Quite some other slides will be available on
-<a href="http://planet.documentfoundation.org/">Planet</a> I expect, don&#8217;t miss them.</p></div>
-</div>
-</div>
-
+    <p><a href="https://speakerd.s3.amazonaws.com/presentations/540497a4ac8443d2a42c92dd0ee1d298/epub-fosdem-brussels-2k18.pdf"><figure><img src="https://farm5.staticflickr.com/4613/39363415464_1ed88d85f3_z.jpg"><figcaption>Slides of the talk</figcaption></figure></a></p>
+<p>Yesterday I gave an <a href="https://fosdem.org/2018/schedule/event/ode_epub_export/">EPUB export in LibreOffice Writer
+FOSDEM</a> talk at FOSDEM 2018, in the <a href="https://fosdem.org/2018/schedule/track/open_document_editors/">Open
+document editors developer
+room</a>. The room was well-crowded --
+perhaps because the next talk was about LibreOffice/Collabora Online. ;-)</p>
+<p>Quite some other slides will be available on <a href="http://planet.documentfoundation.org/">Planet</a> I
+expect, don't miss them.</p>
   </div>
 </article>
 <hr />
@@ -448,108 +306,71 @@ talk was about LibreOffice/Collabora Online. ;-)</p></div>
     <p>Estimated read time: 3 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>I worked on improving the EPUB3 export filter in LibreOffice further recently.
-First, thanks to <a href="http://nouenoff.nl/">Nou&amp;Off</a> in cooperation with a customer
-who made this work possible. Since the
-<a href="https://vmiklos.hu/blog/epub3-improvements.html">previous blog entry</a> there have been a
-number of improvements around a next set of topics.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_cover_images">Cover images</h2>
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://farm5.staticflickr.com/4760/38920770224_b247fa89c4_o.png" alt="https://farm5.staticflickr.com/4760/38920770224_b247fa89c4_o.png" />
-</div>
-</div>
-<div class="paragraph"><p>It is now possible to specify a cover image for the exported EPUB file. Given
-that a cover image is not naturally part of the Writer document model, I introduced the
-concept of a media directory for the EPUB export. The media directory is a
-directory next to the source file, with the &lt;file name without extension&gt;
-name. If that directory contains a file named cover.svg (or .gif, .jpg, .png),
-the exporter will automatically use it. Otherwise you can customize this
-default.</p></div>
-<div class="paragraph"><p>The picture shows two EPUB files in <a href="http://readium.org/">Readium</a> with
-different cover images.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_improved_metadata_support">Improved metadata support</h2>
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://farm5.staticflickr.com/4603/38920770174_142950782e_o.png" alt="https://farm5.staticflickr.com/4603/38920770174_142950782e_o.png" />
-</div>
-</div>
-<div class="paragraph"><p>It&#8217;s quite frequent that you are technically author of a document, but the
-logical author of the book is somebody else. Same for the date of the book,
-and so on. So the EPUB export dialog now has support for overwriting the
-defaults coming from the Writer document model. For mass-conversion of
-documents it&#8217;s possible to place a &lt;file name without extension&gt;.xmp file in
-the media directory and <a href="http://www.adobe.com/devnet/xmp.html">XMP</a> metadata
-from that file will also overwrite metadata coming from the document model.</p></div>
-<div class="paragraph"><p>The picture shows the extended EPUB export options dialog.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_footnotes_and_image_popups">Footnotes and image popups</h2>
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://farm5.staticflickr.com/4612/38920770144_e90e2a8e92_o.png" alt="https://farm5.staticflickr.com/4612/38920770144_e90e2a8e92_o.png" />
-</div>
-</div>
-<div class="paragraph"><p>I&#8217;ve added support for footnotes. As a special case of this, image popups on
-images and text is now supported. This works by placing a relative link on a
-text portion or on an image, and placing an image with the same name (e.g. in
-high resolution) in the media directory. In this case the EPUB export will
-bundle the image from the media directory inside the EPUB file and clicking on
-the text or image will open the bundled image in a popup (or in some other
-container, depending on how your reader interprets footnotes).</p></div>
-<div class="paragraph"><p>The picture shows such a popup in Microsoft Edge.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_fixed_layout">Fixed layout</h2>
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://farm5.staticflickr.com/4604/38920770104_108465bda1_o.png" alt="https://farm5.staticflickr.com/4604/38920770104_108465bda1_o.png" />
-</div>
-</div>
-<div class="paragraph"><p>The EPUB3 fixed layout is quite similar to PDF, just it is built on top of
-XHTML and SVG. Possible use-cases for this can be:</p></div>
-<div class="ulist"><ul>
-<li>
+    <p>I worked on improving the EPUB3 export filter in LibreOffice further recently. First, thanks to
+<a href="http://nouenoff.nl/">Nou&amp;Off</a> in cooperation with a customer who made this work possible. Since the
+<a href="https://vmiklos.hu/blog/epub3-improvements.html">previous blog entry</a> there have been a number of
+improvements around a next set of topics.</p>
+<h2 id="cover-images">Cover images<a class="headerlink" href="#cover-images" title="Permanent link">&para;</a></h2>
 <p>
-exporting a document where presenting the content as reflowable text would
-  be misleading (e.g. comic books), but the publisher of the book only works
-  with EPUB (reflowable or fixed layout, but no PDF)
+<figure><img src="https://farm5.staticflickr.com/4760/38920770224_b247fa89c4_o.png"><figcaption>Two EPUB files with different cover images in Readium</figcaption>
+</figure>
 </p>
+<p>It is now possible to specify a cover image for the exported EPUB file. Given that a cover image is
+not naturally part of the Writer document model, I introduced the concept of a media directory for
+the EPUB export. The media directory is a directory next to the source file, with the <file name
+without extension> name. If that directory contains a file named cover.svg (or .gif, .jpg, .png),
+the exporter will automatically use it. Otherwise you can customize this default.</p>
+<p>The picture shows two EPUB files in <a href="http://readium.org/">Readium</a> with different cover images.</p>
+<h2 id="improved-metadata-support">Improved metadata support<a class="headerlink" href="#improved-metadata-support" title="Permanent link">&para;</a></h2>
+<p>
+<figure><img src="https://farm5.staticflickr.com/4603/38920770174_142950782e_o.png"><figcaption>Extended EPUB export options dialog</figcaption>
+</figure>
+</p>
+<p>It's quite frequent that you are technically author of a document, but the logical author of the
+book is somebody else. Same for the date of the book, and so on. So the EPUB export dialog now has
+support for overwriting the defaults coming from the Writer document model. For mass-conversion of
+documents it's possible to place a <file name without extension>.xmp file in the media directory
+and <a href="http://www.adobe.com/devnet/xmp.html">XMP</a> metadata from that file will also overwrite metadata
+coming from the document model.</p>
+<p>The picture shows the extended EPUB export options dialog.</p>
+<h2 id="footnotes-and-image-popups">Footnotes and image popups<a class="headerlink" href="#footnotes-and-image-popups" title="Permanent link">&para;</a></h2>
+<p>
+<figure><img src="https://farm5.staticflickr.com/4612/38920770144_e90e2a8e92_o.png"><figcaption>Image popup in Microsoft Edge</figcaption>
+</figure>
+</p>
+<p>I've added support for footnotes. As a special case of this, image popups on images and text is now
+supported. This works by placing a relative link on a text portion or on an image, and placing an
+image with the same name (e.g. in high resolution) in the media directory. In this case the EPUB
+export will bundle the image from the media directory inside the EPUB file and clicking on the text
+or image will open the bundled image in a popup (or in some other container, depending on how your
+reader interprets footnotes).</p>
+<p>The picture shows such a popup in Microsoft Edge.</p>
+<h2 id="fixed-layout">Fixed layout<a class="headerlink" href="#fixed-layout" title="Permanent link">&para;</a></h2>
+<p>
+<figure><img src="https://farm5.staticflickr.com/4604/38920770104_108465bda1_o.png"><figcaption>Writer document with a table of contents in Readium</figcaption>
+</figure>
+</p>
+<p>The EPUB3 fixed layout is quite similar to PDF, just it is built on top of XHTML and SVG. Possible
+use-cases for this can be:</p>
+<ul>
+<li>
+<p>exporting a document where presenting the content as reflowable text would be misleading (e.g.
+  comic books), but the publisher of the book only works with EPUB (reflowable or fixed layout, but
+  no PDF)</p>
 </li>
 <li>
-<p>
-printing (again, in case for some reason you want to avoid PDF)
-</p>
+<p>printing (again, in case for some reason you want to avoid PDF)</p>
 </li>
-</ul></div>
-<div class="paragraph"><p>These might be very specific situations, but luckily supporting them is not
-too complex. I implemented an approach very similar to the PDF export, where
-we export individual pages of the Writer document&#8217;s layout as a metafile, and
-then consume that&#8201;&#8212;&#8201;this time with the SVG export. Building on top of the
-existing Writer layout and SVG export means the hard work is really done by
-these components, the EPUB fixed layout export just puts these together.</p></div>
-<div class="paragraph"><p>The picture shows a Writer document with a table of contents containing page
-numbers, a header and a footer in Readium.</p></div>
-<div class="paragraph"><p>All this is available in master (towards LibreOffice 6.1), or you can grab a
-<a href="http://dev-builds.libreoffice.org/daily/master/">daily build</a> and try it out
-right now. :-)</p></div>
-</div>
-</div>
-
+</ul>
+<p>These might be very specific situations, but luckily supporting them is not too complex. I
+implemented an approach very similar to the PDF export, where we export individual pages of the
+Writer document's layout as a metafile, and then consume that -- this time with the SVG export.
+Building on top of the existing Writer layout and SVG export means the hard work is really done by
+these components, the EPUB fixed layout export just puts these together.</p>
+<p>The picture shows a Writer document with a table of contents containing page numbers, a header and
+a footer in Readium.</p>
+<p>All this is available in master (towards LibreOffice 6.1), or you can grab a <a href="http://dev-builds.libreoffice.org/daily/master/">daily
+build</a> and try it out right now. :-)</p>
   </div>
 </article>
 <hr />
