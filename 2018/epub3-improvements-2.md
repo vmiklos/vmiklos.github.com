@@ -1,0 +1,73 @@
+Title: EPUB3 export improvements in Libreoffice Writer, take two
+Slug: epub3-improvements-2
+Category: libreoffice
+Tags: en
+Date: 2018-01-11T12:25:02Z
+
+I worked on improving the EPUB3 export filter in LibreOffice further recently. First, thanks to
+[Nou&Off](http://nouenoff.nl/) in cooperation with a customer who made this work possible. Since the
+[previous blog entry]({filename}/2017/epub3-improvements.adoc) there have been a number of
+improvements around a next set of topics.
+
+## Cover images
+
+![Two EPUB files with different cover images in Readium](https://farm5.staticflickr.com/4760/38920770224_b247fa89c4_o.png)
+
+It is now possible to specify a cover image for the exported EPUB file. Given that a cover image is
+not naturally part of the Writer document model, I introduced the concept of a media directory for
+the EPUB export. The media directory is a directory next to the source file, with the <file name
+without extension> name. If that directory contains a file named cover.svg (or .gif, .jpg, .png),
+the exporter will automatically use it. Otherwise you can customize this default.
+
+The picture shows two EPUB files in [Readium](http://readium.org/) with different cover images.
+
+## Improved metadata support
+
+![Extended EPUB export options dialog](https://farm5.staticflickr.com/4603/38920770174_142950782e_o.png)
+
+It's quite frequent that you are technically author of a document, but the logical author of the
+book is somebody else. Same for the date of the book, and so on. So the EPUB export dialog now has
+support for overwriting the defaults coming from the Writer document model. For mass-conversion of
+documents it's possible to place a <file name without extension>.xmp file in the media directory
+and [XMP](http://www.adobe.com/devnet/xmp.html) metadata from that file will also overwrite metadata
+coming from the document model.
+
+The picture shows the extended EPUB export options dialog.
+
+## Footnotes and image popups
+
+![Image popup in Microsoft Edge](https://farm5.staticflickr.com/4612/38920770144_e90e2a8e92_o.png)
+
+I've added support for footnotes. As a special case of this, image popups on images and text is now
+supported. This works by placing a relative link on a text portion or on an image, and placing an
+image with the same name (e.g. in high resolution) in the media directory. In this case the EPUB
+export will bundle the image from the media directory inside the EPUB file and clicking on the text
+or image will open the bundled image in a popup (or in some other container, depending on how your
+reader interprets footnotes).
+
+The picture shows such a popup in Microsoft Edge.
+
+## Fixed layout
+
+![Writer document with a table of contents in Readium](https://farm5.staticflickr.com/4604/38920770104_108465bda1_o.png)
+
+The EPUB3 fixed layout is quite similar to PDF, just it is built on top of XHTML and SVG. Possible
+use-cases for this can be:
+
+- exporting a document where presenting the content as reflowable text would be misleading (e.g.
+  comic books), but the publisher of the book only works with EPUB (reflowable or fixed layout, but
+  no PDF)
+
+- printing (again, in case for some reason you want to avoid PDF)
+
+These might be very specific situations, but luckily supporting them is not too complex. I
+implemented an approach very similar to the PDF export, where we export individual pages of the
+Writer document's layout as a metafile, and then consume that -- this time with the SVG export.
+Building on top of the existing Writer layout and SVG export means the hard work is really done by
+these components, the EPUB fixed layout export just puts these together.
+
+The picture shows a Writer document with a table of contents containing page numbers, a header and
+a footer in Readium.
+
+All this is available in master (towards LibreOffice 6.1), or you can grab a [daily
+build](http://dev-builds.libreoffice.org/daily/master/) and try it out right now. :-)

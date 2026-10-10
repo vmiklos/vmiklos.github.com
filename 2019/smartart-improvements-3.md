@@ -4,7 +4,7 @@ Category: libreoffice
 Tags: en
 Date: 2019-01-04T14:35:29Z
 
-I recently [dived into]({filename}/2018/smartart-improvements-2.adoc) the SmartArt support of
+I recently [dived into]({filename}/2018/smartart-improvements-2.md) the SmartArt support of
 LibreOffice, which is the component responsible for displaying complex diagrams from PPTX. I focus
 on the case when only the document model and the layout constraints are given, not a pre-rendered
 result.
