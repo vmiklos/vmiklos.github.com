@@ -68,86 +68,47 @@
     <p>Estimated read time: 2 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Impress is now able to correctly render shadows for table shapes, even if the shadow itself or the
-fill of the table cells have transparency. The result is now compatible with PowerPoint.</p></div>
-<div class="paragraph"><p>First, thanks to our partner <a href="https://www.suse.com/">SUSE</a> for working with
-<a href="https://www.collaboraoffice.com/">Collabora</a> to make this possible.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_motivation">Motivation</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>We got a PPTX document, which has a table shape with pink background and a blurry shadow. Impress
-rendered a red background, making the text hard to read.</p></div>
-<div class="paragraph"><p>The request was to improve the shadow rendering to be PowerPoint-compatible and in general correctly
-support transparency when it comes to table cell fills and table shadows.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_results_so_far">Results so far</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>The table shadow now looks like this:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sd-table-transparent-shadow/new.png" alt="https://share.vmiklos.hu/blog/sd-table-transparent-shadow/new.png" />
-</div>
-<div class="title">Figure 1. New render result in Impress</div>
-</div>
-<div class="paragraph"><p>Matching the reference rendering:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sd-table-transparent-shadow/ref.png" alt="https://share.vmiklos.hu/blog/sd-table-transparent-shadow/ref.png" />
-</div>
-<div class="title">Figure 2. Reference render result</div>
-</div>
-<div class="paragraph"><p>While background was red previously:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sd-table-transparent-shadow/old.png" alt="https://share.vmiklos.hu/blog/sd-table-transparent-shadow/old.png" />
-</div>
-<div class="title">Figure 3. Old render result in Impress</div>
-</div>
-<div class="paragraph"><p>You can see that not only the background in the top center cell is pink now, but the blurry table
-shadow is still correct.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_how_is_this_implemented">How is this implemented?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
-<div class="paragraph"><p>As usual, the high-level problem was addressed by a series of fixes:</p></div>
-<div class="ulist"><ul>
-<li>
+    <p>Impress is now able to correctly render shadows for table shapes, even if the shadow itself or the
+fill of the table cells have transparency. The result is now compatible with PowerPoint.</p>
+<p>First, thanks to our partner <a href="https://www.suse.com/">SUSE</a> for working with
+<a href="https://www.collaboraoffice.com/">Collabora</a> to make this possible.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>We got a PPTX document, which has a table shape with pink background and a blurry shadow. Impress
+rendered a red background, making the text hard to read.</p>
+<p>The request was to improve the shadow rendering to be PowerPoint-compatible and in general correctly
+support transparency when it comes to table cell fills and table shadows.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>The table shadow now looks like this:</p>
 <p>
-<a href="https://gerrit.libreoffice.org/c/core/+/122349">tdf#144091 svx: fix unwanted blur of shadow from
-  table cell fill</a>
+<figure><img src="https://share.vmiklos.hu/blog/sd-table-transparent-shadow/new.png"><figcaption>New render result in Impress</figcaption>
+</figure>
 </p>
-</li>
-<li>
+<p>Matching the reference rendering:</p>
 <p>
-<a href="https://gerrit.libreoffice.org/c/core/+/122532">Related: tdf#144091 svx: fix interaction of transp
-  cell fill and transp shadow</a>
-  (<a href="https://git.libreoffice.org/core/+/00fa364a2403dc23a786d3f91fde06e10b3a4a9a/svx/source/sdr/primitive2d/sdrdecompositiontools.cxx#629">key
-  part</a>)
+<figure><img src="https://share.vmiklos.hu/blog/sd-table-transparent-shadow/ref.png"><figcaption>Reference render result</figcaption>
+</figure>
 </p>
-</li>
-</ul></div>
-<div class="paragraph"><p>With these, it&#8217;s now possible to add transparency to both table cell fills and to table shadows, and
-the rendering will take both into account, correctly.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_want_to_start_using_this">Want to start using this?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
-<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
-intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF&#8217;s next release too (7.3).</p></div>
-</div>
-</div>
-
+<p>While background was red previously:</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sd-table-transparent-shadow/old.png"><figcaption>Old render result in Impress</figcaption>
+</figure>
+</p>
+<p>You can see that not only the background in the top center cell is pink now, but the blurry table
+shadow is still correct.</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>As usual, the high-level problem was addressed by a series of fixes:</p>
+<ul>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/122349">tdf#144091 svx: fix unwanted blur of shadow from table cell fill</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/122532">Related: tdf#144091 svx: fix interaction of transp cell fill and transp shadow</a> (<a href="https://git.libreoffice.org/core/+/00fa364a2403dc23a786d3f91fde06e10b3a4a9a/svx/source/sdr/primitive2d/sdrdecompositiontools.cxx#629">key part</a>)</li>
+</ul>
+<p>With these, it's now possible to add transparency to both table cell fills and to table shadows, and
+the rendering will take both into account, correctly.</p>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a snapshot / demo of Collabora Office and try it out yourself right now: <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable
+snapshot</a>.  Collabora intends to
+continue supporting and contributing to LibreOffice, the code is merged so we expect all of this
+work will be available in TDF's next release too (7.3).</p>
   </div>
   <div class="article_meta">
     <p>Category: <a href="https://vmiklos.hu/blog/category/libreoffice.html">libreoffice</a>

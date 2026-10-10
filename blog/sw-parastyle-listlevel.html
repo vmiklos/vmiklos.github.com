@@ -68,72 +68,43 @@
     <p>Estimated read time: 2 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Writer now has the start of list level support in Writer paragraph styles. This improves ODT and
-DOCX compatibility, and it&#8217;ll improve the style previews and the UI in the future.</p></div>
-<div class="paragraph"><p>First, thanks <a href="https://www.docmosis.com/">Docmosis</a> who made this work by
-<a href="https://www.collaboraoffice.com/">Collabora</a> possible.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_motivation">Motivation</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>A paragraph might have an associated list in Writer and that list can have multiple levels. This is
+    <p>Writer now has the start of list level support in Writer paragraph styles. This improves ODT and
+DOCX compatibility, and it'll improve the style previews and the UI in the future.</p>
+<p>First, thanks <a href="https://www.docmosis.com/">Docmosis</a> who made this work by
+<a href="https://www.collaboraoffice.com/">Collabora</a> possible.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>A paragraph might have an associated list in Writer and that list can have multiple levels. This is
 direct formatting. When it comes to paragraph styles, referring to a list was already possible, but
-defining a custom list level was not.</p></div>
-<div class="paragraph"><p>Loosing this information in Word documents was quite annoying, and it turned out that ODF also has
-markup for this, just LibreOffice didn&#8217;t implement it.</p></div>
-<div class="paragraph"><p>This work is currently done for the document model, scripting API and file filters: style previews &amp;
-UI still needs finishing.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_results_so_far">Results so far</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Writer can at the moment preserve list level info from ODT and DOCX files. Here is how a file written
-by Writer looks like in Word:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-parastyle-listlevel/parastyle-listlevel.png" alt="https://share.vmiklos.hu/blog/sw-parastyle-listlevel/parastyle-listlevel.png" />
-</div>
-<div class="title">Figure 1. Writer exporting a paragraph style with list level info</div>
-</div>
-<div class="paragraph"><p>You can see that the style preview in Word takes the list level into account. Doing the same and
-applying the list level as part of applying the paragraph style on the Writer UI is still future work.</p></div>
-<div class="paragraph"><p>Thanks to Justin Luth who did the follow-up work to adapt the DOC filter accordingly, and also doing
-other related fixes.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_how_is_this_implemented">How is this implemented?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
-<div class="ulist"><ul>
-<li>
+defining a custom list level was not.</p>
+<p>Loosing this information in Word documents was quite annoying, and it turned out that ODF also has
+markup for this, just LibreOffice didn't implement it.</p>
+<p>This work is currently done for the document model, scripting API and file filters: style previews &amp;
+UI still needs finishing.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>Writer can at the moment preserve list level info from ODT and DOCX files. Here is how a file written
+by Writer looks like in Word:</p>
 <p>
-<a href="https://gerrit.libreoffice.org/c/core/+/121141">tdf#137363 DOCX filter: don&#8217;t loose
-  &lt;w:ilvl w:val="&#8230;"&gt; of paragraph styles</a> added document model, API and DOCX import/export support
+<figure><img src="https://share.vmiklos.hu/blog/sw-parastyle-listlevel/parastyle-listlevel.png"><figcaption>Writer exporting a paragraph style with list level info</figcaption>
+</figure>
 </p>
+<p>You can see that the style preview in Word takes the list level into account. Doing the same and
+applying the list level as part of applying the paragraph style on the Writer UI is still future work.</p>
+<p>Thanks to Justin Luth who did the follow-up work to adapt the DOC filter accordingly, and also doing
+other related fixes.</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<ul>
+<li>
+<p><a href="https://gerrit.libreoffice.org/c/core/+/121141">tdf#137363 DOCX filter: don't loose <w:ilvl w:val="..."> of paragraph styles</a> added document model, API and DOCX import/export support</p>
 </li>
 <li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/121515">Related: tdf#137363 ODT import: handle
-  style:list-level="&#8230;" for para styles</a> added ODT import/export support
-</p>
+<p><a href="https://gerrit.libreoffice.org/c/core/+/121515">Related: tdf#137363 ODT import: handle style:list-level="..." for para styles</a> added ODT import/export support</p>
 </li>
-</ul></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_want_to_start_using_this">Want to start using this?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
-expect all of this work will be available in TDF&#8217;s
-<a href="http://dev-builds.libreoffice.org/daily/master/">next release</a> (7.3).</p></div>
-</div>
-</div>
-
+</ul>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
+expect all of this work will be available in TDF's
+<a href="http://dev-builds.libreoffice.org/daily/master/">next release</a> (7.3).</p>
   </div>
   <div class="article_meta">
     <p>Category: <a href="https://vmiklos.hu/blog/category/libreoffice.html">libreoffice</a>

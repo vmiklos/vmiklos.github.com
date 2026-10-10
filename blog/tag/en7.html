@@ -68,86 +68,47 @@
     <p>Estimated read time: 2 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Impress is now able to correctly render shadows for table shapes, even if the shadow itself or the
-fill of the table cells have transparency. The result is now compatible with PowerPoint.</p></div>
-<div class="paragraph"><p>First, thanks to our partner <a href="https://www.suse.com/">SUSE</a> for working with
-<a href="https://www.collaboraoffice.com/">Collabora</a> to make this possible.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_motivation">Motivation</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>We got a PPTX document, which has a table shape with pink background and a blurry shadow. Impress
-rendered a red background, making the text hard to read.</p></div>
-<div class="paragraph"><p>The request was to improve the shadow rendering to be PowerPoint-compatible and in general correctly
-support transparency when it comes to table cell fills and table shadows.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_results_so_far">Results so far</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>The table shadow now looks like this:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sd-table-transparent-shadow/new.png" alt="https://share.vmiklos.hu/blog/sd-table-transparent-shadow/new.png" />
-</div>
-<div class="title">Figure 1. New render result in Impress</div>
-</div>
-<div class="paragraph"><p>Matching the reference rendering:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sd-table-transparent-shadow/ref.png" alt="https://share.vmiklos.hu/blog/sd-table-transparent-shadow/ref.png" />
-</div>
-<div class="title">Figure 2. Reference render result</div>
-</div>
-<div class="paragraph"><p>While background was red previously:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sd-table-transparent-shadow/old.png" alt="https://share.vmiklos.hu/blog/sd-table-transparent-shadow/old.png" />
-</div>
-<div class="title">Figure 3. Old render result in Impress</div>
-</div>
-<div class="paragraph"><p>You can see that not only the background in the top center cell is pink now, but the blurry table
-shadow is still correct.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_how_is_this_implemented">How is this implemented?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
-<div class="paragraph"><p>As usual, the high-level problem was addressed by a series of fixes:</p></div>
-<div class="ulist"><ul>
-<li>
+    <p>Impress is now able to correctly render shadows for table shapes, even if the shadow itself or the
+fill of the table cells have transparency. The result is now compatible with PowerPoint.</p>
+<p>First, thanks to our partner <a href="https://www.suse.com/">SUSE</a> for working with
+<a href="https://www.collaboraoffice.com/">Collabora</a> to make this possible.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>We got a PPTX document, which has a table shape with pink background and a blurry shadow. Impress
+rendered a red background, making the text hard to read.</p>
+<p>The request was to improve the shadow rendering to be PowerPoint-compatible and in general correctly
+support transparency when it comes to table cell fills and table shadows.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>The table shadow now looks like this:</p>
 <p>
-<a href="https://gerrit.libreoffice.org/c/core/+/122349">tdf#144091 svx: fix unwanted blur of shadow from
-  table cell fill</a>
+<figure><img src="https://share.vmiklos.hu/blog/sd-table-transparent-shadow/new.png"><figcaption>New render result in Impress</figcaption>
+</figure>
 </p>
-</li>
-<li>
+<p>Matching the reference rendering:</p>
 <p>
-<a href="https://gerrit.libreoffice.org/c/core/+/122532">Related: tdf#144091 svx: fix interaction of transp
-  cell fill and transp shadow</a>
-  (<a href="https://git.libreoffice.org/core/+/00fa364a2403dc23a786d3f91fde06e10b3a4a9a/svx/source/sdr/primitive2d/sdrdecompositiontools.cxx#629">key
-  part</a>)
+<figure><img src="https://share.vmiklos.hu/blog/sd-table-transparent-shadow/ref.png"><figcaption>Reference render result</figcaption>
+</figure>
 </p>
-</li>
-</ul></div>
-<div class="paragraph"><p>With these, it&#8217;s now possible to add transparency to both table cell fills and to table shadows, and
-the rendering will take both into account, correctly.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_want_to_start_using_this">Want to start using this?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
-<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
-intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF&#8217;s next release too (7.3).</p></div>
-</div>
-</div>
-
+<p>While background was red previously:</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sd-table-transparent-shadow/old.png"><figcaption>Old render result in Impress</figcaption>
+</figure>
+</p>
+<p>You can see that not only the background in the top center cell is pink now, but the blurry table
+shadow is still correct.</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>As usual, the high-level problem was addressed by a series of fixes:</p>
+<ul>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/122349">tdf#144091 svx: fix unwanted blur of shadow from table cell fill</a></li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/122532">Related: tdf#144091 svx: fix interaction of transp cell fill and transp shadow</a> (<a href="https://git.libreoffice.org/core/+/00fa364a2403dc23a786d3f91fde06e10b3a4a9a/svx/source/sdr/primitive2d/sdrdecompositiontools.cxx#629">key part</a>)</li>
+</ul>
+<p>With these, it's now possible to add transparency to both table cell fills and to table shadows, and
+the rendering will take both into account, correctly.</p>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a snapshot / demo of Collabora Office and try it out yourself right now: <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable
+snapshot</a>.  Collabora intends to
+continue supporting and contributing to LibreOffice, the code is merged so we expect all of this
+work will be available in TDF's next release too (7.3).</p>
   </div>
 </article>
 <hr />
@@ -162,72 +123,43 @@ of this work will be available in TDF&#8217;s next release too (7.3).</p></div>
     <p>Estimated read time: 2 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Writer now has the start of list level support in Writer paragraph styles. This improves ODT and
-DOCX compatibility, and it&#8217;ll improve the style previews and the UI in the future.</p></div>
-<div class="paragraph"><p>First, thanks <a href="https://www.docmosis.com/">Docmosis</a> who made this work by
-<a href="https://www.collaboraoffice.com/">Collabora</a> possible.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_motivation">Motivation</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>A paragraph might have an associated list in Writer and that list can have multiple levels. This is
+    <p>Writer now has the start of list level support in Writer paragraph styles. This improves ODT and
+DOCX compatibility, and it'll improve the style previews and the UI in the future.</p>
+<p>First, thanks <a href="https://www.docmosis.com/">Docmosis</a> who made this work by
+<a href="https://www.collaboraoffice.com/">Collabora</a> possible.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>A paragraph might have an associated list in Writer and that list can have multiple levels. This is
 direct formatting. When it comes to paragraph styles, referring to a list was already possible, but
-defining a custom list level was not.</p></div>
-<div class="paragraph"><p>Loosing this information in Word documents was quite annoying, and it turned out that ODF also has
-markup for this, just LibreOffice didn&#8217;t implement it.</p></div>
-<div class="paragraph"><p>This work is currently done for the document model, scripting API and file filters: style previews &amp;
-UI still needs finishing.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_results_so_far">Results so far</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Writer can at the moment preserve list level info from ODT and DOCX files. Here is how a file written
-by Writer looks like in Word:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-parastyle-listlevel/parastyle-listlevel.png" alt="https://share.vmiklos.hu/blog/sw-parastyle-listlevel/parastyle-listlevel.png" />
-</div>
-<div class="title">Figure 1. Writer exporting a paragraph style with list level info</div>
-</div>
-<div class="paragraph"><p>You can see that the style preview in Word takes the list level into account. Doing the same and
-applying the list level as part of applying the paragraph style on the Writer UI is still future work.</p></div>
-<div class="paragraph"><p>Thanks to Justin Luth who did the follow-up work to adapt the DOC filter accordingly, and also doing
-other related fixes.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_how_is_this_implemented">How is this implemented?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
-<div class="ulist"><ul>
-<li>
+defining a custom list level was not.</p>
+<p>Loosing this information in Word documents was quite annoying, and it turned out that ODF also has
+markup for this, just LibreOffice didn't implement it.</p>
+<p>This work is currently done for the document model, scripting API and file filters: style previews &amp;
+UI still needs finishing.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>Writer can at the moment preserve list level info from ODT and DOCX files. Here is how a file written
+by Writer looks like in Word:</p>
 <p>
-<a href="https://gerrit.libreoffice.org/c/core/+/121141">tdf#137363 DOCX filter: don&#8217;t loose
-  &lt;w:ilvl w:val="&#8230;"&gt; of paragraph styles</a> added document model, API and DOCX import/export support
+<figure><img src="https://share.vmiklos.hu/blog/sw-parastyle-listlevel/parastyle-listlevel.png"><figcaption>Writer exporting a paragraph style with list level info</figcaption>
+</figure>
 </p>
+<p>You can see that the style preview in Word takes the list level into account. Doing the same and
+applying the list level as part of applying the paragraph style on the Writer UI is still future work.</p>
+<p>Thanks to Justin Luth who did the follow-up work to adapt the DOC filter accordingly, and also doing
+other related fixes.</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<ul>
+<li>
+<p><a href="https://gerrit.libreoffice.org/c/core/+/121141">tdf#137363 DOCX filter: don't loose <w:ilvl w:val="..."> of paragraph styles</a> added document model, API and DOCX import/export support</p>
 </li>
 <li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/121515">Related: tdf#137363 ODT import: handle
-  style:list-level="&#8230;" for para styles</a> added ODT import/export support
-</p>
+<p><a href="https://gerrit.libreoffice.org/c/core/+/121515">Related: tdf#137363 ODT import: handle style:list-level="..." for para styles</a> added ODT import/export support</p>
 </li>
-</ul></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_want_to_start_using_this">Want to start using this?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
-expect all of this work will be available in TDF&#8217;s
-<a href="http://dev-builds.libreoffice.org/daily/master/">next release</a> (7.3).</p></div>
-</div>
-</div>
-
+</ul>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
+expect all of this work will be available in TDF's
+<a href="http://dev-builds.libreoffice.org/daily/master/">next release</a> (7.3).</p>
   </div>
 </article>
 <hr />
@@ -242,97 +174,57 @@ expect all of this work will be available in TDF&#8217;s
     <p>Estimated read time: 2 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Shape properties were shared by shape type (e.g. shared between group shapes) before insertion into
+    <p>Shape properties were shared by shape type (e.g. shared between group shapes) before insertion into
 a document model in Impress. This is now fixed: the property names and types are still shared to
 help performance, but their values are no longer shared. This helps matching the user expectation
-that separate opened documents don&#8217;t share information with each other.</p></div>
-<div class="paragraph"><p>First, thanks to our partner <a href="https://www.suse.com/">SUSE</a> for working with
-<a href="https://www.collaboraoffice.com/">Collabora</a> to make this possible.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_motivation">Motivation</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>I was working on a testcase for
-<a href="https://bugs.documentfoundation.org/show_bug.cgi?id=132696">tdf#132696</a> when I noticed that the
+that separate opened documents don't share information with each other.</p>
+<p>First, thanks to our partner <a href="https://www.suse.com/">SUSE</a> for working with
+<a href="https://www.collaboraoffice.com/">Collabora</a> to make this possible.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>I was working on a testcase for <a href="https://bugs.documentfoundation.org/show_bug.cgi?id=132696">tdf#132696</a> when I noticed that the
 existing CppunitTest_oox_drawingml testsuite runs fine before my changes, also a newly added
 testGroupShapeSmartArt testcase runs fine in isolation, but if I run the whole testsuite, then it
-breaks.</p></div>
-<div class="paragraph"><p>Further investigation revealed that in case testGroupShapeSmartArt is executed first, then testTdf131082 fails. This means:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-the first document is opened
-</p>
-</li>
-<li>
-<p>
-the first document is closed
-</p>
-</li>
-<li>
-<p>
-the second document is opened
-</p>
-</li>
-<li>
-<p>
-the second document is saved
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>And at this point information from the first document is leaked to the second document, even if the
+breaks.</p>
+<p>Further investigation revealed that in case testGroupShapeSmartArt is executed first, then testTdf131082 fails. This means:</p>
+<ul>
+<li>the first document is opened</li>
+<li>the first document is closed</li>
+<li>the second document is opened</li>
+<li>the second document is saved</li>
+</ul>
+<p>And at this point information from the first document is leaked to the second document, even if the
 first document was already closed by the time we performed the save. It turns out the root cause was
 <a href="https://bz.apache.org/ooo/show_bug.cgi?id=114206">i#114206</a> (reported in 2010), i.e. group shapes
 shared their property values till they got inserted to the document model. The first document import
 did not consume pending SmartArt properties on a to-be-inserted group shape, the second import was
-looking for pending properties, found them. And then the second document&#8217;s save wrote those pending
-properties to the file, leading to this unexpected leak.</p></div>
-<div class="paragraph"><p>Here is how the first document looks like, containing the blue rectangles (a SmartArt):</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sd-groupshape-unshare/first.png" alt="https://share.vmiklos.hu/blog/sd-groupshape-unshare/first.png" />
-</div>
-<div class="title">Figure 1. First document with a SmartArt</div>
-</div>
-<div class="paragraph"><p>Here is how the second document looks like, without a SmartArt:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sd-groupshape-unshare/second.png" alt="https://share.vmiklos.hu/blog/sd-groupshape-unshare/second.png" />
-</div>
-<div class="title">Figure 2. Second document after loading, no SmartArt</div>
-</div>
-<div class="paragraph"><p>And here is how the second document looks, after saving to PPTX and reloading:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sd-groupshape-unshare/second-saved.png" alt="https://share.vmiklos.hu/blog/sd-groupshape-unshare/second-saved.png" />
-</div>
-<div class="title">Figure 3. Second document after reloading, with a SmartArt</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_results_so_far">Results so far</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>The <a href="https://git.libreoffice.org/core/commit/c6f25506b02fbd2a087b7e790283921bf8550206">fix</a> is to
+looking for pending properties, found them. And then the second document's save wrote those pending
+properties to the file, leading to this unexpected leak.</p>
+<p>Here is how the first document looks like, containing the blue rectangles (a SmartArt):</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sd-groupshape-unshare/first.png"><figcaption>First document with a SmartArt</figcaption>
+</figure>
+</p>
+<p>Here is how the second document looks like, without a SmartArt:</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sd-groupshape-unshare/second.png"><figcaption>Second document after loading, no SmartArt</figcaption>
+</figure>
+</p>
+<p>And here is how the second document looks, after saving to PPTX and reloading:</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sd-groupshape-unshare/second-saved.png"><figcaption>Second document after reloading, with a SmartArt</figcaption>
+</figure>
+</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>The <a href="https://git.libreoffice.org/core/commit/c6f25506b02fbd2a087b7e790283921bf8550206">fix</a> is to
 split out part of <code>SvxItemPropertySet</code> to a separate class, so that we can keep sharing
 <code>SvxItemPropertySet</code> between multiple instances of the same shape type (describing the name and type
 of the various properties), while introducing a new <code>SvxItemPropertySetUsrAnys</code> that is specific to
 each not-yet-inserted shape. This way each pending shape is independent, and in case they are not
-inserted to the document model later, that results in no side-effects.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_want_to_start_using_this">Want to start using this?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
-expect all of this work will be available in TDF&#8217;s
-<a href="http://dev-builds.libreoffice.org/daily/master/">next release</a> (7.3).</p></div>
-</div>
-</div>
-
+inserted to the document model later, that results in no side-effects.</p>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
+expect all of this work will be available in TDF's
+<a href="http://dev-builds.libreoffice.org/daily/master/">next release</a> (7.3).</p>
   </div>
 </article>
 <hr />
@@ -347,103 +239,59 @@ expect all of this work will be available in TDF&#8217;s
     <p>Estimated read time: 2 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Embedding macros to Calc documents and invoking them by clicking on buttons is a common use-case.
+    <p>Embedding macros to Calc documents and invoking them by clicking on buttons is a common use-case.
 There was also decent support for importing these from XLSX (XLSM to be precise), but the export
-side was not on par with the binary XLS export.</p></div>
-<div class="paragraph"><p>Calc now got a series of incremental improvements to map our form controls (buttons in particular)
-to OOXML&#8217;s form controls, especially when macros are assigned to such buttons.</p></div>
-<div class="paragraph"><p>This work is primarily for <a href="https://www.collaboraoffice.com/">Collabora Online</a>, but the feature is
-fully available in desktop Calc as well.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_motivation">Motivation</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Excel has both
-<a href="https://support.microsoft.com/en-us/office/assign-a-macro-to-a-form-or-a-control-button-d58edd7d-cb04-4964-bead-9c72c843a283">form
-controls and ActiveX controls</a>, and
-<a href="https://gerrit.libreoffice.org/c/core/+/94161">tdf#106181 XLSX export: output form controls</a>
-last year started adding support for form control export to XLSX.</p></div>
-<div class="paragraph"><p>Hoping that this will be mostly shared drawingML export code fixing (benefiting DOCX and PPTX as
-well), it seemed reasonable to assume that we can improve button handling from the "it&#8217;s lost" state
-to "it&#8217;s good enough" with some effort.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_results_so_far">Results so far</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Now Excel shows the button and you can click on it:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sc-xlsx-button-macro/new.png" alt="https://share.vmiklos.hu/blog/sc-xlsx-button-macro/new.png" />
-</div>
-<div class="title">Figure 1. Excel consuming our XLSM output with a button and a macro</div>
-</div>
-<div class="paragraph"><p>While it used to just refuse our export result:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sc-xlsx-button-macro/old.png" alt="https://share.vmiklos.hu/blog/sc-xlsx-button-macro/old.png" />
-</div>
-<div class="title">Figure 2. Excel refusing bad XLSM output</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_how_is_this_implemented">How is this implemented?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
-<div class="paragraph"><p>As usual, the end goal was reached via a set of incremental commits:</p></div>
-<div class="ulist"><ul>
-<li>
+side was not on par with the binary XLS export.</p>
+<p>Calc now got a series of incremental improvements to map our form controls (buttons in particular)
+to OOXML's form controls, especially when macros are assigned to such buttons.</p>
+<p>This work is primarily for <a href="https://www.collaboraoffice.com/">Collabora Online</a>, but the feature is
+fully available in desktop Calc as well.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>Excel has both <a href="https://support.microsoft.com/en-us/office/assign-a-macro-to-a-form-or-a-control-button-d58edd7d-cb04-4964-bead-9c72c843a283">form controls and ActiveX
+controls</a>,
+and <a href="https://gerrit.libreoffice.org/c/core/+/94161">tdf#106181 XLSX export: output form controls</a>
+last year started adding support for form control export to XLSX.</p>
+<p>Hoping that this will be mostly shared drawingML export code fixing (benefiting DOCX and PPTX as
+well), it seemed reasonable to assume that we can improve button handling from the "it's lost" state
+to "it's good enough" with some effort.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>Now Excel shows the button and you can click on it:</p>
 <p>
-<a href="https://gerrit.libreoffice.org/c/core/+/118085">sc: don&#8217;t require ctrl-click when clicking
-  on internal links of shapes</a> was a UX problem, users don&#8217;t finding Ctrl-click
+<figure><img src="https://share.vmiklos.hu/blog/sc-xlsx-button-macro/new.png"><figcaption>Excel consuming our XLSM output with a button and a macro</figcaption>
+</figure>
 </p>
+<p>While it used to just refuse our export result:</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sc-xlsx-button-macro/old.png"><figcaption>Excel refusing bad XLSM output</figcaption>
+</figure>
+</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>As usual, the end goal was reached via a set of incremental commits:</p>
+<ul>
+<li>
+<p><a href="https://gerrit.libreoffice.org/c/core/+/118085">sc: don't require ctrl-click when clicking on internal links of shapes</a> was a UX problem, users don't finding Ctrl-click</p>
 </li>
 <li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/118168">XLSX export: improve handling of checkbox
-  (form controls)</a> was an improvement to the existing checkbox export code, probably today&#8217;s Excel is just more strict in what it accepts
-</p>
+<p><a href="https://gerrit.libreoffice.org/c/core/+/118168">XLSX export: improve handling of checkbox (form controls)</a> was an improvement to the existing checkbox export code, probably today's Excel is just more strict in what it accepts</p>
 </li>
 <li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/118219">XLSX export: handle button form controls</a>
-  adds the initial button support
-</p>
+<p><a href="https://gerrit.libreoffice.org/c/core/+/118219">XLSX export: handle button form controls</a> adds the initial button support</p>
 </li>
 <li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/118401">XLSX import: fix handling of named ranges
-  referring to PathMissing sheets</a> fixes an import problem around named ranges and external references
-</p>
+<p><a href="https://gerrit.libreoffice.org/c/core/+/118401">XLSX import: fix handling of named ranges referring to PathMissing sheets</a> fixes an import problem around named ranges and external references</p>
 </li>
 <li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/118485">XLSX export: handle macros on button form
-  controls</a> adds the macro bits of buttons
-</p>
+<p><a href="https://gerrit.libreoffice.org/c/core/+/118485">XLSX export: handle macros on button form controls</a> adds the macro bits of buttons</p>
 </li>
 <li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/118600">XSLX export, button form control: fix
-  handling of no macros</a> is a fixup for non-macro buttons
-</p>
+<p><a href="https://gerrit.libreoffice.org/c/core/+/118600">XSLX export, button form control: fix handling of no macros</a> is a fixup for non-macro buttons</p>
 </li>
-</ul></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_want_to_start_using_this">Want to start using this?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
-expect all of this work will be available in TDF&#8217;s
-<a href="http://dev-builds.libreoffice.org/daily/master/">next release</a> (7.3).</p></div>
-</div>
-</div>
-
+</ul>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
+expect all of this work will be available in TDF's
+<a href="http://dev-builds.libreoffice.org/daily/master/">next release</a> (7.3).</p>
   </div>
 </article>
 <hr />
@@ -458,80 +306,48 @@ expect all of this work will be available in TDF&#8217;s
     <p>Estimated read time: 2 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Line heights in Writer are typically defined in points on the UI (e.g. 12pt), though they are
+    <p>Line heights in Writer are typically defined in points on the UI (e.g. 12pt), though they are
 measured in twips internally (1 point is 20 twips). This height was stored in a 16bit unsigned
-integer, so the maximum allowed height was 65536 twips, around 116 cm.</p></div>
-<div class="paragraph"><p>Now we track line heights with 32 bits ints, so this limitation is practically removed.</p></div>
-<div class="paragraph"><p>First, thanks <a href="https://vector.com/">Vector</a> who made this work by
-<a href="https://www.collaboraoffice.com/">Collabora</a> possible.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_motivation">Motivation</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Once you insert an image to a Writer document, you can customize its anchor type. The as-char
-anchor type is handy if you don&#8217;t want text to flow around the image. This has the side effect that
+integer, so the maximum allowed height was 65536 twips, around 116 cm.</p>
+<p>Now we track line heights with 32 bits ints, so this limitation is practically removed.</p>
+<p>First, thanks <a href="https://vector.com/">Vector</a> who made this work by
+<a href="https://www.collaboraoffice.com/">Collabora</a> possible.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>Once you insert an image to a Writer document, you can customize its anchor type. The as-char
+anchor type is handy if you don't want text to flow around the image. This has the side effect that
 a large image significantly increases the nominal height of a line. The problematic document had an
 image height of 118.9 cm (46.81 inch), so the unsigned integer used to represent its height wrapped
-around, leading to an incorrect layout.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_results_so_far">Results so far</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Now it looks like the way you would expect it:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-line-height/sw-line-height.png" alt="https://share.vmiklos.hu/blog/sw-line-height/sw-line-height.png" />
-</div>
-<div class="title">Figure 1. Writer as-char image with height that is larger than 65k twips</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_how_is_this_implemented">How is this implemented?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
-<div class="paragraph"><p>As usual, the end goal was reached via a set of incremental commits:</p></div>
-<div class="ulist"><ul>
-<li>
+around, leading to an incorrect layout.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>Now it looks like the way you would expect it:</p>
 <p>
-The very first integer truncation was found using gdb, manually. At that point it was clear that
+<figure><img src="https://share.vmiklos.hu/blog/sw-line-height/sw-line-height.png"><figcaption>Writer as-char image with height that is larger than 65k twips</figcaption>
+</figure>
+</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>As usual, the end goal was reached via a set of incremental commits:</p>
+<ul>
+<li>
+<p>The very first integer truncation was found using gdb, manually. At that point it was clear that
   some tool to catch the problematic places would accelerate development. First
-  <a href="https://gerrit.libreoffice.org/c/core/+/115948">sw: replace most static_cast&lt;sal_uInt16&gt;()
-  calls with o3tl::narrowing()</a> prepared Writer code so that sanitizers can flag the interesting code
+  <a href="https://gerrit.libreoffice.org/c/core/+/115948">sw: replace most static_cast<sal_uInt16>() calls with o3tl::narrowing()</a> prepared Writer code so that sanitizers can flag the interesting code
   locations when using <code>-fsanitize=implicit-unsigned-integer-truncation
   -fsanitize=implicit-signed-integer-truncation</code>. This is important, as conversion with
-  <code>static_cast&lt;&gt;</code> counts as an explicit integer conversion, and sanitizers can&#8217;t flag such
-  conversions.
-</p>
+  <code>static_cast&lt;&gt;</code> counts as an explicit integer conversion, and sanitizers can't flag such
+  conversions.</p>
 </li>
 <li>
-<p>
-Then <a href="https://gerrit.libreoffice.org/c/core/+/115873">sw: allow the height of a line to be
-  larger than 65536 twips</a> took care of the height part.
-</p>
+<p>Then <a href="https://gerrit.libreoffice.org/c/core/+/115873">sw: allow the height of a line to be larger than 65536 twips</a> took care of the height part.</p>
 </li>
 <li>
-<p>
-Finally <a href="https://gerrit.libreoffice.org/c/core/+/116835">sw: allow the width of a line
-  portion to be larger than 65536 twips</a> fixed the width part.
-</p>
+<p>Finally <a href="https://gerrit.libreoffice.org/c/core/+/116835">sw: allow the width of a line portion to be larger than 65536 twips</a> fixed the width part.</p>
 </li>
-</ul></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_want_to_start_using_this">Want to start using this?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
-expect all of this work will be available in TDF&#8217;s
-<a href="http://dev-builds.libreoffice.org/daily/master/">next release</a> (7.2).</p></div>
-</div>
-</div>
-
+</ul>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
+expect all of this work will be available in TDF's
+<a href="http://dev-builds.libreoffice.org/daily/master/">next release</a> (7.2).</p>
   </div>
 </article>
 <hr />
@@ -546,127 +362,58 @@ expect all of this work will be available in TDF&#8217;s
     <p>Estimated read time: 3 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>The bibliography feature in Writer allows authors of e.g. scientific papers to track sources: first
+    <p>The bibliography feature in Writer allows authors of e.g. scientific papers to track sources: first
 you can insert bibliography entry fields, then at the end you can generate a bibliography table
-automatically.</p></div>
-<div class="paragraph"><p>Writer recently gained <a href="https://vmiklos.hu/blog/sw-bibliography.html">two improvements in this area</a>, and
-now there is one more: the ability to refer to a specific page of a (potentially long) source.</p></div>
-<div class="paragraph"><p>First, thanks <a href="https://ulakbim.tubitak.gov.tr/en">TUBITAK ULAKBIM</a> who made this work by
-<a href="https://www.collaboraoffice.com/">Collabora</a> possible.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_motivation">Motivation</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>The same feature in normal HTML linking / citation is well-known: you can place anchors in your
+automatically.</p>
+<p>Writer recently gained <a href="https://vmiklos.hu/blog/sw-bibliography.html">two improvements in this area</a>, and
+now there is one more: the ability to refer to a specific page of a (potentially long) source.</p>
+<p>First, thanks <a href="https://ulakbim.tubitak.gov.tr/en">TUBITAK ULAKBIM</a> who made this work by
+<a href="https://www.collaboraoffice.com/">Collabora</a> possible.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>The same feature in normal HTML linking / citation is well-known: you can place anchors in your
 document and then links can refer to not only to your page, but also can set the fragment part of
 the URL to jump to a specific section directly. E.g.
 <a href="https://vmiklos.hu/blog/sw-bibliography.html#_motivation">this link</a> will jump to the "Motivation"
-section of the above referred previous post.</p></div>
-<div class="paragraph"><p>Wouldn&#8217;t it be nice if you could also jump to a specific page of a scientific PDF?</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_results_so_far">Results so far</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>You can add such references by choosing the Insert &#8594; Table of Contents and Index &#8594; Bibliography
+section of the above referred previous post.</p>
+<p>Wouldn't it be nice if you could also jump to a specific page of a scientific PDF?</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>You can add such references by choosing the Insert -&gt; Table of Contents and Index -&gt; Bibliography
 Entry menu item.  Set Bibliography Source to Document Content and press the New button. The
-appearing dialog now has widgets to set a specific page number:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-bibliography-page/page.png" alt="https://share.vmiklos.hu/blog/sw-bibliography-page/page.png" />
-</div>
-<div class="title">Figure 1. Refer to a specic page of a bibliography source, user interface</div>
-</div>
-<div class="paragraph"><p>This is then stored in the URL by setting its fragment to <code>page=...</code>, and typically PDF readers
-understand this syntax, so when you click on the URL, the PDF will open exactly on the cited page.</p></div>
-<div class="paragraph"><p>This also works the other way around: URLs with such syntax are presented to the user with the
-dedicated widget to see, edit or delete the page number of the URL.</p></div>
-<div class="paragraph"><p>Finally, if you refer to different pages of the same source, the bibliography text generator detects
-this and lists the source in the bibliography only once.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_how_is_this_implemented">How is this implemented?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
-<div class="paragraph"><p>As usual, the high-level problem was addressed by a series of incremental development steps:</p></div>
-<div class="ulist"><ul>
-<li>
+appearing dialog now has widgets to set a specific page number:</p>
 <p>
-<a href="https://gerrit.libreoffice.org/c/core/+/111653">sw bibliography, refer to a page: strip
-  URLs in the bibliography table</a> improved the bibliography table generator to not show page fragments
+<figure><img src="https://share.vmiklos.hu/blog/sw-bibliography-page/page.png"><figcaption>Refer to a specic page of a bibliography source, user interface</figcaption>
+</figure>
 </p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/111761">sw bibliography, refer to a page:
-  de-duplicate bibliography table URLs</a> merged the idendical sources to a single entry in the bibliography
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/112400">sw bibliography, refer to a page: make the
-  biblio field clickable</a> allows opening the URL-with-page by clicking on the bibliography entry field
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/112981">sw bibliography, refer to a page: add open
-  hyperlink context menu</a> implemented the context menu, in case you prefer to avoid ctrl-click for hyperlink opening
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/113035">sw bibliography, refer to a page: add PDF
-  export links</a> improved the PDF export to have clickable bibliography entry fields
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/114059">sw bibliography, refer to a page: fix
-  biblio field relative URLs</a> added support for relative URLs, in case the edited document and
-  referred PDFs are in the same directory, next to each other
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/114104">sw bibliography, refer to a page: also
-  de-duplicate relative URLs</a> made the relative URL and bibliography table row merging work together
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/114380">sw bibliography, refer to a page: edit the
-  page number of individual entries</a> allows editing just a single bibliography entry field for page
-  number purposes, since in other cases it makes sense to update all fields of the same source (e.g.
-  correcting a spelling mistake in an author name)
-</p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/114443">sw bibliography, refer to a page: add
-  dedicate widget to show the page number</a>,
-  <a href="https://gerrit.libreoffice.org/c/core/+/114664">sw bibliography, refer to a page: save
-  edited page number</a> and <a href="https://gerrit.libreoffice.org/c/core/+/114750">sw bibliography,
-  refer to a page: add insert/delete UI</a> add support for creating, showing, editing and deleting page
-  numbers of such URLs on the user interface
-</p>
-</li>
-</ul></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_want_to_start_using_this">Want to start using this?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
-expect all of this work will be available in TDF&#8217;s
-<a href="http://dev-builds.libreoffice.org/daily/master/">next release</a> (7.2).</p></div>
-</div>
-</div>
+<p>This is then stored in the URL by setting its fragment to <code>page=...</code>, and typically PDF readers
+understand this syntax, so when you click on the URL, the PDF will open exactly on the cited page.</p>
+<p>This also works the other way around: URLs with such syntax are presented to the user with the
+dedicated widget to see, edit or delete the page number of the URL.</p>
+<p>Finally, if you refer to different pages of the same source, the bibliography text generator detects
+this and lists the source in the bibliography only once.</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>As usual, the high-level problem was addressed by a series of incremental development steps:</p>
+<!-- git log --author=vmiklos --since=2021-01-01 --grep 'bibliography' --pretty=oneline --reverse -->
 
+<ul>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/111653">sw bibliography, refer to a page: strip URLs in the bibliography table</a> improved the bibliography table generator to not show page fragments</li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/111761">sw bibliography, refer to a page: de-duplicate bibliography table URLs</a> merged the idendical sources to a single entry in the bibliography</li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/112400">sw bibliography, refer to a page: make the biblio field clickable</a> allows opening the URL-with-page by clicking on the bibliography entry field</li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/112981">sw bibliography, refer to a page: add open hyperlink context menu</a> implemented the context menu, in case you prefer to avoid ctrl-click for hyperlink opening</li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/113035">sw bibliography, refer to a page: add PDF export links</a> improved the PDF export to have clickable bibliography entry fields</li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/114059">sw bibliography, refer to a page: fix biblio field relative URLs</a> added support for relative URLs, in case the edited document and
+  referred PDFs are in the same directory, next to each other</li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/114104">sw bibliography, refer to a page: also de-duplicate relative URLs</a> made the relative URL and bibliography table row merging work together</li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/114380">sw bibliography, refer to a page: edit the page number of individual entries</a> allows editing just a single bibliography entry field for page
+  number purposes, since in other cases it makes sense to update all fields of the same source (e.g.
+  correcting a spelling mistake in an author name)</li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/114443">sw bibliography, refer to a page: add dedicate widget to show the page number</a>, <a href="https://gerrit.libreoffice.org/c/core/+/114664">sw bibliography, refer to a page: save edited page number</a> and <a href="https://gerrit.libreoffice.org/c/core/+/114750">sw bibliography, refer to a page: add insert/delete UI</a> add support for creating, showing, editing and deleting page
+  numbers of such URLs on the user interface</li>
+</ul>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
+expect all of this work will be available in TDF's
+<a href="http://dev-builds.libreoffice.org/daily/master/">next release</a> (7.2).</p>
   </div>
 </article>
 <hr />
@@ -681,101 +428,66 @@ expect all of this work will be available in TDF&#8217;s
     <p>Estimated read time: 2 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Writer now has better
+    <p>Writer now has better
 <a href="https://git.libreoffice.org/core/commit/66ac8e60896f6306bed8fbb34606fd14474f19ce">support</a> for
-Word-compatible border rending when it comes to vertically merged cells in tables.</p></div>
-<div class="paragraph"><p>First, thanks <a href="https://www.docmosis.com/">Docmosis</a> who made this work by
-<a href="https://www.collaboraoffice.com/">Collabora</a> possible.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_motivation">Motivation</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Both Word and Writer allow specifying borders for any kind of table cells. When the user creates a
-vertically merged cell, there is a covering cell and there is one or more covered table cells.</p></div>
-<div class="paragraph"><p>The Writer approach is to render the cell borders according to the properties of the covering cell.
+Word-compatible border rending when it comes to vertically merged cells in tables.</p>
+<p>First, thanks <a href="https://www.docmosis.com/">Docmosis</a> who made this work by
+<a href="https://www.collaboraoffice.com/">Collabora</a> possible.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>Both Word and Writer allow specifying borders for any kind of table cells. When the user creates a
+vertically merged cell, there is a covering cell and there is one or more covered table cells.</p>
+<p>The Writer approach is to render the cell borders according to the properties of the covering cell.
 This has the benefit that each edge of the table cell has a single border style (e.g. dashed or
-hairline).</p></div>
-<div class="paragraph"><p>The Word approach is to render the cell borders as if there would be no vertical merge, according to
+hairline).</p>
+<p>The Word approach is to render the cell borders as if there would be no vertical merge, according to
 the properties of the covered cell. This has the benefit that merging the content of cells
-vertically doesn&#8217;t change the border rendering, but it also requires more complex code for painting.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_results_so_far">Results so far</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Writer can now detect that your tables originate from Word formats and render table borders the Word way in that case.</p></div>
-<div class="paragraph"><p>Here is how the new rendering result look like:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-merged-border/new.png" alt="https://share.vmiklos.hu/blog/sw-merged-border/new.png" />
-</div>
-<div class="title">Figure 1. Writer rendering in compatibility mode, new output</div>
-</div>
-<div class="paragraph"><p>And here is how it used to look like:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-merged-border/old.png" alt="https://share.vmiklos.hu/blog/sw-merged-border/old.png" />
-</div>
-<div class="title">Figure 2. Writer rendering in compatibility mode, old output</div>
-</div>
-<div class="paragraph"><p>And finally the reference rendering is:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-merged-border/ref.png" alt="https://share.vmiklos.hu/blog/sw-merged-border/ref.png" />
-</div>
-<div class="title">Figure 3. Writer rendering in compatibility mode, reference output</div>
-</div>
-<div class="paragraph"><p>You can see that the B4 and B5 cells are covered, they had some unwanted border on their left side
-and this is now gone.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_how_is_this_implemented">How is this implemented?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
-<div class="ulist"><ul>
-<li>
+vertically doesn't change the border rendering, but it also requires more complex code for painting.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>Writer can now detect that your tables originate from Word formats and render table borders the Word way in that case.</p>
+<p>Here is how the new rendering result look like:</p>
 <p>
-First, some building blocks were introduced: <code>SwCellFrame::GetCoveredCellInRow()</code> can look up a
-  covered cell in a certain row, provided that this cell covers it
+<figure><img src="https://share.vmiklos.hu/blog/sw-merged-border/new.png"><figcaption>Writer rendering in compatibility mode, new output</figcaption>
+</figure>
 </p>
+<p>And here is how it used to look like:</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-merged-border/old.png"><figcaption>Writer rendering in compatibility mode, old output</figcaption>
+</figure>
+</p>
+<p>And finally the reference rendering is:</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-merged-border/ref.png"><figcaption>Writer rendering in compatibility mode, reference output</figcaption>
+</figure>
+</p>
+<p>You can see that the B4 and B5 cells are covered, they had some unwanted border on their left side
+and this is now gone.</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<ul>
+<li>
+<p>First, some building blocks were introduced: <code>SwCellFrame::GetCoveredCellInRow()</code> can look up a
+  covered cell in a certain row, provided that this cell covers it</p>
 </li>
 <li>
-<p>
-Building on top of this, <code>SwCellFrame::GetCoveredCells()</code> can provide a list of cell frames which
+<p>Building on top of this, <code>SwCellFrame::GetCoveredCells()</code> can provide a list of cell frames which
   are covered by the current cell, due to vertical merge. This is needed, because previously the
-  layout didn&#8217;t have to consider properties of covered cells, so while the document model had this
-  information, it was not visible to the layout in a convenient way
-</p>
+  layout didn't have to consider properties of covered cells, so while the document model had this
+  information, it was not visible to the layout in a convenient way</p>
 </li>
 <li>
-<p>
-Using the above functionality, <code>SwTabFramePainter::Insert()</code> can suppress painting of certain
-  border lines in Word compatibility mode
-</p>
+<p>Using the above functionality, <code>SwTabFramePainter::Insert()</code> can suppress painting of certain
+  border lines in Word compatibility mode</p>
 </li>
 <li>
-<p>
-Finally, the code change can be covered with a test by recording the rendering and asserting the
+<p>Finally, the code change can be covered with a test by recording the rendering and asserting the
   vertical positions of border points: we can check that all the positions belong to the 1st, 2nd or
-  3rd rows, and not to a row below them
-</p>
+  3rd rows, and not to a row below them</p>
 </li>
-</ul></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_want_to_start_using_this">Want to start using this?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
-expect all of this work will be available in TDF&#8217;s
-<a href="http://dev-builds.libreoffice.org/daily/master/">next release</a> (7.2).</p></div>
-</div>
-</div>
-
+</ul>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
+expect all of this work will be available in TDF's
+<a href="http://dev-builds.libreoffice.org/daily/master/">next release</a> (7.2).</p>
   </div>
 </article>
 <hr />
@@ -790,120 +502,73 @@ expect all of this work will be available in TDF&#8217;s
     <p>Estimated read time: 3 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>As mentioned in a <a href="https://vmiklos.hu/blog/hackweek-2020.html">previous</a> such report, a hack week is when
+    <p>As mentioned in a <a href="https://vmiklos.hu/blog/hackweek-2020.html">previous</a> such report, a hack week is when
 we are allowed to hack on anything we want in LibreOffice / Collabora Office / Collabora Online for
 a few days at <a href="https://www.collaboraoffice.com/">Collabora</a>. I used this time to implement core
-support for RTL gutter margin in Writer.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_motivation">Motivation</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>I posted about Writer gutter margin in general <a href="https://vmiklos.hu/blog/sw-gutter-margin.html">back in
-February</a>, and two follow-up requests accumulated around this new feature since then.</p></div>
-<div class="paragraph"><p>First, the gutter margin could be on the left or at the top for non-mirrored documents, which
+support for RTL gutter margin in Writer.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>I posted about Writer gutter margin in general <a href="https://vmiklos.hu/blog/sw-gutter-margin.html">back in
+February</a>, and two follow-up requests accumulated around this
+new feature since then.</p>
+<p>First, the gutter margin could be on the left or at the top for non-mirrored documents, which
 initially sounded like a complete solution, but later it turned out that right-to-left (RTL)
-documents <a href="https://bugs.documentfoundation.org/show_bug.cgi?id=140343">want it on the right</a>.</p></div>
-<div class="paragraph"><p>Second, there was a <a href="https://issues.oasis-open.org/browse/OFFICE-4105">request from the OASIS TC to</a>
-to implement the ODF filter differently for gutter margin.</p></div>
-<div class="paragraph"><p>Neither of these is simple to do, so this hackweek was a good opportunity to address these problems.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_results_so_far">Results so far</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Here is the layout and user interface for RTL gutter looks like:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/hackweek-2021/layout-ui.png" alt="https://share.vmiklos.hu/blog/hackweek-2021/layout-ui.png" />
-</div>
-<div class="title">Figure 1. RTL gutter margin in Writer, layout and UI</div>
-</div>
-<div class="paragraph"><p>You can see how the gutter is on the right (not the left) and you can alter this behavior with a
-dedicated checkbox on the UI.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_how_is_this_implemented">How is this implemented?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
-<div class="ulist"><ul>
-<li>
+documents <a href="https://bugs.documentfoundation.org/show_bug.cgi?id=140343">want it on the
+right</a>.</p>
+<p>Second, there was a <a href="https://issues.oasis-open.org/browse/OFFICE-4105">request from the OASIS TC
+to</a> to implement the ODF filter differently for
+gutter margin.</p>
+<p>Neither of these is simple to do, so this hackweek was a good opportunity to address these problems.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>Here is the layout and user interface for RTL gutter looks like:</p>
 <p>
-<a href="https://git.libreoffice.org/core/commit/67e53dfeadbbc4f4ab207af0d2cd4e8f556b73d4">sw page rtl
-  gutter margin: add doc model</a> introduced a new RES_RTL_GUTTER page style property
+<figure><img src="https://share.vmiklos.hu/blog/hackweek-2021/layout-ui.png"><figcaption>RTL gutter margin in Writer, layout and UI</figcaption>
+</figure>
 </p>
-</li>
-<li>
-<p>
-<a href="https://git.libreoffice.org/core/commit/bcbf1c245fa13cfbae2059a996006179c7f4b747">sw page rtl
-  gutter margin: add UNO API</a> added a new public RtlGutter UNO API property
-</p>
-</li>
-<li>
-<p>
-<a href="https://git.libreoffice.org/core/commit/c088d26578d1be352efa49bd164a8217627648de">sw page rtl
-  gutter margin: add layout</a> was the tricky layout piece, extending <code>SwBorderAttrs</code>
-</p>
-</li>
-<li>
-<p>
-<a href="https://git.libreoffice.org/core/commit/3db477fd0e6cfc4ff77b3c911ca4ab14fd980932">sw page rtl
-  gutter margin: add DOCX filter</a> mapped this to DOCX&#8217;s <code>&lt;w:rtlGutter&gt;</code>
-</p>
-</li>
-<li>
-<p>
-<a href="https://git.libreoffice.org/core/commit/fac65bb9d831a854298d6cba09ad6159d15b8323">sw page rtl
-  gutter margin: add ODF import</a> mapped this to <code>&lt;style:page-layout-properties
-  style:writing-mode="..."&gt;</code> in case the attribute value is RTL
-</p>
-</li>
-<li>
-<p>
-<a href="https://git.libreoffice.org/core/commit/8b7ff52ac87795881a4d86395885778f1da3d18b">sw page rtl
-  gutter margin: add DOC filter</a> mapped this to DOC&#8217;s SFRTLGutter, amusingly that handling of that
-  was somewhat there, but more or less broken since 2002-02-04
-</p>
-</li>
-<li>
-<p>
-<a href="https://git.libreoffice.org/core/commit/f15c6c5d2947a61e6521471b6b7541812953efc3">sw page rtl
-  gutter margin: add RTF filter</a> mapped this to RTF&#8217;s <code>\rtlgutter</code> section flag
-</p>
-</li>
-<li>
-<p>
-<a href="https://git.libreoffice.org/core/commit/d48a4174708ce0850577dba76dccaf85c4f6ffa1">sw page rtl
-  gutter margin: add UI</a> introduced a new checkbox on the UI to set/get this, and fixed up
-  notifications, so that the incremental layout repaints the necessary page frames when this setting
-  changes
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>Finally I had a little bit of remaining time, so I addressed a request from the OASIS ODF TC:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-<a href="https://git.libreoffice.org/core/commit/f3cf833f7079ce8d2f53681cae1b430a875cc320">sw page gutter
-  margin: reimplement ODF filter</a> changed the ODF markup to be more compatible with readers ignoring
-  <code>&lt;style:page-layout-properties loext:margin-gutter="..."&gt;</code>
-</p>
-</li>
-</ul></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_want_to_start_using_this">Want to start using this?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
-expect all of this work will be available in TDF&#8217;s
-<a href="http://dev-builds.libreoffice.org/daily/master/">next release</a> (7.2).</p></div>
-</div>
-</div>
+<p>You can see how the gutter is on the right (not the left) and you can alter this behavior with a
+dedicated checkbox on the UI.</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<!-- git log --author=vmiklos --since=2021-03-28 --pretty=oneline --reverse --grep gutter -->
 
+<ul>
+<li>
+<p><a href="https://git.libreoffice.org/core/commit/67e53dfeadbbc4f4ab207af0d2cd4e8f556b73d4">sw page rtl gutter margin: add doc model</a> introduced a new RES_RTL_GUTTER page style property</p>
+</li>
+<li>
+<p><a href="https://git.libreoffice.org/core/commit/bcbf1c245fa13cfbae2059a996006179c7f4b747">sw page rtl gutter margin: add UNO API</a> added a new public RtlGutter UNO API property</p>
+</li>
+<li>
+<p><a href="https://git.libreoffice.org/core/commit/c088d26578d1be352efa49bd164a8217627648de">sw page rtl gutter margin: add layout</a> was the tricky layout piece, extending <code>SwBorderAttrs</code></p>
+</li>
+<li>
+<p><a href="https://git.libreoffice.org/core/commit/3db477fd0e6cfc4ff77b3c911ca4ab14fd980932">sw page rtl gutter margin: add DOCX filter</a> mapped this to DOCX's <code>&lt;w:rtlGutter&gt;</code></p>
+</li>
+<li>
+<p><a href="https://git.libreoffice.org/core/commit/fac65bb9d831a854298d6cba09ad6159d15b8323">sw page rtl gutter margin: add ODF import</a> mapped this to <code>&lt;style:page-layout-properties
+  style:writing-mode="..."&gt;</code> in case the attribute value is RTL</p>
+</li>
+<li>
+<p><a href="https://git.libreoffice.org/core/commit/8b7ff52ac87795881a4d86395885778f1da3d18b">sw page rtl gutter margin: add DOC filter</a> mapped this to DOC's SFRTLGutter, amusingly that handling of that
+  was somewhat there, but more or less broken since 2002-02-04</p>
+</li>
+<li>
+<p><a href="https://git.libreoffice.org/core/commit/f15c6c5d2947a61e6521471b6b7541812953efc3">sw page rtl gutter margin: add RTF filter</a> mapped this to RTF's <code>\rtlgutter</code> section flag</p>
+</li>
+<li>
+<p><a href="https://git.libreoffice.org/core/commit/d48a4174708ce0850577dba76dccaf85c4f6ffa1">sw page rtl gutter margin: add UI</a> introduced a new checkbox on the UI to set/get this, and fixed up
+  notifications, so that the incremental layout repaints the necessary page frames when this setting
+  changes</p>
+</li>
+</ul>
+<p>Finally I had a little bit of remaining time, so I addressed a request from the OASIS ODF TC:</p>
+<ul>
+<li><a href="https://git.libreoffice.org/core/commit/f3cf833f7079ce8d2f53681cae1b430a875cc320">sw page gutter margin: reimplement ODF filter</a> changed the ODF markup to be more compatible with readers ignoring
+  <code>&lt;style:page-layout-properties loext:margin-gutter="..."&gt;</code></li>
+</ul>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
+expect all of this work will be available in TDF's
+<a href="http://dev-builds.libreoffice.org/daily/master/">next release</a> (7.2).</p>
   </div>
 </article>
 <hr />
@@ -918,86 +583,47 @@ expect all of this work will be available in TDF&#8217;s
     <p>Estimated read time: 2 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>The bibliography feature in Writer allows authors of e.g. scientific papers to track sources: first
+    <p>The bibliography feature in Writer allows authors of e.g. scientific papers to track sources: first
 you can insert bibliography entry fields, then at the end you can generate a bibliography table
-automatically.</p></div>
-<div class="paragraph"><p>Writer now has two improvements in this area: more information about these entries in the form of a
-mouse tooltip and clickable URLs in the table.</p></div>
-<div class="paragraph"><p>First, thanks <a href="https://ulakbim.tubitak.gov.tr/en">TUBITAK ULAKBIM</a> who made this work by
-<a href="https://www.collaboraoffice.com/">Collabora</a> possible.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_motivation">Motivation</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Generating a bibliography (table) for a document is a two-step process: first the user inserts
+automatically.</p>
+<p>Writer now has two improvements in this area: more information about these entries in the form of a
+mouse tooltip and clickable URLs in the table.</p>
+<p>First, thanks <a href="https://ulakbim.tubitak.gov.tr/en">TUBITAK ULAKBIM</a> who made this work by
+<a href="https://www.collaboraoffice.com/">Collabora</a> possible.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>Generating a bibliography (table) for a document is a two-step process: first the user inserts
 bibliography entry fields to refer to sources, then later the bibliography can be auto-generated. It
 was not great that details of a source was only visible in the Writer edit window after generating
 the bibliography table. A somewhat related shortcoming was that URLs of sources were handled as
 plain text, while users expect that references are also clickable, similar to e.g. table of
-contents.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_results_so_far">Results so far</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>This is how a tooltip looks like, available even if there is no bibliography table yet:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-bibliography/tooltip.png" alt="https://share.vmiklos.hu/blog/sw-bibliography/tooltip.png" />
-</div>
-<div class="title">Figure 1. Tooltip for bibliography entry fields</div>
-</div>
-<div class="paragraph"><p>And URLs in the bibliography table are now clickable:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-bibliography/url.png" alt="https://share.vmiklos.hu/blog/sw-bibliography/url.png" />
-</div>
-<div class="title">Figure 2. Clickable URLs in the bibliography table</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_how_is_this_implemented">How is this implemented?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
-<div class="paragraph"><p>As usual, the high-level problem was addressed by a series of incremental development steps:</p></div>
-<div class="ulist"><ul>
-<li>
+contents.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>This is how a tooltip looks like, available even if there is no bibliography table yet:</p>
 <p>
-<a href="https://gerrit.libreoffice.org/c/core/+/110705">sw tooltip on bibliography fields: add an
-  SwTOXInternational factory</a> and <a href="https://gerrit.libreoffice.org/c/core/+/110712">sw tooltip on
-  bibliography fields: add a text factory that gives us a string</a> were necessary refactors to get a
-  string that looks like a row in the bibliography table, without having an empty bibliography table
-  at hand
+<figure><img src="https://share.vmiklos.hu/blog/sw-bibliography/tooltip.png"><figcaption>Tooltip for bibliography entry fields</figcaption>
+</figure>
 </p>
-</li>
-<li>
+<p>And URLs in the bibliography table are now clickable:</p>
 <p>
-<a href="https://gerrit.libreoffice.org/c/core/+/110765">sw tooltip on bibliography fields: add the actual
-  tooltip functionality</a> improved the UI to have a tooltip
+<figure><img src="https://share.vmiklos.hu/blog/sw-bibliography/url.png"><figcaption>Clickable URLs in the bibliography table</figcaption>
+</figure>
 </p>
-</li>
-<li>
-<p>
-<a href="https://gerrit.libreoffice.org/c/core/+/111117">sw bibliography: make URLs in the bibliography
-  table clickable</a> implemented the clickable URLs feature
-</p>
-</li>
-</ul></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_want_to_start_using_this">Want to start using this?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
-expect all of this work will be available in TDF&#8217;s
-<a href="http://dev-builds.libreoffice.org/daily/master/">next release</a> (7.2).</p></div>
-</div>
-</div>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>As usual, the high-level problem was addressed by a series of incremental development steps:</p>
+<!-- git log --author=vmiklos --since=2021-01-01 --grep 'bibliography' --pretty=oneline --reverse -->
 
+<ul>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/110705">sw tooltip on bibliography fields: add an SwTOXInternational factory</a> and <a href="https://gerrit.libreoffice.org/c/core/+/110712">sw tooltip on bibliography fields: add a text factory that gives us a string</a> were necessary refactors to get a
+  string that looks like a row in the bibliography table, without having an empty bibliography table
+  at hand</li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/110765">sw tooltip on bibliography fields: add the actual tooltip functionality</a> improved the UI to have a tooltip</li>
+<li><a href="https://gerrit.libreoffice.org/c/core/+/111117">sw bibliography: make URLs in the bibliography table clickable</a> implemented the clickable URLs feature</li>
+</ul>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>Collabora intends to continue supporting and contributing to LibreOffice, the code is merged so we
+expect all of this work will be available in TDF's
+<a href="http://dev-builds.libreoffice.org/daily/master/">next release</a> (7.2).</p>
   </div>
 </article>
 <hr />
@@ -1012,125 +638,85 @@ expect all of this work will be available in TDF&#8217;s
     <p>Estimated read time: 3 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>The page gutter defines the amount of extra space added to the specified margin (typically left),
-above any existing margin values.</p></div>
-<div class="paragraph"><p>Writer now has much better support for gutter margins: not only this margin type can be specified
-explicitly, it&#8217;s also possible to select if the gutter should be on the left or on the top, and it
-works with mirrored margins as well.</p></div>
-<div class="paragraph"><p>This work is primarily for <a href="https://www.collaboraoffice.com/">Collabora Online</a>, but the feature is
-fully available in desktop Writer as well.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_motivation">Motivation</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Word has a gutter margin feature, and we saw that some UI-level
+    <p>The page gutter defines the amount of extra space added to the specified margin (typically left),
+above any existing margin values.</p>
+<p>Writer now has much better support for gutter margins: not only this margin type can be specified
+explicitly, it's also possible to select if the gutter should be on the left or on the top, and it
+works with mirrored margins as well.</p>
+<p>This work is primarily for <a href="https://www.collaboraoffice.com/">Collabora Online</a>, but the feature is
+fully available in desktop Writer as well.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>Word has a gutter margin feature, and we saw that some UI-level
 <a href="https://github.com/OSSII/oxool-community/commit/a7e0dec2fad7e6c63e8951875bb28ac015f736a0">workaround</a>
-appeared to have something similar based on the LibreOffice technology. We thought it&#8217;s much better
+appeared to have something similar based on the LibreOffice technology. We thought it's much better
 to impelement this properly, so that the result is interoperable with Word, and also available both
-in Online and on the desktop.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_results_so_far">Results so far</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>This is how the UI looks like in Online:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-gutter-margin/online.png" alt="https://share.vmiklos.hu/blog/sw-gutter-margin/online.png" />
-</div>
-<div class="title">Figure 1. New UI in Online</div>
-</div>
-<div class="paragraph"><p>This is how the new render result looks like:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-gutter-margin/new.png" alt="https://share.vmiklos.hu/blog/sw-gutter-margin/new.png" />
-</div>
-<div class="title">Figure 2. New render result in Writer</div>
-</div>
-<div class="paragraph"><p>Matching the reference rendering:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-gutter-margin/ref.png" alt="https://share.vmiklos.hu/blog/sw-gutter-margin/ref.png" />
-</div>
-<div class="title">Figure 3. Reference render result</div>
-</div>
-<div class="paragraph"><p>While the gutter was just missing previously:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://share.vmiklos.hu/blog/sw-gutter-margin/old.png" alt="https://share.vmiklos.hu/blog/sw-gutter-margin/old.png" />
-</div>
-<div class="title">Figure 4. Old render result in Writer</div>
-</div>
-<div class="paragraph"><p>You can see that the gutter margin is now handled properly.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_how_is_this_implemented">How is this implemented?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>If you would like to know a bit more about how this works, continue reading&#8230; :-)</p></div>
-<div class="paragraph"><p>As usual, the high-level problem was addressed by a series of incremental development steps:</p></div>
-<div class="ulist"><ul>
-<li>
+in Online and on the desktop.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>This is how the UI looks like in Online:</p>
 <p>
-First, we added a new "gutter" margin type (length) and a gutter position (left or top) to the
-  document model &amp; UNO API.
+<figure><img src="https://share.vmiklos.hu/blog/sw-gutter-margin/online.png"><figcaption>New UI in Online</figcaption>
+</figure>
 </p>
+<p>This is how the new render result looks like:</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-gutter-margin/new.png"><figcaption>New render result in Writer</figcaption>
+</figure>
+</p>
+<p>Matching the reference rendering:</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-gutter-margin/ref.png"><figcaption>Reference render result</figcaption>
+</figure>
+</p>
+<p>While the gutter was just missing previously:</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-gutter-margin/old.png"><figcaption>Old render result in Writer</figcaption>
+</figure>
+</p>
+<p>You can see that the gutter margin is now handled properly.</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>As usual, the high-level problem was addressed by a series of incremental development steps:</p>
+<!-- git log --author=vmiklos --since=2021-01-01 --grep 'sw page gutter margin' --pretty=oneline --reverse -->
+
+<ul>
+<li>
+<p>First, we added a new "gutter" margin type (length) and a gutter position (left or top) to the
+  document model &amp; UNO API.</p>
 </li>
 <li>
-<p>
-This was followed by adding the layout, which is always the most challenging part of a new Writer
+<p>This was followed by adding the layout, which is always the most challenging part of a new Writer
   feature. In this case the basic functionality was implemented by reducing the "print area" of page
   frames, so that the positioning of header, body and footer frames all respect the gutter margin.
   Then additional care was taken to ignore the gutter margin for page borders to be compatible with
-  Word. Finally the margin position and mirrored margin support was implemented.
-</p>
+  Word. Finally the margin position and mirrored margin support was implemented.</p>
 </li>
 <li>
-<p>
-Then we looked at import/export: this feature is now supported with the ODP, DOCX, DOC and RTF
+<p>Then we looked at import/export: this feature is now supported with the ODP, DOCX, DOC and RTF
   formats. Note that some best-effort handling was there in the DOC filter already, but the gutter
-  margin was (semantically) lost on export.
-</p>
+  margin was (semantically) lost on export.</p>
 </li>
 <li>
-<p>
-You already saw the new UI above: this allows changing the amount of the gutter margin, specifying
+<p>You already saw the new UI above: this allows changing the amount of the gutter margin, specifying
   its position, finally the preview widget also takes the gutter margin into account.  Note that
   this dialog is shared code between Writer, Calc and Impress: we made sure to not break those other
-  apps with the extended UI, which is specific to Writer.
-</p>
+  apps with the extended UI, which is specific to Writer.</p>
 </li>
 <li>
-<p>
-Brief help has been added for these new UI controls and submitting an ODF extension proposal to
-  OASIS is in progress to standardize the so far LO-specific markup:
-</p>
+<p>Brief help has been added for these new UI controls and submitting an ODF extension proposal to
+  OASIS is in progress to standardize the so far LO-specific markup:</p>
 </li>
-</ul></div>
-<div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight
-by Lorenzo Bettini
-http://www.lorenzobettini.it
-http://www.gnu.org/software/src-highlite -->
-<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">&lt;style:page-layout-properties</span></span> <span style="color: #009900">loext:margin-gutter</span><span style="color: #990000">=</span><span style="color: #FF0000">"1.27cm"</span><span style="font-weight: bold"><span style="color: #0000FF">&gt;</span></span></tt></pre></div></div>
-<div class="paragraph"><p>With these, it&#8217;s now possible to add, modify, render and delete gutter margins for your documents,
-while preserving them during ODT and DOCX import/export, without introducing any weird fake line
-shapes.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_want_to_start_using_this">Want to start using this?</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>You can get a snapshot / demo of Collabora Office and try it out yourself right now:
-<a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
-intends to continue supporting and contributing to LibreOffice, the code is merged so we expect all
-of this work will be available in TDF&#8217;s next release too (7.2).</p></div>
-</div>
-</div>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;style:page-layout-properties</span><span class="w"> </span><span class="na">loext:margin-gutter=</span><span class="s">&quot;1.27cm&quot;</span><span class="nt">&gt;</span>
+</code></pre></div>
 
+<p>With these, it's now possible to add, modify, render and delete gutter margins for your documents,
+while preserving them during ODT and DOCX import/export, without introducing any weird fake line
+shapes.</p>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a snapshot / demo of Collabora Office and try it out yourself right now: <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable
+snapshot</a>.  Collabora intends to
+continue supporting and contributing to LibreOffice, the code is merged so we expect all of this
+work will be available in TDF's next release too (7.2).</p>
   </div>
 </article>
 
