@@ -5,7 +5,7 @@ Tags: en
 Date: 2020-07-20T09:07:46+02:00
 
 Draw now has support for adding visible signatures to an existing PDF file. This is in contrast with
-the [old functionality]({filename}/2016/pdf-sign.adoc) which was limited to invisible signatures.
+the [old functionality]({filename}/2016/pdf-sign.md) which was limited to invisible signatures.
 
 First, thanks to the Dutch Ministry of Defense in cooperation with [Nou&Off](http://nouenoff.nl/) who
 made this work by [Collabora](https://www.collaboraoffice.com/) possible.

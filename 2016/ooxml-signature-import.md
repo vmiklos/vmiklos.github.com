@@ -1,19 +1,13 @@
-= OOXML signature import in LibreOffice
+Title: OOXML signature import in LibreOffice
+Slug: ooxml-signature-import
+Category: libreoffice
+Tags: en
+Date: 2016-03-31T08:47:31Z
 
-:slug: ooxml-signature-import
-:category: libreoffice
-:tags: en
-:date: 2016-03-31T08:47:31Z
+![(via ascertia)](https://lh3.googleusercontent.com/-8fwMz2Ie0ys/Vvpxvf94SrI/AAAAAAAAGlQ/vVaTBn_vEvY7Y3Fn2rcLYPERx3raDX_UwCCo/s400-Ic42/)
 
-++++
-<div style="text-align: center; font-size: 0.6em;">
-<img src="https://lh3.googleusercontent.com/-8fwMz2Ie0ys/Vvpxvf94SrI/AAAAAAAAGlQ/vVaTBn_vEvY7Y3Fn2rcLYPERx3raDX_UwCCo/s400-Ic42/"/>
-<p>(via <a href="http://www.ascertia.com/">ascertia</a>)</p>
-</div>
-++++
-
-After adding link:|filename|/2016/libreoffice-sha256-signatures.adoc[support
-for SHA-256 hashes in LibreOffice], I turned towards implementing OOXML
+After adding [support
+for SHA-256 hashes in LibreOffice]({filename}/2016/libreoffice-sha256-signatures.md), I turned towards implementing OOXML
 signature import (as in: verification, not signing) in LibreOffice. First,
 thanks to the Dutch Ministry of Defense who made this work possible (as part
 of a project implementing trusted signing and communication in LibreOffice), I
@@ -28,7 +22,7 @@ collected a list of building blocks needed for this to work:
   assume that multiple signatures are always written to a single file
 
 The xmlsec bits are now
-https://github.com/lsh123/xmlsec/commit/7069e2b0ab49679008abedd6d223fb95538b0684.patch[upstream],
+[upstream](https://github.com/lsh123/xmlsec/commit/7069e2b0ab49679008abedd6d223fb95538b0684.patch),
 it seems to me that new algorithm is needed, so that MSO can avoid signing a
 number of streams (files in ZIP containers), while still being able to verify
 that all normal streams are signed. Given that MSO by default doesn't sign all
@@ -40,8 +34,8 @@ not all streams are signed. This is a bit of a rant, but better not hide the
 reality: a default ODF signature covers more than a default OOXML signature.
 
 The
-https://cgit.freedesktop.org/libreoffice/core/tree/xmlsecurity/source/helper/ooxmlsecparser.cxx[OOXML
-signature parser] had to extract all information from the signature markup
+[OOXML
+signature parser](https://cgit.freedesktop.org/libreoffice/core/tree/xmlsecurity/source/helper/ooxmlsecparser.cxx) had to extract all information from the signature markup
 that's interesting for LibreOffice, like the certificate, the signature date
 or the signature description. I considered extending the ODF signature parser
 instead of implementing a new one for OOXML, since both markups are based on
@@ -63,6 +57,4 @@ work with that.
 Putting all of these together, we now have unit tests that take test documents
 having "good" and "bad" signatures, and the verification result in LO will
 match with the one of MSO. As usual, you can try this right now with a 5.2
-http://dev-builds.libreoffice.org/daily/master/[daily build]. :-)
-
-// vim: ft=asciidoc
+[daily build](http://dev-builds.libreoffice.org/daily/master/). :-)

@@ -1,19 +1,19 @@
-= PAdES support for PDF files in LibreOffice
+Title: PAdES support for PDF files in LibreOffice
+Slug: pades
+Category: libreoffice
+Tags: en
+Date: 2016-12-20T12:08:37Z
 
-:slug: pades
-:category: libreoffice
-:tags: en
-:date: 2016-12-20T12:08:37Z
-image::https://farm1.staticflickr.com/443/30919530974_7ab3d132d8_z.jpg[align="center",link="https://farm1.staticflickr.com/443/30919530974_5c5b3cb3a9_o.png"]
+[![Screenshot showing a valid PAdES signature](https://farm1.staticflickr.com/443/30919530974_7ab3d132d8_z.jpg)](https://farm1.staticflickr.com/443/30919530974_5c5b3cb3a9_o.png)
 
 Building on top of the previously mentioned
-link:|filename|/2016/pdf-sign.adoc[signing of existing PDF files] work, one
+[signing of existing PDF files]({filename}/2016/pdf-sign.md) work, one
 more PDF feature coming in LibreOffice 5.3 is initial support for the PDF
-Advanced Electronic Signatures (https://en.wikipedia.org/wiki/PAdES[PAdES])
+Advanced Electronic Signatures ([PAdES](https://en.wikipedia.org/wiki/PAdES))
 standard.  First, thanks to the Dutch Ministry of Defense in cooperation with
-http://nouenoff.nl/[Nou&Off] who made this work possible.
+[Nou&Off](http://nouenoff.nl/) who made this work possible.
 
-== Results
+## Results
 
 PAdES is an extension of the ISO PDF signature with additional constraints, so
 that it conforms to the requirements of the European eIDAS regulation, which
@@ -23,15 +23,15 @@ legally binding in many EU member states.
 The best way to check if LibreOffice produces such PDF signatures is to use a
 PAdES validator. So far I found two of them:
 
-- http://signatures-conformance-checker.etsi.org/[the ETSI one], which
+- [the ETSI one](http://signatures-conformance-checker.etsi.org/), which
   requires registration and is a free web service
-- https://github.com/esig/dss/[Digital Signature Service] (DSS), which is an
+- [Digital Signature Service](https://github.com/esig/dss/) (DSS), which is an
   open source tool you can build, use and modify locally
 
 As it can be seen above, the PDF signature produced by LibreOffice 5.3 by
 default conforms to the PAdES baseline spec.
 
-== Implementation
+## Implementation
 
 I implemented the followings in LO to make this happen:
 
@@ -43,7 +43,7 @@ I implemented the followings in LO to make this happen:
 - the PDF signature import can now detect if such an embedded signing
   certificate is present in the signature or not
 
-NOTE: Don't get confused, LO does signature verification (checks if the digest
+**NOTE:** Don't get confused, LO does signature verification (checks if the digest
 matches and validates the certificate) and now shows if the signing
 certificate is present in the signature or not, but it doesn't do more than
 that, the above mentioned DSS tool is still superior when it comes to do a
@@ -55,7 +55,7 @@ opposite: when writing the signing certificate hash, I could provide templates
 to NSS on how the ASN.1 encoding of it should happen, and NSS did the actual
 ASN.1 DER encoding for me. In the CryptoAPI case there is no such API, so I
 had to do this encoding manually (see
-https://github.com/LibreOffice/core/blob/master/vcl/source/gdi/pdfwriter_impl.cxx#L6202[CreateSigningCertificateAttribute()]),
+[CreateSigningCertificateAttribute()](https://github.com/LibreOffice/core/blob/master/vcl/source/gdi/pdfwriter_impl.cxx#L6202)),
 which is obviously much more complicated.
 
 Another pain was that the DSS tool doesn't really separate the validation of
@@ -64,8 +64,6 @@ using a non-self-signed certificate, hence the unclear part in the signed-by
 row.
 
 If you want to try these out yourself, get a
-http://dev-builds.libreoffice.org/daily/[daily build] and feel free to play
+[daily build](http://dev-builds.libreoffice.org/daily/) and feel free to play
 with it. This work is part of both `master` or `libreoffice-5-3`, so those
 builds are of interest. Happy testing! :-)
-
-// vim: ft=asciidoc

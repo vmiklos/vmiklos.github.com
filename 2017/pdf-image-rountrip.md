@@ -33,7 +33,7 @@ Both techniques have pros and cons, here is a summary:
   byte array -- that can hardly go wrong. The problem is that no non-Acrobat PDF viewer implements
   this, including e.g. your printer most probably.
 - The new approach uses the tokenizer I originally wrote for [PDF signature
-  verification]({filename}/2016/pdf-sign.adoc) purposes -- it extracts the page stream of the first
+  verification]({filename}/2016/pdf-sign.md) purposes -- it extracts the page stream of the first
   page from the original file and uses it as a form XObject in the export result -- this is the same
   as how e.g. `pdfcrop` works.  This markup is handled by almost all PDF viewers and also the
   resulting size is smaller, since the data of other pages is dropped and there is no fallback

@@ -1,28 +1,28 @@
-= Signing existing PDF files in LibreOffice
+Title: Signing existing PDF files in LibreOffice
+Slug: pdf-sign
+Category: libreoffice
+Tags: en
+Date: 2016-12-12T10:11:30Z
 
-:slug: pdf-sign
-:category: libreoffice
-:tags: en
-:date: 2016-12-12T10:11:30Z
-image::https://farm1.staticflickr.com/542/31208923460_2eb9bca147_z.jpg[align="center",link="https://farm1.staticflickr.com/542/31208923460_e3d674d15f_o.png"]
+[![PDF signatures in LibreOffice](https://farm1.staticflickr.com/542/31208923460_2eb9bca147_z.jpg)](https://farm1.staticflickr.com/542/31208923460_e3d674d15f_o.png)
 
 TL;DR: see above -- it's now possible signing existing PDF files and also
 verify those signatures in LibreOffice 5.3.
 
-== The problem
+## The problem
 
 LibreOffice already made it possible to digitally sign PDF files as part of
 the PDF export, so in case you had e.g. ODF documents and exported them to
 PDF, optionally a single digital signature could be added as part of the
 export process. This is now much improved. First, thanks to the Dutch Ministry
-of Defense in cooperation with http://nouenoff.nl/[Nou&Off] who made this work
+of Defense in cooperation with [Nou&Off](http://nouenoff.nl/) who made this work
 possible.
 
 A user can already use an other application to verify that signature or sign
 an already existing PDF file. The idea is to allow doing these from inside
 LibreOffice, directly.
 
-== Results
+## Results
 
 As it can be seen above, now the Digital Signatures dialog not only works for
 ODF and OOXML files, but also for PDF files. If the file has been signed, then
@@ -34,25 +34,25 @@ file is easy, similarly how exporting to PDF is easier than exporting to a
 random other file format. There is now a new File -> Digital signatures ->
 Sign exiting PDF menu item to open a PDF file for signing:
 
-image::https://farm1.staticflickr.com/30/31543378146_b981a22ee0_z.jpg[align="center",link="https://farm1.staticflickr.com/30/31543378146_b33c2f0a83_o.png"]
+[![Sign exiting PDF menu item](https://farm1.staticflickr.com/30/31543378146_b981a22ee0_z.jpg)](https://farm1.staticflickr.com/30/31543378146_b33c2f0a83_o.png)
 
 When that happens the infobar has a dedicated button to open the Digital
 Signatures dialog, and also going into editing mode triggers a warning dialog,
 as going read-write is not needed to be able to sign a document:
 
-image::https://farm1.staticflickr.com/752/31543377356_eaed7c2301_z.jpg[align="center",link="https://farm1.staticflickr.com/752/31543377356_d359124361_o.png"]
+[![Warning dialog](https://farm1.staticflickr.com/752/31543377356_eaed7c2301_z.jpg)](https://farm1.staticflickr.com/752/31543377356_d359124361_o.png)
 
 And that's basically it, after you open a PDF file in Draw, you can do the
 usual digital signature operations on the file, just like it already works for
 previously supported file formats.
 
-== Details
+## Details
 
 What follows is something you can probably skip if you're a user -- however if
 you're a developer and you want to understand how the above is implemented,
 then read on. ;-)
 
-=== PDF tokenizer
+### PDF tokenizer
 
 The signing feature in ODF/OOXML is implemented by working directly on the ZIP
 storage in `xmlsecurity/`. This means that in the PDF case it's necessary to
@@ -66,7 +66,7 @@ existing content in the file. This is fundamentally different form the usual
 load-edit-save workflow, when we convert the file into a document model, and
 work on that.
 
-=== Verification of signatures
+### Verification of signatures
 
 Previously LO was only able to generate signatures, not verify them. I've
 implemented PDF signature verification using both NSS and CryptoAPI, so all
@@ -77,19 +77,19 @@ different hash types explicitly, for example.)
 
 When I added support for non-detached signatures, that changed the situation a bit:
 
-----
+```
  1 file changed, 15 insertions(+), 11 deletions(-)
-----
+```
 
 was the NSS patch, and
 
-----
+```
  1 file changed, 104 insertions(+), 8 deletions(-)
-----
+```
 
 was the CryptoAPI patch.
 
-=== Signing existing files
+### Signing existing files
 
 Signing an existing file means tokenizing a document, figuring out how an
 incremental update should look like for that file, writing an incremental
@@ -98,14 +98,14 @@ the input is just the non-placeholder parts of the document as binary data), and
 finally filling in the placeholder with the actual signature.
 
 For the last step, I could reuse code from the PDF export (modulo fixing bugs
-like https://bugs.documentfoundation.org/show_bug.cgi?id=99327[tdf#99327]).
+like [tdf#99327](https://bugs.documentfoundation.org/show_bug.cgi?id=99327)).
 For the other steps, the tokenizer remembers the input offset / length for the
 given token, this way it's relatively easy to create incremental updates. You
 can add new objects or update new objects in such an incremental update, and
 this source tracking feature allows copying even the unchanged parts of
 updated objects verbatim.
 
-=== PDF 1.5+
+### PDF 1.5+
 
 Everything becomes a bit more complicated once I started to handle not only
 LO-generated PDF-1.4, but also newer PDF versions. I think this is important,
@@ -134,13 +134,13 @@ affects the tokenizer:
   the PNG spec. :-) (To be close to the Adobe output, we also apply such
   predictors when writing compressed xref streams.)
 
-=== User Interface
+### User Interface
 
 In addition to be UI changes already mentioned above, one more improvement I
 did is that now the Digital Signatures dialog has a new column to show the
 signature type.  This is either XML-DSig (for ODF/OOXML) or PDF.
 
-=== Testing
+### Testing
 
 I've added an integration test in the existing
 `CppunitTest_xmlsecurity_signing` to have coverage for the small new code that
@@ -152,11 +152,9 @@ Needless to say that invoking the PDF tokenizer + signature creator/verifier
 directly is *much* quicker than loading a full PDF file into Draw, just to see
 the signature status. ;-)
 
-== Summary
+## Summary
 
 If you want to try these out yourself, get a 
-http://dev-builds.libreoffice.org/daily/[daily build] and play with it! This
+[daily build](http://dev-builds.libreoffice.org/daily/) and play with it! This
 work is part of both `master` or `libreoffice-5-3`, so those builds are of
 interest. Happy testing! :-)
-
-// vim: ft=asciidoc

@@ -35,7 +35,7 @@ problems are all gone.
 If you would like to know a bit more about how this works, continue reading... :-)
 
 PDF signature verification works by using a custom PDF tokenizer. You can read about that code in
-the PDF tokenizer section of [this post]({filename}/2016/pdf-sign.adoc). The bottom line is that
+the PDF tokenizer section of [this post]({filename}/2016/pdf-sign.md). The bottom line is that
 we now have both PDFium and this custom tokenizer, somewhat duplicating the functionality.
 
 After talking to the PDFium developers (see the relevant [mailing list

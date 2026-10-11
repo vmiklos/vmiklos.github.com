@@ -1,14 +1,13 @@
-= OOXML signature export in LibreOffice
+Title: OOXML signature export in LibreOffice
+Slug: ooxml-signature-export
+Category: libreoffice
+Tags: en
+Date: 2016-04-14T08:20:51Z
 
-:slug: ooxml-signature-export
-:category: libreoffice
-:tags: en
-:date: 2016-04-14T08:20:51Z
+[![Select certificate dialog](https://lh3.googleusercontent.com/-E5cCfFV5kkk/VwzwIcJ0JqI/AAAAAAAAGqk/4JpTSRlvUok6txiXgp1MgoNoNgPb0ov8gCCo/s600-Ic42/)](https://lh3.googleusercontent.com/-E5cCfFV5kkk/VwzwIcJ0JqI/AAAAAAAAGqk/4JpTSRlvUok6txiXgp1MgoNoNgPb0ov8gCCo/s0-Ic42/)
 
-image::https://lh3.googleusercontent.com/-E5cCfFV5kkk/VwzwIcJ0JqI/AAAAAAAAGqk/4JpTSRlvUok6txiXgp1MgoNoNgPb0ov8gCCo/s600-Ic42/[align="center",link="https://lh3.googleusercontent.com/-E5cCfFV5kkk/VwzwIcJ0JqI/AAAAAAAAGqk/4JpTSRlvUok6txiXgp1MgoNoNgPb0ov8gCCo/s0-Ic42/"]
-
-After adding link:|filename|/2016/ooxml-signature-import.adoc[support
-for reading OOXML signatures in LibreOffice], I continued with implementing OOXML
+After adding [support
+for reading OOXML signatures in LibreOffice]({filename}/2016/ooxml-signature-import.md), I continued with implementing OOXML
 signature export (as in: not only verification, but signing).
 
 By verification, I mean that I count the signature of the input document, then
@@ -49,8 +48,8 @@ is writing hardcoded values based on what my test environment would produce,
 just to please MSO. ;-)
 
 After the initial
-https://cgit.freedesktop.org/libreoffice/core/tree/xmlsecurity/source/helper/ooxmlsecexporter.cxx[OOXML
-signature exporter] was ready, the next challenge was adding multiple
+[OOXML
+signature exporter](https://cgit.freedesktop.org/libreoffice/core/tree/xmlsecurity/source/helper/ooxmlsecexporter.cxx) was ready, the next challenge was adding multiple
 signatures. The problem here is that you have to roundtrip the existing
 signatures perfectly. And when I write perfectly, I really mean it: if a
 single character is written differently, then the hash of the signature will
@@ -76,11 +75,9 @@ relation list), finally removing the signature sub-storage all-together. I
 also factored out all this signature management code from
 `DigitalSignaturesDialog` (which is a graphical dialog) to
 `DocumentSignatureManager`, so that all the above mentioned features can be
-https://cgit.freedesktop.org/libreoffice/core/tree/xmlsecurity/qa/unit/signing/signing.cxx[unit-tested].
+[unit-tested](https://cgit.freedesktop.org/libreoffice/core/tree/xmlsecurity/qa/unit/signing/signing.cxx).
 
 Putting all of these together, LO can now do all signature add, append, remove
 and clean operations a user would expect from what is referred as simply
 'OOXML signature support'. As usual, you can try this right now with a 5.2
-http://dev-builds.libreoffice.org/daily/master/[daily build]. :-)
-
-// vim: ft=asciidoc
+[daily build](http://dev-builds.libreoffice.org/daily/master/). :-)

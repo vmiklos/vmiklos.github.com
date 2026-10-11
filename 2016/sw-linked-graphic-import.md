@@ -1,14 +1,13 @@
-= Import of DOCX and RTF linked graphic into LibreOffice Writer
+Title: Import of DOCX and RTF linked graphic into LibreOffice Writer
+Slug: sw-linked-graphic-import
+Category: libreoffice
+Tags: en
+Date: 2016-02-25T09:17:00Z
 
-:slug: sw-linked-graphic-import
-:category: libreoffice
-:tags: en
-:date: 2016-02-25T09:17:00Z
-
-image::https://lh3.googleusercontent.com/-ov8ANPdqriE/Vs3em0UknHI/AAAAAAAAGc8/7mHejdWPLlg/s900-Ic42/[align="center",link="https://lh3.googleusercontent.com/-ov8ANPdqriE/Vs3em0UknHI/AAAAAAAAGc8/7mHejdWPLlg/s900-Ic42/"]
+[![New, old and reference result](https://lh3.googleusercontent.com/-ov8ANPdqriE/Vs3em0UknHI/AAAAAAAAGc8/7mHejdWPLlg/s900-Ic42/)](https://lh3.googleusercontent.com/-ov8ANPdqriE/Vs3em0UknHI/AAAAAAAAGc8/7mHejdWPLlg/s900-Ic42/)
 
 As it has been
-https://bugs.documentfoundation.org/show_bug.cgi?id=59699[reported], the RTF
+[reported](https://bugs.documentfoundation.org/show_bug.cgi?id=59699), the RTF
 `includepicture` field was ignored on import. As writerfilter has quite some
 shared code for DOCX and RTF import, I also looked at the state of linked
 graphics in the DOCX import, and that wasn't better, either.
@@ -30,5 +29,3 @@ are valid, but it seems Word never writes them: either their expanded field
 result is outdated (e.g. it's some text), or if the user updates the field,
 then their implementation instantly replaces the field with a drawingML markup
 that links the graphic.
-
-// vim: ft=asciidoc

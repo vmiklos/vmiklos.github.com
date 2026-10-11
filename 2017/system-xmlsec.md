@@ -35,7 +35,7 @@ With that in mind, let's have a look what blocked using system-xmlsec in the pas
 ```
 
 - I even increased this when I added the [SHA256
-  patches]({filename}/2016/libreoffice-sha256-signatures.adoc), as back then I wasn't sure if it'll
+  patches]({filename}/2016/libreoffice-sha256-signatures.md), as back then I wasn't sure if it'll
   be ever possible to upgrade to a newer libxmlsec version.
 - Step by step I got rid of most of these patches, either by upstreaming them or realizing they are
   no longer necessary. Upstreaming wasn't always trivial, as for our purposes it was always easy to

@@ -1,9 +1,8 @@
-= SHA-256 hashes for ODF signatures in LibreOffice
-
-:slug: libreoffice-sha256-signatures
-:category: libreoffice
-:tags: en
-:date: 2016-03-23T09:37:54Z
+Title: SHA-256 hashes for ODF signatures in LibreOffice
+Slug: libreoffice-sha256-signatures
+Category: libreoffice
+Tags: en
+Date: 2016-03-23T09:37:54Z
 
 As it happened with MD5 hashes in the past, the world is currently moving from
 SHA1 hashes to SHA-256 hashes these days. This affects LibreOffice's ODF
@@ -11,7 +10,7 @@ signing feature as well, where we previously wrote and read SHA-1 hashes, but
 not SHA-256 ones. First, thanks to the Dutch Ministry of Defense who made this
 work possible (as part of a project implementing trusted signing and
 communication in LibreOffice), I could start work on
-https://bugs.documentfoundation.org/show_bug.cgi?id=76142[tdf#76142] which
+[tdf#76142](https://bugs.documentfoundation.org/show_bug.cgi?id=76142) which
 attached a reproducer document as well, helping the implementation of this
 feature.
 
@@ -31,11 +30,11 @@ signing using rsa.
 
 A valid signed document using SHA-256 hashing looked like this before:
 
-image::https://lh3.googleusercontent.com/-c6JR6vywSuY/Vuw4CdYpj8I/AAAAAAAAGjE/hUOW-Ul073QM4SqMN2GM8K0mjGUdGSk5wCCo/s400-Ic42/[align="center",link="https://lh3.googleusercontent.com/-c6JR6vywSuY/Vuw4CdYpj8I/AAAAAAAAGjE/hUOW-Ul073QM4SqMN2GM8K0mjGUdGSk5wCCo/s0-Ic42/"]
+[![Old result](https://lh3.googleusercontent.com/-c6JR6vywSuY/Vuw4CdYpj8I/AAAAAAAAGjE/hUOW-Ul073QM4SqMN2GM8K0mjGUdGSk5wCCo/s400-Ic42/)](https://lh3.googleusercontent.com/-c6JR6vywSuY/Vuw4CdYpj8I/AAAAAAAAGjE/hUOW-Ul073QM4SqMN2GM8K0mjGUdGSk5wCCo/s0-Ic42/)
 
 I.e. we failed to validate the signature, and presented a dialog that suggested the signature is not valid. After my changes, it looks like this:
 
-image::https://lh3.googleusercontent.com/-QLHuSvGkFJQ/Vuw4CQD60ZI/AAAAAAAAGjI/GcmqED9Vqmc7KEw1BpDVNg_uxyrJp693gCCo/s400-Ic42/[align="center",link="https://lh3.googleusercontent.com/-QLHuSvGkFJQ/Vuw4CQD60ZI/AAAAAAAAGjI/GcmqED9Vqmc7KEw1BpDVNg_uxyrJp693gCCo/s0-Ic42/"]
+[![New result](https://lh3.googleusercontent.com/-QLHuSvGkFJQ/Vuw4CQD60ZI/AAAAAAAAGjI/GcmqED9Vqmc7KEw1BpDVNg_uxyrJp693gCCo/s400-Ic42/)](https://lh3.googleusercontent.com/-QLHuSvGkFJQ/Vuw4CQD60ZI/AAAAAAAAGjI/GcmqED9Vqmc7KEw1BpDVNg_uxyrJp693gCCo/s0-Ic42/)
 
 I.e. no error on loading, and the status bar icon tells the user that
 everything is fine, except that we can't validate the certificate used for
@@ -48,7 +47,7 @@ still keep support for reading SHA-1 hashes, but we would use SHA-256 when
 creating new signatures.
 
 Another detail is that the hard work of signing in LibreOffice is done by
-using https://www.aleksey.com/xmlsec/[libxmlsec]. We bundled a heavily patched
+using [libxmlsec](https://www.aleksey.com/xmlsec/). We bundled a heavily patched
 version from 2009, and it wasn't clear how much work it is to port our patches
 to a newer upstream version, so I've initially backported the SHA-256 patches
 to our older version (for the nss and mscrypto backends of libxmlsec, as that
@@ -56,6 +55,4 @@ covers what LibreOffice uses on Linux, Windows and OS X). At the end I managed
 to update our bundled libxmlsec to a newer (even if not the newest yet)
 version, so latest master got rid of those custom backports.  As usual, you
 can try this right now with a 5.2
-http://dev-builds.libreoffice.org/daily/master/[daily build]. :-)
-
-// vim: ft=asciidoc
+[daily build](http://dev-builds.libreoffice.org/daily/master/). :-)

@@ -1,13 +1,12 @@
-= LibreOffice now bundles the latest libxmlsec version
+Title: LibreOffice now bundles the latest libxmlsec version
+Slug: libreoffice-xmlsec
+Category: libreoffice
+Tags: en
+Date: 2016-08-05T09:13:51Z
 
-:slug: libreoffice-xmlsec
-:category: libreoffice
-:tags: en
-:date: 2016-08-05T09:13:51Z
-
-I wrote about how LibreOffice uses the https://www.aleksey.com/xmlsec/[XMLSec
-Library] in an
-link:|filename|/2016/libreoffice-sha256-signatures.adoc[earlier post] from
+I wrote about how LibreOffice uses the [XMLSec
+Library](https://www.aleksey.com/xmlsec/) in an
+[earlier post]({filename}/2016/libreoffice-sha256-signatures.md) from
 March. There are two long-term goals regarding xmlsec in LibreOffice:
 
 - bundle the latest xmlsec version, instead the one from 2009
@@ -24,5 +23,3 @@ This is good, as this way it's easier to integrate xmlsec upstream
 improvements into LibreOffice in the future.
 
 Regarding the other goal, shrinking the patch list is still to be done. ;-)
-
-// vim: ft=asciidoc

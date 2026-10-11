@@ -1,9 +1,8 @@
-= Signature descriptions in LibreOffice
-
-:slug: libreoffice-signature-descriptions
-:category: libreoffice
-:tags: en
-:date: 2016-03-16T09:13:06Z
+Title: Signature descriptions in LibreOffice
+Slug: libreoffice-signature-descriptions
+Category: libreoffice
+Tags: en
+Date: 2016-03-16T09:13:06Z
 
 LibreOffice's user interface prohibited creating multiple signatures by the
 same author on a document, because there was no semantic meaning of signing
@@ -16,12 +15,12 @@ made this work possible.
 When the user selects File -> Digital Signatures, the dialog lists existing
 signatures together with their description (if they have any):
 
-image::https://lh3.googleusercontent.com/-DqvpQOrLq6c/VuGAEfC56AI/AAAAAAAAGhg/CnFGm5z5Uoo/s600-Ic42/[align="center",link="https://lh3.googleusercontent.com/-DqvpQOrLq6c/VuGAEfC56AI/AAAAAAAAGhg/CnFGm5z5Uoo/s0-Ic42/"]
+[![Digital signatures dialog](https://lh3.googleusercontent.com/-DqvpQOrLq6c/VuGAEfC56AI/AAAAAAAAGhg/CnFGm5z5Uoo/s600-Ic42/)](https://lh3.googleusercontent.com/-DqvpQOrLq6c/VuGAEfC56AI/AAAAAAAAGhg/CnFGm5z5Uoo/s0-Ic42/)
 
 When the user clicks on the Sign Document button, the dialog for certificate
 selection now also asks for an optional description:
 
-image::https://lh3.googleusercontent.com/-OoA7rDynpzo/VuGAFuHpskI/AAAAAAAAGhg/aEqUEOVtcEo/s600-Ic42/[align="center",link="https://lh3.googleusercontent.com/-OoA7rDynpzo/VuGAFuHpskI/AAAAAAAAGhg/aEqUEOVtcEo/s0-Ic42/"]
+[![Select certificate dialog](https://lh3.googleusercontent.com/-OoA7rDynpzo/VuGAFuHpskI/AAAAAAAAGhg/aEqUEOVtcEo/s600-Ic42/)](https://lh3.googleusercontent.com/-OoA7rDynpzo/VuGAFuHpskI/AAAAAAAAGhg/aEqUEOVtcEo/s0-Ic42/)
 
 Changing the value of the description invalidates the signature. For this
 feature to work, I have extended LibreOffice's ODF signature markup to store
@@ -31,6 +30,4 @@ the ODF specification, it is allowed to extend the metadata with custom child
 elements, so it was not necessary to submit an ODF enhancement proposal for
 this file format change at this stage.  As usual the commits are in master, so
 you can try this right now with a 5.2
-http://dev-builds.libreoffice.org/daily/master/[daily build]. :-)
-
-// vim: ft=asciidoc
+[daily build](http://dev-builds.libreoffice.org/daily/master/). :-)
