@@ -67,71 +67,45 @@
     <p>Estimated read time: 2 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://farm4.staticflickr.com/3924/32549564340_4d0990cfa4_o.png" alt="https://farm4.staticflickr.com/3924/32549564340_4d0990cfa4_o.png" />
-</div>
-</div>
-<div class="paragraph"><p>PDF supports screen annotations, which means it&#8217;s possible to play embedded
-and linked videos on top of a static image. Given that LibreOffice also
-supports videos, it made sense to add support for this in our PDF export
-filter. First, thanks to <a href="http://www.pmg.be/">PMG</a> who made this work possible. This
-is currently added for Writer and Impress.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_linked_videos">Linked videos</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Linked videos are the situation when the video is not part of the document
-itself, but it&#8217;s located somewhere else, e.g. a http:// location. This is
-helpful if you want to email around a PDF file, and want to avoid sending
-large files when it has video content.</p></div>
-<div class="paragraph"><p><a href="https://bugs.documentfoundation.org/show_bug.cgi?id=104841">tdf#104841</a> is
-about this situation, first I added support for
-<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=9d6a749bc664f1876c938afb9eba4adc9f6ee09a">linked
-videos in Impress</a>, then
+    <p>
+<figure><img src="https://farm4.staticflickr.com/3924/32549564340_4d0990cfa4_o.png"><figcaption>PDF export with embedded video</figcaption>
+</figure>
+</p>
+<p>PDF supports screen annotations, which means it's possible to play embedded and linked videos on
+top of a static image. Given that LibreOffice also supports videos, it made sense to add support for
+this in our PDF export filter. First, thanks to <a href="http://www.pmg.be/">PMG</a> who made this work
+possible. This is currently added for Writer and Impress.</p>
+<h2 id="linked-videos">Linked videos<a class="headerlink" href="#linked-videos" title="Permanent link">&para;</a></h2>
+<p>Linked videos are the situation when the video is not part of the document itself, but it's located
+somewhere else, e.g. a http:// location. This is helpful if you want to email around a PDF file, and
+want to avoid sending large files when it has video content.</p>
+<p><a href="https://bugs.documentfoundation.org/show_bug.cgi?id=104841">tdf#104841</a> is about this situation,
+first I added support for <a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=9d6a749bc664f1876c938afb9eba4adc9f6ee09a">linked videos in
+Impress</a>, then
 <a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=81aef113056270ce65f9dee5fe31b6f60617973c">also</a>
-<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=0e71075bb7379af318482bb3abbb630c58db9ec9">in
-Writer</a>.</p></div>
-<div class="paragraph"><p>The result can be played using Adobe Acrobat Reader&#8201;&#8212;&#8201;for some reason okular
-on Linux is a bit confused about http:// URLs, wants to convert them to
-relative ones, and then fails as of today.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_embedded_videos">Embedded videos</h2>
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://farm3.staticflickr.com/2666/32115175413_ec6f64243a_z.jpg" alt="https://farm3.staticflickr.com/2666/32115175413_ec6f64243a_z.jpg" />
-</div>
-</div>
-<div class="paragraph"><p><a href="https://bugs.documentfoundation.org/show_bug.cgi?id=105093">tdf#105093</a> is the
-embedded video case, this is handy in case you want to create an entirely
-self-contained PDF, where even the video content is inside the PDF file as an
-embedded file.</p></div>
-<div class="paragraph"><p>After
-<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=4ad249af88d15f2c8a09f0721a59d82718fcc201">Impress
-support</a> (and a trick around
-<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=64d80d22851a38eb3f320f4e2b2bdf875da4d8b4">Draw
-vs Impress shapes</a>) the
-<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=46153bdcf2f89e88607dfb0dd0003108796424e9">Writer
-part</a> wasn&#8217;t too complicated.</p></div>
-<div class="paragraph"><p>Regarding the situation around various video containers and codecs, the above
-code is quite agnostic. :-) On the LibreOffice side all we require is to be
-able to extract a key frame from the video to provide a preview image, so e.g.
-on Linux the support depends on what gstreamer plugins you have installed. The
-video content is written to the PDF file as-is, so again if it will work in
-the PDF reader is up to the reader&#8217;s codec support. On Linux e.g. okular uses
-vlc for video playback, so the range of supported formats is quite wide.  The
-same is true on Windows, what I personally tested is LibreOffice&#8217;s VLC backend
-and the embedded QuickTime player in Acrobat Reader.</p></div>
-<div class="paragraph"><p>All of this is available on LibreOffice master towards 5.4.</p></div>
-</div>
-</div>
-
+<a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=0e71075bb7379af318482bb3abbb630c58db9ec9">in Writer</a>.</p>
+<p>The result can be played using Adobe Acrobat Reader -- for some reason okular on Linux is a bit
+confused about http:// URLs, wants to convert them to relative ones, and then fails as of today.</p>
+<h2 id="embedded-videos">Embedded videos<a class="headerlink" href="#embedded-videos" title="Permanent link">&para;</a></h2>
+<p>
+<figure><img src="https://farm3.staticflickr.com/2666/32115175413_ec6f64243a_z.jpg"><figcaption>PDF export with embedded video, okular</figcaption>
+</figure>
+</p>
+<p><a href="https://bugs.documentfoundation.org/show_bug.cgi?id=105093">tdf#105093</a> is the embedded video case,
+this is handy in case you want to create an entirely self-contained PDF, where even the video
+content is inside the PDF file as an embedded file.</p>
+<p>After <a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=4ad249af88d15f2c8a09f0721a59d82718fcc201">Impress support</a>
+(and a trick around <a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=64d80d22851a38eb3f320f4e2b2bdf875da4d8b4">Draw vs Impress shapes</a>)
+the <a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=46153bdcf2f89e88607dfb0dd0003108796424e9">Writer part</a>
+wasn't too complicated.</p>
+<p>Regarding the situation around various video containers and codecs, the above code is quite agnostic.
+:-) On the LibreOffice side all we require is to be able to extract a key frame from the video to
+provide a preview image, so e.g. on Linux the support depends on what gstreamer plugins you have
+installed. The video content is written to the PDF file as-is, so again if it will work in the PDF
+reader is up to the reader's codec support. On Linux e.g. okular uses vlc for video playback, so the
+range of supported formats is quite wide.  The same is true on Windows, what I personally tested is
+LibreOffice's VLC backend and the embedded QuickTime player in Acrobat Reader.</p>
+<p>All of this is available on LibreOffice master towards 5.4.</p>
   </div>
 </article>
 <hr />
@@ -146,52 +120,32 @@ and the embedded QuickTime player in Acrobat Reader.</p></div>
     <p>Estimated read time: 2 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://farm1.staticflickr.com/334/32605456735_ac88121be8_o.png" alt="https://farm1.staticflickr.com/334/32605456735_ac88121be8_o.png" />
-</div>
-</div>
-<div class="paragraph"><p><a href="https://fosdem.org/2017/">FOSDEM 2017</a> is here this weekend, and as Michael
-Stahl pointed out, this (together with the LibreOffice annual conference) are
-two time periods each year when lots of Impress bugfixes are made, as people
-start <a href="https://en.wikipedia.org/wiki/Eating_your_own_dog_food">dogfooding</a>. ;-)
-So below you can read about a pair of Impress bugs I fixed recently.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_changing_font_size_now_takes_table_selection_into_account">Changing font size now takes table selection into account</h2>
-<div class="sectionbody">
-<div class="paragraph"><p><a href="https://bugs.documentfoundation.org/show_bug.cgi?id=105502">tdf#105502</a> is a
-situation where you have an Impress table shape, and you select part of the
-cells, then you click on the sidebar to change the font size. Previously this
-affected all cells of the table shape, now only the selected cells are
-updated.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_background_fill_for_shapes">Background fill for shapes</h2>
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://farm1.staticflickr.com/277/31761747774_4b1e6b8d38_o.png" alt="https://farm1.staticflickr.com/277/31761747774_4b1e6b8d38_o.png" />
-</div>
-</div>
-<div class="paragraph"><p><a href="https://bugs.documentfoundation.org/show_bug.cgi?id=105150">tdf#105150</a> is a
-PPT(X) filter bug where a shape was previously imported as transparent, but it
-actually has to have the same fill type as the slide background. In case of
-PPTX this was already handled in general, but not in case the slide had no
-explicit background. The result was that in case the shape was used to cover
-other shapes, they were visible, leading to e.g. this unexpected red rectangle
-on the screenshot.</p></div>
-<div class="paragraph"><p>The same bug was present in the PPT import, though there existing support was
-even more limited: just the "background colored objects" were collected, but
-nothing was done to them. Now the above use-case should be as good for PPT as
-it is for PPTX.</p></div>
-</div>
-</div>
-
+    <p>
+<figure><img src="https://farm1.staticflickr.com/334/32605456735_ac88121be8_o.png"><figcaption>font size change in a table shape</figcaption>
+</figure>
+</p>
+<p><a href="https://fosdem.org/2017/">FOSDEM 2017</a> is here this weekend, and as Michael Stahl pointed out,
+this (together with the LibreOffice annual conference) are two time periods each year when lots of
+Impress bugfixes are made, as people start <a href="https://en.wikipedia.org/wiki/Eating_your_own_dog_food">dogfooding</a>.
+;-) So below you can read about a pair of Impress bugs I fixed recently.</p>
+<h2 id="changing-font-size-now-takes-table-selection-into-account">Changing font size now takes table selection into account<a class="headerlink" href="#changing-font-size-now-takes-table-selection-into-account" title="Permanent link">&para;</a></h2>
+<p><a href="https://bugs.documentfoundation.org/show_bug.cgi?id=105502">tdf#105502</a> is a situation where you
+have an Impress table shape, and you select part of the cells, then you click on the sidebar to
+change the font size. Previously this affected all cells of the table shape, now only the selected
+cells are updated.</p>
+<h2 id="background-fill-for-shapes">Background fill for shapes<a class="headerlink" href="#background-fill-for-shapes" title="Permanent link">&para;</a></h2>
+<p>
+<figure><img src="https://farm1.staticflickr.com/277/31761747774_4b1e6b8d38_o.png"><figcaption>Unexpected red rectangle before the PPT(X) fix</figcaption>
+</figure>
+</p>
+<p><a href="https://bugs.documentfoundation.org/show_bug.cgi?id=105150">tdf#105150</a> is a PPT(X) filter bug where
+a shape was previously imported as transparent, but it actually has to have the same fill type as
+the slide background. In case of PPTX this was already handled in general, but not in case the slide
+had no explicit background. The result was that in case the shape was used to cover other shapes,
+they were visible, leading to e.g. this unexpected red rectangle on the screenshot.</p>
+<p>The same bug was present in the PPT import, though there existing support was even more limited:
+just the "background colored objects" were collected, but nothing was done to them. Now the above
+use-case should be as good for PPT as it is for PPTX.</p>
   </div>
 </article>
 <hr />
@@ -206,62 +160,37 @@ it is for PPTX.</p></div>
     <p>Estimated read time: 2 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://farm1.staticflickr.com/726/32306648426_b4ee93f6a1_o.png" alt="https://farm1.staticflickr.com/726/32306648426_b4ee93f6a1_o.png" />
-</div>
-</div>
-<div class="paragraph"><p>As mentioned in
-<a href="https://mikekaganski.wordpress.com/2016/12/11/my-first-hack-rest-of-the-week-at-collabora/">the
-blog post of Mike</a> already, last month we were allowed to hack on anything we
-want in LibreOffice for a few days. I used this time to progress with 3
-different topics.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_stepping_through_textboxes_using_the_keyboard">Stepping through TextBoxes using the keyboard</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Given that a Writer shape with a TextBox is internally two shapes, this needed
-explicit support. After my
-<a href="https://gerrit.libreoffice.org/gitweb?p=core.git;a=commitdiff;h=5d2c189aee5057d1533165c368227c9c4c49d330">TextBox
-bugfix</a> it&#8217;s possible to have two such shapes in a document, and once you
-select one of them, tab properly jumps between the two shapes; previously
-nothing happened.</p></div>
-<div class="paragraph"><p>What did happen is we tried to activate the TextBox of the selected shape,
-which selected the shape itself, so at the end nothing happened.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_rtf_improvements">RTF improvements</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>For some time it was already possible to import and export custom string
-document properties from/to RTF, but just in case the value type of the
-property was string. Now I extended support for these custom properties, so
-also the remaining types are handled:
+    <p>
+<figure><img src="https://farm1.staticflickr.com/726/32306648426_b4ee93f6a1_o.png"><figcaption>Some photos of the hack week</figcaption>
+</figure>
+</p>
+<p>As mentioned in <a href="https://mikekaganski.wordpress.com/2016/12/11/my-first-hack-rest-of-the-week-at-collabora/">the blog post of Mike</a>
+already, last month we were allowed to hack on anything we want in LibreOffice for a few days. I used
+this time to progress with 3 different topics.</p>
+<h2 id="stepping-through-textboxes-using-the-keyboard">Stepping through TextBoxes using the keyboard<a class="headerlink" href="#stepping-through-textboxes-using-the-keyboard" title="Permanent link">&para;</a></h2>
+<p>Given that a Writer shape with a TextBox is internally two shapes, this needed explicit support.
+After my <a href="https://gerrit.libreoffice.org/gitweb?p=core.git;a=commitdiff;h=5d2c189aee5057d1533165c368227c9c4c49d330">TextBox bugfix</a>
+it's possible to have two such shapes in a document, and once you select one of them, tab properly
+jumps between the two shapes; previously nothing happened.</p>
+<p>What did happen is we tried to activate the TextBox of the selected shape, which selected the shape
+itself, so at the end nothing happened.</p>
+<h2 id="rtf-improvements">RTF improvements<a class="headerlink" href="#rtf-improvements" title="Permanent link">&para;</a></h2>
+<p>For some time it was already possible to import and export custom string document properties
+from/to RTF, but just in case the value type of the property was string. Now I extended support for
+these custom properties, so also the remaining types are handled:
 <a href="https://gerrit.libreoffice.org/gitweb?p=core.git;a=commitdiff;h=fc8c4606e0834cd2128a228c2c95fc7c8f9eb7b1">numbers</a>,
 <a href="https://gerrit.libreoffice.org/gitweb?p=core.git;a=commitdiff;h=547de17fcb654e560a60d683c33482feeee84358">bools</a>,
 <a href="https://gerrit.libreoffice.org/gitweb?p=core.git;a=commitdiff;h=51c400dc4cd6a88c01b245e41d0de737d4df4017">doubles</a>
 and
-<a href="https://gerrit.libreoffice.org/gitweb?p=core.git;a=commitdiff;h=07b0cde32a7eebce996b8c32aa58545e4ec15003">dates</a>.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_xmlsec_patch_upstreaming">xmlsec patch upstreaming</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Last, I&#8217;ve started working on upstreaming
-<code>external/libxmlsec/xmlsec1-noverify.patch.1</code>. xmlsec has no ability to
-disable the verification of certificates (think of <code>curl -k</code> or <code>wget -k</code>), so
-in LibreOffice currently we just patch out that code as we don&#8217;t need it. So I
-wanted to add a new verification flag to avoid patching, but it turns out that
-in the NSS case xmlsec didn&#8217;t do the verification, so as a first step I fixed
-that instead in this <a href="https://github.com/lsh123/xmlsec/pull/72">xmlsec GitHub
-pull request</a>. Now that it&#8217;s merged, the next step will be to add such a flag,
-and then LibreOffice can get rid of the patch after the next xmlsec release.</p></div>
-</div>
-</div>
-
+<a href="https://gerrit.libreoffice.org/gitweb?p=core.git;a=commitdiff;h=07b0cde32a7eebce996b8c32aa58545e4ec15003">dates</a>.</p>
+<h2 id="xmlsec-patch-upstreaming">xmlsec patch upstreaming<a class="headerlink" href="#xmlsec-patch-upstreaming" title="Permanent link">&para;</a></h2>
+<p>Last, I've started working on upstreaming <code>external/libxmlsec/xmlsec1-noverify.patch.1</code>. xmlsec has
+no ability to disable the verification of certificates (think of <code>curl -k</code> or <code>wget -k</code>), so in
+LibreOffice currently we just patch out that code as we don't need it. So I wanted to add a new
+verification flag to avoid patching, but it turns out that in the NSS case xmlsec didn't do the
+verification, so as a first step I fixed that instead in this <a href="https://github.com/lsh123/xmlsec/pull/72">xmlsec GitHub pull
+request</a>. Now that it's merged, the next step will be to
+add such a flag, and then LibreOffice can get rid of the patch after the next xmlsec release.</p>
   </div>
 </article>
 <hr />

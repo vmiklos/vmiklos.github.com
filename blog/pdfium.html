@@ -68,56 +68,48 @@
     <p>Estimated read time: 2 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>pdfium is the rendering library used in Chromium&#8217;s pdf viewer. It&#8217;s based on
-the foxit pdf renderer and its rendering quality is much better compared to
-the pre-existing "convert PDF to ODG, then to an image" code when it comes to
-just viewing a PDF file.  First, thanks to <a href="http://www.pmg.be/">PMG</a> who made
-this work possible.</p></div>
-<div class="paragraph"><p>Let&#8217;s look at a few samples that compare the old pdfimport rendering result
-and the new pdfium-based one. One important feature is that embedded fonts are
-handled. This is how this inserted PDF looked like previously:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://farm4.staticflickr.com/3727/33163219940_3a2a3278a0_o.png" alt="https://farm4.staticflickr.com/3727/33163219940_3a2a3278a0_o.png" />
-</div>
-</div>
-<div class="paragraph"><p>Compare it with the new result:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://farm3.staticflickr.com/2927/33547029855_92c1a5150d_o.png" alt="https://farm3.staticflickr.com/2927/33547029855_92c1a5150d_o.png" />
-</div>
-</div>
-<div class="paragraph"><p>Now let&#8217;s see the front page of a magazine, you can see 4 unexpected artifacts:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://farm4.staticflickr.com/3948/33563793222_8a6b8e8a6b_z.jpg" alt="https://farm4.staticflickr.com/3948/33563793222_8a6b8e8a6b_z.jpg" />
-</div>
-</div>
-<div class="paragraph"><p>New result:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://farm3.staticflickr.com/2809/33547029645_de7cbcd800_z.jpg" alt="https://farm3.staticflickr.com/2809/33547029645_de7cbcd800_z.jpg" />
-</div>
-</div>
-<div class="paragraph"><p>Finally a problem with pdfium was that LibreOffice got bitmaps from it, so in case you re-exported to PDF, the quality of these PDF images were worse than in the original PDF file. The PDF specification has a <em>reference XObject</em> feature that helps in this case: it allows the PDF export to still write the bitmap to the exported PDF, but in case the reader supports this feature, the vector-based original file will be shown, not the bitmap.</p></div>
-<div class="paragraph"><p>Here is a simple hand-crafted star in a PDF file, as it looked initially:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://farm3.staticflickr.com/2915/33163219680_30f63b4a82_z.jpg" alt="https://farm3.staticflickr.com/2915/33163219680_30f63b4a82_z.jpg" />
-</div>
-</div>
-<div class="paragraph"><p>This is how it looks after LibreOffice&#8217;s PDF export learned to emit reference XObjects:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://farm4.staticflickr.com/3933/33547029485_4f487bb26c_z.jpg" alt="https://farm4.staticflickr.com/3933/33547029485_4f487bb26c_z.jpg" />
-</div>
-</div>
-<div class="paragraph"><p>All this is available in LibreOffice master, towards 5.4.</p></div>
-</div>
-</div>
-
+    <p>pdfium is the rendering library used in Chromium's pdf viewer. It's based on the foxit pdf renderer
+and its rendering quality is much better compared to the pre-existing "convert PDF to ODG, then to
+an image" code when it comes to just viewing a PDF file.  First, thanks to <a href="http://www.pmg.be/">PMG</a>
+who made this work possible.</p>
+<p>Let's look at a few samples that compare the old pdfimport rendering result and the new pdfium-based
+one. One important feature is that embedded fonts are handled. This is how this inserted PDF looked
+like previously:</p>
+<p>
+<figure><img src="https://farm4.staticflickr.com/3727/33163219940_3a2a3278a0_o.png"><figcaption>Old pdfimport rendering result</figcaption>
+</figure>
+</p>
+<p>Compare it with the new result:</p>
+<p>
+<figure><img src="https://farm3.staticflickr.com/2927/33547029855_92c1a5150d_o.png"><figcaption>New pdfium-based rendering result</figcaption>
+</figure>
+</p>
+<p>Now let's see the front page of a magazine, you can see 4 unexpected artifacts:</p>
+<p>
+<figure><img src="https://farm4.staticflickr.com/3948/33563793222_8a6b8e8a6b_z.jpg"><figcaption>Magazine front page, old rendering</figcaption>
+</figure>
+</p>
+<p>New result:</p>
+<p>
+<figure><img src="https://farm3.staticflickr.com/2809/33547029645_de7cbcd800_z.jpg"><figcaption>Magazine front page, new rendering</figcaption>
+</figure>
+</p>
+<p>Finally a problem with pdfium was that LibreOffice got bitmaps from it, so in case you re-exported
+to PDF, the quality of these PDF images were worse than in the original PDF file. The PDF
+specification has a 'reference XObject' feature that helps in this case: it allows the PDF export to
+still write the bitmap to the exported PDF, but in case the reader supports this feature, the
+vector-based original file will be shown, not the bitmap.</p>
+<p>Here is a simple hand-crafted star in a PDF file, as it looked initially:</p>
+<p>
+<figure><img src="https://farm3.staticflickr.com/2915/33163219680_30f63b4a82_z.jpg"><figcaption>Hand-crafted star, initial look</figcaption>
+</figure>
+</p>
+<p>This is how it looks after LibreOffice's PDF export learned to emit reference XObjects:</p>
+<p>
+<figure><img src="https://farm4.staticflickr.com/3933/33547029485_4f487bb26c_z.jpg"><figcaption>Hand-crafted star, after PDF export</figcaption>
+</figure>
+</p>
+<p>All this is available in LibreOffice master, towards 5.4.</p>
   </div>
   <div class="article_meta">
     <p>Category: <a href="https://vmiklos.hu/blog/category/libreoffice.html">libreoffice</a>
