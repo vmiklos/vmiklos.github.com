@@ -4,7 +4,7 @@ Category: libreoffice
 Tags: en
 Date: 2020-03-10T09:43:24+01:00
 
-As mentioned in a [previous]({filename}/2017/hackweek-2016.adoc) such report, a hack week is when
+As mentioned in a [previous]({filename}/2017/hackweek-2016.md) such report, a hack week is when
 we are allowed to hack on anything we want in LibreOffice for a few days at
 [Collabora](https://www.collaboraoffice.com/). I used this time to implement core support for padded
 numbering in Writer.

@@ -6,7 +6,7 @@ Date: 2018-01-11T12:25:02Z
 
 I worked on improving the EPUB3 export filter in LibreOffice further recently. First, thanks to
 [Nou&Off](http://nouenoff.nl/) in cooperation with a customer who made this work possible. Since the
-[previous blog entry]({filename}/2017/epub3-improvements.adoc) there have been a number of
+[previous blog entry]({filename}/2017/epub3-improvements.md) there have been a number of
 improvements around a next set of topics.
 
 ## Cover images
