@@ -68,52 +68,29 @@
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://farm9.staticflickr.com/8833/28305552801_1d518e31ae_o.png">
-<img src="https://farm9.staticflickr.com/8833/28305552801_21343667ff_z.jpg" alt="https://farm9.staticflickr.com/8833/28305552801_21343667ff_z.jpg" />
-</a>
-</div>
-</div>
-<div class="paragraph"><p>I&#8217;ve recently
+    <p><a href="https://farm9.staticflickr.com/8833/28305552801_1d518e31ae_o.png"><figure><img src="https://farm9.staticflickr.com/8833/28305552801_21343667ff_z.jpg"><figcaption>Figure from the old presentation</figcaption></figure></a></p>
+<p>I've recently
 <a href="https://gerrit.libreoffice.org/gitweb?p=core.git;a=commit;h=ac0b3b05ab52d0ac06137cf93d71187c7957ec99">fixed</a>
-a missing-repaint problem in LibreOffice&#8217;s headless backend, but the root
-cause wasn&#8217;t close to the symptom I saw first. Part of the debugging process
-was to understand what&#8217;s the relation between <code>sdr::contact::ViewContact</code>,
-<code>sdr::contact::ViewObjectContact</code> and <code>sdr::contact::ObjectContact</code>.</p></div>
-<div class="paragraph"><p>See
+a missing-repaint problem in LibreOffice's headless backend, but the root
+cause wasn't close to the symptom I saw first. Part of the debugging process
+was to understand what's the relation between <code>sdr::contact::ViewContact</code>,
+<code>sdr::contact::ViewObjectContact</code> and <code>sdr::contact::ObjectContact</code>.</p>
+<p>See
 <a href="http://www.openoffice.org/marketing/ooocon2006/presentations/wednesday_g11.odp">this
 old presentation</a> and the <a href="https://gerrit.libreoffice.org/27190">review of my
-documentation update</a> for the details, but the short version is that:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-somewhat confusingly, <code>sdr::contact::ViewContact</code> is part of the <strong>model</strong>, and
-  there is one <code>sdr::contact::ViewContact</code> object per shape
-</p>
-</li>
-<li>
-<p>
-<code>sdr::contact::ViewObjectContact</code> is part of a view, and there is one
-  <code>sdr::contact::ViewObjectContact</code> per shape, per view
-</p>
-</li>
-<li>
-<p>
-finally <code>sdr::contact::ObjectContact</code> is part of a <strong>view</strong>, and there is one
-  <code>sdr::contact::ObjectContact</code> per view
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>So the answer to my original <em>Is it normal that I have two object contacts and
-a single view contact for a shape and two views?</em> question is: yes, that&#8217;s
+documentation update</a> for the details, but the short version is that:</p>
+<ul>
+<li>somewhat confusingly, <code>sdr::contact::ViewContact</code> is part of the <em>model</em>, and
+  there is one <code>sdr::contact::ViewContact</code> object per shape</li>
+<li><code>sdr::contact::ViewObjectContact</code> is part of a view, and there is one
+  <code>sdr::contact::ViewObjectContact</code> per shape, per view</li>
+<li>finally <code>sdr::contact::ObjectContact</code> is part of a <em>view</em>, and there is one
+  <code>sdr::contact::ObjectContact</code> per view</li>
+</ul>
+<p>So the answer to my original 'Is it normal that I have two object contacts and
+a single view contact for a shape and two views?' question is: yes, that's
 expected. ;-) Hopefully the updated documentation is now more clear, the
-incorrect 1:N relation in the original class diagram first confused me.</p></div>
-</div>
-</div>
-
+incorrect 1:N relation in the original class diagram first confused me.</p>
   </div>
   <div class="article_meta">
     <p>Category: <a href="https://vmiklos.hu/blog/category/libreoffice.html">libreoffice</a>
