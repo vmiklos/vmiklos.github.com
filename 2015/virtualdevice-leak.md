@@ -1,25 +1,19 @@
-= 8884 VirtualDevices
+Title: 8884 VirtualDevices
+Slug: virtualdevice-leak
+Category: libreoffice
+Tags: en
+Date: 2015-08-18T09:09:44Z
 
-:slug: virtualdevice-leak
-:category: libreoffice
-:tags: en
-:date: 2015-08-18T09:09:44Z
+![(via teq)](https://lh3.googleusercontent.com/-RAsPMFc8JVk/VdH9h_W4r_I/AAAAAAAAF6U/PDpQIbBtPKg/s475-Ic42/)
 
-++++
-<div style="text-align: center; font-size: 0.6em;">
-<img src="https://lh3.googleusercontent.com/-RAsPMFc8JVk/VdH9h_W4r_I/AAAAAAAAF6U/PDpQIbBtPKg/s475-Ic42/"/>
-<p>(via <a href="http://www.teq.com/smart-pointers">teq</a>)</p>
-</div>
-++++
-
-If you are into $$C++$$ programming, you probably know that smart pointers are
+If you are into `C++` programming, you probably know that smart pointers are
 not just literally strange things like the above ones. ;-) LibreOffice 5.0 got
-https://gerrit.libreoffice.org/gitweb?p=core.git;a=blob;f=vcl/README.lifecycle;h=6b5cbd6e8df4bcc77b28b0e296e50a96ca8899a0;hb=HEAD[VclPtr],
+[VclPtr](https://gerrit.libreoffice.org/gitweb?p=core.git;a=blob;f=vcl/README.lifecycle;h=6b5cbd6e8df4bcc77b28b0e296e50a96ca8899a0;hb=HEAD),
 which is smart pointer specialized to VCL's needs.
 
 Such refactorings are good things, except that there is no huge rework without
-regressions. In https://bugs.documentfoundation.org/show_bug.cgi?id=93284[this
-case] the WMF filter had 3 places where we were leaking VirtualDevices due to
+regressions. In [this
+case](https://bugs.documentfoundation.org/show_bug.cgi?id=93284) the WMF filter had 3 places where we were leaking VirtualDevices due to
 a misconversion to the new VclPtr API. The problem was that the document had
 135 images, WMF files to be exact. Now given that the leaks were during
 parsing of WMF records (a WMF file consists of multiple WMF records), at the
@@ -39,11 +33,9 @@ container, the test file can be still only 99KB instead of the original 17MB
 RTF.
 
 Thanks to the
-https://wiki.documentfoundation.org/QA/Bibisect/Windows#Versions[4.4 -> 5.0
-Windows bibisect repo], it was immediately obvious that this is a VclPtr
+[4.4 -> 5.0
+Windows bibisect repo](https://wiki.documentfoundation.org/QA/Bibisect/Windows#Versions), it was immediately obvious that this is a VclPtr
 problem, and then it was possible to identify the root cause, and finally see
 that the bug title mentioning RTF was just container of the WMF images in this
 case, the problem had nothing to with with RTF and the leak wasn't
 Windows-specific, either.
-
-// vim: ft=asciidoc

@@ -1,11 +1,10 @@
-= PNG export in LibreOffice Calc
+Title: PNG export in LibreOffice Calc
+Slug: calc-png-export
+Category: libreoffice
+Tags: en
+Date: 2015-11-04T09:17:15Z
 
-:slug: calc-png-export
-:category: libreoffice
-:tags: en
-:date: 2015-11-04T09:17:15Z
-
-image::https://lh3.googleusercontent.com/-8n61EJB3Xco/VjkUn1JvuqI/AAAAAAAAGOE/0-DCtcNV2RY/s400-Ic42/[align="center",link="https://lh3.googleusercontent.com/-8n61EJB3Xco/VjkUn1JvuqI/AAAAAAAAGOE/0-DCtcNV2RY/s0-Ic42/"]
+[![Export dialog](https://lh3.googleusercontent.com/-8n61EJB3Xco/VjkUn1JvuqI/AAAAAAAAGOE/0-DCtcNV2RY/s400-Ic42/)](https://lh3.googleusercontent.com/-8n61EJB3Xco/VjkUn1JvuqI/AAAAAAAAGOE/0-DCtcNV2RY/s0-Ic42/)
 
 Both LibreOffice Writer and Impress has the ability to export the document as
 PNG, which is one way to create thumbnails for documents -- i.e. being able to
@@ -15,11 +14,11 @@ Calc did not have this feature, and given that `ScModelObj` also supports the
 be too complex to add one.
 
 You can refer to
-http://fridrich.blogspot.com/2013/08/extending-swiss-army-knife-overview.html[Fridrich's
-overview blog post] for the complete list of steps on how to add a new filter
+[Fridrich's
+overview blog post](http://fridrich.blogspot.com/2013/08/extending-swiss-army-knife-overview.html) for the complete list of steps on how to add a new filter
 to LibreOffice, here the following steps
-http://cgit.freedesktop.org/libreoffice/core/commit/?id=03bb5d52fecd6c613c6cc36508eb44e5e1c3456a[were
-needed]:
+[were
+needed](http://cgit.freedesktop.org/libreoffice/core/commit/?id=03bb5d52fecd6c613c6cc36508eb44e5e1c3456a):
 
 - improve `DocumentToGraphicRenderer`, so that it can handle that Calc does
   not implement the `text::XTextViewCursorSupplier` interface (Writer uses
@@ -31,7 +30,5 @@ needed]:
 - testcase
 
 If you can't wait till LibreOffice 5.1 is released to try out this new
-feature, you can get a http://dev-builds.libreoffice.org/daily/master/[daily
-build]. :-)
-
-// vim: ft=asciidoc
+feature, you can get a [daily
+build](http://dev-builds.libreoffice.org/daily/master/). :-)

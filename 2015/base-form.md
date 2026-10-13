@@ -1,14 +1,13 @@
-= Fixing Base form image backgrounds
+Title: Fixing Base form image backgrounds
+Slug: base-form
+Category: libreoffice
+Tags: en
+Date: 2015-09-16T09:10:29Z
 
-:slug: base-form
-:category: libreoffice
-:tags: en
-:date: 2015-09-16T09:10:29Z
-
-image::https://lh3.googleusercontent.com/-G5jug0myAVY/Vfh1U_i-QTI/AAAAAAAAGFQ/eZ-GKJqxqMU/s640-Ic42/[align="center",link="https://lh3.googleusercontent.com/-G5jug0myAVY/Vfh1U_i-QTI/AAAAAAAAGFQ/eZ-GKJqxqMU/s0-Ic42/"]
+[![Correctly rendered page background image fill](https://lh3.googleusercontent.com/-G5jug0myAVY/Vfh1U_i-QTI/AAAAAAAAGFQ/eZ-GKJqxqMU/s640-Ic42/)](https://lh3.googleusercontent.com/-G5jug0myAVY/Vfh1U_i-QTI/AAAAAAAAGFQ/eZ-GKJqxqMU/s0-Ic42/)
 
 In this post I want to go further, and after
-link:|filename|/2015/calc-header.adoc[touching Calc], here is my first story
+[touching Calc]({filename}/2015/calc-header.md), here is my first story
 about Base. Of course I lie, it seems that Base forms are kind of read-only
 Writer documents, at least that's how I could fix the bug I'm describing here.
 :-) The topic is still the same, rounding rough edges after the fill
@@ -17,32 +16,28 @@ not stretched at all, it was simply centered both horizontally and vertically
 on the page.)
 
 I'm not entirely sure how the document from
-https://bugs.documentfoundation.org/show_bug.cgi?id=92586[tdf#92586] is
+[tdf#92586](https://bugs.documentfoundation.org/show_bug.cgi?id=92586) is
 created, but the interesting part from styles.xml is:
 
-[source,xml]
-----
+```xml
 <style:page-layout-properties ... style:repeat="no-repeat">
      <style:background-image ... style:repeat="stretch"/>
 </style:page-layout-properties>
-----
+```
 
 So the schema allows specifying the way how the bitmap is repeated at two
 places, and in the past the later attribute won, and with the rework this got
 lost.
 
 An additional problem that
-http://cgit.freedesktop.org/libreoffice/core/commit/?id=6621da38b3cd217314c2d2295fd1e71be7e1875e[the
-commit] had to solve is that the attribute on the page-layout-properties XML
+[the
+commit](http://cgit.freedesktop.org/libreoffice/core/commit/?id=6621da38b3cd217314c2d2295fd1e71be7e1875e) had to solve is that the attribute on the page-layout-properties XML
 element is mapped to our
-http://api.libreoffice.org/docs/idl/ref/servicecom_1_1sun_1_1star_1_1drawing_1_1FillProperties.html#acd89f2a230dfdf0be3f6c840c2630871[FillBitmapMode]
+[FillBitmapMode](http://api.libreoffice.org/docs/idl/ref/servicecom_1_1sun_1_1star_1_1drawing_1_1FillProperties.html#acd89f2a230dfdf0be3f6c840c2630871)
 API, while the attribute with the same name on the background-image XML
 element is mapped to the
-http://api.libreoffice.org/docs/idl/ref/servicecom_1_1sun_1_1star_1_1style_1_1PageProperties.html#a229455fd0417732944f850139fdf96d5[BackGraphicLocation]
-API, which is specific to Writer. As a result, now there is a compatibility
+[BackGraphicLocation](http://api.libreoffice.org/docs/idl/ref/servicecom_1_1sun_1_1star_1_1style_1_1PageProperties.html#a229455fd0417732944f850139fdf96d5) API, which is specific to Writer. As a result, now there is a compatibility
 map from the old enumeration to the new one, that's how the bug document is
 now rendered the same again, as in the past.
 
 The fix is already backported to the `libreoffice-5-0` branch.
-
-// vim: ft=asciidoc

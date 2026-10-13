@@ -1,18 +1,18 @@
-= Tiled editing: from viewing only to a living document
+Title: Tiled editing: from viewing only to a living document
+Slug: tiled-editing-part-1
+Category: libreoffice
+Tags: en
+Date: 2015-01-27T11:02:48Z
 
-:slug: tiled-editing-part-1
-:category: libreoffice
-:tags: en
-:date: 2015-01-27T11:02:48Z
 As it has been announced
-http://blog.documentfoundation.org/2015/01/21/libreoffice-viewer-for-android/[last
-week], an Android port of LibreOffice in the form of a viewer app is now
+[last
+week](http://blog.documentfoundation.org/2015/01/21/libreoffice-viewer-for-android/), an Android port of LibreOffice in the form of a viewer app is now
 available for download.  What's next?
-http://blog.documentfoundation.org/2015/01/27/the-document-foundation-announces-the-results-of-the-android-tender/[Editing],
+[Editing](http://blog.documentfoundation.org/2015/01/27/the-document-foundation-announces-the-results-of-the-android-tender/),
 naturally.  First, thanks again to The Document Foundation -- and all the
-http://donate.libreoffice.org/[donors] who made this (ongoing) work possible.
+[donors](http://donate.libreoffice.org/) who made this (ongoing) work possible.
 In this post I would like to explain what did we do with
-http://tomazvajngerl.blogspot.com/[Tomaž Vajngerl] at Collabora so far in that
+[Tomaž Vajngerl](http://tomazvajngerl.blogspot.com/) at Collabora so far in that
 direction.
 
 If you ever touched the Android port of LibreOffice, you probably noticed that
@@ -46,7 +46,7 @@ task we solved was to let gtktiledviewer also render small tiles. For
 debugging purposes, small red rectangles are painted at the top left corners
 of each rectangle, so the size and position of the tiles can be seen easily:
 
-image::https://lh5.googleusercontent.com/-VvQFF-Kg270/VMYqe9G76-I/AAAAAAAAFL4/Fnh9_ig03Ww/s420/[align="center",link="https://lh5.googleusercontent.com/-VvQFF-Kg270/VMYqe9G76-I/AAAAAAAAFL4/Fnh9_ig03Ww/s0/"]
+[![Visible tile boundaries in gtktiledviewer](https://lh5.googleusercontent.com/-VvQFF-Kg270/VMYqe9G76-I/AAAAAAAAFL4/Fnh9_ig03Ww/s420/)](https://lh5.googleusercontent.com/-VvQFF-Kg270/VMYqe9G76-I/AAAAAAAAFL4/Fnh9_ig03Ww/s0/)
 
 The next step was to somehow start work on real editing -- but where to start? We identified two critical building blocks:
 
@@ -63,24 +63,18 @@ LibreOfficeKit clients to register a notification callback, and using that,
 LibreOffice can notify clients if part of the view has to be redrawn. Here is
 how it looks using gtktiledviewer:
 
-++++
 <center>
 <iframe width="420" height="315" src="http://www.youtube.com/embed/rgv76GPlMRU" frameborder="0" allowfullscreen></iframe>
 </center>
-++++
 
 This demonstrates that the LibreOfficeKit implementation in LibreOffice core
 and also the gtktiledviewer client code handle correctly tile invalidations.
 Once that was done, we could also implement a similar client code in the
 Android app -- it looks like this:
 
-++++
 <center>
 <iframe width="420" height="315" src="http://www.youtube.com/embed/EkGpCrGlhiY" frameborder="0" allowfullscreen></iframe>
 </center>
-++++
 
 That's it for now -- next on our list is adding support for input handling, so
 it's possible to type in some text. :-)
-
-// vim: ft=asciidoc

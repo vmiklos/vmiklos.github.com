@@ -1,15 +1,14 @@
-= Tiled editing: from input handling to selections
+Title: Tiled editing: from input handling to selections
+Slug: tiled-editing-part-3
+Category: libreoffice
+Tags: en
+Date: 2015-02-27T12:14:55Z
 
-:slug: tiled-editing-part-3
-:category: libreoffice
-:tags: en
-:date: 2015-02-27T12:14:55Z
-
-In link:|filename|/2015/tiled-editing-part-2.adoc[from a living document to
-input handling], I wrote about how we handle touch and on-screen keyboard
+In [from a living document to
+input handling]({filename}/2015/tiled-editing-part-2.md), I wrote about how we handle touch and on-screen keyboard
 events in the LibreOffice Android app. A next step in this
-http://blog.documentfoundation.org/2015/01/27/the-document-foundation-announces-the-results-of-the-android-tender/[TDF-funded
-project] is to provide more UI elements which are specific to touch devices:
+[TDF-funded
+project](http://blog.documentfoundation.org/2015/01/27/the-document-foundation-announces-the-results-of-the-android-tender/) is to provide more UI elements which are specific to touch devices:
 selections is one of them.
 
 Here are the problems we had to solve to get this working:
@@ -34,11 +33,9 @@ indexes) point.
 
 If you are interested how this looks like, here is a demo:
 
-++++
 <center>
 <iframe width="420" height="315" src="https://www.youtube.com/embed/dmZtxA2HD5o" frameborder="0" allowfullscreen></iframe>
 </center>
-++++
 
 An other direction we're working towards is to have the same features in other
 applications as well: Impress and Calc. Perhaps not so surprisingly, we hit
@@ -68,26 +65,20 @@ The typical problems are:
 Here is how Impress looks like, with working tile invalidation, touch and
 keyboard handling:
 
-++++
 <center>
 <iframe width="420" height="315" src="https://www.youtube.com/embed/P2cF8zsNnrg" frameborder="0" allowfullscreen></iframe>
 </center>
-++++
 
 Calc is lagging a bit behind, but it also has working tile invalidation and
 keyboard handling:
 
-++++
 <center>
 <iframe width="420" height="315" src="https://www.youtube.com/embed/kQDRpoDkb0s" frameborder="0" allowfullscreen></iframe>
 </center>
-++++
 
 That's it for now -- as usual the commits of me and
-http://tomazvajngerl.blogspot.com/[Tomaž Vajngerl] are in master (a few of
+[Tomaž Vajngerl](http://tomazvajngerl.blogspot.com/) are in master (a few of
 them is only in feature/tiled-editing for now), so you can try this right now,
 or wait till the next Tuesday and get the
-http://dev-builds.libreoffice.org/daily/master/Android-ARM@24-Bytemark-Hosting/current/[Android
-daily build]. :-)
-
-// vim: ft=asciidoc
+[Android
+daily build](http://dev-builds.libreoffice.org/daily/master/Android-ARM@24-Bytemark-Hosting/current/). :-)

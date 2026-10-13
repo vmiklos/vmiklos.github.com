@@ -1,23 +1,22 @@
-= Tiled editing: from a living document to input handling
+Title: Tiled editing: from a living document to input handling
+Slug: tiled-editing-part-2
+Category: libreoffice
+Tags: en
+Date: 2015-02-09T09:54:48Z
 
-:slug: tiled-editing-part-2
-:category: libreoffice
-:tags: en
-:date: 2015-02-09T09:54:48Z
-
-In link:|filename|/2015/tiled-editing-part-1.adoc[from viewing only to a
-living document], I wrote about how tile invalidation can handle updates in
+In [from viewing only to a
+living document]({filename}/2015/tiled-editing-part-1.md), I wrote about how tile invalidation can handle updates in
 the Android app in case what should be displayed on the screen changes. A next
 step in this
-http://blog.documentfoundation.org/2015/01/27/the-document-foundation-announces-the-results-of-the-android-tender/[TDF-funded
-project] is to handle more than blinking text: keyboard and mouse/touch events
+[TDF-funded
+project](http://blog.documentfoundation.org/2015/01/27/the-document-foundation-announces-the-results-of-the-android-tender/) is to handle more than blinking text: keyboard and mouse/touch events
 from the user.
 
 First let me enumerate over the issues we had to face:
 
 - Gtk, Android and LibreOffice's VCL use different key codes for the same
   physical keys. We solved this by mapping the special keys manually on the
-  Gtk/Android side (using the $$C++$$ and Java UNO binding), and for the rest,
+  Gtk/Android side (using the `C++` and Java UNO binding), and for the rest,
   we simply use the unicode representation of the keys.
 - Special keys: while "return" was easy to map, getting "backspace" to work
   was more challenging. It worked fine on the Gtk side, but on Android we had
@@ -39,46 +38,36 @@ First let me enumerate over the issues we had to face:
   and then it can handle the blinking cursor itself in a transparent overlay.
   This overlay will be useful for presenting selections as well.
 
-As usual the commits of me and http://tomazvajngerl.blogspot.com/[Tomaž
-Vajngerl] are in master, so you can try this right now, or wait till tomorrow
+As usual the commits of me and [Tomaž
+Vajngerl](http://tomazvajngerl.blogspot.com/) are in master, so you can try this right now, or wait till tomorrow
 and get the
-http://dev-builds.libreoffice.org/daily/master/Android-ARM@24-Bytemark-Hosting/current/[Android
-daily build]. However, if you are just interested how this looks like, here are some demos:
+[Android
+daily build](http://dev-builds.libreoffice.org/daily/master/Android-ARM@24-Bytemark-Hosting/current/). However, if you are just interested how this looks like, here are some demos:
 
 - Keyboard handling in gtktiledviewer:
 
-++++
 <center>
 <iframe width="420" height="315" src="https://www.youtube.com/embed/Hi9N9IumMZY" frameborder="0" allowfullscreen></iframe>
 </center>
-++++
 
 - Same on Android, including newlines and backspace handling:
 
-++++
 <center>
 <iframe width="420" height="315" src="https://www.youtube.com/embed/4CJbu_QNUh0" frameborder="0" allowfullscreen></iframe>
 </center>
-++++
 
 - Mouse handling in gtktiledviewer:
 
-++++
 <center>
 <iframe width="420" height="315" src="https://www.youtube.com/embed/4jH_Ek1p1OA" frameborder="0" allowfullscreen></iframe>
 </center>
-++++
 
 - Same on Android, including the transparent selection overlay that can
   efficiently blink the cursor:
 
-++++
 <center>
 <iframe width="420" height="315" src="https://www.youtube.com/embed/frQWyjjsl3I" frameborder="0" allowfullscreen></iframe>
 </center>
-++++
 
 That's it for now -- next on our list are selections, so you can delete and
 overwrite more easily. :-)
-
-// vim: ft=asciidoc

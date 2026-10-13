@@ -1,11 +1,10 @@
-= Restarting timer of the presenter console
+Title: Restarting timer of the presenter console
+Slug: presenter-console
+Category: libreoffice
+Tags: en
+Date: 2015-10-09T08:06:29Z
 
-:slug: presenter-console
-:category: libreoffice
-:tags: en
-:date: 2015-10-09T08:06:29Z
-
-image::https://lh3.googleusercontent.com/-gedKN4759cE/VhZqBSpZL7I/AAAAAAAAGJs/Hlez6jX85ww/s400-Ic42/[align="center",link="https://lh3.googleusercontent.com/-gedKN4759cE/VhZqBSpZL7I/AAAAAAAAGJs/Hlez6jX85ww/s0-Ic42/"]
+[![Impress presenter console](https://lh3.googleusercontent.com/-gedKN4759cE/VhZqBSpZL7I/AAAAAAAAGJs/Hlez6jX85ww/s400-Ic42/)](https://lh3.googleusercontent.com/-gedKN4759cE/VhZqBSpZL7I/AAAAAAAAGJs/Hlez6jX85ww/s0-Ic42/)
 
 This use-case came up during this year's LibreOffice conference. I started the
 Impress slideshow a few minutes in advance, so the audience could check if they
@@ -18,11 +17,9 @@ while the presentation was not running at the moment I started talking.
 Because hacking the presenter console requires you to have two monitors, it's
 not something I looked into during the conference's hackfest, but now here it
 is: I
-https://gerrit.libreoffice.org/gitweb?p=core.git;a=commit;h=b1a6a99b9a78689c6d3649ce066fad66912188e2[added]
+[added](https://gerrit.libreoffice.org/gitweb?p=core.git;a=commit;h=b1a6a99b9a78689c6d3649ce066fad66912188e2)
 a button to just restart the timer, then it's not needed to stop/start the
 presentation manually.
     
 The icon is just a placeholder for now, the real design is
-http://listarchives.libreoffice.org/global/design/msg07351.html[in progress].
-
-// vim: ft=asciidoc
+[in progress](http://listarchives.libreoffice.org/global/design/msg07351.html).

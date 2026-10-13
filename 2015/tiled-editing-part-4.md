@@ -1,17 +1,16 @@
-= Android editing: from selections to graphic handling
+Title: Android editing: from selections to graphic handling
+Slug: tiled-editing-part-4
+Category: libreoffice
+Tags: en
+Date: 2015-03-19T12:26:34Z
 
-:slug: tiled-editing-part-4
-:category: libreoffice
-:tags: en
-:date: 2015-03-19T12:26:34Z
-
-In link:|filename|/2015/tiled-editing-part-3.adoc[from input handling to
-selections], I wrote about how we let LibreOffice Android app draw the
+In [from input handling to
+selections]({filename}/2015/tiled-editing-part-3.md), I wrote about how we let LibreOffice Android app draw the
 selections around text content natively. A next step in this
-http://blog.documentfoundation.org/2015/01/27/the-document-foundation-announces-the-results-of-the-android-tender/[TDF-funded
-project] is to provide selections around more UI elements: images and shapes.
+[TDF-funded
+project](http://blog.documentfoundation.org/2015/01/27/the-document-foundation-announces-the-results-of-the-android-tender/) is to provide selections around more UI elements: images and shapes.
 
-Here are a number of challenges we (http://tomazvajngerl.blogspot.com/[Tomaž Vajngerl] and me) faced while we implemented this:
+Here are a number of challenges we ([Tomaž Vajngerl](http://tomazvajngerl.blogspot.com/) and me) faced while we implemented this:
 
 - On Linux (the desktop), the move and resize operations are really similar:
   if you click near a resize handle (you "hit it"), then it'll be a resize,
@@ -37,7 +36,7 @@ Here are a number of challenges we (http://tomazvajngerl.blogspot.com/[Tomaž Va
 
 If you are interested how this looks like, here is a demo (click on the image to see the video):
 
-image::https://lh5.googleusercontent.com/-JEuiW789JEM/VQqrR8zDHjI/AAAAAAAAFVo/ORgDKNBIIJA/s800/[align="center",link="http://youtu.be/bTWLz_4YQtA"]
+[![Graphic selections on Android](https://lh5.googleusercontent.com/-JEuiW789JEM/VQqrR8zDHjI/AAAAAAAAFVo/ORgDKNBIIJA/s800/)](http://youtu.be/bTWLz_4YQtA)
 
 Notice how the word selection in a table turns into a table selection, or how
 a long push inside an empty cell creates a selection containing only the empty
@@ -58,19 +57,17 @@ Additionally, we need to handle the situation when this automagic goes wrong.
 The Android soft keyboard has a button to hide itself, but we added a toolbar
 button to force-show it, too (click on the image to see the video):
 
-image::https://lh6.googleusercontent.com/-rUxX9gC9z4M/VQqrR0rIyMI/AAAAAAAAFVk/y5GluM-u5eg/s800/[align="center",link="http://youtu.be/36MsGe-7Mpo"]
+[![Force-show of the Android clipboard](https://lh6.googleusercontent.com/-rUxX9gC9z4M/VQqrR0rIyMI/AAAAAAAAFVk/y5GluM-u5eg/s800/)](http://youtu.be/36MsGe-7Mpo)
 
-Finally, https://siqi43.wordpress.com/[Siqi Liu] added a new callback type,
+Finally, [Siqi Liu](https://siqi43.wordpress.com/) added a new callback type,
 allowing to tap on hyperlinks and handle them according to how you
 configured URL handling on your Android device. Here is a demo to show this in
 action:
 
-image::https://lh6.googleusercontent.com/-tNnSAiN3p-o/VQqrR5UslSI/AAAAAAAAFVg/xCbkq7-Vark/s800/[align="center",link="http://youtu.be/dBcGVu5pcSk"]
+[![Opening hyperlinks](https://lh6.googleusercontent.com/-tNnSAiN3p-o/VQqrR5UslSI/AAAAAAAAFVg/xCbkq7-Vark/s800/)](http://youtu.be/dBcGVu5pcSk)
 
 That's it for now -- as usual the commits are in master (a few of them is only
 in feature/tiled-editing for now), so you can try this right now, or wait till
 the next Tuesday and get the
-http://dev-builds.libreoffice.org/daily/master/Android-ARM@24-Bytemark-Hosting/current/[Android
-daily build]. :-)
-
-// vim: ft=asciidoc
+[Android
+daily build](http://dev-builds.libreoffice.org/daily/master/Android-ARM@24-Bytemark-Hosting/current/). :-)

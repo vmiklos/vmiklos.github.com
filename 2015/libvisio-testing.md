@@ -1,13 +1,12 @@
-= Document Liberation Project regression testing
+Title: Document Liberation Project regression testing
+Slug: libvisio-testing
+Category: libreoffice
+Tags: en
+Date: 2015-03-14T20:09:44Z
 
-:slug: libvisio-testing
-:category: libreoffice
-:tags: en
-:date: 2015-03-14T20:09:44Z
+![Tested](https://lh5.googleusercontent.com/-0Qh5cUx4gGA/VQR_RkRe2jI/AAAAAAAAFU8/5KIPToOna4Q/s0/)
 
-image::https://lh5.googleusercontent.com/-0Qh5cUx4gGA/VQR_RkRe2jI/AAAAAAAAFU8/5KIPToOna4Q/s0/[align="center"]
-
-link:|filename|/2014/libvisio-setup.adoc[Earlier] I wrote about my setup to
+[Earlier]({filename}/2014/libvisio-setup.adoc) I wrote about my setup to
 hack libvisio. One missing bit was testing the contributed code. Testing can
 be performed at various levels, so far DLP libraries were tested by recording
 the output of the various `foo2raw` tools and then comparing the current output
@@ -28,16 +27,16 @@ the maintainer doesn't do that, everyone can only ignore the test results --
 so it doesn't really scale.
 
 In short, both techniques have some benefits, but given that the
-https://gerrit.libreoffice.org/gitweb?p=libvisio-test.git[libvisio test repo]
+[libvisio test repo](https://gerrit.libreoffice.org/gitweb?p=libvisio-test.git)
 is quite empty, I thought it's a good time to give an other method (what we
 use quite successfully in LO code) a go, too. This method is easy: instead of
 recording the whole output of some test tool, output a structured format (in
 this case XML), and then just assert the interesting part of it using XPath.
 Additionally, these tests
-https://gerrit.libreoffice.org/gitweb?p=libvisio.git;a=tree;f=src/test;hb=HEAD[are
-in libvisio.git], so you can nicely put the code change and the testcase
-https://gerrit.libreoffice.org/gitweb?p=libvisio.git;a=commitdiff;h=1bda66b9c0c1cc2b9dcf323a0a45e314b5d4410f[in
-the same commit]. So the hope is that this is a more scalable technique:
+[are
+in libvisio.git](https://gerrit.libreoffice.org/gitweb?p=libvisio.git;a=tree;f=src/test;hb=HEAD), so you can nicely put the code change and the testcase
+[in
+the same commit](https://gerrit.libreoffice.org/gitweb?p=libvisio.git;a=commitdiff;h=1bda66b9c0c1cc2b9dcf323a0a45e314b5d4410f). So the hope is that this is a more scalable technique:
 
 - Provided that `make distcheck` is ran before committing, you can't forget to
   clone and run the tests.
@@ -54,13 +53,11 @@ this is part of libvisio, so in case you want to re-use it in some other DLP
 library, you need to copy it to your import library, though if indeed multiple
 importers start to use it, perhaps it'll be moved to librevenge. The rest of
 the test framework is a simple
-https://gerrit.libreoffice.org/gitweb?p=libvisio.git;a=blob;f=src/test/test.cpp;hb=HEAD[testsuite
-runner] and a
-https://gerrit.libreoffice.org/gitweb?p=libvisio.git;a=blob;f=src/test/importtest.cpp;hb=HEAD[cppunit
-TestFixture] subclass that contains the actual test cases.
+[testsuite
+runner](https://gerrit.libreoffice.org/gitweb?p=libvisio.git;a=blob;f=src/test/test.cpp;hb=HEAD) and a
+[cppunit
+TestFixture](https://gerrit.libreoffice.org/gitweb?p=libvisio.git;a=blob;f=src/test/importtest.cpp;hb=HEAD) subclass that contains the actual test cases.
 
 So in case you are planning how to test your import library, then now you have
 two options, evaluate them and choose what seems to be the better tool for
 your purpose.
-
-// vim: ft=asciidoc shiftwidth=4 softtabstop=4 expandtab:

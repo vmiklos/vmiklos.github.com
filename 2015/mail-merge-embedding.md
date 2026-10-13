@@ -1,17 +1,16 @@
-= Mail merge embedding
-
-:slug: mail-merge-embedding
-:category: libreoffice
-:tags: en
-:date: 2015-07-28T09:34:09Z
+Title: Mail merge embedding
+Slug: mail-merge-embedding
+Category: libreoffice
+Tags: en
+Date: 2015-07-28T09:34:09Z
 
 If you ever used the
-https://help.libreoffice.org/Writer/Mail_Merge_Wizard[mail merge wizard] with
+[mail merge wizard](https://help.libreoffice.org/Writer/Mail_Merge_Wizard) with
 a Calc data source, then you know how it worked in the past: you've got 3
 files: the .odt mail template, the .ods data source and a .odb data source
 definition that defines how to access the .ods.
 
-The target of this http://www.muenchen.de/[LHM-funded project] was to get rid
+The target of this [LHM-funded project](http://www.muenchen.de/) was to get rid
 of the .odb file and just embed it into the .odt mail template. Why?
 
 Here is the problem description from a user's point of view: "When a mail
@@ -26,10 +25,8 @@ registration will be missing there.
 If you are interested how this looks like, here is a demo (click on the image
 to see the video):
 
-image::https://lh3.googleusercontent.com/-XDcWgOWKr2k/Vbc4blHURTI/AAAAAAAAF4E/VXFBglt-YmU/s800-Ic42/[align="center",link="https://youtu.be/5iQFZBOz8rM"]
+[![Calc data source selected directly in Writer mail merge](https://lh3.googleusercontent.com/-XDcWgOWKr2k/Vbc4blHURTI/AAAAAAAAF4E/VXFBglt-YmU/s800-Ic42/)](https://youtu.be/5iQFZBOz8rM)
 
 That's it for now -- as usual the commits are in master, so you can try this
-right now with a 5.1 http://dev-builds.libreoffice.org/daily/master/[daily
-build]. :-)
-
-// vim: ft=asciidoc
+right now with a 5.1 [daily
+build](http://dev-builds.libreoffice.org/daily/master/). :-)

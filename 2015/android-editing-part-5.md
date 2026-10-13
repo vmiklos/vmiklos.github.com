@@ -1,17 +1,16 @@
-= Android editing: from graphic handling to formatting
+Title: Android editing: from graphic handling to formatting
+Slug: android-editing-part-5
+Category: libreoffice
+Tags: en
+Date: 2015-04-02T15:44:21Z
 
-:slug: android-editing-part-5
-:category: libreoffice
-:tags: en
-:date: 2015-04-02T15:44:21Z
-
-In link:|filename|/2015/tiled-editing-part-4.adoc[from selections to graphic
-handling], I wrote about how we let the LibreOffice Android app select, resize
+In [from selections to graphic
+handling]({filename}/2015/tiled-editing-part-4.md), I wrote about how we let the LibreOffice Android app select, resize
 and move images and shapes.  Now that we have all type of selections (at least
 for Writer) in this
-http://blog.documentfoundation.org/2015/01/27/the-document-foundation-announces-the-results-of-the-android-tender/[TDF-funded
-project], let's do some formatting! The example implemented by
-http://holesovsky.blogspot.com/[Jan Holesovsky] here is to mark the text bold,
+[TDF-funded
+project](http://blog.documentfoundation.org/2015/01/27/the-document-foundation-announces-the-results-of-the-android-tender/), let's do some formatting! The example implemented by
+[Jan Holesovsky](http://holesovsky.blogspot.com/) here is to mark the text bold,
 but you can imagine that using the same technique a number of other character
 or paragraph properties could be set the same way with little work.
 
@@ -31,7 +30,7 @@ Here is how it works:
 
 If you are interested how this looks like, here is a demo (click on the image to see the video):
 
-image::https://lh6.googleusercontent.com/-t3TbtyU1BG4/VR05HL8srKI/AAAAAAAAFYQ/cM2Ex5MTkoo/s800/[align="center",link="https://youtu.be/5fmjQ6PmBQw"]
+[![Posting UNO commands on Android](https://lh6.googleusercontent.com/-t3TbtyU1BG4/VR05HL8srKI/AAAAAAAAFYQ/cM2Ex5MTkoo/s800/)](https://youtu.be/5fmjQ6PmBQw)
 
 Notice that Calc also gained a number of new features, like cell selection,
 blinking cursor, text selection with much help from Henry Castro.
@@ -41,7 +40,7 @@ be good to see in all four applications, time to look at what's new in
 Impress-land!
 
 To bring Impress in line with Writer, we implemented the followings with
-http://tomazvajngerl.blogspot.com/[Tomaž Vajngerl]:
+[Tomaž Vajngerl](http://tomazvajngerl.blogspot.com/):
 
 - shape text now has a blinking cursor with a cursor handle that can be
   dragged
@@ -55,7 +54,7 @@ http://tomazvajngerl.blogspot.com/[Tomaž Vajngerl]:
 
 Here is a demo to show this in action:
 
-image::https://lh3.googleusercontent.com/-IwBuKW9bI6Y/VR05HO5Fa_I/AAAAAAAAFYM/YNCT3k56j5I/s800/[align="center",link="http://youtu.be/4KdFMZJK7uY"]
+[![Impress on Android](https://lh3.googleusercontent.com/-IwBuKW9bI6Y/VR05HO5Fa_I/AAAAAAAAFYM/YNCT3k56j5I/s800/)](http://youtu.be/4KdFMZJK7uY)
 
 For many of the above features, the core part was already implemented due to
 Writer shapes, what was missing is to call the same editeng methods from
@@ -71,7 +70,5 @@ details about how exactly the editing works.
 That's it for now -- as usual the commits are in master (a few of them is only
 in feature/tiled-editing for now), so you can try this right now, or wait till
 the next Tuesday and get the
-http://dev-builds.libreoffice.org/daily/master/Android-ARM@24-Bytemark-Hosting/current/[Android
-daily build]. :-)
-
-// vim: ft=asciidoc
+[Android
+daily build](http://dev-builds.libreoffice.org/daily/master/Android-ARM@24-Bytemark-Hosting/current/). :-)

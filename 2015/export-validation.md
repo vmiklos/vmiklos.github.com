@@ -1,15 +1,15 @@
-= Export validation as a new year's resolution
+Title: Export validation as a new year's resolution
+Slug: export-validation
+Category: libreoffice
+Tags: en
+Date: 2015-01-10T13:07:42Z
 
-:slug: export-validation
-:category: libreoffice
-:tags: en
-:date: 2015-01-10T13:07:42Z
 TL;DR: If you touch the ODF and/or OOXML filters in LibreOffice, please use
 the `--with-export-validation` configure option after you ran the
-https://gerrit.libreoffice.org/gitweb?p=dev-tools.git;a=blob;f=export-validation/setup.sh;hb=HEAD[setup.sh]
+[setup.sh](https://gerrit.libreoffice.org/gitweb?p=dev-tools.git;a=blob;f=export-validation/setup.sh;hb=HEAD)
 script.
 
-https://mmohrhard.wordpress.com/[Markus Mohrhard] did an excellent job with
+[Markus Mohrhard](https://mmohrhard.wordpress.com/) did an excellent job with
 adding the `--with-export-validation` build switch to LibreOffice. It does the
 following:
 
@@ -18,10 +18,10 @@ following:
 - it does the same for Writer, except there only a subset of documents are
   validated
 
-One remaining https://bugs.freedesktop.org/show_bug.cgi?id=84600[problem] was
+One remaining [problem](https://bugs.freedesktop.org/show_bug.cgi?id=84600) was
 that it required setting up both
-http://incubator.apache.org/odftoolkit/conformance/ODFValidator.html[odfvalidator]
-and https://code.google.com/p/officeotron/[officeotron], neither of them are
+[odfvalidator](http://incubator.apache.org/odftoolkit/conformance/ODFValidator.html)
+and [officeotron](https://code.google.com/p/officeotron/), neither of them are
 standard GNU projects but Java beasts. So even if I and a number of other
 developers do use this option, it happens from time to time that we need to
 fix new validation regressions, as others don't see the problem; and even if
@@ -29,11 +29,11 @@ we point it out, it's hard to reproduce for the author of the problematic
 commit.
 
 This has just changed, all you need is to get `export-validation/setup.sh`
-from https://gerrit.libreoffice.org/gitweb?p=dev-tools.git[dev-tools.git], and run it like this:
+from [dev-tools.git](https://gerrit.libreoffice.org/gitweb?p=dev-tools.git), and run it like this:
 
-----
+```
 ./setup.sh ~/svn /opt/lo/bin
-----
+```
 
 I.e. the first parameter is a working directory and the second is a directory
 that's writable by you and is already in your path. And then wait a bit... ODF
@@ -49,5 +49,3 @@ The new year is here, if you don't have a new year's resolution yet -- or if
 you hate those, but you're willing to adopt a new habit from time to time --
 then please consider `--with-export-validation`, so that such regressions can
 be detected before you publish your changes. Thanks! ;-)
-
-// vim: ft=asciidoc
