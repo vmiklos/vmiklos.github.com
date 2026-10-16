@@ -6,7 +6,7 @@ Date: 2019-05-15T09:29:57+02:00
 
 ![Chart in drawingML group shape in DOCX, imported into Writer](https://lh3.googleusercontent.com/Jw_BHWWDubfGASjfFszFu6q9VRXaELjjLun974YCt7pQv3P-WIKqkISu5GHwTNndCHi8jGqv_FvYTZFXdWfxASIzXbgw0Et-7rAQZ3LzxA5Ntxx0GTxRH3y4m3hOYVLMKAyXtCQECQ=w640)
 
-Years ago I [posted]({filename}/2014/lo-writer-drawingml-shape-improvements.adoc) about a large
+Years ago I [posted]({filename}/2014/lo-writer-drawingml-shape-improvements.md) about a large
 rework to where [Collabora](https://www.collaboraoffice.com/) helped a customer to make Writer read
 the drawingML markup for DOCX shapes. You can read the various benefits of this switch in that
 article -- but similar to other large reworks, this also broke some previously working corner-cases,

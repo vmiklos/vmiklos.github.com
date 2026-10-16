@@ -1,13 +1,13 @@
-= Death of doctok in LibreOffice
+Title: Death of doctok in LibreOffice
+Slug: doctok
+Category: libreoffice
+Tags: en
+Date: 2014-03-09T12:21:08Z
 
-:slug: doctok
-:category: libreoffice
-:tags: en
-:date: 2014-03-09T12:21:08Z
-image::https://lh5.googleusercontent.com/-IumGq3jzNdI/UxxG3Deg6QI/AAAAAAAAEFY/Ij7oMS7YyoY/s300/[align="center",link="https://lh5.googleusercontent.com/-IumGq3jzNdI/UxxG3Deg6QI/AAAAAAAAEFY/Ij7oMS7YyoY/s809/"]
+[![writerfilter architecture](https://lh5.googleusercontent.com/-IumGq3jzNdI/UxxG3Deg6QI/AAAAAAAAEFY/Ij7oMS7YyoY/s300/)](https://lh5.googleusercontent.com/-IumGq3jzNdI/UxxG3Deg6QI/AAAAAAAAEFY/Ij7oMS7YyoY/s809/)
 
 Last year in September we
-http://lists.freedesktop.org/archives/libreoffice/2013-September/055976.html[decided]
+[decided](http://lists.freedesktop.org/archives/libreoffice/2013-September/055976.html)
 to get rid of the writerfilter-based DOC tokenizer, and I volunteered to
 actually do this. As cleanups in general have a low priority, I only
 progressed with this slowly, though yesterday I completed it, that's why I'm
@@ -23,7 +23,7 @@ writerfilter one. It's just a matter of deleting that code, right? :-) That's
 what I thought first. But then I had to realize that the architecture of
 writerfilter is a bit more complex:
 
-image::https://lh3.googleusercontent.com/-vBMsCsYLRZE/UxxG3PsuI2I/AAAAAAAAEFc/Ly8sQ0ydY1A/s400/[align="center",link="https://lh3.googleusercontent.com/-vBMsCsYLRZE/UxxG3PsuI2I/AAAAAAAAEFc/Ly8sQ0ydY1A/s831/"]
+[![More complexity](https://lh3.googleusercontent.com/-vBMsCsYLRZE/UxxG3PsuI2I/AAAAAAAAEFc/Ly8sQ0ydY1A/s400/)](https://lh3.googleusercontent.com/-vBMsCsYLRZE/UxxG3PsuI2I/AAAAAAAAEFc/Ly8sQ0ydY1A/s831/)
 
 It has the following components:
 
@@ -48,7 +48,7 @@ used the rtf/sprm grammars.
 
 So at the end, the cleaned up architecture now looks like this:
 
-image::https://lh5.googleusercontent.com/-Iki8jKN61vE/UxxG3FaQc2I/AAAAAAAAEFQ/hWFsR20qB5o/s400/[align="center",link="https://lh5.googleusercontent.com/-Iki8jKN61vE/UxxG3FaQc2I/AAAAAAAAEFQ/hWFsR20qB5o/s813/"]
+[![New architecture](https://lh5.googleusercontent.com/-Iki8jKN61vE/UxxG3FaQc2I/AAAAAAAAEFQ/hWFsR20qB5o/s400/)](https://lh5.googleusercontent.com/-Iki8jKN61vE/UxxG3FaQc2I/AAAAAAAAEFQ/hWFsR20qB5o/s813/)
 
 And that has multiple advantages:
 
@@ -68,5 +68,3 @@ And that has multiple advantages:
 - Given that DOC and RTF formats are a dead end, I think it's a good thing
   that in writerfilter now _the_ grammar is OOXML (that keeps introducing new
   features), rather than some dead format. ;-)
-
-// vim: ft=asciidoc

@@ -1,15 +1,15 @@
-= TextBox: complex LibreOffice Writer content inside shapes
+Title: TextBox: complex LibreOffice Writer content inside shapes
+Slug: textbox
+Category: libreoffice
+Tags: en
+Date: 2014-07-16T13:33:38Z
 
-:slug: textbox
-:category: libreoffice
-:tags: en
-:date: 2014-07-16T13:33:38Z
-image::https://lh6.googleusercontent.com/-Aq8Uxzw0bys/U8ZXkDbzhfI/AAAAAAAAEiQ/2pvZlSkHTsc/s400/[align="center",link="https://lh6.googleusercontent.com/-Aq8Uxzw0bys/U8ZXkDbzhfI/AAAAAAAAEiQ/2pvZlSkHTsc/s0/"]
+[![A Writer TextBox](https://lh6.googleusercontent.com/-Aq8Uxzw0bys/U8ZXkDbzhfI/AAAAAAAAEiQ/2pvZlSkHTsc/s400/)](https://lh6.googleusercontent.com/-Aq8Uxzw0bys/U8ZXkDbzhfI/AAAAAAAAEiQ/2pvZlSkHTsc/s0/)
 
 TL;DR: see above -- it's now possible to have complex Writer content (charts,
 tracked changes, tables, fields, etc.) inside drawinglayer shapes, yay! :-)
 
-== The problem
+## The problem
 
 Writer in LibreOffice 4.3 can have two kind of shapes: drawinglayer ones or
 Writer TextFrames. (Let's ignore OLE objects and Writer pictures for now.)
@@ -18,7 +18,7 @@ rounded corners and so on, but shape text is handled by editeng -- the same
 engine that is used for Impress shapes or Calc cells. OTOH a Writer TextFrame
 can contain anything that is supported by Writer (Writer fields, styles,
 tables, etc.), but its drawing capabilities are quite limited: no triangle,
-rounded corners, etc. Together with http://www.cloudon.com/[CloudOn], we
+rounded corners, etc. Together with [CloudOn](http://www.cloudon.com/), we
 thought the best would be to be able to have both, and started to use the
 "shape with TextBox" term for this feature.
 
@@ -28,37 +28,37 @@ Writer TextFrame, and by setting the properties of the Writer TextFrame
 the drawinglayer shape.  The idea is to tie these two objects together, so the
 (UI and API) user sees them as a single object.
 
-== Results
+## Results
 
-I'm providing here a few screenshots. Above, you can see http://cgit.freedesktop.org/libreoffice/core/tree/sw/qa/extras/odfexport/data/textbox-rounded-corners.odt[an ODF document]
+I'm providing here a few screenshots. Above, you can see [an ODF document](http://cgit.freedesktop.org/libreoffice/core/tree/sw/qa/extras/odfexport/data/textbox-rounded-corners.odt)
 having a rectangle with rounded corners, still containing a table.
 
-Given that OOXML has this feature since its birth, I'm also showing http://people.freedesktop.org/~vmiklos/2014/textbox/[a few DOCX
-documents], which are now handled far better:
+Given that OOXML has this feature since its birth, I'm also showing [a few DOCX
+documents](http://people.freedesktop.org/~vmiklos/2014/textbox/), which are now handled far better:
 
 - chart inside a left arrow callout:
 
-image::https://lh4.googleusercontent.com/-s5ABCN9pchc/U8ZXfLV5eKI/AAAAAAAAEh4/uxpwBVIcJRU/s400/[align="center",link="https://lh4.googleusercontent.com/-s5ABCN9pchc/U8ZXfLV5eKI/AAAAAAAAEh4/uxpwBVIcJRU/s0/"]
+[![Chart inside a left arrow callout](https://lh4.googleusercontent.com/-s5ABCN9pchc/U8ZXfLV5eKI/AAAAAAAAEh4/uxpwBVIcJRU/s400/)](https://lh4.googleusercontent.com/-s5ABCN9pchc/U8ZXfLV5eKI/AAAAAAAAEh4/uxpwBVIcJRU/s0/)
 
 - tracked changes inside a cloud callout:
 
-image::https://lh6.googleusercontent.com/-AzHF9r3PMgY/U8ZXhbZuXOI/AAAAAAAAEiA/58FsbrkumcM/s400/[align="center",link="https://lh6.googleusercontent.com/-AzHF9r3PMgY/U8ZXhbZuXOI/AAAAAAAAEiA/58FsbrkumcM/s0/"]
+[![Tracked changes inside a cloud callout](https://lh6.googleusercontent.com/-AzHF9r3PMgY/U8ZXhbZuXOI/AAAAAAAAEiA/58FsbrkumcM/s400/)](https://lh6.googleusercontent.com/-AzHF9r3PMgY/U8ZXhbZuXOI/AAAAAAAAEiA/58FsbrkumcM/s0/)
 
 - SmartArt inside a snip diagonal corner rectangle:
 
-image::https://lh3.googleusercontent.com/-_1-RYPfLX2w/U8ZXi6XNEhI/AAAAAAAAEiI/irEHHeoxRXU/s400/[align="center",link="https://lh3.googleusercontent.com/-_1-RYPfLX2w/U8ZXi6XNEhI/AAAAAAAAEiI/irEHHeoxRXU/s0/"]
+[![SmartArt inside a snip diagonal corner rectangle](https://lh3.googleusercontent.com/-_1-RYPfLX2w/U8ZXi6XNEhI/AAAAAAAAEiI/irEHHeoxRXU/s400/)](https://lh3.googleusercontent.com/-_1-RYPfLX2w/U8ZXi6XNEhI/AAAAAAAAEiI/irEHHeoxRXU/s0/)
 
 - Table of Contents inside a pentagon:
 
-image::https://lh3.googleusercontent.com/-aBD1Rbv4-DU/U8ZXlV2vxSI/AAAAAAAAEiY/atjjnYGDQyw/s400/[align="center",link="https://lh3.googleusercontent.com/-aBD1Rbv4-DU/U8ZXlV2vxSI/AAAAAAAAEiY/atjjnYGDQyw/s0/"]
+[![Table of Contents inside a pentagon](https://lh3.googleusercontent.com/-aBD1Rbv4-DU/U8ZXlV2vxSI/AAAAAAAAEiY/atjjnYGDQyw/s400/)](https://lh3.googleusercontent.com/-aBD1Rbv4-DU/U8ZXlV2vxSI/AAAAAAAAEiY/atjjnYGDQyw/s0/)
 
-== Details
+## Details
 
 What follows is something you can probably skip if you're a user -- however if
 you're a developer and you want to understand how the above is implemented,
 then read on. ;-)
 
-=== Situation in 4.3
+### Situation in 4.3
 
 From the drawinglayer point of view: `SwDoc` contains an `SdrModel`
 (`SwDoc::GetOrCreateDrawModel()`), which contains a single `SdrPage`
@@ -89,7 +89,7 @@ toplevel section is used for body text), that's how it can contain anything
 that's a valid Writer body text. An offset into this node array of the
 "content" property of the `SwFrmFmt`.
 
-=== Document model
+### Document model
 
 At a document model level, we need a way to describe that an `SdrObject`
 (provided by svx) has an associated TextFrame (provided by sw). svx can't
@@ -113,7 +113,7 @@ Finding the largest rectangle that fits inside the shape is probably the most
 interesting here, it's implemented in `SwTextBoxHelper::getTextRectangle()`,
 which uses `SdrObjCustomShape::GetTextBounds()`.
 
-=== UNO API
+### UNO API
 
 The UNO API hides the detail that the TextFrame and the `SdrObject` are in
 fact two objects. To get there, the followings are done:
@@ -129,7 +129,7 @@ fact two objects. To get there, the followings are done:
 - `SwXText::insertTextContent()` and `SwXText::appendTextContent()` is
   modified to handle the TextBox case
 
-=== Layout
+### Layout
 
 This was the easiest part: the "merge TextFrame and `SdrObj` into a shape with
 TextBox" approach ensured that that we use existing layout features here, no
@@ -138,7 +138,7 @@ major effort was necessary here.
 One interesting detail here was the positioning of as-character anchored
 shapes having TextBoxes, that's now handled in `SwFlyCntPortion::SetBase()`.
 
-=== Filters
+### Filters
 
 The primary point of this feature is to improve Word (and in particular DOCX)
 compatibility, and of course I wanted to update ODF as necessary as well.
@@ -150,8 +150,8 @@ Regarding the new feature, I did the followings:
 - DOCX export now handles the TextBox case: reads Writer text instead of
   editeng text as necessary
 - ODF export now adds a
-  https://wiki.documentfoundation.org/Development/ODF_Implementer_Notes#List_of_LibreOffice_ODF_extensions[new
-  optional boolean attribute] to make export of the TextBox case possible
+  [new
+  optional boolean attribute](https://wiki.documentfoundation.org/Development/ODF_Implementer_Notes#List_of_LibreOffice_ODF_extensions) to make export of the TextBox case possible
 - ODF import now handles the new attribute and act accordingly
 
 Note that regarding backwards compatibility, we keep supporting
@@ -161,7 +161,7 @@ editengine-based text as well. This has the best of two worlds:
 - the TextBox feature is enabled unconditionally in DOCX import to avoid
   formatting loss
 
-=== User Interface
+### User Interface
 
 I took care of the followings:
 
@@ -174,13 +174,11 @@ I took care of the followings:
 - editing individual TextBox properties is no longer possible, since they
   depend on the shape properties
 
-== Summary
+## Summary
 
 If you want to try these out yourself, get a
-http://dev-builds.libreoffice.org/daily/[daily build] and play with it! If
+[daily build](http://dev-builds.libreoffice.org/daily/) and play with it! If
 something goes wrong, report it to us in the
-https://www.libreoffice.org/get-help/bug/[Bugzilla], so we can try fix it
+[Bugzilla](https://www.libreoffice.org/get-help/bug/), so we can try fix it
 before 4.4 gets branched off. Last, but not at least, thanks for
-http://www.cloudon.com/[CloudOn] for funding these improvements! :-)
-
-// vim: ft=asciidoc
+[CloudOn](http://www.cloudon.com/) for funding these improvements! :-)

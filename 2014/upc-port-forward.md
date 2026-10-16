@@ -1,11 +1,10 @@
-= UPC vs port forwarding
+Title: UPC vs port forwarding
+Slug: upc-port-forward
+Category: networking
+Tags: en, upc
+Date: 2014-09-20T20:56:33Z
 
-:slug: upc-port-forward
-:category: networking
-:tags: en, upc
-:date: 2014-09-20T20:56:33Z
-
-http://en.wikipedia.org/wiki/UPC_Broadband[UPC] traditionally had a setup
+[UPC](http://en.wikipedia.org/wiki/UPC_Broadband) traditionally had a setup
 consisting of a cable modem providing internet access to a single computer,
 and then it was up to the users if they use that access to really connect to a
 computer or to a router, providing wireless access and so on.  It seems, these
@@ -14,7 +13,7 @@ subscription on multiple devices -- possibly that way it's easier to sell
 larger packages (like 60 MBit/s download rate instead of 30 MBit/s, etc).  One
 fallout from this move is that they started to replace modems with a
 combination of modems and routers, in this case this is an
-http://www.ubeeinteractive.com/products/cable/evw3226[Ubee EVW3226], with the
+[Ubee EVW3226](http://www.ubeeinteractive.com/products/cable/evw3226), with the
 brand removed. I wanted to try out if this new device could replace my
 previous router or not -- so far it seems to be good enough, though there was
 one pitfall, hence this post.
@@ -37,5 +36,3 @@ address will be _known_ to the router. Then add the port-forwarding rule,
 finally set the DHCP range back to its original value (in my case I use
 192.168.0.1..99 for fixed addresses and 100+ for dynamic purposes). It's a
 stupid trick, but it works... ;-)
-
-// vim: ft=asciidoc

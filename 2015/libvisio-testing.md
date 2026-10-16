@@ -6,7 +6,7 @@ Date: 2015-03-14T20:09:44Z
 
 ![Tested](https://lh5.googleusercontent.com/-0Qh5cUx4gGA/VQR_RkRe2jI/AAAAAAAAFU8/5KIPToOna4Q/s0/)
 
-[Earlier]({filename}/2014/libvisio-setup.adoc) I wrote about my setup to
+[Earlier]({filename}/2014/libvisio-setup.md) I wrote about my setup to
 hack libvisio. One missing bit was testing the contributed code. Testing can
 be performed at various levels, so far DLP libraries were tested by recording
 the output of the various `foo2raw` tools and then comparing the current output

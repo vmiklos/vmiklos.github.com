@@ -15,7 +15,7 @@ probably nobody will miss them. :-)
 The resourcemodel building block of writerfilter (that handles Writer's DOCX
 and RTF import in LibreOffice) was basically a bucket of old and unused
 [stuff](https://www.youtube.com/watch?v=MvgN5gCuLac).  After the removal of the
-unused [.DOC tokenizer]({filename}/2014/doctok.adoc), it turned out that
+unused [.DOC tokenizer]({filename}/2014/doctok.md), it turned out that
 most of that code was just referring to itself or template code that was used
 with a single type only (hello
 [TableManager](http://cgit.freedesktop.org/libreoffice/core/commit/?id=45234fd21ad76b7732be4e5783cc7dd5dcf2daa2)).

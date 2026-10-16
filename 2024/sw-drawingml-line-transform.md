@@ -11,7 +11,7 @@ fully available in desktop Writer as well.
 
 ## Motivation
 
-As described in a [post from 2014]({filename}/2014/lo-writer-drawingml-shape-improvements.adoc),
+As described in a [post from 2014]({filename}/2014/lo-writer-drawingml-shape-improvements.md),
 Writer reads the drawingML markup for shapes in DOCX files, including line shapes. While
 investigating a simple-looking problem around a horizontal vs vertical line, it turns out that there
 is a deeper issue here, and it looks like now have proper fix for this bug.

@@ -1,15 +1,15 @@
-= Fixing the cloud problem
+Title: Fixing the cloud problem
+Slug: cloud
+Category: libreoffice
+Tags: en
+Date: 2014-12-27T12:21:56Z
 
-:slug: cloud
-:category: libreoffice
-:tags: en
-:date: 2014-12-27T12:21:56Z
-image::https://lh3.googleusercontent.com/-0aWZ5rvDWI4/VJ3tCCh9wcI/AAAAAAAAFHA/A1P8Un5ksrw/s400/[align="center",link="https://lh3.googleusercontent.com/-0aWZ5rvDWI4/VJ3tCCh9wcI/AAAAAAAAFHA/A1P8Un5ksrw/s0/"]
+[![New result](https://lh3.googleusercontent.com/-0aWZ5rvDWI4/VJ3tCCh9wcI/AAAAAAAAFHA/A1P8Un5ksrw/s400/)](https://lh3.googleusercontent.com/-0aWZ5rvDWI4/VJ3tCCh9wcI/AAAAAAAAFHA/A1P8Un5ksrw/s0/)
 
-TL;DR: see above -- a number of preset shapes are now rendered correctly at
+TL;DR: see above -- a number of preset shapes are now rendered correctly at
 any scale factors, where previously rendering problems occurred.
 
-https://bugs.freedesktop.org/show_bug.cgi?id=87448[fdo#87448] has a reproducer
+[fdo#87448](https://bugs.freedesktop.org/show_bug.cgi?id=87448) has a reproducer
 document that shows rendering errors with the scaled cloud preset shape
 definition. At first I thought that the OOXML spec has wrong definition for
 this shape type, but that turned out to be not the case. What was a problem is
@@ -21,7 +21,7 @@ problem.
 
 The rendering result looked like this before:
 
-image::https://lh3.googleusercontent.com/-tYg4cifemAs/VJ3tCEHtf9I/AAAAAAAAFG8/WzioMo1AkMA/s400/[align="center",link="https://lh3.googleusercontent.com/-tYg4cifemAs/VJ3tCEHtf9I/AAAAAAAAFG8/WzioMo1AkMA/s0/"]
+[![Old result](https://lh3.googleusercontent.com/-tYg4cifemAs/VJ3tCEHtf9I/AAAAAAAAFG8/WzioMo1AkMA/s400/)](https://lh3.googleusercontent.com/-tYg4cifemAs/VJ3tCEHtf9I/AAAAAAAAFG8/WzioMo1AkMA/s0/)
 
 The cloud is drawn using a set of moveTo and arcTo commands. MoveTo is easier,
 as it uses explicit coordinates, but arcTo is more complex. It has 4
@@ -35,8 +35,7 @@ end of an earlier arc using moveTo: if arcTo has some problem, then it'll be
 clearly visible.
 
 After
-http://cgit.freedesktop.org/libreoffice/core/commit/?id=20f8006e21943b08f1f152e4a0359c9ebe4786f2[fixing
-UNO ARCANGLETO] to only take care of scaling / translation only after counting
+[fixing UNO ARCANGLETO](http://cgit.freedesktop.org/libreoffice/core/commit/?id=20f8006e21943b08f1f152e4a0359c9ebe4786f2) to only take care of scaling / translation only after counting
 the actual arc, we started to produce correct end points for the arcs and
 shapes started to appear correctly at any scale factor, yay! :-)
 
@@ -45,5 +44,3 @@ exported the shape to a metafile, and then I could use Tomaž's excellent
 MetafileXmlDump to assert that the end of an arc (implicit location) and the
 parameters of a moveTo command (explicit location) equal -- when they do not,
 that's what your eyes call a "rendering problem".
-
-// vim: ft=asciidoc

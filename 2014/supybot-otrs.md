@@ -1,9 +1,8 @@
-= OTRS plugin for Supybot
-
-:slug: supybot-otrs
-:category: python
-:tags: en, supybot, otrs
-:date: 2014-05-18T11:03:46Z
+Title: OTRS plugin for Supybot
+Slug: supybot-otrs
+Category: python
+Tags: en, supybot, otrs
+Date: 2014-05-18T11:03:46Z
 
 OTRS is quite different to Bugzilla (what we use for upstream LibreOffice
 development for quite some time). On the plus side, e.g. it has strong support
@@ -27,20 +26,18 @@ IRC channel, and give you the clickable URL (after finding out the ticket ID
 from the ticket number).
 
 The result is available
-https://github.com/vmiklos/vmexam/tree/master/python/supybot-otrs[on GitHub],
+[on GitHub](https://github.com/vmiklos/vmexam/tree/master/python/supybot-otrs),
 it looks like this:
 
-----
+```
 09:58 < vmiklos> bug#1000068
 09:58 < supybot> https://localhost/otrs/index.pl?Action=AgentTicketZoom;TicketID=73
-----
+```
 
 Given that I found no relevant hits when
-https://www.google.com/search?q=supybot+%22otrs%22[searching] for 'supybot
+[searching](https://www.google.com/search?q=supybot+%22otrs%22) for 'supybot
 otrs', I hope this code may be useful for others as well.
 
 Thanks to James Scott for his
-https://github.com/scottjab/supybot-youtube[YouTube] plugin that helped to
+[YouTube](https://github.com/scottjab/supybot-youtube) plugin that helped to
 quickly figure out the relevant Supybot API's.
-
-// vim: ft=asciidoc

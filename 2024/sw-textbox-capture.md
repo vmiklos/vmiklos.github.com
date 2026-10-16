@@ -13,7 +13,7 @@ available in desktop Writer as well.
 
 ## Motivation
 
-As described in a [previous post]({filename}/2014/textbox.adoc), Writer implements the TextBox
+As described in a [previous post]({filename}/2014/textbox.md), Writer implements the TextBox
 feature with a pair of objects: a Draw shape (with complex geometry) and a (hidden) Writer TextFrame,
 providing complex content. To avoid wrapping problems, the underlying TextFrame always has its wrap
 type set to "through", i.e. text may wrap around the Draw shape, but the hidden TextFrame is always
