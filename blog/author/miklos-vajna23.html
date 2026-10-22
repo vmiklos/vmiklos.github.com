@@ -68,17 +68,9 @@
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://lh5.googleusercontent.com/-fhN5_7nf5A8/UWG83Z5qLqI/AAAAAAAAChY/cehOqHVomas/s628/ooxml-graphic-bullet.png">
-<img src="https://lh5.googleusercontent.com/-fhN5_7nf5A8/UWG83Z5qLqI/AAAAAAAAChY/cehOqHVomas/s400/ooxml-graphic-bullet.png" alt="https://lh5.googleusercontent.com/-fhN5_7nf5A8/UWG83Z5qLqI/AAAAAAAAChY/cehOqHVomas/s400/ooxml-graphic-bullet.png" />
-</a>
-</div>
-</div>
-<div class="paragraph"><p>If you ever tried to use graphical bullets in Writer (Format &#8594; Bullets and
-Numbering &#8594; Graphics), you may have noticed that only the ODF filter can load
+    <p><a href="https://lh5.googleusercontent.com/-fhN5_7nf5A8/UWG83Z5qLqI/AAAAAAAAChY/cehOqHVomas/s628/ooxml-graphic-bullet.png"><figure><img src="https://lh5.googleusercontent.com/-fhN5_7nf5A8/UWG83Z5qLqI/AAAAAAAAChY/cehOqHVomas/s400/ooxml-graphic-bullet.png"><figcaption>ooxml-graphic-bullet</figcaption></figure></a></p>
+<p>If you ever tried to use graphical bullets in Writer (Format -&gt; Bullets and
+Numbering -&gt; Graphics), you may have noticed that only the ODF filter can load
 and save such a numbering. This is now improved a lot. Motivated by seeing this
 is now handled in the binary DOC filter, I now added support for this also to
 the DOCX and RTF import and export filters. If you want to play with this
@@ -86,10 +78,7 @@ feature, core.git also contains a
 <a href="http://cgit.freedesktop.org/libreoffice/core/plain/sw/qa/extras/ooxmlexport/data/i120928.docx">DOCX</a>
 and an
 <a href="http://cgit.freedesktop.org/libreoffice/core/plain/sw/qa/extras/rtfexport/data/i120928.rtf">RTF</a>
-sample as well.</p></div>
-</div>
-</div>
-
+sample as well.</p>
   </div>
 </article>
 <hr />
@@ -104,68 +93,50 @@ sample as well.</p></div>
     <p>Estimated read time: 2 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>LibreOffice started to use <a href="https://gerrit.libreoffice.org/">Gerrit</a> for code
+    <p>LibreOffice started to use <a href="https://gerrit.libreoffice.org/">Gerrit</a> for code
 review, and while occasional contributors
 <a href="https://wiki.documentfoundation.org/Development/gerrit/SubmitPatch">can submit
-patches manually</a>, in case one does many reviews, it&#8217;s handy to use a dedicated
+patches manually</a>, in case one does many reviews, it's handy to use a dedicated
 tool. In core.git, we have
 <a href="http://cgit.freedesktop.org/libreoffice/core/tree/logerrit">logerrit</a>, but
-that&#8217;s not advised for regular reviewers, either,
+that's not advised for regular reviewers, either,
 <a href="https://github.com/openstack-infra/git-review">git-review</a> is recommended
-instead.</p></div>
-<div class="paragraph"><p>So I looked into git-review. The good news is that it&#8217;s packaged already for most distributions, e.g. a simple</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>zypper in python-git-review</code></pre>
-</div></div>
-<div class="paragraph"><p>on openSUSE installs it.</p></div>
-<div class="paragraph"><p>I wanted to use this tool for two tasks:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-Submitting changes to Gerrit: <code>git review -R</code> could do that. <code>-R</code> prevents
-  automatic rebase, so a test build won&#8217;t fail because your patch is based on
-  an already broken commit. The other good thing is that you don&#8217;t have to
+instead.</p>
+<p>So I looked into git-review. The good news is that it's packaged already for most distributions, e.g. a simple</p>
+<div class="highlight"><pre><span></span><code>zypper in python-git-review
+</code></pre></div>
+
+<p>on openSUSE installs it.</p>
+<p>I wanted to use this tool for two tasks:</p>
+<ul>
+<li>Submitting changes to Gerrit: <code>git review -R</code> could do that. <code>-R</code> prevents
+  automatic rebase, so a test build won't fail because your patch is based on
+  an already broken commit. The other good thing is that you don't have to
   remember where to submit: both the master and libreoffice-4-0 branches contain
-  a <code>.gitreview</code> file that contains the necessary server / branch information.
-</p>
-</li>
-<li>
-<p>
-Cherry-picking changes from Gerrit: I found no option for this. A cherry-pick
-  command is generated on the web interface, but it&#8217;s more complicated than a
+  a <code>.gitreview</code> file that contains the necessary server / branch information.</li>
+<li>Cherry-picking changes from Gerrit: I found no option for this. A cherry-pick
+  command is generated on the web interface, but it's more complicated than a
   simple <code>&lt;some command&gt; &lt;number of the change&gt;</code>. So I submitted
   <a href="https://review.openstack.org/17290">this change</a> to git-review itself, the next
-  release will be able to do <code>git review -x &lt;number of the change&gt;</code>.
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>Probably the browser interface is still the best to comment (especially inline
+  release will be able to do <code>git review -x &lt;number of the change&gt;</code>.</li>
+</ul>
+<p>Probably the browser interface is still the best to comment (especially inline
 comment) and approve changes, though David even submitted a
-<a href="https://review.openstack.org/17423">proof of concept patch</a> for that as well.</p></div>
-<div class="paragraph"><p>Finally, let me just clear two myths:</p></div>
-<div class="ulist"><ul>
+<a href="https://review.openstack.org/17423">proof of concept patch</a> for that as well.</p>
+<p>Finally, let me just clear two myths:</p>
+<ul>
 <li>
-<p>
-If you use Google for OpenID login, you can have multiple OpenID accounts
-  associated with your Gerrit login, so it&#8217;s not a problem (first I thought it
+<p>If you use Google for OpenID login, you can have multiple OpenID accounts
+  associated with your Gerrit login, so it's not a problem (first I thought it
   is) if you use one email for Gerrit and an other one for accessing other
-  Google services.
-</p>
+  Google services.</p>
 </li>
 <li>
-<p>
-Somewhere I read that the stock LibreOffice hooks conflict with git-review:
-  nope, git-review didn&#8217;t touch the hooks, you can use the tool without
-  corrupting them in any way.
-</p>
+<p>Somewhere I read that the stock LibreOffice hooks conflict with git-review:
+  nope, git-review didn't touch the hooks, you can use the tool without
+  corrupting them in any way.</p>
 </li>
-</ul></div>
-</div>
-</div>
-
+</ul>
   </div>
 </article>
 <hr />
@@ -180,35 +151,24 @@ Somewhere I read that the stock LibreOffice hooks conflict with git-review:
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>When you create a rectangle or text frame in Writer, you have two choices. You
+    <p>When you create a rectangle or text frame in Writer, you have two choices. You
 can use the draw toolbar to create a drawinglayer rectangle, and you can also
 insert a text frame. The drawinglayer shapes are shared between the LibreOffice
 applications, and already supported having not only a bitmap or a color but a
 gradient or a hatch as a background.  The benefit of Writer text frames is that
-they can contain anything a normal Writer document can&#8201;&#8212;&#8201;think of columns,
-tables, etc. These features are not supported by drawinglayer rectangles.</p></div>
-<div class="paragraph"><p>So till now you had to decide what to pick, but it wasn&#8217;t possible to have
-both. LibreOffice 4.1 makes this situation better. Now it&#8217;s possible to have
-gradient backgrounds in Writer text frames as well:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://wiki.documentfoundation.org/File:Swxtextframe-gradient-ui.png">
-<img src="https://wiki.documentfoundation.org/images/thumb/e/e6/Swxtextframe-gradient-ui.png/400px-Swxtextframe-gradient-ui.png" alt="https://wiki.documentfoundation.org/images/thumb/e/e6/Swxtextframe-gradient-ui.png/400px-Swxtextframe-gradient-ui.png" />
-</a>
-</div>
-</div>
-<div class="paragraph"><p>The nice thing is that this feature was already supported by ODF, just not by
+they can contain anything a normal Writer document can -- think of columns,
+tables, etc. These features are not supported by drawinglayer rectangles.</p>
+<p>So till now you had to decide what to pick, but it wasn't possible to have
+both. LibreOffice 4.1 makes this situation better. Now it's possible to have
+gradient backgrounds in Writer text frames as well:</p>
+<p><a href="https://wiki.documentfoundation.org/File:Swxtextframe-gradient-ui.png"><figure><img src="https://wiki.documentfoundation.org/images/thumb/e/e6/Swxtextframe-gradient-ui.png/400px-Swxtextframe-gradient-ui.png"><figcaption>gradient backgrounds in Writer text frames</figcaption></figure></a></p>
+<p>The nice thing is that this feature was already supported by ODF, just not by
 Writer, so no such paperwork was needed this time. Also the OOXML filters are
 updated. As I already stated in
 <a href="https://bugs.freedesktop.org/show_bug.cgi?id=46029#c5">this comment</a>, the binary
-DOC and RTF filters are not yet touched regarding this feature&#8201;&#8212;&#8201;though I
+DOC and RTF filters are not yet touched regarding this feature -- though I
 already looked into the RTF one, and have some idea what rework is needed there
-first.</p></div>
-</div>
-</div>
-
+first.</p>
   </div>
 </article>
 <hr />
@@ -223,56 +183,25 @@ first.</p></div>
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<a class="image" href="https://speakerdeck.com/vmiklos/how-to-debug-writer-file-format-issues">
-<img src="https://lh4.googleusercontent.com/-0xHohY_C07c/URQAMD3n2MI/AAAAAAAACHk/AS18zixref8/s320/Swfilters-fosdem-brussels-2k13.png" alt="https://lh4.googleusercontent.com/-0xHohY_C07c/URQAMD3n2MI/AAAAAAAACHk/AS18zixref8/s320/Swfilters-fosdem-brussels-2k13.png" />
-</a>
-</div>
-</div>
-<div class="paragraph"><p>We spent the last weekend in Brussels, at FOSDEM 2013. Outside attending great
-talks, I most enjoyed meeting people I haven&#8217;t met in person before, in no particual order:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-<a href="http://www.bitlbee.org/">Wilmer van der Gaast</a>
-</p>
-</li>
-<li>
-<p>
-<a href="https://developers.google.com/open-source/">Cat Allman</a>
-</p>
-</li>
-<li>
-<p>
-<a href="http://wiki.openoffice.org/wiki/User:Od">Oliver-Rainer Wittmann</a>
-</p>
-</li>
-<li>
-<p>
-<a href="http://picobot.org/">Phil Muldoon</a>
-</p>
-</li>
-<li>
-<p>
-<a href="http://0pointer.de/blog">Lennart Poettering</a>
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>Also fixed <a href="https://bugs.freedesktop.org/show_bug.cgi?id=48440">fdo#48440</a>,
+    <p><a href="https://speakerdeck.com/vmiklos/how-to-debug-writer-file-format-issues"><figure><img src="https://lh4.googleusercontent.com/-0xHohY_C07c/URQAMD3n2MI/AAAAAAAACHk/AS18zixref8/s320/Swfilters-fosdem-brussels-2k13.png"><figcaption>Title slide</figcaption></figure></a></p>
+<p>We spent the last weekend in Brussels, at FOSDEM 2013. Outside attending great
+talks, I most enjoyed meeting people I haven't met in person before, in no particual order:</p>
+<ul>
+<li><a href="http://www.bitlbee.org/">Wilmer van der Gaast</a></li>
+<li><a href="https://developers.google.com/open-source/">Cat Allman</a></li>
+<li><a href="http://wiki.openoffice.org/wiki/User:Od">Oliver-Rainer Wittmann</a></li>
+<li><a href="http://picobot.org/">Phil Muldoon</a></li>
+<li><a href="http://0pointer.de/blog">Lennart Poettering</a></li>
+</ul>
+<p>Also fixed <a href="https://bugs.freedesktop.org/show_bug.cgi?id=48440">fdo#48440</a>,
 <a href="https://bugs.freedesktop.org/show_bug.cgi?id=58646">fdo#58646</a> and
 <a href="https://bugs.freedesktop.org/show_bug.cgi?id=59419">fdo#59419</a> during
-less-interesting talks. ;-)</p></div>
-<div class="paragraph"><p>Additionally, during the last day we had time for some site-seeing, some
+less-interesting talks. ;-)</p>
+<p>Additionally, during the last day we had time for some site-seeing, some
 pictures are
 <a href="https://www.flickr.com/photos/vmiklos/albums/72157671332447231">here</a>.
 Slides of other LibreOffice talks are also
-<a href="https://wiki.documentfoundation.org/Marketing/Events/Fosdem2013">available</a>.</p></div>
-</div>
-</div>
-
+<a href="https://wiki.documentfoundation.org/Marketing/Events/Fosdem2013">available</a>.</p>
   </div>
 </article>
 <hr />
@@ -287,54 +216,48 @@ Slides of other LibreOffice talks are also
     <p>Estimated read time: 2 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>There are multiple strategies how to add testcases for code that sort of works,
+    <p>There are multiple strategies how to add testcases for code that sort of works,
 but has no or too few tests. One approach (that works quite well in
 LibreOffice, for example) is to just add tests for new code, and there the test
 is "good", if it passes, but it fails if you revert the corresponding real
-change.</p></div>
-<div class="paragraph"><p>An other approach to avoid duplicated tests is to use a tool like <code>lcov</code>, that
+change.</p>
+<p>An other approach to avoid duplicated tests is to use a tool like <code>lcov</code>, that
 can perform line or function coverage analysis for you, so a test is "good" if
 it increases the coverage. I wanted to look into this later approach for
-LibreOffice, but I decided it&#8217;s more fun to try this out for a smaller project
-first. That&#8217;s when adding testcases for BitlBee&#8217;s Skype plugin came into my
-mind.</p></div>
-<div class="paragraph"><p>The problem there is that manual testing typically includes multiple online
+LibreOffice, but I decided it's more fun to try this out for a smaller project
+first. That's when adding testcases for BitlBee's Skype plugin came into my
+mind.</p>
+<p>The problem there is that manual testing typically includes multiple online
 Skype clients and an IRC client as well, and such tests are extremely
-unreliable. So I thought: if I&#8217;m able to
+unreliable. So I thought: if I'm able to
 <a href="http://en.wikipedia.org/wiki/Mock_object">mock</a> both the interactive IRC and
-Skype clients, then it&#8217;ll be easy to test the C Skype plugin itself, even for
+Skype clients, then it'll be easy to test the C Skype plugin itself, even for
 very special scenarios (like changing a groupchat topic in the middle of
-inviting somebody to a groupchat or similar).</p></div>
-<div class="paragraph"><p>So here is the result looks like:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code> skyped mock file   +--------+         +---------+   pyexpect mock file
-------------------&gt; | skyped | &lt;-----&gt; | bitlbee | &lt;--------------------
-                    +--------+   TCP   +---------+</code></pre>
-</div></div>
-<div class="paragraph"><p>For skyped, the exact traffic is recorded and played back later; for BitlBee,
+inviting somebody to a groupchat or similar).</p>
+<p>So here is the result looks like:</p>
+<div class="highlight"><pre><span></span><code><span class="c"> skyped mock file   </span><span class="nb">+--------+</span><span class="c">         </span><span class="nb">+---------+</span><span class="c">   pyexpect mock file</span>
+<span class="nb">------------------</span><span class="nv">&gt;</span><span class="c"> | skyped | </span><span class="nv">&lt;</span><span class="nb">-----</span><span class="nv">&gt;</span><span class="c"> | bitlbee | </span><span class="nv">&lt;</span><span class="nb">--------------------</span>
+<span class="c">                    </span><span class="nb">+--------+</span><span class="c">   TCP   </span><span class="nb">+---------+</span>
+</code></pre></div>
+
+<p>For skyped, the exact traffic is recorded and played back later; for BitlBee,
 only the outgoing traffic is exact, for the incoming traffic <code>pyexpect</code> allows
 just patterns (to allow tolerance for not interesting changes). Once the
 framework was available, it was quite easy to add testcases: I already have
 70%+ coverage, and I think approaching the 100% function coverage is realistic.
-:-)</p></div>
-<div class="paragraph"><p>What was also interesting is that it turned out the latest upstream lcov
+:-)</p>
+<p>What was also interesting is that it turned out the latest upstream lcov
 release is
 <a href="http://sourceforge.net/mailarchive/forum.php?thread_name=50F3ECB7.7070505%40linux.vnet.ibm.com&amp;forum_name=ltp-coverage">not
 compatible</a> with gcc-4.7, but the necessary patches are
 <a href="https://build.opensuse.org/request/show/148334">now</a>
 <a href="https://build.opensuse.org/request/show/148408">integrated</a>, and the next
-upstream release will work out of the box.</p></div>
-<div class="paragraph"><p>The BitlBee mock files can be found
+upstream release will work out of the box.</p>
+<p>The BitlBee mock files can be found
 <a href="http://code.bitlbee.org/lh/bitlbee/files/head:/protocols/skype/t">here</a>. Given
 that there are now instructions to do similar analysis for
 <a href="http://wiki.documentfoundation.org/Development/Lcov">LibreOffice as well</a>, I
-hope to look into increasing test coverage for the classes I maintain as well.</p></div>
-</div>
-</div>
-
+hope to look into increasing test coverage for the classes I maintain as well.</p>
   </div>
 </article>
 <hr />
@@ -349,30 +272,25 @@ hope to look into increasing test coverage for the classes I maintain as well.</
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Sounds like an easy question, but I learned over the past few years that for
-software projects, the answer is typically not a yes or no question.</p></div>
-<div class="paragraph"><p>Technically&#8201;&#8212;&#8201;for example&#8201;&#8212;&#8201;Virtualbox OSE is considered opensource, even the
-OSE abbreviation suggests that it&#8217;s a stripped down version of the real
-codebase, that is kept as a secret. At first thought I wouldn&#8217;t even imagine
-it&#8217;s possible to contribute back a patch from someone not working on the
-original&#8201;&#8212;&#8201;closed&#8201;&#8212;&#8201;codebase, but of course I may be wrong in case of
-Virtualbox.</p></div>
-<div class="paragraph"><p>There is also the question of what is open. Only tarballs of releases, or also
-the SCM repo used for development? Think of Amazon&#8217;s
+    <p>Sounds like an easy question, but I learned over the past few years that for
+software projects, the answer is typically not a yes or no question.</p>
+<p>Technically -- for example -- Virtualbox OSE is considered opensource, even the
+OSE abbreviation suggests that it's a stripped down version of the real
+codebase, that is kept as a secret. At first thought I wouldn't even imagine
+it's possible to contribute back a patch from someone not working on the
+original -- closed -- codebase, but of course I may be wrong in case of
+Virtualbox.</p>
+<p>There is also the question of what is open. Only tarballs of releases, or also
+the SCM repo used for development? Think of Amazon's
 <a href="http://www.amazon.com/gp/help/customer/display.html?tag=androidpolice-20&amp;nodeId=200203720">custom
-kernels</a> where the code is open, but it&#8217;s obviously only a code dump, one is
-not supposed to contribute to it, and the individual changesets are not public.</p></div>
-<div class="paragraph"><p>Finally, even if the software itself is developed in a truly free manner, some
+kernels</a> where the code is open, but it's obviously only a code dump, one is
+not supposed to contribute to it, and the individual changesets are not public.</p>
+<p>Finally, even if the software itself is developed in a truly free manner, some
 enterprise version (which is based on the free version) may not be publicly
-developed, e.g. only the resulting tarball is public. I&#8217;m happy to see that at
+developed, e.g. only the resulting tarball is public. I'm happy to see that at
 $dayjob even this last detail is quite public, think of
 <a href="http://cgit.freedesktop.org/libreoffice/core/log/?h=distro/suse/suse-3.6">LibreOffice</a>
-or the <a href="http://kernel.opensuse.org/cgit">Linux kernel</a>.</p></div>
-</div>
-</div>
-
+or the <a href="http://kernel.opensuse.org/cgit">Linux kernel</a>.</p>
   </div>
 </article>
 <hr />
@@ -387,45 +305,37 @@ or the <a href="http://kernel.opensuse.org/cgit">Linux kernel</a>.</p></div>
     <p>Estimated read time: 2 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Even though I spend little of my free time with sysadmin stuff these days, this
+    <p>Even though I spend little of my free time with sysadmin stuff these days, this
 came up recently. A few years ago I hit an issue about <code>mdadm</code> creating too new
-metadata that wasn&#8217;t handled by the installed kernel, so I remembered to use
+metadata that wasn't handled by the installed kernel, so I remembered to use
 <code>--metadata 0.90</code> when creating a new array. Additionally, I preferred using
-<code>cfdisk</code> for partitioning.</p></div>
-<div class="paragraph"><p>It turns out this caused quite some grief when it came to <code>grub2</code>, I wrote about
-this <a href="https://vmiklos.hu/blog/grub2.html">earlier</a>&#8201;&#8212;&#8201;that was about the theory, in a VM. This is
+<code>cfdisk</code> for partitioning.</p>
+<p>It turns out this caused quite some grief when it came to <code>grub2</code>, I wrote about
+this <a href="https://vmiklos.hu/blog/grub2.html">earlier</a> -- that was about the theory, in a VM. This is
 about the practice. In practice, <code>gparted</code> turned out to be too risky, and I
 choose the following approach to repartition the hard drives (so there is
-enough space for <code>grub2</code>) and upgrade the <code>mdadm</code> metadata.</p></div>
-<div class="paragraph"><p>First, I broke the mirror by removing one leg of the RAID1 array:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>mdadm --manage /dev/md126 --fail /dev/sdd1
-mdadm --manage /dev/md126 --remove /dev/sdd1</code></pre>
-</div></div>
-<div class="paragraph"><p>Then I created a new array (with a single leg) with the new metadata and formatted it:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>fdisk /dev/sdd
+enough space for <code>grub2</code>) and upgrade the <code>mdadm</code> metadata.</p>
+<p>First, I broke the mirror by removing one leg of the RAID1 array:</p>
+<div class="highlight"><pre><span></span><code>mdadm --manage /dev/md126 --fail /dev/sdd1
+mdadm --manage /dev/md126 --remove /dev/sdd1
+</code></pre></div>
+
+<p>Then I created a new array (with a single leg) with the new metadata and formatted it:</p>
+<div class="highlight"><pre><span></span><code>fdisk /dev/sdd
 mdadm --create /dev/md125 --metadata=1.0 --level=1 --assume-clean --raid-devices=2 missing /dev/sdd1
-mkfs.ext4 /dev/md125</code></pre>
-</div></div>
-<div class="paragraph"><p>Finally I copied over the live system:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>mkdir /mnt/md125
+mkfs.ext4 /dev/md125
+</code></pre></div>
+
+<p>Finally I copied over the live system:</p>
+<div class="highlight"><pre><span></span><code>mkdir /mnt/md125
 mount /dev/md125 /mnt/md125
 rsync --delete -avxP / /mnt/md125
-umount /mnt/md125</code></pre>
-</div></div>
-<div class="paragraph"><p>The rest was easy: I booted a livecd to do the <code>rsync</code> once again (taking a few
-minutes only), and once the system was running from the new array, added the
-leg of the old array to the new one as well&#8201;&#8212;&#8201;and that&#8217;s it.</p></div>
-</div>
-</div>
+umount /mnt/md125
+</code></pre></div>
 
+<p>The rest was easy: I booted a livecd to do the <code>rsync</code> once again (taking a few
+minutes only), and once the system was running from the new array, added the
+leg of the old array to the new one as well -- and that's it.</p>
   </div>
 </article>
 <hr />

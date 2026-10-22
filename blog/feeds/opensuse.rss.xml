@@ -1,52 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>What is Miklos hacking - opensuse</title><link>https://vmiklos.hu/blog/</link><description/><atom:link href="https://vmiklos.hu/blog/feeds/opensuse.rss.xml" rel="self"/><lastBuildDate>Sun, 27 Jan 2013 21:33:02 +0000</lastBuildDate><item><title>lcov</title><link>https://vmiklos.hu/blog/lcov.html</link><description>&lt;div id="preamble"&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;There are multiple strategies how to add testcases for code that sort of works,
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>What is Miklos hacking - opensuse</title><link>https://vmiklos.hu/blog/</link><description/><atom:link href="https://vmiklos.hu/blog/feeds/opensuse.rss.xml" rel="self"/><lastBuildDate>Sun, 27 Jan 2013 21:33:02 +0000</lastBuildDate><item><title>lcov</title><link>https://vmiklos.hu/blog/lcov.html</link><description>&lt;p&gt;There are multiple strategies how to add testcases for code that sort of works,
 but has no or too few tests. One approach (that works quite well in
 LibreOffice, for example) is to just add tests for new code, and there the test
 is "good", if it passes, but it fails if you revert the corresponding real
-change.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;An other approach to avoid duplicated tests is to use a tool like &lt;code&gt;lcov&lt;/code&gt;, that
+change.&lt;/p&gt;
+&lt;p&gt;An other approach to avoid duplicated tests is to use a tool like &lt;code&gt;lcov&lt;/code&gt;, that
 can perform line or function coverage analysis for you, so a test is "good" if
 it increases the coverage. I wanted to look into this later approach for
-LibreOffice, but I decided it&amp;#8217;s more fun to try this out for a smaller project
-first. That&amp;#8217;s when adding testcases for BitlBee&amp;#8217;s Skype plugin came into my
-mind.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;The problem there is that manual testing typically includes multiple online
+LibreOffice, but I decided it's more fun to try this out for a smaller project
+first. That's when adding testcases for BitlBee's Skype plugin came into my
+mind.&lt;/p&gt;
+&lt;p&gt;The problem there is that manual testing typically includes multiple online
 Skype clients and an IRC client as well, and such tests are extremely
-unreliable. So I thought: if I&amp;#8217;m able to
+unreliable. So I thought: if I'm able to
 &lt;a href="http://en.wikipedia.org/wiki/Mock_object"&gt;mock&lt;/a&gt; both the interactive IRC and
-Skype clients, then it&amp;#8217;ll be easy to test the C Skype plugin itself, even for
+Skype clients, then it'll be easy to test the C Skype plugin itself, even for
 very special scenarios (like changing a groupchat topic in the middle of
-inviting somebody to a groupchat or similar).&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;So here is the result looks like:&lt;/p&gt;&lt;/div&gt;
-&lt;div class="listingblock"&gt;
-&lt;div class="content"&gt;
-&lt;pre&gt;&lt;code&gt; skyped mock file   +--------+         +---------+   pyexpect mock file
-------------------&amp;gt; | skyped | &amp;lt;-----&amp;gt; | bitlbee | &amp;lt;--------------------
-                    +--------+   TCP   +---------+&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;For skyped, the exact traffic is recorded and played back later; for BitlBee,
+inviting somebody to a groupchat or similar).&lt;/p&gt;
+&lt;p&gt;So here is the result looks like:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c"&gt; skyped mock file   &lt;/span&gt;&lt;span class="nb"&gt;+--------+&lt;/span&gt;&lt;span class="c"&gt;         &lt;/span&gt;&lt;span class="nb"&gt;+---------+&lt;/span&gt;&lt;span class="c"&gt;   pyexpect mock file&lt;/span&gt;
+&lt;span class="nb"&gt;------------------&lt;/span&gt;&lt;span class="nv"&gt;&amp;gt;&lt;/span&gt;&lt;span class="c"&gt; | skyped | &lt;/span&gt;&lt;span class="nv"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nb"&gt;-----&lt;/span&gt;&lt;span class="nv"&gt;&amp;gt;&lt;/span&gt;&lt;span class="c"&gt; | bitlbee | &lt;/span&gt;&lt;span class="nv"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nb"&gt;--------------------&lt;/span&gt;
+&lt;span class="c"&gt;                    &lt;/span&gt;&lt;span class="nb"&gt;+--------+&lt;/span&gt;&lt;span class="c"&gt;   TCP   &lt;/span&gt;&lt;span class="nb"&gt;+---------+&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;For skyped, the exact traffic is recorded and played back later; for BitlBee,
 only the outgoing traffic is exact, for the incoming traffic &lt;code&gt;pyexpect&lt;/code&gt; allows
 just patterns (to allow tolerance for not interesting changes). Once the
 framework was available, it was quite easy to add testcases: I already have
 70%+ coverage, and I think approaching the 100% function coverage is realistic.
-:-)&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;What was also interesting is that it turned out the latest upstream lcov
+:-)&lt;/p&gt;
+&lt;p&gt;What was also interesting is that it turned out the latest upstream lcov
 release is
 &lt;a href="http://sourceforge.net/mailarchive/forum.php?thread_name=50F3ECB7.7070505%40linux.vnet.ibm.com&amp;amp;forum_name=ltp-coverage"&gt;not
 compatible&lt;/a&gt; with gcc-4.7, but the necessary patches are
 &lt;a href="https://build.opensuse.org/request/show/148334"&gt;now&lt;/a&gt;
 &lt;a href="https://build.opensuse.org/request/show/148408"&gt;integrated&lt;/a&gt;, and the next
-upstream release will work out of the box.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;The BitlBee mock files can be found
+upstream release will work out of the box.&lt;/p&gt;
+&lt;p&gt;The BitlBee mock files can be found
 &lt;a href="http://code.bitlbee.org/lh/bitlbee/files/head:/protocols/skype/t"&gt;here&lt;/a&gt;. Given
 that there are now instructions to do similar analysis for
 &lt;a href="http://wiki.documentfoundation.org/Development/Lcov"&gt;LibreOffice as well&lt;/a&gt;, I
-hope to look into increasing test coverage for the classes I maintain as well.&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Sun, 27 Jan 2013 21:33:02 +0000</pubDate><guid>tag:vmiklos.hu,2013-01-27:/blog/lcov.html</guid><category>opensuse</category><category>en</category><category>lcov</category><category>bitlbee</category></item><item><title>LibreOffice / openSUSE Conference 2012 in Berlin / Prague</title><link>https://vmiklos.hu/blog/lo-suselabs-conf.html</link><description>&lt;div id="preamble"&gt;
+hope to look into increasing test coverage for the classes I maintain as well.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Miklos Vajna</dc:creator><pubDate>Sun, 27 Jan 2013 21:33:02 +0000</pubDate><guid>tag:vmiklos.hu,2013-01-27:/blog/lcov.html</guid><category>opensuse</category><category>en</category><category>lcov</category><category>bitlbee</category></item><item><title>LibreOffice / openSUSE Conference 2012 in Berlin / Prague</title><link>https://vmiklos.hu/blog/lo-suselabs-conf.html</link><description>&lt;div id="preamble"&gt;
 &lt;div class="sectionbody"&gt;
 &lt;div align="center"&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;&lt;span class="image"&gt;
