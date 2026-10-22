@@ -1,9 +1,8 @@
-= LibreOffice Writer now supports gradients in text frame backgrounds
-
-:slug: swtextframe-gradientbackground
-:category: libreoffice
-:tags: en
-:date: 2013-02-18T15:23:54Z
+Title: LibreOffice Writer now supports gradients in text frame backgrounds
+Slug: swtextframe-gradientbackground
+Category: libreoffice
+Tags: en
+Date: 2013-02-18T15:23:54Z
 
 When you create a rectangle or text frame in Writer, you have two choices. You
 can use the draw toolbar to create a drawinglayer rectangle, and you can also
@@ -17,12 +16,12 @@ So till now you had to decide what to pick, but it wasn't possible to have
 both. LibreOffice 4.1 makes this situation better. Now it's possible to have
 gradient backgrounds in Writer text frames as well:
 
-image::https://wiki.documentfoundation.org/images/thumb/e/e6/Swxtextframe-gradient-ui.png/400px-Swxtextframe-gradient-ui.png[align="center",link="https://wiki.documentfoundation.org/File:Swxtextframe-gradient-ui.png"]
+[![gradient backgrounds in Writer text frames](https://wiki.documentfoundation.org/images/thumb/e/e6/Swxtextframe-gradient-ui.png/400px-Swxtextframe-gradient-ui.png)](https://wiki.documentfoundation.org/File:Swxtextframe-gradient-ui.png)
 
 The nice thing is that this feature was already supported by ODF, just not by
 Writer, so no such paperwork was needed this time. Also the OOXML filters are
 updated. As I already stated in
-https://bugs.freedesktop.org/show_bug.cgi?id=46029#c5[this comment], the binary
+[this comment](https://bugs.freedesktop.org/show_bug.cgi?id=46029#c5), the binary
 DOC and RTF filters are not yet touched regarding this feature -- though I
 already looked into the RTF one, and have some idea what rework is needed there
 first.

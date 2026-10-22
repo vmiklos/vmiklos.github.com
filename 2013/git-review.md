@@ -1,24 +1,24 @@
-= git-review
+Title: git-review
+Slug: git-review
+Category: libreoffice
+Tags: en, openstack
+Date: 2013-02-28T23:05:12Z
 
-:slug: git-review
-:category: libreoffice
-:tags: en, openstack
-:date: 2013-02-28T23:05:12Z
-LibreOffice started to use https://gerrit.libreoffice.org/[Gerrit] for code
+LibreOffice started to use [Gerrit](https://gerrit.libreoffice.org/) for code
 review, and while occasional contributors
-https://wiki.documentfoundation.org/Development/gerrit/SubmitPatch[can submit
-patches manually], in case one does many reviews, it's handy to use a dedicated
+[can submit
+patches manually](https://wiki.documentfoundation.org/Development/gerrit/SubmitPatch), in case one does many reviews, it's handy to use a dedicated
 tool. In core.git, we have
-http://cgit.freedesktop.org/libreoffice/core/tree/logerrit[logerrit], but
+[logerrit](http://cgit.freedesktop.org/libreoffice/core/tree/logerrit), but
 that's not advised for regular reviewers, either,
-https://github.com/openstack-infra/git-review[git-review] is recommended
+[git-review](https://github.com/openstack-infra/git-review) is recommended
 instead.
 
 So I looked into git-review. The good news is that it's packaged already for most distributions, e.g. a simple
 
-----
+```
 zypper in python-git-review
-----
+```
 
 on openSUSE installs it.
 
@@ -32,12 +32,12 @@ I wanted to use this tool for two tasks:
 - Cherry-picking changes from Gerrit: I found no option for this. A cherry-pick
   command is generated on the web interface, but it's more complicated than a
   simple `<some command> <number of the change>`. So I submitted
-  https://review.openstack.org/17290[this change] to git-review itself, the next
+  [this change](https://review.openstack.org/17290) to git-review itself, the next
   release will be able to do `git review -x <number of the change>`.
 
 Probably the browser interface is still the best to comment (especially inline
 comment) and approve changes, though David even submitted a
-https://review.openstack.org/17423[proof of concept patch] for that as well.
+[proof of concept patch](https://review.openstack.org/17423) for that as well.
 
 Finally, let me just clear two myths:
 

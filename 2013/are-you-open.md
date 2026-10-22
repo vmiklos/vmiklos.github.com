@@ -1,8 +1,8 @@
-= Are you open?
+Title: Are you open?
+Slug: are-you-open
+Category: en
+Date: 2013-01-04T22:23:44Z
 
-:slug: are-you-open
-:category: en
-:date: 2013-01-04T22:23:44Z
 Sounds like an easy question, but I learned over the past few years that for
 software projects, the answer is typically not a yes or no question.
 
@@ -15,13 +15,13 @@ Virtualbox.
 
 There is also the question of what is open. Only tarballs of releases, or also
 the SCM repo used for development? Think of Amazon's
-http://www.amazon.com/gp/help/customer/display.html?tag=androidpolice-20&nodeId=200203720[custom
-kernels] where the code is open, but it's obviously only a code dump, one is
+[custom
+kernels](http://www.amazon.com/gp/help/customer/display.html?tag=androidpolice-20&nodeId=200203720) where the code is open, but it's obviously only a code dump, one is
 not supposed to contribute to it, and the individual changesets are not public.
 
 Finally, even if the software itself is developed in a truly free manner, some
 enterprise version (which is based on the free version) may not be publicly
 developed, e.g. only the resulting tarball is public. I'm happy to see that at
 $dayjob even this last detail is quite public, think of
-http://cgit.freedesktop.org/libreoffice/core/log/?h=distro/suse/suse-3.6[LibreOffice]
-or the http://kernel.opensuse.org/cgit[Linux kernel].
+[LibreOffice](http://cgit.freedesktop.org/libreoffice/core/log/?h=distro/suse/suse-3.6)
+or the [Linux kernel](http://kernel.opensuse.org/cgit).

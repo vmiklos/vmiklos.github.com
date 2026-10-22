@@ -1,10 +1,10 @@
-= LibreOffice Writer can now write .dot files
+Title: LibreOffice Writer can now write .dot files
+Slug: lo-dotexport
+Category: libreoffice
+Tags: en
+Date: 2013-11-12T10:03:56Z
 
-:slug: lo-dotexport
-:category: libreoffice
-:tags: en
-:date: 2013-11-12T10:03:56Z
-image::https://lh6.googleusercontent.com/-MFCwDOTVK1o/UoHtE8V1k8I/AAAAAAAADuU/dKjop88lNxo/s400/dotexport.png[align="center",link="https://lh6.googleusercontent.com/-MFCwDOTVK1o/UoHtE8V1k8I/AAAAAAAADuU/dKjop88lNxo/s2000/dotexport.png"]
+[![dotexport](https://lh6.googleusercontent.com/-MFCwDOTVK1o/UoHtE8V1k8I/AAAAAAAADuU/dKjop88lNxo/s400/dotexport.png)](https://lh6.googleusercontent.com/-MFCwDOTVK1o/UoHtE8V1k8I/AAAAAAAADuU/dKjop88lNxo/s2000/dotexport.png)
 
 It was pointed out that LibreOffice Writer is only able to open, not save
 `.dot` (Word binary template) files. From mso-dumper experience, I knew that
@@ -15,7 +15,7 @@ not adding this feature before that deadline? You can see above the result. :-)
 For the ones who love our `--convert-to` commandline switch, an extra fix was
 necessary to make `--convert-to dot` work as well, both commits are now in
 master. You can try it out yourself using a
-http://dev-builds.libreoffice.org/daily/[daily build] or just wait for the
+[daily build](http://dev-builds.libreoffice.org/daily/) or just wait for the
 `libreoffice-4-2` branchoff and the first beta from that branch.
 
 Happy templating! ;-)

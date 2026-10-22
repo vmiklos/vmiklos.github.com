@@ -1,9 +1,9 @@
-= mdadm upgrade
+Title: mdadm upgrade
+Slug: mdadm-upgrade
+Category: mdadm
+Tags: en
+Date: 2013-01-02T21:54:15Z
 
-:slug: mdadm-upgrade
-:category: mdadm
-:tags: en
-:date: 2013-01-02T21:54:15Z
 Even though I spend little of my free time with sysadmin stuff these days, this
 came up recently. A few years ago I hit an issue about `mdadm` creating too new
 metadata that wasn't handled by the installed kernel, so I remembered to use
@@ -11,34 +11,34 @@ metadata that wasn't handled by the installed kernel, so I remembered to use
 `cfdisk` for partitioning.
 
 It turns out this caused quite some grief when it came to `grub2`, I wrote about
-this link:|filename|/2012/grub2.adoc[earlier] -- that was about the theory, in a VM. This is
+this [earlier]({filename}/2012/grub2.adoc) -- that was about the theory, in a VM. This is
 about the practice. In practice, `gparted` turned out to be too risky, and I
 choose the following approach to repartition the hard drives (so there is
 enough space for `grub2`) and upgrade the `mdadm` metadata.
 
 First, I broke the mirror by removing one leg of the RAID1 array:
 
-----
+```
 mdadm --manage /dev/md126 --fail /dev/sdd1
 mdadm --manage /dev/md126 --remove /dev/sdd1
-----
+```
 
 Then I created a new array (with a single leg) with the new metadata and formatted it:
 
-----
+```
 fdisk /dev/sdd
 mdadm --create /dev/md125 --metadata=1.0 --level=1 --assume-clean --raid-devices=2 missing /dev/sdd1
 mkfs.ext4 /dev/md125
-----
+```
 
 Finally I copied over the live system:
 
-----
+```
 mkdir /mnt/md125
 mount /dev/md125 /mnt/md125
 rsync --delete -avxP / /mnt/md125
 umount /mnt/md125
-----
+```
 
 The rest was easy: I booted a livecd to do the `rsync` once again (taking a few
 minutes only), and once the system was running from the new array, added the

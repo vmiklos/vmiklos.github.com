@@ -1,9 +1,9 @@
-= Using a git push tree
+Title: Using a git push tree
+Slug: push-tree
+Category: libreoffice
+Tags: en, git
+Date: 2013-08-14T10:14:28Z
 
-:slug: push-tree
-:category: libreoffice
-:tags: en, git
-:date: 2013-08-14T10:14:28Z
 I just checked, I created my git 'push tree' more than a year ago, but
 yesterday I was reminded that this technique isn't really documented anywhere,
 so let me describe it.
@@ -26,23 +26,23 @@ avoid pulling in your main tree.
 
 Here is how to do it. To set this up:
 
-----
+```
 git clone --reference /path/to/master ssh://logerrit/core master-push
-----
+```
 
 Then to use it, instead of `git pull -r && git push` in your `master` tree, do these:
 
-----
+```
 cd /path/to/master
 git show -s <1>
 cd /path/to/master-push
 git pull -r
 git cherry-pick $sha1 <2>
 git push
-----
+```
 
-<1> copy the sha1 hash from the output
-<2> replace $sha1 with the sha1 hash you got in the previous step
+- `<1>` copy the sha1 hash from the output
+- `<2>` replace $sha1 with the sha1 hash you got in the previous step
 
 (There is a trick here, given that master-push already references the original
 tree, you can go ahead with cherry-pick directly, without fetching branches
@@ -68,5 +68,3 @@ Keep in mind the followings:
 Other than these, I can just recommend using a push tree, it helped me many
 times not to loose focus in the middle of the day. (And as we all know, pushing
 all your risky changes on Friday afternoon is also a bad idea. :-) )
-
-// vim: ft=asciidoc

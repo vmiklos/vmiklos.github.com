@@ -1,10 +1,10 @@
-= Change tracking improvements in LibreOffice Writer spellcheck popup
+Title: Change tracking improvements in LibreOffice Writer spellcheck popup
+Slug: swspellpopup-redline
+Category: libreoffice
+Tags: en
+Date: 2013-10-16T19:33:35Z
 
-:slug: swspellpopup-redline
-:category: libreoffice
-:tags: en
-:date: 2013-10-16T19:33:35Z
-image::https://lh6.googleusercontent.com/-P4Z0GsEN48I/Ul7MxmR1-eI/AAAAAAAADkg/VF9XqYqiwtY/s400/swspellpopup-redline.png[align="center",link="https://lh6.googleusercontent.com/-P4Z0GsEN48I/Ul7MxmR1-eI/AAAAAAAADkg/VF9XqYqiwtY/s640/swspellpopup-redline.png"]
+[![swspellpopup-redline](https://lh6.googleusercontent.com/-P4Z0GsEN48I/Ul7MxmR1-eI/AAAAAAAADkg/VF9XqYqiwtY/s400/swspellpopup-redline.png)](https://lh6.googleusercontent.com/-P4Z0GsEN48I/Ul7MxmR1-eI/AAAAAAAADkg/VF9XqYqiwtY/s640/swspellpopup-redline.png)
 
 If you ever had to review a document that had change tracking enabled in
 LibreOffice Writer, you might have noticed an odd behaviour: if e.g. the

@@ -1,0 +1,18 @@
+Title: ged2dot, a GEDCOM to Graphviz converter
+Slug: ged2dot
+Category: en
+Date: 2013-11-02T19:35:37Z
+
+It's All Souls' Day, so let's celebrate it by writing Free Software that helps
+us to remember our ancestors. I already enjoyed
+[ancestry.com](http://ancestry.com/) as a GEDCOM editor, but it always just shows
+a small part of the family tree. So here comes
+[ged2dot](https://github.com/vmiklos/ged2dot), that will convert your GEDCOM file
+to a [DAG](http://en.wikipedia.org/wiki/Directed_acyclic_graph), resulting in a
+layout similar to this:
+
+[![Screenshot](https://lh3.googleusercontent.com/-HcJ2C2bzmf0/UnVFEsVLzZI/AAAAAAAADtQ/UUZi3tcL-co/s400/screenshot.png)](https://lh3.googleusercontent.com/-HcJ2C2bzmf0/UnVFEsVLzZI/AAAAAAAADtQ/UUZi3tcL-co/s2000/screenshot.png)
+
+Of course you can also feed more sensitive info into it, like disabling
+anonymous mode: then it'll show the name and birth/death date on the nodes;
+it'll also show something more useful than placeholder images. ;-)

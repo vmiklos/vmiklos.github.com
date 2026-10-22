@@ -10,7 +10,7 @@ Idén is részt vettünk LGee-vel a Balaton egy napos körbetekerését célzó,
 órás szintidős [Balaton Maratonon](http://www.tourdepelso.hu/), a tavalyihoz
 hasonló feltételek mellett. Elég csak a fenti képen látható rajt látványát
 összehasonlítani a
-[tavalyival]({filename}/2013/balaton-maraton-2013.adoc). ;-)
+[tavalyival]({filename}/2013/balaton-maraton-2013.md). ;-)
 
 A [velo.hu](http://velo.hu/kepek/galeria/1245/img_1317__1024x683_.jpg) idén is
 végigfotózta a résztvevők nagy részét, így engem is:

@@ -1,10 +1,10 @@
-= DOC support in mso-dumper
+Title: DOC support in mso-dumper
+Slug: mso-dumper
+Category: libreoffice
+Tags: en
+Date: 2013-05-26T18:01:38Z
 
-:slug: mso-dumper
-:category: libreoffice
-:tags: en
-:date: 2013-05-26T18:01:38Z
-http://cgit.freedesktop.org/libreoffice/contrib/mso-dumper/[mso-dumper] is a
+[mso-dumper](http://cgit.freedesktop.org/libreoffice/contrib/mso-dumper/) is a
 project that creates some -- more or less human-readable -- dump from binary
 files. Initially Kohei Yoshida developed it to dump XLS, then Thorsten Behrens
 added support for PPT files, finally during last November I started to add DOC
@@ -20,20 +20,20 @@ understand what's going on inside a binary file using a hex editor.
 
 To my knowledge, such a dumper for the DOC format (in particular the WW8
 version of it) did not exist previously.
-http://gitorious.org/ww8dumper[WW8Dumper] was the closest match, but that was
+[WW8Dumper](http://gitorious.org/ww8dumper) was the closest match, but that was
 far from complete and I found extending mso-dumper easier.
 
 To stress-test the parser, I used
-http://cgit.freedesktop.org/libreoffice/core/tree/bin/get-bugzilla-attachments-by-mimetype[get-bugzilla-attachments-by-mimetype]
+[get-bugzilla-attachments-by-mimetype](http://cgit.freedesktop.org/libreoffice/core/tree/bin/get-bugzilla-attachments-by-mimetype)
 to get all DOC attachements from the Freedesktop bugzilla, and during the last
 days I fixed the remaining crashes (actually this is why I write this post now
 ;-) ). If you want to try it out you can do so by:
 
-----
+```
 git clone git://anongit.freedesktop.org/libreoffice/contrib/mso-dumper
 cd mso-dumper
 ./doc-dump.py /path/to/doc/file.doc
-----
+```
 
 The idea is that on any input the dumper should not crash: instead either it
 should give you usable result, or in case some unhandled structure is reached,

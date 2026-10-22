@@ -1,9 +1,9 @@
-= lcov
+Title: lcov
+Slug: lcov
+Category: opensuse
+Tags: en, lcov, bitlbee
+Date: 2013-01-27T21:33:02Z
 
-:slug: lcov
-:category: opensuse
-:tags: en, lcov, bitlbee
-:date: 2013-01-27T21:33:02Z
 There are multiple strategies how to add testcases for code that sort of works,
 but has no or too few tests. One approach (that works quite well in
 LibreOffice, for example) is to just add tests for new code, and there the test
@@ -20,18 +20,18 @@ mind.
 The problem there is that manual testing typically includes multiple online
 Skype clients and an IRC client as well, and such tests are extremely
 unreliable. So I thought: if I'm able to
-http://en.wikipedia.org/wiki/Mock_object[mock] both the interactive IRC and
+[mock](http://en.wikipedia.org/wiki/Mock_object) both the interactive IRC and
 Skype clients, then it'll be easy to test the C Skype plugin itself, even for
 very special scenarios (like changing a groupchat topic in the middle of
 inviting somebody to a groupchat or similar).
 
 So here is the result looks like:
 
-----
+```
  skyped mock file   +--------+         +---------+   pyexpect mock file
 ------------------> | skyped | <-----> | bitlbee | <--------------------
                     +--------+   TCP   +---------+
-----
+```
 
 For skyped, the exact traffic is recorded and played back later; for BitlBee,
 only the outgoing traffic is exact, for the incoming traffic `pyexpect` allows
@@ -42,14 +42,14 @@ framework was available, it was quite easy to add testcases: I already have
 
 What was also interesting is that it turned out the latest upstream lcov
 release is
-http://sourceforge.net/mailarchive/forum.php?thread_name=50F3ECB7.7070505%40linux.vnet.ibm.com&forum_name=ltp-coverage[not
-compatible] with gcc-4.7, but the necessary patches are
-https://build.opensuse.org/request/show/148334[now]
-https://build.opensuse.org/request/show/148408[integrated], and the next
+[not
+compatible](http://sourceforge.net/mailarchive/forum.php?thread_name=50F3ECB7.7070505%40linux.vnet.ibm.com&forum_name=ltp-coverage) with gcc-4.7, but the necessary patches are
+[now](https://build.opensuse.org/request/show/148334)
+[integrated](https://build.opensuse.org/request/show/148408), and the next
 upstream release will work out of the box.
 
 The BitlBee mock files can be found
-http://code.bitlbee.org/lh/bitlbee/files/head:/protocols/skype/t[here]. Given
+[here](http://code.bitlbee.org/lh/bitlbee/files/head:/protocols/skype/t). Given
 that there are now instructions to do similar analysis for
-http://wiki.documentfoundation.org/Development/Lcov[LibreOffice as well], I
+[LibreOffice as well](http://wiki.documentfoundation.org/Development/Lcov), I
 hope to look into increasing test coverage for the classes I maintain as well.

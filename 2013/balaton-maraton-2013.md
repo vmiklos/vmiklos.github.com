@@ -1,31 +1,30 @@
-= Balaton Maraton 2013
-
-:slug: balaton-maraton-2013
-:category: bringa
-:tags: hu
-:date: 2013-06-03T19:03:29Z
+Title: Balaton Maraton 2013
+Slug: balaton-maraton-2013
+Category: bringa
+Tags: hu
+Date: 2013-06-03T19:03:29Z
 
 Idén is volt Balaton Maraton (a tizenhatodik, nekem a negyedik), sikerült idén
 is teljesíteni a szintidőt, sőt...  de ne szaladjunk ennyire előre.
 
-== Felkészülés
+## Felkészülés
 
 Idén igyekeztem a korábbi évek gyakorlatával ellentétben egy kicsit
 tudatosabban készülni. Így került sor a következő túrákra:
 
-- április 7: Pilis, 126 km (link:|filename|/2013/fehervasarnap.adoc[erről már írtam])
-- április 14: link:|filename|/2009/godollo-30.adoc[Gödöllő K30], 102 km
-  (https://maps.google.com/maps?q=http://vmiklos.hu/gps/2013-04-14.kml[GPS
-  track], a kmóra ezeket mérte: idő 4h27m11s, átlag 22.8 km/h, max 45.7 km/h)
-- április 27: link:|filename|/2009/visegrad.adoc[Dunakanyar], 125 km
-  (https://maps.google.com/maps?q=http://vmiklos.hu/gps/2013-04-27.kml[GPS
-  track], a kmóra ezeket mérte: idő 5h33m29s, átlag 22.4 km/h, max 37.0 km/h)
+- április 7: Pilis, 126 km ([erről már írtam]({filename}/2013/fehervasarnap.md))
+- április 14: [Gödöllő K30]({filename}/2009/godollo-30.adoc), 102 km
+  ([GPS
+  track](https://maps.google.com/maps?q=http://vmiklos.hu/gps/2013-04-14.kml), a kmóra ezeket mérte: idő 4h27m11s, átlag 22.8 km/h, max 45.7 km/h)
+- április 27: [Dunakanyar]({filename}/2009/visegrad.adoc), 125 km
+  ([GPS
+  track](https://maps.google.com/maps?q=http://vmiklos.hu/gps/2013-04-27.kml), a kmóra ezeket mérte: idő 5h33m29s, átlag 22.4 km/h, max 37.0 km/h)
 - május 4: Ráckeve, 105 km
-  (https://maps.google.com/maps?q=http://vmiklos.hu/gps/2013-05-04.kml[GPS
-track], a kmóra ezeket mérte: idő 4h31m31s, átlag 23.1 km/h, max 31.8 km/h)
-- május 27: link:|filename|/2009/godollo-170.adoc[Gödöllő K100], 168 km
-  (https://maps.google.com/maps?q=http://vmiklos.hu/gps/2013-05-25.kml[GPS
-  track], a kmóra ezeket mérte: idő 7h35m3s, átlag 22.0 km/h, max 51.4 km/h)
+  ([GPS
+track](https://maps.google.com/maps?q=http://vmiklos.hu/gps/2013-05-04.kml), a kmóra ezeket mérte: idő 4h31m31s, átlag 23.1 km/h, max 31.8 km/h)
+- május 27: [Gödöllő K100]({filename}/2009/godollo-170.adoc), 168 km
+  ([GPS
+  track](https://maps.google.com/maps?q=http://vmiklos.hu/gps/2013-05-25.kml), a kmóra ezeket mérte: idő 7h35m3s, átlag 22.0 km/h, max 51.4 km/h)
 
 Ez utóbbi 4 túra valahogy majdnem mindig az utolsó pillanatban dőlt el, így
 végül egyedül mentem. A K30/K100 útvonalakon szoktak szervezett versenyt is
@@ -37,13 +36,13 @@ járható út, amit ki is használtam, egy felesleges kerülőt így megspórolv
 Lényeg a lényeg, abban a reményben indultam el az idei maratonra, hogy
 reméltem, sikerül javítani a korábbi időkön.
 
-== A maraton
+## A maraton
 
 Innentől felpörögtek az események: szokás szerint a rajtnál a depóból nem
 indulhattunk el pontban 9:00-kor, mivel akkor még csak a verseny indul.
 Valahogy így festett:
 
-image::https://lh3.googleusercontent.com/-DDoU9LpoyBg/UapBaIw0CEI/AAAAAAAACx4/DBz665H7_Gs/s400/IMG_20130601_091219.jpg[align="center",link="https://lh3.googleusercontent.com/-DDoU9LpoyBg/UapBaIw0CEI/AAAAAAAACx4/DBz665H7_Gs/s2560/IMG_20130601_091219.jpg"]
+[![Depó](https://lh3.googleusercontent.com/-DDoU9LpoyBg/UapBaIw0CEI/AAAAAAAACx4/DBz665H7_Gs/s400/IMG_20130601_091219.jpg)](https://lh3.googleusercontent.com/-DDoU9LpoyBg/UapBaIw0CEI/AAAAAAAACx4/DBz665H7_Gs/s2560/IMG_20130601_091219.jpg)
 
 Aztán 9:15-kor lassan elindult a maraton eleje is, az a rész ahol én álltam a
 kmóra szerint 9:22-kor. Mint mindig, most is lassú rajt kellett volna legyen
@@ -51,7 +50,7 @@ Zamárdiig (tilos előzni), de azért ezt nem sokan tartották be. Ugyanezen a
 szakaszon szoktak jönni a sajtófotósok és végigvillantanak sok-sok embert; LGee
 ki is keresett engem:
 
-image::https://lh5.googleusercontent.com/-thkcz7RN0Rw/UazIC-zN35I/AAAAAAAACy0/LKJjZlkmj9Y/s400/xvi_balaton_maraton_tour_de_pelso_2013__78_.jpg[align="center",link="http://www.velo.hu/kepek/galeria/1046/xvi_balaton_maraton_tour_de_pelso_2013__78_.jpg"]
+[![Akcióban](https://lh5.googleusercontent.com/-thkcz7RN0Rw/UazIC-zN35I/AAAAAAAACy0/LKJjZlkmj9Y/s400/xvi_balaton_maraton_tour_de_pelso_2013__78_.jpg)](http://www.velo.hu/kepek/galeria/1046/xvi_balaton_maraton_tour_de_pelso_2013__78_.jpg)
 
 Idén 5 frissítőpont volt:
 
@@ -72,6 +71,4 @@ egészet 8h29m alatt! :-) Összehasonlításképpen, a korábbi években az idő
 alakultak: 2012-ben 9h45m, 2011-ben 9h51m, 2010 9h29m.
 
 Hivatalos eredmények
-http://balaton-team.com/images/2013_eredmenyek/maraton13_1.xls[erre].
-
-// vim: ft=asciidoc
+[erre](http://balaton-team.com/images/2013_eredmenyek/maraton13_1.xls).

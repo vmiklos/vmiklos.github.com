@@ -1,15 +1,15 @@
-= Fehérvasárnap
+Title: Fehérvasárnap
+Slug: fehervasarnap
+Category: bringa
+Tags: hu
+Date: 2013-04-13T17:59:11Z
 
-:slug: fehervasarnap
-:category: bringa
-:tags: hu
-:date: 2013-04-13T17:59:11Z
 Múlt vasárnap
-(http://hu.wikipedia.org/wiki/Feh%C3%A9rvas%C3%A1rnap[fehérvasárnap]) bringázni
+([fehérvasárnap](http://hu.wikipedia.org/wiki/Feh%C3%A9rvas%C3%A1rnap)) bringázni
 voltunk a Pilisben. Nem mondom, hogy a végére nem fáradtam el, ez volt idén az
 első alkalom, hogy 100km feletti túrára mentem -- de már bőven ideje volt.
 
-A https://maps.google.com/?q=http://vmiklos.hu/gps/2013-04-07.kml[GPS track]
+A [GPS track](https://maps.google.com/?q=http://vmiklos.hu/gps/2013-04-07.kml)
 mutatja, hogy mi Budapestről mentünk, a társaság másik fele pedig Szentendréig
 HÉV-vel, és ott csatlakoztak hozzánk. Onnantól pedig a Dömör-kapu, Pilismarót,
 Két-bükkfa-nyereg, Dobogókő útvonalat követtük.

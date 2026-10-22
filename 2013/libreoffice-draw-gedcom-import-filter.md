@@ -1,22 +1,22 @@
-= A LibreOffice Draw GEDCOM import filter
+Title: A LibreOffice Draw GEDCOM import filter
+Slug: libreoffice-draw-gedcom-import-filter
+Category: libreoffice
+Tags: en
+Date: 2013-12-28T22:27:05Z
 
-:slug: libreoffice-draw-gedcom-import-filter
-:category: libreoffice
-:tags: en
-:date: 2013-12-28T22:27:05Z
-image::https://lh4.googleusercontent.com/-4110I0vkRE4/Ur8-uJ6YcII/AAAAAAAAD44/u1pNo4z1y-M/s400/screenshot.png[align="center",link="https://lh4.googleusercontent.com/-4110I0vkRE4/Ur8-uJ6YcII/AAAAAAAAD44/u1pNo4z1y-M/s1440/screenshot.png"]
+[![GEDCOM import result](https://lh4.googleusercontent.com/-4110I0vkRE4/Ur8-uJ6YcII/AAAAAAAAD44/u1pNo4z1y-M/s400/screenshot.png)](https://lh4.googleusercontent.com/-4110I0vkRE4/Ur8-uJ6YcII/AAAAAAAAD44/u1pNo4z1y-M/s1440/screenshot.png)
 
 You may remember that I wrote about my little
-link:|filename|/2013/ged2dot.adoc[ged2dot project] about two months ago.
+[ged2dot project]({filename}/2013/ged2dot.md) about two months ago.
 It's a Python script that can be used from commandline with quite some
 options. I'm happy to announce that there is a GUI for it now, in the form of
 a LibreOffice Draw import filter. If you open
-https://github.com/vmiklos/ged2dot/blob/master/test/screenshot.ged[this GEDCOM
-file], you'll see something similar to the above image.  You can simply build
-the `.oxt` from the https://github.com/vmiklos/ged2dot[Git repo], or just get
+[this GEDCOM
+file](https://github.com/vmiklos/ged2dot/blob/master/test/screenshot.ged), you'll see something similar to the above image.  You can simply build
+the `.oxt` from the [Git repo](https://github.com/vmiklos/ged2dot), or just get
 it from the
-http://extensions.libreoffice.org/extension-center/gedcom[LibreOffice
-Extensions site].
+[LibreOffice
+Extensions site](http://extensions.libreoffice.org/extension-center/gedcom).
 
 Technical details for the interested readers: the import filter just glues
 together existing pieces. First it runs `ged2dot`, then `dot` to generate an
@@ -31,5 +31,3 @@ guess most users are not interested in building family trees; also being
 someone who works on the core most of the time, I wanted to try out how
 implementing an import filter as an extension (filter detection, import
 options dialog, etc.) works. ;-)
-
-// vim: ft=asciidoc

@@ -1,15 +1,15 @@
-= Hackweek 9
+Title: Hackweek 9
+Slug: hackweek-9
+Category: libreoffice
+Tags: en
+Date: 2013-04-15T17:31:35Z
 
-:slug: hackweek-9
-:category: libreoffice
-:tags: en
-:date: 2013-04-15T17:31:35Z
-image::https://lh6.googleusercontent.com/-o4L02197n38/UW-lp9UHX2I/AAAAAAAACiU/XetdnZpBpp4/s400/hackweek.jpg[align="center",link="https://lh6.googleusercontent.com/-o4L02197n38/UW-lp9UHX2I/AAAAAAAACiU/XetdnZpBpp4/s700/hackweek.jpg"]
+[![Hackweek 9 logo](https://lh6.googleusercontent.com/-o4L02197n38/UW-lp9UHX2I/AAAAAAAACiU/XetdnZpBpp4/s400/hackweek.jpg)](https://lh6.googleusercontent.com/-o4L02197n38/UW-lp9UHX2I/AAAAAAAACiU/XetdnZpBpp4/s700/hackweek.jpg)
 
-Last week was http://hackweek.suse.com/[Hackweek] at SUSE -- below is a quick
+Last week was [Hackweek](http://hackweek.suse.com/) at SUSE -- below is a quick
 summary on what experiments did I do during that timeframe.
 
-== lcov
+## lcov
 
 I did some experiments with using lcov on the LibreOffice codebase. The goal is
 to have a quick iteration, so you can see the current coverage of a file or a
@@ -17,45 +17,45 @@ directory, select a method that is not yet tested, add a test for it, and
 "test" the test by checking if the coverage indeed got improved. As a first
 step, I tried this out on the Writer RTF import:
 
-----
+```
 cd writerfilter
 touch source/rtftok/*
 make -sr -j8 gb_GCOV=YES <1>
 cd ../sw; make -sr -j8 CppunitTest_sw_rtfexport CppunitTest_sw_rtfimport <2>
 lcov --directory workdir/unxlngx6/CxxObject/writerfilter/source/rtftok/ --capture --output-file libreoffice.info <3>
 genhtml -o coverage libreoffice.info <4>
-----
+```
 
-<1> rebuild selected files with lcov options
-<2> run the tests
-<3> extract coverage information to a single .info file
-<4> generate some nice HTML output from the .info file
+- `<1>` rebuild selected files with lcov options
+- `<2>` run the tests
+- `<3>` extract coverage information to a single .info file
+- `<4>` generate some nice HTML output from the .info file
 
-NOTE: lcov
-https://build.opensuse.org/project/show?project=openSUSE%3AMaintenance%3A1336[had
-problems] with gcc-4.7, fully updated openSUSE 12.2 or 12.3 is known to work.
+**NOTE:** lcov
+[had
+problems](https://build.opensuse.org/project/show?project=openSUSE%3AMaintenance%3A1336) with gcc-4.7, fully updated openSUSE 12.2 or 12.3 is known to work.
 
 There is a
-http://cgit.freedesktop.org/libreoffice/contrib/dev-tools/plain/lcov/coverage.sh[script]
+[script](http://cgit.freedesktop.org/libreoffice/contrib/dev-tools/plain/lcov/coverage.sh)
 available to make the above a bit more automated.
 
 The speed of the above depends on the amount of code needing a rebuild + the
 number of tests, but it should not take more than a minute.
 
 E.g. I noticed the bookmark import code isn't tested, added a
-http://cgit.freedesktop.org/libreoffice/core/commit/?id=7b515a57eb6a644860715018656ac0b843b62baf[test
-for it], and that indeed improved the line coverage of rtfdocumentimpl.cxx:
+[test
+for it](http://cgit.freedesktop.org/libreoffice/core/commit/?id=7b515a57eb6a644860715018656ac0b843b62baf), and that indeed improved the line coverage of rtfdocumentimpl.cxx:
 84.1% -> 85.0%.
 
 A next area I wanted to test is the Writer RTF export. Let's pick something in
 rtfattributeoutput.cxx... StartURL() is not tested, so a
-http://cgit.freedesktop.org/libreoffice/core/commit/?id=85c8252e13e9234253494f96ffd70df35be056dc[hyperlink
-testcase] should help. Indeed it did: 50.2% -> 52.0%.
+[hyperlink
+testcase](http://cgit.freedesktop.org/libreoffice/core/commit/?id=85c8252e13e9234253494f96ffd70df35be056dc) should help. Indeed it did: 50.2% -> 52.0%.
 
 Last, but not at least, thanks to Norbert Thiebaud, who added `gb_GCOV` to
 gbuild.
 
-== gdb pretty-printers
+## gdb pretty-printers
 
 Then I experimented with improving our Writer gdb Python pretty-printers. One
 annoying shortcoming was the lack of handling uno::Reference<text::XTextRange>.
@@ -65,7 +65,7 @@ argument is a 2D array of XTextRange pairs, that describe what will be the
 input for cell contents. So if you want to check the first cell, you do
 something like this:
 
-----
+```
 (gdb) b DomainMapperTableHandler.cxx:798
 (gdb) r
 (gdb) print (*m_pTableSeq)[0][0]
@@ -74,28 +74,28 @@ $1 = uno::Sequence of length 2 = {uno::Reference to (XInterface) 0x1a73648, uno:
 $2 = uno::Reference to (XInterface) 0x1a73648
 (gdb) print (*m_pTableSeq)[0][0][1]
 $3 = uno::Reference to (XInterface) 0x1a77f68
-----
+```
 
 Not that helpful. Here is how one could work it around:
 
-----
+```
 (gdb) print (*m_pTableSeq)[0][0][0]._pInterface->m_pImpl->m_pMark->m_pPos1
 $4 = boost::scoped_ptr SwPosition (node 10, offset 0)
 (gdb) print (*m_pTableSeq)[0][0][1]._pInterface->m_pImpl->m_pMark->m_pPos1
 $5 = boost::scoped_ptr SwPosition (node 10, offset 20)
-----
+```
 
 But this is not something anyone will remember. After adding a few new
 pretty-printers, now it's like this:
 
-----
+```
 (gdb) print (*m_pTableSeq)[0][0]
 $1 = uno::Sequence of length 2 = {uno::Reference to (SwXTextRange *) 0x1a72b98, uno::Reference to (SwXTextRange *) 0x1a773b8}
 (gdb) print *(*m_pTableSeq)[0][0][0]._pInterface
 $2 = (SwXTextRange) SwXTextRange sw::UnoImplPtr SwXTextRange::Impl = {mark = sw::mark::IMark = {pos1 = boost::scoped_ptr SwPosition (node 10, offset 0), pos2 = empty boost::scoped_ptr}}
 (gdb) print *(*m_pTableSeq)[0][0][1]._pInterface
 $3 = (SwXTextRange) SwXTextRange sw::UnoImplPtr SwXTextRange::Impl = {mark = sw::mark::IMark = {pos1 = boost::scoped_ptr SwPosition (node 10, offset 20), pos2 = empty boost::scoped_ptr}}
-----
+```
 
 Technically, it would be possible to make `print (*m_pTableSeq)[0][0][0]` work
 as well, but for a larger class without a pretty-printer that would result in
@@ -105,39 +105,39 @@ objects, so something that is not too hard to remember.
 An other improvement is the XTextCursor pretty-printer. Example usage:
 debugging of the commented text range ODF import. Before:
 
-----
+```
 (gdb) b txtfldi.cxx:559
 (gdb) print *rHlp.GetCursor()._pInterface->m_pImpl->pRegisteredIn->m_pMark
 $1 = SwPosition (node 9, offset 4)
-----
+```
 
 After the new pretty-printers one doesn't have to type that much:
 
-----
+```
 (gdb) print *rHlp.GetCursor()._pInterface
 $1 = (SwXTextCursor) 
     SwXTextCursor sw::UnoImplPtr SwXTextCursor::Impl = {registeredIn = SwModify = {point = SwPosition (node 9, offset 4), mark = SwPosition (node 9, offset 4), next = 0x1a28b88, prev = 0x1a28b88}}
-----
+```
 
-== RTF filter text frame rework
+## RTF filter text frame rework
 
 Finally, I experimented with reworking the textframe code in the RTF filter. In
 short, the motivation is to bring the RTF filter in sync with the OOXML one,
 which can nicely import and export text box gradients. To get there, there are
 3 different problems to solve:
 
-. The RTF import filter currently imports rectangle and textbox shapes as
+1. The RTF import filter currently imports rectangle and textbox shapes as
   drawinglayer rectangles, even if they have some text inside. Just like the
   OOXML import filter, we would better import these shapes as Writer textframes,
   as long as they contain some text.
-. The RTF export writes Writer textframes as old-style Word frames, not as text
+2. The RTF export writes Writer textframes as old-style Word frames, not as text
   box shapes. This should be changed, as the old syntax doesn't support
   gradients, and in general both the DOC and DOCX export filters already export
   new-style Word frames, so there is no reason why the RTF filter would not do
   the same.
-. Once all the above is done, add support for gradients in the RTF filter, in a
+3. Once all the above is done, add support for gradients in the RTF filter, in a
   similar way OOXML filters were already improved to handle gradients.
-. Once this all is done, add new testcases to cover the new code.
+4. Once this all is done, add new testcases to cover the new code.
 
 First I had hacked on #1, sadly Writer textframes and drawinglayer rectangles
 don't share the exactly same UNO API, like drawinglayer has `TextWritingMode`
@@ -159,18 +159,18 @@ noticed two more interesting details of Word's new-style RTF textframe markup:
   top/bottom external margins, but Writer does -- so now using the new syntax,
   this is exported properly.
 
-== git
+## git
 
 Unrelated to the above, I
-http://git.kernel.org/cgit/git/git.git/commit/?id=21246dbb9e0af278bc671e32e45a6cae4ad38b6f[fixed]
+[fixed](http://git.kernel.org/cgit/git/git.git/commit/?id=21246dbb9e0af278bc671e32e45a6cae4ad38b6f)
 an annoying git bug, when one tried to cherry-pick multiple commits at the same
 time, and copy&paste went wrong, the "unrecognized" arguments were just
 silently ignored. Now one gets an error instead.
 
-== docs.libreoffice.org
+## docs.libreoffice.org
 
 In parallel to the above, Thorsten was kind enough to explain how to update
-http://docs.libreoffice.org/[docs.libreoffice.org]: The new output is generated
+[docs.libreoffice.org](http://docs.libreoffice.org/): The new output is generated
 using doxygen 1.8, it contains a bit more eye-candy. E.g. notice the new
 foldable subsections
-http://docs.libreoffice.org/sw/html/classSwUnoCrsr.html[here]. ;-)
+[here](http://docs.libreoffice.org/sw/html/classSwUnoCrsr.html). ;-)
