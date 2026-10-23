@@ -1,9 +1,9 @@
-= TL-WN422GC
+Title: TL-WN422GC
+Slug: tl-wn422gc
+Category: en
+Date: 2012-02-26T20:51:06Z
 
-:slug: tl-wn422gc
-:category: en
-:date: 2012-02-26T20:51:06Z
-The http://www.tp-link.com/en/products/details/?model=TL-WN422GC[title] is a
+The [title](http://www.tp-link.com/en/products/details/?model=TL-WN422GC) is a
 wireless card usable for desktop machines. Why I can recommend it:
 
 - It's better than those cheap wifi stricks, having a high(er) gain antenna.

@@ -1,9 +1,9 @@
-= Sorting photos by date using exif date info
+Title: Sorting photos by date using exif date info
+Slug: exif-date-sort
+Category: hacking
+Tags: en
+Date: 2012-06-11T10:56:43Z
 
-:slug: exif-date-sort
-:category: hacking
-:tags: en
-:date: 2012-06-11T10:56:43Z
 For a family event I received photos from about 6 persons, and wanted to view
 all of them, sorted by date. The problem was that the timestamps of the files
 were sometimes incorrect, and also in all but one cases the exif timestamp was
@@ -18,8 +18,7 @@ date. Then any image viewer can show the photos, sorted by date.
 
 Here is the script I came up with:
 
-[source,bash]
-----
+```bash
 for i in *.jpg
 do
     # 2012:01:01 01:01:01 -> 2012-01-01 01:01:01
@@ -42,12 +41,12 @@ do
 done
 # write back the timestamps to the exif info (thx boobaa)
 jhead -dsft *.jpg
-----
+```
 
 And additionally if you don't want to mess up the settings of the image viewer, you can use:
 
-----
+```
 c=0; for i in $(ls -lhtr *.jpg|sed 's/.* //'); do c=$((c+1)); cp -a $i new/$(printf "%03d" $c).jpg; done
-----
+```
 
 to order filenames based on the file timestamp.

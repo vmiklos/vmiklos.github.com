@@ -4,7 +4,7 @@ Category: libreoffice
 Tags: en
 Date: 2013-07-22T11:31:57Z
 
-See [here]({filename}/2012/lo-ooxml-improvements.adoc) for a 3.6/4.0
+See [here]({filename}/2012/lo-ooxml-improvements.md) for a 3.6/4.0
 version of this post.
 
 I'm posting here a few screenshots showing improvements in our DOCX filter,

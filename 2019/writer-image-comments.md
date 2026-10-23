@@ -6,7 +6,7 @@ Date: 2019-07-16T12:11:23+02:00
 
 ## The problem
 
-Years ago I [posted]({filename}/2012/lo-sw-comment-range.adoc) about work to attach comments to text
+Years ago I [posted]({filename}/2012/lo-sw-comment-range.md) about work to attach comments to text
 ranges. This improved compatibility with Word greatly, but it was always a piece of text that was
 commented, never frames. If you just selected a frame and tried to comment by selecting the menu
 entry or the `Ctrl-Alt-C` shortcut, nothing happened, because frame selection did not interpret

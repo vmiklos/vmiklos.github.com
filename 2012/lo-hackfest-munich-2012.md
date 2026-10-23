@@ -1,14 +1,14 @@
-= LibreOffice Hackfest in Munich, 2012
+Title: LibreOffice Hackfest in Munich, 2012
+Slug: lo-hackfest-munich-2012
+Category: libreoffice
+Tags: en
+Date: 2012-11-26T12:38:22Z
 
-:slug: lo-hackfest-munich-2012
-:category: libreoffice
-:tags: en
-:date: 2012-11-26T12:38:22Z
-image::https://lh3.googleusercontent.com/-oCxvARAY6aQ/ULNRD3q8ZTI/AAAAAAAAB3s/wIFkr3bjDZA/s400/MucHackfest2012.png[align="center",link="https://lh3.googleusercontent.com/-oCxvARAY6aQ/ULNRD3q8ZTI/AAAAAAAAB3s/wIFkr3bjDZA/s600/MucHackfest2012.png"]
+[![MucHackfest2012](https://lh3.googleusercontent.com/-oCxvARAY6aQ/ULNRD3q8ZTI/AAAAAAAAB3s/wIFkr3bjDZA/s400/MucHackfest2012.png)](https://lh3.googleusercontent.com/-oCxvARAY6aQ/ULNRD3q8ZTI/AAAAAAAAB3s/wIFkr3bjDZA/s600/MucHackfest2012.png)
 
 During the weekend I was in Munich to visit our second LibreOffice hackfest
 this year. The archivements are detailed
-http://wiki.documentfoundation.org/Hackfest/Munich2012#Achievements[here]. Here
+[here](http://wiki.documentfoundation.org/Hackfest/Munich2012#Achievements). Here
 are a few interestings details I learned during this event:
 
 - Laszlo explained on the train to Munich that single line spacing is 15% of
@@ -19,7 +19,7 @@ are a few interestings details I learned during this event:
   near.
 - The ability to sign each other's gpg key was a great idea. I didn't know too
   much about this topic, so I read up on this
-  http://www.phillylinux.org/keys/terminal.html[here]. (Additionally, the
+  [here](http://www.phillylinux.org/keys/terminal.html). (Additionally, the
   `gpg-key2ps` command from `signing-party` -- yes, there is such a package! --
   is useful.)
 - We set up a nice icecream farm from the laptops, one more aspect that boosted
@@ -34,7 +34,7 @@ It turns out none of this is really needed, so let me share the way to avoid
 these problems:
 
 - look into the
-  https://en.opensuse.org/index.php?title=Icecream&oldid=53112#Firewall[wiki], you only need to open a few ports, even broadcasting/auto-discovery works with a started firewall
+  [wiki](https://en.opensuse.org/index.php?title=Icecream&oldid=53112#Firewall), you only need to open a few ports, even broadcasting/auto-discovery works with a started firewall
 - use `CCACHE_PREFIX="icecc" make build-nocheck PARALLELISM=30` to enable icecream for a single make run
 
 Additionally, if you run openSUSE 12.2, by default the daemon reports that the
@@ -42,12 +42,10 @@ box can't compile x86_64 binaries (probably it hasn't been updated to deal with
 the 3.0 kernel or something), a quick workaround is to install Lubos' updated
 package:
 
-----
+```
 zypper -p http://download.opensuse.org/repositories/home:/llunak:/clang/openSUSE_12.2/ in icecream-0.9.7-64.1s.x86_64
-----
+```
 
 Thanks for the organizers, once again this hackfest turned out to be really useful! :)
 
-As usual, some pictures are https://www.flickr.com/photos/vmiklos/albums/72157670949585810[available].
-
-// vim: ft=asciidoc
+As usual, some pictures are [available](https://www.flickr.com/photos/vmiklos/albums/72157670949585810).

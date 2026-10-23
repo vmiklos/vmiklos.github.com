@@ -14,7 +14,7 @@ into the file, the newer one is a native OOXML markup, which has an RTF markup
 equivalent as well. Handling of the later has been implemented by
 [Luboš Luňák](http://llunak.blogspot.com/) for DOCX a long time ago, and I
 contributed the RTF equivalent almost
-[3 years ago]({filename}/2012/lo-rtf-math-native.adoc).
+[3 years ago]({filename}/2012/lo-rtf-math-native.md).
 
 What remains is the handling of the older version, the embedded OLE object.
 Previously only the replacement graphic was imported, so regardless of the

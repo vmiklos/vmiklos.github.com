@@ -1,9 +1,8 @@
-= LibreOffice Writer now supports first page header/footer
-
-:slug: lo-firstpage-headerfooter
-:category: libreoffice
-:tags: en
-:date: 2012-10-10T16:36:22Z
+Title: LibreOffice Writer now supports first page header/footer
+Slug: lo-firstpage-headerfooter
+Category: libreoffice
+Tags: en
+Date: 2012-10-10T16:36:22Z
 
 When you want to have pages with different properties in Writer, you use page
 styles. If you want to do something similar in Word, you have to use sections.
@@ -19,10 +18,10 @@ differentiate only between right and left pages, not first ones.
 In LibreOffice 3.7, there will be a new checkbox to "unshare" the header and
 footer of the first page with right/left pages:
 
-image::http://wiki.documentfoundation.org/images/thumb/f/f2/Sw-firstpage-headerfooter.png/400px-Sw-firstpage-headerfooter.png[align="center",link="http://wiki.documentfoundation.org/File:Sw-firstpage-headerfooter.png"]
+[![Sw-firstpage-headerfooter](http://wiki.documentfoundation.org/images/thumb/f/f2/Sw-firstpage-headerfooter.png/400px-Sw-firstpage-headerfooter.png)](http://wiki.documentfoundation.org/File:Sw-firstpage-headerfooter.png)
 
 Right now, only ODF filters are updated to open / save this feature (as
-suggested by https://wiki.oasis-open.org/office/HeaderFooterFirst[this] old
+suggested by [this](https://wiki.oasis-open.org/office/HeaderFooterFirst) old
 proposal) -- in later versions it's planned to update the DOCX, DOC and RTF
 filters as well, removing quite some code from import filters working around
 this limitation of Writer core.

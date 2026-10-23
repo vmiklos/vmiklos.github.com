@@ -1,22 +1,22 @@
-= Frugalware history
+Title: Frugalware history
+Slug: frugalware-history
+Category: frugalware
+Tags: en
+Date: 2012-09-16T21:27:14Z
 
-:slug: frugalware-history
-:category: frugalware
-:tags: en
-:date: 2012-09-16T21:27:14Z
-image::https://lh5.googleusercontent.com/-72B3Mo4hOQs/UeegcVH4YZI/AAAAAAAADNU/IwX2_lLQt5k/s128/logo-new-big.png[align="center"]
+![logo-new-big](https://lh5.googleusercontent.com/-72B3Mo4hOQs/UeegcVH4YZI/AAAAAAAADNU/IwX2_lLQt5k/s128/logo-new-big.png)
 
 Given that Frugalware was founded by me, and recently James recently took over
 the project leadership, I think it makes sense to look back and summarize the
 past 6 years.
 
-== The beginning
+## The beginning
 
 It all started with
-http://frugalware.org/pipermail/frugalware-announce/2004-September/000001.html[this
-announcement] about 6 years ago. It was a one-man show before, there was a
-http://ftp.frugalware.org/pub/archive/frugalware-0.1/ChangeLog.txt[manually
-written ChangeLog] but even then there were already quite a few packages, so
+[this
+announcement](http://frugalware.org/pipermail/frugalware-announce/2004-September/000001.html) about 6 years ago. It was a one-man show before, there was a
+[manually
+written ChangeLog](http://ftp.frugalware.org/pub/archive/frugalware-0.1/ChangeLog.txt) but even then there were already quite a few packages, so
 don't ask me when I started hacking on this. Yes, normally there would be a
 first commit in git, but remember this was before git existed, and I hated
 centralized CVS so much that we didn't use anything.
@@ -31,7 +31,7 @@ test and documentation to be in English, to possibly turn the project into an
 international one in the future. And that proved to very, very useful.
 
 It was between 0.1 and 0.2 that we (Krisztián, Zsolt and me) showed up in a
-Hungarian TV (http://ftp.frugalware.org/pub/other/videos/hu/[video record])
+Hungarian TV ([video record](http://ftp.frugalware.org/pub/other/videos/hu/))
 explaining Frugalware. This is something never happened later for some reason.
 
 The way we found a free hosting at a university I never attended may be also
@@ -43,7 +43,7 @@ ultra-slow old PC (some Pentium 1 with a single HDD) and we were extremely
 happy, as the uni offered to host it for free. I remember it ran some Slackware
 version, as Frugalware didn't support i586... ;-)
 
-== Early days
+## Early days
 
 Then some more developers joined and we started to package all the usual free
 software which is available in other distributions but I personally didn't use.
@@ -76,12 +76,12 @@ really cool wallpapers.
 
 Finally, I think the last two Hungarian guys who spent a hell of a time on the
 project was András Vöröskői (we still link his
-http://frugalware.org/docs/getting-involved/en[getting started HOWTO] for new
+[getting started HOWTO](http://frugalware.org/docs/getting-involved/en) for new
 contributors) and János Kovács. I remember for a long time I used the
 home-hosted server of János when we didn't have a fast dedicated i686 build
 server and my desktop was still 32bit.
 
-== Going international
+## Going international
 
 Then things started to happen fast. Developers outside Hungary showed up:
 Gabriel Craciunescu from Germany and Michel Hermier from France worked a lot on
@@ -111,7 +111,7 @@ then the second was written in C, using libdialog. And currently James works on
 a third one, hopefully fixing lots of instability, resulting from the design
 errors of the current one. ;-)
 
-== More and more developers
+## More and more developers
 
 And then somehow more and more developers came. Gourdin Gaetan (bouleetbil) and
 Sébastien Vincent (Baste) worked a lot on the GNOME support, James Buren took
@@ -143,7 +143,7 @@ Finally, I should not forget about Daniel Eledut (Devil505), who probably
 helped me the most with my "the rest" task: he really helped out in various
 areas, and he was a major Frugalware contributor for a long time.
 
-== The end of my leadership
+## The end of my leadership
 
 Contributing to other projects is something I did regularly, since every time I
 got a bugreport for a package, first I created a patch to fix the problem (in
@@ -172,12 +172,12 @@ earlier years, or hopefully even better. And then James came, who first took
 over the base system, and we agreed that after 1.7, he'll do releases. So it
 was not unexpected, but still I was a bit surprised when I saw his
 role-changing
-http://git.frugalware.org/gitweb/gitweb.cgi?p=frugalware-current.git;a=commitdiff;h=979ada221b2f822f88f4468e6aefc2487fe87e48[commit].
+[commit](http://git.frugalware.org/gitweb/gitweb.cgi?p=frugalware-current.git;a=commitdiff;h=979ada221b2f822f88f4468e6aefc2487fe87e48).
 But needless to say, when thinking a bit more, it was completely logical, all I
 really do these days is fixing things left and right regarding my arm port
 needs, and maintaining the LibreOffice package.
 
-== Summary
+## Summary
 
 The idea of writing this post is not mine. However, when I thought about how
 many individuals helped this project so far, I realized I really need to create
@@ -192,5 +192,5 @@ forgot someone. If you think you're missing from this post, please leave a
 comment. Thanks.
 
 Update: the shutdown of the project was
-https://web.archive.org/web/20251007235917/https://frugalware.org/news/268/[announced] on
+[announced](https://web.archive.org/web/20251007235917/https://frugalware.org/news/268/) on
 2025-10-03.
