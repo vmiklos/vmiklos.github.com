@@ -68,60 +68,35 @@
     <p>Estimated read time: 2 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>The <code>git notes</code> command is really about local annotation of commits&#8201;&#8212;&#8201;nothing
+    <p>The <code>git notes</code> command is really about local annotation of commits -- nothing
 to share. If you decide to still do so, for example the
 <a href="http://git-scm.com/2010/08/25/notes.html">git-scm.com</a> HOWTO can show you how to
-pull and push them. But what about merging?  There is no UI for that, but&#8201;&#8212;&#8201;given that with git, everything is possible&#8201;&#8212;&#8201;you can still do so manually.</p></div>
-<div class="paragraph"><p>So the problem comes when Alice fetches notes, Bob does so, Alice pushes her
+pull and push them. But what about merging?  There is no UI for that, but --
+given that with git, everything is possible -- you can still do so manually.</p>
+<p>So the problem comes when Alice fetches notes, Bob does so, Alice pushes her
 notes back, Bob annotates a different commit and when Bob wants to push, he
 gets <code>rejected, non-fast-forward</code>. Normally you would merge or rebase in this
 situation, but given that <code>git notes</code> by default updates the
 <code>refs/notes/commits</code> ref and you typically have a different branch checked out,
-you can&#8217;t use <code>git merge</code> or <code>git rebase</code> directly.</p></div>
-<div class="paragraph"><p>What works is:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>git checkout refs/notes/commits
+you can't use <code>git merge</code> or <code>git rebase</code> directly.</p>
+<p>What works is:</p>
+<div class="highlight"><pre><span></span><code>git checkout refs/notes/commits
 git fetch origin refs/notes/commits
 git merge FETCH_HEAD
 git update-ref refs/notes/commits HEAD
-git checkout master</code></pre>
-</div></div>
-<div class="colist arabic"><ol>
-<li>
-<p>
-Check out the notes, so if you have conflicts, you can resolve them.
-</p>
-</li>
-<li>
-<p>
-Fetch remote notes to FETCH_HEAD.
-</p>
-</li>
-<li>
-<p>
-Do the merge.
-</p>
-</li>
-<li>
-<p>
-Necessary, as <code>git merge</code> won&#8217;t update the ref automatically, since we&#8217;re not on a branch.
-</p>
-</li>
-<li>
-<p>
-Or whereever you were before.
-</p>
-</li>
-</ol></div>
-<div class="paragraph"><p>And now you can push your notes, as detailed in the above referred blog post.
-Yes, rebasing would be possible as well, that&#8217;s left as an exercise for the
-reader. ;-)</p></div>
-</div>
-</div>
+git checkout master
+</code></pre></div>
 
+<ul>
+<li>Check out the notes, so if you have conflicts, you can resolve them.</li>
+<li>Fetch remote notes to FETCH_HEAD.</li>
+<li>Do the merge.</li>
+<li>Necessary, as <code>git merge</code> won't update the ref automatically, since we're not on a branch.</li>
+<li>Or whereever you were before.</li>
+</ul>
+<p>And now you can push your notes, as detailed in the above referred blog post.
+Yes, rebasing would be possible as well, that's left as an exercise for the
+reader. ;-)</p>
   </div>
   <div class="article_meta">
     <p>Category: <a href="https://vmiklos.hu/blog/category/git.html">git</a>

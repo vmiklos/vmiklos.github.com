@@ -70,34 +70,13 @@
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Here are a few contributions I made recently:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-Git: <a href="http://git.kernel.org/?p=git/git.git;a=commit;h=5ed75e2a3fb30f93fea7772e481ec6091e9a2c5f">cherry-pick: don&#8217;t forget -s on failure</a>
-</p>
-</li>
-<li>
-<p>
-openSUSE / mutt package: <a href="https://build.opensuse.org/request/show/134918">add back lost sidebar color patch</a>
-</p>
-</li>
-<li>
-<p>
-irker-cia-proxy: <a href="https://github.com/nenolod/irker-cia-proxy/commit/60a7f36a4285eeff21533549a6361b3a3e1ab796">make it possible to read input from stdin</a>, <a href="https://github.com/nenolod/irker-cia-proxy/commit/7ca987f7deae17f8a7170e0b0f292dc1f1aebbeb">add support for branch-specific templates</a>
-</p>
-</li>
-<li>
-<p>
-BitlBee: <a href="http://code.bitlbee.org/lh/bitlbee/revision/960">skype: make it not hang with &gt;=2.2.0.35</a>
-</p>
-</li>
-</ul></div>
-</div>
-</div>
-
+    <p>Here are a few contributions I made recently:</p>
+<ul>
+<li>Git: <a href="http://git.kernel.org/?p=git/git.git;a=commit;h=5ed75e2a3fb30f93fea7772e481ec6091e9a2c5f">cherry-pick: don't forget -s on failure</a></li>
+<li>openSUSE / mutt package: <a href="https://build.opensuse.org/request/show/134918">add back lost sidebar color patch</a></li>
+<li>irker-cia-proxy: <a href="https://github.com/nenolod/irker-cia-proxy/commit/60a7f36a4285eeff21533549a6361b3a3e1ab796">make it possible to read input from stdin</a>, <a href="https://github.com/nenolod/irker-cia-proxy/commit/7ca987f7deae17f8a7170e0b0f292dc1f1aebbeb">add support for branch-specific templates</a></li>
+<li>BitlBee: <a href="http://code.bitlbee.org/lh/bitlbee/revision/960">skype: make it not hang with &gt;=2.2.0.35</a></li>
+</ul>
   </div>
 </article>
 <hr />
@@ -112,55 +91,46 @@ BitlBee: <a href="http://code.bitlbee.org/lh/bitlbee/revision/960">skype: make i
     <p>Estimated read time: 2 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>For a family event I received photos from about 6 persons, and wanted to view
+    <p>For a family event I received photos from about 6 persons, and wanted to view
 all of them, sorted by date. The problem was that the timestamps of the files
 were sometimes incorrect, and also in all but one cases the exif timestamp was
 incorrect as well (but at least that was consistently incorrect, e.g. all
-behind of time by 20 mins, etc.)</p></div>
-<div class="paragraph"><p>So first I searched for a photo where a clock is shown, then matched photos by
+behind of time by 20 mins, etc.)</p>
+<p>So first I searched for a photo where a clock is shown, then matched photos by
 different authors showing the same action to know the time delta of each
 camera. The rest can be scripted: just read the exif info, apply the necessary
 time correction based on the camera model, and touch the file with the correct
-date. Then any image viewer can show the photos, sorted by date.</p></div>
-<div class="paragraph"><p>Here is the script I came up with:</p></div>
-<div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight
-by Lorenzo Bettini
-http://www.lorenzobettini.it
-http://www.gnu.org/software/src-highlite -->
-<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">for</span></span> i <span style="font-weight: bold"><span style="color: #0000FF">in</span></span> <span style="color: #990000">*.</span>jpg
-<span style="font-weight: bold"><span style="color: #0000FF">do</span></span>
-    <span style="font-style: italic"><span style="color: #9A1900"># 2012:01:01 01:01:01 -&gt; 2012-01-01 01:01:01</span></span>
-    <span style="color: #009900">date</span><span style="color: #990000">=</span><span style="color: #009900">$(</span>exiv2 <span style="color: #009900">$i</span> <span style="color: #990000">|</span>grep timestamp<span style="color: #990000">|</span>sed <span style="color: #FF0000">'s/.* : //'</span><span style="color: #990000">|</span>sed <span style="color: #FF0000">'s/^</span><span style="color: #CC33CC">\(</span><span style="color: #FF0000">[0-9][0-9][0-9][0-9]</span><span style="color: #CC33CC">\)</span><span style="color: #FF0000">:</span><span style="color: #CC33CC">\(</span><span style="color: #FF0000">[0-9][0-9]</span><span style="color: #CC33CC">\)</span><span style="color: #FF0000">:</span><span style="color: #CC33CC">\(</span><span style="color: #FF0000">[0-9][0-9]</span><span style="color: #CC33CC">\)</span><span style="color: #FF0000">/</span><span style="color: #CC33CC">\1</span><span style="color: #FF0000">-</span><span style="color: #CC33CC">\2</span><span style="color: #FF0000">-</span><span style="color: #CC33CC">\3</span><span style="color: #FF0000">/'</span><span style="color: #990000">)</span>
-    <span style="font-style: italic"><span style="color: #9A1900"># date string -&gt; epoch</span></span>
-    <span style="color: #009900">unix</span><span style="color: #990000">=</span><span style="color: #009900">$(</span>date --date<span style="color: #990000">=</span><span style="color: #FF0000">"$date"</span> <span style="color: #990000">+%</span>s<span style="color: #990000">)</span>
+date. Then any image viewer can show the photos, sorted by date.</p>
+<p>Here is the script I came up with:</p>
+<div class="highlight"><pre><span></span><code><span class="k">for</span><span class="w"> </span>i<span class="w"> </span><span class="k">in</span><span class="w"> </span>*.jpg
+<span class="k">do</span>
+<span class="w">    </span><span class="c1"># 2012:01:01 01:01:01 -&gt; 2012-01-01 01:01:01</span>
+<span class="w">    </span><span class="nv">date</span><span class="o">=</span><span class="k">$(</span>exiv2<span class="w"> </span><span class="nv">$i</span><span class="w"> </span><span class="p">|</span>grep<span class="w"> </span>timestamp<span class="p">|</span>sed<span class="w"> </span><span class="s1">&#39;s/.* : //&#39;</span><span class="p">|</span>sed<span class="w"> </span><span class="s1">&#39;s/^\([0-9][0-9][0-9][0-9]\):\([0-9][0-9]\):\([0-9][0-9]\)/\1-\2-\3/&#39;</span><span class="k">)</span>
+<span class="w">    </span><span class="c1"># date string -&gt; epoch</span>
+<span class="w">    </span><span class="nv">unix</span><span class="o">=</span><span class="k">$(</span>date<span class="w"> </span>--date<span class="o">=</span><span class="s2">&quot;</span><span class="nv">$date</span><span class="s2">&quot;</span><span class="w"> </span>+%s<span class="k">)</span>
 
-    <span style="color: #009900">model</span><span style="color: #990000">=</span><span style="color: #009900">$(</span>exiv2 <span style="color: #009900">$i</span> <span style="color: #990000">|</span>grep model<span style="color: #990000">|</span>sed <span style="color: #FF0000">'s/.*: //'</span><span style="color: #990000">)</span>
+<span class="w">    </span><span class="nv">model</span><span class="o">=</span><span class="k">$(</span>exiv2<span class="w"> </span><span class="nv">$i</span><span class="w"> </span><span class="p">|</span>grep<span class="w"> </span>model<span class="p">|</span>sed<span class="w"> </span><span class="s1">&#39;s/.*: //&#39;</span><span class="k">)</span>
 
-    <span style="font-weight: bold"><span style="color: #0000FF">if</span></span> <span style="color: #990000">[</span> <span style="color: #FF0000">"$model"</span> <span style="color: #990000">==</span> <span style="color: #FF0000">"NIKON D40"</span> <span style="color: #990000">];</span> <span style="font-weight: bold"><span style="color: #0000FF">then</span></span>
-        <span style="color: #009900">unix</span><span style="color: #990000">=</span><span style="color: #009900">$(($unix-1320))</span> <span style="font-style: italic"><span style="color: #9A1900"># Alice</span></span>
-    <span style="font-weight: bold"><span style="color: #0000FF">else</span></span>
-        <span style="color: #009900">unix</span><span style="color: #990000">=</span><span style="color: #009900">$(($unix+3600))</span> <span style="font-style: italic"><span style="color: #9A1900"># Bob</span></span>
-    <span style="font-weight: bold"><span style="color: #0000FF">fi</span></span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$model</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">&quot;NIKON D40&quot;</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">        </span><span class="nv">unix</span><span class="o">=</span><span class="k">$((</span><span class="nv">$unix</span><span class="o">-</span><span class="m">1320</span><span class="k">))</span><span class="w"> </span><span class="c1"># Alice</span>
+<span class="w">    </span><span class="k">else</span>
+<span class="w">        </span><span class="nv">unix</span><span class="o">=</span><span class="k">$((</span><span class="nv">$unix</span><span class="o">+</span><span class="m">3600</span><span class="k">))</span><span class="w"> </span><span class="c1"># Bob</span>
+<span class="w">    </span><span class="k">fi</span>
 
-    <span style="font-style: italic"><span style="color: #9A1900"># epoch -&gt; date string</span></span>
-    <span style="color: #009900">date</span><span style="color: #990000">=</span><span style="color: #009900">$(</span>python -c <span style="color: #FF0000">"import time; print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime($unix))"</span><span style="color: #990000">)</span>
-    <span style="font-style: italic"><span style="color: #9A1900"># profit!</span></span>
-    touch --date<span style="color: #990000">=</span><span style="color: #FF0000">"$date"</span> <span style="color: #009900">$i</span>
-<span style="font-weight: bold"><span style="color: #0000FF">done</span></span>
-<span style="font-style: italic"><span style="color: #9A1900"># write back the timestamps to the exif info (thx boobaa)</span></span>
-jhead -dsft <span style="color: #990000">*.</span>jpg</tt></pre></div></div>
-<div class="paragraph"><p>And additionally if you don&#8217;t want to mess up the settings of the image viewer, you can use:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>c=0; for i in $(ls -lhtr *.jpg|sed 's/.* //'); do c=$((c+1)); cp -a $i new/$(printf "%03d" $c).jpg; done</code></pre>
-</div></div>
-<div class="paragraph"><p>to order filenames based on the file timestamp.</p></div>
-</div>
-</div>
+<span class="w">    </span><span class="c1"># epoch -&gt; date string</span>
+<span class="w">    </span><span class="nv">date</span><span class="o">=</span><span class="k">$(</span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import time; print time.strftime(&#39;%Y-%m-%d %H:%M:%S&#39;, time.localtime(</span><span class="nv">$unix</span><span class="s2">))&quot;</span><span class="k">)</span>
+<span class="w">    </span><span class="c1"># profit!</span>
+<span class="w">    </span>touch<span class="w"> </span>--date<span class="o">=</span><span class="s2">&quot;</span><span class="nv">$date</span><span class="s2">&quot;</span><span class="w"> </span><span class="nv">$i</span>
+<span class="k">done</span>
+<span class="c1"># write back the timestamps to the exif info (thx boobaa)</span>
+jhead<span class="w"> </span>-dsft<span class="w"> </span>*.jpg
+</code></pre></div>
 
+<p>And additionally if you don't want to mess up the settings of the image viewer, you can use:</p>
+<div class="highlight"><pre><span></span><code>c=0; for i in $(ls -lhtr <span class="gs">*.jpg|sed &#39;s/.*</span> //&#39;); do c=$((c+1)); cp -a $i new/$(printf &quot;%03d&quot; $c).jpg; done
+</code></pre></div>
+
+<p>to order filenames based on the file timestamp.</p>
   </div>
 </article>
 <hr />
