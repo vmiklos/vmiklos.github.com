@@ -1,0 +1,8 @@
+Title: title 6
+Slug: title-6
+Category: hacking
+Tags: en
+Date: 2005-09-23T18:32:06Z
+
+on sunday, i'll have to give a presentation about Frugalware on the <a href="http://pete.teamlupus.hu/sfd/">hungarian software freedom day</a>. so i've created a skeleton .sxi for all who want to create Frugalware presentations in the future. that can be reached <a href="http://frugalware.org/~vmiklos/stuff/sxi/skel/skel.sxi">here</a>.
+comments? ;)

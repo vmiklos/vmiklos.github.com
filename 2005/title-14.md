@@ -1,0 +1,7 @@
+Title: title 14
+Slug: title-14
+Category: hacking
+Tags: en
+Date: 2005-10-05T18:30:21Z
+
+i've <a href="http://wiki.frugalware.org/Hibernating">wrote</a> a short hibernation howto to the <a href="http://wiki.frugalware.org/">wiki</a>

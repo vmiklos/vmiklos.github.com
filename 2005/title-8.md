@@ -1,0 +1,8 @@
+Title: title 8
+Slug: title-8
+Category: hacking
+Tags: en
+Date: 2005-09-25T18:33:32Z
+
+ok, so as the sfd is over, here is my presentation (if you speak Hungarian): <a href="http://frugalware.org/~vmiklos/stuff/sxi/sfd/sfd.sxi">sxi</a>, <a href="http://frugalware.org/~vmiklos/stuff/sxi/sfd/sfd.pdf">pdf</a>, <a href="http://frugalware.org/~vmiklos/stuff/sxi/sfd/html/">html</a>.
+that's it! ;)

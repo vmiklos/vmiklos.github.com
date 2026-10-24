@@ -1,0 +1,8 @@
+Title: title 23
+Slug: title-23
+Category: hacking
+Tags: en
+Date: 2005-10-23T14:44:39Z
+
+finally we'are upgraded to the new udev (which have to be done since ages) and which means we have to use cdrom_id instead of cdsymlink.sh to create /dev/{cdrom,cdrw,dvd,dvdrw} and such links
+i hope i didn't break anything :)

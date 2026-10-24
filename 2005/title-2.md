@@ -1,0 +1,10 @@
+Title: title 2
+Slug: title-2
+Category: hacking
+Tags: en
+Date: 2005-10-07T18:05:54Z
+
+the x86_64 build server is on the way. the fixed specs currently are:
+ASUS A8N-E nForce4 ULTRA Socket 939 Athlon64
+AMD ATHLON 64 3000 S939 OEM Venice
+512Mb 533MHz DDR2 Brand Dual channel :)

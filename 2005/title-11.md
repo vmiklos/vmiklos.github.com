@@ -1,0 +1,9 @@
+Title: title 11
+Slug: title-11
+Category: hacking
+Tags: en
+Date: 2005-09-29T00:12:34Z
+
+ok, i'm stuck with mandriva's cvs:
+<code>cvs -d anoncvs@cvs.mandriva.com:/cooker checkout SPECS</code>
+just hangs, even it is <a href="http://qa.mandriva.com/twiki/bin/view/Main/CvsGuide">described</a> to do so. anyway, the <a href="http://cvs.mandriva.com/cgi-bin/cvsweb.cgi/">cvsweb</a> interface works fine

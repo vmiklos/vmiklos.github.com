@@ -3,7 +3,7 @@ Slug: kvm-port-forward
 Category: en
 Date: 2011-08-24T17:28:35Z
 
-This is going to be like my [mysql password set]({filename}/2005/mysql.adoc) post, I
+This is going to be like my [mysql password set]({filename}/2005/mysql.md) post, I
 got tired of looking up the docs all the time, so here it is.
 
 If you have a host running kvm instances and you want to forward the

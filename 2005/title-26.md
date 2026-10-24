@@ -1,0 +1,7 @@
+Title: title 26
+Slug: title-26
+Category: hacking
+Tags: en
+Date: 2005-10-29T12:04:51Z
+
+got to update to kernel-2.6.14. what's new? relayfs, fuse, ipw2?00. (there is a quite readable changelog <a href="http://wiki.kernelnewbies.org/LinuxChanges">here</a>) of course the usual pacman -Syu will do everything for you :)

@@ -1,0 +1,7 @@
+Title: title 13
+Slug: title-13
+Category: hacking
+Tags: en
+Date: 2005-10-04T00:06:00Z
+
+ok, finally genesis.frugalware.org is back. from 13:30 cest on 1st the network connection was down (+there was a power cut) till about 11:00 cest on 3rd, and then there was yet another network problem till about 19:00 cest. grr. but now it seems that everything is fine again and we can prepare rc2 to appear on the mirrors :)

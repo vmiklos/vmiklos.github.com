@@ -4,7 +4,7 @@ Category: howto
 Tags: en
 Date: 2011-12-08T17:53:05Z
 
-This will be similar to my [mysql]({filename}/2005/mysql.adoc) post.
+This will be similar to my [mysql]({filename}/2005/mysql.md) post.
 
 In case you do duplex printing, select:
 

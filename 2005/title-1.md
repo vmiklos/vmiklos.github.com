@@ -1,0 +1,7 @@
+Title: title 1
+Slug: title-1
+Category: hacking
+Tags: en
+Date: 2005-10-07T18:31:30Z
+
+as ironiq <a href="http://blogs.frugalware.org/ironiq/2005/09/23/p29">mentioned</a> above, the spannish translation has been <a href="http://frugalware.org/~vmiklos/pics/qemu/es.png">merged</a> :)
