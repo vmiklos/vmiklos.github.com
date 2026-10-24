@@ -1,0 +1,23 @@
+Title: Kekes
+Slug: kekes
+Category: bringa
+Tags: hu
+Date: 2010-08-01T13:30:42Z
+
+Tegnap ide is eljutottunk. :) A tura celja az volt, hogy kizarolag bringaval egy nap alatt megjarjuk Budapestrol a Kekest majd vissza, ami persze sikerult is.
+
+Terjengos beszamolo helyett par esetleg erdekes adat:
+
+Kmora: netto ido: 12h43m47s (ugy tunik a kijelzo nem bir ket szamjegyu orat kiirni igy aztan ebbol 2h lett, ami amugy 120 feletti atlagot eremmenyezne ;) ), brutto ido kb 19h, tav 252.97km, atlag 19.8, max 61.5 km/h.
+
+Pontos szamitasok mellozese nelkul megjegyzendo, hogy kb 1500m szint volt a teljes tavon, igy nem meglepo a gyatra atlag. (Sot, hazafele az Ors vezer terenel meg 20 felett volt, aztan a vegen mar nem siettem, igy tovabb romlott. ;) )
+
+A masik erdekes dolog a sok piheno; itt kb 3 ora a legelejen (sarvedo-szereles) meg a csucs elott (eso) ment el.
+
+Energiabevitel celjabol a kovetkezok fogytak el: kb 5 liter viz, 4 sos kifli, 2 peksutemeny (dios kifli, kakaos csiga), 4 muzli szelet, 3 banan, 1 croissant, 1 csomag szolocukor.
+
+A tura a hosszu ido miatt elegge lefarasztott, ellenben termeszetesen izomlazat nem okozott. :)
+
+Par kep [itt](https://www.flickr.com/photos/vmiklos/albums/72157670561657251).
+
+[tovabb](http://hup.hu/node/90920)

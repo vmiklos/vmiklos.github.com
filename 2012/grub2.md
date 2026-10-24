@@ -60,7 +60,7 @@ Here are the steps I needed:
          GRUB_GFXMODE=auto
          #GRUB_DISABLE_LINUX_UUID=true
 
-    (Refer to [this post]({filename}/2010/amtterm.adoc) if you don't know the needed port number.)
+    (Refer to [this post]({filename}/2010/amtterm.md) if you don't know the needed port number.)
 
 - Finally run `grub-mkconfig` to create the real config from the just modified default settings.
 - Reboot, and GRUB2, the boot process and the login prompt should be accessible over the serial console again.

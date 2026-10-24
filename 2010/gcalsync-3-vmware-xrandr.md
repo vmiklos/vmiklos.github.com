@@ -1,0 +1,33 @@
+Title: gcalsync #3, vmware, xrandr
+Slug: gcalsync-3-vmware-xrandr
+Category: hacking
+Tags: en
+Date: 2010-03-04T00:34:53Z
+
+First, I wasted a few more hours with my never-ending "sync events form my Nokia S40 phone to Google Calendar" project. The result: it's not a daemon, it checks if the last sync was more than a day ago, if it can ping google.com, and if both, but it can't reach the phone via bluetooth, then it raises a kde4 notification, and it also notifies me when (and how) the sync was done, so that I switch bluetooth off on the phone after the sync. As usual, available [here](http://git.frugalware.org/repos/vmexam/bash/gcalsync).
+
+Second, I managed to fix two annoying bugs when installing Frugalware under VMware: dhcpcd did not update /etc/resolv.conf in the installer properly, now that I changed from dhcpcd to busybox's udhcpc, it seems to be fine. (And udhcpc still works fine in qemu as well.). The other vmware-related improvement is that the newport xorg driver somehow locked up the whole virtual machine, now it's moved to extra, so xconfig does not freeze the VM on a default install.
+
+Third, today finally I managed to figure out how to enable the external output on my netbook, using the openchrome driver. It's just about a single line in xorg.conf:
+
+```
+Option     "ActiveDevice"               "LCD,CRT"
+```
+
+This won't do more than just cloning the output, but it's far enough for me, who just uses the external output for presentation only.
+
+(There is a binary driver which locks up the whole machine about 5-8 times a day, which has a bit better external video support, but stability is far more important for me, and the openchrome driver _is_ stable.)
+
+Partly related, when I connected the external output to a projector, I had to set the screen resolution to 1024x768, and later back to 1280x800. 5 years earlier you had to edit xorg.conf and restart X to do this, now you can do this with xrandr:
+
+```
+$ xrandr --output default --mode 1024x768
+```
+
+and then to switch back:
+
+```
+$ xrandr --output default --mode 1280x800
+```
+
+OK, enough entries for today. :)

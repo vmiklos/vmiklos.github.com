@@ -13,7 +13,7 @@ Hivatalos eredmenyekrol egyelore nem tudok, addig is:
 - gps log
   [itt](http://maps.google.com/?q=http://vmiklos.hu/gps/2011-06-04.kml)
 - kmora ezt merte: ido 8h48m16s, tav 214.56km, atlag 24.3 km/h (ez
-  gyakorlatilag megegyezik a [tavalyi]({filename}/2010/balaton-maraton-2010.adoc)
+  gyakorlatilag megegyezik a [tavalyi]({filename}/2010/balaton-maraton-2010.md)
   ertekkel), max 47.2 km/h
 - LGee kepei
   [erre](https://get.google.com/albumarchive/116149866021135351983/album/AF1QipN5HTHzlLa-vs8MxsCtqzElrC0cNDTzq7zTG-Gr?source=pwa)

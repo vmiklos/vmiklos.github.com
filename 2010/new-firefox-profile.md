@@ -1,0 +1,27 @@
+Title: New firefox profile
+Slug: new-firefox-profile
+Category: hacking
+Tags: en
+Date: 2010-01-05T13:59:48Z
+
+I'm continously upgrading my Frugalware installation, IIRC I installed 0.2 on this Clevo machine and I never saw any reason to reinstall. Sadly the situation is not that easy with applications, for example firefox's profile tends to grow from 20M over 100M and the only way to really get rid of all the junk it has is to start over.
+
+Given that in the last month I did not really have time for such minor problems, now I decided to solve this by doing an `mv ~/.mozilla{,.orig}`.
+
+I must note that I'm not a typical firefox user, given that I store my passwords in cpm, bookmarks in git (as I use multiple machines and I trust those applications more than firefox), and finally all the extensions I use are installed via Frugalware firefox-$extname packages.
+
+Now I thought that this way the new profile usage will be easy enough, though there are still a few things to note:
+
+- The bookmarklets (allowing fast search in various bugtrackers) should be installed again.
+
+- The [searchbar autosizer]({filename}/2008/enjoying-search-autosizer.adoc) addon has bad defaults, I like to have the search bar with a fixed 203px size (355px on 1280x800) -- though nowadays this regressed, see [moz#253331](https://bugzilla.mozilla.org/show_bug.cgi?id=253331).
+
+- Finally I forgot I have a custom userChrome.css (also obsolete nowadays):
+
+```css
+.tabs-newtab-button { display: none; } /* remove New Tab button */
+```
+
+- Change browser.backspace_action to 0 to make backspace to a back (as on Windows).
+
+Other than that, no changes were necessary.
