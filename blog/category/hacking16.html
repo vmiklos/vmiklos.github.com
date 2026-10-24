@@ -157,12 +157,8 @@
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>I did it in <a href="http://blogs.frugalware.org/vmiklos/2007/12/31/ten_goals_we_reached_in_2007">2oo7</a> and <a href="http://blogs.frugalware.org/vmiklos/2006/12/31/p276">2oo6</a>, so I did it <a href="http://article.gmane.org/gmane.linux.frugalware.devel/5129">this year</a> as well.</p><p>Writing such a list takes a lot of time, but I think it worth the effort.</p>
-</div>
-</div>
-
+    <p>I did it in <a href="http://blogs.frugalware.org/vmiklos/2007/12/31/ten_goals_we_reached_in_2007">2oo7</a> and <a href="http://blogs.frugalware.org/vmiklos/2006/12/31/p276">2oo6</a>, so I did it <a href="http://article.gmane.org/gmane.linux.frugalware.devel/5129">this year</a> as well.</p>
+<p>Writing such a list takes a lot of time, but I think it worth the effort.</p>
   </div>
 </article>
 <hr />
@@ -177,15 +173,12 @@
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>I just noticed that I can ask mkpasswd to not include extra signs (so only [A-Za-z0-9]) in the passwd, and also I can ask it to make it longer, for example:</p><p><pre>
+    <p>I just noticed that I can ask mkpasswd to not include extra signs (so only [A-Za-z0-9]) in the passwd, and also I can ask it to make it longer, for example:</p>
+<p><pre>
 $ mkpasswd -l 18 -s 0
 kweufGtytpIj1ds8bw
-</pre></p><p>Sadly it's quite useful on broken websites where they bail out with an error when my pass contains a ' or a "...</p>
-</div>
-</div>
-
+</pre></p>
+<p>Sadly it's quite useful on broken websites where they bail out with an error when my pass contains a ' or a "...</p>
   </div>
 </article>
 <hr />
@@ -200,29 +193,41 @@ kweufGtytpIj1ds8bw
     <p>Estimated read time: 2 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>So here they go.</p><p>First, I needed a list of packages for rebuild:</p><p><pre>
+    <p>So here they go.</p>
+<p>First, I needed a list of packages for rebuild:</p>
+<p><pre>
 wget -O test.html 'http://frugalware.org/packages/?op=file&amp;srch=usr%2Flib%2Fpython2.5&amp;arch=i686&amp;ver=current'
 lynx -dump ./test.html|grep ' [0-9]\+\. \['|sed 's/.*\]\(.*\) .*/\1/' &gt; test.list
-</pre></p><p>Then I used the following cycle:</p><p><pre>
+</pre></p>
+<p>Then I used the following cycle:</p>
+<p><pre>
 git checkout -f; for i in $(cat ~/test.list); do echo $i; cd ~/git/python26/source/*/$i || continue; sudo makepkg -t python2
 6,current -C; git clean -x -d -f; sed -i 's|python&gt;=2.5|python&gt;=2.6|g' FrugalBuild; bumppkg -t python26,current --rebuild "-
  rebuilt with python-2.6" || break; repoman -t python26 -k push; done
-</pre></p><p>When a build failed, I fixed it up manually and used the following aliases:</p><p><pre>
+</pre></p>
+<p>When a build failed, I fixed it up manually and used the following aliases:</p>
+<p><pre>
 alias pybuild="sudo makepkg -t python26,current -cu"
 alias pypush="repoman -t python26 -k push"
 alias pyrec='repoman rec "- rebuilt with python-2.6"'
-</pre></p><p>then removed the already built pkgs from the top of test.list and started the for cycle again.</p><p>Once this was done, I did a</p><p><pre>
+</pre></p>
+<p>then removed the already built pkgs from the top of test.list and started the for cycle again.</p>
+<p>Once this was done, I did a</p>
+<p><pre>
 git grep 'python&gt;=2.5'
-</pre></p><p>to ensure everything has &amp;gt=2.6 now (except a few cases where a rebuild was not necessary).</p><p>Syncing on x86_64 was like this:</p><p>I generated the package order with:</p><p><pre>
+</pre></p>
+<p>to ensure everything has &amp;gt=2.6 now (except a few cases where a rebuild was not necessary).</p>
+<p>Syncing on x86_64 was like this:</p>
+<p>I generated the package order with:</p>
+<p><pre>
 git log --reverse --no-merges --pretty=oneline master ^origin/master|sed 's/.* \(.*\)-[^-]\+-[^-]\+-i686/\1/' > build.list
-</pre></p><p>Then I started a for cycle as well, but now just ignoring the failed builds:</p><p><pre>
+</pre></p>
+<p>Then I started a for cycle as well, but now just ignoring the failed builds:</p>
+<p><pre>
 git checkout -f; for i in $(cat ~/build.list); do echo $i; cd ~/git/python26/source/*/$i || continue; sudo makepkg -t python26,current -C; git clean -x -d -f; makepkg -dgu; rm -rf src; if sudo makepkg -t python26,current -cu; then repoman -t python26 -k push; else echo $i >> ~/broken.list; fi; done
-</pre></p><p>fortunately less then 5% of all pkgs failed.</p><p>OK, that's all.</p>
-</div>
-</div>
-
+</pre></p>
+<p>fortunately less then 5% of all pkgs failed.</p>
+<p>OK, that's all.</p>
   </div>
 </article>
 <hr />
@@ -237,12 +242,8 @@ git checkout -f; for i in $(cat ~/build.list); do echo $i; cd ~/git/python26/sou
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>Started to work on a python26 WIP repo. About 400 packages will need a rebuild, so it'll be fun. I'll publish all the needed scripts here when I'm done - though most of them is in a "use once, then trow away" style.</p><p>While waiting for the above scripts, I also started to work on converting git's builtin-apply to parseopt. Ideally it would be trivial, but it really have a lot of options, so probably I won't finish that today, either.</p>
-</div>
-</div>
-
+    <p>Started to work on a python26 WIP repo. About 400 packages will need a rebuild, so it'll be fun. I'll publish all the needed scripts here when I'm done - though most of them is in a "use once, then trow away" style.</p>
+<p>While waiting for the above scripts, I also started to work on converting git's builtin-apply to parseopt. Ideally it would be trivial, but it really have a lot of options, so probably I won't finish that today, either.</p>
   </div>
 </article>
 <hr />
@@ -257,14 +258,13 @@ git checkout -f; for i in $(cat ~/build.list); do echo $i; cd ~/git/python26/sou
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>Whoa, lots of stuff happened.</p><p>darcs-fast-export 0.8 is out and it passes the big-zoo test. (In short AFAIK darcs2git goes to an infinite loop for big repos, the others just produce corrupted results, and d-f-e is the first that can pass that test.)</p><p>I just noticed a bit expensive (since you'll be billed an international fee), but useful sms2irc method, by using <a href="http://www.sms4skype.net/skype/smstoskypeen.asp">sms4skype</a> + bitlbee-skype. :)</p><p>Oh and a trick. We at Frugalware use a hook to update the working dir after every push, so that the new (in git 1.6.1) warning when pushing to a non-bare repo is bogus. The way to disable it is in git-config, manpage, but here it is:</p><p><pre>
+    <p>Whoa, lots of stuff happened.</p>
+<p>darcs-fast-export 0.8 is out and it passes the big-zoo test. (In short AFAIK darcs2git goes to an infinite loop for big repos, the others just produce corrupted results, and d-f-e is the first that can pass that test.)</p>
+<p>I just noticed a bit expensive (since you'll be billed an international fee), but useful sms2irc method, by using <a href="http://www.sms4skype.net/skype/smstoskypeen.asp">sms4skype</a> + bitlbee-skype. :)</p>
+<p>Oh and a trick. We at Frugalware use a hook to update the working dir after every push, so that the new (in git 1.6.1) warning when pushing to a non-bare repo is bogus. The way to disable it is in git-config, manpage, but here it is:</p>
+<p><pre>
 git config receive.denycurrentbranch ignore
 </pre></p>
-</div>
-</div>
-
   </div>
 </article>
 

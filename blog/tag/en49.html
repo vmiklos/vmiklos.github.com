@@ -68,12 +68,13 @@
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>I got to implement the direct patch technique for darcs2 repos in darcs-fast-export, and it seems to be a dramatic speedup.</p><p>The benchmark was done using darcs' darcs.</p><p><a href="http://vmiklos.hu/project/darcs-fast-export/t/bench-results/darcs-repo_play.tar.gz.d-f-e-0.6.log">Before</a>:</p><p><pre>real    786m16.035s</pre></p><p><a href="http://vmiklos.hu/project/darcs-fast-export/t/bench-results/darcs-repo_play.tar.gz.d-f-e-0.6-21-gb2abee1.log">After</a>:</p><p><pre>real       29m39.458s</pre></p><p>I plan to do a similar benchmark with ghc's darcs repo as well (it contains about 19k patches).</p>
-</div>
-</div>
-
+    <p>I got to implement the direct patch technique for darcs2 repos in darcs-fast-export, and it seems to be a dramatic speedup.</p>
+<p>The benchmark was done using darcs' darcs.</p>
+<p><a href="http://vmiklos.hu/project/darcs-fast-export/t/bench-results/darcs-repo_play.tar.gz.d-f-e-0.6.log">Before</a>:</p>
+<p><pre>real    786m16.035s</pre></p>
+<p><a href="http://vmiklos.hu/project/darcs-fast-export/t/bench-results/darcs-repo_play.tar.gz.d-f-e-0.6-21-gb2abee1.log">After</a>:</p>
+<p><pre>real   29m39.458s</pre></p>
+<p>I plan to do a similar benchmark with ghc's darcs repo as well (it contains about 19k patches).</p>
   </div>
 </article>
 <hr />
@@ -88,14 +89,17 @@
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>So today I did what I have in my TODO for some time: make darcs-fast-export produce the fast-import stream on the fly, without a tmp working dir (that's how tailor and darcs2git works, and I think that's just ugly).</p><p>And the result? I thought this will be the trick that makes it a lot faster, compared to tailor and at the end it turns out that it slows it down about 3 times. :-(</p><p>Not counting speed issues, it's a huge cleanup:</p><p><pre> 12 files changed, 34 insertions(+), 106 deletions(-)</pre></p><p>Dunno what to do with it now. I'll try to poke the darcs devs, maybe they can optimize it a bit.</p><p>The sad fact is the comparision to git:</p><p><pre>
-$ time darcs show contents --match "hash 20040523231834-97f81-2bca6242bec169bd01079378524a33e0310e0b65.gz" tailor.py >/dev/null</p><p>real    0m2.780s
-$ time git show 451ae1176d56a579d3d7bd236fe7d7dd9df59326:tailor.py >/dev/null</p><p>real    0m0.004s</pre></p>
-</div>
-</div>
-
+    <p>So today I did what I have in my TODO for some time: make darcs-fast-export produce the fast-import stream on the fly, without a tmp working dir (that's how tailor and darcs2git works, and I think that's just ugly).</p>
+<p>And the result? I thought this will be the trick that makes it a lot faster, compared to tailor and at the end it turns out that it slows it down about 3 times. :-(</p>
+<p>Not counting speed issues, it's a huge cleanup:</p>
+<p><pre> 12 files changed, 34 insertions(+), 106 deletions(-)</pre></p>
+<p>Dunno what to do with it now. I'll try to poke the darcs devs, maybe they can optimize it a bit.</p>
+<p>The sad fact is the comparision to git:</p>
+<p><pre>
+$ time darcs show contents --match "hash 20040523231834-97f81-2bca6242bec169bd01079378524a33e0310e0b65.gz" tailor.py >/dev/null</p>
+<p>real    0m2.780s
+$ time git show 451ae1176d56a579d3d7bd236fe7d7dd9df59326:tailor.py >/dev/null</p>
+<p>real    0m0.004s</pre></p>
   </div>
 </article>
 <hr />
@@ -110,13 +114,12 @@ $ time git show 451ae1176d56a579d3d7bd236fe7d7dd9df59326:tailor.py >/dev/null</p
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>OK, so I got this idea in the darcs-user mailing list that it would be nice to do some benchmarks on how fast and correct darcs-fast-export is. Actually I already have a TODO item about an idea that would make it faster, but doing a benchmark before doing the speedup is required in that case as well, so that I can show "hey, this is cool, it results in foo% speedup!11". ;-)</p><p>And if I'm already there, I plan to do it with tailor as well, I'm just curious about how fast it is. Ideally fast-import is much faster, but I guess the current darcs exporter does not make use of it, so I expect something like 1:1 for now.</p><p>The test repo is darcs' darcs, current status with darcs-fast-export is like:</p><p><pre>progress [2008-11-25 16:02:28] getting list of patches
-progress [2008-11-26 00:53:25] 4000/6548 patches</pre></p><p>Yeah, darcs apply is slow.</p>
-</div>
-</div>
-
+    <p>OK, so I got this idea in the darcs-user mailing list that it would be nice to do some benchmarks on how fast and correct darcs-fast-export is. Actually I already have a TODO item about an idea that would make it faster, but doing a benchmark before doing the speedup is required in that case as well, so that I can show "hey, this is cool, it results in foo% speedup!11". ;-)</p>
+<p>And if I'm already there, I plan to do it with tailor as well, I'm just curious about how fast it is. Ideally fast-import is much faster, but I guess the current darcs exporter does not make use of it, so I expect something like 1:1 for now.</p>
+<p>The test repo is darcs' darcs, current status with darcs-fast-export is like:</p>
+<p><pre>progress [2008-11-25 16:02:28] getting list of patches
+progress [2008-11-26 00:53:25] 4000/6548 patches</pre></p>
+<p>Yeah, darcs apply is slow.</p>
   </div>
 </article>
 <hr />
@@ -131,12 +134,9 @@ progress [2008-11-26 00:53:25] 4000/6548 patches</pre></p><p>Yeah, darcs apply i
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>I got this exercise at the uni, and I thought it's easier if I split the problem: first the logical one (implement the <a href="http://en.wikipedia.org/wiki/A*#Algorithm_description">pseudocode from Wikipedia</a> in Python) then the RTFM one (figure out the right Java API).</p><p>Of course I wasted the whole evening by not starting working on it, so it was 0:30 when I started. It took about 2 hours to do the <a href="http://vmiklos.hu/gitweb/?p=ai2k8.git;a=blob;f=1/hazi.py;hb=HEAD">Python implementation</a>, and then again two hours to transform it to Java. And of course the code is two times longer. Guess what? One of the guy I talked today was surprised about how short my Java code is. :-P</p><p>BTW, the day before I finally got to write <a href="http://vmiklos.hu/gitweb/?p=darcs-fast-export.git;a=blob;f=git-darcs;hb=HEAD">git-darcs</a>. An old vision that is now reality. :-)</p>
-</div>
-</div>
-
+    <p>I got this exercise at the uni, and I thought it's easier if I split the problem: first the logical one (implement the <a href="http://en.wikipedia.org/wiki/A*#Algorithm_description">pseudocode from Wikipedia</a> in Python) then the RTFM one (figure out the right Java API).</p>
+<p>Of course I wasted the whole evening by not starting working on it, so it was 0:30 when I started. It took about 2 hours to do the <a href="http://vmiklos.hu/gitweb/?p=ai2k8.git;a=blob;f=1/hazi.py;hb=HEAD">Python implementation</a>, and then again two hours to transform it to Java. And of course the code is two times longer. Guess what? One of the guy I talked today was surprised about how short my Java code is. :-P</p>
+<p>BTW, the day before I finally got to write <a href="http://vmiklos.hu/gitweb/?p=darcs-fast-export.git;a=blob;f=git-darcs;hb=HEAD">git-darcs</a>. An old vision that is now reality. :-)</p>
   </div>
 </article>
 <hr />
@@ -151,12 +151,8 @@ progress [2008-11-26 00:53:25] 4000/6548 patches</pre></p><p>Yeah, darcs apply i
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>There is now a <a href="http://vmiklos.hu/project/darcs-fast-export/t/testimport-git-twoway.sh">testcase</a> that checks if the feature mentioned in the post title works.</p><p>Basically I hope I can write - based on this - a git-darcs wrapper that will make it easy to convert a darcs repo to a git one, work in git, then push the result back to the darcs repo, something I wish a long time ago. ;-)</p>
-</div>
-</div>
-
+    <p>There is now a <a href="http://vmiklos.hu/project/darcs-fast-export/t/testimport-git-twoway.sh">testcase</a> that checks if the feature mentioned in the post title works.</p>
+<p>Basically I hope I can write - based on this - a git-darcs wrapper that will make it easy to convert a darcs repo to a git one, work in git, then push the result back to the darcs repo, something I wish a long time ago. ;-)</p>
   </div>
 </article>
 <hr />
@@ -171,12 +167,11 @@ progress [2008-11-26 00:53:25] 4000/6548 patches</pre></p><p>Yeah, darcs apply i
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>I use Frugalware's mutt-ng package for e-mail, which is mutt-devel + a more-or-less small <a href="http://ftp.frugalware.org/pub/other/sources/mutt-ng/">patchset</a>, maintained by voroskoi. Given that he was quite inactive recently, I poked him regularly to update the package (+ the patches, of course) to 1.5.18. I just noticed today that he did so about a month ago. :-)</p><p>Two changes I noticed so far are: 1) when you open a large folder, not only the current/total value is printed for processed mails, but the percentage as well, and 2) the sidebar shows again the number of flagged mails, which feature disappeared IIRC after we switched from "mutt-ng as a fork" to "mutt-ng is mutt-devel + patches".</p><p>Snip. I bumped our kernel to 2.6.27.7 and it seems now I have to update the kernel config even for a new -stable release, which is quite annoying. :-/</p><p>Snip. This evening I got some time to work on this darcs-git stuff again and I tagged darcs-fast-export 0.5 + pushed an initial darcs-fast-import.</p><p>Of course it does not support incremental import, it does not import tags yet and such, but it works! ;-)</p>
-</div>
-</div>
-
+    <p>I use Frugalware's mutt-ng package for e-mail, which is mutt-devel + a more-or-less small <a href="http://ftp.frugalware.org/pub/other/sources/mutt-ng/">patchset</a>, maintained by voroskoi. Given that he was quite inactive recently, I poked him regularly to update the package (+ the patches, of course) to 1.5.18. I just noticed today that he did so about a month ago. :-)</p>
+<p>Two changes I noticed so far are: 1) when you open a large folder, not only the current/total value is printed for processed mails, but the percentage as well, and 2) the sidebar shows again the number of flagged mails, which feature disappeared IIRC after we switched from "mutt-ng as a fork" to "mutt-ng is mutt-devel + patches".</p>
+<p>Snip. I bumped our kernel to 2.6.27.7 and it seems now I have to update the kernel config even for a new -stable release, which is quite annoying. :-/</p>
+<p>Snip. This evening I got some time to work on this darcs-git stuff again and I tagged darcs-fast-export 0.5 + pushed an initial darcs-fast-import.</p>
+<p>Of course it does not support incremental import, it does not import tags yet and such, but it works! ;-)</p>
   </div>
 </article>
 <hr />
@@ -191,12 +186,7 @@ progress [2008-11-26 00:53:25] 4000/6548 patches</pre></p><p>Yeah, darcs apply i
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-The <a href="http://github.com/felipec/codeswarm.rb/tree">project</a> was linked on a news site today, but <a href="http://frugalware.org/~voroskoi/">voroskoi</a> already poked me about "hey, you should try it out with Frugalware", so I was aware of the project already. The reason I point it out is that now they create a <a href="http://www.youtube.com/watch?v=PxjLbj8oT1k">sample</a> for Git as well, and I seem to appear in it at 4m25s, heh.
-</div>
-</div>
-
+    <p>The <a href="http://github.com/felipec/codeswarm.rb/tree">project</a> was linked on a news site today, but <a href="http://frugalware.org/~voroskoi/">voroskoi</a> already poked me about "hey, you should try it out with Frugalware", so I was aware of the project already. The reason I point it out is that now they create a <a href="http://www.youtube.com/watch?v=PxjLbj8oT1k">sample</a> for Git as well, and I seem to appear in it at 4m25s, heh.</p>
   </div>
 </article>
 <hr />
@@ -211,12 +201,7 @@ The <a href="http://github.com/felipec/codeswarm.rb/tree">project</a> was linked
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-The IPv6 tunnel I use changed its IPv4 address. This caused some great silence in my IRC client, basically none of the freenode people was able to poke me with random problems. ;-) But the party is over, since the <a href="http://koszik.net/">tunnel guy</a> was kind enough to mail the new IP.
-</div>
-</div>
-
+    <p>The IPv6 tunnel I use changed its IPv4 address. This caused some great silence in my IRC client, basically none of the freenode people was able to poke me with random problems. ;-) But the party is over, since the <a href="http://koszik.net/">tunnel guy</a> was kind enough to mail the new IP.</p>
   </div>
 </article>
 <hr />
@@ -231,12 +216,8 @@ The IPv6 tunnel I use changed its IPv4 address. This caused some great silence i
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>i just recently got a mail about that 'bitlbee1.asnetinc.net' is a public server with my skype plugin installed. in other words, you no longer are forced to run your own bitlbee server if you want to use skype from bitlbee, yay! :)</p><p>note: actually if you are behind nat, then this is not something useful for you as the public server will want to connect to your skype instance, actually. :/</p>
-</div>
-</div>
-
+    <p>i just recently got a mail about that 'bitlbee1.asnetinc.net' is a public server with my skype plugin installed. in other words, you no longer are forced to run your own bitlbee server if you want to use skype from bitlbee, yay! :)</p>
+<p>note: actually if you are behind nat, then this is not something useful for you as the public server will want to connect to your skype instance, actually. :/</p>
   </div>
 </article>
 <hr />
@@ -251,17 +232,20 @@ The IPv6 tunnel I use changed its IPv4 address. This caused some great silence i
     <p>Estimated read time: 2 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>so, one of my friends called me a few days ago, saying 'hi, i got this eee pc, it's shipped with win xp, could you please install frugalware on it, making it dual-bootable?'.</p><p>today i got the gadget, i had about 3 hours to play with it, so i did not have much time.</p><p>first, there was an <a href="http://git.frugalware.org/gitweb/gitweb.cgi?p=setup.git;a=commit;h=6928ab07c4de2797ffb9a7edb6f0da24c80e82e1">installer bug</a>, but fortunately it was trivial to fix it up. second, the internal wifi card is not supported by 2.6.26, so i made a kernel package from <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/bmf/frugalware-i686/kernel-2.6.26-2bmf1-i686.fpm">2.6.27-rc6</a> and made a custom usb installer using that kernel.</p><p>once that was ok, the installation went fairly easy. minor problems were that the netinstall by default wants to use ftp but we were behind a proxy, so we needed http. and other problem was that there were two ntfs partitions, the second was empty, i just formatted it as ext3, using it as /, but i did not set the partition type from ntfs to linux and grub refused to install because of my laziness.</p><p>i did not want to do a full install but i needed network, so i installed base+network. once that was fine, i installed some other packages/groups: acpi, mc, x11 and kdebase.</p><p>so far what i saw working:</p><p><ul>
+    <p>so, one of my friends called me a few days ago, saying 'hi, i got this eee pc, it's shipped with win xp, could you please install frugalware on it, making it dual-bootable?'.</p>
+<p>today i got the gadget, i had about 3 hours to play with it, so i did not have much time.</p>
+<p>first, there was an <a href="http://git.frugalware.org/gitweb/gitweb.cgi?p=setup.git;a=commit;h=6928ab07c4de2797ffb9a7edb6f0da24c80e82e1">installer bug</a>, but fortunately it was trivial to fix it up. second, the internal wifi card is not supported by 2.6.26, so i made a kernel package from <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/bmf/frugalware-i686/kernel-2.6.26-2bmf1-i686.fpm">2.6.27-rc6</a> and made a custom usb installer using that kernel.</p>
+<p>once that was ok, the installation went fairly easy. minor problems were that the netinstall by default wants to use ftp but we were behind a proxy, so we needed http. and other problem was that there were two ntfs partitions, the second was empty, i just formatted it as ext3, using it as /, but i did not set the partition type from ntfs to linux and grub refused to install because of my laziness.</p>
+<p>i did not want to do a full install but i needed network, so i installed base+network. once that was fine, i installed some other packages/groups: acpi, mc, x11 and kdebase.</p>
+<p>so far what i saw working:</p>
+<p><ul>
   <li>wireless, that was working in the netinstall as well after the kernel update</li>
   <li>touchpad</li>
   <li>xorg, using that 1024x600 custom resolution.</li>
   <li>acpi reported the correct battery status</li>
-</ul></p><p>unfortunately i had no more time to play with it, so i did not check how suspend, 3d acceleration, ethernet card and webcam works.</p><p>in short, i think it's nice it has no major problems, but probably it's hard for non-developers to install it as long as we don't have kernel-2.6.27 in current.</p>
-</div>
-</div>
-
+</ul></p>
+<p>unfortunately i had no more time to play with it, so i did not check how suspend, 3d acceleration, ethernet card and webcam works.</p>
+<p>in short, i think it's nice it has no major problems, but probably it's hard for non-developers to install it as long as we don't have kernel-2.6.27 in current.</p>
   </div>
 </article>
 
