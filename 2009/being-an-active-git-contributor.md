@@ -1,0 +1,7 @@
+Title: Being an active git contributor
+Slug: being-an-active-git-contributor
+Category: hacking
+Tags: en
+Date: 2009-03-13T01:18:57Z
+
+<p>I just found this <a href="http://git.or.cz/gitwiki/SoC2009Application">here</a>:</p><p>"The Eclipse plugin and builtin-merge projects were integrated into the mainline source code. The latter student remains a very active contributor to our project."</p><p>Heh, that'd be me. ;-)</p>

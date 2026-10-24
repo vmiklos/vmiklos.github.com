@@ -1,0 +1,7 @@
+Title: rss2email breakage
+Slug: rss2email-breakage
+Category: hacking
+Tags: en
+Date: 2009-03-28T15:21:04Z
+
+I just noticed that I don't have any new mails in my rss notification folder - it turns out that it's because my rss2email fork is broken. Yeah, I remember, I just created a small patch, sent it upstream, then stopped updating rss2email till I get a response from the maintainer. No response so far but now I rebased it, as it seems the latest upstream release works fine with python-2.6.

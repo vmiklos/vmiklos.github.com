@@ -1,0 +1,7 @@
+Title: scooter rss
+Slug: scooter-rss
+Category: hacking
+Tags: en
+Date: 2009-05-25T01:35:42Z
+
+I just noticed that scootertechno.com has no RSS, so I wrote one. Available <a href="http://git.frugalware.org/gitweb/gitweb.cgi?p=vmexam.git;a=tree;f=python/mod_python/rss/scooter;hb=HEAD">here</a>, or in "binary form", <a href="http://frugalware.org/~vmiklos/rss/scooter/scooter.py">here</a>.

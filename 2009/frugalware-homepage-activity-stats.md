@@ -1,0 +1,12 @@
+Title: Frugalware homepage activity stats
+Slug: frugalware-homepage-activity-stats
+Category: hacking
+Tags: en
+Date: 2009-03-26T00:24:43Z
+
+<p>That's interesting. My feeling was that recently the popularity of Frugalware was not increasing but staging, but then I had a look at the apache logs and checked the number of hits one days after the release of 0.9 and 1.0:</p><p><pre>
+$ grep -c '10/Sep/2008' www.frugalware.org-access_log
+88223
+$ grep -c '23/Mar/2009' www.frugalware.org-access_log
+216817
+</pre></p><p>So it seems we recently get way much more hits than previously. Interesting.</p>

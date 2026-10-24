@@ -1,0 +1,11 @@
+Title: b2evo 3
+Slug: b2evo-3
+Category: hacking
+Tags: en
+Date: 2009-09-07T00:42:07Z
+
+I had an "upgrade to latest b2evo 2.x stable" on my TODO for a long time and then I realized that I
+would have to upgrade to 3.x. That's a nightmare, when I switched from 1.x to 2.x it took a few days
+till I ported my patchset to the new major version. Now that these days I don't care about details
+so much, I just decided to drop my hacks and return to the vanilla b2evo. This way the upgrade took
+only about 5 mins and as a side effect my 'hacking' posts are included on the main page as well.

@@ -1,0 +1,7 @@
+Title: Python3
+Slug: python3
+Category: hacking
+Tags: en
+Date: 2009-02-17T02:18:35Z
+
+<p>Finally python 3.0 (or python3k) arrived to -current. Of course the external modules are still for 2.6, but that's not something we want to change before 1.0</p><p>OTOH, they screwed up something at the uni, the dhcp servers were not functional on the wireless network, so I had time to read my current book, and did not read email till 22h. :-)</p>

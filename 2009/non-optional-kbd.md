@@ -1,0 +1,7 @@
+Title: Non-optional kbd
+Slug: non-optional-kbd
+Category: hacking
+Tags: en
+Date: 2009-01-05T00:10:04Z
+
+<p>Still preparing for my 'Computer Networks' exam, so I did not do much coding.</p><p>LGee just uploaded a few new pictures about his servers, and there are two interesting ones. ;-)</p><p>First is this one. And then yes, I must agree that some mainboards are really can't be used a server.</p><p>This other one is just interesting - first we though that's a bug in the Frugalware ppc installer, then later it turned out to be a generic Linux-ppc issue.</p>

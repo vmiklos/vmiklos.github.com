@@ -1,0 +1,7 @@
+Title: Java plugin for x86_64
+Slug: java-plugin-for-x86-64
+Category: hacking
+Tags: en
+Date: 2009-02-11T02:02:14Z
+
+<p>Tthe i686 java plugin is at /usr/lib/java/jre/plugin/i386/ns7/libjavaplugin_oji.so. Guess where is the x86_64 one.. /usr/lib/java/jre/lib/amd64/libnpjp2.so.</p><p>Logical - dear Sun -, eh?</p>

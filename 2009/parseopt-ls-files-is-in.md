@@ -1,0 +1,7 @@
+Title: parseopt-ls-files is in
+Slug: parseopt-ls-files-is-in
+Category: hacking
+Tags: en
+Date: 2009-03-22T00:36:26Z
+
+<p>Finally my parseopt patch in git-ls-files <a href="http://git.kernel.org/?p=git/git.git;a=commit;h=de2e3b04cd70a22016561547530f980c66807641">got merged</a>. It becomes clear how I have less and less time for git, it took about a month. ;-)</p><p>An other interesting project (sadly in Perl) to try out (twitter via irc) is <a href="http://code.google.com/p/tircd/">here</a>.</p>

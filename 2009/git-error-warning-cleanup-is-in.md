@@ -1,0 +1,7 @@
+Title: Git error/warning cleanup is in
+Slug: git-error-warning-cleanup-is-in
+Category: hacking
+Tags: en
+Date: 2009-03-25T23:29:17Z
+
+See <a href="http://git.kernel.org/?p=git/git.git;a=shortlog;h=edbc25c5b377d6fe768cefcc8614cd254a9fc4ff">here</a>. All 9 patches, yay. :)

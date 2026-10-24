@@ -1,0 +1,7 @@
+Title: first swig patch!
+Slug: first-swig-patch
+Category: hacking
+Tags: en
+Date: 2009-03-30T01:46:52Z
+
+<p><a href="http://swig.svn.sourceforge.net/viewvc/swig?view=rev&amp;revision=11174">Here</a>. :-)</p><p>I have an <a href="http://frugalware.org/~vmiklos/patches/swig-Fix-the-arrays_global_runme.php-test.patch">other one</a> as well, but that's not yet commited (and it may be even wrong).</p>

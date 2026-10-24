@@ -1,0 +1,7 @@
+Title: "clock runs way faster than necessary" bug solved
+Slug: clock-runs-way-faster-than-necessary-bug
+Category: hacking
+Tags: en
+Date: 2009-01-23T01:13:35Z
+
+<p>Heh, it took my whole day. So the <a href="http://thread.gmane.org/gmane.linux.kernel/784192">solution</a> was that I needed to disable two CONFIG setting Crazy enabled (+ I enabled KVM again, not sure if that is related or not).</p><p>And of course bisecting was totally damn unnecessary, since the bug is triggered by a given config line, not by a bad commit.</p><p>Life is good.</p>

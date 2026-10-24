@@ -13,16 +13,16 @@ Idén igyekeztem a korábbi évek gyakorlatával ellentétben egy kicsit
 tudatosabban készülni. Így került sor a következő túrákra:
 
 - április 7: Pilis, 126 km ([erről már írtam]({filename}/2013/fehervasarnap.md))
-- április 14: [Gödöllő K30]({filename}/2009/godollo-30.adoc), 102 km
+- április 14: [Gödöllő K30]({filename}/2009/godollo-30.md), 102 km
   ([GPS
   track](https://maps.google.com/maps?q=http://vmiklos.hu/gps/2013-04-14.kml), a kmóra ezeket mérte: idő 4h27m11s, átlag 22.8 km/h, max 45.7 km/h)
-- április 27: [Dunakanyar]({filename}/2009/visegrad.adoc), 125 km
+- április 27: [Dunakanyar]({filename}/2009/visegrad.md), 125 km
   ([GPS
   track](https://maps.google.com/maps?q=http://vmiklos.hu/gps/2013-04-27.kml), a kmóra ezeket mérte: idő 5h33m29s, átlag 22.4 km/h, max 37.0 km/h)
 - május 4: Ráckeve, 105 km
   ([GPS
 track](https://maps.google.com/maps?q=http://vmiklos.hu/gps/2013-05-04.kml), a kmóra ezeket mérte: idő 4h31m31s, átlag 23.1 km/h, max 31.8 km/h)
-- május 27: [Gödöllő K100]({filename}/2009/godollo-170.adoc), 168 km
+- május 27: [Gödöllő K100]({filename}/2009/godollo-170.md), 168 km
   ([GPS
   track](https://maps.google.com/maps?q=http://vmiklos.hu/gps/2013-05-25.kml), a kmóra ezeket mérte: idő 7h35m3s, átlag 22.0 km/h, max 51.4 km/h)
 

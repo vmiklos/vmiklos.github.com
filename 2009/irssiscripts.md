@@ -1,0 +1,7 @@
+Title: irssiscripts
+Slug: irssiscripts
+Category: hacking
+Tags: en
+Date: 2009-01-24T17:01:49Z
+
+<p>I got a reply to patches I sent one and a half year ago. ;)</p><p>My patches to anames.pl and sockter-interface.pl are now applied in f0rked's <a href="http://github.com/msparks/irssiscripts">irssiscripts</a> repo.</p>

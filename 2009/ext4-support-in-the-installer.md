@@ -1,0 +1,7 @@
+Title: Ext4 support in the installer
+Slug: ext4-support-in-the-installer
+Category: hacking
+Tags: en
+Date: 2009-02-12T00:30:00Z
+
+<p>So first I had to patch our grub, then adding ext4 support to the installer was more or less trivial.</p><p>The default is still ext3, though.</p>
