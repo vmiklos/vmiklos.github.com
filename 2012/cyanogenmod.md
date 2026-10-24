@@ -3,7 +3,7 @@ Slug: cyanogenmod
 Category: en
 Date: 2012-09-27T19:28:43Z
 
-So even if I [bookmarked]({filename}/2011/galaxy-s.adoc) a thread to have a
+So even if I [bookmarked]({filename}/2011/galaxy-s.md) a thread to have a
 look at the CyanogenMod install on my phone last year, I didn't have a look at
 that till yesterday. The final motivation was that I thought that CM 9.1 (not
 containing any Samsung code) will not be vulnerable wrt.

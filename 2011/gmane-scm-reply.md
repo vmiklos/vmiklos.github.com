@@ -1,0 +1,19 @@
+Title: Replying to SCM commits using Gmane
+Slug: gmane-scm-reply
+Category: hacking
+Tags: en
+Date: 2011-11-21T00:41:31Z
+
+SCM commit mailing lists are handy in case you want to comment others' commits
+in an email. OTOH they are problematic, as they generate a lot of mails, and in
+case I subscribe to the list, usually I don't read those commits at all. (In
+case you have time to read them, that's a different use case.)
+
+So here is an example how to reply properly -- without having to subscribe.
+
+- [search](http://search.gmane.org/search.php?group=gmane.comp.documentfoundation.libreoffice.scm&query=b863767bd1ddc2af18900fa1df0cd61ef2fa6edb)
+  for the commit ID you want to comment (here b863767bd1ddc2af18900fa1df0cd61ef2fa6edb)
+- extract the article ID associated to the push from the link (here 1643)
+- [download](http://download.gmane.org/gmane.comp.documentfoundation.libreoffice.scm/1643/1644)
+  the article in mbox format, so you can reply to it from mutt (or your other
+  favorite MUA).
