@@ -510,43 +510,29 @@ Frugalware<span class="w"> </span><span class="m">1</span>.5<span class="w"> </s
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>I did not care about boot speed for a long time, since servers usually
+    <p>I did not care about boot speed for a long time, since servers usually
 restarted only for kernel upgrades, laptops suspend to ram all the time,
 and I have no desktop machine at home for years now.  Though one use
 case started to motivate me recently: I use virtual machines a lot, and
-waiting for them to boot up is boring.</p></div>
-<div class="paragraph"><p>So I looked at the <code>systemd-analyze blame</code> output, and it turned out
+waiting for them to boot up is boring.</p>
+<p>So I looked at the <code>systemd-analyze blame</code> output, and it turned out
 that for a base-only install the only service that takes a lot of time
-is <code>netconfig</code>. It&#8217;s because it was a <code>oneshot</code> service, so the whole
+is <code>netconfig</code>. It's because it was a <code>oneshot</code> service, so the whole
 boot process waited for <code>dhcpcd</code> to get an IP. A much better solution is
-to just start netconfig in the background and move on&#8201;&#8212;&#8201;and that&#8217;s
-exactly frugalwareutils in git does now.</p></div>
-<div class="paragraph"><p>Before:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>$ systemd-analyze
-Startup finished in 2030ms (kernel) + 1166ms (initrd) + 6755ms (userspace) = 9953ms</code></pre>
-</div></div>
-<div class="paragraph"><p>After:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>$ systemd-analyze
-Startup finished in 2039ms (kernel) + 1146ms (initrd) + 892ms (userspace) = 4079ms</code></pre>
-</div></div>
-<div class="admonitionblock">
-<table><tr>
-<td class="icon">
-<div class="title">Note</div>
-</td>
-<td class="content">Again, this is for a virtual machine (where the host has some IO
-cache) and for a base-only install.</td>
-</tr></table>
-</div>
-</div>
-</div>
+to just start netconfig in the background and move on -- and that's
+exactly frugalwareutils in git does now.</p>
+<p>Before:</p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>systemd-analyze<span class="w"> </span>
+Startup<span class="w"> </span>finished<span class="w"> </span><span class="k">in</span><span class="w"> </span>2030ms<span class="w"> </span><span class="o">(</span>kernel<span class="o">)</span><span class="w"> </span>+<span class="w"> </span>1166ms<span class="w"> </span><span class="o">(</span>initrd<span class="o">)</span><span class="w"> </span>+<span class="w"> </span>6755ms<span class="w"> </span><span class="o">(</span>userspace<span class="o">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>9953ms
+</code></pre></div>
 
+<p>After:</p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>systemd-analyze<span class="w"> </span>
+Startup<span class="w"> </span>finished<span class="w"> </span><span class="k">in</span><span class="w"> </span>2039ms<span class="w"> </span><span class="o">(</span>kernel<span class="o">)</span><span class="w"> </span>+<span class="w"> </span>1146ms<span class="w"> </span><span class="o">(</span>initrd<span class="o">)</span><span class="w"> </span>+<span class="w"> </span>892ms<span class="w"> </span><span class="o">(</span>userspace<span class="o">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>4079ms
+</code></pre></div>
+
+<p><strong>NOTE:</strong> Again, this is for a virtual machine (where the host has some IO
+cache) and for a base-only install.</p>
   </div>
 </article>
 <hr />
@@ -561,17 +547,12 @@ cache) and for a base-only install.</td>
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Yesterday I
+    <p>Yesterday I
 <a href="http://frugalware.org/pipermail/frugalware-git/2011-January/056115.html">enabled</a>
 udev support in our LVM package, and that means LVM volumes under
 systemd not work as expected. Thanks to Lennart for the quick
 <a href="http://article.gmane.org/gmane.comp.sysutils.systemd.devel/1073">answer</a>.
-:)</p></div>
-</div>
-</div>
-
+:)</p>
   </div>
 </article>
 <hr />
@@ -586,42 +567,34 @@ systemd not work as expected. Thanks to Lennart for the quick
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="/pic/nationality-of-frugalware-developers.t.png" alt="/pic/nationality-of-frugalware-developers.t.png" />
-</div>
-</div>
-<div class="paragraph"><p>Just a FYI:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>$ ./chkacc --verbose
-Accepting active developer 'vmiklos' [hu]
-Accepting active developer 'iron' [hu]
-Accepting active developer 'voroskoi' [hu]
-Accepting active developer 'boobaa' [hu]
-Accepting active developer 'crazy' [ro]
-Accepting active developer 'priyank' [in]
-Accepting active developer 'hermier' [fr]
-Accepting active developer 'devil505' [fr]
-Accepting active developer 'bouleetbil' [fr]
-Accepting active developer 'ryuo' [us]
-Accepting active developer 'gholafox' [fr]
-Accepting active developer 'phayz' [au]
-Accepting active developer 'elentir' [fr]
-Accepting active developer 'cedynamix' [fr]
-Accepting active developer 'jercel' [fr]
-Accepting active developer 'exceed' [fr]
-Accepting active developer 'dex' [de]
-Accepting active developer 'kooda' [fr]
-Accepting active developer 'centuri0' [fr]
-Accepting active developer 'kikadf' [hu]
-Accepting active developer 'pingax' [fr]</code></pre>
-</div></div>
-</div>
-</div>
-
+    <p>
+<figure><img src="/pic/nationality-of-frugalware-developers.t.png"><figcaption>nationality-of-frugalware-developers</figcaption>
+</figure>
+</p>
+<p>Just a FYI:</p>
+<div class="highlight"><pre><span></span><code><span class="err">$</span><span class="w"> </span><span class="p">.</span><span class="o">/</span><span class="n">chkacc</span><span class="w"> </span><span class="o">--</span><span class="n">verbose</span>
+<span class="n">Accepting</span><span class="w"> </span><span class="n">active</span><span class="w"> </span><span class="n">developer</span><span class="w"> </span><span class="s1">&#39;vmiklos&#39;</span><span class="w"> </span><span class="o">[</span><span class="n">hu</span><span class="o">]</span>
+<span class="n">Accepting</span><span class="w"> </span><span class="n">active</span><span class="w"> </span><span class="n">developer</span><span class="w"> </span><span class="s1">&#39;iron&#39;</span><span class="w"> </span><span class="o">[</span><span class="n">hu</span><span class="o">]</span>
+<span class="n">Accepting</span><span class="w"> </span><span class="n">active</span><span class="w"> </span><span class="n">developer</span><span class="w"> </span><span class="s1">&#39;voroskoi&#39;</span><span class="w"> </span><span class="o">[</span><span class="n">hu</span><span class="o">]</span>
+<span class="n">Accepting</span><span class="w"> </span><span class="n">active</span><span class="w"> </span><span class="n">developer</span><span class="w"> </span><span class="s1">&#39;boobaa&#39;</span><span class="w"> </span><span class="o">[</span><span class="n">hu</span><span class="o">]</span>
+<span class="n">Accepting</span><span class="w"> </span><span class="n">active</span><span class="w"> </span><span class="n">developer</span><span class="w"> </span><span class="s1">&#39;crazy&#39;</span><span class="w"> </span><span class="o">[</span><span class="n">ro</span><span class="o">]</span>
+<span class="n">Accepting</span><span class="w"> </span><span class="n">active</span><span class="w"> </span><span class="n">developer</span><span class="w"> </span><span class="s1">&#39;priyank&#39;</span><span class="w"> </span><span class="o">[</span><span class="n">in</span><span class="o">]</span>
+<span class="n">Accepting</span><span class="w"> </span><span class="n">active</span><span class="w"> </span><span class="n">developer</span><span class="w"> </span><span class="s1">&#39;hermier&#39;</span><span class="w"> </span><span class="o">[</span><span class="n">fr</span><span class="o">]</span>
+<span class="n">Accepting</span><span class="w"> </span><span class="n">active</span><span class="w"> </span><span class="n">developer</span><span class="w"> </span><span class="s1">&#39;devil505&#39;</span><span class="w"> </span><span class="o">[</span><span class="n">fr</span><span class="o">]</span>
+<span class="n">Accepting</span><span class="w"> </span><span class="n">active</span><span class="w"> </span><span class="n">developer</span><span class="w"> </span><span class="s1">&#39;bouleetbil&#39;</span><span class="w"> </span><span class="o">[</span><span class="n">fr</span><span class="o">]</span>
+<span class="n">Accepting</span><span class="w"> </span><span class="n">active</span><span class="w"> </span><span class="n">developer</span><span class="w"> </span><span class="s1">&#39;ryuo&#39;</span><span class="w"> </span><span class="o">[</span><span class="n">us</span><span class="o">]</span>
+<span class="n">Accepting</span><span class="w"> </span><span class="n">active</span><span class="w"> </span><span class="n">developer</span><span class="w"> </span><span class="s1">&#39;gholafox&#39;</span><span class="w"> </span><span class="o">[</span><span class="n">fr</span><span class="o">]</span>
+<span class="n">Accepting</span><span class="w"> </span><span class="n">active</span><span class="w"> </span><span class="n">developer</span><span class="w"> </span><span class="s1">&#39;phayz&#39;</span><span class="w"> </span><span class="o">[</span><span class="n">au</span><span class="o">]</span>
+<span class="n">Accepting</span><span class="w"> </span><span class="n">active</span><span class="w"> </span><span class="n">developer</span><span class="w"> </span><span class="s1">&#39;elentir&#39;</span><span class="w"> </span><span class="o">[</span><span class="n">fr</span><span class="o">]</span>
+<span class="n">Accepting</span><span class="w"> </span><span class="n">active</span><span class="w"> </span><span class="n">developer</span><span class="w"> </span><span class="s1">&#39;cedynamix&#39;</span><span class="w"> </span><span class="o">[</span><span class="n">fr</span><span class="o">]</span>
+<span class="n">Accepting</span><span class="w"> </span><span class="n">active</span><span class="w"> </span><span class="n">developer</span><span class="w"> </span><span class="s1">&#39;jercel&#39;</span><span class="w"> </span><span class="o">[</span><span class="n">fr</span><span class="o">]</span>
+<span class="n">Accepting</span><span class="w"> </span><span class="n">active</span><span class="w"> </span><span class="n">developer</span><span class="w"> </span><span class="s1">&#39;exceed&#39;</span><span class="w"> </span><span class="o">[</span><span class="n">fr</span><span class="o">]</span>
+<span class="n">Accepting</span><span class="w"> </span><span class="n">active</span><span class="w"> </span><span class="n">developer</span><span class="w"> </span><span class="s1">&#39;dex&#39;</span><span class="w"> </span><span class="o">[</span><span class="n">de</span><span class="o">]</span>
+<span class="n">Accepting</span><span class="w"> </span><span class="n">active</span><span class="w"> </span><span class="n">developer</span><span class="w"> </span><span class="s1">&#39;kooda&#39;</span><span class="w"> </span><span class="o">[</span><span class="n">fr</span><span class="o">]</span>
+<span class="n">Accepting</span><span class="w"> </span><span class="n">active</span><span class="w"> </span><span class="n">developer</span><span class="w"> </span><span class="s1">&#39;centuri0&#39;</span><span class="w"> </span><span class="o">[</span><span class="n">fr</span><span class="o">]</span>
+<span class="n">Accepting</span><span class="w"> </span><span class="n">active</span><span class="w"> </span><span class="n">developer</span><span class="w"> </span><span class="s1">&#39;kikadf&#39;</span><span class="w"> </span><span class="o">[</span><span class="n">hu</span><span class="o">]</span>
+<span class="n">Accepting</span><span class="w"> </span><span class="n">active</span><span class="w"> </span><span class="n">developer</span><span class="w"> </span><span class="s1">&#39;pingax&#39;</span><span class="w"> </span><span class="o">[</span><span class="n">fr</span><span class="o">]</span>
+</code></pre></div>
   </div>
 </article>
 <hr />

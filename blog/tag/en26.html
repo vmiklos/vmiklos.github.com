@@ -68,43 +68,29 @@
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>I did not care about boot speed for a long time, since servers usually
+    <p>I did not care about boot speed for a long time, since servers usually
 restarted only for kernel upgrades, laptops suspend to ram all the time,
 and I have no desktop machine at home for years now.  Though one use
 case started to motivate me recently: I use virtual machines a lot, and
-waiting for them to boot up is boring.</p></div>
-<div class="paragraph"><p>So I looked at the <code>systemd-analyze blame</code> output, and it turned out
+waiting for them to boot up is boring.</p>
+<p>So I looked at the <code>systemd-analyze blame</code> output, and it turned out
 that for a base-only install the only service that takes a lot of time
-is <code>netconfig</code>. It&#8217;s because it was a <code>oneshot</code> service, so the whole
+is <code>netconfig</code>. It's because it was a <code>oneshot</code> service, so the whole
 boot process waited for <code>dhcpcd</code> to get an IP. A much better solution is
-to just start netconfig in the background and move on&#8201;&#8212;&#8201;and that&#8217;s
-exactly frugalwareutils in git does now.</p></div>
-<div class="paragraph"><p>Before:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>$ systemd-analyze
-Startup finished in 2030ms (kernel) + 1166ms (initrd) + 6755ms (userspace) = 9953ms</code></pre>
-</div></div>
-<div class="paragraph"><p>After:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>$ systemd-analyze
-Startup finished in 2039ms (kernel) + 1146ms (initrd) + 892ms (userspace) = 4079ms</code></pre>
-</div></div>
-<div class="admonitionblock">
-<table><tr>
-<td class="icon">
-<div class="title">Note</div>
-</td>
-<td class="content">Again, this is for a virtual machine (where the host has some IO
-cache) and for a base-only install.</td>
-</tr></table>
-</div>
-</div>
-</div>
+to just start netconfig in the background and move on -- and that's
+exactly frugalwareutils in git does now.</p>
+<p>Before:</p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>systemd-analyze<span class="w"> </span>
+Startup<span class="w"> </span>finished<span class="w"> </span><span class="k">in</span><span class="w"> </span>2030ms<span class="w"> </span><span class="o">(</span>kernel<span class="o">)</span><span class="w"> </span>+<span class="w"> </span>1166ms<span class="w"> </span><span class="o">(</span>initrd<span class="o">)</span><span class="w"> </span>+<span class="w"> </span>6755ms<span class="w"> </span><span class="o">(</span>userspace<span class="o">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>9953ms
+</code></pre></div>
 
+<p>After:</p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>systemd-analyze<span class="w"> </span>
+Startup<span class="w"> </span>finished<span class="w"> </span><span class="k">in</span><span class="w"> </span>2039ms<span class="w"> </span><span class="o">(</span>kernel<span class="o">)</span><span class="w"> </span>+<span class="w"> </span>1146ms<span class="w"> </span><span class="o">(</span>initrd<span class="o">)</span><span class="w"> </span>+<span class="w"> </span>892ms<span class="w"> </span><span class="o">(</span>userspace<span class="o">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>4079ms
+</code></pre></div>
+
+<p><strong>NOTE:</strong> Again, this is for a virtual machine (where the host has some IO
+cache) and for a base-only install.</p>
   </div>
 </article>
 <hr />
@@ -119,25 +105,19 @@ cache) and for a base-only install.</td>
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>When we got back from Munich, Andras had an idea what is the current
+    <p>When we got back from Munich, Andras had an idea what is the current
 bottleneck with the build when there are a lot of languages enabled, and
-it was the <code>po2oo</code> script, which is part of <code>translate-toolkit</code>.</p></div>
-<div class="paragraph"><p>First I tried to optimize that script, but then I tried to do the same
+it was the <code>po2oo</code> script, which is part of <code>translate-toolkit</code>.</p>
+<p>First I tried to optimize that script, but then I tried to do the same
 gettext-to-SDF conversion from scratch, without using that framework at
 all, and it seems that caused a
-<a href="http://article.gmane.org/gmane.comp.documentfoundation.libreoffice.devel/16491">drastic
-speedup</a>.</p></div>
-<div class="paragraph"><p>There were a few iterations, but now the
+<a href="http://article.gmane.org/gmane.comp.documentfoundation.libreoffice.devel/16491">drastic speedup</a>.</p>
+<p>There were a few iterations, but now the
 <a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=1fff8f2576faf3faa141471790ff5d18e0740b0d">two</a>
 <a href="http://cgit.freedesktop.org/libreoffice/translations/commit/?id=7e0aa0d881f50c9d8fa5c94249e5f892f3725b22">patches</a>
 are in master, along with a fix in
 <a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=47a8454f5f76030203ce6458cf63d4348bdacffe">fast_merge.pl</a>,
-which was there since at least commit 654810b (2009-06-17). ;)</p></div>
-</div>
-</div>
-
+which was there since at least commit 654810b (2009-06-17). ;)</p>
   </div>
 </article>
 <hr />
@@ -152,22 +132,16 @@ which was there since at least commit 654810b (2009-06-17). ;)</p></div>
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="http://vmiklos.hu/pic/hackfest2011.png" alt="http://vmiklos.hu/pic/hackfest2011.png" />
-</div>
-</div>
-<div class="paragraph"><p>We were in Munich during this weekend, and I think all of us had great
+    <p>
+<figure><img src="http://vmiklos.hu/pic/hackfest2011.png"><figcaption>hackfest2011</figcaption>
+</figure>
+</p>
+<p>We were in Munich during this weekend, and I think all of us had great
 fun, kudos go to the organizers! If you are curious, there is a growing
 <a href="http://wiki.documentfoundation.org/Hackfest2011#Achievements">list</a> of
-features implemented during the event.</p></div>
-<div class="paragraph"><p>Update: Oh, and I forgot to mention that we (Andras and me) especially
-thank the <a href="http://fsf.hu/">FSF.hu</a> foundation for funding our travel!</p></div>
-</div>
-</div>
-
+features implemented during the event.</p>
+<p>Update: Oh, and I forgot to mention that we (Andras and me) especially
+thank the <a href="http://fsf.hu/">FSF.hu</a> foundation for funding our travel!</p>
   </div>
 </article>
 <hr />
@@ -182,30 +156,25 @@ thank the <a href="http://fsf.hu/">FSF.hu</a> foundation for funding our travel!
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Tonight I worked on
+    <p>Tonight I worked on
 <a href="https://bugs.freedesktop.org/show_bug.cgi?id=39337">fdo#39337</a>, and while
 the writerfilter-based RTF import filter almost handled the document in
-question correctly, the fonts were not correct.</p></div>
-<div class="paragraph"><p>It turned out that this was caused by the fact that RTF&#8217;s font table (a
+question correctly, the fonts were not correct.</p>
+<p>It turned out that this was caused by the fact that RTF's font table (a
 table where each row has an ID and it contains the font name, charset
-and other properties) does not require continuous ID&#8217;s (for example
+and other properties) does not require continuous ID's (for example
 positions 0, 2, 3 are allowed, even if 1 is not set), but dmapper (the
-glue layer between the RTF tokenizer and the Writer UNO API) does.</p></div>
-<div class="paragraph"><p>I already sent the position of the entry to dmapper, but the position
+glue layer between the RTF tokenizer and the Writer UNO API) does.</p>
+<p>I already sent the position of the entry to dmapper, but the position
 turned out to be
 <a href="http://opengrok.libreoffice.org/xref/core/writerfilter/source/dmapper/FontTable.cxx#157">ignored</a>,
-so now I fixed the RTF tokenizer to send continuous ID&#8217;s.</p></div>
-<div class="paragraph"><p>A related improvement is that I just discovered the
+so now I fixed the RTF tokenizer to send continuous ID's.</p>
+<p>A related improvement is that I just discovered the
 <code>writerfilter::TagLogger::unoPropertySet()</code> method, which can dump the
-properties of an UNO object, and now I&#8217;ve
+properties of an UNO object, and now I've
 <a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=120003152826b7450bbf384a9633c83dda4782c7">enabled</a>
 dumping of shape properties, which can help a lot when something goes
-wrong there.</p></div>
-</div>
-</div>
-
+wrong there.</p>
   </div>
 </article>
 <hr />
@@ -220,30 +189,23 @@ wrong there.</p></div>
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="http://bitlbee.org/style/logo.png" alt="http://bitlbee.org/style/logo.png" />
-</div>
-</div>
-<div class="paragraph"><p>Back in April I had the idea to merge my <code>bitlbee-skype</code> plugin to the
+    <p>
+<figure><img src="http://bitlbee.org/style/logo.png"><figcaption>BitlBee logo</figcaption>
+</figure>
+</p>
+<p>Back in April I had the idea to merge my <code>bitlbee-skype</code> plugin to the
 main BitlBee project. The reason is simple: BitlBee does not really have
 plugins (basically my Skype plugin was the only one) and because of
 this, ABI compatibility was not guaranteed, so I usually had to rebuild
 or even fix it after each BitlBee release (though Wilmer was helpful in
 case I was in doubt). Today this is all past, the plugin is
-<a href="http://bugs.bitlbee.org/bitlbee/changeset/devel%2C802">part of the main
-BitlBee repo</a> I won&#8217;t make separate <code>bitlbee-skype</code> releases anymore. (Latest
+<a href="http://bugs.bitlbee.org/bitlbee/changeset/devel%2C802">part of the main BitlBee repo</a> I won't make separate <code>bitlbee-skype</code> releases anymore. (Latest
 version of the code is
 <a href="http://code.bitlbee.org/lh/bitlbee/files/head:/protocols/skype/">here</a>, bzr info
-<a href="http://code.bitlbee.org/bitlbee/">here</a>.)</p></div>
-<div class="paragraph"><p>I&#8217;m quite happy this little piece of software did not get lost, but now
+<a href="http://code.bitlbee.org/bitlbee/">here</a>.)</p>
+<p>I'm quite happy this little piece of software did not get lost, but now
 is in the hands of an active maintainer again. :) If you need help with
-BitlBee, ask on #bitlbee, at irc.oftc.net.</p></div>
-</div>
-</div>
-
+BitlBee, ask on #bitlbee, at irc.oftc.net.</p>
   </div>
 </article>
 <hr />
@@ -258,30 +220,24 @@ BitlBee, ask on #bitlbee, at irc.oftc.net.</p></div>
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>The next major LibreOffice version, 3.4, means some work for (Linux
+    <p>The next major LibreOffice version, 3.4, means some work for (Linux
 distribution, and other) packagers, as the <code>build</code> repo is now
 deprecated and packagers are suggested to use the <code>bootstrap</code> repo
-directly, which is a different build system.</p></div>
-<div class="paragraph"><p>On one hand, this is a nice cleanup - there is now a single configure
-script. OTOH this needs major rework of distro build scripts.</p></div>
-<div class="paragraph"><p>The interesting part here is that the official binary installers are not
+directly, which is a different build system.</p>
+<p>On one hand, this is a nice cleanup - there is now a single configure
+script. OTOH this needs major rework of distro build scripts.</p>
+<p>The interesting part here is that the official binary installers are not
 using the <code>make DESTDIR=/some/path install</code> method to install the
-compiled binaries, so it was discovered quite late that it wasn&#8217;t
+compiled binaries, so it was discovered quite late that it wasn't
 working properly. First Hanno and Petr
-<a href="http://cgit.freedesktop.org/libreoffice/bootstrap/commit/?id=c612724331a3d66d2ee488d91161a54f4d3576bd">worked
-on this</a>, then I
+<a href="http://cgit.freedesktop.org/libreoffice/bootstrap/commit/?id=c612724331a3d66d2ee488d91161a54f4d3576bd">worked on this</a>, then I
 <a href="http://cgit.freedesktop.org/libreoffice/bootstrap/commit/?id=b9dd2241c60635ba15929ffad9962928460bd3ec">fixed</a>
-a minor, but blocking glitch.</p></div>
-<div class="paragraph"><p>As a result 3.4 beta4 will be something packagers (even the ones not
+a minor, but blocking glitch.</p>
+<p>As a result 3.4 beta4 will be something packagers (even the ones not
 using the split build) can offer to distro users for testing without
 patching. Binaries for Frugalware users
 <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/lotesting/frugalware-i686/">here</a>
-(i686-only at the moment).</p></div>
-</div>
-</div>
-
+(i686-only at the moment).</p>
   </div>
 </article>
 <hr />
@@ -296,20 +252,13 @@ patching. Binaries for Frugalware users
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="http://code.google.com/images/GSoC2011_300x200.png" alt="http://code.google.com/images/GSoC2011_300x200.png" />
-</div>
-</div>
-<div class="paragraph"><p>I just got the mail about
-<a href="http://www.google-melange.com/gsoc/project/google/gsoc2011/vmiklos/9001">my
-LibreOffice proposal</a> got accepted to Google Summer of Code 2011. I&#8217;m
-looking forward to an exciting summer. :)</p></div>
-</div>
-</div>
-
+    <p>
+<figure><img src="http://code.google.com/images/GSoC2011_300x200.png"><figcaption>GSoC2011</figcaption>
+</figure>
+</p>
+<p>I just got the mail about
+<a href="http://www.google-melange.com/gsoc/project/google/gsoc2011/vmiklos/9001">my LibreOffice proposal</a> got accepted to Google Summer of Code 2011. I'm
+looking forward to an exciting summer. :)</p>
   </div>
 </article>
 <hr />
@@ -324,23 +273,17 @@ looking forward to an exciting summer. :)</p></div>
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="https://lh3.googleusercontent.com/-D-pV0cucPL0/UYduyolR-AI/AAAAAAAACso/zL9Vd2IQgY0/s400/fdo32413.png" alt="https://lh3.googleusercontent.com/-D-pV0cucPL0/UYduyolR-AI/AAAAAAAACso/zL9Vd2IQgY0/s400/fdo32413.png" />
-</div>
-</div>
-<div class="paragraph"><p>LibreOffice 3.4 will have a new
+    <p>
+<figure><img src="https://lh3.googleusercontent.com/-D-pV0cucPL0/UYduyolR-AI/AAAAAAAACso/zL9Vd2IQgY0/s400/fdo32413.png"><figcaption>fdo32413</figcaption>
+</figure>
+</p>
+<p>LibreOffice 3.4 will have a new
 <a href="http://cgit.freedesktop.org/libreoffice/writer/commit/?id=c62b8fc02d9357cea7fd399b173ed5280bf4c53c">feature</a>,
 if you edit styles in Writer, then you can test your style changes
-without manually closing and opening the style edit dialog again.</p></div>
-<div class="paragraph"><p>Do you like this feature? There are still similar
+without manually closing and opening the style edit dialog again.</p>
+<p>Do you like this feature? There are still similar
 <a href="https://bugs.freedesktop.org/show_bug.cgi?id=32413">remaining dialogs</a> to
-improve like this, send in a patch!</p></div>
-</div>
-</div>
-
+improve like this, send in a patch!</p>
   </div>
 </article>
 <hr />
@@ -355,23 +298,18 @@ improve like this, send in a patch!</p></div>
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>We recently merged KDE 4.6 in Frugalware -current and since now it uses
+    <p>We recently merged KDE 4.6 in Frugalware -current and since now it uses
 <code>upower</code>, it catches the sleep button of my netbook. The problem is that
-it tried to suspend instead of hibernation - what I wanted.</p></div>
-<div class="paragraph"><p>The trick is easy, but not really obvious. First, I disabled
+it tried to suspend instead of hibernation - what I wanted.</p>
+<p>The trick is easy, but not really obvious. First, I disabled
 suspend/hibernate in
 <code>/usr/share/polkit-1/actions/org.freedesktop.upower.policy</code> so that I
-can play with this without actually hibernating/suspending the system.</p></div>
-<div class="paragraph"><p>Second, I went to System Settings &#8594; Input actions &#8594; Global, selected
+can play with this without actually hibernating/suspending the system.</p>
+<p>Second, I went to System Settings -&gt; Input actions -&gt; Global, selected
 "KDE services" and there you can see Suspend and Hibernate as well. Go
 to Hibernate, and set a custom shortcut: it will ask if you want to
-remove the sleep button from Suspend - the answer is obviously yes.</p></div>
-<div class="paragraph"><p>Done!</p></div>
-</div>
-</div>
-
+remove the sleep button from Suspend - the answer is obviously yes.</p>
+<p>Done!</p>
   </div>
 </article>
 <hr />
@@ -386,39 +324,29 @@ remove the sleep button from Suspend - the answer is obviously yes.</p></div>
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>I got <a href="https://bugs.freedesktop.org/show_bug.cgi?id=33478">a report</a> about
-two problems which got fixed in master now.</p></div>
-<div class="paragraph"><p>The first error is triggered, if you have special (in RTF terms, so for
+    <p>I got <a href="https://bugs.freedesktop.org/show_bug.cgi?id=33478">a report</a> about
+two problems which got fixed in master now.</p>
+<p>The first error is triggered, if you have special (in RTF terms, so for
 example <code>{</code> or <code>}</code>) characters in style names. The result was not so
-friendly when you opened such a document:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="http://vmiklos.hu/pic/loru1.png" alt="http://vmiklos.hu/pic/loru1.png" />
-</div>
-</div>
-<div class="paragraph"><p>After applying the
-<a href="http://cgit.freedesktop.org/libreoffice/writer/commit/?id=1482475880c2902d8e041bdc211fc52afd4a7efb">first
-fix</a>, the document was imported but the original
+friendly when you opened such a document:</p>
+<p>
+<figure><img src="http://vmiklos.hu/pic/loru1.png"><figcaption>loru1</figcaption>
+</figure>
+</p>
+<p>After applying the
+<a href="http://cgit.freedesktop.org/libreoffice/writer/commit/?id=1482475880c2902d8e041bdc211fc52afd4a7efb">first fix</a>, the document was imported but the original
 &#1058;&#1077;&#1089;&#1090; text was replaced by something
-non-unicode:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="http://vmiklos.hu/pic/loru2.png" alt="http://vmiklos.hu/pic/loru2.png" />
-</div>
-</div>
-<div class="paragraph"><p>The
-<a href="http://cgit.freedesktop.org/libreoffice/writer/commit/?id=a37fae128b4badc8f9f2201e28dca3e08948ddec">second
-fix</a> addresses this, and now the result is the expected one:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="http://vmiklos.hu/pic/loru3.png" alt="http://vmiklos.hu/pic/loru3.png" />
-</div>
-</div>
-</div>
-</div>
-
+non-unicode:</p>
+<p>
+<figure><img src="http://vmiklos.hu/pic/loru2.png"><figcaption>loru2</figcaption>
+</figure>
+</p>
+<p>The
+<a href="http://cgit.freedesktop.org/libreoffice/writer/commit/?id=a37fae128b4badc8f9f2201e28dca3e08948ddec">second fix</a> addresses this, and now the result is the expected one:</p>
+<p>
+<figure><img src="http://vmiklos.hu/pic/loru3.png"><figcaption>loru3</figcaption>
+</figure>
+</p>
   </div>
 </article>
 

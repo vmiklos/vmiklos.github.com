@@ -68,30 +68,25 @@
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Tonight I worked on
+    <p>Tonight I worked on
 <a href="https://bugs.freedesktop.org/show_bug.cgi?id=39337">fdo#39337</a>, and while
 the writerfilter-based RTF import filter almost handled the document in
-question correctly, the fonts were not correct.</p></div>
-<div class="paragraph"><p>It turned out that this was caused by the fact that RTF&#8217;s font table (a
+question correctly, the fonts were not correct.</p>
+<p>It turned out that this was caused by the fact that RTF's font table (a
 table where each row has an ID and it contains the font name, charset
-and other properties) does not require continuous ID&#8217;s (for example
+and other properties) does not require continuous ID's (for example
 positions 0, 2, 3 are allowed, even if 1 is not set), but dmapper (the
-glue layer between the RTF tokenizer and the Writer UNO API) does.</p></div>
-<div class="paragraph"><p>I already sent the position of the entry to dmapper, but the position
+glue layer between the RTF tokenizer and the Writer UNO API) does.</p>
+<p>I already sent the position of the entry to dmapper, but the position
 turned out to be
 <a href="http://opengrok.libreoffice.org/xref/core/writerfilter/source/dmapper/FontTable.cxx#157">ignored</a>,
-so now I fixed the RTF tokenizer to send continuous ID&#8217;s.</p></div>
-<div class="paragraph"><p>A related improvement is that I just discovered the
+so now I fixed the RTF tokenizer to send continuous ID's.</p>
+<p>A related improvement is that I just discovered the
 <code>writerfilter::TagLogger::unoPropertySet()</code> method, which can dump the
-properties of an UNO object, and now I&#8217;ve
+properties of an UNO object, and now I've
 <a href="http://cgit.freedesktop.org/libreoffice/core/commit/?id=120003152826b7450bbf384a9633c83dda4782c7">enabled</a>
 dumping of shape properties, which can help a lot when something goes
-wrong there.</p></div>
-</div>
-</div>
-
+wrong there.</p>
   </div>
   <div class="article_meta">
     <p>Category: <a href="https://vmiklos.hu/blog/category/gsoc2011.html">gsoc2011</a>

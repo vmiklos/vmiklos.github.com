@@ -68,39 +68,29 @@
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>I got <a href="https://bugs.freedesktop.org/show_bug.cgi?id=33478">a report</a> about
-two problems which got fixed in master now.</p></div>
-<div class="paragraph"><p>The first error is triggered, if you have special (in RTF terms, so for
+    <p>I got <a href="https://bugs.freedesktop.org/show_bug.cgi?id=33478">a report</a> about
+two problems which got fixed in master now.</p>
+<p>The first error is triggered, if you have special (in RTF terms, so for
 example <code>{</code> or <code>}</code>) characters in style names. The result was not so
-friendly when you opened such a document:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="http://vmiklos.hu/pic/loru1.png" alt="http://vmiklos.hu/pic/loru1.png" />
-</div>
-</div>
-<div class="paragraph"><p>After applying the
-<a href="http://cgit.freedesktop.org/libreoffice/writer/commit/?id=1482475880c2902d8e041bdc211fc52afd4a7efb">first
-fix</a>, the document was imported but the original
+friendly when you opened such a document:</p>
+<p>
+<figure><img src="http://vmiklos.hu/pic/loru1.png"><figcaption>loru1</figcaption>
+</figure>
+</p>
+<p>After applying the
+<a href="http://cgit.freedesktop.org/libreoffice/writer/commit/?id=1482475880c2902d8e041bdc211fc52afd4a7efb">first fix</a>, the document was imported but the original
 &#1058;&#1077;&#1089;&#1090; text was replaced by something
-non-unicode:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="http://vmiklos.hu/pic/loru2.png" alt="http://vmiklos.hu/pic/loru2.png" />
-</div>
-</div>
-<div class="paragraph"><p>The
-<a href="http://cgit.freedesktop.org/libreoffice/writer/commit/?id=a37fae128b4badc8f9f2201e28dca3e08948ddec">second
-fix</a> addresses this, and now the result is the expected one:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="http://vmiklos.hu/pic/loru3.png" alt="http://vmiklos.hu/pic/loru3.png" />
-</div>
-</div>
-</div>
-</div>
-
+non-unicode:</p>
+<p>
+<figure><img src="http://vmiklos.hu/pic/loru2.png"><figcaption>loru2</figcaption>
+</figure>
+</p>
+<p>The
+<a href="http://cgit.freedesktop.org/libreoffice/writer/commit/?id=a37fae128b4badc8f9f2201e28dca3e08948ddec">second fix</a> addresses this, and now the result is the expected one:</p>
+<p>
+<figure><img src="http://vmiklos.hu/pic/loru3.png"><figcaption>loru3</figcaption>
+</figure>
+</p>
   </div>
 </article>
 <hr />
@@ -115,48 +105,34 @@ fix</a> addresses this, and now the result is the expected one:</p></div>
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>There was a thread about this topic already, but just refusing to commit
+    <p>There was a thread about this topic already, but just refusing to commit
 new files without documentation sounded too aggressive. So the
-<a href="http://cgit.freedesktop.org/libreoffice/bootstrap/commit/?id=5e7d47da56c9b35331756bcb915b23e2f14a62d6">current
-code</a> just prints a warning.</p></div>
-<div class="paragraph"><p>It was also requested to show some good/bad examples. Lubos
+<a href="http://cgit.freedesktop.org/libreoffice/bootstrap/commit/?id=5e7d47da56c9b35331756bcb915b23e2f14a62d6">current code</a> just prints a warning.</p>
+<p>It was also requested to show some good/bad examples. Lubos
 <a href="http://thread.gmane.org/gmane.comp.documentfoundation.libreoffice.devel/2938/focus=5389">volunteered</a>
-to add detailed instructions in the wiki, so I&#8217;m just describing in
-short what did I test so far.</p></div>
-<div class="paragraph"><p>A good example:</p></div>
-<div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight
-by Lorenzo Bettini
-http://www.lorenzobettini.it
-http://www.gnu.org/software/src-highlite -->
-<pre><tt><span style="font-style: italic"><span style="color: #9A1900">/// Handles export of foos using RTF markup</span></span>
-<span style="font-weight: bold"><span style="color: #0000FF">class</span></span> <span style="color: #008080">RtfFoo</span>
-<span style="color: #FF0000">{</span>
-<span style="color: #FF0000">}</span><span style="color: #990000">;</span></tt></pre></div></div>
-<div class="paragraph"><p>A bad example:</p></div>
-<div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight
-by Lorenzo Bettini
-http://www.lorenzobettini.it
-http://www.gnu.org/software/src-highlite -->
-<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">class</span></span> <span style="color: #008080">RtfBarBuggy</span>
-<span style="color: #FF0000">{</span>
-<span style="color: #FF0000">}</span><span style="color: #990000">;</span></tt></pre></div></div>
-<div class="paragraph"><p>Example output when a warning is emitted:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>~/git/libreoffice/master/sw$ git commit -a -m foo
+to add detailed instructions in the wiki, so I'm just describing in
+short what did I test so far.</p>
+<p>A good example:</p>
+<div class="highlight"><pre><span></span><code><span class="c1">/// Handles export of foos using RTF markup</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">RtfFoo</span>
+<span class="p">{</span>
+<span class="p">};</span>
+</code></pre></div>
+
+<p>A bad example:</p>
+<div class="highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">RtfBarBuggy</span>
+<span class="p">{</span>
+<span class="p">};</span>
+</code></pre></div>
+
+<p>Example output when a warning is emitted:</p>
+<div class="highlight"><pre><span></span><code>~/git/libreoffice/master/sw$ git commit -a -m foo
 sw/source/filter/ww8/bar.hxx:30: warning: Compound RtfBarBuggy is not documented.
 [master 1b11571] foo
  3 files changed, 68 insertions(+), 0 deletions(-)
  create mode 100644 sw/source/filter/ww8/bar.hxx
- create mode 100644 sw/source/filter/ww8/foo.hxx</code></pre>
-</div></div>
-</div>
-</div>
-
+ create mode 100644 sw/source/filter/ww8/foo.hxx
+</code></pre></div>
   </div>
 </article>
 <hr />
@@ -171,17 +147,12 @@ sw/source/filter/ww8/bar.hxx:30: warning: Compound RtfBarBuggy is not documented
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Yesterday I
+    <p>Yesterday I
 <a href="http://frugalware.org/pipermail/frugalware-git/2011-January/056115.html">enabled</a>
 udev support in our LVM package, and that means LVM volumes under
 systemd not work as expected. Thanks to Lennart for the quick
 <a href="http://article.gmane.org/gmane.comp.sysutils.systemd.devel/1073">answer</a>.
-:)</p></div>
-</div>
-</div>
-
+:)</p>
   </div>
 </article>
 <hr />
@@ -196,42 +167,34 @@ systemd not work as expected. Thanks to Lennart for the quick
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="/pic/nationality-of-frugalware-developers.t.png" alt="/pic/nationality-of-frugalware-developers.t.png" />
-</div>
-</div>
-<div class="paragraph"><p>Just a FYI:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>$ ./chkacc --verbose
-Accepting active developer 'vmiklos' [hu]
-Accepting active developer 'iron' [hu]
-Accepting active developer 'voroskoi' [hu]
-Accepting active developer 'boobaa' [hu]
-Accepting active developer 'crazy' [ro]
-Accepting active developer 'priyank' [in]
-Accepting active developer 'hermier' [fr]
-Accepting active developer 'devil505' [fr]
-Accepting active developer 'bouleetbil' [fr]
-Accepting active developer 'ryuo' [us]
-Accepting active developer 'gholafox' [fr]
-Accepting active developer 'phayz' [au]
-Accepting active developer 'elentir' [fr]
-Accepting active developer 'cedynamix' [fr]
-Accepting active developer 'jercel' [fr]
-Accepting active developer 'exceed' [fr]
-Accepting active developer 'dex' [de]
-Accepting active developer 'kooda' [fr]
-Accepting active developer 'centuri0' [fr]
-Accepting active developer 'kikadf' [hu]
-Accepting active developer 'pingax' [fr]</code></pre>
-</div></div>
-</div>
-</div>
-
+    <p>
+<figure><img src="/pic/nationality-of-frugalware-developers.t.png"><figcaption>nationality-of-frugalware-developers</figcaption>
+</figure>
+</p>
+<p>Just a FYI:</p>
+<div class="highlight"><pre><span></span><code><span class="err">$</span><span class="w"> </span><span class="p">.</span><span class="o">/</span><span class="n">chkacc</span><span class="w"> </span><span class="o">--</span><span class="n">verbose</span>
+<span class="n">Accepting</span><span class="w"> </span><span class="n">active</span><span class="w"> </span><span class="n">developer</span><span class="w"> </span><span class="s1">&#39;vmiklos&#39;</span><span class="w"> </span><span class="o">[</span><span class="n">hu</span><span class="o">]</span>
+<span class="n">Accepting</span><span class="w"> </span><span class="n">active</span><span class="w"> </span><span class="n">developer</span><span class="w"> </span><span class="s1">&#39;iron&#39;</span><span class="w"> </span><span class="o">[</span><span class="n">hu</span><span class="o">]</span>
+<span class="n">Accepting</span><span class="w"> </span><span class="n">active</span><span class="w"> </span><span class="n">developer</span><span class="w"> </span><span class="s1">&#39;voroskoi&#39;</span><span class="w"> </span><span class="o">[</span><span class="n">hu</span><span class="o">]</span>
+<span class="n">Accepting</span><span class="w"> </span><span class="n">active</span><span class="w"> </span><span class="n">developer</span><span class="w"> </span><span class="s1">&#39;boobaa&#39;</span><span class="w"> </span><span class="o">[</span><span class="n">hu</span><span class="o">]</span>
+<span class="n">Accepting</span><span class="w"> </span><span class="n">active</span><span class="w"> </span><span class="n">developer</span><span class="w"> </span><span class="s1">&#39;crazy&#39;</span><span class="w"> </span><span class="o">[</span><span class="n">ro</span><span class="o">]</span>
+<span class="n">Accepting</span><span class="w"> </span><span class="n">active</span><span class="w"> </span><span class="n">developer</span><span class="w"> </span><span class="s1">&#39;priyank&#39;</span><span class="w"> </span><span class="o">[</span><span class="n">in</span><span class="o">]</span>
+<span class="n">Accepting</span><span class="w"> </span><span class="n">active</span><span class="w"> </span><span class="n">developer</span><span class="w"> </span><span class="s1">&#39;hermier&#39;</span><span class="w"> </span><span class="o">[</span><span class="n">fr</span><span class="o">]</span>
+<span class="n">Accepting</span><span class="w"> </span><span class="n">active</span><span class="w"> </span><span class="n">developer</span><span class="w"> </span><span class="s1">&#39;devil505&#39;</span><span class="w"> </span><span class="o">[</span><span class="n">fr</span><span class="o">]</span>
+<span class="n">Accepting</span><span class="w"> </span><span class="n">active</span><span class="w"> </span><span class="n">developer</span><span class="w"> </span><span class="s1">&#39;bouleetbil&#39;</span><span class="w"> </span><span class="o">[</span><span class="n">fr</span><span class="o">]</span>
+<span class="n">Accepting</span><span class="w"> </span><span class="n">active</span><span class="w"> </span><span class="n">developer</span><span class="w"> </span><span class="s1">&#39;ryuo&#39;</span><span class="w"> </span><span class="o">[</span><span class="n">us</span><span class="o">]</span>
+<span class="n">Accepting</span><span class="w"> </span><span class="n">active</span><span class="w"> </span><span class="n">developer</span><span class="w"> </span><span class="s1">&#39;gholafox&#39;</span><span class="w"> </span><span class="o">[</span><span class="n">fr</span><span class="o">]</span>
+<span class="n">Accepting</span><span class="w"> </span><span class="n">active</span><span class="w"> </span><span class="n">developer</span><span class="w"> </span><span class="s1">&#39;phayz&#39;</span><span class="w"> </span><span class="o">[</span><span class="n">au</span><span class="o">]</span>
+<span class="n">Accepting</span><span class="w"> </span><span class="n">active</span><span class="w"> </span><span class="n">developer</span><span class="w"> </span><span class="s1">&#39;elentir&#39;</span><span class="w"> </span><span class="o">[</span><span class="n">fr</span><span class="o">]</span>
+<span class="n">Accepting</span><span class="w"> </span><span class="n">active</span><span class="w"> </span><span class="n">developer</span><span class="w"> </span><span class="s1">&#39;cedynamix&#39;</span><span class="w"> </span><span class="o">[</span><span class="n">fr</span><span class="o">]</span>
+<span class="n">Accepting</span><span class="w"> </span><span class="n">active</span><span class="w"> </span><span class="n">developer</span><span class="w"> </span><span class="s1">&#39;jercel&#39;</span><span class="w"> </span><span class="o">[</span><span class="n">fr</span><span class="o">]</span>
+<span class="n">Accepting</span><span class="w"> </span><span class="n">active</span><span class="w"> </span><span class="n">developer</span><span class="w"> </span><span class="s1">&#39;exceed&#39;</span><span class="w"> </span><span class="o">[</span><span class="n">fr</span><span class="o">]</span>
+<span class="n">Accepting</span><span class="w"> </span><span class="n">active</span><span class="w"> </span><span class="n">developer</span><span class="w"> </span><span class="s1">&#39;dex&#39;</span><span class="w"> </span><span class="o">[</span><span class="n">de</span><span class="o">]</span>
+<span class="n">Accepting</span><span class="w"> </span><span class="n">active</span><span class="w"> </span><span class="n">developer</span><span class="w"> </span><span class="s1">&#39;kooda&#39;</span><span class="w"> </span><span class="o">[</span><span class="n">fr</span><span class="o">]</span>
+<span class="n">Accepting</span><span class="w"> </span><span class="n">active</span><span class="w"> </span><span class="n">developer</span><span class="w"> </span><span class="s1">&#39;centuri0&#39;</span><span class="w"> </span><span class="o">[</span><span class="n">fr</span><span class="o">]</span>
+<span class="n">Accepting</span><span class="w"> </span><span class="n">active</span><span class="w"> </span><span class="n">developer</span><span class="w"> </span><span class="s1">&#39;kikadf&#39;</span><span class="w"> </span><span class="o">[</span><span class="n">hu</span><span class="o">]</span>
+<span class="n">Accepting</span><span class="w"> </span><span class="n">active</span><span class="w"> </span><span class="n">developer</span><span class="w"> </span><span class="s1">&#39;pingax&#39;</span><span class="w"> </span><span class="o">[</span><span class="n">fr</span><span class="o">]</span>
+</code></pre></div>
   </div>
 </article>
 <hr />
@@ -246,34 +209,27 @@ Accepting active developer 'pingax' [fr]</code></pre>
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>I&#8217;ve got a <a href="https://bugs.freedesktop.org/show_bug.cgi?id=32613">report</a>
+    <p>I've got a <a href="https://bugs.freedesktop.org/show_bug.cgi?id=32613">report</a>
 which turned out to be two separate issues. One is a regression from
 Go-OO 3.2.x, this post is about this part. The other part is about the
 improvement of both the import/export RTF filter, the bug has some
-detail on that part as well.</p></div>
-<div class="paragraph"><p>So the problem was that wrapped images (when the image is a frame and
+detail on that part as well.</p>
+<p>So the problem was that wrapped images (when the image is a frame and
 not a character) had some extremely small height. I did not notice this
 bug in LO as an LO-specific extension hides that value, but in Word you
-can see it:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="http://vmiklos.hu/pic/fdo32613-before.png" alt="http://vmiklos.hu/pic/fdo32613-before.png" />
-</div>
-</div>
-<div class="paragraph"><p>The
+can see it:</p>
+<p>
+<figure><img src="http://vmiklos.hu/pic/fdo32613-before.png"><figcaption>fdo32613-before</figcaption>
+</figure>
+</p>
+<p>The
 <a href="http://cgit.freedesktop.org/libreoffice/writer/commit/?id=c27e4668b18248322be699fc9fc6bf01e4d6a7ea">fix</a>
 is to use the height of the containing frame instead of the height of
-the picture itself, then it&#8217;ll look fine:</p></div>
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="http://vmiklos.hu/pic/fdo32613-after.png" alt="http://vmiklos.hu/pic/fdo32613-after.png" />
-</div>
-</div>
-</div>
-</div>
-
+the picture itself, then it'll look fine:</p>
+<p>
+<figure><img src="http://vmiklos.hu/pic/fdo32613-after.png"><figcaption>fdo32613-after</figcaption>
+</figure>
+</p>
   </div>
 </article>
 <hr />
@@ -288,36 +244,20 @@ the picture itself, then it&#8217;ll look fine:</p></div>
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="/pic/hp-hungary.t.png" alt="/pic/hp-hungary.t.png" />
-</div>
-</div>
-<div class="paragraph"><p>Yesterday I bought a
-<a href="http://h10010.www1.hp.com/wwpc/ie/en/sm/WF06b/18972-18972-3328059-3328066-3328066-4110402-4110406.html">HP
-LaserJet Pro P1566</a> printer. The device itself is nice, supported by
+    <p>
+<figure><img src="/pic/hp-hungary.t.png"><figcaption>hp-hungary</figcaption>
+</figure>
+</p>
+<p>Yesterday I bought a
+<a href="http://h10010.www1.hp.com/wwpc/ie/en/sm/WF06b/18972-18972-3328059-3328066-3328066-4110402-4110406.html">HP LaserJet Pro P1566</a> printer. The device itself is nice, supported by
 foo2zjs, though of course that support is unofficial. I was curious what
 do they offer a "Linux support" on their website, since the case of the
 printer mentions Linux support. And I had to use the above picture to
-select my country.</p></div>
-<div class="olist arabic"><ol class="arabic">
-<li>
-<p>
-It&#8217;s Magyarország, not Magyarorság.
-</p>
-</li>
-<li>
-<p>
-The map of the country isn&#8217;t even close to
-  <a href="http://en.wikipedia.org/wiki/Hungary">reality</a>, what are they smoking? ;)
-</p>
-</li>
-</ol></div>
-</div>
-</div>
-
+select my country.</p>
+<ol>
+<li>It's Magyarország, not Magyarorság.</li>
+<li>The map of the country isn't even close to <a href="http://en.wikipedia.org/wiki/Hungary">reality</a>, what are they smoking? ;)</li>
+</ol>
   </div>
 </article>
 <hr />
@@ -332,26 +272,20 @@ The map of the country isn&#8217;t even close to
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="imageblock" style="text-align:center;">
-<div class="content">
-<img src="http://vmiklos.hu/pic/lof13.png" alt="http://vmiklos.hu/pic/lof13.png" />
-</div>
-</div>
-<div class="paragraph"><p>About four days ago it has been asked on <code>#libreoffice</code> if it&#8217;s possible
+    <p>
+<figure><img src="http://vmiklos.hu/pic/lof13.png"><figcaption>lof13</figcaption>
+</figure>
+</p>
+<p>About four days ago it has been asked on <code>#libreoffice</code> if it's possible
 to bind functions to F13..F16 in Calc. The short answer is no, but it
-turned out it&#8217;s pretty trivial to allow that (and of course not only in
-Calc).</p></div>
-<div class="paragraph"><p><a href="http://cedric.bosdonnat.free.fr/wordpress/?p=657">Cedric&#8217;s great post</a> is
+turned out it's pretty trivial to allow that (and of course not only in
+Calc).</p>
+<p><a href="http://cedric.bosdonnat.free.fr/wordpress/?p=657">Cedric's great post</a> is
 helpful here to find the relevant code. It also truned out that VCL
 already supports those keys, so only the user interface has to be
-improvied to export that feature.</p></div>
-<div class="paragraph"><p>The patch is
-<a href="http://article.gmane.org/gmane.comp.documentfoundation.libreoffice.devel/4793">here</a>.</p></div>
-</div>
-</div>
-
+improvied to export that feature.</p>
+<p>The patch is
+<a href="http://article.gmane.org/gmane.comp.documentfoundation.libreoffice.devel/4793">here</a>.</p>
   </div>
 </article>
 <hr />
@@ -366,19 +300,13 @@ improvied to export that feature.</p></div>
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>If you use systemd, you know <code>systemctl</code>. That&#8217;s the command that
+    <p>If you use systemd, you know <code>systemctl</code>. That's the command that
 controls systemd: you can use it to start, stop or list (and so on)
 services. Now in case you use list, there is a lot of output, probably
-it won&#8217;t fit your screen. git already invented auto-paging, which means
-it&#8217;ll feed its output to a pager if the output is more than a screen,
+it won't fit your screen. git already invented auto-paging, which means
+it'll feed its output to a pager if the output is more than a screen,
 for example when using <code>git log</code>. With my
-<a href="https://github.com/systemd/systemd/commit/0736af98c6fae9c7d31e3dd17589421b7e883ef5">recent
-commit</a> this now the case with systemctl as well. :)</p></div>
-</div>
-</div>
-
+<a href="https://github.com/systemd/systemd/commit/0736af98c6fae9c7d31e3dd17589421b7e883ef5">recent commit</a> this now the case with systemctl as well. :)</p>
   </div>
 </article>
 <hr />
@@ -393,18 +321,13 @@ commit</a> this now the case with systemctl as well. :)</p></div>
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>I released bitlbee-skype 0.9.0 today. The last feature that triggered
+    <p>I released bitlbee-skype 0.9.0 today. The last feature that triggered
 the relase born in git during the last two days: now it reads and writes
 Skype group info. This means if you have a Skype group "work", then you
 can just <code>/j &amp;work</code> to see work contacts only, and <code>/invite</code> also works
-in that channel as expected.</p></div>
-<div class="paragraph"><p>More in the <a href="http://wiki.bitlbee.org/UiFix">BitlBee wiki</a> and in the
-<a href="https://github.com/vmiklos/bitlbee-skype/blob/master/NEWS">NEWS file</a>.</p></div>
-</div>
-</div>
-
+in that channel as expected.</p>
+<p>More in the <a href="http://wiki.bitlbee.org/UiFix">BitlBee wiki</a> and in the
+<a href="https://github.com/vmiklos/bitlbee-skype/blob/master/NEWS">NEWS file</a>.</p>
   </div>
 </article>
 <hr />
