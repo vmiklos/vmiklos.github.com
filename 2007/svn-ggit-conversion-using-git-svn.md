@@ -1,10 +1,9 @@
-= svn->git conversion using git-svn
+Title: svn->git conversion using git-svn
+Slug: svn-ggit-conversion-using-git-svn
+Category: hacking
+Tags: en
+Date: 2007-12-09T21:38:09Z
 
-:slug: svn-ggit-conversion-using-git-svn
-:category: hacking
-:tags: en
-:date: 2007-12-09T21:38:09Z
-++++
 <p>git-svnimport will be removed in git-1.5.4 and i don't think it's tirival to use git-svn (which is great for bi-directional work) to properly convert an svn repo (with multiple branches) to a git one, so here is a recipe.</p><p>first, just use git-svn to create a git-svn repo. it's a git repo but it's a bit weird, it contains metadata which is necessary for bi-directional operations and you won't see the branches by default when you clone it. ah and it's not a bare repo.</p><p>in this example i'll convert ooo-build's svn repo (it has several branches and tags, so it's a good example).</p><p><code>mkdir -p ~/git/ooo-build
 cd ~/git/ooo-build
 git svn init -s svn+ssh://svn.gnome.org/svn/ooo-build
@@ -26,4 +25,3 @@ git config remote.origin.fetch +refs/remotes/tags/*:refs/tags/*
 git config --add remote.origin.fetch +refs/remotes/*:refs/heads/*
 git fetch
 </code></p><p>note: git config --add remote.origin.fetch +refs/remotes/trunk:refs/heads/master it unnecessary as git svn fetch will update this for you (it is different from git fetch)</p><p>thanks for devurandom from #git for pointing out that this is possible using git --bare init before git svn init and using git --bare svn fetch :)</p>
-++++

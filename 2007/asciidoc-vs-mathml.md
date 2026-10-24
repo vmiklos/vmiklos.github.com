@@ -1,9 +1,7 @@
-= asciidoc vs mathml
+Title: asciidoc vs mathml
+Slug: asciidoc-vs-mathml
+Category: hacking
+Tags: en
+Date: 2007-09-02T15:21:18Z
 
-:slug: asciidoc-vs-mathml
-:category: hacking
-:tags: en
-:date: 2007-09-02T15:21:18Z
-++++
 <p>i've recently <a href="http://frugalware.org/pipermail/frugalware-git/2007-September/001862.html">pushed</a> a new asciidoc to my repo. after intalling it, you have to be able to display <a href="http://frugalware.org/~vmiklos/docs/math.html">this</a> example page properly. (<a href="http://frugalware.org/~vmiklos/docs/math.txt">here</a> is the source)</p><p>so now go and tell your latex friends that you can still include your exotic math formulas in asciidoc while you can avoid its usualy difficult syntax! :)</p>
-++++

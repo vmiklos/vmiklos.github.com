@@ -1,9 +1,7 @@
-= linuxquestions.org screenshots
+Title: linuxquestions.org screenshots
+Slug: linuxquestions-org-screenshots
+Category: hacking
+Tags: en
+Date: 2007-01-28T21:12:04Z
 
-:slug: linuxquestions-org-screenshots
-:category: hacking
-:tags: en
-:date: 2007-01-28T21:12:04Z
-++++
 i've recently got a mail about linuxquestions.org now has a separate collection of <a href="http://shots.linuxquestions.org/index.php?os=Frugalware">Frugalware screenshots</a>. so here it is, maybe one find it interesting :)
-++++

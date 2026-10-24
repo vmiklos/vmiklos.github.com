@@ -1,9 +1,7 @@
-= mplayer with dvdnav support
+Title: mplayer with dvdnav support
+Slug: mplayer-with-dvdnav-support
+Category: hacking
+Tags: en
+Date: 2007-09-08T18:15:08Z
 
-:slug: mplayer-with-dvdnav-support
-:category: hacking
-:tags: en
-:date: 2007-09-08T18:15:08Z
-++++
 <p>i've uploaded an updated mplayer package to <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/bmf/">my repo</a> which includes dvdnav support to mplayer. at the moment it seems you need to</p><p><code># pacman -R codecs</code></p><p>otherwise mplayer will crash</p><p>many thanks to <a href="http://onebithq.com/root/mplayer/dvdnav">Otvos Attila</a>, the dvdnav patch author for his help (two additional build fixes was needed for our "enable everything what is possible" mplayer configuration)</p><p>hopefully we'll figure out soon how to resolve the conflict with the binary codecs, too :)</p><p>(a <a href="http://frugalware.org/~vmiklos/pics/shots/mplayer-dvdnav.png">screenshot</a>)</p>
-++++

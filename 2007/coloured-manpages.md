@@ -1,9 +1,7 @@
-= coloured manpages
+Title: coloured manpages
+Slug: coloured-manpages
+Category: hacking
+Tags: en
+Date: 2007-09-07T00:06:10Z
 
-:slug: coloured-manpages
-:category: hacking
-:tags: en
-:date: 2007-09-07T00:06:10Z
-++++
 this is always a subject of flamewars and Frugalware did not have any support for coloured manpages so far. i've now added (in man-1.6e-2) support for it, but it's still disabled. see the <a href="http://frugalware.org/packages/369/documentation">documentation</a> on how to enable it if you like. you can reach a screenshot <a href="http://frugalware.org/~vmiklos/pics/shots/colorman2.png">here</a> if you use the default colors.
-++++

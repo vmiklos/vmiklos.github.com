@@ -1,9 +1,7 @@
-= find -exclude
+Title: find -exclude
+Slug: find-exclude
+Category: hacking
+Tags: en
+Date: 2007-04-06T21:34:11Z
 
-:slug: find-exclude
-:category: hacking
-:tags: en
-:date: 2007-04-06T21:34:11Z
-++++
 <p>ok, there is no such option, but there is an equivalent trick :)</p><p>for example if you want to do exclude the _darcs dir, then you need:</p><p><code>find . -type d -name _darcs -prune -o <filter> -print</code></p><p>where <filter> can be "-name *.c" or so</p><p>thanks crazy for the tip :)</p>
-++++

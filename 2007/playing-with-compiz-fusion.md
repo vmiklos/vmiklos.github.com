@@ -1,10 +1,9 @@
-= playing with compiz fusion
+Title: playing with compiz fusion
+Slug: playing-with-compiz-fusion
+Category: hacking
+Tags: en
+Date: 2007-10-27T22:00:12Z
 
-:slug: playing-with-compiz-fusion
-:category: hacking
-:tags: en
-:date: 2007-10-27T22:00:12Z
-++++
 <p>Priyank recently removed Beryl from -current and added Compiz Fusion. so i did a base install then i followed the instructions in xgl's README.Frugalware. a few impressions:</p><p>pros:
 <ul>
   <li>i have an i810 card, not nvidia, or anything extra, it's a cheap one. the only effect that was slow for me is when i marked the cube 100% transparent. but all the other effect were really fast.</li>
@@ -13,8 +12,7 @@
 </ul></p><p>cons:<ul>
   <li>i have 4 virtual desktops like:
 <pre>1 | 2
-----
+```
 3 | 4</pre></p><p>compiz translates this to: a simple paper with two side and on each size there is another side on top of the other one. so it says it's not a cube. how crappy</li>
   <li>i can't select to hide windows from other virtual desktops from the taskbar. a basic feature @ kde</li>
 </ul></p><p>conclusion? it's really nice, well done - but for daily work of course i won't enable it :)</p>
-++++

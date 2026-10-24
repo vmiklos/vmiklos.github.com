@@ -1,10 +1,9 @@
-= using git request-pull
+Title: using git request-pull
+Slug: using-git-request-pull
+Category: hacking
+Tags: en
+Date: 2007-09-21T13:18:10Z
 
-:slug: using-git-request-pull
-:category: hacking
-:tags: en
-:date: 2007-09-21T13:18:10Z
-++++
 <p>it's a nice simple script to generate a message body for you when you have no write access to a repo and you want to request the m8r to pull from you. here is how to use it:</p><p><pre>$ git request-pull origin/master \ 
 vmiklos@vmiklos.dev.frugalware.org:git/pacman-g2/
 The following changes since commit 52a29e40a52bb09e0db7f167712a9be3ad8d0d3c:
@@ -20,4 +19,3 @@ git.frugalware.org:/home/ftp/pub/other/pacman-g2/pacman-g2</p><p>are available i
  src/pacman-g2/pacman-g2.c   |    3 +++
  4 files changed, 33 insertions(+), 17 deletions(-)
  create mode 100644 pactest/tests/upgrade071.py</pre></p><p>of course in real life, you want to use http:// or git:// since probably the m8r won't be be able to login to your own machine via ssh :)</p>
-++++

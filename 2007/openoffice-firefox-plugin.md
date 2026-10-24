@@ -1,9 +1,7 @@
-= openoffice firefox plugin
+Title: openoffice firefox plugin
+Slug: openoffice-firefox-plugin
+Category: hacking
+Tags: en
+Date: 2007-09-01T20:52:40Z
 
-:slug: openoffice-firefox-plugin
-:category: hacking
-:tags: en
-:date: 2007-09-01T20:52:40Z
-++++
 <p>as of <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/ooodev/frugalware-i686/openoffice.org-2.3oog680_m1-1-i686.fpm">openoffice.org-2.3oog680_m1</a> there is a firefox plugin (for OOo documents) included in our openoffice pkg. at the moment it's not enabled by default, you need an</p><p><code>ln -s /usr/lib/openoffice.org/program/libnpsoplugin.so ~/.mozilla/plugins</code></p><p>to enable it</p>
-++++
