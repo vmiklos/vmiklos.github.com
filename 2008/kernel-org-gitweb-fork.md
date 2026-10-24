@@ -1,0 +1,7 @@
+Title: kernel.org gitweb fork
+Slug: kernel-org-gitweb-fork
+Category: hacking
+Tags: en
+Date: 2008-12-05T02:47:31Z
+
+It has not been updated for a long time, but today a <a href="http://git.kernel.org/?p=git/warthog9/gitweb.git;a=commitdiff;h=2586ea1d3fdce3d27479903a79a6e916b000b640">fix</a> appeared. It seem to be kernel.org-specific though, so don't worry.

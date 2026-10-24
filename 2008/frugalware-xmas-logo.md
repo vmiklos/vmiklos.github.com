@@ -1,0 +1,7 @@
+Title: Frugalware Xmas logo
+Slug: frugalware-xmas-logo
+Category: hacking
+Tags: en
+Date: 2008-12-25T12:40:52Z
+
+<p>phayz just pushed out a <a href="http://frugalware.org/news/120">special Frugalware logo</a> for Xmas, I like it. :)</p><p>BTW it's interesting, my sister got an English bible and it claims that "to make it easier to read it more fluently and accurately, it's 'anglicised'." Not sure if that's really true, especially that young people like me typically learn a lot of words and expressions from movies and series...</p>

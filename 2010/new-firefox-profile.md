@@ -14,7 +14,7 @@ Now I thought that this way the new profile usage will be easy enough, though th
 
 - The bookmarklets (allowing fast search in various bugtrackers) should be installed again.
 
-- The [searchbar autosizer]({filename}/2008/enjoying-search-autosizer.adoc) addon has bad defaults, I like to have the search bar with a fixed 203px size (355px on 1280x800) -- though nowadays this regressed, see [moz#253331](https://bugzilla.mozilla.org/show_bug.cgi?id=253331).
+- The [searchbar autosizer]({filename}/2008/enjoying-search-autosizer.md) addon has bad defaults, I like to have the search bar with a fixed 203px size (355px on 1280x800) -- though nowadays this regressed, see [moz#253331](https://bugzilla.mozilla.org/show_bug.cgi?id=253331).
 
 - Finally I forgot I have a custom userChrome.css (also obsolete nowadays):
 

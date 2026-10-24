@@ -1,0 +1,7 @@
+Title: Export to C from Gimp
+Slug: export-to-c-from-gimp
+Category: hacking
+Tags: en
+Date: 2008-12-07T00:48:56Z
+
+I like this feature. It's pretty useful now when I have a homework at the uni where the whole solution should be a single C file. So I just do a texture in Gimp, export it to C, copy&amp;paste it to "the" file, and stop wasting my time trying to create some texture by hand. Yay! :)

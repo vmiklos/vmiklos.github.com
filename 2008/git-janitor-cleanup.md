@@ -1,0 +1,7 @@
+Title: Git Janitor cleanup
+Slug: git-janitor-cleanup
+Category: hacking
+Tags: en
+Date: 2008-12-11T00:42:54Z
+
+<p>Mailed Christian Couder to cleanup up the <a href="http://git.or.cz/gitwiki/Janitor">Janitor page on the wiki</a> a bit, since for example all the git_config_string refactoring is already done.</p><p>It's nice I did not really have to explain I do not want to destroy his work, it's just no longer necessary - he understood it just fine.</p>

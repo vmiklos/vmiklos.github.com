@@ -4,7 +4,7 @@ Category: frugalware
 Tags: en, hacking
 Date: 2010-09-24T18:15:46Z
 
-First, I could almost reuse the same set of scripts as described [here]({filename}/2008/scripts-used-in-the-python-2-6-mass-rebu.adoc). The only change I needed to do is that aborting the build loop after each fail is a waste of time, so now I did:
+First, I could almost reuse the same set of scripts as described [here]({filename}/2008/scripts-used-in-the-python-2-6-mass-rebu.md). The only change I needed to do is that aborting the build loop after each fail is a waste of time, so now I did:
 
 ```sh
 for i in $(cat ~/test.list)
