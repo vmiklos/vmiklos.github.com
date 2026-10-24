@@ -1,0 +1,18 @@
+Title: title 69
+Slug: title-69
+Category: hacking
+Tags: en
+Date: 2006-02-13T17:29:36Z
+
+in the last two days i was working on creating an initial testsuite for the source tree. what does works:<ul>
+  <li>cleaning outdated fpms</li>
+  <li>cleaning outdated sources</li>
+</ul>
+this is the harder part imho
+what is planned:
+<ul>
+  <li>list missing fpms (maybe not needed? checkpkgs does the same)</li>
+  <li>download all missing sources</li>
+  <li>check for syntax errors</li>
+  <li>check for required directives</li>
+</ul>

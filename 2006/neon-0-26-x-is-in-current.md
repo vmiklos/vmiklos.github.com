@@ -1,0 +1,7 @@
+Title: Neon-0.26.x is in -current
+Slug: neon-0-26-x-is-in-current
+Category: hacking
+Tags: en
+Date: 2006-09-25T02:59:37Z
+
+Neon-0.26.1 has been uploaded to -current and all the necessary packages (ie. openoffice.org :)) have been updated, too. it was a challenge :)

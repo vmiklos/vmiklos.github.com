@@ -1,0 +1,11 @@
+Title: title 57
+Slug: title-57
+Category: hacking
+Tags: en
+Date: 2006-01-28T16:06:42Z
+
+<p>yestreday xorg7 hit -current</p><p>in most cases it should install without any problem, if not
+<ul>
+  <li><pre>pacman -S xorg-fonts xorg-libs --noconfirm</pre> to install all the fonts and libs available</li>
+  <li>if you're using a binary driver (for example nvidia), try <pre>pacman -R nvidia && pacman -S nvidia</pre></li>
+</ul></p>

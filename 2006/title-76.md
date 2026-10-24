@@ -1,0 +1,7 @@
+Title: title 76
+Slug: title-76
+Category: hacking
+Tags: en
+Date: 2006-03-05T12:48:56Z
+
+since we include ada/gnat in our gcc package, it's a bit tricky to build it for the first time, so i've <a href="http://wiki.frugalware.org/Gcc_building">written</a> a wiki page about this. also the x86_64 packages for gcc-4.1 are ready, too.

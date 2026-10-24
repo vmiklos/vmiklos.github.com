@@ -1,0 +1,7 @@
+Title: openoffice upstream fix
+Slug: openoffice-upstream-fix
+Category: hacking
+Tags: en
+Date: 2006-04-06T01:22:32Z
+
+upstream at Novell is very fast, they've already <a href="http://cvs.gnome.org/viewcvs/ooo-build/download.in?r1=1.81&r2=1.82&makepatch=1&diff_format=u">fixed</a> the problem mentioned yesterday. so one should be really able to build OOo on x86_64 with the usual simple <code>sudo makepkg -R</code> :)

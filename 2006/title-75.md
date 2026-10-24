@@ -1,0 +1,8 @@
+Title: title 75
+Slug: title-75
+Category: hacking
+Tags: en
+Date: 2006-03-04T21:41:50Z
+
+<p>today's task is to build gcc using ccache. it is not done automatically as gcc uses xgcc for most of the time, but there is a moslty usable howto <a href="http://gcc.gnu.org/ml/gcc/2004-02/msg01024.html">available</a>. ok, the log is nice, ccache is used, but the compiler cache is empty... so still need to figure out what's happening :/</p><p>update: dunno what was wrong, but on the buildserver it works fine! :)
+update2: now the i686 packages are <a href="ftp://ftp.frugalware.org/pub/other/people/vmiklos/gcc41/frugalware-i686/">available</a></p>

@@ -1,0 +1,7 @@
+Title: gnome-scriptlet cleanup finished
+Slug: gnome-scriptlet-cleanup-finished
+Category: hacking
+Tags: en
+Date: 2006-07-12T15:58:18Z
+
+there was an effort about generating the packages' post_install (and other) scriptlet functions dynamically. this is done via using the magic<pre>Finclude gnome-scriptlet</pre> command. the parameters you can includes <code>_F_gnome_schemas()</code>, <code>_F_gnome_scrollkeeper</code>, <code>_F_gnome_desktop</code> and so on. where it was possible the original scriptlet has been removed and now automatically generated. enjoy! :)

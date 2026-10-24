@@ -1,0 +1,7 @@
+Title: title 70
+Slug: title-70
+Category: hacking
+Tags: en
+Date: 2006-02-17T00:25:16Z
+
+just finished another regression test for the testsuite: srcmissing, which searches for missing (not yet mirrored) source tarballs (and optionally downloads them). available <a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=frugalware-current;a=headblob;f=/testsuite/srcmissing.sh">here</a>

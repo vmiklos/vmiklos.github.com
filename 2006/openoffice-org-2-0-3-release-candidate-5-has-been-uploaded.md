@@ -1,0 +1,7 @@
+Title: OpenOffice.org 2.0.3 Release Candidate 5 has been uploaded
+Slug: openoffice-org-2-0-3-release-candidate-5-has-been-uploaded
+Category: hacking
+Tags: en
+Date: 2006-06-03T12:08:41Z
+
+<a href="http://development.openoffice.org/releases/2.0.3rc5.html">release notes</a>, <a href="http://frugalware.org/pipermail/frugalware-darcs/2006-June/016253.html">commit</a>, <a href="http://ftp.frugalware.org/pub/other/people/vmiklos/frugalware-x86_64/">x86_64 fpms</a>. enjoy! :)

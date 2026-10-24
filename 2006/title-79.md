@@ -1,0 +1,7 @@
+Title: title 79
+Slug: title-79
+Category: hacking
+Tags: en
+Date: 2006-03-25T01:59:01Z
+
+it took a few (2-3 days?) but i've now finished the <a href="http://wiki.frugalware.org/Upgrade-0.3-0.4">Upgrade: 0.3->0.4</a> howto. DNAku was so kind that he has written a script to automate the procedure. you can find it at the bottom of the wiki page :)

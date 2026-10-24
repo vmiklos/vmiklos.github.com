@@ -1,0 +1,7 @@
+Title: glibc-2.5
+Slug: glibc-2-5
+Category: hacking
+Tags: en
+Date: 2006-10-02T23:01:23Z
+
+glibc-2.5 has been uploaded to -current, check out the news <a href="http://sources.redhat.com/cgi-bin/cvsweb.cgi/~checkout~/libc/NEWS?cvsroot=glibc">here</a>

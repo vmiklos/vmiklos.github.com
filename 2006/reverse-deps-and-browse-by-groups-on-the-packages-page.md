@@ -1,0 +1,7 @@
+Title: reverse deps and browse by groups on the packages page
+Slug: reverse-deps-and-browse-by-groups-on-the-packages-page
+Category: hacking
+Tags: en
+Date: 2006-08-14T19:27:11Z
+
+<p>that's all from the user's point of view, internally the whole package-to-sqldb script is redesigned and the sql db itself, too.</p><p>examples: <a href="http://frugalware.org/packages/186">reverse deps</a>, <a href="http://frugalware.org/packages/?op=groups&id=49&arch=i686&ver=current">browse by group</a></p><p>the new db updater <a href="http://darcs.frugalware.org/darcsweb/darcsweb.cgi?r=frugalware-current;a=headblob;f=/tools/fpm2db">here</a></p>

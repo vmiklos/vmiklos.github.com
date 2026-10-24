@@ -1,0 +1,7 @@
+Title: title 73
+Slug: title-73
+Category: hacking
+Tags: en
+Date: 2006-02-25T20:22:51Z
+
+ffmpeg devs recommend everyone to use cvs, not the "formal" releases. ok, let's do it, but then we have to the apps for the recent changes. for now, vlc has been <a href="http://forum.videolan.org/viewtopic.php?p=54928">fixed</a>

@@ -1,0 +1,7 @@
+Title: splashy
+Slug: splashy
+Category: hacking
+Tags: en
+Date: 2006-07-14T15:09:08Z
+
+<p>in -current we replaced bootsplash with splashy. it's a splash implementation fully in userspace, thus we no longer need any kernel patches</p><p>to support splashy, the kbd, grub, gfxboot and sysvinit packages has been updated, too</p>

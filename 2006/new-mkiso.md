@@ -1,0 +1,12 @@
+Title: new mkiso
+Slug: new-mkiso
+Category: hacking
+Tags: en
+Date: 2006-06-03T03:17:27Z
+
+<p>the current (old) mkiso script worked, but had several limitations:
+<ul>
+  <li>you had to have write access to the repo</li>
+  <li>no dependency checking, you needed to arrange the categories by hand</li>
+  <li>no support for more than one dvd</li>
+</ul></p><p>yes, this all has been gone, there is a new mkiso in the pacman-tools repo (and soon in the next pacman-tools release) which supports all these missing features, basically you need to specify the volume size and the wished volumes in an xml, then mkiso will do everything for you. also it comes with a nice manpage examples :)</p>

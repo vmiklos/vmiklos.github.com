@@ -1,0 +1,9 @@
+Title: free netbeans? not yet..
+Slug: free-netbeans-not-yet
+Category: hacking
+Tags: en
+Date: 2006-10-08T14:11:09Z
+
+<p>i'm sorry to say, but it seems our free tools are not yet ready to build netbeans. first you need to add the gcj.jar to the classpath (patch <a href="http://frugalware.org/~vmiklos/patches/netbeans-gcj.diff">here</a>), but that's basically usual. then the compilation fails with the following casting error:
+<code>[repeat] java.io.IOException: java.lang.ClassCastException: org.apache.xerces.dom.DocumentImpl cannot be cast to gnu.xml.dom.DomDocument</code>
+(full log <a href="http://frugalware.org/~vmiklos/logs/netbeans-5.0-gcj.log">here</a>)</p><p>that's something i can't fix.</p>

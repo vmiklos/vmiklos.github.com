@@ -1,0 +1,7 @@
+Title: title 72
+Slug: title-72
+Category: hacking
+Tags: en
+Date: 2006-02-24T16:41:00Z
+
+<p>this was yesterday, but probably still a news</p><p>so in the (not so good) old times we used some up2date.foo scripts to have a common $up2date variable for several FrugalBuilds. these are ugly and are broken in chroot. the "new" trend is to use Finclude for these scripts. yesterday the last up2date.thunderbird-i18n file was removed, so this big merge ended. so far we have already 20 scheme :)</p><p>probably the next will be to get rid of the old 'x' dependency in all packages (mostly done already)</p>
