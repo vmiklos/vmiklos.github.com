@@ -68,36 +68,25 @@
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>First, I could almost reuse the same set of scripts as described
-<a href="https://vmiklos.hu/blog/scripts-used-in-the-python-2-6-mass-rebu.html">here</a>. The only change I needed
-to do is that aborting the build loop after each fail is a waste of time, so now I did:</p></div>
-<div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight
-by Lorenzo Bettini
-http://www.lorenzobettini.it
-http://www.gnu.org/software/src-highlite -->
-<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">for</span></span> i <span style="font-weight: bold"><span style="color: #0000FF">in</span></span> <span style="color: #009900">$(</span>cat <span style="color: #990000">~</span>/test<span style="color: #990000">.</span>list<span style="color: #990000">)</span>
-<span style="font-weight: bold"><span style="color: #0000FF">do</span></span>
-        echo <span style="color: #009900">$i</span>
-        cd <span style="color: #990000">~</span>/git/python<span style="color: #993399">27</span>/source<span style="color: #990000">/*/</span><span style="color: #009900">$i</span> <span style="color: #990000">||</span> <span style="font-weight: bold"><span style="color: #0000FF">continue</span></span>
-        sudo makepkg -t python27<span style="color: #990000">,</span>current -C
-        git clean -x -d -f
-        git checkout -f
-        sed -i <span style="color: #FF0000">'s|python&gt;=2.6|python&gt;=2.7|g'</span> FrugalBuild
-        <span style="font-weight: bold"><span style="color: #0000FF">if</span></span> bumppkg -t python27<span style="color: #990000">,</span>current --rebuild <span style="color: #FF0000">"- rebuilt with python-2.7"</span><span style="color: #990000">;</span> <span style="font-weight: bold"><span style="color: #0000FF">then</span></span>
-                repoman -t python27 -k push
-        <span style="font-weight: bold"><span style="color: #0000FF">else</span></span>
-                echo <span style="color: #009900">$i</span> <span style="color: #990000">&gt;&gt;</span> <span style="color: #990000">~</span>/failed<span style="color: #990000">.</span>list
-        <span style="font-weight: bold"><span style="color: #0000FF">fi</span></span>
-<span style="font-weight: bold"><span style="color: #0000FF">done</span></span></tt></pre></div></div>
-<div class="paragraph"><p>Then investigated the failed builds manually.</p></div>
-<div class="paragraph"><p>Oh, and obviously I no longer had to build the x86_64/ppc fpms manually, I just enabled syncpkgd for
-the python27 WIP repo.</p></div>
-</div>
-</div>
+    <p>First, I could almost reuse the same set of scripts as described <a href="https://vmiklos.hu/blog/scripts-used-in-the-python-2-6-mass-rebu.html">here</a>. The only change I needed to do is that aborting the build loop after each fail is a waste of time, so now I did:</p>
+<div class="highlight"><pre><span></span><code><span class="k">for</span><span class="w"> </span>i<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="k">$(</span>cat<span class="w"> </span>~/test.list<span class="k">)</span>
+<span class="k">do</span>
+<span class="w">        </span><span class="nb">echo</span><span class="w"> </span><span class="nv">$i</span>
+<span class="w">        </span><span class="nb">cd</span><span class="w"> </span>~/git/python27/source/*/<span class="nv">$i</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="k">continue</span>
+<span class="w">        </span>sudo<span class="w"> </span>makepkg<span class="w"> </span>-t<span class="w"> </span>python27,current<span class="w"> </span>-C
+<span class="w">        </span>git<span class="w"> </span>clean<span class="w"> </span>-x<span class="w"> </span>-d<span class="w"> </span>-f
+<span class="w">        </span>git<span class="w"> </span>checkout<span class="w"> </span>-f
+<span class="w">        </span>sed<span class="w"> </span>-i<span class="w"> </span><span class="s1">&#39;s|python&gt;=2.6|python&gt;=2.7|g&#39;</span><span class="w"> </span>FrugalBuild
+<span class="w">        </span><span class="k">if</span><span class="w"> </span>bumppkg<span class="w"> </span>-t<span class="w"> </span>python27,current<span class="w"> </span>--rebuild<span class="w"> </span><span class="s2">&quot;- rebuilt with python-2.7&quot;</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">                </span>repoman<span class="w"> </span>-t<span class="w"> </span>python27<span class="w"> </span>-k<span class="w"> </span>push
+<span class="w">        </span><span class="k">else</span>
+<span class="w">                </span><span class="nb">echo</span><span class="w"> </span><span class="nv">$i</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>~/failed.list
+<span class="w">        </span><span class="k">fi</span>
+<span class="k">done</span>
+</code></pre></div>
 
+<p>Then investigated the failed builds manually.</p>
+<p>Oh, and obviously I no longer had to build the x86_64/ppc fpms manually, I just enabled syncpkgd for the python27 WIP repo.</p>
   </div>
   <div class="article_meta">
     <p>Category: <a href="https://vmiklos.hu/blog/category/frugalware.html">frugalware</a>

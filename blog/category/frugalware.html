@@ -609,44 +609,11 @@ systemd not work as expected. Thanks to Lennart for the quick
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="ulist"><ul>
-<li>
-<p>
-Finally I can run systemd on my desktop, and not in a virtual machine
-  only, since there is
-  <a href="http://thread.gmane.org/gmane.linux.kernel/1080727">a patch</a> for the
-  sched/cgroup issue I had. It was not a systemd bug, but systemd
-  triggered a kernel issue, which was hidden so far.
-</p>
-</li>
-<li>
-<p>
-I just
-  <a href="http://frugalware.org/pipermail/frugalware-git/2010-December/055098.html">updated
-  our bluez package</a>, and bus activation works fine. This means bluetoothd
-  is not started till somebody connects to it. Given that I sometimes do
-  not log in to KDE to use kbluetooth, but just want to do something on
-  the console, where having bluetoothd running is totally unnecessary, I
-  consider this really nice.
-</p>
-</li>
-<li>
-<p>
-It came up on <code>#bitlbee</code> that there is a
-  <a href="https://bugzilla.redhat.com/show_bug.cgi?id=662289">Fedora bug</a> where
-  they ask for systemd unit files for BitlBee. So I
-  <a href="http://bugs.bitlbee.org/bitlbee/ticket/738">created a patch</a>, and the
-  nice thing is that the second iteration now seems to be fine for
-  Frugalware/Fedora/Debian, so we managed to build something cross-distro
-  here. (I think I mentioned that&#8217;s the #1 feature I like in systemd.)
-</p>
-</li>
-</ul></div>
-</div>
-</div>
-
+    <ul>
+<li>Finally I can run systemd on my desktop, and not in a virtual machine only, since there is <a href="http://thread.gmane.org/gmane.linux.kernel/1080727">a patch</a> for the sched/cgroup issue I had. It was not a systemd bug, but systemd triggered a kernel issue, which was hidden so far.</li>
+<li>I just <a href="http://frugalware.org/pipermail/frugalware-git/2010-December/055098.html">updated our bluez package</a>, and bus activation works fine. This means bluetoothd is not started till somebody connects to it. Given that I sometimes do not log in to KDE to use kbluetooth, but just want to do something on the console, where having bluetoothd running is totally unnecessary, I consider this really nice.</li>
+<li>It came up on <code>#bitlbee</code> that there is a <a href="https://bugzilla.redhat.com/show_bug.cgi?id=662289">Fedora bug</a> where they ask for systemd unit files for BitlBee. So I <a href="http://bugs.bitlbee.org/bitlbee/ticket/738">created a patch</a>, and the nice thing is that the second iteration now seems to be fine for Frugalware/Fedora/Debian, so we managed to build something cross-distro here. (I think I mentioned that's the #1 feature I like in systemd.)</li>
+</ul>
   </div>
 </article>
 <hr />
@@ -661,58 +628,15 @@ It came up on <code>#bitlbee</code> that there is a
     <p>Estimated read time: 2 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>I just found
-<a href="http://media.libsyn.com/media/linuxoutlaws/linuxoutlaws160.ogg">this</a>
-podcast, it&#8217;s a bit dated since it happened in August and things have
-been improved a bit since then, but still I was happy to listen it. (The
-interesting part starts at 1:10:50; 17 minutes.)</p></div>
-<div class="paragraph"><p>I already had a short <a href="https://vmiklos.hu/blog/systemd.html">post</a> about systemd, and I
-mentioned the killer feature for me is the compact distro-independent
-service file (initscript for sysvinit) format it uses, since even if the
-initscript format we use in Frugalware right now is mostly
-bullshit-free, it&#8217;s still more bloated than the systemd service files.</p></div>
-<div class="paragraph"><p>Now back to why I began writing this post. :) So there is
-<a href="http://0pointer.de/blog/projects/systemd.html">the post</a> about systemd,
-but it&#8217;s rather long, and it&#8217;s easy to miss the point. Since the
-previous post, I think there are a few more killer features in systemd:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-Every service is started in a separate control group (cgroup). Do you
-  remember the situation when you wanted to know who the hell started a
-  given particular process? This is typically a problem if the process is
-  running as root. Now this is no longer a problem, systemd-cgls will show
-  you if it was started by a user or a given service, etc. (Yes, I
-  consider this a security feature.)
-</p>
-</li>
-<li>
-<p>
-Upstart already had this "restart if it crashed" feature, but systemd
-  does it better: if the daemon supports socket activation, then
-  messages sent to the socket are buffered by the kernel, and no message
-  will be lost during the restart.
-</p>
-</li>
-<li>
-<p>
-systemd provides this on-demand feature, which is pretty much like
-  inetd, so hopefully we can get rid of inetd, which was a constant
-  problem previously. (We inherited a fork of the OpenBSD inetd from
-  Slackware, and being a fork it did not improve since years, causing a
-  constant problem.)
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>Why writing this post today? Because this morning systemd
-<a href="http://frugalware.org/packages/103609">appeared</a> in -current, so you can
-even <a href="http://wiki.frugalware.org/index.php/Systemd#Installation">try it
-out</a> without installing any unofficial package.</p></div>
-</div>
-</div>
-
+    <p>I just found <a href="http://media.libsyn.com/media/linuxoutlaws/linuxoutlaws160.ogg">this podcast</a>, it's a bit dated since it happened in August and things have been improved a bit since then, but still I was happy to listen it. (The interesting part starts at 1:10:50; 17 minutes.)</p>
+<p>I already had a short <a href="https://vmiklos.hu/blog/systemd.html">post</a> about systemd, and I mentioned the killer feature for me is the compact distro-independent service file (initscript for sysvinit) format it uses, since even if the initscript format we use in Frugalware right now is mostly bullshit-free, it's still more bloated than the systemd service files.</p>
+<p>Now back to why I began writing this post. :) So there is <a href="http://0pointer.de/blog/projects/systemd.html">the post</a> about systemd, but it's rather long, and it's easy to miss the point. Since the previous post, I think there are a few more killer features in systemd:</p>
+<ul>
+<li>Every service is started in a separate control group (cgroup). Do you remember the situation when you wanted to know who the hell started a given particular process? This is typically a problem if the process is running as root. Now this is no longer a problem, systemd-cgls will show you if it was started by a user or a given service, etc. (Yes, I consider this a security feature.)</li>
+<li>Upstart already had this "restart if it crashed" feature, but systemd does it better: if the daemon supports socket activation, then messages sent to the socket are buffered by the kernel, and no message will be lost during the restart.</li>
+<li>systemd provides this on-demand feature, which is pretty much like inetd, so hopefully we can get rid of inetd, which was a constant problem previously. (We inherited a fork of the OpenBSD inetd from Slackware, and being a fork it did not improve since years, causing a constant problem.)</li>
+</ul>
+<p>Why writing this post today? Because this morning systemd <a href="http://frugalware.org/packages/103609">appeared</a> in -current, so you can even <a href="http://wiki.frugalware.org/index.php/Systemd#Installation">try it out</a> without installing any unofficial package.</p>
   </div>
 </article>
 <hr />
@@ -727,114 +651,36 @@ out</a> without installing any unofficial package.</p></div>
     <p>Estimated read time: 2 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>So we have this <a href="http://wiki.frugalware.org/index.php/Systemd">systemd wip
-repo</a> and one of the remaining todo items was to fix up splashy to work
-with systemd.</p></div>
-<div class="paragraph"><p>First, why doesn&#8217;t it out of the box of systemd is a drop-in
-replacement? Because splashy is not a simple init script, it hooks
-itself to <code>rc.sysvinit</code>, so it was specific to sysvinit.</p></div>
-<div class="paragraph"><p>Now given that plymouth was already ported to systemd, it served as a
-good example. You may also ask: why don&#8217;t we just switch to plymouth?
-Because:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-we don&#8217;t want to introduce multiple changes at the same time
-</p>
-</li>
-<li>
-<p>
-it
-  <a href="http://fedoraproject.org/wiki/Releases/FeatureBetterStartup#User_Documentation">requires
-  kms</a>, while Splashy did not require it - so as long as it&#8217;s not true
-  that most video cards support kms (think of via or anything else which
-  supports vesafb, but not kms), such a switch would be a regression
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>Okay, enough anti-Plymouth rant. As you can see, right now the task is to fix Splashy.</p></div>
-<div class="paragraph"><p>The steps I did were:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-updated the Splashy theme to remove the progressbar: given that now we
-  start services parallel and on-demand, it does not really make too
-  much sense
-</p>
-</li>
-<li>
-<p>
-introduced unit files: to start on boot, to stop before getty/xorg, to
-  start before kexec/reboot/halt/poweroff
-</p>
-</li>
-<li>
-<p>
-added the usual compatibility symlinks to avoid starting the old
-  rc.splash (which would happen anyway)
-</p>
-</li>
-<li>
-<p>
-added a simple wrapper that fires up splashy and once it&#8217;s ready it
-  sends the Booting&#8230;/Rebooting&#8230;/etc text to it
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>The last problem is a bit more complex: now that xorg startup wants to
-stop splashy, a dependency has to be declared. xorg startup is handled
-by <code>prefdm.service</code>, but in case it depends on <code>splashy-quit.service</code>,
-what will happen if you don&#8217;t have or don&#8217;t want a splash?</p></div>
-<div class="paragraph"><p>The solution for now is to declare an <code>After=</code> relation: that means xorg
-startup will happen after the quit of splashy, if it happens at all.</p></div>
-<div class="paragraph"><p>This way:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-you can disable the splash, it won&#8217;t cause any dependency errors
-</p>
-</li>
-<li>
-<p>
-if you don&#8217;t have <code>prefdm.service</code> enabled, you can even have splashy
-  uninstalled
-</p>
-</li>
-<li>
-<p>
-(this one is a bit ugly) you can disable the splash, but if you
-  uninstall it and have <code>prefdm.service</code> enabled, you&#8217;ll get a
-  dependency error, as systemd will have no idea what
-  <code>splashy-quit.service</code> is.
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>To test the above:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-you need to enable the systemd wip repo (see the link above)
-</p>
-</li>
-<li>
-<p>
-run <code>pacman-g2 -Sy systemd</code>
-</p>
-</li>
-<li>
-<p>
-boot with <code>init=/bin/systemd</code>
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>Stay tuned, we still have a few blocker issues before merging the
-(disabled by default, as you need that kernel parameter) systemd support
-to current.</p></div>
-</div>
-</div>
-
+    <p>So we have this <a href="http://wiki.frugalware.org/index.php/Systemd">systemd wip repo</a> and one of the remaining todo items was to fix up splashy to work with systemd.</p>
+<p>First, why doesn't it out of the box of systemd is a drop-in replacement? Because splashy is not a simple init script, it hooks itself to <code>rc.sysvinit</code>, so it was specific to sysvinit.</p>
+<p>Now given that plymouth was already ported to systemd, it served as a good example. You may also ask: why don't we just switch to plymouth? Because:</p>
+<ul>
+<li>we don't want to introduce multiple changes at the same time</li>
+<li>it <a href="http://fedoraproject.org/wiki/Releases/FeatureBetterStartup#User_Documentation">requires kms</a>, while Splashy did not require it - so as long as it's not true that most video cards support kms (think of via or anything else which supports vesafb, but not kms), such a switch would be a regression</li>
+</ul>
+<p>Okay, enough anti-Plymouth rant. As you can see, right now the task is to fix Splashy.</p>
+<p>The steps I did were:</p>
+<ul>
+<li>updated the Splashy theme to remove the progressbar: given that now we start services parallel and on-demand, it does not really make too much sense</li>
+<li>introduced unit files: to start on boot, to stop before getty/xorg, to start before kexec/reboot/halt/poweroff</li>
+<li>added the usual compatibility symlinks to avoid starting the old rc.splash (which would happen anyway)</li>
+<li>added a simple wrapper that fires up splashy and once it's ready it sends the Booting.../Rebooting.../etc text to it</li>
+</ul>
+<p>The last problem is a bit more complex: now that xorg startup wants to stop splashy, a dependency has to be declared. xorg startup is handled by <code>prefdm.service</code>, but in case it depends on <code>splashy-quit.service</code>, what will happen if you don't have or don't want a splash?</p>
+<p>The solution for now is to declare an <code>After=</code> relation: that means xorg startup will happen after the quit of splashy, if it happens at all.</p>
+<p>This way:</p>
+<ul>
+<li>you can disable the splash, it won't cause any dependency errors</li>
+<li>if you don't have <code>prefdm.service</code> enabled, you can even have splashy uninstalled</li>
+<li>(this one is a bit ugly) you can disable the splash, but if you uninstall it and have <code>prefdm.service</code> enabled, you'll get a dependency error, as systemd will have no idea what <code>splashy-quit.service</code> is.</li>
+</ul>
+<p>To test the above:</p>
+<ul>
+<li>you need to enable the systemd wip repo (see the link above)</li>
+<li>run <code>pacman-g2 -Sy systemd</code></li>
+<li>boot with <code>init=/bin/systemd</code></li>
+</ul>
+<p>Stay tuned, we still have a few blocker issues before merging the (disabled by default, as you need that kernel parameter) systemd support to current.</p>
   </div>
 </article>
 

@@ -68,114 +68,36 @@
     <p>Estimated read time: 2 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>So we have this <a href="http://wiki.frugalware.org/index.php/Systemd">systemd wip
-repo</a> and one of the remaining todo items was to fix up splashy to work
-with systemd.</p></div>
-<div class="paragraph"><p>First, why doesn&#8217;t it out of the box of systemd is a drop-in
-replacement? Because splashy is not a simple init script, it hooks
-itself to <code>rc.sysvinit</code>, so it was specific to sysvinit.</p></div>
-<div class="paragraph"><p>Now given that plymouth was already ported to systemd, it served as a
-good example. You may also ask: why don&#8217;t we just switch to plymouth?
-Because:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-we don&#8217;t want to introduce multiple changes at the same time
-</p>
-</li>
-<li>
-<p>
-it
-  <a href="http://fedoraproject.org/wiki/Releases/FeatureBetterStartup#User_Documentation">requires
-  kms</a>, while Splashy did not require it - so as long as it&#8217;s not true
-  that most video cards support kms (think of via or anything else which
-  supports vesafb, but not kms), such a switch would be a regression
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>Okay, enough anti-Plymouth rant. As you can see, right now the task is to fix Splashy.</p></div>
-<div class="paragraph"><p>The steps I did were:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-updated the Splashy theme to remove the progressbar: given that now we
-  start services parallel and on-demand, it does not really make too
-  much sense
-</p>
-</li>
-<li>
-<p>
-introduced unit files: to start on boot, to stop before getty/xorg, to
-  start before kexec/reboot/halt/poweroff
-</p>
-</li>
-<li>
-<p>
-added the usual compatibility symlinks to avoid starting the old
-  rc.splash (which would happen anyway)
-</p>
-</li>
-<li>
-<p>
-added a simple wrapper that fires up splashy and once it&#8217;s ready it
-  sends the Booting&#8230;/Rebooting&#8230;/etc text to it
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>The last problem is a bit more complex: now that xorg startup wants to
-stop splashy, a dependency has to be declared. xorg startup is handled
-by <code>prefdm.service</code>, but in case it depends on <code>splashy-quit.service</code>,
-what will happen if you don&#8217;t have or don&#8217;t want a splash?</p></div>
-<div class="paragraph"><p>The solution for now is to declare an <code>After=</code> relation: that means xorg
-startup will happen after the quit of splashy, if it happens at all.</p></div>
-<div class="paragraph"><p>This way:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-you can disable the splash, it won&#8217;t cause any dependency errors
-</p>
-</li>
-<li>
-<p>
-if you don&#8217;t have <code>prefdm.service</code> enabled, you can even have splashy
-  uninstalled
-</p>
-</li>
-<li>
-<p>
-(this one is a bit ugly) you can disable the splash, but if you
-  uninstall it and have <code>prefdm.service</code> enabled, you&#8217;ll get a
-  dependency error, as systemd will have no idea what
-  <code>splashy-quit.service</code> is.
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>To test the above:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-you need to enable the systemd wip repo (see the link above)
-</p>
-</li>
-<li>
-<p>
-run <code>pacman-g2 -Sy systemd</code>
-</p>
-</li>
-<li>
-<p>
-boot with <code>init=/bin/systemd</code>
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>Stay tuned, we still have a few blocker issues before merging the
-(disabled by default, as you need that kernel parameter) systemd support
-to current.</p></div>
-</div>
-</div>
-
+    <p>So we have this <a href="http://wiki.frugalware.org/index.php/Systemd">systemd wip repo</a> and one of the remaining todo items was to fix up splashy to work with systemd.</p>
+<p>First, why doesn't it out of the box of systemd is a drop-in replacement? Because splashy is not a simple init script, it hooks itself to <code>rc.sysvinit</code>, so it was specific to sysvinit.</p>
+<p>Now given that plymouth was already ported to systemd, it served as a good example. You may also ask: why don't we just switch to plymouth? Because:</p>
+<ul>
+<li>we don't want to introduce multiple changes at the same time</li>
+<li>it <a href="http://fedoraproject.org/wiki/Releases/FeatureBetterStartup#User_Documentation">requires kms</a>, while Splashy did not require it - so as long as it's not true that most video cards support kms (think of via or anything else which supports vesafb, but not kms), such a switch would be a regression</li>
+</ul>
+<p>Okay, enough anti-Plymouth rant. As you can see, right now the task is to fix Splashy.</p>
+<p>The steps I did were:</p>
+<ul>
+<li>updated the Splashy theme to remove the progressbar: given that now we start services parallel and on-demand, it does not really make too much sense</li>
+<li>introduced unit files: to start on boot, to stop before getty/xorg, to start before kexec/reboot/halt/poweroff</li>
+<li>added the usual compatibility symlinks to avoid starting the old rc.splash (which would happen anyway)</li>
+<li>added a simple wrapper that fires up splashy and once it's ready it sends the Booting.../Rebooting.../etc text to it</li>
+</ul>
+<p>The last problem is a bit more complex: now that xorg startup wants to stop splashy, a dependency has to be declared. xorg startup is handled by <code>prefdm.service</code>, but in case it depends on <code>splashy-quit.service</code>, what will happen if you don't have or don't want a splash?</p>
+<p>The solution for now is to declare an <code>After=</code> relation: that means xorg startup will happen after the quit of splashy, if it happens at all.</p>
+<p>This way:</p>
+<ul>
+<li>you can disable the splash, it won't cause any dependency errors</li>
+<li>if you don't have <code>prefdm.service</code> enabled, you can even have splashy uninstalled</li>
+<li>(this one is a bit ugly) you can disable the splash, but if you uninstall it and have <code>prefdm.service</code> enabled, you'll get a dependency error, as systemd will have no idea what <code>splashy-quit.service</code> is.</li>
+</ul>
+<p>To test the above:</p>
+<ul>
+<li>you need to enable the systemd wip repo (see the link above)</li>
+<li>run <code>pacman-g2 -Sy systemd</code></li>
+<li>boot with <code>init=/bin/systemd</code></li>
+</ul>
+<p>Stay tuned, we still have a few blocker issues before merging the (disabled by default, as you need that kernel parameter) systemd support to current.</p>
   </div>
   <div class="article_meta">
     <p>Category: <a href="https://vmiklos.hu/blog/category/frugalware.html">frugalware</a>

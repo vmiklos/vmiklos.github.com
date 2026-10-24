@@ -68,59 +68,40 @@
     <p>Estimated read time: 2 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Yesterday I wanted to print a PDF document: two pages per sheet, and of
-course I wanted duplex printing as well (on the short side).</p></div>
-<div class="paragraph"><p>Given that the hardware (the printer) was not capable of duplex
-printing, I needed some software workaround. If you want one page per
-sheet, this is trivial, as the print dialog of any PDF reader will let
-you select "odd pages", then you re-feed the printer with the output
-paper and you select "even pages" and that&#8217;s it.</p></div>
-<div class="paragraph"><p>OTOH, if you want 2 pages per sheet, then first you need some trick
-first to create two PDF from the original: the first containing the
-pages 1, 2, 5, 6, etc. - and the other containing 3, 4, 7, 8, etc.</p></div>
-<div class="paragraph"><p>After all this isn&#8217;t really hard using <code>pdftk</code>. First, the input PDF was
-around 150 pages, so I wanted to split the input to one file / page:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>pdftk in.pdf burst output out/%03d.pdf</code></pre>
-</div></div>
-<div class="paragraph"><p>Then let&#8217;s move the pages to the subdirs <code>a</code> or <code>b</code>, based on the above
-pattern:</p></div>
-<div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight
-by Lorenzo Bettini
-http://www.lorenzobettini.it
-http://www.gnu.org/software/src-highlite -->
-<pre><tt>cd out
-mkdir a b
-<span style="font-weight: bold"><span style="color: #0000FF">for</span></span> i <span style="font-weight: bold"><span style="color: #0000FF">in</span></span> <span style="color: #990000">*.</span>pdf
-<span style="font-weight: bold"><span style="color: #0000FF">do</span></span>
-        <span style="color: #009900">base</span><span style="color: #990000">=</span><span style="color: #009900">$(</span>basename <span style="color: #009900">$i</span> <span style="color: #990000">.</span>pdf<span style="color: #990000">)</span>
-        <span style="font-weight: bold"><span style="color: #0000FF">if</span></span> <span style="color: #990000">[</span> <span style="color: #009900">$base</span> -lt <span style="color: #993399">100</span> <span style="color: #990000">];</span> <span style="font-weight: bold"><span style="color: #0000FF">then</span></span>
-                <span style="color: #009900">rem</span><span style="color: #990000">=</span><span style="color: #009900">$(</span><span style="color: #990000">(</span><span style="color: #009900">$(</span>echo <span style="color: #009900">$i</span><span style="color: #990000">|</span>sed <span style="color: #FF0000">'s/^0</span><span style="color: #CC33CC">\+\(</span><span style="color: #FF0000">.*</span><span style="color: #CC33CC">\)\.</span><span style="color: #FF0000">pdf/</span><span style="color: #CC33CC">\1</span><span style="color: #FF0000">/'</span><span style="color: #990000">)%</span><span style="color: #993399">4</span><span style="color: #990000">))</span>
-        <span style="font-weight: bold"><span style="color: #0000FF">else</span></span>
-                <span style="color: #009900">rem</span><span style="color: #990000">=</span><span style="color: #009900">$(($base%4))</span>
-        <span style="font-weight: bold"><span style="color: #0000FF">fi</span></span>
-        <span style="font-weight: bold"><span style="color: #0000FF">if</span></span> <span style="color: #990000">[</span> <span style="color: #FF0000">"$rem"</span> <span style="color: #990000">=</span> <span style="color: #993399">1</span> -o <span style="color: #FF0000">"$rem"</span> <span style="color: #990000">=</span> <span style="color: #993399">2</span> <span style="color: #990000">];</span> <span style="font-weight: bold"><span style="color: #0000FF">then</span></span>
-                mv <span style="color: #009900">$i</span> a
-        <span style="font-weight: bold"><span style="color: #0000FF">else</span></span>
-                mv <span style="color: #009900">$i</span> b
-        <span style="font-weight: bold"><span style="color: #0000FF">fi</span></span>
-<span style="font-weight: bold"><span style="color: #0000FF">done</span></span></tt></pre></div></div>
-<div class="paragraph"><p>Finally concat the files from the <code>a</code> and the <code>b</code> dir to a single file:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>cd a
-pdftk *.pdf cat output ../a.pdf
-cd ../b
-pdftk *.pdf cat output ../b.pdf</code></pre>
-</div></div>
-<div class="paragraph"><p>That&#8217;s it!</p></div>
-</div>
-</div>
+    <p>Yesterday I wanted to print a PDF document: two pages per sheet, and of course I wanted duplex printing as well (on the short side).</p>
+<p>Given that the hardware (the printer) was not capable of duplex printing, I needed some software workaround. If you want one page per sheet, this is trivial, as the print dialog of any PDF reader will let you select "odd pages", then you re-feed the printer with the output paper and you select "even pages" and that's it.</p>
+<p>OTOH, if you want 2 pages per sheet, then first you need some trick first to create two PDF from the original: the first containing the pages 1, 2, 5, 6, etc. - and the other containing 3, 4, 7, 8, etc.</p>
+<p>After all this isn't really hard using <code>pdftk</code>. First, the input PDF was around 150 pages, so I wanted to split the input to one file / page:</p>
+<div class="highlight"><pre><span></span><code>pdftk in.pdf burst output out/%03d.pdf
+</code></pre></div>
 
+<p>Then let's move the pages to the subdirs <code>a</code> or <code>b</code>, based on the above pattern:</p>
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>out
+mkdir<span class="w"> </span>a<span class="w"> </span>b
+<span class="k">for</span><span class="w"> </span>i<span class="w"> </span><span class="k">in</span><span class="w"> </span>*.pdf
+<span class="k">do</span>
+<span class="w">    </span><span class="nv">base</span><span class="o">=</span><span class="k">$(</span>basename<span class="w"> </span><span class="nv">$i</span><span class="w"> </span>.pdf<span class="k">)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="nv">$base</span><span class="w"> </span>-lt<span class="w"> </span><span class="m">100</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">        </span><span class="nv">rem</span><span class="o">=</span><span class="k">$(($(</span><span class="nb">echo</span><span class="w"> </span><span class="nv">$i</span><span class="p">|</span>sed<span class="w"> </span><span class="s1">&#39;s/^0\+\(.*\)\.pdf/\1/&#39;</span><span class="k">)</span><span class="o">%</span><span class="m">4</span><span class="k">))</span>
+<span class="w">    </span><span class="k">else</span>
+<span class="w">        </span><span class="nv">rem</span><span class="o">=</span><span class="k">$((</span><span class="nv">$base</span><span class="o">%</span><span class="m">4</span><span class="k">))</span>
+<span class="w">    </span><span class="k">fi</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$rem</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="w"> </span>-o<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$rem</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">                </span>mv<span class="w"> </span><span class="nv">$i</span><span class="w"> </span>a
+<span class="w">        </span><span class="k">else</span>
+<span class="w">                </span>mv<span class="w"> </span><span class="nv">$i</span><span class="w"> </span>b
+<span class="w">        </span><span class="k">fi</span>
+<span class="k">done</span>
+</code></pre></div>
+
+<p>Finally concat the files from the <code>a</code> and the <code>b</code> dir to a single file:</p>
+<div class="highlight"><pre><span></span><code>cd a
+pdftk <span class="gs">*.pdf cat output ../a.pdf</span>
+<span class="gs">cd ../b</span>
+<span class="gs">pdftk *</span>.pdf cat output ../b.pdf
+</code></pre></div>
+
+<p>That's it!</p>
   </div>
 </article>
 <hr />
@@ -135,27 +116,9 @@ pdftk *.pdf cat output ../b.pdf</code></pre>
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>I tried to search back when did I create Java bindings for libwpd - it
-seems
-<a href="http://vmiklos.hu/gitweb/?p=libwpd-old.git;a=commit;h=2ee19c1e5e3b5cc28db8c9dc9aa7e6116e62b730">this</a>
-was the first commit.</p></div>
-<div class="paragraph"><p>First I kept back the source code to get some money for it (there were a
-customer who seemed to be willing to pay, but then disappeared), then I
-just abandoned the idea and pushed it to
-<a href="http://libwpd.sourceforge.net/">SourceForge.net</a> to some
-<a href="http://libwpd.cvs.sourceforge.net/viewvc/libwpd/libwpd2-bindings/">CVS
-repo</a>, (I even mentioned it in a
-<a href="https://vmiklos.hu/blog/preparing-frugalware-1-0pre2.html">blog post</a>), which is finally
-now converted to
-<a href="http://libwpd.git.sourceforge.net/git/gitweb.cgi?p=libwpd/libwpd-bindings;a=summary">git</a>.</p></div>
-<div class="paragraph"><p>Long story short, a week ago finally Fridrich
-<a href="http://sourceforge.net/projects/libwpd/files/libwpd-bindings/download">released</a>
-the first version of the code, after about 2.75 years. :)</p></div>
-</div>
-</div>
-
+    <p>I tried to search back when did I create Java bindings for libwpd - it seems <a href="http://vmiklos.hu/gitweb/?p=libwpd-old.git;a=commit;h=2ee19c1e5e3b5cc28db8c9dc9aa7e6116e62b730">this</a> was the first commit.</p>
+<p>First I kept back the source code to get some money for it (there were a customer who seemed to be willing to pay, but then disappeared), then I just abandoned the idea and pushed it to <a href="http://libwpd.sourceforge.net/">SourceForge.net</a> to some <a href="http://libwpd.cvs.sourceforge.net/viewvc/libwpd/libwpd2-bindings/">CVS repo</a>, (I even mentioned it in a <a href="https://vmiklos.hu/blog/preparing-frugalware-1-0pre2.html">blog post</a>), which is finally now converted to <a href="http://libwpd.git.sourceforge.net/git/gitweb.cgi?p=libwpd/libwpd-bindings;a=summary">git</a>.</p>
+<p>Long story short, a week ago finally Fridrich <a href="http://sourceforge.net/projects/libwpd/files/libwpd-bindings/download">released</a> the first version of the code, after about 2.75 years. :)</p>
   </div>
 </article>
 <hr />
@@ -170,55 +133,29 @@ the first version of the code, after about 2.75 years. :)</p></div>
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Background: <code>OSL_TRACE()</code> is an internal LibreOffice macro that is like
-<code>printf()</code>, but it&#8217;s only enabled in debug mode. Without it, you would
-add a debug printf during development:</p></div>
-<div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight
-by Lorenzo Bettini
-http://www.lorenzobettini.it
-http://www.gnu.org/software/src-highlite -->
-<pre><tt><span style="font-weight: bold"><span style="color: #000000">printf</span></span><span style="color: #990000">(</span><span style="color: #FF0000">"debug, foo</span><span style="color: #CC33CC">\n</span><span style="color: #FF0000">"</span><span style="color: #990000">);</span></tt></pre></div></div>
-<div class="paragraph"><p>then you would comment it out when the code started working,:</p></div>
-<div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight
-by Lorenzo Bettini
-http://www.lorenzobettini.it
-http://www.gnu.org/software/src-highlite -->
-<pre><tt><span style="font-style: italic"><span style="color: #9A1900">//printf("debug, foo\n");</span></span></tt></pre></div></div>
-<div class="paragraph"><p>then remove the comment when it breaks again, etc.</p></div>
-<div class="paragraph"><p>In the past, if you built a LibreOffice module, then you executed:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>build</code></pre>
-</div></div>
-<div class="paragraph"><p>inside a module, and in case you wanted debug symbols and such messages you built using:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>build debug=t</code></pre>
-</div></div>
-<div class="paragraph"><p>which increased the debug level to 2 (from 0), where 1 is required for
-debug symbols, 2 for debug messages. (See the OOo
-<a href="http://wiki.services.openoffice.org/wiki/Debug_Levels">wiki page</a>.)</p></div>
-<div class="paragraph"><p>The recent update, why I&#8217;m writing this post: Now this has been
-<a href="http://cgit.freedesktop.org/libreoffice/bootstrap/commit/?id=47d09469e96485f93623a6fbeb42f709c2ce49bb">changed</a>,
-and <code>debug=t</code> gives you debug symbols only, but no extra debug output.
-While this is
-<a href="http://lists.freedesktop.org/archives/libreoffice/2010-November/002894.html">great
-in most cases</a>, sometimes you still want the old behaviour to get the
-debug messages. In that case the solution (as pointed out in the mailing
-list post) is to use:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>build debug=t dbglevel=2</code></pre>
-</div></div>
-<div class="paragraph"><p>(Hopefully this post will be handy for who missed that post, like I did
-the first time.)</p></div>
-</div>
-</div>
+    <p>Background: <code>OSL_TRACE()</code> is an internal LibreOffice macro that is like <code>printf()</code>, but it's only enabled in debug mode. Without it, you would add a debug printf during development:</p>
+<div class="highlight"><pre><span></span><code><span class="n">printf</span><span class="p">(</span><span class="s">&quot;debug, foo</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+</code></pre></div>
 
+<p>then you would comment it out when the code started working,:</p>
+<div class="highlight"><pre><span></span><code><span class="c1">//printf(&quot;debug, foo\n&quot;);</span>
+</code></pre></div>
+
+<p>then remove the comment when it breaks again, etc.</p>
+<p>In the past, if you built a LibreOffice module, then you executed:</p>
+<div class="highlight"><pre><span></span><code>build
+</code></pre></div>
+
+<p>inside a module, and in case you wanted debug symbols and such messages you built using:</p>
+<div class="highlight"><pre><span></span><code>build debug=t
+</code></pre></div>
+
+<p>which increased the debug level to 2 (from 0), where 1 is required for debug symbols, 2 for debug messages. (See the OOo <a href="http://wiki.services.openoffice.org/wiki/Debug_Levels">wiki page</a>.)</p>
+<p>The recent update, why I'm writing this post: Now this has been <a href="http://cgit.freedesktop.org/libreoffice/bootstrap/commit/?id=47d09469e96485f93623a6fbeb42f709c2ce49bb">changed</a>, and <code>debug=t</code> gives you debug symbols only, but no extra debug output. While this is <a href="http://lists.freedesktop.org/archives/libreoffice/2010-November/002894.html">great in most cases</a>, sometimes you still want the old behaviour to get the debug messages. In that case the solution (as pointed out in the mailing list post) is to use:</p>
+<div class="highlight"><pre><span></span><code>build debug=t dbglevel=2
+</code></pre></div>
+
+<p>(Hopefully this post will be handy for who missed that post, like I did the first time.)</p>
   </div>
 </article>
 <hr />
@@ -233,25 +170,9 @@ the first time.)</p></div>
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>I first heard about
-<a href="http://freedesktop.org/wiki/Software/systemd">systemd</a> from
-<a href="http://frugalware.org/~voroskoi/">voroskoi</a>, later
-<a href="http://people.gnome.org/~michael/blog/">Michael</a> pointed it out again
-during the <a href="http://www.ooocon.org/index.php/ooocon/2010">OOoCon 2010</a>,
-finally it somehow came up on <code>#frugalware.dev</code> today.</p></div>
-<div class="paragraph"><p>So I read up some documentation in this area, and I definitely like it.
-(Note: I didn&#8217;t say I&#8217;m willing to do all the work to integrate this
-into Frugalware, but I like the idea.) For me, the killer post is
-<a href="http://0pointer.de/blog/projects/systemd-for-admins-3.html">this one</a>: a
-distro-independent init script in 8 lines is very much like our
-<code>FrugalBuild</code> scripts which are no longer than 11 lines for a project
-with a standard build-system.</p></div>
-<div class="paragraph"><p>I like that minimalism a lot.</p></div>
-</div>
-</div>
-
+    <p>I first heard about <a href="http://freedesktop.org/wiki/Software/systemd">systemd</a> from <a href="http://frugalware.org/~voroskoi/">voroskoi</a>, later <a href="http://people.gnome.org/~michael/blog/">Michael</a> pointed it out again during the <a href="http://www.ooocon.org/index.php/ooocon/2010">OOoCon 2010</a>, finally it somehow came up on <code>#frugalware.dev</code> today.</p>
+<p>So I read up some documentation in this area, and I definitely like it. (Note: I didn't say I'm willing to do all the work to integrate this into Frugalware, but I like the idea.) For me, the killer post is <a href="http://0pointer.de/blog/projects/systemd-for-admins-3.html">this one</a>: a distro-independent init script in 8 lines is very much like our <code>FrugalBuild</code> scripts which are no longer than 11 lines for a project with a standard build-system.</p>
+<p>I like that minimalism a lot.</p>
   </div>
 </article>
 <hr />
@@ -266,19 +187,14 @@ with a standard build-system.</p></div>
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>One may have noticed that right now my
+    <p>One may have noticed that right now my
 <a href="http://vmiklos.hu/gitweb/?p=rejourn.git;a=summary">rejourn tree</a> is
-empty. That&#8217;s not an accident, after Ram accepted my 15th patch, finally
+empty. That's not an accident, after Ram accepted my 15th patch, finally
 the site runs an unpatched version of <a href="https://vmiklos.hu/blog/rejourn.html">rejourn</a> - of
-course with a custom config and design.</p></div>
-<div class="paragraph"><p>Of course I still have a few ideas on what to improve, so this is not
-the end of the story, but still - I&#8217;m happy he was so open for changes
-and new features that we reached this post. :)</p></div>
-</div>
-</div>
-
+course with a custom config and design.</p>
+<p>Of course I still have a few ideas on what to improve, so this is not
+the end of the story, but still - I'm happy he was so open for changes
+and new features that we reached this post. :)</p>
   </div>
 </article>
 <hr />
@@ -293,59 +209,24 @@ and new features that we reached this post. :)</p></div>
     <p>Estimated read time: 2 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>I usually just download the gpx track from my GPS and delete the track
-from device each time I arrive home and I was at some interesting place
-before. Last week this was not the case, I was at
-<a href="http://maps.google.com/?q=Gy%FAr%F3,+Hungary">Gyúró</a> two weeks ago, then
-I borrowed by device, without clearing the log from it.</p></div>
-<div class="paragraph"><p>So the task was easy: I had a timestamp and I had the full log from the
-device, and I want to split it: before and after a given timestamp. It
-turned out that I had some log from Oct 28th as well, so I wanted:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-The log till Oct 28th
-</p>
-</li>
-<li>
-<p>
-The log between Nov 5th and 8th
-</p>
-</li>
-<li>
-<p>
-The log after 10th.
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>Luckily the
-<a href="http://www.gpsbabel.org/htmldoc-1.3.0/filter_track.html">gpsbabel
-documentation</a> is quite clear in this area (see Example 4.8), I just
-needed the following commands:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>$ gpsbabel -t -i gpx -f in.gpx -x track,stop=20101028 -o gpx -F out1.gpx
-$ gpsbabel -t -i gpx -f in.gpx -x track,start=20101105,stop=20101108 -o gpx -F out2.gpx
-$ gpsbabel -t -i gpx -f in.gpx -x track,start=20101110 -o gpx -F out3.gpx</code></pre>
-</div></div>
-<div class="paragraph"><p>Update: two more notes:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-the stop is exclusive, start is inclusive
-</p>
-</li>
-<li>
-<p>
-when using the result in digikam, the camera time zone has to be set to "manual: gmt+0", even if both the gpx result and the camera time is in local time
-</p>
-</li>
-</ul></div>
-</div>
-</div>
+    <p>I usually just download the gpx track from my GPS and delete the track from device each time I arrive home and I was at some interesting place before. Last week this was not the case, I was at <a href="http://maps.google.com/?q=Gy%FAr%F3,+Hungary">Gyúró</a> two weeks ago, then I borrowed by device, without clearing the log from it.</p>
+<p>So the task was easy: I had a timestamp and I had the full log from the device, and I want to split it: before and after a given timestamp. It turned out that I had some log from Oct 28th as well, so I wanted:</p>
+<ul>
+<li>The log till Oct 28th</li>
+<li>The log between Nov 5th and 8th</li>
+<li>The log after 10th.</li>
+</ul>
+<p>Luckily the <a href="http://www.gpsbabel.org/htmldoc-1.3.0/filter_track.html">gpsbabel documentation</a> is quite clear in this area (see Example 4.8), I just needed the following commands:</p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>gpsbabel<span class="w"> </span>-t<span class="w"> </span>-i<span class="w"> </span>gpx<span class="w"> </span>-f<span class="w"> </span><span class="k">in</span>.gpx<span class="w"> </span>-x<span class="w"> </span>track,stop<span class="o">=</span><span class="m">20101028</span><span class="w"> </span>-o<span class="w"> </span>gpx<span class="w"> </span>-F<span class="w"> </span>out1.gpx
+$<span class="w"> </span>gpsbabel<span class="w"> </span>-t<span class="w"> </span>-i<span class="w"> </span>gpx<span class="w"> </span>-f<span class="w"> </span><span class="k">in</span>.gpx<span class="w"> </span>-x<span class="w"> </span>track,start<span class="o">=</span><span class="m">20101105</span>,stop<span class="o">=</span><span class="m">20101108</span><span class="w"> </span>-o<span class="w"> </span>gpx<span class="w"> </span>-F<span class="w"> </span>out2.gpx
+$<span class="w"> </span>gpsbabel<span class="w"> </span>-t<span class="w"> </span>-i<span class="w"> </span>gpx<span class="w"> </span>-f<span class="w"> </span><span class="k">in</span>.gpx<span class="w"> </span>-x<span class="w"> </span>track,start<span class="o">=</span><span class="m">20101110</span><span class="w"> </span>-o<span class="w"> </span>gpx<span class="w"> </span>-F<span class="w"> </span>out3.gpx
+</code></pre></div>
 
+<p>Update: two more notes:</p>
+<ul>
+<li>the stop is exclusive, start is inclusive</li>
+<li>when using the result in digikam, the camera time zone has to be set to "manual: gmt+0", even if both the gpx result and the camera time is in local time</li>
+</ul>
   </div>
 </article>
 <hr />
@@ -360,18 +241,13 @@ when using the result in digikam, the camera time zone has to be set to "manual:
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Once I was ready with this year&#8217;s GSoC work I started to submit it back
+    <p>Once I was ready with this year's GSoC work I started to submit it back
 to OpenOffice.org. Before that was completed, LibreOffice was launched,
 though I thought if I started working on submitting it to OpenOffice.org
-as well, I&#8217;ll finish it. About 6 weeks later they now
+as well, I'll finish it. About 6 weeks later they now
 <a href="http://hg.services.openoffice.org/DEV300/rev/5a2d87e7a414">integrated</a>
 (merged) the <code>vmiklos01</code> CWS (the branch containing my GSoC work) to
-DEV300, what will became OpenOffice.org 3.4 later.</p></div>
-</div>
-</div>
-
+DEV300, what will became OpenOffice.org 3.4 later.</p>
   </div>
 </article>
 <hr />
@@ -386,30 +262,11 @@ DEV300, what will became OpenOffice.org 3.4 later.</p></div>
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>The whole story starts
-<a href="http://www.google.com/support/a/bin/answer.py?hl=en&amp;answer=182075">here</a>.
-The whole conflict is about I had a google account with my vmiklos.hu
-domain already, but now the google apps account took it over and they
-asked me to rename the old account to something else.</p></div>
-<div class="paragraph"><p>I joined the early adopter program and I was happy about it, finally I
-could access Picasa with my google apps account, though I could not make
-it to picasa.vmiklos.hu or something. But at least I could use it.</p></div>
-<div class="paragraph"><p>Why I&#8217;m writing is that now they changed something regarding google
-groups as well, since I just noticed I can no longer post to the
-invite-only lists hosted on google groups where I use my personal
-address&#8230; It turns out the trick is to get the old (renamed) address
-unsubscribed and get the new one subscribed.</p></div>
-<div class="paragraph"><p>I&#8217;m not really claiming, since the new state is much more clear, but
-this unsubscribe + subscribe dance is rather uncomfortable&#8230;</p></div>
-<div class="paragraph"><p>Oh, and a related
-<a href="http://www.google.com/support/a/bin/answer.py?hl=en&amp;answer=60227">doc
-link</a> in case you want to use gtalk on your domain as well (for now I
-decided not to use it).</p></div>
-</div>
-</div>
-
+    <p>The whole story starts <a href="http://www.google.com/support/a/bin/answer.py?hl=en&amp;answer=182075">here</a>. The whole conflict is about I had a google account with my vmiklos.hu domain already, but now the google apps account took it over and they asked me to rename the old account to something else.</p>
+<p>I joined the early adopter program and I was happy about it, finally I could access Picasa with my google apps account, though I could not make it to picasa.vmiklos.hu or something. But at least I could use it.</p>
+<p>Why I'm writing is that now they changed something regarding google groups as well, since I just noticed I can no longer post to the invite-only lists hosted on google groups where I use my personal address... It turns out the trick is to get the old (renamed) address unsubscribed and get the new one subscribed.</p>
+<p>I'm not really claiming, since the new state is much more clear, but this unsubscribe + subscribe dance is rather uncomfortable...</p>
+<p>Oh, and a related <a href="http://www.google.com/support/a/bin/answer.py?hl=en&amp;answer=60227">doc link</a> in case you want to use gtalk on your domain as well (for now I decided not to use it).</p>
   </div>
 </article>
 <hr />
@@ -424,27 +281,11 @@ decided not to use it).</p></div>
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>So we had
-<a href="http://thread.gmane.org/gmane.comp.documentfoundation.libreoffice.devel/844">this
-script</a> with Jonas, and the current news about it is that it&#8217;s mentioned
-by in <a href="https://lwn.net/Articles/414051/">this LWN article</a>. I just
-innocently read the article and noticed:</p></div>
-<div class="quoteblock">
-<div class="content">
-<div class="paragraph"><p>After ten years, the code still has over 100,000 lines of
-German-language comments; those are now being targeted with the help of
-a script which repurposes the built-in language-guessing code which is
-part of the spelling checker.</p></div>
-</div>
-<div class="attribution">
-&#8212; LPC: Michael Meeks on LibreOffice and code ownership
-</div></div>
-<div class="paragraph"><p>Nice! :)</p></div>
-</div>
-</div>
-
+    <p>So we had <a href="http://thread.gmane.org/gmane.comp.documentfoundation.libreoffice.devel/844">this script</a> with Jonas, and the current news about it is that it's mentioned by in <a href="https://lwn.net/Articles/414051/">this LWN article</a>. I just innocently read the article and noticed:</p>
+<blockquote>
+<p>After ten years, the code still has over 100,000 lines of German-language comments; those are now being targeted with the help of a script which repurposes the built-in language-guessing code which is part of the spelling checker.</p>
+</blockquote>
+<p>Nice! :)</p>
   </div>
 </article>
 <hr />
@@ -459,17 +300,12 @@ part of the spelling checker.</p></div>
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph"><p>Even if I gave it a quick testing about two weeks ago, now I tried the
+    <p>Even if I gave it a quick testing about two weeks ago, now I tried the
 new Twitter / identi.ca support and I like it a lot. Now messages are
 not coming from a single user by default, but a separate channel is
 created, nicks are appearing there, and I can just highlight people to
-reply to their last tweet or simply type to submit a new one.</p></div>
-<div class="paragraph"><p>And of course my Skype module still works, as Wilmer fixed it up. :)</p></div>
-</div>
-</div>
-
+reply to their last tweet or simply type to submit a new one.</p>
+<p>And of course my Skype module still works, as Wilmer fixed it up. :)</p>
   </div>
 </article>
 
