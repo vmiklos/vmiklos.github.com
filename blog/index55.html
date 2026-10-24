@@ -232,12 +232,17 @@ tailor -c bitlbee.conf
     <p>Estimated read time: 2 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>..continuing <a href="http://blogs.frugalware.org/vmiklos/2006/12/31/p276">last year's article</a>. so another year passed by and it's time to look back and see what we did during 2007. probably i miss a lot of stuff but here is my list:</p><p>1) ability to go back in the installer to a previous point if you missed something. do you remember the days when one had to reboot if he/she wanted to do so? :)</p><p>2) compiz improvements. this is now settled down in current and it's pretty sane. we cleaned up the old compiz and beryl, we have a single compiz-fusion, it has a nice step by step documentation and it works fine both for kde and gnome.</p><p>3) asciidoc. i think we highly improved our documentation since we switched from latex to asciidoc. a user manual of 98 pages in a nice pdf format is cute, isn't it? :)</p><p>4) newsletters. Alex started to issue newsletters and recently phayz helped out us, so it's alive again. i think it's something great.</p><p>5) yugo. 'factory' was our previous i686 build server, it was a very old machine with a cpu of 300mhz and so on. it was time to replace it and now yugo does the job.</p><p>6) fwlive. this was an old project but only test versions were available, based on old frugalware versions. now there is a live version of every released version of frugalware, thanks to janny, boobaa and ironiq. great!</p><p>7) gnetconfig. the first graphical config tool from priyank. i'm really bad at any graphical programming, so i'm glad to see finally we started to work on guis.</p><p>8) gfpm. something users always wanted and now it's here. a true graphical package manager, which is not just a wrapper but properly uses libpacman. awesome.</p><p>9) fun. this is our update manager which can sit on the system tray (or whatever i should call kicker not to be kde specific ;) ) and notifies you if there is something to update. i'm sure this is more comfortable compared to watching the -security mailing list for updates or doing a -Syu daily :)</p><p>10) syncpkgd2. if you remember, the old method was that there were only clients and they tried to figure out what to build, they built and uploaded the packages. this was very suboptimal: it allowed only one buildserver / arch and it was slow. okay, being slow is the smaller problem, but every buildserver was a single point of failure. nowadays we have two i686 buildservers (thanks to boobaa) and it's theoretically it's possible to have two x86_64 buildservers, too. so even if one i686 buildserver is down, i can be at the beach, sipping a mojito :)</p>
-</div>
-</div>
-
+    <p>..continuing <a href="http://blogs.frugalware.org/vmiklos/2006/12/31/p276">last year's article</a>. so another year passed by and it's time to look back and see what we did during 2007. probably i miss a lot of stuff but here is my list:</p>
+<p>1) ability to go back in the installer to a previous point if you missed something. do you remember the days when one had to reboot if he/she wanted to do so? :)</p>
+<p>2) compiz improvements. this is now settled down in current and it's pretty sane. we cleaned up the old compiz and beryl, we have a single compiz-fusion, it has a nice step by step documentation and it works fine both for kde and gnome.</p>
+<p>3) asciidoc. i think we highly improved our documentation since we switched from latex to asciidoc. a user manual of 98 pages in a nice pdf format is cute, isn't it? :)</p>
+<p>4) newsletters. Alex started to issue newsletters and recently phayz helped out us, so it's alive again. i think it's something great.</p>
+<p>5) yugo. 'factory' was our previous i686 build server, it was a very old machine with a cpu of 300mhz and so on. it was time to replace it and now yugo does the job.</p>
+<p>6) fwlive. this was an old project but only test versions were available, based on old frugalware versions. now there is a live version of every released version of frugalware, thanks to janny, boobaa and ironiq. great!</p>
+<p>7) gnetconfig. the first graphical config tool from priyank. i'm really bad at any graphical programming, so i'm glad to see finally we started to work on guis.</p>
+<p>8) gfpm. something users always wanted and now it's here. a true graphical package manager, which is not just a wrapper but properly uses libpacman. awesome.</p>
+<p>9) fun. this is our update manager which can sit on the system tray (or whatever i should call kicker not to be kde specific ;) ) and notifies you if there is something to update. i'm sure this is more comfortable compared to watching the -security mailing list for updates or doing a -Syu daily :)</p>
+<p>10) syncpkgd2. if you remember, the old method was that there were only clients and they tried to figure out what to build, they built and uploaded the packages. this was very suboptimal: it allowed only one buildserver / arch and it was slow. okay, being slow is the smaller problem, but every buildserver was a single point of failure. nowadays we have two i686 buildservers (thanks to boobaa) and it's theoretically it's possible to have two x86_64 buildservers, too. so even if one i686 buildserver is down, i can be at the beach, sipping a mojito :)</p>
   </div>
 </article>
 <hr />
@@ -252,17 +257,22 @@ tailor -c bitlbee.conf
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>okay, i learned something today :)</p><p>you have a client behind a firewall and you have a server somewhere. and you want to ssh from the server to the client. that's exactly why ssh has a magic -R option!</p><p>if you do an</p><p><code>$ ssh -R 19022:localhost:22 server</code></p><p>that will mean that you can ssh to client:22 on the server by sshing to localhost:19022 on the server. yes, and it works even if the client is behind a firewall, yay! :)</p><p>update:</p><p>you probably want to add this to your ~/.ssh/config on the server as well:</p><p><pre>
+    <p>okay, i learned something today :)</p>
+<p>you have a client behind a firewall and you have a server somewhere. and you want to ssh from the server to the client. that's exactly why ssh has a magic -R option!</p>
+<p>if you do an</p>
+<p><code>$ ssh -R 19022:localhost:22 server</code></p>
+<p>that will mean that you can ssh to client:22 on the server by sshing to localhost:19022 on the server. yes, and it works even if the client is behind a firewall, yay! :)</p>
+<p>update:</p>
+<p>you probably want to add this to your ~/.ssh/config on the server as well:</p>
+<p><pre>
 Host client
         NoHostAuthenticationForLocalhost yes
         HostName localhost
         Port 19022
-</pre></p><p>so that you can easily just type</p><p><code>$ ssh client</code></p><p>on the server</p>
-</div>
-</div>
-
+</pre></p>
+<p>so that you can easily just type</p>
+<p><code>$ ssh client</code></p>
+<p>on the server</p>
   </div>
 </article>
 <hr />
@@ -277,12 +287,15 @@ Host client
     <p>Estimated read time: 2 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>git-svnimport will be removed in git-1.5.4 and i don't think it's tirival to use git-svn (which is great for bi-directional work) to properly convert an svn repo (with multiple branches) to a git one, so here is a recipe.</p><p>first, just use git-svn to create a git-svn repo. it's a git repo but it's a bit weird, it contains metadata which is necessary for bi-directional operations and you won't see the branches by default when you clone it. ah and it's not a bare repo.</p><p>in this example i'll convert ooo-build's svn repo (it has several branches and tags, so it's a good example).</p><p><code>mkdir -p ~/git/ooo-build
+    <p>git-svnimport will be removed in git-1.5.4 and i don't think it's tirival to use git-svn (which is great for bi-directional work) to properly convert an svn repo (with multiple branches) to a git one, so here is a recipe.</p>
+<p>first, just use git-svn to create a git-svn repo. it's a git repo but it's a bit weird, it contains metadata which is necessary for bi-directional operations and you won't see the branches by default when you clone it. ah and it's not a bare repo.</p>
+<p>in this example i'll convert ooo-build's svn repo (it has several branches and tags, so it's a good example).</p>
+<p><code>mkdir -p ~/git/ooo-build
 cd ~/git/ooo-build
 git svn init -s svn+ssh://svn.gnome.org/svn/ooo-build
-git svn fetch</code></p><p>this will take a while. once it's completed, you need to convert this to a bare repo:</p><p><code>mkdir ../ooo-build.git
+git svn fetch</code></p>
+<p>this will take a while. once it's completed, you need to convert this to a bare repo:</p>
+<p><code>mkdir ../ooo-build.git
 cd ../ooo-build.git
 git --bare init
 git config remote.origin.url ~/git/ooo-build
@@ -290,19 +303,26 @@ git config remote.origin.fetch +refs/remotes/tags/*:refs/tags/*
 git config --add remote.origin.fetch +refs/remotes/trunk:refs/heads/master
 git config --add remote.origin.fetch +refs/remotes/*:refs/heads/*
 git fetch
-</code></p><p>and you're done! :)</p><p>of course this is an incremental operation, so all you need is to run git svn fetch and git fetch from cron to keep the mirror up to date.</p><p>update:</p><p>it turns out you can even do this by having only one git repo. it has benefints: you don't have to duplicate the object database. and it has one problem: if you later switch fully to git, then you want to remove the git-svn metadata - doing so is the easiest if you just clone the repo.</p><p>so - in case you want this, you have to:</p><p><code>mkdir -p ~/git/ooo-build.git
+</code></p>
+<p>and you're done! :)</p>
+<p>of course this is an incremental operation, so all you need is to run git svn fetch and git fetch from cron to keep the mirror up to date.</p>
+<p>update:</p>
+<p>it turns out you can even do this by having only one git repo. it has benefints: you don't have to duplicate the object database. and it has one problem: if you later switch fully to git, then you want to remove the git-svn metadata - doing so is the easiest if you just clone the repo.</p>
+<p>so - in case you want this, you have to:</p>
+<p><code>mkdir -p ~/git/ooo-build.git
 cd ~/git/ooo-build.git
 git --bare init
 git --bare svn init -s svn+ssh://svn.gnome.org/svn/ooo-build
-git --bare svn fetch</code></p><p>and then you can fetch from yourself:</p><p><code>
+git --bare svn fetch</code></p>
+<p>and then you can fetch from yourself:</p>
+<p><code>
 git config remote.origin.url .
 git config remote.origin.fetch +refs/remotes/tags/*:refs/tags/*
 git config --add remote.origin.fetch +refs/remotes/*:refs/heads/*
 git fetch
-</code></p><p>note: git config --add remote.origin.fetch +refs/remotes/trunk:refs/heads/master it unnecessary as git svn fetch will update this for you (it is different from git fetch)</p><p>thanks for devurandom from #git for pointing out that this is possible using git --bare init before git svn init and using git --bare svn fetch :)</p>
-</div>
-</div>
-
+</code></p>
+<p>note: git config --add remote.origin.fetch +refs/remotes/trunk:refs/heads/master it unnecessary as git svn fetch will update this for you (it is different from git fetch)</p>
+<p>thanks for devurandom from #git for pointing out that this is possible using git --bare init before git svn init and using git --bare svn fetch :)</p>
   </div>
 </article>
 <hr />
@@ -317,13 +337,13 @@ git fetch
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>it was a while ago when we registered at <a href="http://www.ohloh.net/projects/6659?p=Frugalware+Linux">ohloh.net</a>, but i recently re-visited that page, and i found some nice PR texts there ;)</p><p><blockquote> Over the past twelve months, 18 developers contributed new code to Frugalware Linux.</p><p>This is a relatively large team, putting this project among the top 10% of all project teams on Ohloh.</p><p>For this measurement, Ohloh considered only recent changes to the code. Over the entire history of the project, 36 developers have contributed. </blockquote>
-(<a href="http://www.ohloh.net/projects/6659/factoids/273910">source</a>)</p><p>well, i always considered our team as a nice and good but small team, it turns out that if you count projects, we're not that small! :)</p><p>it also creates nice charts about what programming languages do we use, etc, etc. so it's a different approach, compared to cia, but it's interesting.</p>
-</div>
-</div>
-
+    <p>it was a while ago when we registered at <a href="http://www.ohloh.net/projects/6659?p=Frugalware+Linux">ohloh.net</a>, but i recently re-visited that page, and i found some nice PR texts there ;)</p>
+<p><blockquote> Over the past twelve months, 18 developers contributed new code to Frugalware Linux.</p>
+<p>This is a relatively large team, putting this project among the top 10% of all project teams on Ohloh.</p>
+<p>For this measurement, Ohloh considered only recent changes to the code. Over the entire history of the project, 36 developers have contributed. </blockquote>
+(<a href="http://www.ohloh.net/projects/6659/factoids/273910">source</a>)</p>
+<p>well, i always considered our team as a nice and good but small team, it turns out that if you count projects, we're not that small! :)</p>
+<p>it also creates nice charts about what programming languages do we use, etc, etc. so it's a different approach, compared to cia, but it's interesting.</p>
   </div>
 </article>
 <hr />
@@ -338,12 +358,10 @@ git fetch
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>recently i needed to convert a cvs repo to git, in fact i'm providing a git mirror, so i need incremental updates.</p><p>here is the command i needed:</p><p><code>$ git cvsimport -d :pserver:anonymous@tcpflow.cvs.sourceforge.net:/cvsroot/tcpflow -C tcpflow tcpflow</code></p><p>yes, this will do the initial conversion and the incremental one, too. :)</p>
-</div>
-</div>
-
+    <p>recently i needed to convert a cvs repo to git, in fact i'm providing a git mirror, so i need incremental updates.</p>
+<p>here is the command i needed:</p>
+<p><code>$ git cvsimport -d :pserver:anonymous@tcpflow.cvs.sourceforge.net:/cvsroot/tcpflow -C tcpflow tcpflow</code></p>
+<p>yes, this will do the initial conversion and the incremental one, too. :)</p>
   </div>
 </article>
 <hr />
@@ -358,12 +376,10 @@ git fetch
     <p>Estimated read time: 1 minutes</p>
   </div>
   <div class="article_text">
-    <div id="preamble">
-<div class="sectionbody">
-<p>tcpflow is a nice small console application to debug your network data. the usage is simple. just something like</p><p><code># tcpflow -i eth0</code></p><p>is enough. you're recommended to start it in an empty directory :)</p><p>don't be surprised, the incoming and the outgoing connection to a server's given port will be logged to 2 different files ;)</p>
-</div>
-</div>
-
+    <p>tcpflow is a nice small console application to debug your network data. the usage is simple. just something like</p>
+<p><code># tcpflow -i eth0</code></p>
+<p>is enough. you're recommended to start it in an empty directory :)</p>
+<p>don't be surprised, the incoming and the outgoing connection to a server's given port will be logged to 2 different files ;)</p>
   </div>
 </article>
 
