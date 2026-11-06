@@ -59,6 +59,39 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/scripts-used-in-the-python-2-7-rebuild.html">Scripts used in the Python 2.7 rebuild</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Fri 24 September 2010</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <p>First, I could almost reuse the same set of scripts as described <a href="https://vmiklos.hu/blog/scripts-used-in-the-python-2-6-mass-rebu.html">here</a>. The only change I needed to do is that aborting the build loop after each fail is a waste of time, so now I did:</p>
+<div class="highlight"><pre><span></span><code><span class="k">for</span><span class="w"> </span>i<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="k">$(</span>cat<span class="w"> </span>~/test.list<span class="k">)</span>
+<span class="k">do</span>
+<span class="w">        </span><span class="nb">echo</span><span class="w"> </span><span class="nv">$i</span>
+<span class="w">        </span><span class="nb">cd</span><span class="w"> </span>~/git/python27/source/*/<span class="nv">$i</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="k">continue</span>
+<span class="w">        </span>sudo<span class="w"> </span>makepkg<span class="w"> </span>-t<span class="w"> </span>python27,current<span class="w"> </span>-C
+<span class="w">        </span>git<span class="w"> </span>clean<span class="w"> </span>-x<span class="w"> </span>-d<span class="w"> </span>-f
+<span class="w">        </span>git<span class="w"> </span>checkout<span class="w"> </span>-f
+<span class="w">        </span>sed<span class="w"> </span>-i<span class="w"> </span><span class="s1">&#39;s|python&gt;=2.6|python&gt;=2.7|g&#39;</span><span class="w"> </span>FrugalBuild
+<span class="w">        </span><span class="k">if</span><span class="w"> </span>bumppkg<span class="w"> </span>-t<span class="w"> </span>python27,current<span class="w"> </span>--rebuild<span class="w"> </span><span class="s2">&quot;- rebuilt with python-2.7&quot;</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">                </span>repoman<span class="w"> </span>-t<span class="w"> </span>python27<span class="w"> </span>-k<span class="w"> </span>push
+<span class="w">        </span><span class="k">else</span>
+<span class="w">                </span><span class="nb">echo</span><span class="w"> </span><span class="nv">$i</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>~/failed.list
+<span class="w">        </span><span class="k">fi</span>
+<span class="k">done</span>
+</code></pre></div>
+
+<p>Then investigated the failed builds manually.</p>
+<p>Oh, and obviously I no longer had to build the x86_64/ppc fpms manually, I just enabled syncpkgd for the python27 WIP repo.</p>
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/next-rtf-fix-tables-at-the-start-of-a-document-1.html">Next RTF fix: tables at the start of a document</a></h1>
   </div>
   <div class="article_meta">
@@ -249,24 +282,6 @@
 <p>With best regards,
 The Google Summer of Code Program Administration Team</p>
 </blockquote>
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/vdsl.html">vDSL</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Fri 23 April 2010</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <p>Time to say bye-bye to adsl!</p>
-<p>The optical fiber is now only <a href="http://maps.google.com/maps?f=d&amp;source=s_d&amp;saddr=1124+Budapest,+N%C3%A9metv%C3%B6lgyi+Way+55,+Hungary&amp;daddr=1124+Budapest,+Kiss+J%C3%A1nos+Alt%C3%A1bornagy+Way+57,+Hungary&amp;hl=en&amp;geocode=Feau1AIdfhkiASkV2naYg95BRzG9tgLExaGY7Q%3B&amp;mra=ls&amp;sll=47.492935,19.01343&amp;sspn=0.001783,0.004823&amp;ie=UTF8&amp;z=18">260 meters</a> away and that means it's possible to order vDSL here.</p>
-<p>That means that means that the average download speed is now about 14MBit/s while it was about 5MBit/s with adsl. :) </p>
-<p>Completely unrelated: if you use ps2pdf and the margins a screwed up, don't forget to give <a href="http://www-h.eng.cam.ac.uk/help/tpl/textprocessing/latex2pdfprint.html">-sPAPERSIZE=a4</a> a try.</p>
   </div>
 </article>
 

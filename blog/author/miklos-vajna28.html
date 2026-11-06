@@ -59,6 +59,43 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/userspace-boot-speed.html">Userspace boot speed: less than a second</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Sat 24 September 2011</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <p>I did not care about boot speed for a long time, since servers usually
+restarted only for kernel upgrades, laptops suspend to ram all the time,
+and I have no desktop machine at home for years now.  Though one use
+case started to motivate me recently: I use virtual machines a lot, and
+waiting for them to boot up is boring.</p>
+<p>So I looked at the <code>systemd-analyze blame</code> output, and it turned out
+that for a base-only install the only service that takes a lot of time
+is <code>netconfig</code>. It's because it was a <code>oneshot</code> service, so the whole
+boot process waited for <code>dhcpcd</code> to get an IP. A much better solution is
+to just start netconfig in the background and move on -- and that's
+exactly frugalwareutils in git does now.</p>
+<p>Before:</p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>systemd-analyze<span class="w"> </span>
+Startup<span class="w"> </span>finished<span class="w"> </span><span class="k">in</span><span class="w"> </span>2030ms<span class="w"> </span><span class="o">(</span>kernel<span class="o">)</span><span class="w"> </span>+<span class="w"> </span>1166ms<span class="w"> </span><span class="o">(</span>initrd<span class="o">)</span><span class="w"> </span>+<span class="w"> </span>6755ms<span class="w"> </span><span class="o">(</span>userspace<span class="o">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>9953ms
+</code></pre></div>
+
+<p>After:</p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>systemd-analyze<span class="w"> </span>
+Startup<span class="w"> </span>finished<span class="w"> </span><span class="k">in</span><span class="w"> </span>2039ms<span class="w"> </span><span class="o">(</span>kernel<span class="o">)</span><span class="w"> </span>+<span class="w"> </span>1146ms<span class="w"> </span><span class="o">(</span>initrd<span class="o">)</span><span class="w"> </span>+<span class="w"> </span>892ms<span class="w"> </span><span class="o">(</span>userspace<span class="o">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>4079ms
+</code></pre></div>
+
+<p><strong>NOTE:</strong> Again, this is for a virtual machine (where the host has some IO
+cache) and for a base-only install.</p>
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/lo-l10n-build-speedup.html">Speeding up build with a lot languages enabled</a></h1>
   </div>
   <div class="article_meta">
@@ -353,136 +390,6 @@ ora) alatt.</p>
 <li>LGee kepei
   <a href="https://get.google.com/albumarchive/116149866021135351983/album/AF1QipN5HTHzlLa-vs8MxsCtqzElrC0cNDTzq7zTG-Gr?source=pwa">erre</a></li>
 </ul>
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/jogsi.html">Mennyibe kerul 2011-ben egy jogsi?</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Fri 27 May 2011</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <p>Azt tudjuk, hogy a <a href="http://www.mazsolajogsi.hu/">reklam szerint</a> csak
-49.000 Ft. A kerdes inkabb az, hogy ez a valosagban hogy alakul.</p>
-<p>Remelhetoleg a sajat peldam eleg atlagosnak mondhato: volt jopar
-potoram, viszont a vizsgakon elsore atmentem. Van akinek mondjuk a
-forgalmi csak masodszorra sikerul, de ott meg lehet nincs ennyi potora,
-es akkor ugyanott tartunk.</p>
-<p>Lenyeg, hogy irogattam, hogy a <a href="http://www.taltosjogsi.hu/">Taltosban</a> (fo
-kivalasztasi szempont: ma este hol indul KRESZ tanfolyam :) ) nalunk
-miert mennyit kellett fizetni, ime hat a lista, amibol tenyleg nem
-hianyzik semmi:</p>
-<table>
-<thead>
-<tr>
-<th>Szakasz</th>
-<th>Mire</th>
-<th>Mennyit</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>KRESZ:</td>
-<td>Oktatas I.</td>
-<td>12 000,00 Ft</td>
-</tr>
-<tr>
-<td></td>
-<td>Vizsgadij</td>
-<td>4 600,00 Ft</td>
-</tr>
-<tr>
-<td></td>
-<td>Orvos</td>
-<td>4 000,00 Ft</td>
-</tr>
-<tr>
-<td></td>
-<td>Oktatas II.</td>
-<td>12 000,00 Ft</td>
-</tr>
-<tr>
-<td>Rutin:</td>
-<td>Normal ora</td>
-<td>12 000,00 Ft</td>
-</tr>
-<tr>
-<td></td>
-<td>Vizsgadij</td>
-<td>4 700,00 Ft</td>
-</tr>
-<tr>
-<td></td>
-<td>Tankonyv</td>
-<td>1 500,00 Ft</td>
-</tr>
-<tr>
-<td></td>
-<td>Potora I.</td>
-<td>4 000,00 Ft</td>
-</tr>
-<tr>
-<td></td>
-<td>Potora II.</td>
-<td>4 000,00 Ft</td>
-</tr>
-<tr>
-<td></td>
-<td>Potora III.</td>
-<td>4 000,00 Ft</td>
-</tr>
-<tr>
-<td>Forgalmi:</td>
-<td>Normal ora I.</td>
-<td>12 000,00 Ft</td>
-</tr>
-<tr>
-<td></td>
-<td>Normal ora II.</td>
-<td>12 000,00 Ft</td>
-</tr>
-<tr>
-<td></td>
-<td>Vizsgadij</td>
-<td>11 000,00 Ft</td>
-</tr>
-<tr>
-<td></td>
-<td>Potora I.</td>
-<td>12 000,00 Ft</td>
-</tr>
-<tr>
-<td></td>
-<td>Potora II.</td>
-<td>12 000,00 Ft</td>
-</tr>
-<tr>
-<td>Eu.:</td>
-<td>Oktatas</td>
-<td>8 000,00 Ft</td>
-</tr>
-<tr>
-<td></td>
-<td>Vizsgadij</td>
-<td>5 500,00 Ft</td>
-</tr>
-<tr>
-<td>Okmanyiroda</td>
-<td></td>
-<td>4 000,00 Ft</td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td>139 300,00 Ft</td>
-</tr>
-</tbody>
-</table>
   </div>
 </article>
 

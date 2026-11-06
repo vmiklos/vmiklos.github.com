@@ -59,6 +59,29 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/latex-sources.html">Handy Latex bookmarks</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Wed 03 November 2010</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <p>Today I had some Hungarian mathematical logic notes to type in Latex, and again I had to dig up the various references to get the proper symbols I needed.</p>
+<p>I used the following pages:</p>
+<ul>
+<li><a href="ftp://ftp.ams.org/pub/tex/doc/amsmath/amsldoc.pdf">amsmath</a> is unique in that for example it explains how to use <code>\begin{cases}</code></li>
+<li><a href="http://amath.colorado.edu/documentation/LaTeX/Symbols.pdf">this one</a> is a collection of lot of symbols, I found <code>\mathcal</code> here</li>
+<li>An <a href="http://en.wikipedia.org/wiki/List_of_logic_symbols">article from Wikipedia</a> about logic symbols</li>
+<li><a href="http://en.wikibooks.org/wiki/LaTeX/Mathematics">The Math chapter</a> of the well-known LaTeX wikibook</li>
+<li><a href="http://www.maths.tcd.ie/~dwilkins/LaTeXPrimer/Theorems.html">A set of macros</a> making easy to declare lemmas, definitions, proofs.</li>
+</ul>
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/qtsql-sqlite.html">QtSql vs. SQLite</a></h1>
   </div>
   <div class="article_meta">
@@ -276,39 +299,6 @@ compare it to an OpenBSD professional release song, then you'll like it!
 <p>So I decided to give the server mode mode a try and I choosed okular as a test application. My commandline is:</p>
 <p><code>anyremote -s bluetooth:19 -f /usr/share/anyremote/cfg-data/Server-mode/okular.cfg</code></p>
 <p>Once I started the server on my notebook I could choose it in the midlet on my phone in the j2me client and it worked as expected.</p>
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/scripts-used-in-the-python-2-7-rebuild.html">Scripts used in the Python 2.7 rebuild</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Fri 24 September 2010</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <p>First, I could almost reuse the same set of scripts as described <a href="https://vmiklos.hu/blog/scripts-used-in-the-python-2-6-mass-rebu.html">here</a>. The only change I needed to do is that aborting the build loop after each fail is a waste of time, so now I did:</p>
-<div class="highlight"><pre><span></span><code><span class="k">for</span><span class="w"> </span>i<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="k">$(</span>cat<span class="w"> </span>~/test.list<span class="k">)</span>
-<span class="k">do</span>
-<span class="w">        </span><span class="nb">echo</span><span class="w"> </span><span class="nv">$i</span>
-<span class="w">        </span><span class="nb">cd</span><span class="w"> </span>~/git/python27/source/*/<span class="nv">$i</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="k">continue</span>
-<span class="w">        </span>sudo<span class="w"> </span>makepkg<span class="w"> </span>-t<span class="w"> </span>python27,current<span class="w"> </span>-C
-<span class="w">        </span>git<span class="w"> </span>clean<span class="w"> </span>-x<span class="w"> </span>-d<span class="w"> </span>-f
-<span class="w">        </span>git<span class="w"> </span>checkout<span class="w"> </span>-f
-<span class="w">        </span>sed<span class="w"> </span>-i<span class="w"> </span><span class="s1">&#39;s|python&gt;=2.6|python&gt;=2.7|g&#39;</span><span class="w"> </span>FrugalBuild
-<span class="w">        </span><span class="k">if</span><span class="w"> </span>bumppkg<span class="w"> </span>-t<span class="w"> </span>python27,current<span class="w"> </span>--rebuild<span class="w"> </span><span class="s2">&quot;- rebuilt with python-2.7&quot;</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
-<span class="w">                </span>repoman<span class="w"> </span>-t<span class="w"> </span>python27<span class="w"> </span>-k<span class="w"> </span>push
-<span class="w">        </span><span class="k">else</span>
-<span class="w">                </span><span class="nb">echo</span><span class="w"> </span><span class="nv">$i</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>~/failed.list
-<span class="w">        </span><span class="k">fi</span>
-<span class="k">done</span>
-</code></pre></div>
-
-<p>Then investigated the failed builds manually.</p>
-<p>Oh, and obviously I no longer had to build the x86_64/ppc fpms manually, I just enabled syncpkgd for the python27 WIP repo.</p>
   </div>
 </article>
 

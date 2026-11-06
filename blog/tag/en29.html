@@ -59,6 +59,54 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/pdf-duplex-printing.html">Poor man's PDF duplex printing</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Sat 27 November 2010</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 2 minutes</p>
+  </div>
+  <div class="article_text">
+    <p>Yesterday I wanted to print a PDF document: two pages per sheet, and of course I wanted duplex printing as well (on the short side).</p>
+<p>Given that the hardware (the printer) was not capable of duplex printing, I needed some software workaround. If you want one page per sheet, this is trivial, as the print dialog of any PDF reader will let you select "odd pages", then you re-feed the printer with the output paper and you select "even pages" and that's it.</p>
+<p>OTOH, if you want 2 pages per sheet, then first you need some trick first to create two PDF from the original: the first containing the pages 1, 2, 5, 6, etc. - and the other containing 3, 4, 7, 8, etc.</p>
+<p>After all this isn't really hard using <code>pdftk</code>. First, the input PDF was around 150 pages, so I wanted to split the input to one file / page:</p>
+<div class="highlight"><pre><span></span><code>pdftk in.pdf burst output out/%03d.pdf
+</code></pre></div>
+
+<p>Then let's move the pages to the subdirs <code>a</code> or <code>b</code>, based on the above pattern:</p>
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>out
+mkdir<span class="w"> </span>a<span class="w"> </span>b
+<span class="k">for</span><span class="w"> </span>i<span class="w"> </span><span class="k">in</span><span class="w"> </span>*.pdf
+<span class="k">do</span>
+<span class="w">    </span><span class="nv">base</span><span class="o">=</span><span class="k">$(</span>basename<span class="w"> </span><span class="nv">$i</span><span class="w"> </span>.pdf<span class="k">)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="nv">$base</span><span class="w"> </span>-lt<span class="w"> </span><span class="m">100</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">        </span><span class="nv">rem</span><span class="o">=</span><span class="k">$(($(</span><span class="nb">echo</span><span class="w"> </span><span class="nv">$i</span><span class="p">|</span>sed<span class="w"> </span><span class="s1">&#39;s/^0\+\(.*\)\.pdf/\1/&#39;</span><span class="k">)</span><span class="o">%</span><span class="m">4</span><span class="k">))</span>
+<span class="w">    </span><span class="k">else</span>
+<span class="w">        </span><span class="nv">rem</span><span class="o">=</span><span class="k">$((</span><span class="nv">$base</span><span class="o">%</span><span class="m">4</span><span class="k">))</span>
+<span class="w">    </span><span class="k">fi</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$rem</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="w"> </span>-o<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$rem</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">                </span>mv<span class="w"> </span><span class="nv">$i</span><span class="w"> </span>a
+<span class="w">        </span><span class="k">else</span>
+<span class="w">                </span>mv<span class="w"> </span><span class="nv">$i</span><span class="w"> </span>b
+<span class="w">        </span><span class="k">fi</span>
+<span class="k">done</span>
+</code></pre></div>
+
+<p>Finally concat the files from the <code>a</code> and the <code>b</code> dir to a single file:</p>
+<div class="highlight"><pre><span></span><code>cd a
+pdftk <span class="gs">*.pdf cat output ../a.pdf</span>
+<span class="gs">cd ../b</span>
+<span class="gs">pdftk *</span>.pdf cat output ../b.pdf
+</code></pre></div>
+
+<p>That's it!</p>
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/libwpd-bindings.html">libwpd-bindings-0.1.0</a></h1>
   </div>
   <div class="article_meta">
@@ -264,29 +312,6 @@ default-driver<span class="w"> </span>iscsi
 </code></pre></div>
 
 <p>Something offtopic: a <a href="https://github.com/artagnon/rejourn/commit/3b87aab385647ea8e5dd8844aec913ab3c02252f">rejourn</a> patch accepted and a <a href="https://bugs.freedesktop.org/show_bug.cgi?id=31362">LibreOffice</a> bug fixed today.</p>
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/latex-sources.html">Handy Latex bookmarks</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Wed 03 November 2010</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 1 minutes</p>
-  </div>
-  <div class="article_text">
-    <p>Today I had some Hungarian mathematical logic notes to type in Latex, and again I had to dig up the various references to get the proper symbols I needed.</p>
-<p>I used the following pages:</p>
-<ul>
-<li><a href="ftp://ftp.ams.org/pub/tex/doc/amsmath/amsldoc.pdf">amsmath</a> is unique in that for example it explains how to use <code>\begin{cases}</code></li>
-<li><a href="http://amath.colorado.edu/documentation/LaTeX/Symbols.pdf">this one</a> is a collection of lot of symbols, I found <code>\mathcal</code> here</li>
-<li>An <a href="http://en.wikipedia.org/wiki/List_of_logic_symbols">article from Wikipedia</a> about logic symbols</li>
-<li><a href="http://en.wikibooks.org/wiki/LaTeX/Mathematics">The Math chapter</a> of the well-known LaTeX wikibook</li>
-<li><a href="http://www.maths.tcd.ie/~dwilkins/LaTeXPrimer/Theorems.html">A set of macros</a> making easy to declare lemmas, definitions, proofs.</li>
-</ul>
   </div>
 </article>
 

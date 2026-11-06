@@ -59,6 +59,99 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/sw-gutter-margin.html">Gutter margin in Writer</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Fri 12 February 2021</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 3 minutes</p>
+  </div>
+  <div class="article_text">
+    <p>The page gutter defines the amount of extra space added to the specified margin (typically left),
+above any existing margin values.</p>
+<p>Writer now has much better support for gutter margins: not only this margin type can be specified
+explicitly, it's also possible to select if the gutter should be on the left or on the top, and it
+works with mirrored margins as well.</p>
+<p>This work is primarily for <a href="https://www.collaboraoffice.com/">Collabora Online</a>, but the feature is
+fully available in desktop Writer as well.</p>
+<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
+<p>Word has a gutter margin feature, and we saw that some UI-level
+<a href="https://github.com/OSSII/oxool-community/commit/a7e0dec2fad7e6c63e8951875bb28ac015f736a0">workaround</a>
+appeared to have something similar based on the LibreOffice technology. We thought it's much better
+to impelement this properly, so that the result is interoperable with Word, and also available both
+in Online and on the desktop.</p>
+<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
+<p>This is how the UI looks like in Online:</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-gutter-margin/online.png"><figcaption>New UI in Online</figcaption>
+</figure>
+</p>
+<p>This is how the new render result looks like:</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-gutter-margin/new.png"><figcaption>New render result in Writer</figcaption>
+</figure>
+</p>
+<p>Matching the reference rendering:</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-gutter-margin/ref.png"><figcaption>Reference render result</figcaption>
+</figure>
+</p>
+<p>While the gutter was just missing previously:</p>
+<p>
+<figure><img src="https://share.vmiklos.hu/blog/sw-gutter-margin/old.png"><figcaption>Old render result in Writer</figcaption>
+</figure>
+</p>
+<p>You can see that the gutter margin is now handled properly.</p>
+<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
+<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
+<p>As usual, the high-level problem was addressed by a series of incremental development steps:</p>
+<!-- git log --author=vmiklos --since=2021-01-01 --grep 'sw page gutter margin' --pretty=oneline --reverse -->
+
+<ul>
+<li>
+<p>First, we added a new "gutter" margin type (length) and a gutter position (left or top) to the
+  document model &amp; UNO API.</p>
+</li>
+<li>
+<p>This was followed by adding the layout, which is always the most challenging part of a new Writer
+  feature. In this case the basic functionality was implemented by reducing the "print area" of page
+  frames, so that the positioning of header, body and footer frames all respect the gutter margin.
+  Then additional care was taken to ignore the gutter margin for page borders to be compatible with
+  Word. Finally the margin position and mirrored margin support was implemented.</p>
+</li>
+<li>
+<p>Then we looked at import/export: this feature is now supported with the ODP, DOCX, DOC and RTF
+  formats. Note that some best-effort handling was there in the DOC filter already, but the gutter
+  margin was (semantically) lost on export.</p>
+</li>
+<li>
+<p>You already saw the new UI above: this allows changing the amount of the gutter margin, specifying
+  its position, finally the preview widget also takes the gutter margin into account.  Note that
+  this dialog is shared code between Writer, Calc and Impress: we made sure to not break those other
+  apps with the extended UI, which is specific to Writer.</p>
+</li>
+<li>
+<p>Brief help has been added for these new UI controls and submitting an ODF extension proposal to
+  OASIS is in progress to standardize the so far LO-specific markup:</p>
+</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;style:page-layout-properties</span><span class="w"> </span><span class="na">loext:margin-gutter=</span><span class="s">&quot;1.27cm&quot;</span><span class="nt">&gt;</span>
+</code></pre></div>
+
+<p>With these, it's now possible to add, modify, render and delete gutter margins for your documents,
+while preserving them during ODT and DOCX import/export, without introducing any weird fake line
+shapes.</p>
+<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
+<p>You can get a snapshot / demo of Collabora Office and try it out yourself right now: <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable
+snapshot</a>.  Collabora intends to
+continue supporting and contributing to LibreOffice, the code is merged so we expect all of this
+work will be available in TDF's next release too (7.2).</p>
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/fosdem2021.html">Handling PDF digital signatures with PDFium FOSDEM talk</a></h1>
   </div>
   <div class="article_meta">
@@ -589,86 +682,6 @@ that the document language is Hungarian, not the confusing "multiple languages",
 <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable snapshot</a>.  Collabora
 is a major contributor to LibreOffice and all of this work will be available in TDF's next release
 too (7.1).</p>
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/smartart-improvements-5.html">SmartArt improvements in Impress, part 5</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Wed 19 August 2020</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 3 minutes</p>
-  </div>
-  <div class="article_text">
-    <p>Impress now has support for considering rules next to constraints when it comes to lay out
-SmartArt graphics from PPTX files. This builds on top of the
-<a href="https://vmiklos.hu/blog/smartart-improvements-4.html">previous improvements</a> around SmartArt support.</p>
-<p>First, thanks to our partner <a href="https://www.suse.com/">SUSE</a> for working with
-<a href="https://www.collaboraoffice.com/">Collabora</a> to make this possible.</p>
-<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
-<p>SmartArt allows declaring your content and requirements for a graphic, then the layout will take
-care of arranging that in a suitable way. It is allowed to declare conflicting requirements, and
-rules can specify how to resolve those conflicts. The below example document has shape widths
-defined in a way that multiple child shapes wants to have a width of 100%, but simply scaling down
-all child shapes does not give a correct result. Rules define what to scale down and what to leave
-unchanged.</p>
-<h2 id="results-so-far">Results so far<a class="headerlink" href="#results-so-far" title="Permanent link">&para;</a></h2>
-<p>Here is how this works in practice:</p>
-<p>
-<figure><img src="https://lh3.googleusercontent.com/_AL6ARVsbgdaovqKPxr0n0I1kSn2zX_5xGg5y_4M8whkT6K0-mXIsGXeYI2Uo6u2YQAVwfLtbfy8XeYHggaPWpIHV4yaA4CaaIFUK4LQLRbV-JIbhy9A-Xz5JEEbcXp3TRWK4CzVcl0=w640"><figcaption>Linear layout with multiple 100% width shapes, new output</figcaption>
-</figure>
-</p>
-<p>
-<figure><img src="https://lh3.googleusercontent.com/UmK7-j0WxUHamDA-g3FepAOYYgbD5LJJhssleqv2jLnfXX-62fP82uA_5t__9HOQWIZfJUl6hoZVVQX5-LuIdOxz2M0HS90zcaoov_SbxQHuv4DN48be8dZkvySb_QtAbmNOTcMpJ5c=w640"><figcaption>Linear layout with multiple 100% width shapes, old output</figcaption>
-</figure>
-</p>
-<p>
-<figure><img src="https://lh3.googleusercontent.com/i2ScJOwjQfQeeFrw-yu6EQt67nt5Xx7o325WnaOeprXH4jc_CPLuXt0Mwb2iiT9rBamjooEA271HY48P6v8ieuWMUcoSq5HTjMsJkJnUOcrCrF_7uutebYGfO2WOZzAJRh6k-ibbglc=w640"><figcaption>Linear layout with multiple 100% width shapes, reference output</figcaption>
-</figure>
-</p>
-<h2 id="how-is-this-implemented">How is this implemented?<a class="headerlink" href="#how-is-this-implemented" title="Permanent link">&para;</a></h2>
-<p>If you would like to know a bit more about how this works, continue reading... :-)</p>
-<ul>
-<li>
-<p>The initial heavy-lifting is done in
-  <a href="https://git.libreoffice.org/core/commit/6ca5412bac9e3da5cd20f315fc853c7733f10858">this commit</a>,
-  which parses the rules from the XML input.</p>
-</li>
-<li>
-<p>Then once we had rule info around, the linear algorithm was improved to scale down child shapes
-  based on rules (and not just all of them, equally).</p>
-</li>
-<li>
-<p>Then it was necessary to scale spacings (between child shapes) based on rules as well.</p>
-</li>
-<li>
-<p>It was also needed to limit the height request of a shape, since they should not leave the canvas
-  of the SmartArt.</p>
-</li>
-<li>
-<p>Finally it was necessary to support the "top" child order. This can be declared using the
-  following markup:</p>
-</li>
-</ul>
-<div class="highlight"><pre><span></span><code><span class="nt">&lt;dgm:layoutNode</span><span class="w"> </span><span class="err">...</span><span class="w"> </span><span class="na">chOrder=</span><span class="s">&quot;t&quot;</span><span class="nt">&gt;</span>
-</code></pre></div>
-
-<p>This declares that an earlier shape in a linear layout is on top of a later shapes, not the
-opposite. The default is that newer shapes are on top of older shapes. This is not a visible
-problem usually, but once you start using negative widths in a linear layout, you can have
-overlapping shapes. The above example has 3 text shapes, which are overlapping with the "background"
-arrow shape. This is expressed by having 100% width for child shapes (OK to scale down), then a
--100% width for a dummy shape (not scaling) and finally a 100% width for the background arrow (not
-scaling).</p>
-<p>All in all, now the background arrow shape has a good position and size, and the text on the arrow
-is readable.</p>
-<h2 id="want-to-start-using-this">Want to start using this?<a class="headerlink" href="#want-to-start-using-this" title="Permanent link">&para;</a></h2>
-<p>You can get a snapshot / demo of Collabora Office and try it out yourself right now: <a href="https://www.collaboraoffice.com/collabora-office-latest-snapshot/">try unstable
-snapshot</a>.  Collabora is a major
-contributor to LibreOffice and all of this work will be available in TDF's next release too (7.1).</p>
   </div>
 </article>
 

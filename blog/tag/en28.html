@@ -59,6 +59,25 @@
 
 <article>
   <div class="article_title">
+    <h1><a href="https://vmiklos.hu/blog/systemd-3.html">Systemd: kernel, bluetooth, bitlbee</a></h1>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Mon 27 December 2010</p>
+  </div>
+  <div class="article_readtime">
+    <p>Estimated read time: 1 minutes</p>
+  </div>
+  <div class="article_text">
+    <ul>
+<li>Finally I can run systemd on my desktop, and not in a virtual machine only, since there is <a href="http://thread.gmane.org/gmane.linux.kernel/1080727">a patch</a> for the sched/cgroup issue I had. It was not a systemd bug, but systemd triggered a kernel issue, which was hidden so far.</li>
+<li>I just <a href="http://frugalware.org/pipermail/frugalware-git/2010-December/055098.html">updated our bluez package</a>, and bus activation works fine. This means bluetoothd is not started till somebody connects to it. Given that I sometimes do not log in to KDE to use kbluetooth, but just want to do something on the console, where having bluetoothd running is totally unnecessary, I consider this really nice.</li>
+<li>It came up on <code>#bitlbee</code> that there is a <a href="https://bugzilla.redhat.com/show_bug.cgi?id=662289">Fedora bug</a> where they ask for systemd unit files for BitlBee. So I <a href="http://bugs.bitlbee.org/bitlbee/ticket/738">created a patch</a>, and the nice thing is that the second iteration now seems to be fine for Frugalware/Fedora/Debian, so we managed to build something cross-distro here. (I think I mentioned that's the #1 feature I like in systemd.)</li>
+</ul>
+  </div>
+</article>
+<hr />
+<article>
+  <div class="article_title">
     <h1><a href="https://vmiklos.hu/blog/pcal.html">pcal</a></h1>
   </div>
   <div class="article_meta">
@@ -293,54 +312,6 @@ rest is just merge from:</p>
 <p>Of course it should be used with care - if someone starts adding bullshit or misleading documentation using this script, that just makes the situation even worse.</p>
 <p>The patch generated a nice <a href="http://thread.gmane.org/gmane.comp.documentfoundation.libreoffice.devel/2938">thread</a> where basically they argue if it makes sense to have a KDE-like API documentation for LibreOffice or it's just better to refactor code to have self-documenting function names, etc.</p>
 <p>At the end of the they, looks like there are people who find it <a href="http://article.gmane.org/gmane.comp.documentfoundation.libreoffice.devel/3032">great</a>. :) (In the meantime that patch has been pushed, of course.)</p>
-  </div>
-</article>
-<hr />
-<article>
-  <div class="article_title">
-    <h1><a href="https://vmiklos.hu/blog/pdf-duplex-printing.html">Poor man's PDF duplex printing</a></h1>
-  </div>
-  <div class="article_meta">
-    <p>Posted on: Sat 27 November 2010</p>
-  </div>
-  <div class="article_readtime">
-    <p>Estimated read time: 2 minutes</p>
-  </div>
-  <div class="article_text">
-    <p>Yesterday I wanted to print a PDF document: two pages per sheet, and of course I wanted duplex printing as well (on the short side).</p>
-<p>Given that the hardware (the printer) was not capable of duplex printing, I needed some software workaround. If you want one page per sheet, this is trivial, as the print dialog of any PDF reader will let you select "odd pages", then you re-feed the printer with the output paper and you select "even pages" and that's it.</p>
-<p>OTOH, if you want 2 pages per sheet, then first you need some trick first to create two PDF from the original: the first containing the pages 1, 2, 5, 6, etc. - and the other containing 3, 4, 7, 8, etc.</p>
-<p>After all this isn't really hard using <code>pdftk</code>. First, the input PDF was around 150 pages, so I wanted to split the input to one file / page:</p>
-<div class="highlight"><pre><span></span><code>pdftk in.pdf burst output out/%03d.pdf
-</code></pre></div>
-
-<p>Then let's move the pages to the subdirs <code>a</code> or <code>b</code>, based on the above pattern:</p>
-<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>out
-mkdir<span class="w"> </span>a<span class="w"> </span>b
-<span class="k">for</span><span class="w"> </span>i<span class="w"> </span><span class="k">in</span><span class="w"> </span>*.pdf
-<span class="k">do</span>
-<span class="w">    </span><span class="nv">base</span><span class="o">=</span><span class="k">$(</span>basename<span class="w"> </span><span class="nv">$i</span><span class="w"> </span>.pdf<span class="k">)</span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="nv">$base</span><span class="w"> </span>-lt<span class="w"> </span><span class="m">100</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
-<span class="w">        </span><span class="nv">rem</span><span class="o">=</span><span class="k">$(($(</span><span class="nb">echo</span><span class="w"> </span><span class="nv">$i</span><span class="p">|</span>sed<span class="w"> </span><span class="s1">&#39;s/^0\+\(.*\)\.pdf/\1/&#39;</span><span class="k">)</span><span class="o">%</span><span class="m">4</span><span class="k">))</span>
-<span class="w">    </span><span class="k">else</span>
-<span class="w">        </span><span class="nv">rem</span><span class="o">=</span><span class="k">$((</span><span class="nv">$base</span><span class="o">%</span><span class="m">4</span><span class="k">))</span>
-<span class="w">    </span><span class="k">fi</span>
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$rem</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="w"> </span>-o<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$rem</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
-<span class="w">                </span>mv<span class="w"> </span><span class="nv">$i</span><span class="w"> </span>a
-<span class="w">        </span><span class="k">else</span>
-<span class="w">                </span>mv<span class="w"> </span><span class="nv">$i</span><span class="w"> </span>b
-<span class="w">        </span><span class="k">fi</span>
-<span class="k">done</span>
-</code></pre></div>
-
-<p>Finally concat the files from the <code>a</code> and the <code>b</code> dir to a single file:</p>
-<div class="highlight"><pre><span></span><code>cd a
-pdftk <span class="gs">*.pdf cat output ../a.pdf</span>
-<span class="gs">cd ../b</span>
-<span class="gs">pdftk *</span>.pdf cat output ../b.pdf
-</code></pre></div>
-
-<p>That's it!</p>
   </div>
 </article>
 
