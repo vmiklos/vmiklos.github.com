@@ -177,7 +177,7 @@
                         <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
 <p>turtle-cpm is a command line tool to manage passwords, a replacement of the now gone <a href="https://www.harry-b.de/dokuwiki/doku.php?id=harry:cpm">cpm
 project</a>.</p>
-<p>The latest version is v26.2, released on 2026-02-05.  See the <a href="news.html">release notes</a>.</p>
+<p>The latest version is v26.8, released on 2026-08-07.  See the <a href="news.html">release notes</a>.</p>
 <p>Notable features:</p>
 <ul>
 <li>Simple database format: encrypted SQLite (via <code>gpg</code>), tracking machines, services, users and
@@ -380,6 +380,12 @@ using (assuming an empty <code>XDG_STATE_HOME</code> environment variable):</p>
 <pre><code class="language-console">sqlitebrowser decrypted.db
 </code></pre>
 <p>Don't forget to delete the decrypted database after you're done with your investigation.</p>
+<h2 id="password-search-log"><a class="header" href="#password-search-log">Password search log</a></h2>
+<p>Searches are appended to <code>~/.local/state/cpm/passwords.log</code> (or under <code>XDG_STATE_HOME</code>, if set), so
+you can see e.g. how often you had to re-login to a site. Each line looks like:</p>
+<pre><code class="language-console">[2026-11-13 22:51:45] search: totp is true, query is example.com
+</code></pre>
+<p>The file is plain text, so avoid putting secrets in search queries if that is a concern.</p>
 <h2 id="reference-documentation"><a class="header" href="#reference-documentation">Reference documentation</a></h2>
 <p>Apart from this guide, reference documentation is available in <code>cpm</code> itself. You can learn about the
 possible subcommands using:</p>
@@ -422,6 +428,14 @@ machine: facebook.com, service: http, user: myuser, password type: TOTP shared s
 <pre><code class="language-console">go test -run=TestInsert ./...
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="changelog"><a class="header" href="#changelog">Changelog</a></h1>
+<h2 id="main"><a class="header" href="#main">main</a></h2>
+<ul>
+<li>search queries are now logged in <code>~/.local/state/cpm/passwords.log</code></li>
+</ul>
+<h2 id="268"><a class="header" href="#268">26.8</a></h2>
+<ul>
+<li>export: now takes an optional search query, the same way <code>search</code> does, to limit what is exported</li>
+</ul>
 <h2 id="262"><a class="header" href="#262">26.2</a></h2>
 <ul>
 <li>new <code>export</code> command to write the password database as a JSON file</li>
